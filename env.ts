@@ -14,6 +14,14 @@ const envSchema = z
     // OAuth - Kakao
     OAUTH_KAKAO_CLIENT_ID: z.string().optional(),
     OAUTH_KAKAO_CLIENT_SECRET: z.string().optional(),
+
+    // AI - Upstage
+    UPSTAGE_API_KEY: z.string().optional(),
+
+    // Supabase
+    NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (!!data.OAUTH_GOOGLE_CLIENT_ID !== !!data.OAUTH_GOOGLE_CLIENT_SECRET) {
