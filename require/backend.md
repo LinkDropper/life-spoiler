@@ -59,6 +59,8 @@
 #### 4.2.1. users (사용자)
 
 > Supabase Auth의 `auth.users`와 연동되는 public 스키마 테이블
+>
+> **계정 연결 정책:** 동일 이메일로 다른 소셜 제공자(카카오/구글)를 통해 가입할 경우, Supabase Auth의 자동 계정 연결 기능을 활용합니다. `auth.users`에서 검증된 이메일이 동일하면 기존 계정과 연결되어 `public.users`에 중복 레코드가 생성되지 않습니다.
 
 ```sql
 CREATE TABLE public.users (
@@ -833,13 +835,15 @@ export const confirmPayment = async (
 ### 8.3. orderId 생성 규칙
 
 ```typescript
+import { randomBytes } from "crypto";
+
 // 형식: {PREFIX}_{YYYYMMDD}_{RANDOM}
 // 예: LS_20240115_a1b2c3d4
 
 const generateOrderId = (): string => {
   const prefix = "LS"; // Life Spoiler
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const random = Math.random().toString(36).substring(2, 10);
+  const random = randomBytes(4).toString("hex"); // 8-character hex string
   return `${prefix}_${date}_${random}`;
 };
 ```
