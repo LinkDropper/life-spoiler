@@ -2,6 +2,7 @@ import { AIError } from "./errors";
 import { PALACE_NAME_MAP, USER_PROMPTS, ZIWEI_SYSTEM_PROMPT } from "./prompts";
 import type {
   FortuneInterpretation,
+  InterpretationType,
   PalaceData,
   PreviewResponse,
   SectionResponse,
@@ -27,6 +28,13 @@ const DAYUN_REQUIRED_TYPES = [
   "health",
   "summary",
 ] as const;
+
+/** 대운 정보가 필요한 해석 유형인지 확인하는 타입 가드 */
+const isDayunRequired = (
+  type: InterpretationType
+): type is (typeof DAYUN_REQUIRED_TYPES)[number] => {
+  return (DAYUN_REQUIRED_TYPES as readonly string[]).includes(type);
+};
 
 /**
  * 명반 데이터를 AI에게 전달할 문자열로 포맷팅
@@ -66,11 +74,7 @@ ${formatPalaceData(oppositePalace)}`;
   }
 
   // 대운 정보 추가 (timeline이 필요한 해석 유형에서만)
-  if (
-    dayunPeriods &&
-    dayunPeriods.length > 0 &&
-    (DAYUN_REQUIRED_TYPES as readonly string[]).includes(requestType)
-  ) {
+  if (dayunPeriods && dayunPeriods.length > 0 && isDayunRequired(requestType)) {
     dataStr += `\n\n## 대운(10년 주기) 흐름`;
     for (const period of dayunPeriods) {
       const starsStr =

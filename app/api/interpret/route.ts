@@ -150,7 +150,6 @@ const convertChartToRequest = (
 
   return {
     user: {
-      name: input.name,
       gender: input.gender,
       lunarBirthInfo,
       currentAge,
@@ -185,7 +184,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "입력값이 유효하지 않습니다.",
-          details: parseResult.error.errors,
+          details: parseResult.error.issues,
         },
         { status: 400 }
       );

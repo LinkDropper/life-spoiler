@@ -79,7 +79,6 @@ export interface DayunData {
 
 export interface ZiweiInterpretationRequest {
   user: {
-    name: string;
     gender: "male" | "female";
     lunarBirthInfo: string;
     currentAge?: number;

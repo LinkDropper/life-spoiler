@@ -91,6 +91,7 @@ export const setCachedResult = async (
       updated_at: new Date().toISOString(),
     };
 
+    // HACK: Supabase v2 upsert 타입 문제로 인한 임시 우회
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (supabase.from("interpretation_cache") as any).upsert(insertData, {
       onConflict: "chart_hash,interpretation_type",
