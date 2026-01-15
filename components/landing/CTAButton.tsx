@@ -4,7 +4,7 @@ import styles from "./CTAButton.module.css";
 
 export const CTAButton = () => {
   return (
-    <button className={styles.button}>
+    <button type="button" className={styles.button}>
       <span className={styles.text}>인생 스포일러 확인하기</span>
       <Image
         src="/images/landing/arrow-right.svg"

@@ -39,7 +39,6 @@
 }
 
 .title {
-  font-family: var(--font-pretendard), sans-serif;
   font-size: 30px;
   font-weight: 900;
   line-height: 1.33;
@@ -54,7 +53,6 @@
 
 .subtitle {
   position: relative;
-  font-family: var(--font-pretendard), sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -65,7 +63,6 @@
 
 .subtitleHighlight {
   color: #deff7c;
-  border-radius: 500;
 }
 
 .star {

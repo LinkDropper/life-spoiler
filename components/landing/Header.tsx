@@ -13,7 +13,7 @@ export const Header = () => {
         priority
         quality={100}
       />
-      <button className={styles.menuButton} aria-label="메뉴">
+      <button type="button" className={styles.menuButton} aria-label="메뉴">
         <Image
           src="/images/landing/menu-icon.svg"
           alt=""

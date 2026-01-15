@@ -14,7 +14,6 @@
 }
 
 .title {
-  font-family: var(--font-pretendard), sans-serif;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.19;
@@ -27,7 +26,6 @@
 }
 
 .description {
-  font-family: var(--font-pretendard), sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.625;

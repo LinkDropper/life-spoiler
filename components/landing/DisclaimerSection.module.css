@@ -16,7 +16,6 @@
 }
 
 .warningText {
-  font-family: var(--font-pretendard), sans-serif;
   font-size: 24px;
   font-weight: 700;
   line-height: 1.19;
@@ -26,9 +25,7 @@
 .disclaimerText {
   color: #fff;
   text-align: center;
-  font-family: var(--font-pretendard), sans-serif;
   font-size: 14px;
-  font-style: normal;
   font-weight: 500;
   line-height: 20px;
   margin-top: 18px;
