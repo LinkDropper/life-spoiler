@@ -110,7 +110,7 @@ pnpm add jose    # JWT 세션 토큰 생성/검증
 
 ```
 ┌─────────────────────────────────┐
-│           nextjs-15-automation-starter-kit 로고              │
+│           life-spoiler 로고              │
 ├─────────────────────────────────┤
 │                                 │
 │   [ Google로 로그인 ]           │
