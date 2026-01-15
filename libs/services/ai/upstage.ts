@@ -100,11 +100,8 @@ export const chatCompletion = async (
         }
       }
 
-      // 타임아웃이 아닌 경우 재시도
-      if (
-        attempt < UPSTAGE_CONFIG.maxRetries &&
-        !(error instanceof AIError && error.code === "TIMEOUT")
-      ) {
+      // 재시도 가능한 경우 (타임아웃 포함)
+      if (attempt < UPSTAGE_CONFIG.maxRetries) {
         // 지수 백오프
         await sleep(Math.pow(2, attempt) * 1000);
         continue;

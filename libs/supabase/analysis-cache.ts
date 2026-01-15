@@ -1,3 +1,5 @@
+import { createHash } from "crypto";
+
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type {
@@ -39,15 +41,8 @@ export const generateChartHash = (params: {
   } = params;
   const key = `${birthDate}|${birthTime}|${gender}|${calendarType}|${isLeapMonth}`;
 
-  // 간단한 해시 함수 (브라우저/서버 호환)
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    const char = key.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // 32비트 정수로 변환
-  }
-
-  return Math.abs(hash).toString(36);
+  // SHA-256 해시 사용 (서버 사이드 전용)
+  return createHash("sha256").update(key).digest("hex").slice(0, 16);
 };
 
 /**

@@ -19,6 +19,15 @@ import { chatCompletion, parseJsonResponse } from "./upstage";
 // 자미두수 해석 서비스
 // ============================================================
 
+/** 대운 정보가 필요한 해석 유형 */
+const DAYUN_REQUIRED_TYPES = [
+  "wealth",
+  "career",
+  "relationship",
+  "health",
+  "summary",
+] as const;
+
 /**
  * 명반 데이터를 AI에게 전달할 문자열로 포맷팅
  */
@@ -60,7 +69,7 @@ ${formatPalaceData(oppositePalace)}`;
   if (
     dayunPeriods &&
     dayunPeriods.length > 0 &&
-    ["wealth", "career", "relationship", "health", "summary"].includes(requestType)
+    (DAYUN_REQUIRED_TYPES as readonly string[]).includes(requestType)
   ) {
     dataStr += `\n\n## 대운(10년 주기) 흐름`;
     for (const period of dayunPeriods) {

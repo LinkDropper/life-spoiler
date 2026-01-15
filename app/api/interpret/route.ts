@@ -26,6 +26,7 @@ import type {
   ZiweiChart,
   ZiweiInput,
 } from "@/libs/zi-wei-dou-shu/types";
+import { ZiweiInputSchema } from "@/libs/zi-wei-dou-shu/types";
 
 // ============================================================
 // 차트 변환 유틸리티
@@ -176,14 +177,21 @@ const convertChartToRequest = (
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const input: ZiweiInput = {
-      name: body.name,
-      birthDate: body.birthDate,
-      birthTime: body.birthTime,
-      gender: body.gender,
-      calendarType: body.calendarType,
-      isLeapMonth: body.isLeapMonth,
-    };
+
+    // 입력값 유효성 검사
+    const parseResult = ZiweiInputSchema.safeParse(body);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "입력값이 유효하지 않습니다.",
+          details: parseResult.error.errors,
+        },
+        { status: 400 }
+      );
+    }
+
+    const input: ZiweiInput = parseResult.data;
 
     // 1. 명반 생성
     const chart = generateZiweiChart(input);
