@@ -13,6 +13,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.90.1",
+    "korean-lunar-calendar": "^0.3.6",
     "next": "15.5.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -43,6 +45,7 @@
     "lint-staged": "^16.2.7",
     "prettier": "^3.7.2",
     "ts-jest": "^29.4.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

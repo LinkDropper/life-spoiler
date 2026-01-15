@@ -1192,164 +1192,418 @@ const generateZiweiChart = (input: {
 
 ---
 
-## 6. 결과 해석 알고리즘
+## 6. AI 기반 해석 시스템
 
-### 6.1. 해석 원칙
+명반 계산 후 결과 해석은 **AI 모델(solar-pro)**을 활용하여 전문적이고 개인화된 해석을 제공합니다.
 
-1. **주성 우선:** 각 궁의 주성이 가장 중요
-2. **밝기 고려:** 묘/왕은 긍정적, 함/평은 부정적
-3. **사화 영향:** 화록/화권/화과는 긍정, 화기는 주의
-4. **살성 영향:** 화성/영성/양인/타라 등은 부정적 요소
-5. **보좌성 영향:** 좌보/우필/문창/문곡 등은 긍정적 요소
+### 6.1. 시스템 아키텍처
 
-### 6.2. 궁별 해석 데이터
+```
+[사용자 입력] → [명반 계산 엔진] → [구조화된 명반 데이터] → [AI 해석 엔진] → [결과]
+                 (알고리즘)           (JSON)                  (solar-pro)
+```
+
+### 6.2. AI 모델 설정
+
+- **모델:** solar-pro (Upstage)
+- **역할:** 자미두수 전문 해석가
+- **온도:** 0.7 (창의성과 일관성의 균형)
+- **최대 토큰:** 2000
+
+### 6.3. 시스템 프롬프트 (System Prompt)
+
+```
+당신은 40년 경력의 자미두수(紫微斗數) 대가입니다. 삼합파(三合派) 정통 이론에 정통하며, 수천 명의 명반을 분석한 경험이 있습니다.
+
+## 핵심 역할
+- 주어진 명반 데이터를 정확하게 해석합니다
+- 별의 위치, 밝기, 사화, 동궁 관계를 종합적으로 분석합니다
+- 전문적이면서도 이해하기 쉬운 언어로 설명합니다
+
+## 해석 원칙
+
+### 1. 주성(主星) 해석 우선순위
+각 궁의 주성이 가장 중요합니다. 주성의 본질적 특성을 먼저 파악하세요.
+
+**자미성(紫微星) - 황제의 별**
+- 본질: 권위, 리더십, 자존심, 품위
+- 묘/왕: 타고난 통솔력, 높은 지위에 오를 운명
+- 함/평: 권위욕은 있으나 실현이 어려움, 겸손이 필요
+
+**천기성(天機星) - 지혜의 별**
+- 본질: 지능, 기획력, 변화, 민첩성
+- 묘/왕: 뛰어난 두뇌, 참모형 인재, 전략가
+- 함/평: 생각만 많고 실행력 부족, 우유부단
+
+**태양성(太陽星) - 빛의 별**
+- 본질: 활력, 명예, 봉사, 남성성
+- 묘/왕: 에너지 넘침, 사회적 성공, 명예로운 삶
+- 함/평: 에너지 분산, 빛을 발하기 어려움
+
+**무곡성(武曲星) - 재물의 별**
+- 본질: 재물, 결단력, 강직함, 무인 기질
+- 묘/왕: 재물 복이 강함, 투자 감각, 사업 수완
+- 함/평: 돈은 벌지만 모으기 어려움, 고집으로 손해
+
+**천동성(天同星) - 복의 별**
+- 본질: 복덕, 쾌락, 게으름, 낙천성
+- 묘/왕: 타고난 복, 큰 고생 없는 삶, 인덕
+- 함/평: 안일함, 노력 부족, 의지박약
+
+**염정성(廉貞星) - 정치의 별**
+- 본질: 정치력, 교활함, 질투, 관료성
+- 묘/왕: 정치적 수완, 조직 내 승진, 처세술
+- 함/평: 관재구설, 시기질투, 인간관계 갈등
+
+**천부성(天府星) - 재고의 별**
+- 본질: 재물 저장, 보수성, 안정, 관리 능력
+- 묘/왕: 안정적 재물운, 자산 축적, 든든한 기반
+- 함/평: 보수적 고집, 변화 거부, 기회 상실
+
+**태음성(太陰星) - 달의 별**
+- 본질: 부동산, 여성성, 감성, 예술성
+- 묘/왕: 부동산 복, 감성 풍부, 예술적 재능
+- 함/평: 감정 기복, 우울 경향, 재물 불안정
+
+**탐랑성(貪狼星) - 욕망의 별**
+- 본질: 욕망, 다재다능, 예술, 화려함
+- 묘/왕: 다방면 재능, 예술/연예 성공, 매력 넘침
+- 함/평: 욕심 과다, 색정 문제, 본업 소홀
+
+**거문성(巨門星) - 말의 별**
+- 본질: 언변, 시비, 분석력, 비판성
+- 묘/왕: 뛰어난 언변, 변호사/강사/방송인 적합
+- 함/평: 구설수, 논쟁 휘말림, 비판만 하고 대안 없음
+
+**천상성(天相星) - 인(印)의 별**
+- 본질: 인장, 보좌, 조화, 외교력
+- 묘/왕: 2인자로서 성공, 조율 능력, 공무원 적합
+- 함/평: 우유부단, 남의 눈치, 주체성 부족
+
+**천량성(天梁星) - 수명의 별**
+- 본질: 장수, 해결사, 어른 역할, 학문
+- 묘/왕: 위기 모면, 귀인 덕, 학자/교육자 적합
+- 함/평: 잔소리, 고리타분, 시대에 뒤처짐
+
+**칠살성(七殺星) - 장군의 별**
+- 본질: 결단, 개척, 고독, 파괴와 창조
+- 묘/왕: 강한 추진력, 개척자, 사업 성공
+- 함/평: 충동적, 인간관계 파탄, 고독한 말년
+
+**파군성(破軍星) - 선봉의 별**
+- 본질: 파괴, 변화, 모험, 개혁
+- 묘/왕: 변화 속 성공, 새로운 분야 개척, 과감한 도전
+- 함/평: 파괴만 있고 건설 없음, 불안정, 변덕
+
+### 2. 밝기(廟旺得利平陷) 해석
+
+밝기는 별의 힘이 얼마나 발휘되는지를 나타냅니다:
+
+| 밝기 | 의미 | 점수 |
+|------|------|------|
+| 묘(廟) | 최고 상태, 완전히 발휘 | 100 |
+| 왕(旺) | 좋은 상태, 잘 발휘 | 80 |
+| 득(得) | 양호, 적당히 발휘 | 60 |
+| 리(利) | 보통, 약간 발휘 | 40 |
+| 평(平) | 미미, 거의 발휘 안 됨 | 20 |
+| 함(陷) | 최저 상태, 오히려 해로움 | 0 |
+
+### 3. 사화성(四化星) 해석
+
+사화는 별에 붙어 그 성질을 강화하거나 약화시킵니다:
+
+- **화록(化祿):** 재물, 인연, 복이 들어옴. 해당 별의 좋은 면이 강화됨
+- **화권(化權):** 권력, 통제력, 주도권. 해당 영역에서 힘을 발휘
+- **화과(化科):** 명예, 학업, 시험운. 인정받고 빛나는 기회
+- **화기(化忌):** 막힘, 집착, 손실. 해당 영역에서 문제 발생 가능
+
+### 4. 보조성/살성 영향
+
+**길성(吉星) - 긍정적 영향:**
+- 좌보/우필: 귀인의 도움, 협력자 운
+- 천괴/천월: 귀인 등장, 고난 중 구원
+- 문창/문곡: 학업, 시험, 문서 관련 행운
+
+**살성(煞星) - 주의 필요:**
+- 화성/영성: 급한 성격, 충동, 사고 주의
+- 양인/타라: 형액, 수술, 인간관계 갈등
+- 지겁/지공: 공허함, 허무, 돈이 새는 구멍
+
+### 5. 동궁(同宮) 및 상호작용
+
+여러 별이 같은 궁에 있을 때의 조합 효과:
+- 자미+천부: 재부쌍미격, 부귀 겸전
+- 태양+태음: 일월동궁, 밝은 인생
+- 탐랑+염정: 도화 과다, 이성 문제 주의
+- 칠살+파군+탐랑: 살파탐, 파란만장한 인생
+
+## 해석 스타일 가이드
+
+1. **전문적이면서 친근하게**: 학술적 용어도 사용하되, 일반인이 이해할 수 있게 풀어서 설명
+2. **구체적인 조언 포함**: 추상적 해석에 그치지 않고 실생활에 적용 가능한 조언 제공
+3. **균형 잡힌 시각**: 좋은 점과 주의할 점을 모두 언급하되, 희망적 메시지로 마무리
+4. **성별 고려**: 남성/여성에 따른 미묘한 해석 차이 반영
+5. **맥락 연결**: 각 궁의 해석을 개별적으로 하지 않고, 전체적인 인생 흐름으로 연결
+
+## 금기사항
+
+- 절대적인 예언처럼 말하지 않기 (확률과 경향으로 표현)
+- 지나치게 부정적이거나 절망적인 표현 금지
+- 미신적이거나 비과학적인 표현 자제
+- "~할 수 있습니다", "~경향이 있습니다" 등 열린 표현 사용
+```
+
+### 6.4. AI 요청 데이터 구조
+
+명반 계산 후 AI에게 전달할 데이터 구조:
 
 ```typescript
-interface PalaceInterpretation {
-  palace: string;
-  mainStarTexts: Record<string, StarInterpretation>;
+interface AIInterpretationRequest {
+  // 사용자 정보
+  user: {
+    name: string;
+    gender: "male" | "female";
+    lunarBirthInfo: string; // "음력 1990년 4월 21일 오시생"
+  };
+
+  // 명반 핵심 정보
+  chart: {
+    wuxingJu: string; // "수이국", "목삼국" 등
+    mingGongPosition: string; // "해궁" 등
+    shenGongPosition: string; // "인궁" 등
+
+    // 사화 정보
+    sihua: {
+      hualu: { star: string; palace: string };
+      huaquan: { star: string; palace: string };
+      huake: { star: string; palace: string };
+      huaji: { star: string; palace: string };
+    };
+  };
+
+  // 분석 대상 궁 정보
+  targetPalace: {
+    name: string; // "명궁", "재백궁" 등
+    branch: string; // "자", "축" 등
+    mainStars: Array<{
+      name: string;
+      brightness: string;
+      sihua?: string;
+    }>;
+    minorStars: string[];
+    hasNoMainStar: boolean;
+  };
+
+  // 대궁 정보 (반드시 포함)
+  oppositePalace: {
+    name: string;
+    mainStars: Array<{
+      name: string;
+      brightness: string;
+    }>;
+  };
+
+  // 요청 유형
+  requestType: "preview" | "wealth" | "career" | "relationship" | "health" | "summary";
 }
+```
 
-interface StarInterpretation {
-  base: string; // 기본 해석
-  bright: string; // 묘/왕일 때 추가
-  dark: string; // 함/평일 때 추가
-  withHualu: string; // 화록 붙었을 때
-  withHuaji: string; // 화기 붙었을 때
-  withSha: string; // 살성과 동궁일 때
+### 6.5. 궁별 해석 요청 프롬프트
+
+#### 미리보기 (명궁 요약)
+
+```
+주어진 명반 데이터를 분석하여 이 사람의 핵심 성격과 인생 테마를 2-3문장으로 요약해주세요.
+
+응답 형식:
+{
+  "headline": "한 줄 요약 (이모지 포함, 20자 내외)",
+  "description": "핵심 설명 (100자 내외)"
 }
 ```
 
-### 6.3. 명궁 해석 예시
+#### 재물운 (재백궁)
 
-```typescript
-const MING_GONG_INTERPRETATIONS: Record<string, Record<Brightness, string>> = {
-  자미: {
-    묘: "당신은 타고난 황제 기질! 리더십이 넘치고 카리스마가 철철 흘러요. 남 눈치 볼 필요 없이 당당하게 밀어붙이면 다 따라와요.",
-    왕: "리더 기질이 확실해요. 조직에서 자연스럽게 높은 자리로 올라가는 타입이에요.",
-    득: "나름 존재감 있고, 주변에서 인정받는 편이에요. 단, 너무 잘난 척하면 역효과!",
-    리: "리더 기질은 있는데 좀 부족해요. 겸손하게 실력 쌓으면 빛을 볼 수 있어요.",
-    평: "평범한 성격이지만, 묵묵히 자기 할 일 하는 타입이에요.",
-    함: "욕심은 많은데 실행력이 부족할 수 있어요. 작은 것부터 차근차근!",
-  },
-  천기: {
-    묘: "머리가 비상해요! 두뇌 회전이 빨라서 뭘 해도 금방 익혀요. 전략가, 참모형 인재!",
-    왕: "똑똑하고 눈치도 빨라요. 복잡한 상황에서 최적의 해결책을 찾아내는 능력자.",
-    // ... 계속
-  },
-  태양: {
-    묘: "에너지가 넘쳐요! 밝고 활동적이라 어딜 가든 분위기 메이커. 사람들이 당신 주변으로 모여요.",
-    왕: "긍정 에너지 뿜뿜! 어려운 일도 웃으면서 해결하는 낙천가예요.",
-    // ... 계속
-  },
-  // ... 14주성 모두 정의
-};
+```
+주어진 재백궁 데이터를 분석하여 이 사람의 재물운을 상세히 해석해주세요.
+
+다음을 포함하세요:
+1. 돈을 버는 방식과 적합한 분야
+2. 재물 관리 성향
+3. 투자/재테크 조언
+4. 주의해야 할 점
+5. 재물운이 좋아지는 시기나 조건
+
+응답 형식:
+{
+  "title": "재물운",
+  "content": "상세 해석 (300-500자)",
+  "highlights": ["핵심 포인트 3-5개"]
+}
 ```
 
-### 6.4. 재백궁(재물운) 해석 예시
+#### 직업운 (관록궁)
 
-```typescript
-const CAIBAI_INTERPRETATIONS: Record<string, Record<Brightness, string>> = {
-  무곡: {
-    묘: "금융/재테크의 달인이 될 팔자! 돈 냄새 잘 맡고, 투자하면 대박 칠 확률 높아요. 부동산, 주식 적극 고려해 보세요.",
-    왕: "재물 복이 확실해요. 열심히 일하면 돈이 따라와요. 저축보다 투자가 맞는 스타일!",
-    함: "돈은 들어오는데 새는 구멍도 많아요. 재테크보단 본업에 집중하는 게 나을 수도.",
-    // ...
-  },
-  태음: {
-    묘: "부동산 복이 대박! 땅, 건물 관련해서 큰 재물이 들어올 수 있어요. 현금보다 자산을 모으세요.",
-    함: "돈 관리에 신경 써야 해요. 충동 구매 주의! 부동산은 신중하게 접근.",
-    // ...
-  },
-  탐랑: {
-    묘: "재물운이 좋지만 욕심 부리면 탈나요. 예술/엔터/유흥업 쪽에서 돈 벌 기회 많아요.",
-    // ...
-  },
-  // ... 14주성 모두 정의
-};
+```
+주어진 관록궁 데이터를 분석하여 이 사람의 직업운을 상세히 해석해주세요.
+
+다음을 포함하세요:
+1. 적합한 직업/업종
+2. 사회적 성취 가능성
+3. 직장생활 vs 사업 적합성
+4. 승진/성공 시기
+5. 주의해야 할 점
+
+응답 형식:
+{
+  "title": "직업운",
+  "content": "상세 해석 (300-500자)",
+  "highlights": ["핵심 포인트 3-5개"]
+}
 ```
 
-### 6.5. 부처궁(연애/결혼운) 해석 예시
+#### 인연운 (부처궁)
 
-```typescript
-const FUQI_INTERPRETATIONS: Record<string, Record<Brightness, string>> = {
-  천부: {
-    묘: "배우자 복 터졌어요! 능력 있고 자상한 짝 만나요. 안정적이고 화목한 가정 보장!",
-    함: "배우자가 잔소리꾼일 수 있어요. 서로 간섭 줄이면 원만해져요.",
-    // ...
-  },
-  태음: {
-    묘: "로맨틱한 연애 후 결혼! 배우자가 당신을 아껴주고 내조/외조 잘해요.",
-    // ...
-  },
-  염정: {
-    묘: "연애는 불같이 뜨겁고 결혼 생활은 파란만장할 수 있어요. 질투와 집착 주의!",
-    함: "연애 복이 좀 꼬여있어요. 급하게 결혼하면 후회할 수도. 신중하게!",
-    // ...
-  },
-  // ... 14주성 모두 정의
-};
+```
+주어진 부처궁 데이터를 분석하여 이 사람의 인연운을 상세히 해석해주세요.
+
+다음을 포함하세요:
+1. 이상형과 만날 배우자의 특징
+2. 연애 스타일
+3. 결혼 시기와 조건
+4. 결혼 생활 전망
+5. 주의해야 할 점
+
+응답 형식:
+{
+  "title": "인연운",
+  "content": "상세 해석 (300-500자)",
+  "highlights": ["핵심 포인트 3-5개"]
+}
 ```
 
-### 6.6. 관록궁(직업운) 해석 예시
+#### 건강운 (질액궁)
 
-```typescript
-const GUANLU_INTERPRETATIONS: Record<string, Record<Brightness, string>> = {
-  자미: {
-    묘: "사장님 팔자! CEO, 임원급으로 올라갈 운명이에요. 남 밑에서 일하면 답답해서 못 버텨요.",
-    왕: "조직에서 리더 역할이 딱이에요. 관리직, 공무원 고위직도 잘 맞아요.",
-    // ...
-  },
-  태양: {
-    묘: "공직, 정치, 교육계에서 크게 빛날 수 있어요. 대중 앞에 서는 일이 천직!",
-    // ...
-  },
-  거문: {
-    묘: "말로 먹고 사는 직업 추천! 변호사, 강사, 컨설턴트, 방송인 등이 딱이에요.",
-    // ...
-  },
-  // ... 14주성 모두 정의
-};
+```
+주어진 질액궁 데이터를 분석하여 이 사람의 건강운을 상세히 해석해주세요.
+
+다음을 포함하세요:
+1. 체질적 특성
+2. 주의해야 할 신체 부위/질병
+3. 건강 관리 조언
+4. 스트레스 관리법
+5. 장수/단명 여부 (완곡하게)
+
+응답 형식:
+{
+  "title": "건강운",
+  "content": "상세 해석 (300-500자)",
+  "highlights": ["핵심 포인트 3-5개"]
+}
 ```
 
-### 6.7. 질액궁(건강운) 해석 예시
+#### 종합 총평
 
-```typescript
-const JIYE_INTERPRETATIONS: Record<string, Record<Brightness, string>> = {
-  천동: {
-    묘: "기본 체력은 좋은 편! 다만 게으름 피우면 살찌기 쉬워요. 규칙적인 운동 필수!",
-    함: "비뇨기, 생식기 쪽 주의. 스트레스 받으면 몸이 먼저 반응해요.",
-    // ...
-  },
-  염정: {
-    함: "심장, 혈관 쪽 조심! 화나면 혈압 팍 올라가는 타입. 화 다스리는 연습 필요.",
-    // ...
-  },
-  파군: {
-    함: "사고나 수술 암시가 있어요. 위험한 레저, 과격한 운동은 피하세요.",
-    // ...
-  },
-  // ... 14주성 모두 정의
-};
+```
+주어진 명반 전체 데이터를 종합하여 이 사람의 인생 총평을 작성해주세요.
+
+다음을 포함하세요:
+1. 타고난 팔자의 핵심 특징
+2. 인생의 주요 흐름
+3. 가장 큰 복과 가장 큰 시련
+4. 인생에서 가장 중요한 조언
+
+응답 형식:
+{
+  "summary": "종합 총평 (500-700자)"
+}
 ```
 
 ---
 
-## 7. 결과 생성 로직
+## 7. AI 응답 처리
 
-### 7.1. 최종 결과 생성
+### 7.1. 응답 스키마 검증
+
+```typescript
+import { z } from "zod";
+
+const PreviewResponseSchema = z.object({
+  headline: z.string().max(30),
+  description: z.string().max(150),
+});
+
+const SectionResponseSchema = z.object({
+  title: z.string(),
+  content: z.string().min(200).max(800),
+  highlights: z.array(z.string()).min(3).max(5),
+});
+
+const SummaryResponseSchema = z.object({
+  summary: z.string().min(400).max(1000),
+});
+```
+
+### 7.2. 에러 핸들링
+
+```typescript
+const handleAIError = async (error: Error): Promise<FallbackResponse> => {
+  // AI 응답 실패 시 기본 템플릿 응답 사용
+  console.error("AI interpretation failed:", error);
+
+  return {
+    content: "현재 상세 분석을 준비 중입니다. 잠시 후 다시 시도해주세요.",
+    highlights: ["분석 준비 중"],
+    isFallback: true,
+  };
+};
+```
+
+### 7.3. 캐싱 전략
+
+```typescript
+// 동일한 명반 구조의 해석은 캐싱하여 비용 절감
+const cacheKey = generateCacheKey({
+  palaceName: targetPalace.name,
+  mainStars: targetPalace.mainStars,
+  sihua: chart.sihua,
+});
+
+const cachedResult = await cache.get(cacheKey);
+if (cachedResult) {
+  return cachedResult;
+}
+```
+
+---
+
+## 8. 최종 결과 구조
+
+### 8.1. 결과 타입
 
 ```typescript
 interface FortuneResult {
-  summary: string; // 총평 한 줄 요약
+  // 미리보기 (무료)
   preview: {
-    summary: string; // 미리보기용 명궁 요약
-    description: string; // 미리보기용 명궁 상세
+    headline: string; // "👑 타고난 리더의 운명"
+    description: string; // 명궁 핵심 설명
   };
-  wealth: FortuneSection;
-  career: FortuneSection;
-  relationship: FortuneSection;
-  health: FortuneSection;
+
+  // 상세 분석 (유료)
+  details: {
+    summary: string; // 종합 총평
+    wealth: FortuneSection;
+    career: FortuneSection;
+    relationship: FortuneSection;
+    health: FortuneSection;
+  };
+
+  // 메타 정보
+  meta: {
+    generatedAt: string;
+    modelVersion: string;
+    confidence: number; // AI 응답 신뢰도
+  };
 }
 
 interface FortuneSection {
@@ -1357,162 +1611,40 @@ interface FortuneSection {
   content: string;
   highlights: string[];
 }
-
-const generateFortuneResult = (chart: ZiweiChart): FortuneResult => {
-  // 1. 명궁 분석 (미리보기 + 본성)
-  const mingAnalysis = analyzePalace(chart, "명궁");
-
-  // 2. 재백궁 분석 (재물운)
-  const wealthAnalysis = analyzePalace(chart, "재백궁");
-
-  // 3. 관록궁 분석 (직업운)
-  const careerAnalysis = analyzePalace(chart, "관록궁");
-
-  // 4. 부처궁 분석 (연애/결혼운)
-  const relationshipAnalysis = analyzePalace(chart, "부처궁");
-
-  // 5. 질액궁 분석 (건강운)
-  const healthAnalysis = analyzePalace(chart, "질액궁");
-
-  // 6. 총평 생성
-  const summary = generateSummary(chart, {
-    ming: mingAnalysis,
-    wealth: wealthAnalysis,
-    career: careerAnalysis,
-  });
-
-  return {
-    summary,
-    preview: {
-      summary: mingAnalysis.headline,
-      description: mingAnalysis.shortDescription,
-    },
-    wealth: {
-      title: "재물운",
-      content: wealthAnalysis.fullText,
-      highlights: wealthAnalysis.highlights,
-    },
-    career: {
-      title: "직업운",
-      content: careerAnalysis.fullText,
-      highlights: careerAnalysis.highlights,
-    },
-    relationship: {
-      title: "연애/결혼운",
-      content: relationshipAnalysis.fullText,
-      highlights: relationshipAnalysis.highlights,
-    },
-    health: {
-      title: "건강/기타",
-      content: healthAnalysis.fullText,
-      highlights: healthAnalysis.highlights,
-    },
-  };
-};
 ```
 
-### 7.2. 총평 생성 로직
+### 8.2. 미리보기 vs 유료 결과 분리
 
 ```typescript
-const generateSummary = (
+const generateFortuneResult = async (
   chart: ZiweiChart,
-  analyses: AnalysisResults
-): string => {
-  const patterns: string[] = [];
+  isPaid: boolean
+): Promise<FortuneResult> => {
+  // 미리보기는 항상 생성
+  const preview = await generatePreview(chart);
 
-  // 패턴 1: 초년고생 말년안락
-  if (isEarlyStruggleLateSuccess(chart)) {
-    patterns.push("초년엔 고생하나 말년엔 건물주 될 팔자");
-  }
-
-  // 패턴 2: 재물복
-  if (hasStrongWealthLuck(chart)) {
-    patterns.push("평생 돈 걱정 없이 살 팔자");
-  }
-
-  // 패턴 3: 리더형
-  if (isLeaderType(chart)) {
-    patterns.push("남 밑에서 일 못 하는 사장님 팔자");
-  }
-
-  // 패턴 4: 예술가형
-  if (isArtisticType(chart)) {
-    patterns.push("예술적 감각으로 먹고 살 팔자");
-  }
-
-  // 여러 패턴 조합
-  return patterns.length > 0
-    ? patterns.join(", ")
-    : "평범해 보이지만 숨은 복이 있는 팔자";
-};
-```
-
----
-
-## 8. 미리보기 데이터 생성
-
-### 8.1. 무료 공개 부분 (명궁 분석)
-
-```typescript
-const generatePreview = (chart: ZiweiChart): PreviewData => {
-  const mingPalace = chart.palaces.find((p) => p.name === "명궁");
-  const mainStar = mingPalace?.mainStars[0];
-
-  if (!mainStar) {
+  if (!isPaid) {
     return {
-      summary: "복잡한 내면을 가진 당신",
-      description:
-        "여러 성향이 섞여 있어 단순히 정의하기 어려워요. 상황에 따라 다양한 모습을 보여주는 타입!",
+      preview,
+      details: null, // 유료 결제 후 열람 가능
+      meta: { ... },
     };
   }
 
-  const interpretation =
-    MING_GONG_INTERPRETATIONS[mainStar.name]?.[mainStar.brightness];
-
-  // 이모지 추가
-  const emoji = getStarEmoji(mainStar.name);
+  // 유료 결제 시 전체 분석
+  const [wealth, career, relationship, health, summary] = await Promise.all([
+    analyzeWealth(chart),
+    analyzeCareer(chart),
+    analyzeRelationship(chart),
+    analyzeHealth(chart),
+    generateSummary(chart),
+  ]);
 
   return {
-    summary: `${emoji} ${getHeadline(mainStar.name, mainStar.brightness)}`,
-    description: interpretation,
+    preview,
+    details: { summary, wealth, career, relationship, health },
+    meta: { ... },
   };
-};
-
-const getStarEmoji = (star: string): string => {
-  const emojis: Record<string, string> = {
-    자미: "👑",
-    천기: "🧠",
-    태양: "☀️",
-    무곡: "💰",
-    천동: "😊",
-    염정: "🔥",
-    천부: "🏦",
-    태음: "🌙",
-    탐랑: "🎭",
-    거문: "👄",
-    천상: "🎀",
-    천량: "📚",
-    칠살: "⚔️",
-    파군: "💥",
-  };
-  return emojis[star] || "✨";
-};
-```
-
-### 8.2. 블러 처리 티저
-
-```typescript
-const generateLockedTeaser = (chart: ZiweiChart): LockedQuestion[] => {
-  return [
-    {
-      question: "평생 만질 돈의 그릇은?",
-      teaser: `당신의 재물 창고에는 💰 [잠겨있음] 정도가 들어있습니다.`,
-    },
-    {
-      question: "인생 최대의 전성기는?",
-      teaser: `지금 힘들다면 버티세요. [잠겨있음]세 부터 인생 역전이 시작됩니다.`,
-    },
-  ];
 };
 ```
 
@@ -1558,6 +1690,40 @@ describe("자미두수 명반 계산", () => {
 });
 ```
 
+### 9.2. AI 해석 응답 검증
+
+```typescript
+describe("AI 해석 응답", () => {
+  it("미리보기 응답 스키마 검증", async () => {
+    const response = await generatePreview(mockChart);
+
+    expect(response.headline).toBeDefined();
+    expect(response.headline.length).toBeLessThanOrEqual(30);
+    expect(response.description).toBeDefined();
+    expect(response.description.length).toBeLessThanOrEqual(150);
+  });
+
+  it("섹션 응답 스키마 검증", async () => {
+    const response = await analyzeWealth(mockChart);
+
+    expect(response.title).toBe("재물운");
+    expect(response.content.length).toBeGreaterThanOrEqual(200);
+    expect(response.highlights).toHaveLength(expect.any(Number));
+    expect(response.highlights.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("AI 오류 시 폴백 응답 확인", async () => {
+    // AI 서비스 모킹
+    jest.spyOn(aiService, "interpret").mockRejectedValue(new Error("API Error"));
+
+    const response = await analyzeWealth(mockChart);
+
+    expect(response.isFallback).toBe(true);
+    expect(response.content).toContain("준비 중");
+  });
+});
+```
+
 ---
 
 ## 10. 구현 시 주의사항
@@ -1576,12 +1742,26 @@ describe("자미두수 명반 계산", () => {
 ### 10.3. 성별에 따른 차이
 
 - 대운 순행/역행이 성별에 따라 다름 (본 서비스에서는 대운 미사용)
-- 일부 해석 텍스트는 성별 맞춤 필요
+- AI 해석 시 성별 정보를 포함하여 맞춤형 해석 제공
 
-### 10.4. 결과 캐싱
+### 10.4. AI 응답 품질 관리
 
-- 동일 생년월일시 + 성별의 명반은 항상 동일
-- 명반 계산 결과 캐싱으로 성능 최적화 가능
+- 응답 스키마 검증 필수
+- JSON 파싱 실패 시 재시도 로직 구현
+- 부적절한 내용 필터링 (비속어, 지나친 부정적 표현)
+- 응답 일관성을 위한 temperature 조절 (0.7 권장)
+
+### 10.5. 비용 최적화
+
+- 동일 명반 구조의 해석은 캐싱 (24시간)
+- 미리보기와 상세 분석 분리하여 필요 시에만 상세 분석 호출
+- 토큰 사용량 모니터링
+
+### 10.6. 에러 핸들링
+
+- AI 서비스 장애 시 기본 템플릿 응답 제공
+- 타임아웃 설정 (10초)
+- 재시도 로직 (최대 2회)
 
 ---
 
@@ -1591,9 +1771,23 @@ describe("자미두수 명반 계산", () => {
 {
   "dependencies": {
     "korean-lunar-calendar": "^0.3.x",
-    "dayjs": "^1.11.x"
+    "dayjs": "^1.11.x",
+    "zod": "^3.x"
   }
 }
+```
+
+### AI 서비스 설정 (Upstage solar-pro)
+
+```typescript
+// libs/services/ai/upstage.ts
+const UPSTAGE_CONFIG = {
+  baseUrl: "https://api.upstage.ai/v1/solar",
+  model: "solar-pro",
+  maxTokens: 2000,
+  temperature: 0.7,
+  timeout: 10000,
+};
 ```
 
 ---
@@ -1603,5 +1797,7 @@ describe("자미두수 명반 계산", () => {
 - [ ] 대운/유년 분석 추가
 - [ ] 궁합 분석 기능
 - [ ] 명반 시각화 (차트 이미지 생성)
-- [ ] 더 세밀한 해석 텍스트 DB 구축
-- [ ] A/B 테스트를 통한 해석 문구 최적화
+- [ ] AI 모델 파인튜닝 (자미두수 전용)
+- [ ] 사용자 피드백 기반 해석 품질 개선
+- [ ] A/B 테스트를 통한 프롬프트 최적화
+- [ ] 다국어 지원 (영어, 중국어)
