@@ -57,7 +57,7 @@ const formatLogEntry = (entry: LogEntry, useColor: boolean): string => {
   let output = `${timeStr} ${levelStr}${sourceStr} ${message}`;
 
   if (context) {
-    const { source, ...rest } = context;
+    const { source: _source, ...rest } = context;
     if (Object.keys(rest).length > 0) {
       try {
         output += `\n  Context: ${JSON.stringify(rest)}`;
