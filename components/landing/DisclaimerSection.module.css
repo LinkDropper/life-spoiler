@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 24px 130px;
+  background: transparent;
+  border-top: 1px solid #ffccd9;
+}
+
+.warningBadge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 8px;
+  background: #fb7194;
+}
+
+.warningText {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.19;
+  color: #ffffff;
+}
+
+.disclaimerText {
+  color: #fff;
+  text-align: center;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  margin-top: 18px;
+}

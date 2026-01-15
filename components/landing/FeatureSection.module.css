@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 98px 24px 80px;
+  gap: 130px;
+}
+
+.feature {
+  position: relative;
+}
+
+.featureRight {
+  padding-bottom: 100px;
+}
+
+.title {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.19;
+  color: #ffffff;
+  margin: 0 0 12px;
+}
+
+.titleRight {
+  text-align: right;
+}
+
+.description {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.625;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.descriptionRight {
+  text-align: right;
+}
+
+.imageLeft {
+  position: absolute;
+  left: 4px;
+  bottom: -110px;
+}
+
+.imageRight {
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 261.375px;
+  height: 129.97px;
+  transform: rotate(9.932deg);
+  aspect-ratio: 261.38/129.97;
+}
+
+.featureImage {
+  filter: drop-shadow(0px 0px 40px rgba(255, 204, 217, 0.4));
+}
