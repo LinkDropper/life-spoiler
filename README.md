@@ -1,4 +1,4 @@
-# nextjs-15-automation-starter-kit
+# life-spoiler
 
 Next.js 15 + React 19 기반 프로젝트
 
