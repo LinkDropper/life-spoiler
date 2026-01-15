@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  margin: 0 24px 60px;
+  background: transparent;
+  border: 1px solid #ffccd9;
+  border-radius: 50px;
+}
+
+.text {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #ffccd9;
+  text-align: center;
+}
