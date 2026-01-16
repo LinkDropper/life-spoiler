@@ -5,6 +5,8 @@ export type {
   AnalysisResultInsert,
   AnalysisResultRow,
   Database,
+  FortuneInsert,
+  FortuneRow,
   InterpretationCacheInsert,
   InterpretationCacheRow,
   Json,
@@ -18,3 +20,10 @@ export {
   getOrCreateCachedResult,
   setCachedResult,
 } from "./analysis-cache";
+export {
+  getFortune,
+  getFortunesByProfile,
+  saveFortune,
+  type FortuneType,
+  type SaveFortuneParams,
+} from "./fortune";

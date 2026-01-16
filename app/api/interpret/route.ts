@@ -15,6 +15,7 @@ import {
 import {
   generateChartHash,
   getCachedResult,
+  saveFortune,
   setCachedResult,
 } from "@/libs/supabase";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
@@ -201,6 +202,8 @@ export async function POST(request: NextRequest) {
 
     const input: ZiweiInput = parseResult.data;
     const includeDetails = body.includeDetails ?? false;
+    const profileId =
+      typeof body.profileId === "string" ? body.profileId : undefined;
     const cacheKey = includeDetails ? "full" : "preview";
 
     const chart = generateZiweiChart(input);
@@ -211,6 +214,8 @@ export async function POST(request: NextRequest) {
       gender: input.gender,
       calendarType: input.calendarType,
       isLeapMonth: input.isLeapMonth,
+      relationshipStatus: input.relationshipStatus,
+      occupationStatus: input.occupationStatus,
     });
 
     const dayunResult = calculateAllDayunScores(calculateDayun(chart));
@@ -218,6 +223,16 @@ export async function POST(request: NextRequest) {
     const cachedResult = await getCachedResult(chartHash, cacheKey);
 
     if (cachedResult) {
+      // 캐시 히트 시에도 fortunes 저장 (인생운세인 경우)
+      if (profileId && includeDetails) {
+        saveFortune({
+          profileId,
+          fortuneType: "lifetime",
+          year: 0,
+          result: cachedResult,
+        }).catch(() => {});
+      }
+
       return NextResponse.json({
         success: true,
         data: {
@@ -249,9 +264,18 @@ export async function POST(request: NextRequest) {
         includeDetails,
       });
 
-      setCachedResult(chartHash, cacheKey, result).catch(() => {
-        // 저장 실패 무시
-      });
+      // 캐시 저장
+      setCachedResult(chartHash, cacheKey, result).catch(() => {});
+
+      // fortunes 저장 (인생운세인 경우)
+      if (profileId && includeDetails) {
+        saveFortune({
+          profileId,
+          fortuneType: "lifetime",
+          year: 0,
+          result,
+        }).catch(() => {});
+      }
     } catch (error) {
       console.error("AI 해석 오류:", error);
       result = createFallbackInterpretation(error as Error);

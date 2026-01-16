@@ -465,6 +465,7 @@ export default function LifetimeFortunePage() {
               occupationStatusCustom: targetProfile.occupation_status_custom,
             }),
             includeDetails: true,
+            profileId: targetProfile.id,
           }),
         });
 
