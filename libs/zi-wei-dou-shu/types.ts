@@ -31,17 +31,19 @@ export const TIME_BRANCHES = [
 
 export type TimeBranchValue = (typeof TIME_BRANCHES)[number]["value"];
 
-const TIME_BRANCH_VALUES = TIME_BRANCHES.map((t) => t.value) as [
-  TimeBranchValue,
-  ...TimeBranchValue[],
-];
+const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+const BirthTimeSchema = z.union([
+  z.string().regex(TIME_REGEX, "HH:mm 형식이어야 합니다"),
+  z.literal("unknown"),
+]);
 
 export const ZiweiInputSchema = z.object({
   name: z.string().min(1).max(20),
   birthDate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "YYYY-MM-DD 형식이어야 합니다"),
-  birthTime: z.enum(TIME_BRANCH_VALUES),
+  birthTime: BirthTimeSchema,
   gender: z.enum(["male", "female"]),
   calendarType: z.enum(["solar", "lunar"]),
   isLeapMonth: z.boolean().optional(),
