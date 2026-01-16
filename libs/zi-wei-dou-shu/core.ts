@@ -12,7 +12,7 @@ import {
   getMinorStarsInPalace,
   getPalaceStem,
   getStarBrightness,
-  timeBranchToIndex,
+  parseTimeToTimeBranch,
 } from "./calculators";
 import { PALACE_ORDER } from "./constants";
 import { ZiWeiError } from "./errors";
@@ -39,11 +39,16 @@ const validateInput = (input: ZiweiInput): void => {
   }
 };
 
+const UNKNOWN_TIME_REPRESENTATIVE = "12:00";
+
 export const generateZiweiChart = (input: ZiweiInput): ZiweiChart => {
   validateInput(input);
 
+  const birthTimeForChart =
+    input.birthTime === "unknown" ? UNKNOWN_TIME_REPRESENTATIVE : input.birthTime;
+
   const lunarDate = toLunarDate(input);
-  const timeBranch = timeBranchToIndex(input.birthTime);
+  const timeBranch = parseTimeToTimeBranch(birthTimeForChart);
 
   const mingGong = calculateMingGong(lunarDate.month, timeBranch);
   const shenGong = calculateShenGong(lunarDate.month, timeBranch);
@@ -113,11 +118,31 @@ export const getChartPreview = (
 
 export const analyzeZiwei = (input: ZiweiInput): ZiweiAnalysisResult => {
   const chart = generateZiweiChart(input);
-  const result = interpretChart(chart);
+  const baseResult = interpretChart(chart);
+
+  const result =
+    input.birthTime === "unknown"
+      ? addUnknownTimeNote(baseResult)
+      : baseResult;
 
   return {
     chart,
     result,
+  };
+};
+
+const addUnknownTimeNote = (result: FortuneResult): FortuneResult => {
+  const uncertaintyNote =
+    "\n\n※ 정확한 출생 시간을 알 수 없어 일부 해석이 달라질 수 있습니다.";
+  const previewNoteSuffix = " (출생 시간 미상으로 참고용 해석입니다)";
+
+  return {
+    ...result,
+    summary: result.summary + uncertaintyNote,
+    preview: {
+      ...result.preview,
+      description: result.preview.description + previewNoteSuffix,
+    },
   };
 };
 
