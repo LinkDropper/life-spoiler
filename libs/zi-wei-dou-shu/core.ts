@@ -134,15 +134,14 @@ export const analyzeZiwei = (input: ZiweiInput): ZiweiAnalysisResult => {
 const addUnknownTimeNote = (result: FortuneResult): FortuneResult => {
   const uncertaintyNote =
     "\n\n※ 정확한 출생 시간을 알 수 없어 일부 해석이 달라질 수 있습니다.";
+  const previewNoteSuffix = " (출생 시간 미상으로 참고용 해석입니다)";
 
   return {
     ...result,
     summary: result.summary + uncertaintyNote,
     preview: {
       ...result.preview,
-      description:
-        result.preview.description +
-        " (출생 시간 미상으로 참고용 해석입니다)",
+      description: result.preview.description + previewNoteSuffix,
     },
   };
 };
