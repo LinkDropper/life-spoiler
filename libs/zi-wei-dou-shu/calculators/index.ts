@@ -1,7 +1,9 @@
-// 시간 계산
-export { getTimeBranch, parseTimeToTimeBranch } from "./time";
+export {
+  timeBranchToIndex,
+  getTimeBranch,
+  parseTimeToTimeBranch,
+} from "./time";
 
-// 궁 계산
 export {
   calculateMingGong,
   calculateShenGong,
@@ -9,7 +11,6 @@ export {
   getPalaceStem,
 } from "./palace";
 
-// 오행국 계산
 export {
   getGanZhi,
   getNayin,
@@ -17,7 +18,6 @@ export {
   getWuxingJuName,
 } from "./wuxing";
 
-// 주성 계산
 export {
   calculateZiweiPosition,
   calculateTianfuPosition,
@@ -25,7 +25,6 @@ export {
   getMainStarsInPalace,
 } from "./main-stars";
 
-// 밝기 계산
 export {
   getStarBrightness,
   getBrightnessScore,
@@ -33,7 +32,6 @@ export {
   isNegativeBrightness,
 } from "./brightness";
 
-// 보조성 계산
 export {
   calculateZuofu,
   calculateYoubi,
@@ -54,7 +52,6 @@ export {
   getMinorStarsInPalace,
 } from "./minor-stars";
 
-// 사화성 계산
 export {
   calculateSihua,
   getSihuaForStar,
@@ -64,7 +61,6 @@ export {
   isNegativeSihua,
 } from "./sihua";
 
-// 대운 계산
 export {
   calculateDayun,
   getCurrentDayun,
