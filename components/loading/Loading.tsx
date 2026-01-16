@@ -7,6 +7,8 @@ import loadingAnimation from "./loading.json";
 
 import styles from "./Loading.module.css";
 
+const MESSAGE_CHANGE_INTERVAL_MS = 3000;
+
 const LOADING_MESSAGES = [
   "당신의 수호성과 교신 중입니다...",
   "태어난 그 시각, 우주의 기운을 계산합니다",
@@ -26,7 +28,7 @@ export const Loading = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
-    }, 3000);
+    }, MESSAGE_CHANGE_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, []);
