@@ -23,7 +23,7 @@ type SupabaseDB = SupabaseClient<Database>;
 /**
  * 명반 데이터로부터 고유 해시 생성
  *
- * 동일한 생년월일/시간/성별이면 같은 해시가 생성됨
+ * 동일한 생년월일/시간/성별/개인화정보면 같은 해시가 생성됨
  */
 export const generateChartHash = (params: {
   birthDate: string; // YYYY-MM-DD
@@ -31,6 +31,8 @@ export const generateChartHash = (params: {
   gender: "male" | "female";
   calendarType: "solar" | "lunar";
   isLeapMonth?: boolean;
+  relationshipStatus?: string | null;
+  occupationStatus?: string | null;
 }): string => {
   const {
     birthDate,
@@ -38,8 +40,10 @@ export const generateChartHash = (params: {
     gender,
     calendarType,
     isLeapMonth = false,
+    relationshipStatus = null,
+    occupationStatus = null,
   } = params;
-  const key = `${birthDate}|${birthTime}|${gender}|${calendarType}|${isLeapMonth}`;
+  const key = `${birthDate}|${birthTime}|${gender}|${calendarType}|${isLeapMonth}|${relationshipStatus ?? ""}|${occupationStatus ?? ""}`;
 
   // SHA-256 해시 사용 (서버 사이드 전용)
   return createHash("sha256").update(key).digest("hex").slice(0, 16);
@@ -75,19 +79,12 @@ export const getCachedResult = async (
 
 /**
  * 분석 결과 캐시에 저장
- * 로컬 개발 환경에서는 캐시 저장을 건너뜀
  */
 export const setCachedResult = async (
   chartHash: string,
   interpretationType: InterpretationType | "full",
   result: FortuneInterpretation
 ): Promise<void> => {
-  // 로컬 개발 환경에서는 캐시 저장 건너뛰기
-  if (process.env.NODE_ENV === "development") {
-    console.log("[Cache] 로컬 환경 - 캐시 저장 건너뜀");
-    return;
-  }
-
   try {
     const supabase = createServerClient() as SupabaseDB;
 
