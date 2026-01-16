@@ -45,7 +45,8 @@ export const createUserStore = () => {
         } else {
           set({ user: null, status: "unauthenticated" });
         }
-      } catch {
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
         set({ user: null, status: "unauthenticated" });
       }
     },

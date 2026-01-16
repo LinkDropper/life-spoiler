@@ -43,7 +43,8 @@ export const GET = async () => {
     return NextResponse.json({
       user: mapDbUserToUser(dbUser),
     });
-  } catch {
+  } catch (error) {
+    console.error("GET /api/user error:", error);
     return NextResponse.json(
       { error: "서버 오류가 발생했습니다." },
       { status: 500 }

@@ -13,30 +13,41 @@ export const GET = async (request: Request) => {
     return NextResponse.redirect(`${origin}/login?error=no_code`);
   }
 
-  const supabase = await createAuthClient();
+  try {
+    const supabase = await createAuthClient();
 
-  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-  if (error || !data.user) {
+    if (error || !data.user) {
+      return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+    }
+
+    const { user } = data;
+    const provider = user.app_metadata.provider as OAuthProvider | undefined;
+
+    if (!provider) {
+      console.error("OAuth provider not found in user metadata:", user.id);
+      return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+    }
+
+    const providerId = user.user_metadata.provider_id ?? user.id;
+    const email = user.email ?? "";
+
+    const userData: UserInsert = {
+      id: user.id,
+      email,
+      name: user.user_metadata.full_name ?? user.user_metadata.name ?? null,
+      avatar_url: user.user_metadata.avatar_url ?? null,
+      provider,
+      provider_id: String(providerId),
+      last_login_at: new Date().toISOString(),
+    };
+
+    await (supabase.from("users") as any).upsert(userData, { onConflict: "id" });
+
+    return NextResponse.redirect(`${origin}${next}`);
+  } catch (error) {
+    console.error("OAuth callback error:", error);
     return NextResponse.redirect(`${origin}/login?error=auth_failed`);
   }
-
-  const { user } = data;
-  const provider = (user.app_metadata.provider ?? "kakao") as OAuthProvider;
-  const providerId = user.user_metadata.provider_id ?? user.id;
-  const email = user.email ?? "";
-
-  const userData: UserInsert = {
-    id: user.id,
-    email,
-    name: user.user_metadata.full_name ?? user.user_metadata.name ?? null,
-    avatar_url: user.user_metadata.avatar_url ?? null,
-    provider,
-    provider_id: String(providerId),
-    last_login_at: new Date().toISOString(),
-  };
-
-  await (supabase.from("users") as any).upsert(userData, { onConflict: "id" });
-
-  return NextResponse.redirect(`${origin}${next}`);
 };

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import styles from "./FooterInfo.module.css";
 
@@ -25,9 +26,9 @@ export const FooterInfo = () => {
         070-8094-3030
       </p>
       <div className={styles.links}>
-        <a href="/terms">이용약관</a>
+        <Link href="/terms">이용약관</Link>
         <span className={styles.divider}>|</span>
-        <a href="/privacy">개인정보 처리방침</a>
+        <Link href="/privacy">개인정보 처리방침</Link>
       </div>
     </section>
   );
