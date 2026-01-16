@@ -15,6 +15,7 @@ const mapDbUserToUser = (dbUser: UserRow): User => ({
   createdAt: dbUser.created_at,
   updatedAt: dbUser.updated_at,
   lastLoginAt: dbUser.last_login_at,
+  profileCompleted: dbUser.profile_completed ?? false,
 });
 
 export const GET = async () => {
@@ -43,8 +44,7 @@ export const GET = async () => {
     return NextResponse.json({
       user: mapDbUserToUser(dbUser),
     });
-  } catch (error) {
-    console.error("GET /api/user error:", error);
+  } catch {
     return NextResponse.json(
       { error: "서버 오류가 발생했습니다." },
       { status: 500 }

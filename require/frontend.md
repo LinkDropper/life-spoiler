@@ -14,18 +14,19 @@
 ## 2. User Flow 및 라우팅
 
 ```
-[랜딩] → [로그인] → [정보입력] → [로딩] → [미리보기] → [결제] → [결과]
-   /      /login      /form     /loading   /preview   (PG팝업)  /result
+[랜딩] → [로그인] → [프로필설정] → [정보입력] → [로딩] → [미리보기] → [결제] → [결과]
+   /      /login   /profile/setup    /form     /loading   /preview   (PG팝업)  /result
 ```
 
-| 경로       | 페이지명         | 인증 필요 | 설명                                |
-| ---------- | ---------------- | --------- | ----------------------------------- |
-| `/`        | 랜딩 페이지      | X         | 마케팅 페이지 + CTA 버튼            |
-| `/login`   | 로그인 페이지    | X         | 소셜 로그인 (카카오, 구글 등)       |
-| `/form`    | 정보 입력 페이지 | **O**     | 생년월일 등 사용자 정보 입력        |
-| `/loading` | 로딩 페이지      | **O**     | 분석 연출 (2.5~3초)                 |
-| `/preview` | 미리보기 페이지  | **O**     | 무료 콘텐츠 + 블러 처리 + 결제 유도 |
-| `/result`  | 결과 페이지      | **O**     | 결제 완료 후 전체 분석 결과         |
+| 경로             | 페이지명           | 인증 필요 | 설명                                       |
+| ---------------- | ------------------ | --------- | ------------------------------------------ |
+| `/`              | 랜딩 페이지        | X         | 마케팅 페이지 + CTA 버튼                   |
+| `/login`         | 로그인 페이지      | X         | 소셜 로그인 (카카오, 구글 등)              |
+| `/profile/setup` | 프로필 설정 페이지 | **O**     | 최초 로그인 시 프로필 정보 입력 (2-Step)   |
+| `/form`          | 정보 입력 페이지   | **O**     | 생년월일 등 사용자 정보 입력               |
+| `/loading`       | 로딩 페이지        | **O**     | 분석 연출 (2.5~3초)                        |
+| `/preview`       | 미리보기 페이지    | **O**     | 무료 콘텐츠 + 블러 처리 + 결제 유도        |
+| `/result`        | 결과 페이지        | **O**     | 결제 완료 후 전체 분석 결과                |
 
 ### 2.1. 인증 흐름
 
@@ -140,11 +141,91 @@ interface LoginPageProps {
 
 ---
 
-### 3.3. 정보 입력 페이지 (`/form`) - **로그인 필수**
+### 3.3. 프로필 설정 페이지 (`/profile/setup`) - **로그인 필수**
+
+> 최초 로그인 후 프로필 정보를 입력받는 2-Step 페이지. 프로필 완료 전까지 다른 페이지 접근 불가.
+
+#### 3.3.1. 레이아웃 구조
+
+```
+┌─────────────────────────────────┐
+│    헤더 (프로필 설정 / Step 1/2)   │
+├─────────────────────────────────┤
+│                                 │
+│       Step 1: 기본 정보          │
+│   - 이름                        │
+│   - 생년월일                    │
+│   - 태어난 시간 (HH:MM)         │
+│   - ☑ 시간 모름                 │
+│   - 달력 (양력/음력)            │
+│   - 성별 (여자/남자)            │
+│                                 │
+│           [다음] 버튼            │
+└─────────────────────────────────┘
+
+┌─────────────────────────────────┐
+│    헤더 (프로필 설정 / Step 2/2)   │
+├─────────────────────────────────┤
+│   프로필 요약 카드               │
+│   (이름, 생년월일, 시간, 성별)   │
+│   [수정] 버튼                   │
+├─────────────────────────────────┤
+│       Step 2: 추가 정보          │
+│   - 연애 상태 (칩 선택)          │
+│   - 직업 상태 (칩 선택)          │
+│                                 │
+│       [◀] [저장하기] 버튼        │
+└─────────────────────────────────┘
+```
+
+#### 3.3.2. Step 1 입력 필드
+
+| 필드명       | 타입     | 필수 | 설명                                |
+| ------------ | -------- | ---- | ----------------------------------- |
+| `name`       | `string` | O    | 이름 (1~20자)                       |
+| `birthDate`  | `string` | O    | 생년월일 (YYYY-MM-DD)               |
+| `birthTime`  | `string` | △    | 태어난 시간 (HH:MM, 시간 모름 체크 시 생략) |
+| `birthTimeUnknown` | `boolean` | - | 시간 모름 체크박스              |
+| `calendarType` | `enum` | O    | `solar` (양력) / `lunar` (음력)     |
+| `gender`     | `enum`   | O    | `female` (여자) / `male` (남자)     |
+
+#### 3.3.3. Step 2 입력 필드
+
+| 필드명             | 타입     | 필수 | 옵션                                           |
+| ------------------ | -------- | ---- | ---------------------------------------------- |
+| `relationshipStatus` | `enum` | O    | 솔로, 연애중, 결혼함, 이혼/사별, 직접입력      |
+| `occupationStatus`   | `enum` | O    | 학생, 취준생, 주부, 직장인, 사업/프리랜서, 은퇴, 직접입력 |
+
+#### 3.3.4. 동작 명세
+
+```typescript
+interface ProfileSetupData {
+  // Step 1
+  name: string;
+  birthDate: string;
+  birthTime: string;
+  birthTimeUnknown: boolean;
+  calendarType: "solar" | "lunar";
+  gender: "female" | "male";
+  // Step 2
+  relationshipStatus: "solo" | "dating" | "married" | "divorced" | "custom";
+  relationshipStatusCustom?: string;
+  occupationStatus: "student" | "job_seeker" | "homemaker" | "employed" | "self_employed" | "retired" | "custom";
+  occupationStatusCustom?: string;
+}
+```
+
+- **Step 1 "다음" 클릭:** 유효성 검사 후 Step 2로 이동
+- **Step 2 "저장하기" 클릭:** POST `/api/profile` 호출 → 성공 시 `/` (홈)으로 이동
+- **프로필 미완료 시:** `/profile/setup` 외 다른 페이지 접근 시 자동 리다이렉트
+
+---
+
+### 3.4. 정보 입력 페이지 (`/form`) - **로그인 필수**
 
 > 자미두수 분석에 필요한 생년월일시 정보를 입력받는 페이지.
 
-#### 3.3.1. 레이아웃 구조
+#### 3.4.1. 레이아웃 구조
 
 ```
 ┌─────────────────────────────────┐
@@ -164,7 +245,7 @@ interface LoginPageProps {
 └─────────────────────────────────┘
 ```
 
-#### 3.3.2. 입력 폼 필드 정의
+#### 3.4.2. 입력 폼 필드 정의
 
 | 필드명         | 타입     | 필수 | 유효성 검사              | UI 컴포넌트 |
 | -------------- | -------- | ---- | ------------------------ | ----------- |
@@ -191,7 +272,7 @@ interface LoginPageProps {
 | `술` | 술시 (19:00~20:59)  | 저녁 7시~9시   |
 | `해` | 해시 (21:00~22:59)  | 밤 9시~11시    |
 
-#### 3.3.3. 상태 및 동작
+#### 3.4.3. 상태 및 동작
 
 ```typescript
 type TimeBranchValue = "자" | "축" | "인" | "묘" | "진" | "사" | "오" | "미" | "신" | "유" | "술" | "해";
@@ -209,7 +290,7 @@ interface BirthInfoForm {
   1. 클라이언트 유효성 검사
   2. 유효성 통과 시 `/loading`으로 이동 (폼 데이터는 sessionStorage로 전달)
 
-#### 3.3.4. UX 요구사항
+#### 3.4.4. UX 요구사항
 
 - 시진 선택 안내 문구: "태어난 시간대를 선택해주세요. 정확한 시간을 모르시면 부모님께 확인해보세요."
 - 모바일 키보드 최적화 (날짜/시간 네이티브 피커 활용)
@@ -218,9 +299,9 @@ interface BirthInfoForm {
 
 ---
 
-### 3.4. 로딩 페이지 (`/loading`) - **로그인 필수**
+### 3.5. 로딩 페이지 (`/loading`) - **로그인 필수**
 
-#### 3.4.1. 레이아웃 구조
+#### 3.5.1. 레이아웃 구조
 
 ```
 ┌─────────────────────────────────┐
@@ -233,7 +314,7 @@ interface BirthInfoForm {
 └─────────────────────────────────┘
 ```
 
-#### 3.4.2. 롤링 메시지 목록
+#### 3.5.2. 롤링 메시지 목록
 
 ```typescript
 const LOADING_MESSAGES = [
@@ -245,14 +326,14 @@ const LOADING_MESSAGES = [
 ];
 ```
 
-#### 3.4.3. 동작 명세
+#### 3.5.3. 동작 명세
 
 - **Duration:** 2.5초 ~ 3초
 - **메시지 롤링:** 0.5초 간격으로 메시지 순환
 - **완료 시:** 자동으로 `/preview`로 이동
 - **백엔드 연동:** 로딩 중 분석 API 호출 (실제 분석 시간이 더 짧으면 최소 2.5초 대기)
 
-#### 3.4.4. 데이터 흐름
+#### 3.5.4. 데이터 흐름
 
 ```
 [정보입력에서 전달받은 데이터] → [분석 API 호출] → [결과를 sessionStorage에 저장] → [/preview 이동]
@@ -260,9 +341,9 @@ const LOADING_MESSAGES = [
 
 ---
 
-### 3.5. 미리보기 페이지 (`/preview`) - **로그인 필수**
+### 3.6. 미리보기 페이지 (`/preview`) - **로그인 필수**
 
-#### 3.5.1. 레이아웃 구조
+#### 3.6.1. 레이아웃 구조
 
 ```
 ┌─────────────────────────────────┐
@@ -283,7 +364,7 @@ const LOADING_MESSAGES = [
 └─────────────────────────────────┘
 ```
 
-#### 3.5.2. 섹션별 상세
+#### 3.6.2. 섹션별 상세
 
 **명궁 분석 섹션 (무료 공개)**
 
@@ -306,7 +387,7 @@ interface PreviewLockedContent {
 }
 ```
 
-#### 3.5.3. 결제 유도 Bottom Sheet
+#### 3.6.3. 결제 유도 Bottom Sheet
 
 - **고정 위치:** 화면 하단에 고정 (Sticky/Fixed)
 - **구성 요소:**
@@ -316,9 +397,9 @@ interface PreviewLockedContent {
 
 ---
 
-### 3.6. 결제 프로세스
+### 3.7. 결제 프로세스
 
-#### 3.6.1. 토스페이먼츠 연동 흐름
+#### 3.7.1. 토스페이먼츠 연동 흐름
 
 ```
 [결제 버튼 클릭]
@@ -332,7 +413,7 @@ interface PreviewLockedContent {
 [성공 시 /result로 이동]
 ```
 
-#### 3.6.2. 결제 정보
+#### 3.7.2. 결제 정보
 
 ```typescript
 interface PaymentRequest {
@@ -343,16 +424,16 @@ interface PaymentRequest {
 }
 ```
 
-#### 3.6.3. 결제 결과 처리
+#### 3.7.3. 결제 결과 처리
 
 - **성공:** `/result?orderId={orderId}` 로 리다이렉트
 - **실패/취소:** 에러 메시지 토스트 표시, 미리보기 페이지 유지
 
 ---
 
-### 3.7. 결과 페이지 (`/result`) - **로그인 필수**
+### 3.8. 결과 페이지 (`/result`) - **로그인 필수**
 
-#### 3.7.1. 레이아웃 구조
+#### 3.8.1. 레이아웃 구조
 
 ```
 ┌─────────────────────────────────┐
@@ -377,7 +458,7 @@ interface PaymentRequest {
 └─────────────────────────────────┘
 ```
 
-#### 3.7.2. 결과 데이터 구조
+#### 3.8.2. 결과 데이터 구조
 
 ```typescript
 interface FortuneResult {
@@ -405,13 +486,13 @@ interface FortuneResult {
 }
 ```
 
-#### 3.7.3. 공유 기능
+#### 3.8.3. 공유 기능
 
 - **[내 인생 요약 짤 저장하기]:** 결과 요약을 이미지로 생성하여 저장
 - **[친구에게 공유하기]:** 카카오톡/링크 공유
 - **공유 썸네일:** "내 인생 등급은 S급? 990원 자미두수 확인하기"
 
-#### 3.7.4. 접근 제어
+#### 3.8.4. 접근 제어
 
 - 로그인 필수 (미로그인 시 `/login`으로 리다이렉트)
 - 유효한 결제 완료 정보가 없으면 `/form` 으로 리다이렉트
@@ -425,17 +506,20 @@ interface FortuneResult {
 
 | 컴포넌트명          | 용도                    | 위치                                |
 | ------------------- | ----------------------- | ----------------------------------- |
+| `Input`             | 텍스트/날짜/시간 입력   | `components/form/Input`             |
 | `TextInput`         | 텍스트 입력 필드        | `components/form/TextInput`         |
 | `DatePicker`        | 날짜 선택               | `components/form/DatePicker`        |
 | `TimePicker`        | 시간 선택               | `components/form/TimePicker`        |
 | `RadioGroup`        | 라디오 버튼 그룹        | `components/form/RadioGroup`        |
-| `Button`            | 공통 버튼               | `components/ui/Button`              |
+| `Checkbox`          | 체크박스                | `components/form/Checkbox`          |
+| `Button`            | 공통 버튼               | `components/form/Button`            |
 | `Toast`             | 알림 메시지             | `components/ui/Toast`               |
 | `BottomSheet`       | 하단 고정 시트          | `components/ui/BottomSheet`         |
 | `BlurredCard`       | 블러 처리된 콘텐츠 카드 | `components/ui/BlurredCard`         |
 | `LoadingSpinner`    | 로딩 애니메이션         | `components/ui/LoadingSpinner`      |
 | `ShareButtons`      | 공유 버튼 그룹          | `components/ui/ShareButtons`        |
 | `SocialLoginButton` | 소셜 로그인 버튼        | `components/auth/SocialLoginButton` |
+| `ProfileSummaryCard`| 프로필 요약 카드        | `components/profile/ProfileSummaryCard` |
 
 ### 4.2. 디렉토리 구조
 
@@ -444,6 +528,14 @@ app/
 ├── page.tsx                    # 랜딩 페이지
 ├── login/
 │   └── page.tsx               # 로그인 페이지
+├── profile/
+│   └── setup/
+│       ├── page.tsx           # 프로필 설정 페이지 (Protected)
+│       ├── page.module.css
+│       ├── StepOne.tsx        # Step 1 컴포넌트
+│       ├── StepOne.module.css
+│       ├── StepTwo.tsx        # Step 2 컴포넌트
+│       └── StepTwo.module.css
 ├── form/
 │   └── page.tsx               # 정보 입력 페이지 (Protected)
 ├── loading/
@@ -453,11 +545,13 @@ app/
 ├── result/
 │   └── page.tsx               # 결과 페이지 (Protected)
 ├── api/
-│   └── auth/
-│       ├── [...nextauth]/
-│       │   └── route.ts       # NextAuth.js 핸들러 (또는 자체 구현)
-│       └── callback/
-│           └── route.ts       # OAuth 콜백 처리
+│   ├── auth/
+│   │   ├── [...nextauth]/
+│   │   │   └── route.ts       # NextAuth.js 핸들러 (또는 자체 구현)
+│   │   └── callback/
+│   │       └── route.ts       # OAuth 콜백 처리
+│   └── profile/
+│       └── route.ts           # POST: 프로필 저장 API
 ├── layout.tsx
 └── globals.css
 
@@ -467,7 +561,14 @@ components/
 │   ├── SocialLoginButton.module.css
 │   ├── AuthGuard.tsx          # Protected Route 래퍼
 │   └── AuthGuard.module.css
+├── profile/
+│   ├── index.ts
+│   ├── ProfileSummaryCard.tsx # Step 1 정보 요약 카드
+│   └── ProfileSummaryCard.module.css
 ├── form/
+│   ├── index.ts
+│   ├── Input.tsx
+│   ├── Input.module.css
 │   ├── TextInput.tsx
 │   ├── TextInput.module.css
 │   ├── DatePicker.tsx
@@ -475,10 +576,12 @@ components/
 │   ├── TimePicker.tsx
 │   ├── TimePicker.module.css
 │   ├── RadioGroup.tsx
-│   └── RadioGroup.module.css
-├── ui/
+│   ├── RadioGroup.module.css
+│   ├── Checkbox.tsx
+│   ├── Checkbox.module.css
 │   ├── Button.tsx
-│   ├── Button.module.css
+│   └── Button.module.css
+├── ui/
 │   ├── Toast.tsx
 │   ├── Toast.module.css
 │   ├── BottomSheet.tsx

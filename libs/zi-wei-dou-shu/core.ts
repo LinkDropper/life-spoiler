@@ -45,7 +45,9 @@ export const generateZiweiChart = (input: ZiweiInput): ZiweiChart => {
   validateInput(input);
 
   const birthTimeForChart =
-    input.birthTime === "unknown" ? UNKNOWN_TIME_REPRESENTATIVE : input.birthTime;
+    input.birthTime === "unknown"
+      ? UNKNOWN_TIME_REPRESENTATIVE
+      : input.birthTime;
 
   const lunarDate = toLunarDate(input);
   const timeBranch = parseTimeToTimeBranch(birthTimeForChart);
@@ -121,9 +123,7 @@ export const analyzeZiwei = (input: ZiweiInput): ZiweiAnalysisResult => {
   const baseResult = interpretChart(chart);
 
   const result =
-    input.birthTime === "unknown"
-      ? addUnknownTimeNote(baseResult)
-      : baseResult;
+    input.birthTime === "unknown" ? addUnknownTimeNote(baseResult) : baseResult;
 
   return {
     chart,
