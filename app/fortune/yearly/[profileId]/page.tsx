@@ -13,6 +13,7 @@ import {
 import { useAuthStatus } from "@/libs/stores/user";
 
 import type { YearlyFortuneInterpretation } from "@/libs/services/ai";
+import { calculateAge } from "@/libs/utils";
 import type {
   MonthlyFortune,
   YearlyPalaceInfo,
@@ -68,16 +69,20 @@ interface YearlyFortuneResult {
 }
 
 // ============================================================
+// 유틸리티 함수
+// ============================================================
+
+const getScoreColor = (score: number) => {
+  if (score >= 70) return "#deff7c";
+  if (score >= 50) return "#ffc854";
+  return "#fb7194";
+};
+
+// ============================================================
 // 점수 게이지 컴포넌트
 // ============================================================
 
 const ScoreGauge = ({ score, label }: { score: number; label: string }) => {
-  const getScoreColor = (score: number) => {
-    if (score >= 70) return "#deff7c";
-    if (score >= 50) return "#ffc854";
-    return "#fb7194";
-  };
-
   return (
     <div className={styles.scoreGauge}>
       <div className={styles.scoreLabel}>{label}</div>
@@ -193,12 +198,6 @@ const getScoreEmoji = (score: number) => {
   return "💪";
 };
 
-const getScoreColor = (score: number) => {
-  if (score >= 70) return "#deff7c";
-  if (score >= 50) return "#ffc854";
-  return "#fb7194";
-};
-
 const MonthlyFortuneList = ({
   monthlyFortunes,
 }: {
@@ -265,20 +264,6 @@ export default function YearlyFortunePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
 
   const currentYear = new Date().getFullYear();
-
-  const calculateAge = (birthDate: string): number => {
-    const birth = new Date(birthDate);
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      age--;
-    }
-    return age;
-  };
 
   // 프로필이 로드되지 않은 경우 로드 시도
   useEffect(() => {

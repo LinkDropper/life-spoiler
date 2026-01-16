@@ -292,28 +292,22 @@ export const interpretYearlyMonthly = async (
 /**
  * 전체 유년 운세 해석 생성
  *
- * 병렬 요청으로 성능 최적화
+ * 2단계 병렬 요청으로 성능 최적화
  */
 export const generateYearlyInterpretation = async (
   request: Omit<YearlyInterpretationRequest, "requestType">
 ): Promise<YearlyFortuneInterpretation> => {
-  // 1단계: overview + wealth
-  const [overview, wealth] = await Promise.all([
+  // 1단계: overview + 4개 카테고리
+  const [overview, wealth, career, relationship, health] = await Promise.all([
     interpretYearlyOverview(request),
     interpretYearlyWealth(request),
-  ]);
-
-  // 2단계: career + relationship
-  const [career, relationship] = await Promise.all([
     interpretYearlyCareer(request),
     interpretYearlyRelationship(request),
+    interpretYearlyHealth(request),
   ]);
 
-  // 3단계: health + monthly
-  const [health, monthlyResult] = await Promise.all([
-    interpretYearlyHealth(request),
-    interpretYearlyMonthly(request),
-  ]);
+  // 2단계: 월별 운세 (프롬프트가 길어서 분리)
+  const monthlyResult = await interpretYearlyMonthly(request);
 
   return {
     overview,

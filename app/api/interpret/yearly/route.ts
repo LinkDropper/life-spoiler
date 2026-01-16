@@ -18,6 +18,7 @@ import {
   saveFortune,
   setCachedResult,
 } from "@/libs/supabase";
+import { calculateAge } from "@/libs/utils";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 import {
   calculateDayun,
@@ -48,20 +49,6 @@ const WUXING_JU_NAMES: Record<number, string> = {
   4: "금사국(金四局)",
   5: "토오국(土五局)",
   6: "화육국(火六局)",
-};
-
-/**
- * 현재 나이 계산
- */
-const calculateAge = (birthDate: string): number => {
-  const birth = new Date(birthDate);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
 };
 
 // ============================================================
@@ -120,7 +107,7 @@ export async function POST(request: NextRequest) {
           fortuneType: "yearly",
           year: targetYear,
           result: cachedResult,
-        }).catch(() => {});
+        }).catch(console.error);
       }
 
       return NextResponse.json({
@@ -185,10 +172,10 @@ export async function POST(request: NextRequest) {
         gender: input.gender,
         lunarBirthInfo,
         currentAge,
-        relationshipStatus: input.relationshipStatus ?? undefined,
-        relationshipStatusCustom: input.relationshipStatusCustom ?? undefined,
-        occupationStatus: input.occupationStatus ?? undefined,
-        occupationStatusCustom: input.occupationStatusCustom ?? undefined,
+        relationshipStatus: input.relationshipStatus,
+        relationshipStatusCustom: input.relationshipStatusCustom,
+        occupationStatus: input.occupationStatus,
+        occupationStatusCustom: input.occupationStatusCustom,
       },
       chart: {
         wuxingJu: WUXING_JU_NAMES[chart.wuxingJu] || `${chart.wuxingJu}국`,
@@ -214,7 +201,7 @@ export async function POST(request: NextRequest) {
       result = await generateYearlyInterpretation(interpretRequest);
 
       // 캐시 저장
-      setCachedResult(chartHash, cacheKey, result).catch(() => {});
+      setCachedResult(chartHash, cacheKey, result).catch(console.error);
 
       // fortunes 저장
       if (profileId) {
@@ -223,7 +210,7 @@ export async function POST(request: NextRequest) {
           fortuneType: "yearly",
           year: targetYear,
           result,
-        }).catch(() => {});
+        }).catch(console.error);
       }
     } catch (error) {
       console.error("AI 해석 오류:", error);
