@@ -129,8 +129,7 @@ export default function ProfilesPage() {
       alert("프로필을 선택해주세요.");
       return;
     }
-    // TODO: 올해 운세 페이지로 이동
-    console.log("올해 운세 보기", selectedProfileId);
+    router.push(`/fortune/yearly/${selectedProfileId}`);
   };
 
   return (
