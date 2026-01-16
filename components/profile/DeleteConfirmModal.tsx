@@ -64,7 +64,6 @@ export const DeleteConfirmModal = ({
               삭제됩니다.
             </p>
           </div>
-          ㄹ
           <div className={styles.buttons}>
             <button
               type="button"

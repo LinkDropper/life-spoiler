@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 import { createAuthClient } from "@/libs/supabase";
 
+import type { ProfileRow } from "@/libs/supabase/types";
+
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
@@ -26,10 +28,10 @@ export const DELETE = async (_request: Request, { params }: RouteParams) => {
     // 프로필이 현재 사용자의 것인지 확인
     const { data: profile, error: profileError } =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase.from("profiles") as any)
-        .select("id, user_id")
+      (await (supabase.from("profiles") as any)
+        .select("*")
         .eq("id", profileId)
-        .single();
+        .single()) as { data: ProfileRow | null; error: Error | null };
 
     if (profileError || !profile) {
       return NextResponse.json(
@@ -45,16 +47,11 @@ export const DELETE = async (_request: Request, { params }: RouteParams) => {
       );
     }
 
-    // 연관된 운세 기록 삭제
+    // 프로필 삭제 (fortunes는 ON DELETE CASCADE로 자동 삭제됨)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase.from("fortunes") as any)
+    const { error: deleteError } = await (supabase.from("profiles") as any)
       .delete()
-      .eq("profile_id", profileId);
-
-    // 프로필 삭제
-    const { error: deleteError } =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase.from("profiles") as any).delete().eq("id", profileId);
+      .eq("id", profileId);
 
     if (deleteError) {
       return NextResponse.json(
@@ -64,11 +61,10 @@ export const DELETE = async (_request: Request, { params }: RouteParams) => {
     }
 
     // 남은 프로필 수 확인하여 profile_completed 업데이트
-    const { data: remainingProfiles } =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase.from("profiles") as any)
-        .select("id")
-        .eq("user_id", authUser.id);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: remainingProfiles } = await (supabase.from("profiles") as any)
+      .select("id")
+      .eq("user_id", authUser.id);
 
     if (!remainingProfiles || remainingProfiles.length === 0) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,7 +77,8 @@ export const DELETE = async (_request: Request, { params }: RouteParams) => {
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("DELETE /api/profile/[id] error:", error);
     return NextResponse.json(
       { error: "서버 오류가 발생했습니다." },
       { status: 500 }

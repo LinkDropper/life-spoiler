@@ -45,7 +45,8 @@ export const GET = async () => {
     }
 
     return NextResponse.json({ profiles: profiles as ProfileWithFortunes[] });
-  } catch {
+  } catch (error) {
+    console.error("GET /api/profile error:", error);
     return NextResponse.json(
       { error: "서버 오류가 발생했습니다." },
       { status: 500 }
@@ -108,8 +109,8 @@ export const POST = async (request: Request) => {
     };
 
     const { data: profile, error: insertError } =
-      await // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (supabase.from("profiles") as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.from("profiles") as any)
         .insert(profileData)
         .select("id")
         .single();
@@ -137,7 +138,8 @@ export const POST = async (request: Request) => {
     }
 
     return NextResponse.json({ success: true, profileId: profile.id });
-  } catch {
+  } catch (error) {
+    console.error("POST /api/profile error:", error);
     return NextResponse.json(
       { error: "서버 오류가 발생했습니다." },
       { status: 500 }

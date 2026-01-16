@@ -51,7 +51,8 @@ export const GET = async (request: Request) => {
     const redirectPath = dbUser?.profile_completed ? next : "/profile/setup";
 
     return NextResponse.redirect(`${origin}${redirectPath}`);
-  } catch {
+  } catch (error) {
+    console.error("OAuth callback error:", error);
     return NextResponse.redirect(`${origin}/login?error=auth_failed`);
   }
 };
