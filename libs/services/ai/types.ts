@@ -77,12 +77,34 @@ export interface DayunData {
   sihua?: string[];
 }
 
+// 사용자 상태 정보 (프로필 기반)
+export interface UserStatusInfo {
+  relationshipStatus?:
+    | "solo"
+    | "dating"
+    | "married"
+    | "divorced"
+    | "custom"
+    | null;
+  relationshipStatusCustom?: string | null;
+  occupationStatus?:
+    | "student"
+    | "job_seeker"
+    | "homemaker"
+    | "employed"
+    | "self_employed"
+    | "retired"
+    | "custom"
+    | null;
+  occupationStatusCustom?: string | null;
+}
+
 export interface ZiweiInterpretationRequest {
   user: {
     gender: "male" | "female";
     lunarBirthInfo: string;
     currentAge?: number;
-  };
+  } & UserStatusInfo;
   chart: {
     wuxingJu: string;
     mingGongPosition: string;
@@ -91,8 +113,7 @@ export interface ZiweiInterpretationRequest {
   };
   targetPalace: PalaceData;
   oppositePalace?: PalaceData;
-  allPalaces?: PalaceData[];
-  dayunPeriods?: DayunData[]; // 대운 정보
+  dayunPeriods?: DayunData[];
   requestType: InterpretationType;
 }
 
@@ -107,20 +128,10 @@ export const PreviewResponseSchema = z.object({
 
 export type PreviewResponse = z.infer<typeof PreviewResponseSchema>;
 
-// 타임라인 항목 (대운별 점수)
-export const TimelineItemSchema = z.object({
-  age: z.string(),
-  score: z.number().min(0).max(100),
-  description: z.string(),
-});
-
-export type TimelineItem = z.infer<typeof TimelineItemSchema>;
-
 export const SectionResponseSchema = z.object({
   title: z.string(),
   content: z.string(),
   highlights: z.array(z.string()),
-  timeline: z.array(TimelineItemSchema).optional(),
 });
 
 export type SectionResponse = z.infer<typeof SectionResponseSchema>;

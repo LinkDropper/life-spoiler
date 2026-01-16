@@ -12,8 +12,9 @@ const UPSTAGE_CONFIG = {
   model: "solar-pro",
   defaultTemperature: 0.7,
   defaultMaxTokens: 2000,
-  timeout: 30000, // 30초
-  maxRetries: 2,
+  timeout: 35000, // 35초 (Upstage API 불안정 대응)
+  maxRetries: 2, // 2회 재시도 (총 3회 시도)
+  retryDelay: 1000, // 1초 대기 후 재시도
 } as const;
 
 // ============================================================
@@ -102,8 +103,7 @@ export const chatCompletion = async (
 
       // 재시도 가능한 경우 (타임아웃 포함)
       if (attempt < UPSTAGE_CONFIG.maxRetries) {
-        // 지수 백오프
-        await sleep(Math.pow(2, attempt) * 1000);
+        await sleep(UPSTAGE_CONFIG.retryDelay);
         continue;
       }
     }
@@ -158,28 +158,118 @@ const sleep = (ms: number): Promise<void> => {
 };
 
 /**
+ * JSON 문자열 정리 (일반적인 AI 출력 오류 수정)
+ */
+const sanitizeJsonString = (str: string): string => {
+  let result = str.trim();
+
+  // 마크다운 코드 블록 제거
+  if (result.startsWith("```json")) {
+    result = result.slice(7);
+  } else if (result.startsWith("```")) {
+    result = result.slice(3);
+  }
+  if (result.endsWith("```")) {
+    result = result.slice(0, -3);
+  }
+
+  result = result.trim();
+
+  // JSON 시작 찾기
+  const jsonStart = result.indexOf("{");
+  if (jsonStart === -1) return result;
+
+  result = result.slice(jsonStart);
+
+  // 일반적인 JSON 오류 수정
+  // 1. 문자열 내 이스케이프 안 된 줄바꿈 수정
+  result = result.replace(/:\s*"([^"]*)\n([^"]*)"/g, (match, p1, p2) => {
+    return `: "${p1}\\n${p2}"`;
+  });
+
+  // 2. 후행 쉼표 제거
+  result = result.replace(/,\s*([}\]])/g, "$1");
+
+  // 3. 누락된 쉼표 추가 (AI가 쉼표를 빠뜨리는 경우)
+  // "value" 다음에 바로 "key": 가 오는 패턴 수정
+  result = result.replace(/"\s*\n\s*"/g, '",\n"');
+  // ] 다음에 바로 "key": 가 오는 패턴 수정
+  result = result.replace(/\]\s*\n\s*"/g, '],\n"');
+  // } 다음에 바로 "key": 가 오는 패턴 수정
+  result = result.replace(/\}\s*\n\s*"/g, '},\n"');
+
+  // 4. 잘린 JSON 복구 시도 (응답이 토큰 한도로 잘렸을 때)
+  result = tryRecoverTruncatedJson(result);
+
+  return result;
+};
+
+/**
+ * 잘린 JSON 복구 시도
+ * AI 응답이 토큰 한도로 잘렸을 때 JSON 구조를 복구
+ */
+const tryRecoverTruncatedJson = (str: string): string => {
+  try {
+    JSON.parse(str);
+    return str;
+  } catch {
+    // 복구 시도
+  }
+
+  let result = str;
+
+  // 이스케이프된 따옴표를 제외한 실제 따옴표 카운트
+  const unescapedQuotes = result.replace(/\\"/g, "").match(/"/g) || [];
+  if (unescapedQuotes.length % 2 !== 0) {
+    result = `${result}"`;
+  }
+
+  // 괄호 균형 맞추기
+  const openBraces = (result.match(/{/g) || []).length;
+  const closeBraces = (result.match(/}/g) || []).length;
+  const openBrackets = (result.match(/\[/g) || []).length;
+  const closeBrackets = (result.match(/]/g) || []).length;
+
+  for (let i = 0; i < openBrackets - closeBrackets; i++) {
+    result = `${result}]`;
+  }
+
+  for (let i = 0; i < openBraces - closeBraces; i++) {
+    result = `${result}}`;
+  }
+
+  result = result.replace(/,\s*([}\]])/g, "$1");
+
+  return result;
+};
+
+/**
  * JSON 응답 파싱 (AI가 마크다운 코드 블록으로 감쌀 수 있음)
  */
 export const parseJsonResponse = <T>(content: string): T => {
+  const jsonStr = sanitizeJsonString(content);
+
   try {
-    // 마크다운 코드 블록 제거
-    let jsonStr = content.trim();
+    return JSON.parse(jsonStr) as T;
+  } catch (firstError) {
+    // 첫 번째 시도 실패 시 더 공격적인 정리 후 재시도
+    try {
+      const cleaned = jsonStr
+        .replace(/[\x00-\x1F\x7F]/g, (char) => {
+          if (char === "\n" || char === "\r" || char === "\t") {
+            return char;
+          }
+          return "";
+        })
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n");
 
-    if (jsonStr.startsWith("```json")) {
-      jsonStr = jsonStr.slice(7);
-    } else if (jsonStr.startsWith("```")) {
-      jsonStr = jsonStr.slice(3);
+      return JSON.parse(cleaned) as T;
+    } catch {
+      throw new AIError("AI 응답을 JSON으로 파싱할 수 없습니다.", {
+        code: "RESPONSE_PARSE_FAILED",
+        originalError: firstError as Error,
+      });
     }
-
-    if (jsonStr.endsWith("```")) {
-      jsonStr = jsonStr.slice(0, -3);
-    }
-
-    return JSON.parse(jsonStr.trim()) as T;
-  } catch (error) {
-    throw new AIError("AI 응답을 JSON으로 파싱할 수 없습니다.", {
-      code: "RESPONSE_PARSE_FAILED",
-      originalError: error as Error,
-    });
   }
 };

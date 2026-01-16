@@ -20,20 +20,52 @@ import { chatCompletion, parseJsonResponse } from "./upstage";
 // 자미두수 해석 서비스
 // ============================================================
 
-/** 대운 정보가 필요한 해석 유형 */
-const DAYUN_REQUIRED_TYPES = [
-  "wealth",
-  "career",
-  "relationship",
-  "health",
-  "summary",
-] as const;
+/** 대운 정보가 필요한 해석 유형 (summary만 대운 맥락 필요) */
+const DAYUN_REQUIRED_TYPES = ["summary"] as const;
 
 /** 대운 정보가 필요한 해석 유형인지 확인하는 타입 가드 */
 const isDayunRequired = (
   type: InterpretationType
 ): type is (typeof DAYUN_REQUIRED_TYPES)[number] => {
   return (DAYUN_REQUIRED_TYPES as readonly string[]).includes(type);
+};
+
+/**
+ * 연애 상태 레이블 변환
+ */
+const getRelationshipStatusLabel = (
+  status: string | null | undefined,
+  custom?: string | null
+): string | null => {
+  if (!status) return null;
+  const labels: Record<string, string> = {
+    solo: "솔로",
+    dating: "연애중",
+    married: "기혼",
+    divorced: "이혼",
+    custom: custom || "직접입력",
+  };
+  return labels[status] || null;
+};
+
+/**
+ * 직업 상태 레이블 변환
+ */
+const getOccupationStatusLabel = (
+  status: string | null | undefined,
+  custom?: string | null
+): string | null => {
+  if (!status) return null;
+  const labels: Record<string, string> = {
+    student: "학생",
+    job_seeker: "취준생",
+    homemaker: "주부",
+    employed: "직장인",
+    self_employed: "자영업",
+    retired: "은퇴",
+    custom: custom || "직접입력",
+  };
+  return labels[status] || null;
 };
 
 /**
@@ -45,14 +77,31 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
     chart,
     targetPalace,
     oppositePalace,
-    allPalaces,
     dayunPeriods,
     requestType,
   } = request;
 
+  // 사용자 상태 정보 포맷팅
+  const relationshipLabel = getRelationshipStatusLabel(
+    user.relationshipStatus,
+    user.relationshipStatusCustom
+  );
+  const occupationLabel = getOccupationStatusLabel(
+    user.occupationStatus,
+    user.occupationStatusCustom
+  );
+
+  let userStatusStr = "";
+  if (relationshipLabel) {
+    userStatusStr += `\n- 연애 상태: ${relationshipLabel}`;
+  }
+  if (occupationLabel) {
+    userStatusStr += `\n- 직업 상태: ${occupationLabel}`;
+  }
+
   let dataStr = `## 사용자 정보
 - 성별: ${user.gender === "male" ? "남성" : "여성"}
-- 음력 생일: ${user.lunarBirthInfo}${user.currentAge ? `\n- 현재 나이: ${user.currentAge}세` : ""}
+- 음력 생일: ${user.lunarBirthInfo}${user.currentAge ? `\n- 현재 나이: ${user.currentAge}세` : ""}${userStatusStr}
 
 ## 명반 기본 정보
 - 오행국: ${chart.wuxingJu}
@@ -87,14 +136,6 @@ ${formatPalaceData(oppositePalace)}`;
     }
     if (user.currentAge) {
       dataStr += `\n- **현재 ${user.currentAge}세 대운에 특히 주목해서 분석해줘!**`;
-    }
-  }
-
-  if (allPalaces && requestType === "summary") {
-    dataStr += `\n\n## 전체 12궁 배치`;
-    for (const palace of allPalaces) {
-      dataStr += `\n\n### ${palace.name} (${palace.branch})
-${formatPalaceData(palace)}`;
     }
   }
 
@@ -239,9 +280,19 @@ export interface FullInterpretationOptions {
 }
 
 /**
+ * 개별 해석 요청을 시간 측정과 함께 실행
+ */
+const timedInterpret = async <T>(
+  _name: string,
+  fn: () => Promise<T>
+): Promise<T> => {
+  return fn();
+};
+
+/**
  * 전체 운세 해석 생성
  *
- * preview만 요청하거나, 상세 해석(재물/직업/인연/건강/종합)까지 모두 요청
+ * 모든 섹션이 성공해야 결과 반환 (하나라도 실패하면 에러)
  */
 export const generateFullInterpretation = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">,
@@ -249,34 +300,50 @@ export const generateFullInterpretation = async (
 ): Promise<FortuneInterpretation> => {
   const { includeDetails = false } = options;
 
-  // 미리보기는 항상 요청
-  const preview = await interpretPreview(request);
-
-  let details: FortuneInterpretation["details"] = null;
-
   if (includeDetails) {
-    // 상세 해석 병렬 요청
-    const [wealth, career, relationship, health, summaryResult] =
-      await Promise.all([
-        interpretWealth(request),
-        interpretCareer(request),
-        interpretRelationship(request),
-        interpretHealth(request),
-        interpretSummary(request),
-      ]);
+    // 1차 배치: preview, wealth (2개)
+    const [preview, wealth] = await Promise.all([
+      timedInterpret("preview", () => interpretPreview(request)),
+      timedInterpret("wealth", () => interpretWealth(request)),
+    ]);
 
-    details = {
-      summary: summaryResult.summary,
-      wealth,
-      career,
-      relationship,
-      health,
+    // 2차 배치: career, relationship (2개)
+    const [career, relationship] = await Promise.all([
+      timedInterpret("career", () => interpretCareer(request)),
+      timedInterpret("relationship", () => interpretRelationship(request)),
+    ]);
+
+    // 3차 배치: health, summary (2개)
+    const [health, summaryResult] = await Promise.all([
+      timedInterpret("health", () => interpretHealth(request)),
+      timedInterpret("summary", () => interpretSummary(request)),
+    ]);
+
+    return {
+      preview,
+      details: {
+        summary: summaryResult.summary,
+        wealth,
+        career,
+        relationship,
+        health,
+      },
+      meta: {
+        generatedAt: new Date().toISOString(),
+        model: "solar-pro",
+        isFallback: false,
+      },
     };
   }
 
+  // 미리보기만 필요한 경우
+  const preview = await timedInterpret("preview", () =>
+    interpretPreview(request)
+  );
+
   return {
     preview,
-    details,
+    details: null,
     meta: {
       generatedAt: new Date().toISOString(),
       model: "solar-pro",
