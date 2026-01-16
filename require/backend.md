@@ -42,16 +42,20 @@
 
 ```
 ┌─────────────┐       ┌─────────────┐       ┌─────────────────┐
-│   users     │──1:N──│  analyses   │──1:1──│ analysis_results│
+│   users     │──1:N──│  profiles   │──1:N──│    fortunes     │
 └─────────────┘       └─────────────┘       └─────────────────┘
-                            │
-                            ├──1:1──┌─────────────┐
-                            │       │  payments   │
-                            │       └─────────────┘
-                            │
-                            └──1:N──┌─────────────┐
-                                    │   shares    │
-                                    └─────────────┘
+       │
+       └──1:N──┌─────────────┐       ┌─────────────────┐
+               │  analyses   │──1:1──│ analysis_results│
+               └─────────────┘       └─────────────────┘
+                      │
+                      ├──1:1──┌─────────────┐
+                      │       │  payments   │
+                      │       └─────────────┘
+                      │
+                      └──1:N──┌─────────────┐
+                              │   shares    │
+                              └─────────────┘
 ```
 
 ### 4.2. 테이블 상세
@@ -76,6 +80,9 @@ CREATE TABLE public.users (
   provider VARCHAR(20) NOT NULL CHECK (provider IN ('kakao', 'google')),
   provider_id VARCHAR(255) NOT NULL,
 
+  -- 프로필 설정 상태
+  profile_completed BOOLEAN DEFAULT FALSE,
+
   -- 메타데이터
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -96,7 +103,84 @@ CREATE TRIGGER set_users_updated_at
   EXECUTE FUNCTION public.handle_updated_at();
 ```
 
-#### 4.2.2. analyses (분석 요청)
+#### 4.2.2. profiles (프로필)
+
+> 사용자별 프로필 정보. 한 계정에 여러 프로필 등록 가능 (본인, 가족, 지인 등)
+
+```sql
+CREATE TABLE public.profiles (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+
+  -- 기본 정보
+  name VARCHAR(50) NOT NULL,
+  birth_date DATE NOT NULL,
+  birth_time TIME,
+  birth_time_unknown BOOLEAN NOT NULL DEFAULT FALSE,
+  calendar_type VARCHAR(10) NOT NULL CHECK (calendar_type IN ('solar', 'lunar')),
+  gender VARCHAR(10) NOT NULL CHECK (gender IN ('male', 'female')),
+
+  -- 추가 정보
+  relationship_status VARCHAR(20),
+  relationship_status_custom VARCHAR(50),
+  occupation_status VARCHAR(20),
+  occupation_status_custom VARCHAR(50),
+  relationship_to_user VARCHAR(20),  -- 본인, 가족, 지인 등 (추후 확장용)
+
+  -- 메타데이터
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 인덱스
+CREATE INDEX idx_profiles_user_id ON public.profiles(user_id);
+
+-- updated_at 자동 갱신 트리거
+CREATE TRIGGER set_profiles_updated_at
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_updated_at();
+```
+
+#### 4.2.3. fortunes (운세 결과)
+
+> 프로필별 운세 결과 저장. 인생운세(lifetime) + 올해운세(yearly)
+
+```sql
+CREATE TABLE public.fortunes (
+  -- Primary Key
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+  -- Foreign Key
+  profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+
+  -- 운세 정보
+  fortune_type VARCHAR(20) NOT NULL CHECK (fortune_type IN ('lifetime', 'yearly')),
+  year INTEGER NOT NULL DEFAULT 0,  -- 0: 인생운세, 2024/2025...: 해당 연도 운세
+  result JSONB NOT NULL,
+
+  -- 메타데이터
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  -- 중복 방지 (프로필당 인생운세 1개, 연도별 운세 1개씩)
+  UNIQUE (profile_id, fortune_type, year)
+);
+
+-- 인덱스
+CREATE INDEX idx_fortunes_profile_id ON public.fortunes(profile_id);
+
+-- updated_at 자동 갱신 트리거
+CREATE TRIGGER set_fortunes_updated_at
+  BEFORE UPDATE ON public.fortunes
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_updated_at();
+```
+
+#### 4.2.4. analyses (분석 요청)
 
 > 사용자가 입력한 생년월일시 정보와 분석 상태 관리
 
@@ -145,7 +229,7 @@ CREATE TRIGGER set_analyses_updated_at
   EXECUTE FUNCTION public.handle_updated_at();
 ```
 
-#### 4.2.3. analysis_results (분석 결과)
+#### 4.2.5. analysis_results (분석 결과)
 
 > 결제 완료 후 열람 가능한 상세 분석 결과
 
@@ -201,7 +285,7 @@ interface FortuneSection {
 }
 ```
 
-#### 4.2.4. payments (결제)
+#### 4.2.6. payments (결제)
 
 > 토스페이먼츠 결제 정보
 
@@ -255,7 +339,7 @@ CREATE TRIGGER set_payments_updated_at
   EXECUTE FUNCTION public.handle_updated_at();
 ```
 
-#### 4.2.5. shares (공유)
+#### 4.2.7. shares (공유)
 
 > 결과 공유 링크 관리
 
@@ -326,6 +410,8 @@ CREATE TRIGGER on_auth_user_created
 ```sql
 -- 모든 테이블에 RLS 활성화
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.fortunes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analyses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analysis_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
@@ -339,6 +425,60 @@ CREATE POLICY "Users can view own profile"
 CREATE POLICY "Users can update own profile"
   ON public.users FOR UPDATE
   USING (auth.uid() = id);
+
+-- profiles: 본인 프로필만 CRUD 가능
+CREATE POLICY "Users can view own profiles"
+  ON public.profiles FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own profiles"
+  ON public.profiles FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own profiles"
+  ON public.profiles FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own profiles"
+  ON public.profiles FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- fortunes: 본인 프로필에 연결된 운세만 CRUD 가능
+CREATE POLICY "Users can view own fortunes"
+  ON public.fortunes FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = profile_id AND p.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can insert own fortunes"
+  ON public.fortunes FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = profile_id AND p.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can update own fortunes"
+  ON public.fortunes FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = profile_id AND p.user_id = auth.uid()
+    )
+  );
+
+CREATE POLICY "Users can delete own fortunes"
+  ON public.fortunes FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = profile_id AND p.user_id = auth.uid()
+    )
+  );
 
 -- analyses: 본인 분석만 조회/생성 가능
 CREATE POLICY "Users can view own analyses"
@@ -425,7 +565,17 @@ CREATE POLICY "Service can manage payments"
 | GET    | `/api/auth/callback`     | OAuth 콜백 처리     | X         |
 | POST   | `/api/auth/logout`       | 로그아웃            | O         |
 
-### 5.2. 분석 API
+### 5.2. 프로필 API
+
+| Method | Endpoint          | 설명                 | 인증 필요 |
+| ------ | ----------------- | -------------------- | --------- |
+| POST   | `/api/profile`    | 새 프로필 생성       | O         |
+| GET    | `/api/profiles`   | 내 프로필 목록 조회  | O         |
+| GET    | `/api/profile/:id`| 프로필 상세 조회     | O         |
+| PUT    | `/api/profile/:id`| 프로필 수정          | O         |
+| DELETE | `/api/profile/:id`| 프로필 삭제          | O         |
+
+### 5.3. 분석 API
 
 | Method | Endpoint                    | 설명                     | 인증 필요 |
 | ------ | --------------------------- | ------------------------ | --------- |
@@ -435,7 +585,7 @@ CREATE POLICY "Service can manage payments"
 | GET    | `/api/analysis/:id/result`  | 전체 결과 조회 (결제 후) | O         |
 | GET    | `/api/analyses`             | 내 분석 목록             | O         |
 
-### 5.3. 결제 API
+### 5.4. 결제 API
 
 | Method | Endpoint                | 설명           | 인증 필요 |
 | ------ | ----------------------- | -------------- | --------- |
@@ -443,7 +593,7 @@ CREATE POLICY "Service can manage payments"
 | POST   | `/api/payment/confirm`  | 결제 승인 처리 | O         |
 | GET    | `/api/payment/:orderId` | 결제 상태 조회 | O         |
 
-### 5.4. 공유 API
+### 5.5. 공유 API
 
 | Method | Endpoint           | 설명             | 인증 필요 |
 | ------ | ------------------ | ---------------- | --------- |

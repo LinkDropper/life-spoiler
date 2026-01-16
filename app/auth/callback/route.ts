@@ -26,7 +26,6 @@ export const GET = async (request: Request) => {
     const provider = user.app_metadata.provider as OAuthProvider | undefined;
 
     if (!provider) {
-      console.error("OAuth provider not found in user metadata:", user.id);
       return NextResponse.redirect(`${origin}/login?error=auth_failed`);
     }
 
@@ -43,9 +42,15 @@ export const GET = async (request: Request) => {
       last_login_at: new Date().toISOString(),
     };
 
-    await (supabase.from("users") as any).upsert(userData, { onConflict: "id" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: dbUser } = (await (supabase.from("users") as any)
+      .upsert(userData, { onConflict: "id" })
+      .select("profile_completed")
+      .single()) as { data: { profile_completed: boolean } | null };
 
-    return NextResponse.redirect(`${origin}${next}`);
+    const redirectPath = dbUser?.profile_completed ? next : "/profile/setup";
+
+    return NextResponse.redirect(`${origin}${redirectPath}`);
   } catch (error) {
     console.error("OAuth callback error:", error);
     return NextResponse.redirect(`${origin}/login?error=auth_failed`);

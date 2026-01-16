@@ -69,3 +69,13 @@ export const useUserActions = () => {
     fetchUser: state.fetchUser,
   }));
 };
+
+export const useIsProfileCompleted = () => {
+  return useUserStore((state) => state.user?.profileCompleted ?? false);
+};
+
+export const useNeedsProfileSetup = () => {
+  return useUserStore(
+    (state) => state.status === "authenticated" && !state.user?.profileCompleted
+  );
+};

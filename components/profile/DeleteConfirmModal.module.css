@@ -1,0 +1,118 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(17, 17, 28, 0.6);
+  z-index: 1000;
+}
+
+.modal {
+  width: 100%;
+  max-width: 327px;
+  padding: 24px;
+  background: #18181b;
+  border-radius: 20px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.description {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.cancelButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 52px;
+  padding: 16px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.deleteButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 52px;
+  padding: 16px 20px;
+  background: #fa5252;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.deleteButton:hover {
+  opacity: 0.9;
+}
+
+.deleteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
