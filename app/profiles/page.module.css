@@ -1,0 +1,103 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  padding-bottom: 100px;
+}
+
+.loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+}
+
+.profileList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(46, 20, 49, 0) 0%,
+    rgba(46, 20, 49, 1) 20%
+  );
+}
+
+.primaryButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 52px;
+  padding: 16px 20px;
+  background: #ffccd9;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.primaryButton:hover {
+  opacity: 0.9;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 52px;
+  padding: 16px 20px;
+  background: #b8a4ff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #18181b;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.secondaryButton:hover {
+  opacity: 0.9;
+}
+
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
