@@ -38,6 +38,28 @@ const BirthTimeSchema = z.union([
   z.literal("unknown"),
 ]);
 
+// 연애 상태 타입
+export const RelationshipStatusSchema = z.enum([
+  "solo",
+  "dating",
+  "married",
+  "divorced",
+  "custom",
+]);
+export type RelationshipStatus = z.infer<typeof RelationshipStatusSchema>;
+
+// 직업 상태 타입
+export const OccupationStatusSchema = z.enum([
+  "student",
+  "job_seeker",
+  "homemaker",
+  "employed",
+  "self_employed",
+  "retired",
+  "custom",
+]);
+export type OccupationStatus = z.infer<typeof OccupationStatusSchema>;
+
 export const ZiweiInputSchema = z.object({
   name: z.string().min(1).max(20),
   birthDate: z
@@ -47,6 +69,11 @@ export const ZiweiInputSchema = z.object({
   gender: z.enum(["male", "female"]),
   calendarType: z.enum(["solar", "lunar"]),
   isLeapMonth: z.boolean().optional(),
+  // 프로필 기반 추가 정보 (선택적)
+  relationshipStatus: RelationshipStatusSchema.optional(),
+  relationshipStatusCustom: z.string().optional(),
+  occupationStatus: OccupationStatusSchema.optional(),
+  occupationStatusCustom: z.string().optional(),
 });
 
 export type ZiweiInput = z.infer<typeof ZiweiInputSchema>;

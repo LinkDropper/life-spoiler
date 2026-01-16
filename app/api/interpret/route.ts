@@ -213,11 +213,9 @@ export async function POST(request: NextRequest) {
       isLeapMonth: input.isLeapMonth,
     });
 
-    const [dayunResult, lifestyle, cachedResult] = await Promise.all([
-      Promise.resolve(calculateAllDayunScores(calculateDayun(chart))),
-      Promise.resolve(generateLifestyleRecommendation(chart)),
-      getCachedResult(chartHash, cacheKey),
-    ]);
+    const dayunResult = calculateAllDayunScores(calculateDayun(chart));
+    const lifestyle = generateLifestyleRecommendation(chart);
+    const cachedResult = await getCachedResult(chartHash, cacheKey);
 
     if (cachedResult) {
       return NextResponse.json({

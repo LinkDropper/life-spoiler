@@ -280,16 +280,6 @@ export interface FullInterpretationOptions {
 }
 
 /**
- * 개별 해석 요청을 시간 측정과 함께 실행
- */
-const timedInterpret = async <T>(
-  _name: string,
-  fn: () => Promise<T>
-): Promise<T> => {
-  return fn();
-};
-
-/**
  * 전체 운세 해석 생성
  *
  * 모든 섹션이 성공해야 결과 반환 (하나라도 실패하면 에러)
@@ -301,22 +291,19 @@ export const generateFullInterpretation = async (
   const { includeDetails = false } = options;
 
   if (includeDetails) {
-    // 1차 배치: preview, wealth (2개)
     const [preview, wealth] = await Promise.all([
-      timedInterpret("preview", () => interpretPreview(request)),
-      timedInterpret("wealth", () => interpretWealth(request)),
+      interpretPreview(request),
+      interpretWealth(request),
     ]);
 
-    // 2차 배치: career, relationship (2개)
     const [career, relationship] = await Promise.all([
-      timedInterpret("career", () => interpretCareer(request)),
-      timedInterpret("relationship", () => interpretRelationship(request)),
+      interpretCareer(request),
+      interpretRelationship(request),
     ]);
 
-    // 3차 배치: health, summary (2개)
     const [health, summaryResult] = await Promise.all([
-      timedInterpret("health", () => interpretHealth(request)),
-      timedInterpret("summary", () => interpretSummary(request)),
+      interpretHealth(request),
+      interpretSummary(request),
     ]);
 
     return {
@@ -336,10 +323,7 @@ export const generateFullInterpretation = async (
     };
   }
 
-  // 미리보기만 필요한 경우
-  const preview = await timedInterpret("preview", () =>
-    interpretPreview(request)
-  );
+  const preview = await interpretPreview(request);
 
   return {
     preview,

@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
 import { createUserStore, type UserStoreApi } from "./store";
 import type { UserStore } from "./types";
@@ -63,11 +64,20 @@ export const useIsAuthLoading = () => {
 };
 
 export const useUserActions = () => {
-  return useUserStore((state) => ({
-    login: state.login,
-    logout: state.logout,
-    fetchUser: state.fetchUser,
-  }));
+  const store = useContext(UserStoreContext);
+
+  if (!store) {
+    throw new Error("useUserActions는 UserProvider 내부에서 사용해야 합니다.");
+  }
+
+  return useStore(
+    store,
+    useShallow((state) => ({
+      login: state.login,
+      logout: state.logout,
+      fetchUser: state.fetchUser,
+    }))
+  );
 };
 
 export const useIsProfileCompleted = () => {

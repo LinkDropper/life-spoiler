@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ProfileProvider } from "@/libs/stores/profile";
 import { UserProvider } from "@/libs/stores/user";
 
 import "./globals.css";
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          <ProfileProvider>{children}</ProfileProvider>
+        </UserProvider>
       </body>
     </html>
   );
