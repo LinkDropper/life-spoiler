@@ -202,7 +202,8 @@ export async function POST(request: NextRequest) {
 
     const input: ZiweiInput = parseResult.data;
     const includeDetails = body.includeDetails ?? false;
-    const profileId = body.profileId as string | undefined;
+    const profileId =
+      typeof body.profileId === "string" ? body.profileId : undefined;
     const cacheKey = includeDetails ? "full" : "preview";
 
     const chart = generateZiweiChart(input);

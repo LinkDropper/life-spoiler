@@ -43,8 +43,8 @@ export const saveFortune = async (params: SaveFortuneParams): Promise<void> => {
     await (supabase.from("fortunes") as any).upsert(insertData, {
       onConflict: "profile_id,fortune_type,year",
     });
-  } catch {
-    // 저장 실패는 무시 (서비스 중단 방지)
+  } catch (error) {
+    console.error("Fortune 저장 실패:", error);
   }
 };
 
