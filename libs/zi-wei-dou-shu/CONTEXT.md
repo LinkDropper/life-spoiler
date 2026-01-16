@@ -71,11 +71,14 @@ AI 서비스 장애 시 폴백 응답을 제공합니다.
 ### 주요 타입
 
 ```typescript
+// 시진 타입
+type TimeBranchValue = "자" | "축" | "인" | "묘" | "진" | "사" | "오" | "미" | "신" | "유" | "술" | "해";
+
 // 입력
 interface ZiweiInput {
   name: string;
-  birthDate: string;      // "YYYY-MM-DD"
-  birthTime: string;      // "HH:mm"
+  birthDate: string;           // "YYYY-MM-DD"
+  birthTime: TimeBranchValue;  // 시진 선택 (자, 축, 인 등)
   gender: "male" | "female";
   calendarType: "solar" | "lunar";
   isLeapMonth?: boolean;
@@ -113,7 +116,7 @@ import { generateZiweiChart } from "@/libs/zi-wei-dou-shu";
 const chart = generateZiweiChart({
   name: "홍길동",
   birthDate: "1990-05-15",
-  birthTime: "12:00",
+  birthTime: "오",  // 오시 (11:00~12:59)
   gender: "male",
   calendarType: "solar",
 });

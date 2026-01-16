@@ -1,21 +1,24 @@
-import type { BranchIndex } from "../types";
+import type { BranchIndex, TimeBranchValue } from "../types";
 
-/**
- * 시간을 12시진으로 변환
- *
- * 23:00-00:59 → 자시(0)
- * 01:00-02:59 → 축시(1)
- * 03:00-04:59 → 인시(2)
- * 05:00-06:59 → 묘시(3)
- * 07:00-08:59 → 진시(4)
- * 09:00-10:59 → 사시(5)
- * 11:00-12:59 → 오시(6)
- * 13:00-14:59 → 미시(7)
- * 15:00-16:59 → 신시(8)
- * 17:00-18:59 → 유시(9)
- * 19:00-20:59 → 술시(10)
- * 21:00-22:59 → 해시(11)
- */
+const TIME_BRANCH_MAP: Record<TimeBranchValue, BranchIndex> = {
+  자: 0,
+  축: 1,
+  인: 2,
+  묘: 3,
+  진: 4,
+  사: 5,
+  오: 6,
+  미: 7,
+  신: 8,
+  유: 9,
+  술: 10,
+  해: 11,
+};
+
+export const timeBranchToIndex = (timeBranch: TimeBranchValue): BranchIndex => {
+  return TIME_BRANCH_MAP[timeBranch];
+};
+
 export const getTimeBranch = (hour: number, minute: number): BranchIndex => {
   const totalMinutes = hour * 60 + minute;
 
@@ -33,9 +36,6 @@ export const getTimeBranch = (hour: number, minute: number): BranchIndex => {
   return 11; // 해
 };
 
-/**
- * 시간 문자열(HH:mm)을 파싱하여 시진 반환
- */
 export const parseTimeToTimeBranch = (timeString: string): BranchIndex => {
   const [hour, minute] = timeString.split(":").map(Number);
   return getTimeBranch(hour, minute);

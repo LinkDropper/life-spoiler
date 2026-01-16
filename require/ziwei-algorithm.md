@@ -1131,10 +1131,13 @@ interface ZiweiChart {
 ### 5.2. 명반 생성 메인 함수
 
 ```typescript
+// 시진 타입 정의
+type TimeBranchValue = "자" | "축" | "인" | "묘" | "진" | "사" | "오" | "미" | "신" | "유" | "술" | "해";
+
 const generateZiweiChart = (input: {
   name: string;
   birthDate: string; // "YYYY-MM-DD"
-  birthTime: string; // "HH:mm"
+  birthTime: TimeBranchValue; // 시진 선택 (자, 축, 인, 묘, 진, 사, 오, 미, 신, 유, 술, 해)
   gender: "male" | "female";
   calendarType: "solar" | "lunar";
 }): ZiweiChart => {
@@ -1144,9 +1147,8 @@ const generateZiweiChart = (input: {
       ? convertToLunar(input.birthDate)
       : parseLunarDate(input.birthDate);
 
-  // 2. 시진 계산
-  const [hour, minute] = input.birthTime.split(":").map(Number);
-  const timeBranch = getTimeBranch(hour, minute);
+  // 2. 시진 변환 (문자열 → BranchIndex)
+  const timeBranch = timeBranchToIndex(input.birthTime);
 
   // 3. 명궁/신궁 계산
   const mingGong = calculateMingGong(lunarDate.month, timeBranch);
@@ -1666,7 +1668,7 @@ describe("자미두수 명반 계산", () => {
     const chart = generateZiweiChart({
       name: "테스트",
       birthDate: "1990-05-15",
-      birthTime: "12:00",
+      birthTime: "오", // 오시 (11:00~12:59)
       gender: "male",
       calendarType: "solar",
     });

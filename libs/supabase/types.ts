@@ -1,10 +1,3 @@
-// ============================================================
-// Supabase Database 타입
-// ============================================================
-
-/**
- * JSON 타입 (Supabase JSONB 컬럼)
- */
 export type Json =
   | string
   | number
@@ -13,9 +6,6 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-/**
- * 해석 캐시 테이블 Row 타입
- */
 export interface InterpretationCacheRow {
   id: string;
   chart_hash: string;
@@ -25,9 +15,6 @@ export interface InterpretationCacheRow {
   updated_at: string;
 }
 
-/**
- * 해석 캐시 테이블 Insert 타입
- */
 export interface InterpretationCacheInsert {
   id?: string;
   chart_hash: string;
@@ -37,13 +24,35 @@ export interface InterpretationCacheInsert {
   updated_at?: string;
 }
 
-// 하위 호환성을 위한 별칭
 export type AnalysisResultRow = InterpretationCacheRow;
 export type AnalysisResultInsert = InterpretationCacheInsert;
 
-/**
- * Database 스키마 타입
- */
+export type OAuthProvider = "kakao" | "google";
+
+export interface UserRow {
+  id: string;
+  email: string;
+  name: string | null;
+  avatar_url: string | null;
+  provider: OAuthProvider;
+  provider_id: string;
+  created_at: string;
+  updated_at: string;
+  last_login_at: string | null;
+}
+
+export interface UserInsert {
+  id: string;
+  email: string;
+  name?: string | null;
+  avatar_url?: string | null;
+  provider: OAuthProvider;
+  provider_id: string;
+  created_at?: string;
+  updated_at?: string;
+  last_login_at?: string | null;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -51,6 +60,12 @@ export type Database = {
         Row: InterpretationCacheRow;
         Insert: InterpretationCacheInsert;
         Update: Partial<InterpretationCacheInsert>;
+        Relationships: [];
+      };
+      users: {
+        Row: UserRow;
+        Insert: UserInsert;
+        Update: Partial<UserInsert>;
         Relationships: [];
       };
     };

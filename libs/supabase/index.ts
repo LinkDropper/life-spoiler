@@ -1,6 +1,6 @@
-// Supabase 클라이언트 및 유틸리티
+export { createAuthClient, createServerClient } from "./client";
 
-export { createBrowserClient, createServerClient } from "./client";
+export { createBrowserClient } from "./browser";
 export type {
   AnalysisResultInsert,
   AnalysisResultRow,
@@ -8,6 +8,9 @@ export type {
   InterpretationCacheInsert,
   InterpretationCacheRow,
   Json,
+  OAuthProvider,
+  UserInsert,
+  UserRow,
 } from "./types";
 export {
   generateChartHash,

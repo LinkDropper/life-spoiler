@@ -4,6 +4,7 @@ import {
   FeatureSection,
   PromotionBanner,
   DisclaimerSection,
+  FooterInfo,
   CTAButton,
 } from "@/components/landing";
 
@@ -18,6 +19,7 @@ export default function Home() {
         <FeatureSection />
         <PromotionBanner />
         <DisclaimerSection />
+        <FooterInfo />
       </main>
       <footer className={styles.footer}>
         <CTAButton />
