@@ -41,3 +41,6 @@ export {
   type MainStarName,
   type MinorStarName,
 } from "./stars";
+
+// 점수 계산
+export { PALACE_CATEGORY_WEIGHTS, type CategoryScores } from "./scoring";

@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   FortuneInterpretation,
   InterpretationType,
+  YearlyFortuneInterpretation,
 } from "@/libs/services/ai";
 
 import { createServerClient } from "./client";
@@ -19,6 +20,9 @@ import type {
 // ============================================================
 
 type SupabaseDB = SupabaseClient<Database>;
+
+/** 캐시 키 타입: 인생 운세, 올해 운세(yearly-{year} 형식) */
+type CacheKeyType = InterpretationType | "full" | `yearly-${number}`;
 
 /**
  * 명반 데이터로부터 고유 해시 생성
@@ -49,13 +53,18 @@ export const generateChartHash = (params: {
   return createHash("sha256").update(key).digest("hex").slice(0, 16);
 };
 
+/** 캐시 결과 타입 (인생 운세 또는 올해 운세) */
+type CacheResultType = FortuneInterpretation | YearlyFortuneInterpretation;
+
 /**
  * 캐시된 분석 결과 조회
  */
-export const getCachedResult = async (
+export const getCachedResult = async <
+  T extends CacheResultType = FortuneInterpretation,
+>(
   chartHash: string,
-  interpretationType: InterpretationType | "full"
-): Promise<FortuneInterpretation | null> => {
+  interpretationType: CacheKeyType
+): Promise<T | null> => {
   try {
     const supabase = createServerClient() as SupabaseDB;
 
@@ -70,7 +79,7 @@ export const getCachedResult = async (
       return null;
     }
 
-    return data.result as unknown as FortuneInterpretation;
+    return data.result as unknown as T;
   } catch {
     // 캐시 조회 실패는 무시하고 새로 생성
     return null;
@@ -82,8 +91,8 @@ export const getCachedResult = async (
  */
 export const setCachedResult = async (
   chartHash: string,
-  interpretationType: InterpretationType | "full",
-  result: FortuneInterpretation
+  interpretationType: CacheKeyType,
+  result: CacheResultType
 ): Promise<void> => {
   try {
     const supabase = createServerClient() as SupabaseDB;
@@ -109,13 +118,15 @@ export const setCachedResult = async (
 /**
  * 캐시된 결과가 있으면 반환, 없으면 생성 함수 실행 후 캐시에 저장
  */
-export const getOrCreateCachedResult = async (
+export const getOrCreateCachedResult = async <
+  T extends CacheResultType = FortuneInterpretation,
+>(
   chartHash: string,
-  interpretationType: InterpretationType | "full",
-  createFn: () => Promise<FortuneInterpretation>
-): Promise<FortuneInterpretation> => {
+  interpretationType: CacheKeyType,
+  createFn: () => Promise<T>
+): Promise<T> => {
   // 1. 캐시 조회
-  const cached = await getCachedResult(chartHash, interpretationType);
+  const cached = await getCachedResult<T>(chartHash, interpretationType);
   if (cached) {
     return cached;
   }

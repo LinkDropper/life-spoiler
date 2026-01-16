@@ -1,6 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import type { FortuneInterpretation } from "@/libs/services/ai";
+import type {
+  FortuneInterpretation,
+  YearlyFortuneInterpretation,
+} from "@/libs/services/ai";
 
 import { createServerClient } from "./client";
 import type { Database, FortuneInsert, FortuneRow } from "./types";
@@ -13,11 +16,14 @@ type SupabaseDB = SupabaseClient<Database>;
 
 export type FortuneType = "lifetime" | "yearly";
 
+/** 운세 결과 타입 (인생 운세 또는 올해 운세) */
+type FortuneResultType = FortuneInterpretation | YearlyFortuneInterpretation;
+
 export interface SaveFortuneParams {
   profileId: string;
   fortuneType: FortuneType;
   year?: number;
-  result: FortuneInterpretation;
+  result: FortuneResultType;
 }
 
 /**

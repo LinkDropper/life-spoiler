@@ -69,3 +69,21 @@ export {
   type DayunPeriod,
   type DayunResult,
 } from "./dayun";
+
+export {
+  getYearStemBranch,
+  getMonthStem,
+  getMonthBranch,
+  calculateYearlySihua,
+  calculateYearlyPalaces,
+  calculateYearlyPeachBlossom,
+  calculateMonthlyFortunes,
+  calculateYearlyFortune,
+  getLuckyAndCautionMonths,
+  type YearlySihua,
+  type YearlySihuaEffect,
+  type YearlyPalaceInfo,
+  type YearlyPeachBlossomInfo,
+  type MonthlyFortune,
+  type YearlyFortuneResult,
+} from "./yearly";
