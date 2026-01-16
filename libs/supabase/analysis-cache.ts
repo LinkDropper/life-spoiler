@@ -75,12 +75,19 @@ export const getCachedResult = async (
 
 /**
  * 분석 결과 캐시에 저장
+ * 로컬 개발 환경에서는 캐시 저장을 건너뜀
  */
 export const setCachedResult = async (
   chartHash: string,
   interpretationType: InterpretationType | "full",
   result: FortuneInterpretation
 ): Promise<void> => {
+  // 로컬 개발 환경에서는 캐시 저장 건너뛰기
+  if (process.env.NODE_ENV === "development") {
+    console.log("[Cache] 로컬 환경 - 캐시 저장 건너뜀");
+    return;
+  }
+
   try {
     const supabase = createServerClient() as SupabaseDB;
 

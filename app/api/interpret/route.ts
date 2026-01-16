@@ -12,7 +12,11 @@ import {
   createFallbackInterpretation,
   generateFullInterpretation,
 } from "@/libs/services/ai";
-import { generateChartHash, getOrCreateCachedResult } from "@/libs/supabase";
+import {
+  generateChartHash,
+  getCachedResult,
+  setCachedResult,
+} from "@/libs/supabase";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 import {
   calculateDayun,
@@ -115,6 +119,12 @@ const convertChartToRequest = (
   // 음력 생일 정보 문자열
   const lunarBirthInfo = `${lunarDate.year}년 ${lunarDate.month}월 ${lunarDate.day}일${lunarDate.isLeapMonth ? " (윤달)" : ""}`;
 
+  // 사용자 상태 정보 (프로필 기반)
+  const relationshipStatus = input.relationshipStatus ?? null;
+  const relationshipStatusCustom = input.relationshipStatusCustom ?? null;
+  const occupationStatus = input.occupationStatus ?? null;
+  const occupationStatusCustom = input.occupationStatusCustom ?? null;
+
   // 사화 정보 변환 - 각 사화가 어느 궁에 있는지 찾기
   const findPalaceForStar = (starName: string): string => {
     for (const palace of palaces) {
@@ -145,14 +155,15 @@ const convertChartToRequest = (
   // 대궁 (명궁의 반대편 = 천이궁)
   const oppositePalace = palaces.find((p) => p.name === "천이궁");
 
-  // 전체 궁 변환
-  const allPalaces = palaces.map(convertToPalaceData);
-
   return {
     user: {
       gender: input.gender,
       lunarBirthInfo,
       currentAge,
+      relationshipStatus,
+      relationshipStatusCustom,
+      occupationStatus,
+      occupationStatusCustom,
     },
     chart: {
       wuxingJu: WUXING_JU_NAMES[wuxingJu] || `${wuxingJu}국`,
@@ -164,7 +175,6 @@ const convertChartToRequest = (
     oppositePalace: oppositePalace
       ? convertToPalaceData(oppositePalace)
       : undefined,
-    allPalaces,
     dayunPeriods,
   };
 };
@@ -177,7 +187,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // 입력값 유효성 검사
     const parseResult = ZiweiInputSchema.safeParse(body);
     if (!parseResult.success) {
       return NextResponse.json(
@@ -191,17 +200,11 @@ export async function POST(request: NextRequest) {
     }
 
     const input: ZiweiInput = parseResult.data;
+    const includeDetails = body.includeDetails ?? false;
+    const cacheKey = includeDetails ? "full" : "preview";
 
-    // 1. 명반 생성
     const chart = generateZiweiChart(input);
 
-    // 2. 대운 계산
-    const dayunResult = calculateAllDayunScores(calculateDayun(chart));
-
-    // 3. 라이프스타일 추천 생성
-    const lifestyle = generateLifestyleRecommendation(chart);
-
-    // 4. 캐시 키 생성
     const chartHash = generateChartHash({
       birthDate: input.birthDate,
       birthTime: input.birthTime,
@@ -210,7 +213,28 @@ export async function POST(request: NextRequest) {
       isLeapMonth: input.isLeapMonth,
     });
 
-    // 5. AI 해석 요청 데이터 준비 (대운 정보 포함)
+    const dayunResult = calculateAllDayunScores(calculateDayun(chart));
+    const lifestyle = generateLifestyleRecommendation(chart);
+    const cachedResult = await getCachedResult(chartHash, cacheKey);
+
+    if (cachedResult) {
+      return NextResponse.json({
+        success: true,
+        data: {
+          chart: {
+            wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
+            mingGong: EARTHLY_BRANCHES[chart.mingGong],
+            shenGong: EARTHLY_BRANCHES[chart.shenGong],
+            sihua: chart.sihua,
+          },
+          rawChart: chart,
+          dayun: dayunResult,
+          lifestyle,
+          interpretation: cachedResult,
+        },
+      });
+    }
+
     const currentAge = calculateAge(input.birthDate);
     const dayunPeriods = convertToDayunData(dayunResult);
     const interpretRequest = convertChartToRequest(chart, {
@@ -218,16 +242,16 @@ export async function POST(request: NextRequest) {
       dayunPeriods,
     });
 
-    // 6. 캐시 확인 또는 새로 생성
-    const includeDetails = body.includeDetails ?? false;
-    const cacheKey = includeDetails ? "full" : "preview";
-
     let result: FortuneInterpretation;
 
     try {
-      result = await getOrCreateCachedResult(chartHash, cacheKey, () =>
-        generateFullInterpretation(interpretRequest, { includeDetails })
-      );
+      result = await generateFullInterpretation(interpretRequest, {
+        includeDetails,
+      });
+
+      setCachedResult(chartHash, cacheKey, result).catch(() => {
+        // 저장 실패 무시
+      });
     } catch (error) {
       console.error("AI 해석 오류:", error);
       result = createFallbackInterpretation(error as Error);

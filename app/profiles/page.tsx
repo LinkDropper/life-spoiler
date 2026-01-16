@@ -9,9 +9,14 @@ import {
   NewProfileCard,
   DeleteConfirmModal,
 } from "@/components/profile";
+import {
+  useProfiles,
+  useIsProfilesLoading,
+  useProfileActions,
+} from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
 
-import type { ProfileWithFortunes } from "@/app/api/profile/route";
+import type { ProfileWithFortunes } from "@/libs/stores/profile";
 import type { FortuneType } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
@@ -20,39 +25,24 @@ export default function ProfilesPage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
 
-  const [profiles, setProfiles] = useState<ProfileWithFortunes[]>([]);
+  const profiles = useProfiles();
+  const isProfilesLoading = useIsProfilesLoading();
+  const { deleteProfile: deleteProfileFromStore } = useProfileActions();
+
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(true);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // 프로필 목록이 로드되면 첫 번째 프로필 선택
   useEffect(() => {
-    const fetchProfiles = async () => {
-      try {
-        const response = await fetch("/api/profile");
-        if (!response.ok) {
-          throw new Error("프로필 목록을 가져오는데 실패했습니다.");
-        }
-        const data = await response.json();
-        setProfiles(data.profiles);
-        if (data.profiles.length > 0) {
-          setSelectedProfileId(data.profiles[0].id);
-        }
-      } catch {
-        console.error("프로필 목록을 가져오는데 실패했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (authStatus === "authenticated") {
-      fetchProfiles();
+    if (profiles.length > 0 && !selectedProfileId) {
+      setSelectedProfileId(profiles[0].id);
     }
-  }, [authStatus]);
+  }, [profiles, selectedProfileId]);
 
-  if (authStatus === "loading" || isLoading) {
+  if (authStatus === "loading" || isProfilesLoading) {
     return (
       <div className={styles.page}>
         <Header />
@@ -92,7 +82,10 @@ export default function ProfilesPage() {
         throw new Error("프로필 삭제에 실패했습니다.");
       }
 
-      setProfiles((prev) => prev.filter((p) => p.id !== deleteTargetId));
+      // 전역 상태에서 프로필 삭제
+      deleteProfileFromStore(deleteTargetId);
+
+      // 선택된 프로필이 삭제된 경우 다른 프로필 선택
       if (selectedProfileId === deleteTargetId) {
         const remaining = profiles.filter((p) => p.id !== deleteTargetId);
         setSelectedProfileId(remaining.length > 0 ? remaining[0].id : null);
@@ -110,8 +103,9 @@ export default function ProfilesPage() {
   };
 
   const getCompletedFortunes = (
-    fortunes: ProfileWithFortunes["fortunes"]
+    fortunes: ProfileWithFortunes["fortunes"] | undefined
   ): FortuneType[] => {
+    if (!fortunes) return [];
     const types: FortuneType[] = [];
     if (fortunes.some((f) => f.fortune_type === "lifetime")) {
       types.push("lifetime");
@@ -127,8 +121,7 @@ export default function ProfilesPage() {
       alert("프로필을 선택해주세요.");
       return;
     }
-    // TODO: 인생 운세 페이지로 이동
-    console.log("인생 운세 보기", selectedProfileId);
+    router.push(`/fortune/lifetime/${selectedProfileId}`);
   };
 
   const handleYearlyFortune = () => {

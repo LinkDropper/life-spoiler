@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { useProfileActions } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
 import { Header } from "@/components/landing";
 
@@ -52,6 +53,7 @@ const initialStepTwoData: StepTwoData = {
 export default function ProfileSetupPage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const { addProfile } = useProfileActions();
 
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
   const [stepOneData, setStepOneData] =
@@ -101,6 +103,35 @@ export default function ProfileSetupPage() {
       if (!response.ok) {
         throw new Error("프로필 저장에 실패했습니다.");
       }
+
+      const result = await response.json();
+
+      // 전역 상태에 새 프로필 추가
+      const now = new Date().toISOString();
+      addProfile({
+        id: result.profileId,
+        user_id: "", // 서버에서 설정됨
+        name: stepOneData.name,
+        birth_date: stepOneData.birthDate,
+        birth_time: stepOneData.birthTimeUnknown ? null : stepOneData.birthTime,
+        birth_time_unknown: stepOneData.birthTimeUnknown,
+        calendar_type: stepOneData.calendarType,
+        gender: stepOneData.gender,
+        relationship_status: data.relationshipStatus || null,
+        relationship_status_custom:
+          data.relationshipStatus === "custom"
+            ? data.relationshipStatusCustom
+            : null,
+        occupation_status: data.occupationStatus || null,
+        occupation_status_custom:
+          data.occupationStatus === "custom"
+            ? data.occupationStatusCustom
+            : null,
+        relationship_to_user: null,
+        created_at: now,
+        updated_at: now,
+        fortunes: [],
+      });
 
       router.push("/profiles");
     } catch {
