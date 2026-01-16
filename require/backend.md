@@ -516,7 +516,7 @@ CREATE POLICY "Service can manage payments"
 {
   "name": "홍길동",
   "birthDate": "1990-05-15",
-  "birthTime": "14:30",
+  "birthTime": "미",  // 미시 (13:00~14:59)
   "gender": "male",
   "calendarType": "solar"
 }

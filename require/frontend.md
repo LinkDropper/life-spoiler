@@ -170,17 +170,36 @@ interface LoginPageProps {
 | -------------- | -------- | ---- | ------------------------ | ----------- |
 | `name`         | `string` | O    | 1~20자, 한글/영문만      | TextInput   |
 | `birthDate`    | `string` | O    | YYYY-MM-DD 형식          | DatePicker  |
-| `birthTime`    | `string` | O    | HH:mm 형식 (00:00~23:59) | TimePicker  |
+| `birthTime`    | `enum`   | O    | 12시진 중 선택           | Select      |
 | `gender`       | `enum`   | O    | `male` \| `female`       | RadioGroup  |
 | `calendarType` | `enum`   | O    | `solar` \| `lunar`       | RadioGroup  |
+
+**시진(時辰) 선택 옵션:**
+
+| 값   | 표시 라벨           | 시간대        |
+| ---- | ------------------- | ------------- |
+| `자` | 자시 (23:00~00:59)  | 밤 11시~새벽 1시 |
+| `축` | 축시 (01:00~02:59)  | 새벽 1시~3시   |
+| `인` | 인시 (03:00~04:59)  | 새벽 3시~5시   |
+| `묘` | 묘시 (05:00~06:59)  | 새벽 5시~7시   |
+| `진` | 진시 (07:00~08:59)  | 오전 7시~9시   |
+| `사` | 사시 (09:00~10:59)  | 오전 9시~11시  |
+| `오` | 오시 (11:00~12:59)  | 오전 11시~오후 1시 |
+| `미` | 미시 (13:00~14:59)  | 오후 1시~3시   |
+| `신` | 신시 (15:00~16:59)  | 오후 3시~5시   |
+| `유` | 유시 (17:00~18:59)  | 오후 5시~7시   |
+| `술` | 술시 (19:00~20:59)  | 저녁 7시~9시   |
+| `해` | 해시 (21:00~22:59)  | 밤 9시~11시    |
 
 #### 3.3.3. 상태 및 동작
 
 ```typescript
+type TimeBranchValue = "자" | "축" | "인" | "묘" | "진" | "사" | "오" | "미" | "신" | "유" | "술" | "해";
+
 interface BirthInfoForm {
   name: string;
   birthDate: string; // "YYYY-MM-DD"
-  birthTime: string; // "HH:mm"
+  birthTime: TimeBranchValue; // 시진 선택
   gender: "male" | "female";
   calendarType: "solar" | "lunar";
 }
@@ -192,7 +211,7 @@ interface BirthInfoForm {
 
 #### 3.3.4. UX 요구사항
 
-- 태어난 시간 필드에 안내 문구: "정확한 인생 견적을 위해 태어난 시간을 꼭 입력해주세요."
+- 시진 선택 안내 문구: "태어난 시간대를 선택해주세요. 정확한 시간을 모르시면 부모님께 확인해보세요."
 - 모바일 키보드 최적화 (날짜/시간 네이티브 피커 활용)
 - 버튼 비활성화: 필수 필드 미입력 시
 - 로그인한 사용자 이름 자동 입력 (소셜 로그인에서 가져온 경우)
@@ -579,10 +598,12 @@ interface LogoutResponse {
 
 ```typescript
 // POST /api/analysis
+type TimeBranchValue = "자" | "축" | "인" | "묘" | "진" | "사" | "오" | "미" | "신" | "유" | "술" | "해";
+
 interface AnalysisRequest {
   name: string;
   birthDate: string;
-  birthTime: string;
+  birthTime: TimeBranchValue; // 시진 선택
   gender: "male" | "female";
   calendarType: "solar" | "lunar";
 }
