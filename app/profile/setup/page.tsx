@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { useProfileActions } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
-import { Header } from "@/components/landing";
+import { HeaderClient } from "@/components/landing";
 
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
@@ -150,7 +150,7 @@ export default function ProfileSetupPage() {
 
   return (
     <div className={styles.page}>
-      <Header />
+      <HeaderClient />
 
       <main className={styles.main}>
         {currentStep === 1 ? (

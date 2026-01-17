@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-import { Header } from "@/components/landing";
+import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import {
   useProfileById,
@@ -287,6 +287,7 @@ export default function YearlyFortunePage() {
   const params = useParams();
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const locale = useLocale();
   const profileId = params.profileId as string;
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
@@ -368,6 +369,7 @@ export default function YearlyFortunePage() {
             }),
             targetYear: currentYear,
             profileId: targetProfile.id,
+            language: locale,
           }),
         });
 
@@ -400,6 +402,7 @@ export default function YearlyFortunePage() {
     isProfilesLoaded,
     cachedProfile,
     currentYear,
+    locale,
     t,
     tCommon,
   ]);
@@ -411,7 +414,7 @@ export default function YearlyFortunePage() {
   if (error) {
     return (
       <div className={styles.page}>
-        <Header />
+        <HeaderClient />
         <main className={styles.main}>
           <div className={styles.error}>
             <p>{error}</p>
@@ -448,7 +451,7 @@ export default function YearlyFortunePage() {
 
   return (
     <div className={styles.page}>
-      <Header />
+      <HeaderClient />
 
       <main className={styles.main}>
         <div className={styles.profileInfo}>
