@@ -7,7 +7,7 @@ import type { OAuthProvider, UserInsert } from "@/libs/supabase/types";
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/";
+  const next = searchParams.get("next") ?? "/profiles";
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=no_code`);
