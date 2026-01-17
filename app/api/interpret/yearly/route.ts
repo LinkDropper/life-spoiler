@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
           fortuneType: "yearly",
           year: targetYear,
           result: responseData,
-        }).catch(() => {});
+        }).catch(console.error);
       }
 
       return NextResponse.json({
@@ -249,7 +249,7 @@ export async function POST(request: NextRequest) {
       result = await generateYearlyInterpretation(interpretRequest);
 
       // 캐시 저장
-      setCachedResult(chartHash, cacheKey, result).catch(() => {});
+      setCachedResult(chartHash, cacheKey, result).catch(console.error);
     } catch (error) {
       console.error("AI 해석 오류:", error);
       result = createYearlyFallbackInterpretation(targetYear, error as Error);
@@ -264,7 +264,7 @@ export async function POST(request: NextRequest) {
         fortuneType: "yearly",
         year: targetYear,
         result: responseData,
-      }).catch(() => {});
+      }).catch(console.error);
     }
 
     return NextResponse.json({

@@ -164,11 +164,11 @@ const formatPalaceData = (palace: PalaceData): string => {
     .join(", ");
 
   const minorStarsStr =
-    palace.minorStars.length > 0 ? palace.minorStars.join(", ") : "없음";
+    palace.minorStars.length > 0 ? palace.minorStars.join(", ") : "None";
 
-  return `- 지지: ${palace.branch}
-- 주성: ${mainStarsStr || "없음"}
-- 보조성/살성: ${minorStarsStr}`;
+  return `- Branch: ${palace.branch}
+- Main Stars: ${mainStarsStr || "None"}
+- Minor Stars: ${minorStarsStr}`;
 };
 
 /**

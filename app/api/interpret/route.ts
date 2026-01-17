@@ -288,7 +288,7 @@ export async function POST(request: NextRequest) {
           fortuneType: "lifetime",
           year: 0,
           result: responseData,
-        }).catch(() => {});
+        }).catch(console.error);
       }
 
       return NextResponse.json({
@@ -315,7 +315,7 @@ export async function POST(request: NextRequest) {
       });
 
       // 캐시 저장
-      setCachedResult(chartHash, cacheKey, result).catch(() => {});
+      setCachedResult(chartHash, cacheKey, result).catch(console.error);
     } catch (error) {
       console.error("AI 해석 오류:", error);
       result = createFallbackInterpretation(error as Error);
@@ -330,7 +330,7 @@ export async function POST(request: NextRequest) {
         fortuneType: "lifetime",
         year: 0,
         result: responseData,
-      }).catch(() => {});
+      }).catch(console.error);
     }
 
     return NextResponse.json({
