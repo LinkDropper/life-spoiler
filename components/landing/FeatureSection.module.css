@@ -2,15 +2,11 @@
   display: flex;
   flex-direction: column;
   padding: 98px 24px 80px;
-  gap: 130px;
+  gap: 160px;
 }
 
 .feature {
   position: relative;
-}
-
-.featureRight {
-  padding-bottom: 100px;
 }
 
 .title {
@@ -39,18 +35,22 @@
 
 .imageLeft {
   position: absolute;
-  left: 4px;
-  bottom: -110px;
+  left: -16px;
+  top: -118px;
 }
 
 .imageRight {
   position: absolute;
-  right: 0;
-  top: -50px;
-  width: 261.375px;
-  height: 129.97px;
-  transform: rotate(9.932deg);
-  aspect-ratio: 261.38/129.97;
+  right: -8px;
+  top: -86px;
+}
+
+.imageRightSmall {
+  position: absolute;
+  right: 16px;
+  top: -88px;
+  width: 78px;
+  height: 89px;
 }
 
 .featureImage {

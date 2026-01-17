@@ -15,15 +15,14 @@ export const FeatureSection = () => {
           <Image
             src="/images/landing/section1.png"
             alt="별자리 이미지"
-            fill
-            priority
-            quality={100}
+            width={192}
+            height={110}
             className={styles.featureImage}
           />
         </div>
       </div>
 
-      <div className={`${styles.feature} ${styles.featureRight}`}>
+      <div className={styles.feature}>
         <h2 className={`${styles.title} ${styles.titleRight}`}>
           당신의 엔딩을 바꿀 마지막 한 컷
         </h2>
@@ -35,8 +34,8 @@ export const FeatureSection = () => {
           <Image
             src="/images/landing/section2.png"
             alt="운명의 시계"
-            width={78}
-            height={89}
+            width={148}
+            height={169}
             className={styles.featureImage}
           />
         </div>
@@ -48,6 +47,15 @@ export const FeatureSection = () => {
           고대 황제들만이 독점했던 비밀 점성학 알고리즘. 권력을 유지하고 미래를
           예측하기 위해 사용되었던 금기된 해석법을 현대적으로 재해석했습니다.
         </p>
+        <div className={styles.imageRightSmall}>
+          <Image
+            src="/images/landing/section3.png"
+            alt="비밀 문서"
+            width={88}
+            height={99}
+            className={styles.featureImage}
+          />
+        </div>
       </div>
     </section>
   );
