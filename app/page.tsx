@@ -19,11 +19,9 @@ export default function Home() {
         <FeatureSection />
         <PromotionBanner />
         <DisclaimerSection />
+        <CTAButton />
         <FooterInfo />
       </main>
-      <footer className={styles.footer}>
-        <CTAButton />
-      </footer>
     </div>
   );
 }

@@ -12,12 +12,3 @@
   flex: 1;
 }
 
-.footer {
-  position: fixed;
-  bottom: 0;
-  z-index: 10;
-  width: 100%;
-  max-width: 480px;
-  left: 50%;
-  transform: translateX(-50%);
-}
