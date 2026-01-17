@@ -13,7 +13,9 @@ export default getRequestConfig(async () => {
     | undefined;
 
   const locale =
-    cookieLocale && locales.includes(cookieLocale) ? cookieLocale : defaultLocale;
+    cookieLocale && locales.includes(cookieLocale)
+      ? cookieLocale
+      : defaultLocale;
 
   return {
     locale,
