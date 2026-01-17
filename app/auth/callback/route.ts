@@ -7,7 +7,6 @@ import type { OAuthProvider, UserInsert } from "@/libs/supabase/types";
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/profiles";
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=no_code`);
@@ -43,12 +42,17 @@ export const GET = async (request: Request) => {
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: dbUser } = (await (supabase.from("users") as any)
-      .upsert(userData, { onConflict: "id" })
-      .select("profile_completed")
-      .single()) as { data: { profile_completed: boolean } | null };
+    await (supabase.from("users") as any).upsert(userData, {
+      onConflict: "id",
+    });
 
-    const redirectPath = dbUser?.profile_completed ? next : "/profile/setup";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { count } = (await (supabase.from("profiles") as any)
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)) as { count: number | null };
+
+    const hasProfile = (count ?? 0) > 0;
+    const redirectPath = hasProfile ? "/profiles" : "/profile/setup";
 
     return NextResponse.redirect(`${origin}${redirectPath}`);
   } catch (error) {
