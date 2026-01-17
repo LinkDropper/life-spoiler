@@ -83,7 +83,15 @@ const getScoreColor = (score: number) => {
 // 점수 게이지 컴포넌트
 // ============================================================
 
-const ScoreGauge = ({ score, label }: { score: number; label: string }) => {
+const ScoreGauge = ({
+  score,
+  label,
+  unit,
+}: {
+  score: number;
+  label: string;
+  unit: string;
+}) => {
   return (
     <div className={styles.scoreGauge}>
       <div className={styles.scoreLabel}>{label}</div>
@@ -96,7 +104,10 @@ const ScoreGauge = ({ score, label }: { score: number; label: string }) => {
           }}
         />
       </div>
-      <div className={styles.scoreValue}>{score}</div>
+      <div className={styles.scoreValue}>
+        {score}
+        {unit}
+      </div>
     </div>
   );
 };
@@ -179,7 +190,10 @@ const MonthlyChart = ({
                   style={{ height: `${barHeight}%` }}
                 />
               </div>
-              <div className={styles.chartMonth}>{month.month}</div>
+              <div className={styles.chartMonth}>
+                {month.month}
+                {t("monthly.monthUnit", { default: "월" })}
+              </div>
               {isLucky && (
                 <div className={styles.monthBadge}>
                   {t("monthly.good", { default: "좋음" })}
@@ -227,12 +241,16 @@ const MonthlyFortuneList = ({
         {displayFortunes.map((fortune) => (
           <div key={fortune.month} className={styles.fortuneItem}>
             <div className={styles.fortuneHeader}>
-              <div className={styles.fortuneMonth}>{fortune.month}</div>
+              <div className={styles.fortuneMonth}>
+                {fortune.month}
+                {t("monthly.monthUnit", { default: "월" })}
+              </div>
               <div
                 className={styles.fortuneScore}
                 style={{ color: getScoreColor(fortune.score) }}
               >
                 {getScoreEmoji(fortune.score)} {fortune.score}
+                {t("scores.unit", { default: "점" })}
               </div>
             </div>
             <div className={styles.fortuneTheme}>{fortune.theme}</div>
@@ -442,9 +460,12 @@ export default function YearlyFortunePage() {
             })}
           </h1>
           <p className={styles.profileMeta}>
-            {yearlySihua.yearStemName}
-            {yearlySihua.yearBranchName} |{" "}
-            {tCommon("age", { age: currentAge, default: `${currentAge}세` })}
+            {t("yearInfo", {
+              stem: yearlySihua.yearStemName,
+              branch: yearlySihua.yearBranchName,
+              default: `${yearlySihua.yearStemName}${yearlySihua.yearBranchName}년`,
+            })}{" "}
+            | {tCommon("age", { age: currentAge, default: `${currentAge}세` })}
           </p>
         </div>
 
@@ -512,18 +533,22 @@ export default function YearlyFortunePage() {
             <ScoreGauge
               score={scores.wealth}
               label={t("scores.wealth", { default: "재물운" })}
+              unit={t("scores.unit", { default: "점" })}
             />
             <ScoreGauge
               score={scores.career}
               label={t("scores.career", { default: "직업운" })}
+              unit={t("scores.unit", { default: "점" })}
             />
             <ScoreGauge
               score={scores.relationship}
               label={t("scores.relationship", { default: "인연운" })}
+              unit={t("scores.unit", { default: "점" })}
             />
             <ScoreGauge
               score={scores.health}
               label={t("scores.health", { default: "건강운" })}
+              unit={t("scores.unit", { default: "점" })}
             />
           </div>
         </section>
@@ -582,12 +607,16 @@ export default function YearlyFortunePage() {
             <span className={styles.legendItem}>
               <span className={`${styles.legendDot} ${styles.luckyDot}`} />
               {t("monthly.luckyMonths", { default: "좋은 달" })}:{" "}
-              {luckyMonths.join(", ")}
+              {luckyMonths
+                .map((m) => `${m}${t("monthly.monthUnit", { default: "월" })}`)
+                .join(", ")}
             </span>
             <span className={styles.legendItem}>
               <span className={`${styles.legendDot} ${styles.cautionDot}`} />
               {t("monthly.cautionMonths", { default: "주의할 달" })}:{" "}
-              {cautionMonths.join(", ")}
+              {cautionMonths
+                .map((m) => `${m}${t("monthly.monthUnit", { default: "월" })}`)
+                .join(", ")}
             </span>
           </div>
         </section>

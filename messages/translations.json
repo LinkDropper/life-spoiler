@@ -217,7 +217,8 @@
           "wealth": "재물운",
           "career": "직업운",
           "relationship": "인연운",
-          "health": "건강운"
+          "health": "건강운",
+          "unit": "점"
         },
         "sihua": {
           "title": "올해의 사화",
@@ -254,7 +255,8 @@
           "good": "좋음",
           "caution": "주의",
           "expand": "나머지 {count}개월 보기",
-          "collapse": "접기"
+          "collapse": "접기",
+          "monthUnit": "월"
         }
       }
     },
@@ -489,7 +491,8 @@
           "wealth": "Wealth",
           "career": "Career",
           "relationship": "Relationship",
-          "health": "Health"
+          "health": "Health",
+          "unit": ""
         },
         "sihua": {
           "title": "This Year's Four Transformations",
@@ -526,7 +529,8 @@
           "good": "Good",
           "caution": "Caution",
           "expand": "View {count} more months",
-          "collapse": "Collapse"
+          "collapse": "Collapse",
+          "monthUnit": ""
         }
       }
     },
@@ -761,7 +765,8 @@
           "wealth": "財運",
           "career": "職業運",
           "relationship": "縁運",
-          "health": "健康運"
+          "health": "健康運",
+          "unit": "点"
         },
         "sihua": {
           "title": "今年の四化",
@@ -798,7 +803,8 @@
           "good": "良好",
           "caution": "注意",
           "expand": "残り{count}ヶ月を見る",
-          "collapse": "閉じる"
+          "collapse": "閉じる",
+          "monthUnit": "月"
         }
       }
     },
