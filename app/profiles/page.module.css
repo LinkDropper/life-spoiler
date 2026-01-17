@@ -3,6 +3,9 @@
   flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
   background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
 }
 
@@ -32,8 +35,10 @@
 .footer {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
   display: flex;
   gap: 8px;
   padding: 16px;
