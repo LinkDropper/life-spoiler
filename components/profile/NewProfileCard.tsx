@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import styles from "./NewProfileCard.module.css";
 
 interface NewProfileCardProps {
@@ -7,6 +9,8 @@ interface NewProfileCardProps {
 }
 
 export const NewProfileCard = ({ onClick }: NewProfileCardProps) => {
+  const t = useTranslations("profiles");
+
   return (
     <button type="button" className={styles.card} onClick={onClick}>
       <svg
@@ -31,7 +35,9 @@ export const NewProfileCard = ({ onClick }: NewProfileCardProps) => {
           strokeLinejoin="round"
         />
       </svg>
-      <span className={styles.label}>새 프로필 만들기</span>
+      <span className={styles.label}>
+        {t("newProfile", { default: "새 프로필 만들기" })}
+      </span>
     </button>
   );
 };

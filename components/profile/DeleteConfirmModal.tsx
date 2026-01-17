@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 import styles from "./DeleteConfirmModal.module.css";
 
@@ -17,6 +18,8 @@ export const DeleteConfirmModal = ({
   onConfirm,
   isDeleting = false,
 }: DeleteConfirmModalProps) => {
+  const t = useTranslations("profiles.deleteModal");
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -57,11 +60,15 @@ export const DeleteConfirmModal = ({
                   fill="#FA5252"
                 />
               </svg>
-              <span className={styles.title}>정말 삭제하시겠어요?</span>
+              <span className={styles.title}>
+                {t("title", { default: "정말 삭제하시겠어요?" })}
+              </span>
             </div>
             <p className={styles.description}>
-              삭제 후에는 복구가 불가능 합니다. 선택한 프로필의 운세 기록도 모두
-              삭제됩니다.
+              {t("description", {
+                default:
+                  "삭제 후에는 복구가 불가능 합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
+              })}
             </p>
           </div>
           <div className={styles.buttons}>
@@ -71,7 +78,7 @@ export const DeleteConfirmModal = ({
               onClick={onClose}
               disabled={isDeleting}
             >
-              취소
+              {t("cancel", { default: "취소" })}
             </button>
             <button
               type="button"
@@ -79,7 +86,9 @@ export const DeleteConfirmModal = ({
               onClick={onConfirm}
               disabled={isDeleting}
             >
-              {isDeleting ? "삭제 중..." : "삭제하기"}
+              {isDeleting
+                ? t("deleting", { default: "삭제 중..." })
+                : t("delete", { default: "삭제하기" })}
             </button>
           </div>
         </div>

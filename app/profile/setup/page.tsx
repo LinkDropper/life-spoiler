@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useProfileActions } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
@@ -54,6 +55,7 @@ export default function ProfileSetupPage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
   const { addProfile } = useProfileActions();
+  const t = useTranslations("profileSetup");
 
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
   const [stepOneData, setStepOneData] =
@@ -65,7 +67,9 @@ export default function ProfileSetupPage() {
   if (authStatus === "loading") {
     return (
       <div className={styles.page}>
-        <div className={styles.loading}>로딩 중...</div>
+        <div className={styles.loading}>
+          {t("loading", { default: "로딩 중..." })}
+        </div>
       </div>
     );
   }
@@ -101,16 +105,15 @@ export default function ProfileSetupPage() {
       });
 
       if (!response.ok) {
-        throw new Error("프로필 저장에 실패했습니다.");
+        throw new Error("Failed to save profile");
       }
 
       const result = await response.json();
 
-      // 전역 상태에 새 프로필 추가
       const now = new Date().toISOString();
       addProfile({
         id: result.profileId,
-        user_id: "", // 서버에서 설정됨
+        user_id: "",
         name: stepOneData.name,
         birth_date: stepOneData.birthDate,
         birth_time: stepOneData.birthTimeUnknown ? null : stepOneData.birthTime,
@@ -135,7 +138,11 @@ export default function ProfileSetupPage() {
 
       router.push("/profiles");
     } catch {
-      alert("프로필 저장에 실패했습니다. 다시 시도해주세요.");
+      alert(
+        t("saveError", {
+          default: "프로필 저장에 실패했습니다. 다시 시도해주세요.",
+        })
+      );
     } finally {
       setIsSubmitting(false);
     }
