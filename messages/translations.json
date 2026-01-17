@@ -1,0 +1,818 @@
+{
+  "ko": {
+    "metadata": {
+      "title": "인생스포 - 당신의 인생 시나리오를 미리 확인하세요",
+      "description": "사주보다 더 정밀한 자미두수. 114개 별이 그리는 당신만의 운명 지도를 확인하세요."
+    },
+    "landing": {
+      "header": {
+        "logoAlt": "인생스포 로고",
+        "menuAriaLabel": "메뉴"
+      },
+      "hero": {
+        "imageAlt": "운명의 별자리",
+        "title": "당신의 인생 시나리오",
+        "titleSub": "미리 확인하시겠습니까?",
+        "subtitle": "사주보다 더 정밀한",
+        "subtitleHighlight": "자미두수"
+      },
+      "promotion": {
+        "text": "990원으로 당신만의 운명을 탐험하세요"
+      },
+      "cta": {
+        "button": "인생 스포일러 확인하기"
+      },
+      "features": {
+        "feature1": {
+          "title": "114개의 별이 그리는 디테일",
+          "description": "단순한 별자리가 아닙니다. 당신이 태어난 순간, 우주에 존재했던 114개 별들의 정밀한 좌표를 분석하여 당신만의 고유한 운명 지도를 그려냅니다.",
+          "imageAlt": "별자리 이미지"
+        },
+        "feature2": {
+          "title": "당신의 엔딩을 바꿀 마지막 한 컷",
+          "description": "운명의 오차를 줄이는 핵심은 시간입니다. 분단위의 정밀한 시간 보정을 통해, 당신조차 몰랐던 인생의 결정적 타이밍과 기회의 순간을 포착합니다.",
+          "imageAlt": "운명의 시계"
+        },
+        "feature3": {
+          "title": "황제들의 비밀 문서",
+          "description": "고대 황제들만이 독점했던 비밀 점성학 알고리즘. 권력을 유지하고 미래를 예측하기 위해 사용되었던 금기된 해석법을 현대적으로 재해석했습니다.",
+          "imageAlt": "비밀 문서"
+        }
+      },
+      "disclaimer": {
+        "badge": "FBI WARNING",
+        "text": "본 서비스는 100% 천문 데이터를 기반으로 분석되었습니다.\n운세 결과가 너무 잘 맞아서 생기는 '소름'과 '과호흡'에 대해\n인생스포 측은 책임지지 않습니다."
+      },
+      "footer": {
+        "logoAlt": "인생스포 로고",
+        "businessInfo": {
+          "ceo": "대표: 윤재혁",
+          "businessNumber": "사업자등록번호: 123-45-67890",
+          "salesNumber": "통신판매번호: 2026-서울노원-1503",
+          "address": "서울시 버드나루로 12길 8",
+          "email": "ttja@gmail.com",
+          "phone": "070-8094-3030"
+        },
+        "terms": "이용약관",
+        "privacy": "개인정보 처리방침"
+      }
+    },
+    "login": {
+      "logoAlt": "인생스포 로고",
+      "kakaoButton": "카카오로 계속하기",
+      "googleButton": "Google로 계속하기"
+    },
+    "profiles": {
+      "loading": "로딩 중...",
+      "deleteError": "프로필 삭제에 실패했습니다. 다시 시도해주세요.",
+      "selectProfile": "프로필을 선택해주세요.",
+      "lifetimeFortune": "인생 운세 보기",
+      "yearlyFortune": "올해 운세 보기",
+      "newProfile": "새 프로필 만들기",
+      "deleteModal": {
+        "title": "정말 삭제하시겠어요?",
+        "description": "삭제 후에는 복구가 불가능 합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
+        "cancel": "취소",
+        "delete": "삭제하기",
+        "deleting": "삭제 중..."
+      },
+      "card": {
+        "timeUnknown": "시간 모름",
+        "solar": "양력",
+        "lunar": "음력",
+        "male": "남성",
+        "female": "여성",
+        "deleteAriaLabel": "프로필 삭제",
+        "lifetimeFortune": "인생 운세",
+        "yearlyFortune": "올해 운세"
+      }
+    },
+    "profileSetup": {
+      "loading": "로딩 중...",
+      "saveError": "프로필 저장에 실패했습니다. 다시 시도해주세요.",
+      "stepOne": {
+        "name": {
+          "label": "이름",
+          "placeholder": "이름을 입력해주세요",
+          "errorRequired": "이름을 입력해주세요.",
+          "errorLength": "이름은 20자 이내로 입력해주세요."
+        },
+        "birthDate": {
+          "label": "생년월일",
+          "placeholder": "YYYY-MM-DD",
+          "errorRequired": "생년월일을 입력해주세요."
+        },
+        "birthTime": {
+          "label": "태어난 시간",
+          "placeholder": "HH:MM",
+          "errorRequired": "태어난 시간을 입력하거나 '시간 모름'을 선택해주세요.",
+          "errorFormat": "시간 형식이 올바르지 않습니다. (예: 16:40)",
+          "unknown": "시간 모름",
+          "hint": "정확한 운세 확인을 위해 시간을 꼭 입력해주세요."
+        },
+        "calendar": {
+          "label": "달력",
+          "solar": "양력",
+          "lunar": "음력"
+        },
+        "gender": {
+          "label": "성별",
+          "female": "여자",
+          "male": "남자"
+        },
+        "next": "다음"
+      },
+      "stepTwo": {
+        "relationship": {
+          "label": "연애 상태",
+          "solo": "솔로",
+          "dating": "연애중",
+          "married": "결혼함",
+          "divorced": "이혼 / 사별",
+          "custom": "직접 입력",
+          "error": "연애 상태를 입력해주세요."
+        },
+        "occupation": {
+          "label": "직업 상태",
+          "student": "학생",
+          "jobSeeker": "취준생",
+          "homemaker": "주부",
+          "employed": "직장인",
+          "selfEmployed": "사업 / 프리랜서",
+          "retired": "은퇴",
+          "custom": "직접 입력",
+          "error": "직업 상태를 입력해주세요."
+        },
+        "save": "저장하기",
+        "saving": "저장 중..."
+      }
+    },
+    "fortune": {
+      "common": {
+        "profileNotFound": "프로필을 찾을 수 없습니다.",
+        "unknownError": "알 수 없는 오류가 발생했습니다.",
+        "backToProfiles": "프로필 목록으로 돌아가기",
+        "male": "남",
+        "female": "여",
+        "age": "{age}세",
+        "noMainStars": "주성 없음"
+      },
+      "lifetime": {
+        "title": "{name}님의 인생 운세",
+        "interpretError": "운세 해석에 실패했습니다.",
+        "chart": {
+          "title": "명반",
+          "centerTitle": "자미두수 명반",
+          "wuxingJu": "오행국",
+          "hualu": "화록",
+          "huaquan": "화권",
+          "huake": "화과",
+          "huaji": "화기",
+          "ming": "명",
+          "shen": "신"
+        },
+        "dayun": {
+          "title": "대운 (10년 주기)",
+          "currentAge": "현재 {age}세",
+          "startAge": "대운 시작: {age}세",
+          "ageRange": "{start}-{end}세",
+          "categories": {
+            "overall": "종합",
+            "wealth": "재물",
+            "career": "직업",
+            "relationship": "인연",
+            "health": "건강"
+          }
+        },
+        "lifestyle": {
+          "title": "라이프스타일 추천",
+          "luckyColors": "Lucky Colors",
+          "luckyDirection": "Lucky Direction",
+          "luckyNumbers": "Lucky Numbers",
+          "careerFit": "직업 적합도",
+          "compatibility": "궁합 좋은 띠",
+          "incompatible": "상극",
+          "elementBalance": "오행 밸런스",
+          "dominant": "강",
+          "lacking": "약",
+          "elements": {
+            "water": "수",
+            "wood": "목",
+            "fire": "화",
+            "earth": "토",
+            "metal": "금"
+          }
+        },
+        "details": {
+          "summary": "종합 운세"
+        }
+      },
+      "yearly": {
+        "title": "{name}님의 {year}년 운세",
+        "fetchError": "올해 운세 조회에 실패했습니다.",
+        "yearInfo": "{stem}{branch}년",
+        "scores": {
+          "title": "올해 운세 점수",
+          "overall": "종합 {score}점",
+          "wealth": "재물운",
+          "career": "직업운",
+          "relationship": "인연운",
+          "health": "건강운"
+        },
+        "sihua": {
+          "title": "올해의 사화",
+          "hualu": {
+            "name": "화록",
+            "desc": "복과 기회"
+          },
+          "huaquan": {
+            "name": "화권",
+            "desc": "권력과 주도권"
+          },
+          "huake": {
+            "name": "화과",
+            "desc": "명예와 인정"
+          },
+          "huaji": {
+            "name": "화기",
+            "desc": "주의 필요"
+          }
+        },
+        "peachBlossom": {
+          "title": "올해 인연의 기운",
+          "hongluanPosition": "홍란 위치",
+          "tianxiPosition": "천희 위치"
+        },
+        "currentDayun": {
+          "title": "현재 대운"
+        },
+        "monthly": {
+          "title": "월별 운세 흐름",
+          "detailTitle": "월별 운세",
+          "luckyMonths": "좋은 달",
+          "cautionMonths": "주의할 달",
+          "good": "좋음",
+          "caution": "주의",
+          "expand": "나머지 {count}개월 보기",
+          "collapse": "접기"
+        }
+      }
+    },
+    "common": {
+      "loading": "로딩 중...",
+      "error": "오류가 발생했습니다.",
+      "retry": "다시 시도",
+      "confirm": "확인",
+      "cancel": "취소",
+      "save": "저장",
+      "delete": "삭제",
+      "next": "다음",
+      "back": "이전",
+      "close": "닫기"
+    }
+  },
+  "en": {
+    "metadata": {
+      "title": "Life Spoiler - Preview Your Life Scenario",
+      "description": "More precise than traditional astrology: Zi Wei Dou Shu. Discover your unique destiny map drawn by 114 stars."
+    },
+    "landing": {
+      "header": {
+        "logoAlt": "Life Spoiler Logo",
+        "menuAriaLabel": "Menu"
+      },
+      "hero": {
+        "imageAlt": "Destiny Constellation",
+        "title": "Your Life Scenario",
+        "titleSub": "Would you like a preview?",
+        "subtitle": "More precise than horoscopes:",
+        "subtitleHighlight": "Zi Wei Dou Shu"
+      },
+      "promotion": {
+        "text": "Explore your destiny for just $0.99"
+      },
+      "cta": {
+        "button": "See Your Life Spoiler"
+      },
+      "features": {
+        "feature1": {
+          "title": "Details Drawn by 114 Stars",
+          "description": "This is not just astrology. We analyze the precise coordinates of 114 stars that existed in the universe at the moment you were born to draw your unique destiny map.",
+          "imageAlt": "Constellation Image"
+        },
+        "feature2": {
+          "title": "The Last Cut to Change Your Ending",
+          "description": "The key to reducing fate's margin of error is time. Through minute-level precise time calibration, we capture the decisive timing and opportunities in your life that even you didn't know about.",
+          "imageAlt": "Clock of Destiny"
+        },
+        "feature3": {
+          "title": "The Emperors' Secret Documents",
+          "description": "A secret astrology algorithm exclusively held by ancient emperors. We've modernly reinterpreted the forbidden interpretation methods used to maintain power and predict the future.",
+          "imageAlt": "Secret Document"
+        }
+      },
+      "disclaimer": {
+        "badge": "FBI WARNING",
+        "text": "This service is based on 100% astronomical data analysis.\nLife Spoiler is not responsible for the 'chills' and 'hyperventilation'\ncaused by the fortune results being too accurate."
+      },
+      "footer": {
+        "logoAlt": "Life Spoiler Logo",
+        "businessInfo": {
+          "ceo": "CEO: Jaehyuk Yoon",
+          "businessNumber": "Business Registration: 123-45-67890",
+          "salesNumber": "Mail Order Sales: 2026-Seoul-Nowon-1503",
+          "address": "8 Beodeunaru-ro 12-gil, Seoul",
+          "email": "ttja@gmail.com",
+          "phone": "070-8094-3030"
+        },
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy"
+      }
+    },
+    "login": {
+      "logoAlt": "Life Spoiler Logo",
+      "kakaoButton": "Continue with Kakao",
+      "googleButton": "Continue with Google"
+    },
+    "profiles": {
+      "loading": "Loading...",
+      "deleteError": "Failed to delete profile. Please try again.",
+      "selectProfile": "Please select a profile.",
+      "lifetimeFortune": "View Lifetime Fortune",
+      "yearlyFortune": "View This Year's Fortune",
+      "newProfile": "Create New Profile",
+      "deleteModal": {
+        "title": "Are you sure you want to delete?",
+        "description": "This cannot be undone. All fortune records for this profile will also be deleted.",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleting": "Deleting..."
+      },
+      "card": {
+        "timeUnknown": "Time Unknown",
+        "solar": "Solar",
+        "lunar": "Lunar",
+        "male": "Male",
+        "female": "Female",
+        "deleteAriaLabel": "Delete Profile",
+        "lifetimeFortune": "Lifetime Fortune",
+        "yearlyFortune": "Yearly Fortune"
+      }
+    },
+    "profileSetup": {
+      "loading": "Loading...",
+      "saveError": "Failed to save profile. Please try again.",
+      "stepOne": {
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter your name",
+          "errorRequired": "Please enter a name.",
+          "errorLength": "Name must be 20 characters or less."
+        },
+        "birthDate": {
+          "label": "Date of Birth",
+          "placeholder": "YYYY-MM-DD",
+          "errorRequired": "Please enter your date of birth."
+        },
+        "birthTime": {
+          "label": "Time of Birth",
+          "placeholder": "HH:MM",
+          "errorRequired": "Please enter your birth time or select 'Time Unknown'.",
+          "errorFormat": "Invalid time format. (e.g., 16:40)",
+          "unknown": "Time Unknown",
+          "hint": "Please enter the exact time for accurate fortune reading."
+        },
+        "calendar": {
+          "label": "Calendar",
+          "solar": "Solar",
+          "lunar": "Lunar"
+        },
+        "gender": {
+          "label": "Gender",
+          "female": "Female",
+          "male": "Male"
+        },
+        "next": "Next"
+      },
+      "stepTwo": {
+        "relationship": {
+          "label": "Relationship Status",
+          "solo": "Single",
+          "dating": "Dating",
+          "married": "Married",
+          "divorced": "Divorced / Widowed",
+          "custom": "Custom",
+          "error": "Please enter your relationship status."
+        },
+        "occupation": {
+          "label": "Occupation Status",
+          "student": "Student",
+          "jobSeeker": "Job Seeker",
+          "homemaker": "Homemaker",
+          "employed": "Employed",
+          "selfEmployed": "Self-Employed / Freelancer",
+          "retired": "Retired",
+          "custom": "Custom",
+          "error": "Please enter your occupation status."
+        },
+        "save": "Save",
+        "saving": "Saving..."
+      }
+    },
+    "fortune": {
+      "common": {
+        "profileNotFound": "Profile not found.",
+        "unknownError": "An unknown error occurred.",
+        "backToProfiles": "Back to Profile List",
+        "male": "M",
+        "female": "F",
+        "age": "{age} years old",
+        "noMainStars": "No Main Stars"
+      },
+      "lifetime": {
+        "title": "{name}'s Lifetime Fortune",
+        "interpretError": "Failed to interpret fortune.",
+        "chart": {
+          "title": "Birth Chart",
+          "centerTitle": "Zi Wei Dou Shu Chart",
+          "wuxingJu": "Five Element Bureau",
+          "hualu": "Hua Lu",
+          "huaquan": "Hua Quan",
+          "huake": "Hua Ke",
+          "huaji": "Hua Ji",
+          "ming": "Life",
+          "shen": "Body"
+        },
+        "dayun": {
+          "title": "Major Luck (10-Year Cycles)",
+          "currentAge": "Current Age: {age}",
+          "startAge": "Major Luck Start: Age {age}",
+          "ageRange": "Age {start}-{end}",
+          "categories": {
+            "overall": "Overall",
+            "wealth": "Wealth",
+            "career": "Career",
+            "relationship": "Relationship",
+            "health": "Health"
+          }
+        },
+        "lifestyle": {
+          "title": "Lifestyle Recommendations",
+          "luckyColors": "Lucky Colors",
+          "luckyDirection": "Lucky Direction",
+          "luckyNumbers": "Lucky Numbers",
+          "careerFit": "Career Compatibility",
+          "compatibility": "Compatible Signs",
+          "incompatible": "Incompatible",
+          "elementBalance": "Element Balance",
+          "dominant": "Strong",
+          "lacking": "Weak",
+          "elements": {
+            "water": "Water",
+            "wood": "Wood",
+            "fire": "Fire",
+            "earth": "Earth",
+            "metal": "Metal"
+          }
+        },
+        "details": {
+          "summary": "Overall Fortune"
+        }
+      },
+      "yearly": {
+        "title": "{name}'s {year} Fortune",
+        "fetchError": "Failed to fetch this year's fortune.",
+        "yearInfo": "Year of {stem}{branch}",
+        "scores": {
+          "title": "This Year's Fortune Scores",
+          "overall": "Overall {score} points",
+          "wealth": "Wealth",
+          "career": "Career",
+          "relationship": "Relationship",
+          "health": "Health"
+        },
+        "sihua": {
+          "title": "This Year's Four Transformations",
+          "hualu": {
+            "name": "Hua Lu",
+            "desc": "Blessings & Opportunities"
+          },
+          "huaquan": {
+            "name": "Hua Quan",
+            "desc": "Power & Leadership"
+          },
+          "huake": {
+            "name": "Hua Ke",
+            "desc": "Honor & Recognition"
+          },
+          "huaji": {
+            "name": "Hua Ji",
+            "desc": "Caution Required"
+          }
+        },
+        "peachBlossom": {
+          "title": "This Year's Romantic Energy",
+          "hongluanPosition": "Hong Luan Position",
+          "tianxiPosition": "Tian Xi Position"
+        },
+        "currentDayun": {
+          "title": "Current Major Luck"
+        },
+        "monthly": {
+          "title": "Monthly Fortune Flow",
+          "detailTitle": "Monthly Fortune",
+          "luckyMonths": "Lucky Months",
+          "cautionMonths": "Months to Watch",
+          "good": "Good",
+          "caution": "Caution",
+          "expand": "View {count} more months",
+          "collapse": "Collapse"
+        }
+      }
+    },
+    "common": {
+      "loading": "Loading...",
+      "error": "An error occurred.",
+      "retry": "Retry",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete",
+      "next": "Next",
+      "back": "Back",
+      "close": "Close"
+    }
+  },
+  "ja": {
+    "metadata": {
+      "title": "ライフスポイラー - あなたの人生シナリオを先に確認",
+      "description": "四柱推命より精密な紫微斗数。114個の星が描くあなただけの運命地図を確認してください。"
+    },
+    "landing": {
+      "header": {
+        "logoAlt": "ライフスポイラー ロゴ",
+        "menuAriaLabel": "メニュー"
+      },
+      "hero": {
+        "imageAlt": "運命の星座",
+        "title": "あなたの人生シナリオ",
+        "titleSub": "先に確認してみませんか？",
+        "subtitle": "四柱推命より精密な",
+        "subtitleHighlight": "紫微斗数"
+      },
+      "promotion": {
+        "text": "99円であなただけの運命を探検しましょう"
+      },
+      "cta": {
+        "button": "人生のネタバレを確認する"
+      },
+      "features": {
+        "feature1": {
+          "title": "114個の星が描くディテール",
+          "description": "単なる星座ではありません。あなたが生まれた瞬間、宇宙に存在した114個の星々の精密な座標を分析し、あなただけの固有な運命地図を描きます。",
+          "imageAlt": "星座イメージ"
+        },
+        "feature2": {
+          "title": "あなたのエンディングを変える最後のカット",
+          "description": "運命の誤差を減らす核心は時間です。分単位の精密な時間補正を通じて、あなた自身も知らなかった人生の決定的なタイミングと機会の瞬間を捉えます。",
+          "imageAlt": "運命の時計"
+        },
+        "feature3": {
+          "title": "皇帝たちの秘密文書",
+          "description": "古代皇帝たちだけが独占していた秘密占星術アルゴリズム。権力を維持し未来を予測するために使用された禁じられた解釈法を現代的に再解釈しました。",
+          "imageAlt": "秘密文書"
+        }
+      },
+      "disclaimer": {
+        "badge": "FBI WARNING",
+        "text": "本サービスは100%天文データに基づいて分析されています。\n運勢結果があまりにも当たって起きる「鳥肌」と「過呼吸」について\nライフスポイラーは責任を負いません。"
+      },
+      "footer": {
+        "logoAlt": "ライフスポイラー ロゴ",
+        "businessInfo": {
+          "ceo": "代表: ユン・ジェヒョク",
+          "businessNumber": "事業者登録番号: 123-45-67890",
+          "salesNumber": "通信販売番号: 2026-ソウル蘆原-1503",
+          "address": "ソウル市バードナル路12ギル8",
+          "email": "ttja@gmail.com",
+          "phone": "070-8094-3030"
+        },
+        "terms": "利用規約",
+        "privacy": "個人情報処理方針"
+      }
+    },
+    "login": {
+      "logoAlt": "ライフスポイラー ロゴ",
+      "kakaoButton": "カカオで続ける",
+      "googleButton": "Googleで続ける"
+    },
+    "profiles": {
+      "loading": "読み込み中...",
+      "deleteError": "プロフィールの削除に失敗しました。もう一度お試しください。",
+      "selectProfile": "プロフィールを選択してください。",
+      "lifetimeFortune": "人生運勢を見る",
+      "yearlyFortune": "今年の運勢を見る",
+      "newProfile": "新しいプロフィールを作成",
+      "deleteModal": {
+        "title": "本当に削除しますか？",
+        "description": "削除後は復元できません。選択したプロフィールの運勢記録もすべて削除されます。",
+        "cancel": "キャンセル",
+        "delete": "削除する",
+        "deleting": "削除中..."
+      },
+      "card": {
+        "timeUnknown": "時間不明",
+        "solar": "新暦",
+        "lunar": "旧暦",
+        "male": "男性",
+        "female": "女性",
+        "deleteAriaLabel": "プロフィール削除",
+        "lifetimeFortune": "人生運勢",
+        "yearlyFortune": "今年の運勢"
+      }
+    },
+    "profileSetup": {
+      "loading": "読み込み中...",
+      "saveError": "プロフィールの保存に失敗しました。もう一度お試しください。",
+      "stepOne": {
+        "name": {
+          "label": "名前",
+          "placeholder": "名前を入力してください",
+          "errorRequired": "名前を入力してください。",
+          "errorLength": "名前は20文字以内で入力してください。"
+        },
+        "birthDate": {
+          "label": "生年月日",
+          "placeholder": "YYYY-MM-DD",
+          "errorRequired": "生年月日を入力してください。"
+        },
+        "birthTime": {
+          "label": "生まれた時間",
+          "placeholder": "HH:MM",
+          "errorRequired": "生まれた時間を入力するか、「時間不明」を選択してください。",
+          "errorFormat": "時間形式が正しくありません。(例: 16:40)",
+          "unknown": "時間不明",
+          "hint": "正確な運勢確認のため、時間を必ず入力してください。"
+        },
+        "calendar": {
+          "label": "暦",
+          "solar": "新暦",
+          "lunar": "旧暦"
+        },
+        "gender": {
+          "label": "性別",
+          "female": "女性",
+          "male": "男性"
+        },
+        "next": "次へ"
+      },
+      "stepTwo": {
+        "relationship": {
+          "label": "恋愛状態",
+          "solo": "シングル",
+          "dating": "交際中",
+          "married": "既婚",
+          "divorced": "離婚 / 死別",
+          "custom": "直接入力",
+          "error": "恋愛状態を入力してください。"
+        },
+        "occupation": {
+          "label": "職業状態",
+          "student": "学生",
+          "jobSeeker": "就活生",
+          "homemaker": "主婦/主夫",
+          "employed": "会社員",
+          "selfEmployed": "自営業 / フリーランス",
+          "retired": "引退",
+          "custom": "直接入力",
+          "error": "職業状態を入力してください。"
+        },
+        "save": "保存する",
+        "saving": "保存中..."
+      }
+    },
+    "fortune": {
+      "common": {
+        "profileNotFound": "プロフィールが見つかりません。",
+        "unknownError": "不明なエラーが発生しました。",
+        "backToProfiles": "プロフィール一覧に戻る",
+        "male": "男",
+        "female": "女",
+        "age": "{age}歳",
+        "noMainStars": "主星なし"
+      },
+      "lifetime": {
+        "title": "{name}さんの人生運勢",
+        "interpretError": "運勢解釈に失敗しました。",
+        "chart": {
+          "title": "命盤",
+          "centerTitle": "紫微斗数命盤",
+          "wuxingJu": "五行局",
+          "hualu": "化禄",
+          "huaquan": "化権",
+          "huake": "化科",
+          "huaji": "化忌",
+          "ming": "命",
+          "shen": "身"
+        },
+        "dayun": {
+          "title": "大運 (10年周期)",
+          "currentAge": "現在 {age}歳",
+          "startAge": "大運開始: {age}歳",
+          "ageRange": "{start}-{end}歳",
+          "categories": {
+            "overall": "総合",
+            "wealth": "財運",
+            "career": "職業",
+            "relationship": "縁",
+            "health": "健康"
+          }
+        },
+        "lifestyle": {
+          "title": "ライフスタイル推薦",
+          "luckyColors": "ラッキーカラー",
+          "luckyDirection": "ラッキー方位",
+          "luckyNumbers": "ラッキーナンバー",
+          "careerFit": "職業適合度",
+          "compatibility": "相性の良い干支",
+          "incompatible": "相克",
+          "elementBalance": "五行バランス",
+          "dominant": "強",
+          "lacking": "弱",
+          "elements": {
+            "water": "水",
+            "wood": "木",
+            "fire": "火",
+            "earth": "土",
+            "metal": "金"
+          }
+        },
+        "details": {
+          "summary": "総合運勢"
+        }
+      },
+      "yearly": {
+        "title": "{name}さんの{year}年運勢",
+        "fetchError": "今年の運勢取得に失敗しました。",
+        "yearInfo": "{stem}{branch}年",
+        "scores": {
+          "title": "今年の運勢スコア",
+          "overall": "総合 {score}点",
+          "wealth": "財運",
+          "career": "職業運",
+          "relationship": "縁運",
+          "health": "健康運"
+        },
+        "sihua": {
+          "title": "今年の四化",
+          "hualu": {
+            "name": "化禄",
+            "desc": "福と機会"
+          },
+          "huaquan": {
+            "name": "化権",
+            "desc": "権力と主導権"
+          },
+          "huake": {
+            "name": "化科",
+            "desc": "名誉と認定"
+          },
+          "huaji": {
+            "name": "化忌",
+            "desc": "注意が必要"
+          }
+        },
+        "peachBlossom": {
+          "title": "今年の縁の気運",
+          "hongluanPosition": "紅鸞位置",
+          "tianxiPosition": "天喜位置"
+        },
+        "currentDayun": {
+          "title": "現在の大運"
+        },
+        "monthly": {
+          "title": "月別運勢の流れ",
+          "detailTitle": "月別運勢",
+          "luckyMonths": "良い月",
+          "cautionMonths": "注意する月",
+          "good": "良好",
+          "caution": "注意",
+          "expand": "残り{count}ヶ月を見る",
+          "collapse": "閉じる"
+        }
+      }
+    },
+    "common": {
+      "loading": "読み込み中...",
+      "error": "エラーが発生しました。",
+      "retry": "再試行",
+      "confirm": "確認",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "delete": "削除",
+      "next": "次へ",
+      "back": "戻る",
+      "close": "閉じる"
+    }
+  }
+}
