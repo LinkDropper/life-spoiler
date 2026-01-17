@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import type { Locale } from "@/i18n/config";
 import type {
   FortuneInterpretation,
   InterpretationType,
@@ -21,8 +22,18 @@ import type {
 
 type SupabaseDB = SupabaseClient<Database>;
 
-/** 캐시 키 타입: 인생 운세, 올해 운세(yearly-{year} 형식) */
-type CacheKeyType = InterpretationType | "full" | `yearly-${number}`;
+/**
+ * 캐시 키 타입
+ * - 인생 운세: preview-{lang}, full-{lang}
+ * - 올해 운세: yearly-{year}-{lang}
+ */
+type CacheKeyType =
+  | InterpretationType
+  | "full"
+  | `yearly-${number}`
+  | `preview-${Locale}`
+  | `full-${Locale}`
+  | `yearly-${number}-${Locale}`;
 
 /**
  * 명반 데이터로부터 고유 해시 생성

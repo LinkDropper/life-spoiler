@@ -5,6 +5,17 @@
  * - 궁합 좋은 띠
  */
 
+import type { Locale } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
+
+import {
+  CAREER_CATEGORIES as I18N_CAREER_CATEGORIES,
+  CAREER_DESCRIPTIONS,
+  COMPATIBILITY_REASONS,
+  DIRECTION_NAMES,
+  translateColor,
+  translateZodiac,
+} from "./i18n";
 import type { ZiweiChart } from "./types";
 
 // ============================================================
@@ -281,14 +292,15 @@ const calculateElementBalance = (chart: ZiweiChart): ElementBalance => {
  * 럭키 컬러 계산 (부족한 오행 보완)
  */
 const calculateLuckyColors = (
-  elementBalance: ElementBalance
+  elementBalance: ElementBalance,
+  locale: Locale = defaultLocale
 ): LifestyleRecommendation["luckyColors"] => {
   const { lacking } = elementBalance;
   const colors = ELEMENT_COLORS[lacking] || ELEMENT_COLORS["토"];
 
   return {
-    primary: colors.colors[0],
-    secondary: colors.colors[1],
+    primary: translateColor(colors.colors[0], locale),
+    secondary: translateColor(colors.colors[1], locale),
     hex: {
       primary: colors.hex[0],
       secondary: colors.hex[1],
@@ -300,22 +312,19 @@ const calculateLuckyColors = (
  * 좋은 방향 계산 (부족한 오행 방향)
  */
 const calculateLuckyDirection = (
-  elementBalance: ElementBalance
+  elementBalance: ElementBalance,
+  locale: Locale = defaultLocale
 ): LifestyleRecommendation["luckyDirection"] => {
   const { lacking } = elementBalance;
-  const direction = ELEMENT_DIRECTIONS[lacking] || ELEMENT_DIRECTIONS["토"];
-
-  const elementKorean: Record<string, string> = {
-    수: "물",
-    목: "나무",
-    화: "불",
-    토: "흙",
-    금: "금속",
-  };
+  const directionKo = ELEMENT_DIRECTIONS[lacking] || ELEMENT_DIRECTIONS["토"];
+  const translated =
+    DIRECTION_NAMES[locale]?.[directionKo.direction] ||
+    DIRECTION_NAMES.ko[directionKo.direction];
 
   return {
-    ...direction,
-    description: `${elementKorean[lacking]} 기운을 보충하면 좋아요`,
+    direction: translated.direction,
+    emoji: directionKo.emoji,
+    description: translated.description,
   };
 };
 
@@ -334,10 +343,17 @@ const calculateLuckyNumbers = (elementBalance: ElementBalance): number[] => {
 /**
  * 직업 적합도 계산
  */
-const calculateCareerFit = (chart: ZiweiChart): CareerFitItem[] => {
+const calculateCareerFit = (
+  chart: ZiweiChart,
+  locale: Locale = defaultLocale
+): CareerFitItem[] => {
   const results: CareerFitItem[] = [];
+  const localizedCategories =
+    I18N_CAREER_CATEGORIES[locale] || I18N_CAREER_CATEGORIES.ko;
 
-  for (const category of CAREER_CATEGORIES) {
+  for (let i = 0; i < CAREER_CATEGORIES.length; i++) {
+    const category = CAREER_CATEGORIES[i];
+    const localizedCategory = localizedCategories[i];
     let score = 50; // 기본 점수
 
     // 관련 궁의 주성 확인
@@ -379,10 +395,10 @@ const calculateCareerFit = (chart: ZiweiChart): CareerFitItem[] => {
     score = Math.max(30, Math.min(98, score));
 
     results.push({
-      category: category.name,
+      category: localizedCategory?.name ?? category.name,
       emoji: category.emoji,
       percentage: score,
-      description: getCareerDescription(category.name, score),
+      description: getCareerDescription(score, locale),
     });
   }
 
@@ -393,19 +409,27 @@ const calculateCareerFit = (chart: ZiweiChart): CareerFitItem[] => {
 /**
  * 직업 적합도 설명 생성
  */
-const getCareerDescription = (_category: string, score: number): string => {
-  if (score >= 85) return "천직이에요! 이 분야에서 빛날 수 있어요";
-  if (score >= 70) return "잘 맞아요! 충분히 성공 가능해요";
-  if (score >= 55) return "괜찮아요. 노력하면 잘 할 수 있어요";
-  return "다른 분야가 더 맞을 수 있어요";
+const getCareerDescription = (
+  score: number,
+  locale: Locale = defaultLocale
+): string => {
+  const descriptions = CAREER_DESCRIPTIONS[locale] || CAREER_DESCRIPTIONS.ko;
+  if (score >= 85) return descriptions.excellent;
+  if (score >= 70) return descriptions.good;
+  if (score >= 55) return descriptions.average;
+  return descriptions.poor;
 };
 
 /**
  * 궁합 계산 (결정적)
  */
-const calculateCompatibility = (chart: ZiweiChart): CompatibleSign[] => {
+const calculateCompatibility = (
+  chart: ZiweiChart,
+  locale: Locale = defaultLocale
+): CompatibleSign[] => {
   const userBranch = chart.lunarDate.yearBranch;
   const compatible: CompatibleSign[] = [];
+  const reasons = COMPATIBILITY_REASONS[locale] || COMPATIBILITY_REASONS.ko;
 
   // 삼합 관계 - 점수는 지지 인덱스 기반으로 결정적 계산
   const samhapBranches = SAMHAP[userBranch] || [];
@@ -414,10 +438,10 @@ const calculateCompatibility = (chart: ZiweiChart): CompatibleSign[] => {
     // 결정적 점수: 기본 92 + (userBranch + branch) % 6
     const baseScore = 92 + ((userBranch + branch) % 6);
     compatible.push({
-      sign: sign.name,
+      sign: translateZodiac(branch, locale),
       emoji: sign.emoji,
       compatibility: baseScore,
-      reason: "삼합 관계로 서로 잘 통해요",
+      reason: reasons.samhap,
     });
   });
 
@@ -437,10 +461,10 @@ const calculateCompatibility = (chart: ZiweiChart): CompatibleSign[] => {
       // 결정적 점수: 기본 88 + (a + b) % 8
       const baseScore = 88 + ((a + b) % 8);
       compatible.push({
-        sign: sign.name,
+        sign: translateZodiac(partnerBranch, locale),
         emoji: sign.emoji,
         compatibility: baseScore,
-        reason: "육합 관계로 찰떡궁합이에요",
+        reason: reasons.yukhap,
       });
     }
   }
@@ -451,11 +475,14 @@ const calculateCompatibility = (chart: ZiweiChart): CompatibleSign[] => {
 /**
  * 상극 띠 계산
  */
-const calculateIncompatible = (chart: ZiweiChart): string[] => {
+const calculateIncompatible = (
+  chart: ZiweiChart,
+  locale: Locale = defaultLocale
+): string[] => {
   const userBranch = chart.lunarDate.yearBranch;
   const incompatibleBranch = YUKCHUNG[userBranch];
   const sign = ZODIAC_SIGNS[incompatibleBranch];
-  return [`${sign.emoji} ${sign.name}`];
+  return [`${sign.emoji} ${translateZodiac(incompatibleBranch, locale)}`];
 };
 
 // ============================================================
@@ -466,17 +493,18 @@ const calculateIncompatible = (chart: ZiweiChart): string[] => {
  * 라이프스타일 추천 생성
  */
 export const generateLifestyleRecommendation = (
-  chart: ZiweiChart
+  chart: ZiweiChart,
+  locale: Locale = defaultLocale
 ): LifestyleRecommendation => {
   const elementBalance = calculateElementBalance(chart);
 
   return {
-    luckyColors: calculateLuckyColors(elementBalance),
-    luckyDirection: calculateLuckyDirection(elementBalance),
+    luckyColors: calculateLuckyColors(elementBalance, locale),
+    luckyDirection: calculateLuckyDirection(elementBalance, locale),
     luckyNumbers: calculateLuckyNumbers(elementBalance),
-    careerFit: calculateCareerFit(chart),
-    compatibleSigns: calculateCompatibility(chart),
-    incompatibleSigns: calculateIncompatible(chart),
+    careerFit: calculateCareerFit(chart, locale),
+    compatibleSigns: calculateCompatibility(chart, locale),
+    incompatibleSigns: calculateIncompatible(chart, locale),
     elementBalance,
   };
 };

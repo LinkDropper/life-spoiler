@@ -1,10 +1,13 @@
-import type { InterpretationType, YearlyInterpretationType } from "./types";
+import type { LocalizedPrompts } from "./types";
 
-// ============================================================
-// 시스템 프롬프트 (자미두수 전문가)
-// ============================================================
-
-export const ZIWEI_SYSTEM_PROMPT = `당신은 자미두수 전문가이면서 MZ세대 감성의 친근한 운세 상담사예요.
+/**
+ * 한국어 프롬프트
+ */
+export const koPrompts: LocalizedPrompts = {
+  // ============================================================
+  // 시스템 프롬프트 (자미두수 전문가)
+  // ============================================================
+  ziweiSystemPrompt: `당신은 자미두수 전문가이면서 MZ세대 감성의 친근한 운세 상담사예요.
 
 ## 핵심 지침
 - 명반 데이터 정확히 분석 + 친근하고 재밌게 전달
@@ -18,14 +21,13 @@ export const ZIWEI_SYSTEM_PROMPT = `당신은 자미두수 전문가이면서 MZ
 - 딱딱한 점쟁이 말투/한자어 남발 금지
 
 ## 응답
-반드시 요청된 JSON 형식으로만 응답. 다른 텍스트 없이 순수 JSON만 출력.`;
+반드시 요청된 JSON 형식으로만 응답. 다른 텍스트 없이 순수 JSON만 출력.`,
 
-// ============================================================
-// 해석 유형별 프롬프트
-// ============================================================
-
-export const USER_PROMPTS: Record<InterpretationType, string> = {
-  preview: `이 사람의 명반을 보고 핵심 성격과 인생 테마를 친구한테 얘기하듯 짧게 요약해줘!
+  // ============================================================
+  // 해석 유형별 프롬프트
+  // ============================================================
+  userPrompts: {
+    preview: `이 사람의 명반을 보고 핵심 성격과 인생 테마를 친구한테 얘기하듯 짧게 요약해줘!
 
 말투 예시:
 - "완전 리더형이야! 팀플하면 자연스럽게 조장 맡는 타입 ㅋㅋ"
@@ -37,7 +39,7 @@ export const USER_PROMPTS: Record<InterpretationType, string> = {
   "description": "핵심 설명 (친근한 말투로 80-120자)"
 }`,
 
-  wealth: `재물운 분석해줘! 돈 버는 적성, 관리 스타일, 재테크 팁, 주의점 포함.
+    wealth: `재물운 분석해줘! 돈 버는 적성, 관리 스타일, 재테크 팁, 주의점 포함.
 
 응답 형식 (JSON):
 {
@@ -46,7 +48,7 @@ export const USER_PROMPTS: Record<InterpretationType, string> = {
   "highlights": ["핵심 포인트 3개"]
 }`,
 
-  career: `직업운 분석해줘! 맞는 직업/업종, 성장 가능성, 직장인vs사업가, 성공 팁 포함.
+    career: `직업운 분석해줘! 맞는 직업/업종, 성장 가능성, 직장인vs사업가, 성공 팁 포함.
 사용자 직업상태(occupationStatus)가 있으면 맞춤 조언도 추가.
 
 응답 형식 (JSON):
@@ -56,7 +58,7 @@ export const USER_PROMPTS: Record<InterpretationType, string> = {
   "highlights": ["핵심 포인트 3개"]
 }`,
 
-  relationship: `인연운 분석해줘! 이상형, 연애 스타일, 결혼운, 주의점 포함.
+    relationship: `인연운 분석해줘! 이상형, 연애 스타일, 결혼운, 주의점 포함.
 사용자 연애상태(relationshipStatus)가 있으면 맞춤 조언도 추가.
 
 응답 형식 (JSON):
@@ -66,7 +68,7 @@ export const USER_PROMPTS: Record<InterpretationType, string> = {
   "highlights": ["핵심 포인트 3개"]
 }`,
 
-  health: `건강운 분석해줘! 체질 특성, 주의 부위, 건강 팁, 스트레스 관리 포함.
+    health: `건강운 분석해줘! 체질 특성, 주의 부위, 건강 팁, 스트레스 관리 포함.
 
 응답 형식 (JSON):
 {
@@ -75,32 +77,30 @@ export const USER_PROMPTS: Record<InterpretationType, string> = {
   "highlights": ["핵심 포인트 3개"]
 }`,
 
-  summary: `인생 전체 총평해줘! 타고난 운명, 강점 활용법, 주의점 위주로 정리.
+    summary: `인생 전체 총평해줘! 타고난 운명, 강점 활용법, 주의점 위주로 정리.
 
 응답 형식 (JSON):
 {
   "summary": "종합 총평 (친근한 말투로 300-400자)"
 }`,
-};
+  },
 
-// ============================================================
-// 궁 이름 매핑
-// ============================================================
+  // ============================================================
+  // 궁 이름 매핑
+  // ============================================================
+  palaceNameMap: {
+    preview: "명궁",
+    wealth: "재백궁",
+    career: "관록궁",
+    relationship: "부처궁",
+    health: "질액궁",
+    summary: "전체",
+  },
 
-export const PALACE_NAME_MAP: Record<InterpretationType, string> = {
-  preview: "명궁",
-  wealth: "재백궁",
-  career: "관록궁",
-  relationship: "부처궁",
-  health: "질액궁",
-  summary: "전체",
-};
-
-// ============================================================
-// 올해 운세(유년) 시스템 프롬프트
-// ============================================================
-
-export const YEARLY_SYSTEM_PROMPT = `당신은 자미두수 전문가이면서 MZ세대 감성의 친근한 운세 상담사예요.
+  // ============================================================
+  // 올해 운세(유년) 시스템 프롬프트
+  // ============================================================
+  yearlySystemPrompt: `당신은 자미두수 전문가이면서 MZ세대 감성의 친근한 운세 상담사예요.
 
 ## 핵심 지침
 - 유년(流年) 사화성이 명반의 어느 궁에 작용하는지 분석
@@ -127,14 +127,13 @@ export const YEARLY_SYSTEM_PROMPT = `당신은 자미두수 전문가이면서 M
 - 딱딱한 점쟁이 말투/한자어 남발 금지
 
 ## 응답
-반드시 요청된 JSON 형식으로만 응답. 다른 텍스트 없이 순수 JSON만 출력.`;
+반드시 요청된 JSON 형식으로만 응답. 다른 텍스트 없이 순수 JSON만 출력.`,
 
-// ============================================================
-// 올해 운세(유년) 해석 유형별 프롬프트
-// ============================================================
-
-export const YEARLY_USER_PROMPTS: Record<YearlyInterpretationType, string> = {
-  yearly_overview: `이 사람의 {targetYear}년 운세 총평을 친구한테 얘기하듯 작성해줘!
+  // ============================================================
+  // 올해 운세(유년) 해석 유형별 프롬프트
+  // ============================================================
+  yearlyUserPrompts: {
+    yearly_overview: `이 사람의 {targetYear}년 운세 총평을 친구한테 얘기하듯 작성해줘!
 
 유년 사화가 어느 궁에 작용하는지, 대운과의 상호작용을 고려해서
 올 한해의 핵심 테마와 흐름을 분석해줘.
@@ -153,7 +152,7 @@ export const YEARLY_USER_PROMPTS: Record<YearlyInterpretationType, string> = {
   "cautionMonths": [주의할 달 3개, 예: 5, 9, 12]
 }`,
 
-  yearly_wealth: `{targetYear}년 재물운 분석해줘! 돈이 언제 들어오고, 언제 조심해야 하는지.
+    yearly_wealth: `{targetYear}년 재물운 분석해줘! 돈이 언제 들어오고, 언제 조심해야 하는지.
 
 화록/화기가 재백궁에 어떤 영향을 주는지 분석하고,
 올해 돈 버는 타이밍, 지출 주의 시기, 재테크 팁을 알려줘.
@@ -165,7 +164,7 @@ export const YEARLY_USER_PROMPTS: Record<YearlyInterpretationType, string> = {
   "advice": "구체적인 조언 (1-2문장)"
 }`,
 
-  yearly_career: `{targetYear}년 직업운 분석해줘! 올해 일 잘 풀리는지, 뭘 조심해야 하는지.
+    yearly_career: `{targetYear}년 직업운 분석해줘! 올해 일 잘 풀리는지, 뭘 조심해야 하는지.
 
 화록/화권이 관록궁에 어떤 영향을 주는지 분석하고,
 올해 커리어 기회, 주의점, 성장 전략을 알려줘.
@@ -178,7 +177,7 @@ export const YEARLY_USER_PROMPTS: Record<YearlyInterpretationType, string> = {
   "advice": "구체적인 조언 (1-2문장)"
 }`,
 
-  yearly_relationship: `{targetYear}년 인연운 분석해줘! 올해 연애운 어떤지, 이성 인기도 어떤지.
+    yearly_relationship: `{targetYear}년 인연운 분석해줘! 올해 연애운 어떤지, 이성 인기도 어떤지.
 
 화록/화기가 부처궁에 어떤 영향을 주는지,
 유년 도화성(홍란, 천희) 위치와 도화 활성화 여부를 고려해서,
@@ -193,7 +192,7 @@ peachBlossomNotes가 있으면 이 내용을 반드시 해석에 반영해.
   "advice": "구체적인 조언 (1-2문장)"
 }`,
 
-  yearly_health: `{targetYear}년 건강운 분석해줘! 올해 건강 관리 어떻게 해야 하는지.
+    yearly_health: `{targetYear}년 건강운 분석해줘! 올해 건강 관리 어떻게 해야 하는지.
 
 화기가 질액궁에 영향을 주는지 분석하고,
 올해 건강 주의점, 좋은 습관, 피해야 할 것을 알려줘.
@@ -205,7 +204,7 @@ peachBlossomNotes가 있으면 이 내용을 반드시 해석에 반영해.
   "advice": "구체적인 조언 (1-2문장)"
 }`,
 
-  yearly_monthly: `{targetYear}년 월별 운세를 상세하게 분석해줘!
+    yearly_monthly: `{targetYear}년 월별 운세를 상세하게 분석해줘!
 
 각 달마다 어떤 흐름인지, 점수는 어떤지, 핵심 조언을 친근하게 알려줘.
 유년 사화와 계절 흐름, 월별 천간지지를 고려해서 분석해.
@@ -223,4 +222,31 @@ peachBlossomNotes가 있으면 이 내용을 반드시 해석에 반영해.
     ...12개월 전부
   ]
 }`,
+  },
+
+  // ============================================================
+  // 상태 레이블
+  // ============================================================
+  statusLabels: {
+    gender: {
+      male: "남성",
+      female: "여성",
+    },
+    relationship: {
+      solo: "솔로",
+      dating: "연애중",
+      married: "기혼",
+      divorced: "이혼",
+      custom: "직접입력",
+    },
+    occupation: {
+      student: "학생",
+      job_seeker: "취준생",
+      homemaker: "주부",
+      employed: "직장인",
+      self_employed: "자영업",
+      retired: "은퇴",
+      custom: "직접입력",
+    },
+  },
 };

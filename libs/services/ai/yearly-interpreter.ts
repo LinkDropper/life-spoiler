@@ -1,5 +1,7 @@
+import type { Locale } from "@/i18n/config";
+
 import { AIError } from "./errors";
-import { YEARLY_SYSTEM_PROMPT, YEARLY_USER_PROMPTS } from "./prompts";
+import { getPrompts } from "./prompts";
 import type {
   YearlyCategoryResponse,
   YearlyFortuneInterpretation,
@@ -23,16 +25,15 @@ import { chatCompletion, parseJsonResponse } from "./upstage";
  */
 const getRelationshipStatusLabel = (
   status: string | null | undefined,
-  custom?: string | null
+  custom: string | null | undefined,
+  language?: Locale
 ): string | null => {
   if (!status) return null;
-  const labels: Record<string, string> = {
-    solo: "솔로",
-    dating: "연애중",
-    married: "기혼",
-    divorced: "이혼",
-    custom: custom || "직접입력",
-  };
+  const prompts = getPrompts(language);
+  const labels = prompts.statusLabels.relationship;
+  if (status === "custom") {
+    return custom || labels.custom;
+  }
   return labels[status] || null;
 };
 
@@ -41,18 +42,15 @@ const getRelationshipStatusLabel = (
  */
 const getOccupationStatusLabel = (
   status: string | null | undefined,
-  custom?: string | null
+  custom: string | null | undefined,
+  language?: Locale
 ): string | null => {
   if (!status) return null;
-  const labels: Record<string, string> = {
-    student: "학생",
-    job_seeker: "취준생",
-    homemaker: "주부",
-    employed: "직장인",
-    self_employed: "자영업",
-    retired: "은퇴",
-    custom: custom || "직접입력",
-  };
+  const prompts = getPrompts(language);
+  const labels = prompts.statusLabels.occupation;
+  if (status === "custom") {
+    return custom || labels.custom;
+  }
   return labels[status] || null;
 };
 
@@ -71,62 +69,69 @@ const formatYearlyDataForAI = (
     peachBlossom,
     currentDayun,
     scores,
+    language,
   } = request;
+
+  const prompts = getPrompts(language);
 
   // 사용자 상태 정보 포맷팅
   const relationshipLabel = getRelationshipStatusLabel(
     user.relationshipStatus,
-    user.relationshipStatusCustom
+    user.relationshipStatusCustom,
+    language
   );
   const occupationLabel = getOccupationStatusLabel(
     user.occupationStatus,
-    user.occupationStatusCustom
+    user.occupationStatusCustom,
+    language
   );
+
+  const genderLabel = prompts.statusLabels.gender[user.gender];
 
   let userStatusStr = "";
   if (relationshipLabel) {
-    userStatusStr += `\n- 연애 상태: ${relationshipLabel}`;
+    userStatusStr += `\n- relationshipStatus: ${relationshipLabel}`;
   }
   if (occupationLabel) {
-    userStatusStr += `\n- 직업 상태: ${occupationLabel}`;
+    userStatusStr += `\n- occupationStatus: ${occupationLabel}`;
   }
 
-  let dataStr = `## 사용자 정보
-- 성별: ${user.gender === "male" ? "남성" : "여성"}
-- 음력 생일: ${user.lunarBirthInfo}
-- 현재 나이: ${user.currentAge}세${userStatusStr}
+  let dataStr = `## User Info
+- gender: ${genderLabel}
+- lunarBirthInfo: ${user.lunarBirthInfo}
+- currentAge: ${user.currentAge}${userStatusStr}
 
-## 명반 기본 정보
-- 오행국: ${chart.wuxingJu}
-- 명궁 위치: ${chart.mingGongPosition}
+## Chart Info
+- wuxingJu: ${chart.wuxingJu}
+- mingGongPosition: ${chart.mingGongPosition}
 
-## ${targetYear}년 (${yearlySihua.yearStemName}${yearlySihua.yearBranchName}년) 유년 사화
-- 화록: ${yearlySihua.hualu.star} → ${yearlySihua.hualu.palace} (${yearlySihua.hualu.palaceMeaning})
-- 화권: ${yearlySihua.huaquan.star} → ${yearlySihua.huaquan.palace} (${yearlySihua.huaquan.palaceMeaning})
-- 화과: ${yearlySihua.huake.star} → ${yearlySihua.huake.palace} (${yearlySihua.huake.palaceMeaning})
-- 화기: ${yearlySihua.huaji.star} → ${yearlySihua.huaji.palace} (${yearlySihua.huaji.palaceMeaning})`;
+## ${targetYear} (${yearlySihua.yearStemName}${yearlySihua.yearBranchName}) Yearly Sihua
+- hualu: ${yearlySihua.hualu.star} → ${yearlySihua.hualu.palace} (${yearlySihua.hualu.palaceMeaning})
+- huaquan: ${yearlySihua.huaquan.star} → ${yearlySihua.huaquan.palace} (${yearlySihua.huaquan.palaceMeaning})
+- huake: ${yearlySihua.huake.star} → ${yearlySihua.huake.palace} (${yearlySihua.huake.palaceMeaning})
+- huaji: ${yearlySihua.huaji.star} → ${yearlySihua.huaji.palace} (${yearlySihua.huaji.palaceMeaning})`;
 
   // 유년궁 정보 추가
   if (yearlyPalaces) {
     const mingStars =
       yearlyPalaces.yearlyMingGong.mainStars.length > 0
         ? yearlyPalaces.yearlyMingGong.mainStars.join(", ")
-        : "주성 없음";
+        : "No main stars";
     dataStr += `
 
-## 유년궁 정보
-- 유년 명궁: ${yearlyPalaces.yearlyMingGong.palaceName} (주성: ${mingStars})
-- 유년 부처궁: ${yearlyPalaces.yearlySpousePalace.palaceName}${yearlyPalaces.yearlySpousePalace.hasPeachBlossom ? " (도화성 있음)" : ""}`;
+## Yearly Palace Info
+- yearlyMingGong: ${yearlyPalaces.yearlyMingGong.palaceName} (mainStars: ${mingStars})
+- yearlySpousePalace: ${yearlyPalaces.yearlySpousePalace.palaceName}${yearlyPalaces.yearlySpousePalace.hasPeachBlossom ? " (has peach blossom)" : ""}`;
   }
 
   // 도화성 정보 추가
   if (peachBlossom) {
     dataStr += `
 
-## 유년 도화성 정보
+## Yearly Peach Blossom Info
 - isPeachBlossomActive: ${peachBlossom.isPeachBlossomActive}
-- 유년 홍란 위치: ${peachBlossom.hongluanPalace}
-- 유년 천희 위치: ${peachBlossom.tianxiPalace}`;
+- hongluanPalace: ${peachBlossom.hongluanPalace}
+- tianxiPalace: ${peachBlossom.tianxiPalace}`;
 
     if (peachBlossom.peachBlossomNotes.length > 0) {
       dataStr += `
@@ -143,24 +148,24 @@ const formatYearlyDataForAI = (
     const mainStarsStr =
       currentDayun.mainStars.length > 0
         ? currentDayun.mainStars.join(", ")
-        : "주성 없음";
+        : "No main stars";
     dataStr += `
 
-## 현재 대운 정보
-- 대운 기간: ${currentDayun.period}
-- 대운궁: ${currentDayun.palaceName}
-- 주요 별: ${mainStarsStr}`;
+## Current Dayun Info
+- period: ${currentDayun.period}
+- palace: ${currentDayun.palaceName}
+- mainStars: ${mainStarsStr}`;
   }
 
   // 점수 정보 추가 (AI가 참고할 수 있도록)
   dataStr += `
 
-## 유년 점수 (참고용)
-- 종합: ${scores.overall}점
-- 재물운: ${scores.wealth}점
-- 직업운: ${scores.career}점
-- 인연운: ${scores.relationship}점
-- 건강운: ${scores.health}점`;
+## Yearly Scores (reference)
+- overall: ${scores.overall}
+- wealth: ${scores.wealth}
+- career: ${scores.career}
+- relationship: ${scores.relationship}
+- health: ${scores.health}`;
 
   return dataStr;
 };
@@ -179,9 +184,10 @@ const requestYearlyInterpretation = async <T>(
   request: YearlyInterpretationRequest,
   schema: { parse: (data: unknown) => T }
 ): Promise<T> => {
+  const prompts = getPrompts(request.language);
   const chartData = formatYearlyDataForAI(request);
   const userPrompt = replaceTargetYear(
-    YEARLY_USER_PROMPTS[request.requestType],
+    prompts.yearlyUserPrompts[request.requestType],
     request.targetYear
   );
 
@@ -192,7 +198,7 @@ const requestYearlyInterpretation = async <T>(
 ${userPrompt}`;
 
   const response = await chatCompletion([
-    { role: "system", content: YEARLY_SYSTEM_PROMPT },
+    { role: "system", content: prompts.yearlySystemPrompt },
     { role: "user", content: fullUserPrompt },
   ]);
 

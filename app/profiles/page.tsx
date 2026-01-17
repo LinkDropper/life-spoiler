@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { Header } from "@/components/landing";
+import { HeaderClient } from "@/components/landing";
 import {
   ProfileCard,
   NewProfileCard,
@@ -46,7 +46,7 @@ export default function ProfilesPage() {
   if (authStatus === "loading" || isProfilesLoading) {
     return (
       <div className={styles.page}>
-        <Header />
+        <HeaderClient />
         <div className={styles.loading}>
           {t("loading", { default: "로딩 중..." })}
         </div>
@@ -139,7 +139,7 @@ export default function ProfilesPage() {
 
   return (
     <div className={styles.page}>
-      <Header />
+      <HeaderClient />
 
       <main className={styles.main}>
         <div className={styles.profileList}>

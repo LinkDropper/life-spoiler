@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-import { Header } from "@/components/landing";
+import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import {
   useProfileById,
@@ -447,6 +447,7 @@ export default function LifetimeFortunePage() {
   const profileId = params.profileId as string;
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
+  const locale = useLocale();
 
   const cachedProfile = useProfileById(profileId);
   const isProfilesLoaded = useIsProfilesLoaded();
@@ -537,6 +538,7 @@ export default function LifetimeFortunePage() {
             }),
             includeDetails: true,
             profileId: targetProfile.id,
+            language: locale,
           }),
         });
 
@@ -568,6 +570,7 @@ export default function LifetimeFortunePage() {
     router,
     isProfilesLoaded,
     cachedProfile,
+    locale,
     t,
     tCommon,
   ]);
@@ -579,7 +582,7 @@ export default function LifetimeFortunePage() {
   if (error) {
     return (
       <div className={styles.page}>
-        <Header />
+        <HeaderClient />
         <main className={styles.main}>
           <div className={styles.error}>
             <p>{error}</p>
@@ -607,7 +610,7 @@ export default function LifetimeFortunePage() {
 
   return (
     <div className={styles.page}>
-      <Header />
+      <HeaderClient />
 
       <main className={styles.main}>
         <div className={styles.profileInfo}>

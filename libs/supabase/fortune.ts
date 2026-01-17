@@ -1,9 +1,20 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import type { Locale } from "@/i18n/config";
 import type {
   FortuneInterpretation,
   YearlyFortuneInterpretation,
 } from "@/libs/services/ai";
+import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
+import type {
+  MonthlyFortune,
+  YearlyFortuneResult,
+  YearlyPalaceInfo,
+  YearlyPeachBlossomInfo,
+  YearlySihua,
+} from "@/libs/zi-wei-dou-shu/calculators";
+import type { LifestyleRecommendation } from "@/libs/zi-wei-dou-shu/lifestyle";
+import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 
 import { createServerClient } from "./client";
 import type { Database, FortuneInsert, FortuneRow } from "./types";
@@ -16,8 +27,52 @@ type SupabaseDB = SupabaseClient<Database>;
 
 export type FortuneType = "lifetime" | "yearly";
 
-/** 운세 결과 타입 (인생 운세 또는 올해 운세) */
-type FortuneResultType = FortuneInterpretation | YearlyFortuneInterpretation;
+/**
+ * 인생 운세 전체 데이터 (저장용)
+ */
+export interface LifetimeFortuneData {
+  /** 저장된 데이터의 언어 */
+  language?: Locale;
+  chart: {
+    wuxingJu: string;
+    mingGong: string;
+    shenGong: string;
+    sihua: ZiweiChart["sihua"];
+  };
+  rawChart: ZiweiChart;
+  dayun: DayunResult;
+  lifestyle: LifestyleRecommendation;
+  interpretation: FortuneInterpretation;
+}
+
+/**
+ * 올해 운세 전체 데이터 (저장용)
+ */
+export interface YearlyFortuneData {
+  /** 저장된 데이터의 언어 */
+  language?: Locale;
+  year: number;
+  chart: {
+    wuxingJu: string;
+    mingGong: string;
+  };
+  yearlySihua: YearlySihua;
+  yearlyPalaces: YearlyPalaceInfo;
+  peachBlossom: YearlyPeachBlossomInfo;
+  currentDayun: {
+    period: string;
+    palaceName: string;
+    mainStars: string[];
+  } | null;
+  scores: YearlyFortuneResult["scores"];
+  monthlyFortunes: MonthlyFortune[];
+  luckyMonths: number[];
+  cautionMonths: number[];
+  interpretation: YearlyFortuneInterpretation;
+}
+
+/** 운세 결과 타입 (전체 데이터) */
+export type FortuneResultType = LifetimeFortuneData | YearlyFortuneData;
 
 export interface SaveFortuneParams {
   profileId: string;

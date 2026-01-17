@@ -1,4 +1,8 @@
+import type { Locale } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
+
 import { PALACE_CATEGORY_WEIGHTS } from "../constants";
+import { translateDayunDirection, translatePalaceName } from "../i18n";
 import type {
   BranchIndex,
   Gender,
@@ -38,8 +42,8 @@ export interface DayunPeriod {
 }
 
 export interface DayunResult {
-  /** 대운 방향: "순행"(시계방향) 또는 "역행"(반시계방향) */
-  direction: "순행" | "역행";
+  /** 대운 방향 (언어에 따라 번역됨) */
+  direction: string;
   /** 대운 시작 나이 (오행국 수치) */
   startAge: number;
   /** 모든 대운 기간 (보통 8-10개) */
@@ -128,18 +132,20 @@ const findPalaceByBranch = (
  * 대운 계산 메인 함수
  * @param chart 명반 데이터
  * @param maxAge 최대 나이 (기본 100세)
+ * @param locale 언어 설정 (기본 ko)
  * @returns 대운 결과
  */
 export const calculateDayun = (
   chart: ZiweiChart,
-  maxAge: number = 100
+  maxAge: number = 100,
+  locale: Locale = defaultLocale
 ): DayunResult => {
   const { gender } = chart.input;
   const { yearStem } = chart.lunarDate;
   const { wuxingJu, mingGong, palaces } = chart;
 
   // 1. 대운 방향 결정
-  const direction = getDayunDirection(gender, yearStem);
+  const directionKo = getDayunDirection(gender, yearStem);
 
   // 2. 대운 시작 나이
   const startAge = getDayunStartAge(wuxingJu);
@@ -160,7 +166,11 @@ export const calculateDayun = (
     const palace = findPalaceByBranch(palaces, currentBranch);
 
     // 대운 천간 계산 (명궁 천간에서 이동)
-    const stemIndex = getDayunStem(mingPalace.stem, periodIndex - 1, direction);
+    const stemIndex = getDayunStem(
+      mingPalace.stem,
+      periodIndex - 1,
+      directionKo
+    );
 
     periods.push({
       index: periodIndex,
@@ -168,7 +178,7 @@ export const calculateDayun = (
       endAge,
       branchIndex: currentBranch,
       stemIndex,
-      palaceName: palace.name,
+      palaceName: translatePalaceName(palace.name, locale),
       palace,
       score: {
         overall: 50,
@@ -185,12 +195,12 @@ export const calculateDayun = (
 
     // 순행이면 +1, 역행이면 -1
     currentBranch = cycleBranch(
-      currentBranch + (direction === "순행" ? 1 : -1)
+      currentBranch + (directionKo === "순행" ? 1 : -1)
     );
   }
 
   return {
-    direction,
+    direction: translateDayunDirection(directionKo, locale),
     startAge,
     periods,
   };
@@ -236,9 +246,8 @@ const STAR_CATEGORY_BONUS: Record<
  * 결정적 계산으로 같은 명반은 항상 같은 점수
  */
 export const calculateDayunScores = (period: DayunPeriod): DayunPeriod => {
-  const { palace, palaceName } = period;
+  const { palace } = period;
 
-  // 밝기별 기본 점수
   const brightnessScore: Record<string, number> = {
     묘: 100,
     왕: 80,
@@ -248,7 +257,6 @@ export const calculateDayunScores = (period: DayunPeriod): DayunPeriod => {
     함: 0,
   };
 
-  // 카테고리별 점수 초기화
   const scores = {
     overall: 50,
     wealth: 50,
@@ -257,8 +265,7 @@ export const calculateDayunScores = (period: DayunPeriod): DayunPeriod => {
     health: 50,
   };
 
-  // 궁 특성 가중치 가져오기
-  const weights = PALACE_CATEGORY_WEIGHTS[palaceName] || {
+  const weights = PALACE_CATEGORY_WEIGHTS[palace.name] ?? {
     wealth: 1.0,
     career: 1.0,
     relationship: 1.0,

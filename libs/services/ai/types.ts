@@ -1,5 +1,7 @@
 import { z } from "zod/v4";
 
+import type { Locale } from "@/i18n/config";
+
 // ============================================================
 // Upstage API 타입
 // ============================================================
@@ -115,6 +117,8 @@ export interface ZiweiInterpretationRequest {
   oppositePalace?: PalaceData;
   dayunPeriods?: DayunData[];
   requestType: InterpretationType;
+  /** 응답 언어 (기본값: ko) */
+  language?: Locale;
 }
 
 // ============================================================
@@ -238,6 +242,8 @@ export interface YearlyInterpretationRequest {
     health: number;
   };
   requestType: YearlyInterpretationType;
+  /** 응답 언어 (기본값: ko) */
+  language?: Locale;
 }
 
 // 올해 운세 응답 스키마
@@ -268,9 +274,9 @@ export const YearlyMonthlyFortuneSchema = z.object({
     z.object({
       month: z.number(),
       score: z.number(),
-      theme: z.string(),
+      theme: z.string().optional().default(""),
       content: z.string(),
-      tip: z.string(),
+      tip: z.string().optional().default(""),
     })
   ),
 });

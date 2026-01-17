@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod/v4";
 
+import type { Locale } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
 import type {
   YearlyFortuneInterpretation,
   YearlyInterpretationRequest,
@@ -15,8 +17,10 @@ import {
 import {
   generateChartHash,
   getCachedResult,
+  getFortune,
   saveFortune,
   setCachedResult,
+  type YearlyFortuneData,
 } from "@/libs/supabase";
 import { calculateAge } from "@/libs/utils";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
@@ -74,8 +78,38 @@ export async function POST(request: NextRequest) {
     const { targetYear, profileId, ...inputData } = parseResult.data;
     const input: ZiweiInput = inputData;
 
-    // 캐시 키 생성 (연도 포함)
-    const cacheKey = `yearly-${targetYear}` as const;
+    // 언어 파라미터 검증
+    const requestedLanguage = body.language;
+    const language: Locale =
+      typeof requestedLanguage === "string" &&
+      (locales as readonly string[]).includes(requestedLanguage)
+        ? (requestedLanguage as Locale)
+        : defaultLocale;
+
+    // 1. profileId가 있으면 저장된 fortune 먼저 확인
+    if (profileId) {
+      const existingFortune = await getFortune(profileId, "yearly", targetYear);
+      if (existingFortune?.result) {
+        const storedData =
+          existingFortune.result as unknown as YearlyFortuneData;
+        // 저장된 데이터에 interpretation이 있고, 언어가 일치하는지 확인
+        if (
+          storedData.interpretation &&
+          storedData.yearlySihua &&
+          storedData.language === language
+        ) {
+          return NextResponse.json({
+            success: true,
+            data: storedData,
+          });
+        }
+      }
+    }
+
+    // 2. 저장된 데이터가 없으면 새로 계산
+    // 캐시 키 생성 (연도 및 언어 포함)
+    const cacheKey =
+      `yearly-${targetYear}-${language}` as `yearly-${number}-${Locale}`;
     const chartHash = generateChartHash({
       birthDate: input.birthDate,
       birthTime: input.birthTime,
@@ -99,39 +133,52 @@ export async function POST(request: NextRequest) {
       cacheKey
     );
 
+    // 응답 데이터 구조 (재사용)
+    const { luckyMonths, cautionMonths } = getLuckyAndCautionMonths(
+      yearlyFortune.monthlyFortunes
+    );
+
+    const buildResponseData = (
+      interpretation: YearlyFortuneInterpretation
+    ): YearlyFortuneData => ({
+      language,
+      year: targetYear,
+      chart: {
+        wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
+        mingGong: EARTHLY_BRANCHES[chart.mingGong],
+      },
+      yearlySihua: yearlyFortune.sihua,
+      yearlyPalaces: yearlyFortune.yearlyPalaces,
+      peachBlossom: yearlyFortune.peachBlossom,
+      currentDayun: yearlyFortune.currentDayun,
+      scores: yearlyFortune.scores,
+      monthlyFortunes: yearlyFortune.monthlyFortunes,
+      luckyMonths,
+      cautionMonths,
+      interpretation,
+    });
+
     if (cachedResult) {
-      // 캐시 히트 시에도 fortunes 저장
+      const responseData = buildResponseData(cachedResult);
+
+      // 캐시 히트 시에도 fortunes에 전체 데이터 저장
       if (profileId) {
         saveFortune({
           profileId,
           fortuneType: "yearly",
           year: targetYear,
-          result: cachedResult,
+          result: responseData,
         }).catch(console.error);
       }
 
       return NextResponse.json({
         success: true,
-        data: {
-          year: targetYear,
-          chart: {
-            wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
-            mingGong: EARTHLY_BRANCHES[chart.mingGong],
-          },
-          yearlySihua: yearlyFortune.sihua,
-          yearlyPalaces: yearlyFortune.yearlyPalaces,
-          peachBlossom: yearlyFortune.peachBlossom,
-          currentDayun: yearlyFortune.currentDayun,
-          scores: yearlyFortune.scores,
-          monthlyFortunes: yearlyFortune.monthlyFortunes,
-          ...getLuckyAndCautionMonths(yearlyFortune.monthlyFortunes),
-          interpretation: cachedResult,
-        },
+        data: responseData,
       });
     }
 
     // 대운 정보 가져오기
-    const dayunResult = calculateDayun(chart);
+    const dayunResult = calculateDayun(chart, 100, language);
     const currentDayunPeriod = getCurrentDayun(dayunResult, currentAge);
 
     // AI 해석 요청 데이터 구성
@@ -193,6 +240,7 @@ export async function POST(request: NextRequest) {
           }
         : undefined,
       scores: yearlyFortune.scores,
+      language,
     };
 
     let result: YearlyFortuneInterpretation;
@@ -202,38 +250,26 @@ export async function POST(request: NextRequest) {
 
       // 캐시 저장
       setCachedResult(chartHash, cacheKey, result).catch(console.error);
-
-      // fortunes 저장
-      if (profileId) {
-        saveFortune({
-          profileId,
-          fortuneType: "yearly",
-          year: targetYear,
-          result,
-        }).catch(console.error);
-      }
     } catch (error) {
       console.error("AI 해석 오류:", error);
       result = createYearlyFallbackInterpretation(targetYear, error as Error);
     }
 
+    const responseData = buildResponseData(result);
+
+    // fortunes에 전체 데이터 저장
+    if (profileId) {
+      saveFortune({
+        profileId,
+        fortuneType: "yearly",
+        year: targetYear,
+        result: responseData,
+      }).catch(console.error);
+    }
+
     return NextResponse.json({
       success: true,
-      data: {
-        year: targetYear,
-        chart: {
-          wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
-          mingGong: EARTHLY_BRANCHES[chart.mingGong],
-        },
-        yearlySihua: yearlyFortune.sihua,
-        yearlyPalaces: yearlyFortune.yearlyPalaces,
-        peachBlossom: yearlyFortune.peachBlossom,
-        currentDayun: yearlyFortune.currentDayun,
-        scores: yearlyFortune.scores,
-        monthlyFortunes: yearlyFortune.monthlyFortunes,
-        ...getLuckyAndCautionMonths(yearlyFortune.monthlyFortunes),
-        interpretation: result,
-      },
+      data: responseData,
     });
   } catch (error) {
     console.error("API 오류:", error);

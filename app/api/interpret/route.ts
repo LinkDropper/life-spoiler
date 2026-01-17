@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import type { Locale } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
 import type {
   DayunData,
   FortuneInterpretation,
@@ -15,8 +17,10 @@ import {
 import {
   generateChartHash,
   getCachedResult,
+  getFortune,
   saveFortune,
   setCachedResult,
+  type LifetimeFortuneData,
 } from "@/libs/supabase";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 import {
@@ -204,8 +208,41 @@ export async function POST(request: NextRequest) {
     const includeDetails = body.includeDetails ?? false;
     const profileId =
       typeof body.profileId === "string" ? body.profileId : undefined;
-    const cacheKey = includeDetails ? "full" : "preview";
 
+    // 언어 파라미터 검증
+    const requestedLanguage = body.language;
+    const language: Locale =
+      typeof requestedLanguage === "string" &&
+      (locales as readonly string[]).includes(requestedLanguage)
+        ? (requestedLanguage as Locale)
+        : defaultLocale;
+
+    // 캐시 키에 언어 포함
+    const cacheKey = (
+      includeDetails ? `full-${language}` : `preview-${language}`
+    ) as `full-${Locale}` | `preview-${Locale}`;
+
+    // 1. profileId가 있으면 저장된 fortune 먼저 확인
+    if (profileId && includeDetails) {
+      const existingFortune = await getFortune(profileId, "lifetime", 0);
+      if (existingFortune?.result) {
+        const storedData =
+          existingFortune.result as unknown as LifetimeFortuneData;
+        // 저장된 데이터에 interpretation이 있고, 언어가 일치하는지 확인
+        if (
+          storedData.interpretation &&
+          storedData.rawChart &&
+          storedData.language === language
+        ) {
+          return NextResponse.json({
+            success: true,
+            data: storedData,
+          });
+        }
+      }
+    }
+
+    // 2. 저장된 데이터가 없으면 새로 계산
     const chart = generateZiweiChart(input);
 
     const chartHash = generateChartHash({
@@ -218,44 +255,57 @@ export async function POST(request: NextRequest) {
       occupationStatus: input.occupationStatus,
     });
 
-    const dayunResult = calculateAllDayunScores(calculateDayun(chart));
-    const lifestyle = generateLifestyleRecommendation(chart);
+    const dayunResult = calculateAllDayunScores(
+      calculateDayun(chart, 100, language)
+    );
+    const lifestyle = generateLifestyleRecommendation(chart, language);
     const cachedResult = await getCachedResult(chartHash, cacheKey);
 
+    // 응답 데이터 구조 (재사용)
+    const buildResponseData = (
+      interpretation: FortuneInterpretation
+    ): LifetimeFortuneData => ({
+      language,
+      chart: {
+        wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
+        mingGong: EARTHLY_BRANCHES[chart.mingGong],
+        shenGong: EARTHLY_BRANCHES[chart.shenGong],
+        sihua: chart.sihua,
+      },
+      rawChart: chart,
+      dayun: dayunResult,
+      lifestyle,
+      interpretation,
+    });
+
     if (cachedResult) {
-      // 캐시 히트 시에도 fortunes 저장 (인생운세인 경우)
+      const responseData = buildResponseData(cachedResult);
+
+      // 캐시 히트 시에도 fortunes에 전체 데이터 저장 (인생운세인 경우)
       if (profileId && includeDetails) {
         saveFortune({
           profileId,
           fortuneType: "lifetime",
           year: 0,
-          result: cachedResult,
-        }).catch(() => {});
+          result: responseData,
+        }).catch(console.error);
       }
 
       return NextResponse.json({
         success: true,
-        data: {
-          chart: {
-            wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
-            mingGong: EARTHLY_BRANCHES[chart.mingGong],
-            shenGong: EARTHLY_BRANCHES[chart.shenGong],
-            sihua: chart.sihua,
-          },
-          rawChart: chart,
-          dayun: dayunResult,
-          lifestyle,
-          interpretation: cachedResult,
-        },
+        data: responseData,
       });
     }
 
     const currentAge = calculateAge(input.birthDate);
     const dayunPeriods = convertToDayunData(dayunResult);
-    const interpretRequest = convertChartToRequest(chart, {
-      currentAge,
-      dayunPeriods,
-    });
+    const interpretRequest = {
+      ...convertChartToRequest(chart, {
+        currentAge,
+        dayunPeriods,
+      }),
+      language,
+    };
 
     let result: FortuneInterpretation;
 
@@ -265,41 +315,27 @@ export async function POST(request: NextRequest) {
       });
 
       // 캐시 저장
-      setCachedResult(chartHash, cacheKey, result).catch(() => {});
-
-      // fortunes 저장 (인생운세인 경우)
-      if (profileId && includeDetails) {
-        saveFortune({
-          profileId,
-          fortuneType: "lifetime",
-          year: 0,
-          result,
-        }).catch(() => {});
-      }
+      setCachedResult(chartHash, cacheKey, result).catch(console.error);
     } catch (error) {
       console.error("AI 해석 오류:", error);
       result = createFallbackInterpretation(error as Error);
     }
 
+    const responseData = buildResponseData(result);
+
+    // fortunes에 전체 데이터 저장 (인생운세인 경우)
+    if (profileId && includeDetails) {
+      saveFortune({
+        profileId,
+        fortuneType: "lifetime",
+        year: 0,
+        result: responseData,
+      }).catch(console.error);
+    }
+
     return NextResponse.json({
       success: true,
-      data: {
-        // 기존 요약 데이터
-        chart: {
-          wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
-          mingGong: EARTHLY_BRANCHES[chart.mingGong],
-          shenGong: EARTHLY_BRANCHES[chart.shenGong],
-          sihua: chart.sihua,
-        },
-        // 전체 명반 데이터 (시각화용)
-        rawChart: chart,
-        // 대운 데이터 (그래프용)
-        dayun: dayunResult,
-        // 라이프스타일 추천
-        lifestyle,
-        // AI 해석 결과
-        interpretation: result,
-      },
+      data: responseData,
     });
   } catch (error) {
     console.error("API 오류:", error);

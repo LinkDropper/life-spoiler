@@ -1,5 +1,7 @@
+import type { Locale } from "@/i18n/config";
+
 import { AIError } from "./errors";
-import { PALACE_NAME_MAP, USER_PROMPTS, ZIWEI_SYSTEM_PROMPT } from "./prompts";
+import { getPrompts } from "./prompts";
 import type {
   FortuneInterpretation,
   InterpretationType,
@@ -35,16 +37,15 @@ const isDayunRequired = (
  */
 const getRelationshipStatusLabel = (
   status: string | null | undefined,
-  custom?: string | null
+  custom: string | null | undefined,
+  language?: Locale
 ): string | null => {
   if (!status) return null;
-  const labels: Record<string, string> = {
-    solo: "솔로",
-    dating: "연애중",
-    married: "기혼",
-    divorced: "이혼",
-    custom: custom || "직접입력",
-  };
+  const prompts = getPrompts(language);
+  const labels = prompts.statusLabels.relationship;
+  if (status === "custom") {
+    return custom || labels.custom;
+  }
   return labels[status] || null;
 };
 
@@ -53,18 +54,15 @@ const getRelationshipStatusLabel = (
  */
 const getOccupationStatusLabel = (
   status: string | null | undefined,
-  custom?: string | null
+  custom: string | null | undefined,
+  language?: Locale
 ): string | null => {
   if (!status) return null;
-  const labels: Record<string, string> = {
-    student: "학생",
-    job_seeker: "취준생",
-    homemaker: "주부",
-    employed: "직장인",
-    self_employed: "자영업",
-    retired: "은퇴",
-    custom: custom || "직접입력",
-  };
+  const prompts = getPrompts(language);
+  const labels = prompts.statusLabels.occupation;
+  if (status === "custom") {
+    return custom || labels.custom;
+  }
   return labels[status] || null;
 };
 
@@ -79,55 +77,64 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
     oppositePalace,
     dayunPeriods,
     requestType,
+    language,
   } = request;
+
+  const prompts = getPrompts(language);
 
   // 사용자 상태 정보 포맷팅
   const relationshipLabel = getRelationshipStatusLabel(
     user.relationshipStatus,
-    user.relationshipStatusCustom
+    user.relationshipStatusCustom,
+    language
   );
   const occupationLabel = getOccupationStatusLabel(
     user.occupationStatus,
-    user.occupationStatusCustom
+    user.occupationStatusCustom,
+    language
   );
+
+  const genderLabel = prompts.statusLabels.gender[user.gender];
 
   let userStatusStr = "";
   if (relationshipLabel) {
-    userStatusStr += `\n- 연애 상태: ${relationshipLabel}`;
+    userStatusStr += `\n- relationshipStatus: ${relationshipLabel}`;
   }
   if (occupationLabel) {
-    userStatusStr += `\n- 직업 상태: ${occupationLabel}`;
+    userStatusStr += `\n- occupationStatus: ${occupationLabel}`;
   }
 
-  let dataStr = `## 사용자 정보
-- 성별: ${user.gender === "male" ? "남성" : "여성"}
-- 음력 생일: ${user.lunarBirthInfo}${user.currentAge ? `\n- 현재 나이: ${user.currentAge}세` : ""}${userStatusStr}
+  let dataStr = `## User Info
+- gender: ${genderLabel}
+- lunarBirthInfo: ${user.lunarBirthInfo}${user.currentAge ? `\n- currentAge: ${user.currentAge}` : ""}${userStatusStr}
 
-## 명반 기본 정보
-- 오행국: ${chart.wuxingJu}
-- 명궁 위치: ${chart.mingGongPosition}
-- 신궁 위치: ${chart.shenGongPosition}
+## Chart Info
+- wuxingJu: ${chart.wuxingJu}
+- mingGongPosition: ${chart.mingGongPosition}
+- shenGongPosition: ${chart.shenGongPosition}
 
-## 사화성 정보
-- 화록: ${chart.sihua.hualu.star} (${chart.sihua.hualu.palace})
-- 화권: ${chart.sihua.huaquan.star} (${chart.sihua.huaquan.palace})
-- 화과: ${chart.sihua.huake.star} (${chart.sihua.huake.palace})
-- 화기: ${chart.sihua.huaji.star} (${chart.sihua.huaji.palace})
+## Sihua Info
+- hualu: ${chart.sihua.hualu.star} (${chart.sihua.hualu.palace})
+- huaquan: ${chart.sihua.huaquan.star} (${chart.sihua.huaquan.palace})
+- huake: ${chart.sihua.huake.star} (${chart.sihua.huake.palace})
+- huaji: ${chart.sihua.huaji.star} (${chart.sihua.huaji.palace})
 
-## 분석 대상 궁: ${PALACE_NAME_MAP[requestType]}
+## Target Palace: ${prompts.palaceNameMap[requestType]}
 ${formatPalaceData(targetPalace)}`;
 
   if (oppositePalace) {
-    dataStr += `\n\n## 대궁 (맞은편 궁)
+    dataStr += `\n\n## Opposite Palace
 ${formatPalaceData(oppositePalace)}`;
   }
 
   // 대운 정보 추가 (timeline이 필요한 해석 유형에서만)
   if (dayunPeriods && dayunPeriods.length > 0 && isDayunRequired(requestType)) {
-    dataStr += `\n\n## 대운(10년 주기) 흐름`;
+    dataStr += `\n\n## Dayun (10-year cycles)`;
     for (const period of dayunPeriods) {
       const starsStr =
-        period.mainStars.length > 0 ? period.mainStars.join(", ") : "주성 없음";
+        period.mainStars.length > 0
+          ? period.mainStars.join(", ")
+          : "No main stars";
       const sihuaStr =
         period.sihua && period.sihua.length > 0
           ? ` [${period.sihua.join(", ")}]`
@@ -135,7 +142,7 @@ ${formatPalaceData(oppositePalace)}`;
       dataStr += `\n- ${period.period} (${period.palaceName}): ${starsStr}${sihuaStr}`;
     }
     if (user.currentAge) {
-      dataStr += `\n- **현재 ${user.currentAge}세 대운에 특히 주목해서 분석해줘!**`;
+      dataStr += `\n- **Focus on current age ${user.currentAge} Dayun period!**`;
     }
   }
 
@@ -157,11 +164,11 @@ const formatPalaceData = (palace: PalaceData): string => {
     .join(", ");
 
   const minorStarsStr =
-    palace.minorStars.length > 0 ? palace.minorStars.join(", ") : "없음";
+    palace.minorStars.length > 0 ? palace.minorStars.join(", ") : "None";
 
-  return `- 지지: ${palace.branch}
-- 주성: ${mainStarsStr || "없음"}
-- 보조성/살성: ${minorStarsStr}`;
+  return `- Branch: ${palace.branch}
+- Main Stars: ${mainStarsStr || "None"}
+- Minor Stars: ${minorStarsStr}`;
 };
 
 /**
@@ -171,8 +178,9 @@ const requestInterpretation = async <T>(
   request: ZiweiInterpretationRequest,
   schema: { parse: (data: unknown) => T }
 ): Promise<T> => {
+  const prompts = getPrompts(request.language);
   const chartData = formatChartDataForAI(request);
-  const userPrompt = USER_PROMPTS[request.requestType];
+  const userPrompt = prompts.userPrompts[request.requestType];
 
   const fullUserPrompt = `${chartData}
 
@@ -181,7 +189,7 @@ const requestInterpretation = async <T>(
 ${userPrompt}`;
 
   const response = await chatCompletion([
-    { role: "system", content: ZIWEI_SYSTEM_PROMPT },
+    { role: "system", content: prompts.ziweiSystemPrompt },
     { role: "user", content: fullUserPrompt },
   ]);
 
