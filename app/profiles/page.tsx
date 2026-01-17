@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Header } from "@/components/landing";
 import {
@@ -24,6 +25,7 @@ import styles from "./page.module.css";
 export default function ProfilesPage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const t = useTranslations("profiles");
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
@@ -35,7 +37,6 @@ export default function ProfilesPage() {
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // 프로필 목록이 로드되면 첫 번째 프로필 선택
   useEffect(() => {
     if (profiles.length > 0 && !selectedProfileId) {
       setSelectedProfileId(profiles[0].id);
@@ -46,7 +47,9 @@ export default function ProfilesPage() {
     return (
       <div className={styles.page}>
         <Header />
-        <div className={styles.loading}>로딩 중...</div>
+        <div className={styles.loading}>
+          {t("loading", { default: "로딩 중..." })}
+        </div>
       </div>
     );
   }
@@ -79,20 +82,22 @@ export default function ProfilesPage() {
       });
 
       if (!response.ok) {
-        throw new Error("프로필 삭제에 실패했습니다.");
+        throw new Error("Failed to delete profile");
       }
 
-      // 전역 상태에서 프로필 삭제
       deleteProfileFromStore(deleteTargetId);
 
-      // 선택된 프로필이 삭제된 경우 다른 프로필 선택
       if (selectedProfileId === deleteTargetId) {
         const remaining = profiles.filter((p) => p.id !== deleteTargetId);
         setSelectedProfileId(remaining.length > 0 ? remaining[0].id : null);
       }
       setDeleteTargetId(null);
     } catch {
-      alert("프로필 삭제에 실패했습니다. 다시 시도해주세요.");
+      alert(
+        t("deleteError", {
+          default: "프로필 삭제에 실패했습니다. 다시 시도해주세요.",
+        })
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -118,7 +123,7 @@ export default function ProfilesPage() {
 
   const handleLifetimeFortune = () => {
     if (!selectedProfileId) {
-      alert("프로필을 선택해주세요.");
+      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
       return;
     }
     router.push(`/fortune/lifetime/${selectedProfileId}`);
@@ -126,7 +131,7 @@ export default function ProfilesPage() {
 
   const handleYearlyFortune = () => {
     if (!selectedProfileId) {
-      alert("프로필을 선택해주세요.");
+      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
       return;
     }
     router.push(`/fortune/yearly/${selectedProfileId}`);
@@ -164,7 +169,7 @@ export default function ProfilesPage() {
           onClick={handleLifetimeFortune}
           disabled={!selectedProfileId}
         >
-          인생 운세 보기
+          {t("lifetimeFortune", { default: "인생 운세 보기" })}
         </button>
         <button
           type="button"
@@ -172,7 +177,7 @@ export default function ProfilesPage() {
           onClick={handleYearlyFortune}
           disabled={!selectedProfileId}
         >
-          올해 운세 보기
+          {t("yearlyFortune", { default: "올해 운세 보기" })}
         </button>
       </footer>
 

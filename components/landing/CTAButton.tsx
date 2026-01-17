@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useUser, useAuthStatus } from "@/libs/stores/user";
 
@@ -11,6 +12,7 @@ export const CTAButton = () => {
   const router = useRouter();
   const user = useUser();
   const authStatus = useAuthStatus();
+  const t = useTranslations("landing.cta");
 
   const handleClick = () => {
     if (authStatus !== "authenticated" || !user) {
@@ -27,7 +29,9 @@ export const CTAButton = () => {
 
   return (
     <button type="button" className={styles.button} onClick={handleClick}>
-      <span className={styles.text}>인생 스포일러 확인하기</span>
+      <span className={styles.text}>
+        {t("button", { default: "인생 스포일러 확인하기" })}
+      </span>
       <Image
         src="/images/landing/arrow-right.svg"
         alt=""

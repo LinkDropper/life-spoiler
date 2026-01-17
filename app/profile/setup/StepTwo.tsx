@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button, SelectableChips } from "@/components/form";
 import { ProfileSummaryCard } from "@/components/profile";
@@ -16,24 +17,6 @@ interface StepTwoProps {
   isSubmitting: boolean;
 }
 
-const RELATIONSHIP_OPTIONS = [
-  { value: "solo", label: "솔로" },
-  { value: "dating", label: "연애중" },
-  { value: "married", label: "결혼함" },
-  { value: "divorced", label: "이혼 / 사별" },
-  { value: "custom", label: "직접 입력" },
-];
-
-const OCCUPATION_OPTIONS = [
-  { value: "student", label: "학생" },
-  { value: "job_seeker", label: "취준생" },
-  { value: "homemaker", label: "주부" },
-  { value: "employed", label: "직장인" },
-  { value: "self_employed", label: "사업 / 프리랜서" },
-  { value: "retired", label: "은퇴" },
-  { value: "custom", label: "직접 입력" },
-];
-
 export const StepTwo = ({
   stepOneData,
   initialData,
@@ -41,10 +24,53 @@ export const StepTwo = ({
   onSubmit,
   isSubmitting,
 }: StepTwoProps) => {
+  const t = useTranslations("profileSetup.stepTwo");
   const [formData, setFormData] = useState<StepTwoData>(initialData);
   const [errors, setErrors] = useState<
     Partial<Record<keyof StepTwoData, string>>
   >({});
+
+  const RELATIONSHIP_OPTIONS = [
+    { value: "solo", label: t("relationship.solo", { default: "솔로" }) },
+    { value: "dating", label: t("relationship.dating", { default: "연애중" }) },
+    {
+      value: "married",
+      label: t("relationship.married", { default: "결혼함" }),
+    },
+    {
+      value: "divorced",
+      label: t("relationship.divorced", { default: "이혼 / 사별" }),
+    },
+    {
+      value: "custom",
+      label: t("relationship.custom", { default: "직접 입력" }),
+    },
+  ];
+
+  const OCCUPATION_OPTIONS = [
+    { value: "student", label: t("occupation.student", { default: "학생" }) },
+    {
+      value: "job_seeker",
+      label: t("occupation.jobSeeker", { default: "취준생" }),
+    },
+    {
+      value: "homemaker",
+      label: t("occupation.homemaker", { default: "주부" }),
+    },
+    {
+      value: "employed",
+      label: t("occupation.employed", { default: "직장인" }),
+    },
+    {
+      value: "self_employed",
+      label: t("occupation.selfEmployed", { default: "사업 / 프리랜서" }),
+    },
+    { value: "retired", label: t("occupation.retired", { default: "은퇴" }) },
+    {
+      value: "custom",
+      label: t("occupation.custom", { default: "직접 입력" }),
+    },
+  ];
 
   const handleRelationshipChange = (value: string, customValue?: string) => {
     setFormData((prev) => ({
@@ -75,14 +101,18 @@ export const StepTwo = ({
       formData.relationshipStatus === "custom" &&
       !formData.relationshipStatusCustom.trim()
     ) {
-      newErrors.relationshipStatus = "연애 상태를 입력해주세요.";
+      newErrors.relationshipStatus = t("relationship.error", {
+        default: "연애 상태를 입력해주세요.",
+      });
     }
 
     if (
       formData.occupationStatus === "custom" &&
       !formData.occupationStatusCustom.trim()
     ) {
-      newErrors.occupationStatus = "직업 상태를 입력해주세요.";
+      newErrors.occupationStatus = t("occupation.error", {
+        default: "직업 상태를 입력해주세요.",
+      });
     }
 
     setErrors(newErrors);
@@ -108,7 +138,7 @@ export const StepTwo = ({
         />
 
         <SelectableChips
-          label="연애 상태"
+          label={t("relationship.label", { default: "연애 상태" })}
           options={RELATIONSHIP_OPTIONS}
           value={formData.relationshipStatus}
           customValue={formData.relationshipStatusCustom}
@@ -118,7 +148,7 @@ export const StepTwo = ({
         />
 
         <SelectableChips
-          label="직업 상태"
+          label={t("occupation.label", { default: "직업 상태" })}
           options={OCCUPATION_OPTIONS}
           value={formData.occupationStatus}
           customValue={formData.occupationStatusCustom}
@@ -152,7 +182,9 @@ export const StepTwo = ({
           </svg>
         </button>
         <Button onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? "저장 중..." : "저장하기"}
+          {isSubmitting
+            ? t("saving", { default: "저장 중..." })
+            : t("save", { default: "저장하기" })}
         </Button>
       </div>
     </div>

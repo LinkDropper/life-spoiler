@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Header } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -82,7 +83,15 @@ const getScoreColor = (score: number) => {
 // 점수 게이지 컴포넌트
 // ============================================================
 
-const ScoreGauge = ({ score, label }: { score: number; label: string }) => {
+const ScoreGauge = ({
+  score,
+  label,
+  unit,
+}: {
+  score: number;
+  label: string;
+  unit: string;
+}) => {
   return (
     <div className={styles.scoreGauge}>
       <div className={styles.scoreLabel}>{label}</div>
@@ -95,7 +104,10 @@ const ScoreGauge = ({ score, label }: { score: number; label: string }) => {
           }}
         />
       </div>
-      <div className={styles.scoreValue}>{score}점</div>
+      <div className={styles.scoreValue}>
+        {score}
+        {unit}
+      </div>
     </div>
   );
 };
@@ -107,31 +119,35 @@ const ScoreGauge = ({ score, label }: { score: number; label: string }) => {
 const SihuaCard = ({
   type,
   sihua,
+  t,
 }: {
   type: "hualu" | "huaquan" | "huake" | "huaji";
   sihua: YearlySihua;
+  t: ReturnType<typeof useTranslations>;
 }) => {
   const typeInfo = {
-    hualu: { name: "화록", emoji: "🌟", color: "#deff7c", desc: "복과 기회" },
-    huaquan: {
-      name: "화권",
-      emoji: "👑",
-      color: "#ffc854",
-      desc: "권력과 주도권",
-    },
-    huake: { name: "화과", emoji: "🏆", color: "#b8a4ff", desc: "명예와 인정" },
-    huaji: { name: "화기", emoji: "⚠️", color: "#fb7194", desc: "주의 필요" },
+    hualu: { emoji: "🌟", color: "#deff7c" },
+    huaquan: { emoji: "👑", color: "#ffc854" },
+    huake: { emoji: "🏆", color: "#b8a4ff" },
+    huaji: { emoji: "⚠️", color: "#fb7194" },
   };
 
   const info = typeInfo[type];
   const data = sihua[type];
+
+  const sihuaNames = {
+    hualu: t("sihua.hualu.name", { default: "화록" }),
+    huaquan: t("sihua.huaquan.name", { default: "화권" }),
+    huake: t("sihua.huake.name", { default: "화과" }),
+    huaji: t("sihua.huaji.name", { default: "화기" }),
+  };
 
   return (
     <div className={styles.sihuaCard}>
       <div className={styles.sihuaHeader}>
         <span className={styles.sihuaEmoji}>{info.emoji}</span>
         <span className={styles.sihuaType} style={{ color: info.color }}>
-          {info.name}
+          {sihuaNames[type]}
         </span>
       </div>
       <div className={styles.sihuaStar}>{data.star}</div>
@@ -149,10 +165,12 @@ const MonthlyChart = ({
   monthlyFortunes,
   luckyMonths,
   cautionMonths,
+  t,
 }: {
   monthlyFortunes: MonthlyFortune[];
   luckyMonths: number[];
   cautionMonths: number[];
+  t: ReturnType<typeof useTranslations>;
 }) => {
   const maxScore = Math.max(...monthlyFortunes.map((m) => m.score));
 
@@ -172,11 +190,18 @@ const MonthlyChart = ({
                   style={{ height: `${barHeight}%` }}
                 />
               </div>
-              <div className={styles.chartMonth}>{month.month}월</div>
-              {isLucky && <div className={styles.monthBadge}>좋음</div>}
+              <div className={styles.chartMonth}>
+                {month.month}
+                {t("monthly.monthUnit", { default: "월" })}
+              </div>
+              {isLucky && (
+                <div className={styles.monthBadge}>
+                  {t("monthly.good", { default: "좋음" })}
+                </div>
+              )}
               {isCaution && (
                 <div className={`${styles.monthBadge} ${styles.cautionBadge}`}>
-                  주의
+                  {t("monthly.caution", { default: "주의" })}
                 </div>
               )}
             </div>
@@ -200,8 +225,10 @@ const getScoreEmoji = (score: number) => {
 
 const MonthlyFortuneList = ({
   monthlyFortunes,
+  t,
 }: {
   monthlyFortunes: YearlyFortuneInterpretation["monthlyFortunes"];
+  t: ReturnType<typeof useTranslations>;
 }) => {
   const [expanded, setExpanded] = useState(false);
   const displayFortunes = expanded
@@ -214,12 +241,16 @@ const MonthlyFortuneList = ({
         {displayFortunes.map((fortune) => (
           <div key={fortune.month} className={styles.fortuneItem}>
             <div className={styles.fortuneHeader}>
-              <div className={styles.fortuneMonth}>{fortune.month}월</div>
+              <div className={styles.fortuneMonth}>
+                {fortune.month}
+                {t("monthly.monthUnit", { default: "월" })}
+              </div>
               <div
                 className={styles.fortuneScore}
                 style={{ color: getScoreColor(fortune.score) }}
               >
-                {getScoreEmoji(fortune.score)} {fortune.score}점
+                {getScoreEmoji(fortune.score)} {fortune.score}
+                {t("scores.unit", { default: "점" })}
               </div>
             </div>
             <div className={styles.fortuneTheme}>{fortune.theme}</div>
@@ -236,7 +267,12 @@ const MonthlyFortuneList = ({
           className={styles.expandButton}
           onClick={() => setExpanded(!expanded)}
         >
-          {expanded ? "접기" : `나머지 ${monthlyFortunes.length - 4}개월 보기`}
+          {expanded
+            ? t("monthly.collapse", { default: "접기" })
+            : t("monthly.expand", {
+                count: monthlyFortunes.length - 4,
+                default: `나머지 ${monthlyFortunes.length - 4}개월 보기`,
+              })}
         </button>
       )}
     </div>
@@ -252,8 +288,9 @@ export default function YearlyFortunePage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
   const profileId = params.profileId as string;
+  const t = useTranslations("fortune.yearly");
+  const tCommon = useTranslations("fortune.common");
 
-  // 전역 상태에서 프로필 가져오기
   const cachedProfile = useProfileById(profileId);
   const isProfilesLoaded = useIsProfilesLoaded();
   const { fetchProfiles } = useProfileActions();
@@ -265,14 +302,12 @@ export default function YearlyFortunePage() {
 
   const currentYear = new Date().getFullYear();
 
-  // 프로필이 로드되지 않은 경우 로드 시도
   useEffect(() => {
     if (authStatus === "authenticated" && !isProfilesLoaded) {
       fetchProfiles();
     }
   }, [authStatus, isProfilesLoaded, fetchProfiles]);
 
-  // 캐시된 프로필이 있으면 profile 상태에 설정
   useEffect(() => {
     if (cachedProfile) {
       setProfile(cachedProfile);
@@ -289,14 +324,14 @@ export default function YearlyFortunePage() {
       return;
     }
 
-    // 프로필이 아직 로드되지 않은 경우 대기
     if (!isProfilesLoaded) {
       return;
     }
 
-    // 전역 상태에서 프로필을 찾을 수 없는 경우
     if (!cachedProfile) {
-      setError("프로필을 찾을 수 없습니다.");
+      setError(
+        tCommon("profileNotFound", { default: "프로필을 찾을 수 없습니다." })
+      );
       setIsLoading(false);
       return;
     }
@@ -337,14 +372,20 @@ export default function YearlyFortunePage() {
         });
 
         if (!res.ok) {
-          throw new Error("올해 운세 조회에 실패했습니다.");
+          throw new Error(
+            t("fetchError", { default: "올해 운세 조회에 실패했습니다." })
+          );
         }
 
         const data = await res.json();
         setResult(data.data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다."
+          err instanceof Error
+            ? err.message
+            : tCommon("unknownError", {
+                default: "알 수 없는 오류가 발생했습니다.",
+              })
         );
       } finally {
         setIsLoading(false);
@@ -359,6 +400,8 @@ export default function YearlyFortunePage() {
     isProfilesLoaded,
     cachedProfile,
     currentYear,
+    t,
+    tCommon,
   ]);
 
   if (authStatus === "loading" || isLoading || !isProfilesLoaded) {
@@ -377,7 +420,9 @@ export default function YearlyFortunePage() {
               className={styles.backButton}
               onClick={() => router.push("/profiles")}
             >
-              프로필 목록으로 돌아가기
+              {tCommon("backToProfiles", {
+                default: "프로필 목록으로 돌아가기",
+              })}
             </button>
           </div>
         </main>
@@ -408,11 +453,19 @@ export default function YearlyFortunePage() {
       <main className={styles.main}>
         <div className={styles.profileInfo}>
           <h1 className={styles.name}>
-            {profile.name}님의 {currentYear}년 운세
+            {t("title", {
+              name: profile.name,
+              year: currentYear,
+              default: `${profile.name}님의 ${currentYear}년 운세`,
+            })}
           </h1>
           <p className={styles.profileMeta}>
-            {yearlySihua.yearStemName}
-            {yearlySihua.yearBranchName}년 | {currentAge}세
+            {t("yearInfo", {
+              stem: yearlySihua.yearStemName,
+              branch: yearlySihua.yearBranchName,
+              default: `${yearlySihua.yearStemName}${yearlySihua.yearBranchName}년`,
+            })}{" "}
+            | {tCommon("age", { age: currentAge, default: `${currentAge}세` })}
           </p>
         </div>
 
@@ -439,7 +492,9 @@ export default function YearlyFortunePage() {
             <section className={styles.peachBlossomSection}>
               <div className={styles.peachBlossomHeader}>
                 <span className={styles.peachBlossomEmoji}>🌸</span>
-                <h3 className={styles.peachBlossomTitle}>올해 인연의 기운</h3>
+                <h3 className={styles.peachBlossomTitle}>
+                  {t("peachBlossom.title", { default: "올해 인연의 기운" })}
+                </h3>
               </div>
               <ul className={styles.peachBlossomList}>
                 {peachBlossom.peachBlossomNotes.map((note, idx) => (
@@ -450,10 +505,12 @@ export default function YearlyFortunePage() {
               </ul>
               <div className={styles.peachBlossomStars}>
                 <span className={styles.starInfo}>
-                  홍란 위치: {peachBlossom.hongluan.palaceName}
+                  {t("peachBlossom.hongluanPosition", { default: "홍란 위치" })}
+                  : {peachBlossom.hongluan.palaceName}
                 </span>
                 <span className={styles.starInfo}>
-                  천희 위치: {peachBlossom.tianxi.palaceName}
+                  {t("peachBlossom.tianxiPosition", { default: "천희 위치" })}:{" "}
+                  {peachBlossom.tianxi.palaceName}
                 </span>
               </div>
             </section>
@@ -462,27 +519,52 @@ export default function YearlyFortunePage() {
         {/* 연간 점수 섹션 */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>올해 운세 점수</h3>
-            <span className={styles.sectionBadge}>종합 {scores.overall}점</span>
+            <h3 className={styles.sectionTitle}>
+              {t("scores.title", { default: "올해 운세 점수" })}
+            </h3>
+            <span className={styles.sectionBadge}>
+              {t("scores.overall", {
+                score: scores.overall,
+                default: `종합 ${scores.overall}점`,
+              })}
+            </span>
           </div>
           <div className={styles.scoresContainer}>
-            <ScoreGauge score={scores.wealth} label="재물운" />
-            <ScoreGauge score={scores.career} label="직업운" />
-            <ScoreGauge score={scores.relationship} label="인연운" />
-            <ScoreGauge score={scores.health} label="건강운" />
+            <ScoreGauge
+              score={scores.wealth}
+              label={t("scores.wealth", { default: "재물운" })}
+              unit={t("scores.unit", { default: "점" })}
+            />
+            <ScoreGauge
+              score={scores.career}
+              label={t("scores.career", { default: "직업운" })}
+              unit={t("scores.unit", { default: "점" })}
+            />
+            <ScoreGauge
+              score={scores.relationship}
+              label={t("scores.relationship", { default: "인연운" })}
+              unit={t("scores.unit", { default: "점" })}
+            />
+            <ScoreGauge
+              score={scores.health}
+              label={t("scores.health", { default: "건강운" })}
+              unit={t("scores.unit", { default: "점" })}
+            />
           </div>
         </section>
 
         {/* 유년 사화 섹션 */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>올해의 사화</h3>
+            <h3 className={styles.sectionTitle}>
+              {t("sihua.title", { default: "올해의 사화" })}
+            </h3>
           </div>
           <div className={styles.sihuaGrid}>
-            <SihuaCard type="hualu" sihua={yearlySihua} />
-            <SihuaCard type="huaquan" sihua={yearlySihua} />
-            <SihuaCard type="huake" sihua={yearlySihua} />
-            <SihuaCard type="huaji" sihua={yearlySihua} />
+            <SihuaCard type="hualu" sihua={yearlySihua} t={t} />
+            <SihuaCard type="huaquan" sihua={yearlySihua} t={t} />
+            <SihuaCard type="huake" sihua={yearlySihua} t={t} />
+            <SihuaCard type="huaji" sihua={yearlySihua} t={t} />
           </div>
         </section>
 
@@ -490,7 +572,9 @@ export default function YearlyFortunePage() {
         {currentDayun && (
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>현재 대운</h3>
+              <h3 className={styles.sectionTitle}>
+                {t("currentDayun.title", { default: "현재 대운" })}
+              </h3>
               <span className={styles.sectionBadge}>{currentDayun.period}</span>
             </div>
             <div className={styles.dayunInfo}>
@@ -500,7 +584,7 @@ export default function YearlyFortunePage() {
               <div className={styles.dayunStars}>
                 {currentDayun.mainStars.length > 0
                   ? currentDayun.mainStars.join(", ")
-                  : "주성 없음"}
+                  : tCommon("noMainStars", { default: "주성 없음" })}
               </div>
             </div>
           </section>
@@ -509,21 +593,30 @@ export default function YearlyFortunePage() {
         {/* 월별 운세 차트 섹션 */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>월별 운세 흐름</h3>
+            <h3 className={styles.sectionTitle}>
+              {t("monthly.title", { default: "월별 운세 흐름" })}
+            </h3>
           </div>
           <MonthlyChart
             monthlyFortunes={monthlyFortunes}
             luckyMonths={luckyMonths}
             cautionMonths={cautionMonths}
+            t={t}
           />
           <div className={styles.monthLegend}>
             <span className={styles.legendItem}>
               <span className={`${styles.legendDot} ${styles.luckyDot}`} />
-              좋은 달: {luckyMonths.join(", ")}월
+              {t("monthly.luckyMonths", { default: "좋은 달" })}:{" "}
+              {luckyMonths
+                .map((m) => `${m}${t("monthly.monthUnit", { default: "월" })}`)
+                .join(", ")}
             </span>
             <span className={styles.legendItem}>
               <span className={`${styles.legendDot} ${styles.cautionDot}`} />
-              주의할 달: {cautionMonths.join(", ")}월
+              {t("monthly.cautionMonths", { default: "주의할 달" })}:{" "}
+              {cautionMonths
+                .map((m) => `${m}${t("monthly.monthUnit", { default: "월" })}`)
+                .join(", ")}
             </span>
           </div>
         </section>
@@ -566,10 +659,13 @@ export default function YearlyFortunePage() {
         {/* 월별 운세 섹션 */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>월별 운세</h3>
+            <h3 className={styles.sectionTitle}>
+              {t("monthly.detailTitle", { default: "월별 운세" })}
+            </h3>
           </div>
           <MonthlyFortuneList
             monthlyFortunes={interpretation.monthlyFortunes}
+            t={t}
           />
         </section>
 
@@ -578,7 +674,7 @@ export default function YearlyFortunePage() {
           className={styles.backButton}
           onClick={() => router.push("/profiles")}
         >
-          프로필 목록으로 돌아가기
+          {tCommon("backToProfiles", { default: "프로필 목록으로 돌아가기" })}
         </button>
       </main>
     </div>

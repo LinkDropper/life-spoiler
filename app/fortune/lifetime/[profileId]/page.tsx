@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { Header } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -79,10 +80,12 @@ const ChartGrid = ({
   chart,
   mingGong,
   shenGong,
+  t,
 }: {
   chart: ZiweiChart;
   mingGong: number;
   shenGong: number;
+  t: ReturnType<typeof useTranslations>;
 }) => {
   const palacesByBranch: Record<number, Palace> = {};
   chart.palaces.forEach((palace) => {
@@ -107,8 +110,8 @@ const ChartGrid = ({
       >
         <div className={styles.palaceName}>
           {palace.name}
-          {isMing && " (명)"}
-          {isShen && " (신)"}
+          {isMing && ` (${t("chart.ming", { default: "명" })})`}
+          {isShen && ` (${t("chart.shen", { default: "신" })})`}
         </div>
         <div className={styles.palaceBranch}>
           {EARTHLY_BRANCHES[branchIndex]}
@@ -137,14 +140,20 @@ const ChartGrid = ({
     <div className={styles.chartGrid}>
       {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(renderPalaceCell)}
       <div className={styles.centerCell}>
-        <div className={styles.centerTitle}>자미두수 명반</div>
+        <div className={styles.centerTitle}>
+          {t("chart.centerTitle", { default: "자미두수 명반" })}
+        </div>
         <div className={styles.centerInfo}>
-          <div>오행국: {chart.wuxingJu}</div>
           <div>
-            화록: {chart.sihua.hualu} | 화권: {chart.sihua.huaquan}
+            {t("chart.wuxingJu", { default: "오행국" })}: {chart.wuxingJu}
           </div>
           <div>
-            화과: {chart.sihua.huake} | 화기: {chart.sihua.huaji}
+            {t("chart.hualu", { default: "화록" })}: {chart.sihua.hualu} |{" "}
+            {t("chart.huaquan", { default: "화권" })}: {chart.sihua.huaquan}
+          </div>
+          <div>
+            {t("chart.huake", { default: "화과" })}: {chart.sihua.huake} |{" "}
+            {t("chart.huaji", { default: "화기" })}: {chart.sihua.huaji}
           </div>
         </div>
       </div>
@@ -159,20 +168,37 @@ const ChartGrid = ({
 const DayunTimeline = ({
   dayun,
   currentAge,
+  t,
 }: {
   dayun: DayunResult;
   currentAge: number;
+  t: ReturnType<typeof useTranslations>;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<
     "overall" | "wealth" | "career" | "relationship" | "health"
   >("overall");
 
   const categories = [
-    { key: "overall" as const, label: "종합" },
-    { key: "wealth" as const, label: "재물" },
-    { key: "career" as const, label: "직업" },
-    { key: "relationship" as const, label: "인연" },
-    { key: "health" as const, label: "건강" },
+    {
+      key: "overall" as const,
+      label: t("dayun.categories.overall", { default: "종합" }),
+    },
+    {
+      key: "wealth" as const,
+      label: t("dayun.categories.wealth", { default: "재물" }),
+    },
+    {
+      key: "career" as const,
+      label: t("dayun.categories.career", { default: "직업" }),
+    },
+    {
+      key: "relationship" as const,
+      label: t("dayun.categories.relationship", { default: "인연" }),
+    },
+    {
+      key: "health" as const,
+      label: t("dayun.categories.health", { default: "건강" }),
+    },
   ];
 
   const getScoreClass = (score: number) => {
@@ -184,7 +210,12 @@ const DayunTimeline = ({
   return (
     <div className={styles.dayunTimeline}>
       <div className={styles.dayunHeader}>
-        <span>대운 시작: {dayun.startAge}세</span>
+        <span>
+          {t("dayun.startAge", {
+            age: dayun.startAge,
+            default: `대운 시작: ${dayun.startAge}세`,
+          })}
+        </span>
         <span className={styles.dayunDirection}>{dayun.direction}</span>
       </div>
 
@@ -212,7 +243,11 @@ const DayunTimeline = ({
             className={`${styles.dayunPeriod} ${isCurrent ? styles.current : ""}`}
           >
             <div className={styles.periodAge}>
-              {period.startAge}-{period.endAge}세
+              {t("dayun.ageRange", {
+                start: period.startAge,
+                end: period.endAge,
+                default: `${period.startAge}-${period.endAge}세`,
+              })}
             </div>
             <div className={styles.periodInfo}>
               <div className={styles.periodPalace}>{period.palaceName}</div>
@@ -221,12 +256,12 @@ const DayunTimeline = ({
                   ? period.palace.mainStars
                       .map((s) => `${s.name}(${s.brightness})`)
                       .join(", ")
-                  : "주성 없음"}
+                  : t("common.noMainStars", { default: "주성 없음" })}
               </div>
               <div className={styles.periodScores}>
                 <span className={`${styles.scoreChip} ${getScoreClass(score)}`}>
                   {categories.find((c) => c.key === selectedCategory)?.label}:{" "}
-                  {score}점
+                  {score}
                 </span>
               </div>
             </div>
@@ -243,14 +278,18 @@ const DayunTimeline = ({
 
 const LifestyleSection = ({
   lifestyle,
+  t,
 }: {
   lifestyle: LifestyleRecommendation;
+  t: ReturnType<typeof useTranslations>;
 }) => {
   return (
     <div>
       <div className={styles.lifestyleGrid}>
         <div className={styles.lifestyleCard}>
-          <div className={styles.lifestyleLabel}>Lucky Colors</div>
+          <div className={styles.lifestyleLabel}>
+            {t("lifestyle.luckyColors", { default: "Lucky Colors" })}
+          </div>
           <div className={styles.lifestyleValue}>
             {lifestyle.luckyColors.primary}, {lifestyle.luckyColors.secondary}
           </div>
@@ -267,7 +306,9 @@ const LifestyleSection = ({
         </div>
 
         <div className={styles.lifestyleCard}>
-          <div className={styles.lifestyleLabel}>Lucky Direction</div>
+          <div className={styles.lifestyleLabel}>
+            {t("lifestyle.luckyDirection", { default: "Lucky Direction" })}
+          </div>
           <div className={styles.lifestyleValue}>
             {lifestyle.luckyDirection.emoji}{" "}
             {lifestyle.luckyDirection.direction}
@@ -278,7 +319,9 @@ const LifestyleSection = ({
         </div>
 
         <div className={styles.lifestyleCard}>
-          <div className={styles.lifestyleLabel}>Lucky Numbers</div>
+          <div className={styles.lifestyleLabel}>
+            {t("lifestyle.luckyNumbers", { default: "Lucky Numbers" })}
+          </div>
           <div className={styles.luckyNumbers}>
             {lifestyle.luckyNumbers.map((num) => (
               <span key={num} className={styles.luckyNumber}>
@@ -291,7 +334,9 @@ const LifestyleSection = ({
 
       {/* 직업 적합도 */}
       <div className={styles.careerSection}>
-        <h4 className={styles.subSectionTitle}>직업 적합도</h4>
+        <h4 className={styles.subSectionTitle}>
+          {t("lifestyle.careerFit", { default: "직업 적합도" })}
+        </h4>
         <div className={styles.careerList}>
           {lifestyle.careerFit.slice(0, 5).map((career, idx) => (
             <div key={idx} className={styles.careerItem}>
@@ -314,7 +359,9 @@ const LifestyleSection = ({
 
       {/* 궁합 */}
       <div className={styles.compatSection}>
-        <h4 className={styles.subSectionTitle}>궁합 좋은 띠</h4>
+        <h4 className={styles.subSectionTitle}>
+          {t("lifestyle.compatibility", { default: "궁합 좋은 띠" })}
+        </h4>
         <div className={styles.compatGrid}>
           {lifestyle.compatibleSigns.map((sign, idx) => (
             <div key={idx} className={styles.compatCard}>
@@ -326,7 +373,9 @@ const LifestyleSection = ({
           ))}
         </div>
         <div className={styles.incompatList}>
-          <span className={styles.incompatLabel}>상극:</span>
+          <span className={styles.incompatLabel}>
+            {t("lifestyle.incompatible", { default: "상극" })}:
+          </span>
           {lifestyle.incompatibleSigns.map((sign, idx) => (
             <span key={idx} className={styles.incompatChip}>
               {sign}
@@ -338,15 +387,38 @@ const LifestyleSection = ({
       {/* 오행 밸런스 */}
       <div className={styles.elementSection}>
         <h4 className={styles.subSectionTitle}>
-          오행 밸런스 (강: {lifestyle.elementBalance.dominant}, 약:{" "}
+          {t("lifestyle.elementBalance", { default: "오행 밸런스" })} (
+          {t("lifestyle.dominant", { default: "강" })}:{" "}
+          {lifestyle.elementBalance.dominant},{" "}
+          {t("lifestyle.lacking", { default: "약" })}:{" "}
           {lifestyle.elementBalance.lacking})
         </h4>
         {[
-          { name: "수", value: lifestyle.elementBalance.water, class: "water" },
-          { name: "목", value: lifestyle.elementBalance.wood, class: "wood" },
-          { name: "화", value: lifestyle.elementBalance.fire, class: "fire" },
-          { name: "토", value: lifestyle.elementBalance.earth, class: "earth" },
-          { name: "금", value: lifestyle.elementBalance.metal, class: "metal" },
+          {
+            name: t("lifestyle.elements.water", { default: "수" }),
+            value: lifestyle.elementBalance.water,
+            class: "water",
+          },
+          {
+            name: t("lifestyle.elements.wood", { default: "목" }),
+            value: lifestyle.elementBalance.wood,
+            class: "wood",
+          },
+          {
+            name: t("lifestyle.elements.fire", { default: "화" }),
+            value: lifestyle.elementBalance.fire,
+            class: "fire",
+          },
+          {
+            name: t("lifestyle.elements.earth", { default: "토" }),
+            value: lifestyle.elementBalance.earth,
+            class: "earth",
+          },
+          {
+            name: t("lifestyle.elements.metal", { default: "금" }),
+            value: lifestyle.elementBalance.metal,
+            class: "metal",
+          },
         ].map((el) => (
           <div key={el.name} className={styles.elementRow}>
             <span className={styles.elementName}>{el.name}</span>
@@ -373,8 +445,9 @@ export default function LifetimeFortunePage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
   const profileId = params.profileId as string;
+  const t = useTranslations("fortune.lifetime");
+  const tCommon = useTranslations("fortune.common");
 
-  // 전역 상태에서 프로필 가져오기
   const cachedProfile = useProfileById(profileId);
   const isProfilesLoaded = useIsProfilesLoaded();
   const { fetchProfiles } = useProfileActions();
@@ -398,14 +471,12 @@ export default function LifetimeFortunePage() {
     return age;
   };
 
-  // 프로필이 로드되지 않은 경우 로드 시도
   useEffect(() => {
     if (authStatus === "authenticated" && !isProfilesLoaded) {
       fetchProfiles();
     }
   }, [authStatus, isProfilesLoaded, fetchProfiles]);
 
-  // 캐시된 프로필이 있으면 profile 상태에 설정
   useEffect(() => {
     if (cachedProfile) {
       setProfile(cachedProfile);
@@ -422,14 +493,14 @@ export default function LifetimeFortunePage() {
       return;
     }
 
-    // 프로필이 아직 로드되지 않은 경우 대기
     if (!isProfilesLoaded) {
       return;
     }
 
-    // 전역 상태에서 프로필을 찾을 수 없는 경우
     if (!cachedProfile) {
-      setError("프로필을 찾을 수 없습니다.");
+      setError(
+        tCommon("profileNotFound", { default: "프로필을 찾을 수 없습니다." })
+      );
       setIsLoading(false);
       return;
     }
@@ -470,14 +541,20 @@ export default function LifetimeFortunePage() {
         });
 
         if (!interpretRes.ok) {
-          throw new Error("운세 해석에 실패했습니다.");
+          throw new Error(
+            t("interpretError", { default: "운세 해석에 실패했습니다." })
+          );
         }
 
         const fortuneData = await interpretRes.json();
         setResult(fortuneData.data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다."
+          err instanceof Error
+            ? err.message
+            : tCommon("unknownError", {
+                default: "알 수 없는 오류가 발생했습니다.",
+              })
         );
       } finally {
         setIsLoading(false);
@@ -485,7 +562,15 @@ export default function LifetimeFortunePage() {
     };
 
     fetchFortuneData();
-  }, [authStatus, profileId, router, isProfilesLoaded, cachedProfile]);
+  }, [
+    authStatus,
+    profileId,
+    router,
+    isProfilesLoaded,
+    cachedProfile,
+    t,
+    tCommon,
+  ]);
 
   if (authStatus === "loading" || isLoading || !isProfilesLoaded) {
     return <Loading />;
@@ -503,7 +588,9 @@ export default function LifetimeFortunePage() {
               className={styles.backButton}
               onClick={() => router.push("/profiles")}
             >
-              프로필 목록으로 돌아가기
+              {tCommon("backToProfiles", {
+                default: "프로필 목록으로 돌아가기",
+              })}
             </button>
           </div>
         </main>
@@ -524,10 +611,18 @@ export default function LifetimeFortunePage() {
 
       <main className={styles.main}>
         <div className={styles.profileInfo}>
-          <h1 className={styles.name}>{profile.name}님의 인생 운세</h1>
+          <h1 className={styles.name}>
+            {t("title", {
+              name: profile.name,
+              default: `${profile.name}님의 인생 운세`,
+            })}
+          </h1>
           <p className={styles.profileMeta}>
-            {profile.birth_date} | {profile.gender === "male" ? "남" : "여"} |{" "}
-            {currentAge}세
+            {profile.birth_date} |{" "}
+            {profile.gender === "male"
+              ? tCommon("male", { default: "남" })
+              : tCommon("female", { default: "여" })}{" "}
+            | {tCommon("age", { age: currentAge, default: `${currentAge}세` })}
           </p>
         </div>
 
@@ -544,36 +639,48 @@ export default function LifetimeFortunePage() {
         {/* 명반 섹션 */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>명반</h3>
+            <h3 className={styles.sectionTitle}>
+              {t("chart.title", { default: "명반" })}
+            </h3>
             <span className={styles.sectionBadge}>{result.chart.wuxingJu}</span>
           </div>
           <ChartGrid
             chart={rawChart}
             mingGong={rawChart.mingGong}
             shenGong={rawChart.shenGong}
+            t={t}
           />
         </section>
 
         {/* 대운 섹션 */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>대운 (10년 주기)</h3>
-            <span className={styles.sectionBadge}>현재 {currentAge}세</span>
+            <h3 className={styles.sectionTitle}>
+              {t("dayun.title", { default: "대운 (10년 주기)" })}
+            </h3>
+            <span className={styles.sectionBadge}>
+              {t("dayun.currentAge", {
+                age: currentAge,
+                default: `현재 ${currentAge}세`,
+              })}
+            </span>
           </div>
-          <DayunTimeline dayun={dayun} currentAge={currentAge} />
+          <DayunTimeline dayun={dayun} currentAge={currentAge} t={t} />
         </section>
 
         {/* 라이프스타일 섹션 */}
         <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>라이프스타일 추천</h3>
-          <LifestyleSection lifestyle={lifestyle} />
+          <h3 className={styles.sectionTitle}>
+            {t("lifestyle.title", { default: "라이프스타일 추천" })}
+          </h3>
+          <LifestyleSection lifestyle={lifestyle} t={t} />
         </section>
 
         {/* 상세 운세 섹션 */}
         {interpretation.details && (
           <div className={styles.detailsContainer}>
             <section className={styles.summarySection}>
-              <h3>종합 운세</h3>
+              <h3>{t("details.summary", { default: "종합 운세" })}</h3>
               <p>{interpretation.details.summary}</p>
             </section>
 
@@ -632,7 +739,7 @@ export default function LifetimeFortunePage() {
           className={styles.backButton}
           onClick={() => router.push("/profiles")}
         >
-          프로필 목록으로 돌아가기
+          {tCommon("backToProfiles", { default: "프로필 목록으로 돌아가기" })}
         </button>
       </main>
     </div>

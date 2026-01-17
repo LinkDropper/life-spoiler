@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import styles from "./ProfileCard.module.css";
 
 import type { FortuneType } from "@/libs/stores/user";
@@ -22,22 +24,6 @@ const formatBirthDate = (dateString: string) => {
   return `${year}.${month}.${day}`;
 };
 
-const formatBirthTime = (timeString: string | null, isUnknown: boolean) => {
-  if (isUnknown || !timeString) {
-    return "시간 모름";
-  }
-  const [hour, minute] = timeString.split(":");
-  return `${hour} : ${minute}`;
-};
-
-const getCalendarLabel = (type: "solar" | "lunar") => {
-  return type === "solar" ? "양력" : "음력";
-};
-
-const getGenderLabel = (gender: "male" | "female") => {
-  return gender === "male" ? "남성" : "여성";
-};
-
 export const ProfileCard = ({
   name,
   birthDate,
@@ -50,6 +36,28 @@ export const ProfileCard = ({
   onSelect,
   onDelete,
 }: ProfileCardProps) => {
+  const t = useTranslations("profiles.card");
+
+  const formatBirthTime = (timeString: string | null, isUnknown: boolean) => {
+    if (isUnknown || !timeString) {
+      return t("timeUnknown", { default: "시간 모름" });
+    }
+    const [hour, minute] = timeString.split(":");
+    return `${hour} : ${minute}`;
+  };
+
+  const getCalendarLabel = (type: "solar" | "lunar") => {
+    return type === "solar"
+      ? t("solar", { default: "양력" })
+      : t("lunar", { default: "음력" });
+  };
+
+  const getGenderLabel = (g: "male" | "female") => {
+    return g === "male"
+      ? t("male", { default: "남성" })
+      : t("female", { default: "여성" });
+  };
+
   const hasLifetimeFortune = completedFortunes.includes("lifetime");
   const hasYearlyFortune = completedFortunes.includes("yearly");
 
@@ -71,7 +79,7 @@ export const ProfileCard = ({
             type="button"
             className={styles.deleteButton}
             onClick={handleDeleteClick}
-            aria-label="프로필 삭제"
+            aria-label={t("deleteAriaLabel", { default: "프로필 삭제" })}
           >
             <svg
               width="20"
@@ -124,7 +132,7 @@ export const ProfileCard = ({
                   strokeLinejoin="round"
                 />
               </svg>
-              인생 운세
+              {t("lifetimeFortune", { default: "인생 운세" })}
             </span>
           )}
           {hasYearlyFortune && (
@@ -144,7 +152,7 @@ export const ProfileCard = ({
                   strokeLinejoin="round"
                 />
               </svg>
-              올해 운세
+              {t("yearlyFortune", { default: "올해 운세" })}
             </span>
           )}
         </div>

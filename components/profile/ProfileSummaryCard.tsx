@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import styles from "./ProfileSummaryCard.module.css";
 
 interface ProfileSummaryCardProps {
@@ -14,22 +18,6 @@ const formatBirthDate = (dateString: string) => {
   return `${year}.${month}.${day}`;
 };
 
-const formatBirthTime = (timeString: string | null, isUnknown: boolean) => {
-  if (isUnknown || !timeString) {
-    return "시간 모름";
-  }
-  const [hour, minute] = timeString.split(":");
-  return `${hour} : ${minute}`;
-};
-
-const getCalendarLabel = (type: "solar" | "lunar") => {
-  return type === "solar" ? "양력" : "음력";
-};
-
-const getGenderLabel = (gender: "male" | "female") => {
-  return gender === "male" ? "남성" : "여성";
-};
-
 export const ProfileSummaryCard = ({
   name,
   birthDate,
@@ -38,6 +26,28 @@ export const ProfileSummaryCard = ({
   calendarType,
   gender,
 }: ProfileSummaryCardProps) => {
+  const t = useTranslations("profiles.card");
+
+  const formatBirthTime = (timeString: string | null, isUnknown: boolean) => {
+    if (isUnknown || !timeString) {
+      return t("timeUnknown", { default: "시간 모름" });
+    }
+    const [hour, minute] = timeString.split(":");
+    return `${hour} : ${minute}`;
+  };
+
+  const getCalendarLabel = (type: "solar" | "lunar") => {
+    return type === "solar"
+      ? t("solar", { default: "양력" })
+      : t("lunar", { default: "음력" });
+  };
+
+  const getGenderLabel = (g: "male" | "female") => {
+    return g === "male"
+      ? t("male", { default: "남성" })
+      : t("female", { default: "여성" });
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.nameRow}>
