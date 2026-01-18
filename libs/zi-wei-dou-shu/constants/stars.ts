@@ -38,6 +38,13 @@ export const ZIWEI_GROUP_OFFSETS: Record<string, number> = {
 /**
  * 천부 계열 주성 오프셋
  * 천부성 위치 기준 순행
+ *
+ * @출처 삼합파(三合派)
+ * @구결 "天府太陰順貪狼，巨門天相與天梁，七殺空三是破軍"
+ * @검증일 2026-01-18
+ *
+ * 파군 오프셋 = 10 (칠살 6 + 공백 3칸 + 1 = 10)
+ * @학파차이 일부 학파에서는 파군을 +4로 보는 경우 있음
  */
 export const TIANFU_GROUP_OFFSETS: Record<string, number> = {
   천부: 0,
@@ -47,7 +54,7 @@ export const TIANFU_GROUP_OFFSETS: Record<string, number> = {
   천상: 4,
   천량: 5,
   칠살: 6,
-  파군: 10,
+  파군: 10, // 七殺空三是破軍: 칠살에서 4칸 순행
 };
 
 /**

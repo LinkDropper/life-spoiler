@@ -235,11 +235,13 @@ export async function POST(request: NextRequest) {
     };
 
     let result: YearlyFortuneInterpretation;
+    let isAISuccess = false;
 
     try {
       result = await generateYearlyInterpretation(interpretRequest);
+      isAISuccess = true;
 
-      // 캐시 저장
+      // 캐시 저장 (AI 성공 시에만)
       setCachedResult(chartHash, cacheKey, result).catch(console.error);
     } catch (error) {
       console.error("AI 해석 오류:", error);
@@ -248,8 +250,8 @@ export async function POST(request: NextRequest) {
 
     const responseData = buildResponseData(result);
 
-    // fortunes에 전체 데이터 저장
-    if (profileId) {
+    // fortunes에 전체 데이터 저장 (AI 성공 시에만)
+    if (profileId && isAISuccess) {
       saveFortune({
         profileId,
         fortuneType: "yearly",

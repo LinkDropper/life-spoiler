@@ -64,6 +64,10 @@ export const calculateTianyue = (yearStem: StemIndex): BranchIndex => {
 /**
  * 화성 위치 계산 (연지와 시 기준)
  *
+ * @출처 삼합파(三合派)
+ * @검증일 2026-01-18
+ * @학파차이 북파(北派)와 일부 시작점 차이 있을 수 있음
+ *
  * 인오술년: 축에서 시작
  * 신자진년: 인에서 시작
  * 사유축년: 묘에서 시작
@@ -90,6 +94,15 @@ export const calculateHuoxing = (
 
 /**
  * 영성 위치 계산 (연지와 시 기준)
+ *
+ * @출처 삼합파(三合派)
+ * @검증일 2026-01-18
+ * @학파차이 북파(北派)와 일부 시작점 차이 있을 수 있음
+ *
+ * 인오술년: 묘에서 시작
+ * 신자진년: 술에서 시작
+ * 사유축년: 술에서 시작
+ * 해묘미년: 묘에서 시작
  */
 export const calculateLingxing = (
   yearBranch: BranchIndex,
