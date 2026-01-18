@@ -54,7 +54,7 @@ export const TIANFU_GROUP_OFFSETS: Record<string, number> = {
   천상: 4,
   천량: 5,
   칠살: 6,
-  파군: 10, // 七殺空三是破軍: 칠살 후 3칸 공백
+  파군: 10, // 七殺空三是破軍: 칠살에서 4칸 순행
 };
 
 /**
