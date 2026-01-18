@@ -9,6 +9,24 @@
         "logoAlt": "인생스포 로고",
         "menuAriaLabel": "메뉴"
       },
+      "menu": {
+        "logoAlt": "인생스포 로고",
+        "loginViaGoogle": "구글 이메일로 로그인 했습니다.",
+        "loginViaKakao": "카카오 이메일로 로그인 했습니다.",
+        "loggedIn": "로그인 했습니다.",
+        "lifetimeFortune": "인생 운세 보기",
+        "yearlyFortune": "올해 운세 보기",
+        "login": "로그인",
+        "logout": "로그아웃",
+        "withdraw": "회원탈퇴",
+        "withdrawError": "회원탈퇴에 실패했습니다. 다시 시도해주세요.",
+        "withdrawModal": {
+          "title": "정말 탈퇴하시겠어요?",
+          "description": "탈퇴 후에는 복구가 불가능 합니다. 계정의 모든 프로필의 운세 기록도 모두 삭제됩니다.",
+          "confirm": "탈퇴하기",
+          "withdrawing": "탈퇴 중..."
+        }
+      },
       "hero": {
         "imageAlt": "운명의 별자리",
         "title": "당신의 인생 시나리오",
@@ -441,6 +459,24 @@
         "logoAlt": "Life Spoiler Logo",
         "menuAriaLabel": "Menu"
       },
+      "menu": {
+        "logoAlt": "Life Spoiler Logo",
+        "loginViaGoogle": "Logged in with Google.",
+        "loginViaKakao": "Logged in with Kakao.",
+        "loggedIn": "Logged in.",
+        "lifetimeFortune": "View Lifetime Fortune",
+        "yearlyFortune": "View This Year's Fortune",
+        "login": "Login",
+        "logout": "Logout",
+        "withdraw": "Delete Account",
+        "withdrawError": "Failed to delete account. Please try again.",
+        "withdrawModal": {
+          "title": "Are you sure you want to delete your account?",
+          "description": "This action cannot be undone. All your profiles and fortune records will be permanently deleted.",
+          "confirm": "Delete Account",
+          "withdrawing": "Deleting..."
+        }
+      },
       "hero": {
         "imageAlt": "Destiny Constellation",
         "title": "Your Life Scenario",
@@ -872,6 +908,24 @@
       "header": {
         "logoAlt": "ライフスポイラー ロゴ",
         "menuAriaLabel": "メニュー"
+      },
+      "menu": {
+        "logoAlt": "ライフスポイラー ロゴ",
+        "loginViaGoogle": "Googleでログインしました。",
+        "loginViaKakao": "カカオでログインしました。",
+        "loggedIn": "ログインしました。",
+        "lifetimeFortune": "人生運勢を見る",
+        "yearlyFortune": "今年の運勢を見る",
+        "login": "ログイン",
+        "logout": "ログアウト",
+        "withdraw": "退会",
+        "withdrawError": "退会に失敗しました。もう一度お試しください。",
+        "withdrawModal": {
+          "title": "本当に退会しますか？",
+          "description": "退会後は復元できません。すべてのプロフィールと運勢記録が削除されます。",
+          "confirm": "退会する",
+          "withdrawing": "退会中..."
+        }
       },
       "hero": {
         "imageAlt": "運命の星座",
