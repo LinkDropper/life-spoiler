@@ -304,13 +304,15 @@ export async function POST(request: NextRequest) {
     };
 
     let result: FortuneInterpretation;
+    let isAISuccess = false;
 
     try {
       result = await generateFullInterpretation(interpretRequest, {
         includeDetails,
       });
+      isAISuccess = true;
 
-      // 캐시 저장
+      // 캐시 저장 (AI 성공 시에만)
       setCachedResult(chartHash, cacheKey, result).catch(console.error);
     } catch (error) {
       console.error("AI 해석 오류:", error);
@@ -319,8 +321,8 @@ export async function POST(request: NextRequest) {
 
     const responseData = buildResponseData(result);
 
-    // fortunes에 전체 데이터 저장 (인생운세인 경우)
-    if (profileId && includeDetails) {
+    // fortunes에 전체 데이터 저장 (AI 성공 시에만)
+    if (profileId && includeDetails && isAISuccess) {
       saveFortune({
         profileId,
         fortuneType: "lifetime",
