@@ -1,0 +1,247 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: linear-gradient(180deg, rgba(12, 18, 32, 1) 0%, rgba(46, 20, 49, 1) 100%);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.overlayOpen {
+  opacity: 1;
+  visibility: visible;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  width: 100%;
+  height: 60px;
+  border-bottom: 1px solid #ffccd9;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  flex: 1;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.profileCard {
+  background: #18181b;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loginInfo {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.4;
+  color: #ffffff;
+  margin: 0;
+}
+
+.email {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.menuItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  height: 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  cursor: pointer;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+}
+
+.menuItem:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.menuItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.menuItemText {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.footer {
+  padding: 20px 16px;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.footerLinks {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.625;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.footerLink {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footerLink:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.divider {
+  margin: 0 12px;
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 28, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 20px;
+}
+
+.modal {
+  background: #18181b;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 327px;
+  width: 100%;
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.12);
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modalTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modalTitle {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.4;
+  color: #ffffff;
+  margin: 0;
+}
+
+.modalDescription {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.modalCancelButton {
+  flex: 1;
+  height: 52px;
+  padding: 16px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modalCancelButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modalConfirmButton {
+  flex: 1;
+  height: 52px;
+  padding: 16px 20px;
+  background: #fa5252;
+  border: none;
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modalConfirmButton:hover {
+  background: #e03e3e;
+}
+
+.modalConfirmButton:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}

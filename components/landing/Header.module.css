@@ -8,6 +8,10 @@
   border-bottom: 1px solid #ffccd9;
 }
 
+.logo {
+  cursor: pointer;
+}
+
 .menuButton {
   background: transparent;
   border: none;
