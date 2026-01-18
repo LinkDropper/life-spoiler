@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import { ProfileInfo, ZiweiChartGrid } from "@/components/fortune";
 import {
   useProfileById,
   useIsProfilesLoaded,
@@ -14,19 +15,14 @@ import {
 import { useAuthStatus } from "@/libs/stores/user";
 
 import type { YearlyFortuneInterpretation } from "@/libs/services/ai";
-import { calculateAge } from "@/libs/utils";
 import type {
-  MonthlyFortune,
   YearlyPalaceInfo,
   YearlyPeachBlossomInfo,
   YearlySihua,
 } from "@/libs/zi-wei-dou-shu/calculators";
+import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 
 import styles from "./page.module.css";
-
-// ============================================================
-// 타입 정의
-// ============================================================
 
 interface ProfileData {
   id: string;
@@ -48,6 +44,7 @@ interface YearlyFortuneResult {
     wuxingJu: string;
     mingGong: string;
   };
+  rawChart: ZiweiChart;
   yearlySihua: YearlySihua;
   yearlyPalaces: YearlyPalaceInfo;
   peachBlossom: YearlyPeachBlossomInfo;
@@ -56,232 +53,144 @@ interface YearlyFortuneResult {
     palaceName: string;
     mainStars: string[];
   } | null;
-  scores: {
-    overall: number;
-    wealth: number;
-    career: number;
-    relationship: number;
-    health: number;
-  };
-  monthlyFortunes: MonthlyFortune[];
-  luckyMonths: number[];
-  cautionMonths: number[];
   interpretation: YearlyFortuneInterpretation;
 }
 
-// ============================================================
-// 유틸리티 함수
-// ============================================================
+type CategoryKey = "wealth" | "career" | "relationship" | "health";
 
-const getScoreColor = (score: number) => {
-  if (score >= 70) return "#deff7c";
-  if (score >= 50) return "#ffc854";
-  return "#fb7194";
-};
-
-// ============================================================
-// 점수 게이지 컴포넌트
-// ============================================================
-
-const ScoreGauge = ({
-  score,
-  label,
-  unit,
-}: {
-  score: number;
-  label: string;
-  unit: string;
-}) => {
-  return (
-    <div className={styles.scoreGauge}>
-      <div className={styles.scoreLabel}>{label}</div>
-      <div className={styles.scoreBarContainer}>
-        <div
-          className={styles.scoreBar}
-          style={{
-            width: `${score}%`,
-            backgroundColor: getScoreColor(score),
-          }}
-        />
-      </div>
-      <div className={styles.scoreValue}>
-        {score}
-        {unit}
-      </div>
-    </div>
-  );
-};
-
-// ============================================================
-// 유년 사화 카드 컴포넌트
-// ============================================================
-
-const SihuaCard = ({
-  type,
-  sihua,
+const CategoryItem = ({
+  categoryKey,
+  category,
   t,
 }: {
-  type: "hualu" | "huaquan" | "huake" | "huaji";
-  sihua: YearlySihua;
+  categoryKey: CategoryKey;
+  category: { content: string; tags: string[] };
   t: ReturnType<typeof useTranslations>;
 }) => {
-  const typeInfo = {
-    hualu: { emoji: "🌟", color: "#deff7c" },
-    huaquan: { emoji: "👑", color: "#ffc854" },
-    huake: { emoji: "🏆", color: "#b8a4ff" },
-    huaji: { emoji: "⚠️", color: "#fb7194" },
+  const [expanded, setExpanded] = useState(true);
+
+  const defaultLabels: Record<CategoryKey, string> = {
+    wealth: "재물운",
+    career: "직업운",
+    relationship: "인연운",
+    health: "건강운",
   };
 
-  const info = typeInfo[type];
-  const data = sihua[type];
-
-  const sihuaNames = {
-    hualu: t("sihua.hualu.name", { default: "화록" }),
-    huaquan: t("sihua.huaquan.name", { default: "화권" }),
-    huake: t("sihua.huake.name", { default: "화과" }),
-    huaji: t("sihua.huaji.name", { default: "화기" }),
-  };
+  const label = t(`categories.${categoryKey}`, {
+    default: defaultLabels[categoryKey],
+  });
 
   return (
-    <div className={styles.sihuaCard}>
-      <div className={styles.sihuaHeader}>
-        <span className={styles.sihuaEmoji}>{info.emoji}</span>
-        <span className={styles.sihuaType} style={{ color: info.color }}>
-          {sihuaNames[type]}
-        </span>
-      </div>
-      <div className={styles.sihuaStar}>{data.star}</div>
-      <div className={styles.sihuaPalace}>{data.palace}</div>
-      <div className={styles.sihuaMeaning}>{data.palaceMeaning}</div>
-    </div>
-  );
-};
-
-// ============================================================
-// 월별 운세 차트 컴포넌트
-// ============================================================
-
-const MonthlyChart = ({
-  monthlyFortunes,
-  luckyMonths,
-  cautionMonths,
-  t,
-}: {
-  monthlyFortunes: MonthlyFortune[];
-  luckyMonths: number[];
-  cautionMonths: number[];
-  t: ReturnType<typeof useTranslations>;
-}) => {
-  const maxScore = Math.max(...monthlyFortunes.map((m) => m.score));
-
-  return (
-    <div className={styles.monthlyChart}>
-      <div className={styles.chartBars}>
-        {monthlyFortunes.map((month) => {
-          const isLucky = luckyMonths.includes(month.month);
-          const isCaution = cautionMonths.includes(month.month);
-          const barHeight = (month.score / maxScore) * 100;
-
-          return (
-            <div key={month.month} className={styles.chartColumn}>
-              <div className={styles.chartBarWrapper}>
-                <div
-                  className={`${styles.chartBar} ${isLucky ? styles.lucky : ""} ${isCaution ? styles.caution : ""}`}
-                  style={{ height: `${barHeight}%` }}
-                />
-              </div>
-              <div className={styles.chartMonth}>
-                {month.month}
-                {t("monthly.monthUnit", { default: "월" })}
-              </div>
-              {isLucky && (
-                <div className={styles.monthBadge}>
-                  {t("monthly.good", { default: "좋음" })}
-                </div>
-              )}
-              {isCaution && (
-                <div className={`${styles.monthBadge} ${styles.cautionBadge}`}>
-                  {t("monthly.caution", { default: "주의" })}
-                </div>
-              )}
+    <div className={styles.categoryCard}>
+      <button
+        type="button"
+        className={styles.categoryHeader}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <span className={styles.categoryLabel}>{label}</span>
+        <svg
+          className={`${styles.chevronSmall} ${expanded ? styles.expanded : ""}`}
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M5 12.5L10 7.5L15 12.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      {expanded && (
+        <>
+          <p className={styles.categoryContent}>{category.content}</p>
+          {category.tags && category.tags.length > 0 && (
+            <div className={styles.categoryTags}>
+              {category.tags.map((tag, idx) => (
+                <span key={idx} className={styles.tag}>
+                  #{tag}
+                </span>
+              ))}
             </div>
-          );
-        })}
-      </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
 
-// ============================================================
-// 월별 운세 리스트 컴포넌트
-// ============================================================
+const MonthlyScenarioItem = ({
+  fortune,
+  monthUnit,
+}: {
+  fortune: YearlyFortuneInterpretation["monthlyFortunes"][number];
+  monthUnit: string;
+}) => {
+  const [expanded, setExpanded] = useState(true);
 
-const getScoreEmoji = (score: number) => {
-  if (score >= 75) return "🔥";
-  if (score >= 60) return "✨";
-  if (score >= 45) return "👍";
-  return "💪";
+  return (
+    <div className={styles.scenarioItem}>
+      <button
+        type="button"
+        className={styles.scenarioHeader}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className={styles.scenarioHeaderLeft}>
+          <div className={styles.scenarioMonth}>
+            {fortune.month}
+            {monthUnit}
+          </div>
+          <div className={styles.scenarioHeadline}>{fortune.headline}</div>
+        </div>
+        <svg
+          className={`${styles.chevronSmall} ${expanded ? styles.expanded : ""}`}
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M5 12.5L10 7.5L15 12.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      {expanded && (
+        <div className={styles.scenarioContent}>{fortune.content}</div>
+      )}
+    </div>
+  );
 };
 
-const MonthlyFortuneList = ({
+const MonthlyScenarioList = ({
   monthlyFortunes,
   t,
 }: {
   monthlyFortunes: YearlyFortuneInterpretation["monthlyFortunes"];
   t: ReturnType<typeof useTranslations>;
 }) => {
-  const [expanded, setExpanded] = useState(false);
-  const displayFortunes = expanded
-    ? monthlyFortunes
-    : monthlyFortunes.slice(0, 4);
+  const monthUnit = t("monthly.monthUnit", { default: "월" });
 
   return (
-    <div className={styles.monthlyFortune}>
-      <div className={styles.fortuneList}>
-        {displayFortunes.map((fortune) => (
-          <div key={fortune.month} className={styles.fortuneItem}>
-            <div className={styles.fortuneHeader}>
-              <div className={styles.fortuneMonth}>
-                {fortune.month}
-                {t("monthly.monthUnit", { default: "월" })}
-              </div>
-              <div
-                className={styles.fortuneScore}
-                style={{ color: getScoreColor(fortune.score) }}
-              >
-                {getScoreEmoji(fortune.score)} {fortune.score}
-                {t("scores.unit", { default: "점" })}
-              </div>
-            </div>
-            <div className={styles.fortuneTheme}>{fortune.theme}</div>
-            <div className={styles.fortuneContent}>{fortune.content}</div>
-            {fortune.tip && (
-              <div className={styles.fortuneTip}>💡 {fortune.tip}</div>
-            )}
-          </div>
+    <div className={styles.monthlyScenario}>
+      <div className={styles.scenarioList}>
+        {monthlyFortunes.map((fortune) => (
+          <MonthlyScenarioItem
+            key={fortune.month}
+            fortune={fortune}
+            monthUnit={monthUnit}
+          />
         ))}
       </div>
-      {monthlyFortunes.length > 4 && (
-        <button
-          type="button"
-          className={styles.expandButton}
-          onClick={() => setExpanded(!expanded)}
-        >
-          {expanded
-            ? t("monthly.collapse", { default: "접기" })
-            : t("monthly.expand", {
-                count: monthlyFortunes.length - 4,
-                default: `나머지 ${monthlyFortunes.length - 4}개월 보기`,
-              })}
-        </button>
-      )}
     </div>
   );
 };
-
-// ============================================================
-// 메인 페이지 컴포넌트
-// ============================================================
 
 export default function YearlyFortunePage() {
   const params = useParams();
@@ -291,6 +200,7 @@ export default function YearlyFortunePage() {
   const profileId = params.profileId as string;
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
+  const tPreview = useTranslations("fortune.preview");
 
   const cachedProfile = useProfileById(profileId);
   const isProfilesLoaded = useIsProfilesLoaded();
@@ -300,6 +210,12 @@ export default function YearlyFortunePage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<YearlyFortuneResult | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [chartExpanded, setChartExpanded] = useState(true);
+  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [coreExpanded, setCoreExpanded] = useState(true);
+  const [detailExpanded, setDetailExpanded] = useState(true);
+  const [monthlyExpanded, setMonthlyExpanded] = useState(true);
+  const [showCopyToast, setShowCopyToast] = useState(false);
 
   const currentYear = new Date().getFullYear();
 
@@ -407,6 +323,26 @@ export default function YearlyFortunePage() {
     tCommon,
   ]);
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShowCopyToast(true);
+      setTimeout(() => setShowCopyToast(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = shareUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setShowCopyToast(true);
+      setTimeout(() => setShowCopyToast(false), 2000);
+    }
+  };
+
   if (authStatus === "loading" || isLoading || !isProfilesLoaded) {
     return <Loading />;
   }
@@ -437,249 +373,245 @@ export default function YearlyFortunePage() {
     return null;
   }
 
-  const {
-    interpretation,
-    yearlySihua,
-    peachBlossom,
-    scores,
-    monthlyFortunes,
-    luckyMonths,
-    cautionMonths,
-    currentDayun,
-  } = result;
-  const currentAge = calculateAge(profile.birth_date);
+  const { interpretation, rawChart, yearlySihua } = result;
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       <main className={styles.main}>
-        <div className={styles.profileInfo}>
-          <h1 className={styles.name}>
-            {t("title", {
-              name: profile.name,
-              year: currentYear,
-              default: `${profile.name}님의 ${currentYear}년 운세`,
-            })}
-          </h1>
-          <p className={styles.profileMeta}>
-            {t("yearInfo", {
-              stem: yearlySihua.yearStemName,
-              branch: yearlySihua.yearBranchName,
-              default: `${yearlySihua.yearStemName}${yearlySihua.yearBranchName}년`,
-            })}{" "}
-            | {tCommon("age", { age: currentAge, default: `${currentAge}세` })}
-          </p>
-        </div>
+        {/* 프로필 정보 */}
+        <ProfileInfo
+          name={profile.name}
+          fortuneType="yearly"
+          year={currentYear}
+          birthDate={profile.birth_date}
+          birthTime={profile.birth_time}
+          birthTimeUnknown={profile.birth_time_unknown}
+          calendarType={profile.calendar_type}
+          gender={profile.gender}
+        />
 
-        {/* 연간 총평 섹션 */}
-        <section className={styles.overviewSection}>
-          <h2 className={styles.overviewHeadline}>
-            {interpretation.overview.headline}
-          </h2>
-          <p className={styles.overviewSummary}>
-            {interpretation.overview.summary}
-          </p>
-          <div className={styles.keywordList}>
-            {interpretation.overview.keywords.map((keyword) => (
-              <span key={keyword} className={styles.keyword}>
-                #{keyword}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* 도화성 정보 섹션 (활성화된 경우) */}
-        {peachBlossom.isPeachBlossomActive &&
-          peachBlossom.peachBlossomNotes.length > 0 && (
-            <section className={styles.peachBlossomSection}>
-              <div className={styles.peachBlossomHeader}>
-                <span className={styles.peachBlossomEmoji}>🌸</span>
-                <h3 className={styles.peachBlossomTitle}>
-                  {t("peachBlossom.title", { default: "올해 인연의 기운" })}
-                </h3>
-              </div>
-              <ul className={styles.peachBlossomList}>
-                {peachBlossom.peachBlossomNotes.map((note, idx) => (
-                  <li key={idx} className={styles.peachBlossomNote}>
-                    {note}
-                  </li>
-                ))}
-              </ul>
-              <div className={styles.peachBlossomStars}>
-                <span className={styles.starInfo}>
-                  {t("peachBlossom.hongluanPosition", { default: "홍란 위치" })}
-                  : {peachBlossom.hongluan.palaceName}
-                </span>
-                <span className={styles.starInfo}>
-                  {t("peachBlossom.tianxiPosition", { default: "천희 위치" })}:{" "}
-                  {peachBlossom.tianxi.palaceName}
-                </span>
-              </div>
-            </section>
-          )}
-
-        {/* 연간 점수 섹션 */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>
-              {t("scores.title", { default: "올해 운세 점수" })}
-            </h3>
-            <span className={styles.sectionBadge}>
-              {t("scores.overall", {
-                score: scores.overall,
-                default: `종합 ${scores.overall}점`,
-              })}
-            </span>
-          </div>
-          <div className={styles.scoresContainer}>
-            <ScoreGauge
-              score={scores.wealth}
-              label={t("scores.wealth", { default: "재물운" })}
-              unit={t("scores.unit", { default: "점" })}
+        {/* 자미두수 명반 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setChartExpanded(!chartExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {tPreview("chartTitle", { default: "자미두수 명반" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${chartExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-            <ScoreGauge
-              score={scores.career}
-              label={t("scores.career", { default: "직업운" })}
-              unit={t("scores.unit", { default: "점" })}
-            />
-            <ScoreGauge
-              score={scores.relationship}
-              label={t("scores.relationship", { default: "인연운" })}
-              unit={t("scores.unit", { default: "점" })}
-            />
-            <ScoreGauge
-              score={scores.health}
-              label={t("scores.health", { default: "건강운" })}
-              unit={t("scores.unit", { default: "점" })}
-            />
-          </div>
-        </section>
+          </svg>
+        </button>
 
-        {/* 유년 사화 섹션 */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>
-              {t("sihua.title", { default: "올해의 사화" })}
-            </h3>
-          </div>
-          <div className={styles.sihuaGrid}>
-            <SihuaCard type="hualu" sihua={yearlySihua} t={t} />
-            <SihuaCard type="huaquan" sihua={yearlySihua} t={t} />
-            <SihuaCard type="huake" sihua={yearlySihua} t={t} />
-            <SihuaCard type="huaji" sihua={yearlySihua} t={t} />
-          </div>
-        </section>
+        {chartExpanded && rawChart && (
+          <section className={styles.chartSection}>
+            <ZiweiChartGrid
+              chart={rawChart}
+              profileName={profile.name}
+              wuxingJu={result.chart.wuxingJu}
+              yearlySihua={yearlySihua}
+            />
+          </section>
+        )}
 
-        {/* 현재 대운 섹션 */}
-        {currentDayun && (
+        {/* 올해 스포일러 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setSpoilerExpanded(!spoilerExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {tPreview("yearlySpoilerTitle", { default: "올해 스포일러" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${spoilerExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {spoilerExpanded && (
+          <section className={styles.overviewSection}>
+            <h2 className={styles.overviewHeadline}>
+              {interpretation.overview.headline}
+            </h2>
+            <p className={styles.overviewSummary}>
+              {interpretation.overview.summary}
+            </p>
+          </section>
+        )}
+
+        {/* 핵심 시나리오 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setCoreExpanded(!coreExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {t("coreScenario.title", { default: "핵심 시나리오" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${coreExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {coreExpanded && (
           <section className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h3 className={styles.sectionTitle}>
-                {t("currentDayun.title", { default: "현재 대운" })}
-              </h3>
-              <span className={styles.sectionBadge}>{currentDayun.period}</span>
-            </div>
-            <div className={styles.dayunInfo}>
-              <div className={styles.dayunPalace}>
-                {currentDayun.palaceName}
-              </div>
-              <div className={styles.dayunStars}>
-                {currentDayun.mainStars.length > 0
-                  ? currentDayun.mainStars.join(", ")
-                  : tCommon("noMainStars", { default: "주성 없음" })}
-              </div>
+            <div className={styles.coreScenario}>
+              <p>{interpretation.coreScenario.content}</p>
             </div>
           </section>
         )}
 
-        {/* 월별 운세 차트 섹션 */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>
-              {t("monthly.title", { default: "월별 운세 흐름" })}
-            </h3>
-          </div>
-          <MonthlyChart
-            monthlyFortunes={monthlyFortunes}
-            luckyMonths={luckyMonths}
-            cautionMonths={cautionMonths}
-            t={t}
-          />
-          <div className={styles.monthLegend}>
-            <span className={styles.legendItem}>
-              <span className={`${styles.legendDot} ${styles.luckyDot}`} />
-              {t("monthly.luckyMonths", { default: "좋은 달" })}:{" "}
-              {luckyMonths
-                .map((m) => `${m}${t("monthly.monthUnit", { default: "월" })}`)
-                .join(", ")}
-            </span>
-            <span className={styles.legendItem}>
-              <span className={`${styles.legendDot} ${styles.cautionDot}`} />
-              {t("monthly.cautionMonths", { default: "주의할 달" })}:{" "}
-              {cautionMonths
-                .map((m) => `${m}${t("monthly.monthUnit", { default: "월" })}`)
-                .join(", ")}
-            </span>
-          </div>
-        </section>
-
-        {/* 분야별 운세 섹션 */}
-        <div className={styles.categoriesContainer}>
-          <section className={styles.categorySection}>
-            <h3>{interpretation.categories.wealth.title}</h3>
-            <p>{interpretation.categories.wealth.content}</p>
-            <div className={styles.advice}>
-              {interpretation.categories.wealth.advice}
-            </div>
-          </section>
-
-          <section className={styles.categorySection}>
-            <h3>{interpretation.categories.career.title}</h3>
-            <p>{interpretation.categories.career.content}</p>
-            <div className={styles.advice}>
-              {interpretation.categories.career.advice}
-            </div>
-          </section>
-
-          <section className={styles.categorySection}>
-            <h3>{interpretation.categories.relationship.title}</h3>
-            <p>{interpretation.categories.relationship.content}</p>
-            <div className={styles.advice}>
-              {interpretation.categories.relationship.advice}
-            </div>
-          </section>
-
-          <section className={styles.categorySection}>
-            <h3>{interpretation.categories.health.title}</h3>
-            <p>{interpretation.categories.health.content}</p>
-            <div className={styles.advice}>
-              {interpretation.categories.health.advice}
-            </div>
-          </section>
-        </div>
-
-        {/* 월별 운세 섹션 */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>
-              {t("monthly.detailTitle", { default: "월별 운세" })}
-            </h3>
-          </div>
-          <MonthlyFortuneList
-            monthlyFortunes={interpretation.monthlyFortunes}
-            t={t}
-          />
-        </section>
-
+        {/* 상세 시나리오 섹션 */}
         <button
           type="button"
-          className={styles.backButton}
-          onClick={() => router.push("/profiles")}
+          className={styles.sectionHeader}
+          onClick={() => setDetailExpanded(!detailExpanded)}
         >
-          {tCommon("backToProfiles", { default: "프로필 목록으로 돌아가기" })}
+          <h3 className={styles.sectionTitle}>
+            {t("detailScenario.title", { default: "상세 시나리오" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${detailExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
+
+        {detailExpanded && (
+          <section className={styles.section}>
+            <div className={styles.categoriesContainer}>
+              {(["wealth", "career", "relationship", "health"] as const).map(
+                (key) => (
+                  <CategoryItem
+                    key={key}
+                    categoryKey={key}
+                    category={interpretation.categories[key]}
+                    t={t}
+                  />
+                )
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* 월별 시나리오 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setMonthlyExpanded(!monthlyExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {t("monthly.detailTitle", { default: "월별 시나리오" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${monthlyExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {monthlyExpanded && (
+          <section className={styles.section}>
+            <MonthlyScenarioList
+              monthlyFortunes={interpretation.monthlyFortunes}
+              t={t}
+            />
+          </section>
+        )}
       </main>
+
+      {/* 하단 공유하기 버튼 */}
+      <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.shareButton}
+          onClick={handleShare}
+        >
+          {t("shareButton", { default: "공유하기" })}
+        </button>
+      </footer>
+
+      {/* 복사 완료 토스트 */}
+      {showCopyToast && (
+        <div className={styles.copyToast}>
+          <div className={styles.copyToastContent}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M13.687 4.31295C13.8823 4.50821 13.8823 4.8248 13.687 5.02006L7.02038 11.6867C6.82512 11.882 6.50854 11.882 6.31328 11.6867L2.97994 8.35339C2.78468 8.15813 2.78468 7.84155 2.97994 7.64628C3.1752 7.45102 3.49179 7.45102 3.68705 7.64628L6.66683 10.6261L12.9799 4.31295C13.1752 4.11769 13.4918 4.11769 13.687 4.31295Z"
+                fill="white"
+              />
+            </svg>{" "}
+            {tCommon("copySuccess")}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

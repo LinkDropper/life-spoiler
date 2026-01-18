@@ -6,24 +6,20 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import { ProfileInfo, ZiweiChartGrid } from "@/components/fortune";
 import {
   useProfileById,
   useIsProfilesLoaded,
   useProfileActions,
 } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
-import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 
 import type { FortuneInterpretation } from "@/libs/services/ai";
-import type { ZiweiChart, Palace } from "@/libs/zi-wei-dou-shu/types";
+import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
 import type { LifestyleRecommendation } from "@/libs/zi-wei-dou-shu/lifestyle";
 
 import styles from "./page.module.css";
-
-// ============================================================
-// 타입 정의
-// ============================================================
 
 interface ProfileData {
   id: string;
@@ -57,388 +53,128 @@ interface FortuneResult {
   interpretation: FortuneInterpretation;
 }
 
-// ============================================================
-// 명반 그리드 컴포넌트
-// ============================================================
+type CategoryKey = "wealth" | "career" | "relationship" | "health";
 
-const PALACE_GRID_POSITIONS: Record<number, { row: number; col: number }> = {
-  0: { row: 4, col: 3 },
-  1: { row: 4, col: 2 },
-  2: { row: 4, col: 1 },
-  3: { row: 3, col: 1 },
-  4: { row: 2, col: 1 },
-  5: { row: 1, col: 1 },
-  6: { row: 1, col: 2 },
-  7: { row: 1, col: 3 },
-  8: { row: 1, col: 4 },
-  9: { row: 2, col: 4 },
-  10: { row: 3, col: 4 },
-  11: { row: 4, col: 4 },
-};
-
-const ChartGrid = ({
-  chart,
-  mingGong,
-  shenGong,
+const CategoryItem = ({
+  categoryKey,
+  category,
   t,
 }: {
-  chart: ZiweiChart;
-  mingGong: number;
-  shenGong: number;
+  categoryKey: CategoryKey;
+  category: { content: string; tags: string[] };
   t: ReturnType<typeof useTranslations>;
 }) => {
-  const palacesByBranch: Record<number, Palace> = {};
-  chart.palaces.forEach((palace) => {
-    palacesByBranch[palace.branch] = palace;
+  const [expanded, setExpanded] = useState(true);
+
+  const defaultLabels: Record<CategoryKey, string> = {
+    wealth: "재물운",
+    career: "직업운",
+    relationship: "인연운",
+    health: "건강운",
+  };
+
+  const label = t(`categories.${categoryKey}`, {
+    default: defaultLabels[categoryKey],
   });
 
-  const renderPalaceCell = (branchIndex: number) => {
-    const palace = palacesByBranch[branchIndex];
-    if (!palace) return null;
-
-    const isMing = branchIndex === mingGong;
-    const isShen = branchIndex === shenGong;
-
-    return (
-      <div
-        className={`${styles.palaceCell} ${isMing ? styles.ming : ""} ${isShen ? styles.shen : ""}`}
-        style={{
-          gridRow: PALACE_GRID_POSITIONS[branchIndex].row,
-          gridColumn: PALACE_GRID_POSITIONS[branchIndex].col,
-        }}
-        key={branchIndex}
+  return (
+    <div className={styles.categoryCard}>
+      <button
+        type="button"
+        className={styles.categoryHeader}
+        onClick={() => setExpanded(!expanded)}
       >
-        <div className={styles.palaceName}>
-          {palace.name}
-          {isMing && ` (${t("chart.ming", { default: "명" })})`}
-          {isShen && ` (${t("chart.shen", { default: "신" })})`}
-        </div>
-        <div className={styles.palaceBranch}>
-          {EARTHLY_BRANCHES[branchIndex]}
-        </div>
-        <div className={styles.starList}>
-          {palace.mainStars.map((star, idx) => (
-            <div key={idx} className={styles.mainStar}>
-              {star.name}
-              <span className={styles.brightness}>({star.brightness})</span>
-              {star.sihua && (
-                <span className={styles.sihua}>[{star.sihua}]</span>
-              )}
-            </div>
-          ))}
-        </div>
-        {palace.minorStars.length > 0 && (
-          <div className={styles.minorStars}>
-            {palace.minorStars.map((s) => s.name).join(" ")}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  return (
-    <div className={styles.chartGrid}>
-      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(renderPalaceCell)}
-      <div className={styles.centerCell}>
-        <div className={styles.centerTitle}>
-          {t("chart.centerTitle", { default: "자미두수 명반" })}
-        </div>
-        <div className={styles.centerInfo}>
-          <div>
-            {t("chart.wuxingJu", { default: "오행국" })}: {chart.wuxingJu}
-          </div>
-          <div>
-            {t("chart.hualu", { default: "화록" })}: {chart.sihua.hualu} |{" "}
-            {t("chart.huaquan", { default: "화권" })}: {chart.sihua.huaquan}
-          </div>
-          <div>
-            {t("chart.huake", { default: "화과" })}: {chart.sihua.huake} |{" "}
-            {t("chart.huaji", { default: "화기" })}: {chart.sihua.huaji}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ============================================================
-// 대운 타임라인 컴포넌트
-// ============================================================
-
-const DayunTimeline = ({
-  dayun,
-  currentAge,
-  t,
-}: {
-  dayun: DayunResult;
-  currentAge: number;
-  t: ReturnType<typeof useTranslations>;
-}) => {
-  const [selectedCategory, setSelectedCategory] = useState<
-    "overall" | "wealth" | "career" | "relationship" | "health"
-  >("overall");
-
-  const categories = [
-    {
-      key: "overall" as const,
-      label: t("dayun.categories.overall", { default: "종합" }),
-    },
-    {
-      key: "wealth" as const,
-      label: t("dayun.categories.wealth", { default: "재물" }),
-    },
-    {
-      key: "career" as const,
-      label: t("dayun.categories.career", { default: "직업" }),
-    },
-    {
-      key: "relationship" as const,
-      label: t("dayun.categories.relationship", { default: "인연" }),
-    },
-    {
-      key: "health" as const,
-      label: t("dayun.categories.health", { default: "건강" }),
-    },
-  ];
-
-  const getScoreClass = (score: number) => {
-    if (score >= 70) return styles.high;
-    if (score <= 40) return styles.low;
-    return "";
-  };
-
-  return (
-    <div className={styles.dayunTimeline}>
-      <div className={styles.dayunHeader}>
-        <span>
-          {t("dayun.startAge", {
-            age: dayun.startAge,
-            default: `대운 시작: ${dayun.startAge}세`,
-          })}
-        </span>
-        <span className={styles.dayunDirection}>{dayun.direction}</span>
-      </div>
-
-      <div className={styles.tabContainer}>
-        {categories.map((cat) => (
-          <button
-            key={cat.key}
-            type="button"
-            className={`${styles.tab} ${selectedCategory === cat.key ? styles.active : ""}`}
-            onClick={() => setSelectedCategory(cat.key)}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {dayun.periods.map((period) => {
-        const isCurrent =
-          currentAge >= period.startAge && currentAge <= period.endAge;
-        const score = period.score[selectedCategory];
-
-        return (
-          <div
-            key={period.index}
-            className={`${styles.dayunPeriod} ${isCurrent ? styles.current : ""}`}
-          >
-            <div className={styles.periodAge}>
-              {t("dayun.ageRange", {
-                start: period.startAge,
-                end: period.endAge,
-                default: `${period.startAge}-${period.endAge}세`,
-              })}
-            </div>
-            <div className={styles.periodInfo}>
-              <div className={styles.periodPalace}>{period.palaceName}</div>
-              <div className={styles.periodStars}>
-                {period.palace.mainStars.length > 0
-                  ? period.palace.mainStars
-                      .map((s) => `${s.name}(${s.brightness})`)
-                      .join(", ")
-                  : t("common.noMainStars", { default: "주성 없음" })}
-              </div>
-              <div className={styles.periodScores}>
-                <span className={`${styles.scoreChip} ${getScoreClass(score)}`}>
-                  {categories.find((c) => c.key === selectedCategory)?.label}:{" "}
-                  {score}
+        <span className={styles.categoryLabel}>{label}</span>
+        <svg
+          className={`${styles.chevronSmall} ${expanded ? styles.expanded : ""}`}
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M5 12.5L10 7.5L15 12.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      {expanded && (
+        <>
+          <p className={styles.categoryContent}>{category.content}</p>
+          {category.tags && category.tags.length > 0 && (
+            <div className={styles.categoryTags}>
+              {category.tags.map((tag, idx) => (
+                <span key={idx} className={styles.tag}>
+                  #{tag}
                 </span>
-              </div>
+              ))}
             </div>
-          </div>
-        );
-      })}
+          )}
+        </>
+      )}
     </div>
   );
 };
 
-// ============================================================
-// 라이프스타일 컴포넌트
-// ============================================================
-
-const LifestyleSection = ({
-  lifestyle,
-  t,
+const AgeScenarioItem = ({
+  scenario,
 }: {
-  lifestyle: LifestyleRecommendation;
-  t: ReturnType<typeof useTranslations>;
+  scenario: { period: string; headline: string; content: string };
+}) => {
+  const [expanded, setExpanded] = useState(true);
+
+  return (
+    <div className={styles.scenarioItem}>
+      <button
+        type="button"
+        className={styles.scenarioHeader}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className={styles.scenarioHeaderLeft}>
+          <div className={styles.scenarioPeriod}>{scenario.period}</div>
+          <div className={styles.scenarioHeadline}>{scenario.headline}</div>
+        </div>
+        <svg
+          className={`${styles.chevronSmall} ${expanded ? styles.expanded : ""}`}
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M5 12.5L10 7.5L15 12.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      {expanded && (
+        <div className={styles.scenarioContent}>{scenario.content}</div>
+      )}
+    </div>
+  );
+};
+
+const AgeScenarioList = ({
+  ageScenarios,
+}: {
+  ageScenarios: FortuneInterpretation["ageScenarios"];
 }) => {
   return (
-    <div>
-      <div className={styles.lifestyleGrid}>
-        <div className={styles.lifestyleCard}>
-          <div className={styles.lifestyleLabel}>
-            {t("lifestyle.luckyColors", { default: "Lucky Colors" })}
-          </div>
-          <div className={styles.lifestyleValue}>
-            {lifestyle.luckyColors.primary}, {lifestyle.luckyColors.secondary}
-          </div>
-          <div className={styles.colorSwatches}>
-            <div
-              className={styles.colorSwatch}
-              style={{ background: lifestyle.luckyColors.hex.primary }}
-            />
-            <div
-              className={styles.colorSwatch}
-              style={{ background: lifestyle.luckyColors.hex.secondary }}
-            />
-          </div>
-        </div>
-
-        <div className={styles.lifestyleCard}>
-          <div className={styles.lifestyleLabel}>
-            {t("lifestyle.luckyDirection", { default: "Lucky Direction" })}
-          </div>
-          <div className={styles.lifestyleValue}>
-            {lifestyle.luckyDirection.emoji}{" "}
-            {lifestyle.luckyDirection.direction}
-          </div>
-          <div className={styles.lifestyleDesc}>
-            {lifestyle.luckyDirection.description}
-          </div>
-        </div>
-
-        <div className={styles.lifestyleCard}>
-          <div className={styles.lifestyleLabel}>
-            {t("lifestyle.luckyNumbers", { default: "Lucky Numbers" })}
-          </div>
-          <div className={styles.luckyNumbers}>
-            {lifestyle.luckyNumbers.map((num) => (
-              <span key={num} className={styles.luckyNumber}>
-                {num}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 직업 적합도 */}
-      <div className={styles.careerSection}>
-        <h4 className={styles.subSectionTitle}>
-          {t("lifestyle.careerFit", { default: "직업 적합도" })}
-        </h4>
-        <div className={styles.careerList}>
-          {lifestyle.careerFit.slice(0, 5).map((career, idx) => (
-            <div key={idx} className={styles.careerItem}>
-              <span className={styles.careerEmoji}>{career.emoji}</span>
-              <div className={styles.careerInfo}>
-                <div className={styles.careerName}>{career.category}</div>
-                <div className={styles.careerDesc}>{career.description}</div>
-              </div>
-              <div className={styles.careerBar}>
-                <div
-                  className={styles.careerBarFill}
-                  style={{ width: `${career.percentage}%` }}
-                />
-              </div>
-              <span className={styles.careerPercent}>{career.percentage}%</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 궁합 */}
-      <div className={styles.compatSection}>
-        <h4 className={styles.subSectionTitle}>
-          {t("lifestyle.compatibility", { default: "궁합 좋은 띠" })}
-        </h4>
-        <div className={styles.compatGrid}>
-          {lifestyle.compatibleSigns.map((sign, idx) => (
-            <div key={idx} className={styles.compatCard}>
-              <div className={styles.compatEmoji}>{sign.emoji}</div>
-              <div className={styles.compatName}>{sign.sign}</div>
-              <div className={styles.compatScore}>{sign.compatibility}%</div>
-              <div className={styles.compatReason}>{sign.reason}</div>
-            </div>
-          ))}
-        </div>
-        <div className={styles.incompatList}>
-          <span className={styles.incompatLabel}>
-            {t("lifestyle.incompatible", { default: "상극" })}:
-          </span>
-          {lifestyle.incompatibleSigns.map((sign, idx) => (
-            <span key={idx} className={styles.incompatChip}>
-              {sign}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* 오행 밸런스 */}
-      <div className={styles.elementSection}>
-        <h4 className={styles.subSectionTitle}>
-          {t("lifestyle.elementBalance", { default: "오행 밸런스" })} (
-          {t("lifestyle.dominant", { default: "강" })}:{" "}
-          {lifestyle.elementBalance.dominant},{" "}
-          {t("lifestyle.lacking", { default: "약" })}:{" "}
-          {lifestyle.elementBalance.lacking})
-        </h4>
-        {[
-          {
-            name: t("lifestyle.elements.water", { default: "수" }),
-            value: lifestyle.elementBalance.water,
-            class: "water",
-          },
-          {
-            name: t("lifestyle.elements.wood", { default: "목" }),
-            value: lifestyle.elementBalance.wood,
-            class: "wood",
-          },
-          {
-            name: t("lifestyle.elements.fire", { default: "화" }),
-            value: lifestyle.elementBalance.fire,
-            class: "fire",
-          },
-          {
-            name: t("lifestyle.elements.earth", { default: "토" }),
-            value: lifestyle.elementBalance.earth,
-            class: "earth",
-          },
-          {
-            name: t("lifestyle.elements.metal", { default: "금" }),
-            value: lifestyle.elementBalance.metal,
-            class: "metal",
-          },
-        ].map((el) => (
-          <div key={el.name} className={styles.elementRow}>
-            <span className={styles.elementName}>{el.name}</span>
-            <div className={styles.elementBarContainer}>
-              <div
-                className={`${styles.elementBar} ${styles[el.class]}`}
-                style={{ width: `${el.value}%` }}
-              />
-            </div>
-            <span className={styles.elementPercent}>{el.value}%</span>
-          </div>
+    <div className={styles.ageScenarioContainer}>
+      <div className={styles.scenarioList}>
+        {ageScenarios.map((scenario, idx) => (
+          <AgeScenarioItem key={idx} scenario={scenario} />
         ))}
       </div>
     </div>
   );
 };
-
-// ============================================================
-// 메인 페이지 컴포넌트
-// ============================================================
 
 export default function LifetimeFortunePage() {
   const params = useParams();
@@ -447,6 +183,7 @@ export default function LifetimeFortunePage() {
   const profileId = params.profileId as string;
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
+  const tPreview = useTranslations("fortune.preview");
   const locale = useLocale();
 
   const cachedProfile = useProfileById(profileId);
@@ -457,20 +194,12 @@ export default function LifetimeFortunePage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<FortuneResult | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
-
-  const calculateAge = (birthDate: string): number => {
-    const birth = new Date(birthDate);
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      age--;
-    }
-    return age;
-  };
+  const [chartExpanded, setChartExpanded] = useState(true);
+  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [coreExpanded, setCoreExpanded] = useState(true);
+  const [detailExpanded, setDetailExpanded] = useState(true);
+  const [ageExpanded, setAgeExpanded] = useState(true);
+  const [showCopyToast, setShowCopyToast] = useState(false);
 
   useEffect(() => {
     if (authStatus === "authenticated" && !isProfilesLoaded) {
@@ -575,6 +304,26 @@ export default function LifetimeFortunePage() {
     tCommon,
   ]);
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShowCopyToast(true);
+      setTimeout(() => setShowCopyToast(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = shareUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setShowCopyToast(true);
+      setTimeout(() => setShowCopyToast(false), 2000);
+    }
+  };
+
   if (authStatus === "loading" || isLoading || !isProfilesLoaded) {
     return <Loading />;
   }
@@ -605,146 +354,240 @@ export default function LifetimeFortunePage() {
     return null;
   }
 
-  const { interpretation, rawChart, dayun, lifestyle } = result;
-  const currentAge = calculateAge(profile.birth_date);
+  const { interpretation, rawChart } = result;
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       <main className={styles.main}>
-        <div className={styles.profileInfo}>
-          <h1 className={styles.name}>
-            {t("title", {
-              name: profile.name,
-              default: `${profile.name}님의 인생 운세`,
-            })}
-          </h1>
-          <p className={styles.profileMeta}>
-            {profile.birth_date} |{" "}
-            {profile.gender === "male"
-              ? tCommon("male", { default: "남" })
-              : tCommon("female", { default: "여" })}{" "}
-            | {tCommon("age", { age: currentAge, default: `${currentAge}세` })}
-          </p>
-        </div>
+        {/* 프로필 정보 */}
+        <ProfileInfo
+          name={profile.name}
+          fortuneType="lifetime"
+          birthDate={profile.birth_date}
+          birthTime={profile.birth_time}
+          birthTimeUnknown={profile.birth_time_unknown}
+          calendarType={profile.calendar_type}
+          gender={profile.gender}
+        />
 
-        {/* 미리보기 섹션 */}
-        <section className={styles.previewSection}>
-          <h2 className={styles.previewHeadline}>
-            {interpretation.preview.headline}
-          </h2>
-          <p className={styles.previewDescription}>
-            {interpretation.preview.description}
-          </p>
-        </section>
-
-        {/* 명반 섹션 */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>
-              {t("chart.title", { default: "명반" })}
-            </h3>
-            <span className={styles.sectionBadge}>{result.chart.wuxingJu}</span>
-          </div>
-          <ChartGrid
-            chart={rawChart}
-            mingGong={rawChart.mingGong}
-            shenGong={rawChart.shenGong}
-            t={t}
-          />
-        </section>
-
-        {/* 대운 섹션 */}
-        <section className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h3 className={styles.sectionTitle}>
-              {t("dayun.title", { default: "대운 (10년 주기)" })}
-            </h3>
-            <span className={styles.sectionBadge}>
-              {t("dayun.currentAge", {
-                age: currentAge,
-                default: `현재 ${currentAge}세`,
-              })}
-            </span>
-          </div>
-          <DayunTimeline dayun={dayun} currentAge={currentAge} t={t} />
-        </section>
-
-        {/* 라이프스타일 섹션 */}
-        <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>
-            {t("lifestyle.title", { default: "라이프스타일 추천" })}
-          </h3>
-          <LifestyleSection lifestyle={lifestyle} t={t} />
-        </section>
-
-        {/* 상세 운세 섹션 */}
-        {interpretation.details && (
-          <div className={styles.detailsContainer}>
-            <section className={styles.summarySection}>
-              <h3>{t("details.summary", { default: "종합 운세" })}</h3>
-              <p>{interpretation.details.summary}</p>
-            </section>
-
-            <section className={styles.fortuneSection}>
-              <h3>{interpretation.details.wealth.title}</h3>
-              <p>{interpretation.details.wealth.content}</p>
-              <ul className={styles.highlights}>
-                {interpretation.details.wealth.highlights.map(
-                  (highlight, idx) => (
-                    <li key={idx}>{highlight}</li>
-                  )
-                )}
-              </ul>
-            </section>
-
-            <section className={styles.fortuneSection}>
-              <h3>{interpretation.details.career.title}</h3>
-              <p>{interpretation.details.career.content}</p>
-              <ul className={styles.highlights}>
-                {interpretation.details.career.highlights.map(
-                  (highlight, idx) => (
-                    <li key={idx}>{highlight}</li>
-                  )
-                )}
-              </ul>
-            </section>
-
-            <section className={styles.fortuneSection}>
-              <h3>{interpretation.details.relationship.title}</h3>
-              <p>{interpretation.details.relationship.content}</p>
-              <ul className={styles.highlights}>
-                {interpretation.details.relationship.highlights.map(
-                  (highlight, idx) => (
-                    <li key={idx}>{highlight}</li>
-                  )
-                )}
-              </ul>
-            </section>
-
-            <section className={styles.fortuneSection}>
-              <h3>{interpretation.details.health.title}</h3>
-              <p>{interpretation.details.health.content}</p>
-              <ul className={styles.highlights}>
-                {interpretation.details.health.highlights.map(
-                  (highlight, idx) => (
-                    <li key={idx}>{highlight}</li>
-                  )
-                )}
-              </ul>
-            </section>
-          </div>
-        )}
-
+        {/* 자미두수 명반 섹션 */}
         <button
           type="button"
-          className={styles.backButton}
-          onClick={() => router.push("/profiles")}
+          className={styles.sectionHeader}
+          onClick={() => setChartExpanded(!chartExpanded)}
         >
-          {tCommon("backToProfiles", { default: "프로필 목록으로 돌아가기" })}
+          <h3 className={styles.sectionTitle}>
+            {tPreview("chartTitle", { default: "자미두수 명반" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${chartExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
+
+        {chartExpanded && rawChart && (
+          <section className={styles.chartSection}>
+            <ZiweiChartGrid
+              chart={rawChart}
+              profileName={profile.name}
+              wuxingJu={result.chart.wuxingJu}
+            />
+          </section>
+        )}
+
+        {/* 인생 스포일러 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setSpoilerExpanded(!spoilerExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {tPreview("spoilerTitle", { default: "인생 스포일러" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${spoilerExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {spoilerExpanded && (
+          <section className={styles.overviewSection}>
+            <h2 className={styles.overviewHeadline}>
+              {interpretation.lifeSpoiler.headline}
+            </h2>
+            <p className={styles.overviewSummary}>
+              {interpretation.lifeSpoiler.summary}
+            </p>
+          </section>
+        )}
+
+        {/* 핵심 시나리오 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setCoreExpanded(!coreExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {t("coreScenario.title", { default: "핵심 시나리오" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${coreExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {coreExpanded && interpretation.coreScenario.content && (
+          <section className={styles.section}>
+            <div className={styles.coreScenario}>
+              <p>{interpretation.coreScenario.content}</p>
+            </div>
+          </section>
+        )}
+
+        {/* 상세 시나리오 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setDetailExpanded(!detailExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {t("detailScenario.title", { default: "상세 시나리오" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${detailExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {detailExpanded && (
+          <section className={styles.section}>
+            <div className={styles.categoriesContainer}>
+              {(["wealth", "career", "relationship", "health"] as const).map(
+                (key) => (
+                  <CategoryItem
+                    key={key}
+                    categoryKey={key}
+                    category={interpretation.categories[key]}
+                    t={t}
+                  />
+                )
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* 나이대별 시나리오 섹션 */}
+        <button
+          type="button"
+          className={styles.sectionHeader}
+          onClick={() => setAgeExpanded(!ageExpanded)}
+        >
+          <h3 className={styles.sectionTitle}>
+            {t("ageScenario.title", { default: "나이대별 시나리오" })}
+          </h3>
+          <svg
+            className={`${styles.chevron} ${ageExpanded ? styles.expanded : ""}`}
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M5 12.5L10 7.5L15 12.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {ageExpanded && interpretation.ageScenarios.length > 0 && (
+          <section className={styles.section}>
+            <AgeScenarioList ageScenarios={interpretation.ageScenarios} />
+          </section>
+        )}
       </main>
+
+      {/* 하단 공유하기 버튼 */}
+      <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.shareButton}
+          onClick={handleShare}
+        >
+          {t("shareButton", { default: "공유하기" })}
+        </button>
+      </footer>
+
+      {/* 복사 완료 토스트 */}
+      {showCopyToast && (
+        <div className={styles.copyToast}>
+          <div className={styles.copyToastContent}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M13.687 4.31295C13.8823 4.50821 13.8823 4.8248 13.687 5.02006L7.02038 11.6867C6.82512 11.882 6.50854 11.882 6.31328 11.6867L2.97994 8.35339C2.78468 8.15813 2.78468 7.84155 2.97994 7.64628C3.1752 7.45102 3.49179 7.45102 3.68705 7.64628L6.66683 10.6261L12.9799 4.31295C13.1752 4.11769 13.4918 4.11769 13.687 4.31295Z"
+                fill="white"
+              />
+            </svg>{" "}
+            {tCommon("copySuccess")}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
