@@ -44,7 +44,7 @@ export const HeaderClient = () => {
           priority
           quality={100}
           onClick={handleLogoClick}
-          style={{ cursor: "pointer" }}
+          className={styles.logo}
         />
         <button
           type="button"

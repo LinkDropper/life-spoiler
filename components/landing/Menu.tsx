@@ -29,13 +29,12 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
   const getLoginProviderMessage = () => {
     if (!user) return "";
 
-    if (user.provider === "google") {
-      return t("loginViaGoogle");
-    } else if (user.provider === "kakao") {
-      return t("loginViaKakao");
-    }
+    const providerMessages: Record<string, string> = {
+      google: t("loginViaGoogle"),
+      kakao: t("loginViaKakao"),
+    };
 
-    return t("loggedIn");
+    return providerMessages[user.provider] ?? t("loggedIn");
   };
 
   const handleLogout = useCallback(async () => {

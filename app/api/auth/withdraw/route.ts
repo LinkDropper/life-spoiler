@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
+const createErrorResponse = (logMessage: string, error: unknown) => {
+  console.error(logMessage, error);
+  return NextResponse.json(
+    { error: "회원탈퇴 처리 중 오류가 발생했습니다." },
+    { status: 500 }
+  );
+};
+
 export const DELETE = async () => {
   try {
     const authClient = await createAuthClient();
@@ -32,11 +40,7 @@ export const DELETE = async () => {
       .returns<{ id: string }[]>();
 
     if (profilesError) {
-      console.error("프로필 조회 실패:", profilesError);
-      return NextResponse.json(
-        { error: "회원탈퇴 처리 중 오류가 발생했습니다." },
-        { status: 500 }
-      );
+      return createErrorResponse("프로필 조회 실패:", profilesError);
     }
 
     // 2. 프로필에 연결된 모든 운세 데이터 삭제
@@ -49,11 +53,7 @@ export const DELETE = async () => {
         .in("profile_id", profileIds);
 
       if (fortunesError) {
-        console.error("운세 데이터 삭제 실패:", fortunesError);
-        return NextResponse.json(
-          { error: "회원탈퇴 처리 중 오류가 발생했습니다." },
-          { status: 500 }
-        );
+        return createErrorResponse("운세 데이터 삭제 실패:", fortunesError);
       }
     }
 
@@ -64,11 +64,7 @@ export const DELETE = async () => {
       .eq("user_id", userId);
 
     if (deleteProfilesError) {
-      console.error("프로필 삭제 실패:", deleteProfilesError);
-      return NextResponse.json(
-        { error: "회원탈퇴 처리 중 오류가 발생했습니다." },
-        { status: 500 }
-      );
+      return createErrorResponse("프로필 삭제 실패:", deleteProfilesError);
     }
 
     // 4. users 테이블에서 사용자 삭제
@@ -78,11 +74,7 @@ export const DELETE = async () => {
       .eq("id", userId);
 
     if (deleteUserError) {
-      console.error("사용자 삭제 실패:", deleteUserError);
-      return NextResponse.json(
-        { error: "회원탈퇴 처리 중 오류가 발생했습니다." },
-        { status: 500 }
-      );
+      return createErrorResponse("사용자 삭제 실패:", deleteUserError);
     }
 
     // 5. Auth 사용자 삭제 (Service Role 필요)
