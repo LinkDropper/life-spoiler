@@ -244,32 +244,105 @@ const tryRecoverTruncatedJson = (str: string): string => {
 };
 
 /**
+ * 문자열 값 내의 이스케이프되지 않은 따옴표 처리
+ */
+const escapeQuotesInValues = (str: string): string => {
+  let result = "";
+  let inString = false;
+  let i = 0;
+
+  while (i < str.length) {
+    const char = str[i];
+    const prevChar = i > 0 ? str[i - 1] : "";
+
+    if (char === '"' && prevChar !== "\\") {
+      if (!inString) {
+        // 문자열 시작
+        inString = true;
+        result += char;
+      } else {
+        // 문자열 내 따옴표인지 문자열 끝인지 판단
+        // 다음 문자가 :, ,, }, ] 또는 공백+이들이면 문자열 끝
+        const remaining = str.slice(i + 1).trimStart();
+        if (
+          remaining.startsWith(":") ||
+          remaining.startsWith(",") ||
+          remaining.startsWith("}") ||
+          remaining.startsWith("]") ||
+          remaining.length === 0
+        ) {
+          // 문자열 끝
+          inString = false;
+          result += char;
+        } else {
+          // 문자열 내 따옴표 - 이스케이프
+          result += '\\"';
+        }
+      }
+    } else {
+      result += char;
+    }
+    i++;
+  }
+
+  return result;
+};
+
+/**
  * JSON 응답 파싱 (AI가 마크다운 코드 블록으로 감쌀 수 있음)
  */
 export const parseJsonResponse = <T>(content: string): T => {
   const jsonStr = sanitizeJsonString(content);
 
+  // 1차 시도: 기본 파싱
   try {
     return JSON.parse(jsonStr) as T;
-  } catch (firstError) {
-    // 첫 번째 시도 실패 시 더 공격적인 정리 후 재시도
-    try {
-      const cleaned = jsonStr
-        .replace(/[\x00-\x1F\x7F]/g, (char) => {
-          if (char === "\n" || char === "\r" || char === "\t") {
-            return char;
-          }
-          return "";
-        })
-        .replace(/\r\n/g, "\n")
-        .replace(/\r/g, "\n");
+  } catch {
+    // 1차 실패 - 계속 진행
+  }
 
-      return JSON.parse(cleaned) as T;
-    } catch {
-      throw new AIError("AI 응답을 JSON으로 파싱할 수 없습니다.", {
-        code: "RESPONSE_PARSE_FAILED",
-        originalError: firstError as Error,
-      });
-    }
+  // 2차 시도: 제어 문자 제거
+  try {
+    const cleaned = jsonStr
+      .replace(/[\x00-\x1F\x7F]/g, (char) => {
+        if (char === "\n" || char === "\r" || char === "\t") {
+          return char;
+        }
+        return "";
+      })
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n");
+
+    return JSON.parse(cleaned) as T;
+  } catch {
+    // 2차 실패 - 계속 진행
+  }
+
+  // 3차 시도: 문자열 내 이스케이프되지 않은 따옴표 처리
+  try {
+    const escaped = escapeQuotesInValues(jsonStr);
+    return JSON.parse(escaped) as T;
+  } catch {
+    // 3차 실패 - 계속 진행
+  }
+
+  // 4차 시도: 줄바꿈을 공백으로 치환하고 다시 시도
+  try {
+    const singleLine = jsonStr
+      .replace(/\n/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    return JSON.parse(singleLine) as T;
+  } catch (finalError) {
+    // 디버깅을 위해 원본 응답의 일부 로깅
+    console.error(
+      "JSON 파싱 실패 - 원본 응답 (처음 500자):",
+      jsonStr.slice(0, 500)
+    );
+
+    throw new AIError("AI 응답을 JSON으로 파싱할 수 없습니다.", {
+      code: "RESPONSE_PARSE_FAILED",
+      originalError: finalError as Error,
+    });
   }
 };
