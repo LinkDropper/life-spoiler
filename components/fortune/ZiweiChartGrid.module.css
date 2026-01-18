@@ -1,0 +1,220 @@
+/* 명반 그리드 컨테이너 */
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 85px);
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* 궁 셀 기본 스타일 */
+.palaceCell {
+  position: relative;
+  min-height: 85px;
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* 마지막 열 우측 테두리 제거 */
+.palaceCell[data-col="4"] {
+  border-right: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* 마지막 행 하단 테두리 제거 */
+.palaceCell[data-row="4"] {
+  border-bottom: none;
+}
+
+.palaceCell[data-row="4"][data-col="3"],
+.palaceCell[data-row="1"][data-col="3"] {
+  border-right: none;
+}
+
+.palaceCell[data-row="4"][data-col="2"],
+.palaceCell[data-row="3"][data-col="2"] {
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* 명궁 강조 */
+.palaceCell.mingGong {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 궁 헤더 (궁 이름 + 지지) */
+.palaceHeader {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 73px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.palaceName {
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.palaceBranch {
+  font-family: "Pretendard", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  text-align: right;
+}
+
+/* 주성 영역 (첫 번째 주성) */
+.mainStarsArea {
+  position: absolute;
+  top: 27px;
+  left: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mainStarRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mainStarName {
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.starBrightness {
+  font-family: "Pretendard", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.yearlySihuaMarker {
+  font-family: "Pretendard", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+/* 추가 주성 영역 (두 번째 주성부터) */
+.additionalStarsArea {
+  position: absolute;
+  top: 44px;
+  left: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* 보조성 영역 */
+.minorStarsArea {
+  position: absolute;
+  top: 63px;
+  left: 6px;
+  width: 73px;
+  padding-bottom: 2px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.16);
+}
+
+.minorStars {
+  font-family: "Pretendard", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+/* 가운데 셀 */
+.centerCell {
+  grid-column: 2 / 4;
+  grid-row: 2 / 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 8px;
+  position: relative;
+}
+
+/* 주성 이미지 */
+.starImageContainer {
+  width: 146px;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.starImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.starImagePlaceholder {
+  width: 146px;
+  height: 80px;
+  background: linear-gradient(180deg, #9b8cff 0%, #6366f1 100%);
+  border-radius: 4px;
+}
+
+/* 프로필 정보 */
+.profileInfo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.profileName {
+  font-family: "Pretendard", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.wuxingBadge {
+  font-family: "Pretendard", sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* 사화 정보 */
+.sihuaInfo {
+  margin-top: 4px;
+  text-align: center;
+}
+
+.sihuaInfo span {
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  display: block;
+}
