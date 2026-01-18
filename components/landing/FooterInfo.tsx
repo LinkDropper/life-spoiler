@@ -34,9 +34,9 @@ export const FooterInfo = async () => {
         {t("businessInfo.phone", { default: "070-8094-3030" })}
       </p>
       <div className={styles.links}>
-        <Link href="/terms">{t("terms", { default: "이용약관" })}</Link>
+        <Link href="/policy/terms">{t("terms", { default: "이용약관" })}</Link>
         <span className={styles.divider}>|</span>
-        <Link href="/privacy">
+        <Link href="/policy/privacy">
           {t("privacy", { default: "개인정보 처리방침" })}
         </Link>
       </div>

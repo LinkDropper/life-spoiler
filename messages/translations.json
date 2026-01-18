@@ -60,7 +60,8 @@
     "login": {
       "logoAlt": "인생스포 로고",
       "kakaoButton": "카카오로 계속하기",
-      "googleButton": "Google로 계속하기"
+      "googleButton": "Google로 계속하기",
+      "agreement": "계속 진행하면 인생스포 <terms>이용약관</terms>에 동의하고 <privacy>개인정보처리방침</privacy>을 읽었음을 인정하는 것으로 간주됩니다."
     },
     "profiles": {
       "loading": "로딩 중...",
@@ -328,6 +329,106 @@
       "next": "다음",
       "back": "이전",
       "close": "닫기"
+    },
+    "policy": {
+      "terms": {
+        "title": "서비스 이용약관",
+        "metaTitle": "서비스 이용약관 - 인생스포",
+        "metaDescription": "인생스포 서비스 이용약관",
+        "closeButton": "닫기",
+        "article1": {
+          "title": "제1조 (목적)",
+          "content": "이 약관은 웬 컴퍼니 (이하 \"회사\")이 제공하는 운세 분석 서비스 '인생스포' (이하 \"서비스\")의 이용과 관련하여 회사와 회원 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다."
+        },
+        "article2": {
+          "title": "제2조 (용어의 정의)",
+          "item1": "\"이용자\"란 서비스에 접속하여 이 약관에 따라 회사가 제공하는 서비스를 받는 회원 및 비회원을 말합니다.",
+          "item2": "\"유료 서비스\"란 회사가 유료로 제공하는 상세 운세 분석 리포트 및 관련 제반 서비스를 의미합니다.",
+          "item3": "\"콘텐츠\"란 서비스에서 제공하는 텍스트, 이미지, 그래프 등 모든 형태의 정보를 의미합니다."
+        },
+        "article3": {
+          "title": "제3조 (서비스의 제공 및 변경)",
+          "item1": "회사는 이용자에게 자미두수 및 점성학에 기반한 개인 운세 분석 서비스를 제공합니다.",
+          "item2": "[면책] 본 서비스가 제공하는 운세 정보는 통계와 학문적 이론에 기반한 풀이로, 그 정확성을 보증하지 않으며 인생의 길흉화복을 단정 짓지 않습니다. 서비스 이용의 결과에 대한 최종 판단과 책임은 이용자 본인에게 있습니다."
+        },
+        "article4": {
+          "title": "제4조 (이용계약의 체결 및 정보 입력)",
+          "item1": "이용자는 서비스가 정한 절차에 따라 이름, 생년월일, 태어난 시간, 성별 등의 정보를 입력함으로써 이용계약이 체결됩니다.",
+          "item2": "이용자가 입력한 생년월일 및 태어난 시간 정보가 부정확할 경우, 분석 결과의 정확도가 떨어질 수 있으며 이에 대해 회사는 책임지지 않습니다."
+        },
+        "article5": {
+          "title": "제5조 (이용요금 및 결제)",
+          "item1": "상세 운세 리포트의 열람 비용은 건당 990원(VAT 포함)입니다.",
+          "item2": "결제는 신용카드, 간편결제 등 회사가 제공하는 결제 수단을 통해 이루어집니다."
+        },
+        "article6": {
+          "title": "제6조 (청약철회 및 환불)",
+          "item1": "회사가 제공하는 유료 서비스는 「전자상거래 등에서의 소비자보호에 관한 법률」 및 「콘텐츠산업 진흥법」에 따른 청약철회 제한 사유에 해당하는 '디지털 콘텐츠'입니다.",
+          "item2": "이용자가 결제를 완료하고 상세 리포트 화면을 열람(또는 리포트 생성 완료)한 경우, 서비스 제공이 완료된 것으로 간주하여 환불이 불가능합니다.",
+          "item3": "단, 회사의 시스템 오류로 인해 리포트가 생성되지 않았거나, 리포트 내용이 전혀 보이지 않는 등 명백한 하자가 있는 경우에는 전액 환불 조치합니다."
+        },
+        "article7": {
+          "title": "제7조 (데이터의 보관 및 열람)",
+          "item1": "회원은 결제한 리포트를 회원 탈퇴 전까지 '내 보관함' 등에서 횟수 제한 없이 재열람할 수 있습니다.",
+          "item2": "회원이 자의로 회원 탈퇴를 하거나 데이터를 삭제한 경우, 복구가 불가능할 수 있습니다."
+        },
+        "article8": {
+          "title": "제8조 (저작권의 귀속 및 이용제한)",
+          "item1": "회사가 작성한 저작물에 대한 저작권 및 기타 지적재산권은 회사에 귀속합니다.",
+          "item2": "이용자는 서비스를 통해 얻은 정보를 개인적인 용도(SNS 공유 등)로만 사용할 수 있으며, 이를 영리 목적으로 복제, 송신, 출판, 배포, 방송 기타 방법에 의하여 이용하거나 제3자에게 이용하게 하여서는 안 됩니다."
+        },
+        "effectiveDate": "본 약관은 2026년 1월 18일부터 적용됩니다."
+      },
+      "privacy": {
+        "title": "개인정보 처리방침",
+        "metaTitle": "개인정보 처리방침 - 인생스포",
+        "metaDescription": "인생스포 개인정보 처리방침",
+        "closeButton": "닫기",
+        "intro": "웬 컴퍼니('https://life-spoiler.com' 이하 '인생스포')은(는) 「개인정보 보호법」 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.",
+        "article1": {
+          "title": "제1조 (개인정보의 처리목적)",
+          "content": "회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며 이용 목적이 변경되는 경우에는 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.",
+          "item1": "서비스 제공: 자미두수 명반 분석, 운세 결과 도출, 콘텐츠 제공",
+          "item2": "재화 또는 서비스 제공: 유료 결제 관리, 구매 내역 제공",
+          "item3": "회원 관리: 서비스 이용에 따른 본인 식별, 불량 회원의 부정 이용 방지"
+        },
+        "article2": {
+          "title": "제2조 (처리하는 개인정보의 항목)",
+          "content": "회사는 운세 분석을 위해 다음과 같은 정보를 수집합니다.",
+          "item1": "필수항목: 이름(또는 닉네임), 생년월일, 태어난 시간, 성별, 양력/음력 구분",
+          "item2": "결제 관련(PG사 위탁): 결제 승인 내역, 구매 토큰 (카드 번호 등 민감 정보는 회사가 직접 저장하지 않습니다.)"
+        },
+        "article3": {
+          "title": "제3조 (개인정보의 처리 및 보유 기간)",
+          "content": "회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.",
+          "item1": "서비스 이용 데이터: 회원 탈퇴 시까지 (단, 사용자가 프로필을 삭제하지 않는 한 영구 보관하여 재열람 편의를 제공함)",
+          "item2": "관련 법령에 의한 정보 보유:",
+          "item2a": "대금결제 및 재화 등의 공급에 관한 기록: 5년 (전자상거래 등에서의 소비자보호에 관한 법률)",
+          "item2b": "소비자의 불만 또는 분쟁처리에 관한 기록: 3년"
+        },
+        "article4": {
+          "title": "제4조 (개인정보의 제3자 제공)",
+          "content": "회사는 정보주체의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서만 처리하며, 정보주체의 동의, 법률의 특별한 규정 등 「개인정보 보호법」 제17조 및 제18조에 해당하는 경우에만 개인정보를 제3자에게 제공합니다."
+        },
+        "article5": {
+          "title": "제5조 (개인정보의 파기)",
+          "item1": "회사는 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체 없이 해당 개인정보를 파기합니다.",
+          "item2": "전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용합니다."
+        },
+        "article6": {
+          "title": "제6조 (개인정보 보호책임자)",
+          "content": "회사는 개인정보 처리에 관한 업무를 총괄하고, 개인정보와 관련한 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.",
+          "name": "성명: 윤재혁",
+          "email": "이메일: ttja.when@gmail.com"
+        },
+        "article7": {
+          "title": "제7조 (개인정보 자동 수집 장치의 설치·운영 및 거부에 관한 사항)",
+          "content": "① 회사는 이용자에게 개별적인 맞춤서비스를 제공하기 위해 이용정보를 저장하고 수시로 불러오는 '쿠키(cookie)'를 사용합니다. ② 쿠키는 웹사이트를 운영하는데 이용되는 서버(http)가 이용자의 컴퓨터 브라우저에게 보내는 소량의 정보이며 이용자들의 PC 컴퓨터내의 하드디스크에 저장되기도 합니다.",
+          "purpose": "쿠키의 사용 목적: 이용자의 접속 빈도나 방문 시간 등을 분석, 서비스 개편 등에 활용",
+          "settings": "쿠키의 설치·운영 및 거부: 웹브라우저 상단의 도구 > 인터넷 옵션 > 개인정보 메뉴의 옵션 설정을 통해 쿠키 저장을 거부할 수 있습니다.",
+          "warning": "쿠키 저장을 거부할 경우 맞춤형 서비스 이용에 어려움이 발생할 수 있습니다."
+        }
+      }
     }
   },
   "en": {
@@ -391,7 +492,8 @@
     "login": {
       "logoAlt": "Life Spoiler Logo",
       "kakaoButton": "Continue with Kakao",
-      "googleButton": "Continue with Google"
+      "googleButton": "Continue with Google",
+      "agreement": "By continuing, you agree to Life Spoiler's <terms>Terms of Service</terms> and acknowledge that you have read the <privacy>Privacy Policy</privacy>."
     },
     "profiles": {
       "loading": "Loading...",
@@ -659,6 +761,106 @@
       "next": "Next",
       "back": "Back",
       "close": "Close"
+    },
+    "policy": {
+      "terms": {
+        "title": "Terms of Service",
+        "metaTitle": "Terms of Service - Life Spoiler",
+        "metaDescription": "Life Spoiler Terms of Service",
+        "closeButton": "Close",
+        "article1": {
+          "title": "Article 1 (Purpose)",
+          "content": "These terms and conditions aim to define the rights, obligations, and responsibilities between Wen Company (hereinafter \"Company\") and members regarding the use of the fortune analysis service 'Life Spoiler' (hereinafter \"Service\")."
+        },
+        "article2": {
+          "title": "Article 2 (Definition of Terms)",
+          "item1": "\"User\" refers to members and non-members who access the Service and receive services provided by the Company in accordance with these terms.",
+          "item2": "\"Paid Service\" refers to the detailed fortune analysis reports and related services provided by the Company for a fee.",
+          "item3": "\"Content\" refers to all forms of information provided by the Service, including text, images, and graphs."
+        },
+        "article3": {
+          "title": "Article 3 (Provision and Modification of Service)",
+          "item1": "The Company provides users with personal fortune analysis services based on Zi Wei Dou Shu and astrology.",
+          "item2": "[Disclaimer] The fortune information provided by this Service is an interpretation based on statistics and academic theories. Its accuracy is not guaranteed, and it does not definitively determine life's fortunes and misfortunes. The final judgment and responsibility for the results of using the Service lies with the user."
+        },
+        "article4": {
+          "title": "Article 4 (Conclusion of Use Agreement and Information Input)",
+          "item1": "The use agreement is concluded when the user enters information such as name, date of birth, time of birth, and gender according to the procedures set by the Service.",
+          "item2": "If the date of birth and time of birth entered by the user are inaccurate, the accuracy of the analysis results may be reduced, and the Company is not responsible for this."
+        },
+        "article5": {
+          "title": "Article 5 (Usage Fees and Payment)",
+          "item1": "The cost of viewing a detailed fortune report is $0.99 per report (including tax).",
+          "item2": "Payment is made through payment methods provided by the Company, such as credit cards and simple payment."
+        },
+        "article6": {
+          "title": "Article 6 (Withdrawal and Refund)",
+          "item1": "The paid service provided by the Company is 'digital content' that falls under the reasons for restriction of withdrawal under the Electronic Commerce Act and the Content Industry Promotion Act.",
+          "item2": "If the user completes payment and views the detailed report screen (or report generation is completed), the service is considered complete and refunds are not possible.",
+          "item3": "However, if the report is not generated due to a system error by the Company, or if there is a clear defect such as the report content not being visible at all, a full refund will be provided."
+        },
+        "article7": {
+          "title": "Article 7 (Data Storage and Viewing)",
+          "item1": "Members can re-view purchased reports without limit in 'My Storage' until membership withdrawal.",
+          "item2": "If a member voluntarily withdraws from membership or deletes data, recovery may not be possible."
+        },
+        "article8": {
+          "title": "Article 8 (Attribution of Copyright and Usage Restrictions)",
+          "item1": "Copyright and other intellectual property rights for works created by the Company belong to the Company.",
+          "item2": "Users may only use information obtained through the Service for personal purposes (such as SNS sharing) and may not reproduce, transmit, publish, distribute, broadcast, or otherwise use it for commercial purposes or allow third parties to use it."
+        },
+        "effectiveDate": "These terms are effective from January 18, 2026."
+      },
+      "privacy": {
+        "title": "Privacy Policy",
+        "metaTitle": "Privacy Policy - Life Spoiler",
+        "metaDescription": "Life Spoiler Privacy Policy",
+        "closeButton": "Close",
+        "intro": "Wen Company ('https://life-spoiler.com', hereinafter 'Life Spoiler') establishes and discloses the following privacy policy to protect the personal information of data subjects in accordance with Article 30 of the Personal Information Protection Act and to handle related complaints promptly and smoothly.",
+        "article1": {
+          "title": "Article 1 (Purpose of Processing Personal Information)",
+          "content": "The Company processes personal information for the following purposes. The personal information being processed will not be used for purposes other than those listed below, and if the purpose of use changes, necessary measures such as obtaining separate consent will be implemented.",
+          "item1": "Service Provision: Zi Wei Dou Shu chart analysis, fortune result derivation, content provision",
+          "item2": "Goods or Service Provision: Paid payment management, purchase history provision",
+          "item3": "Member Management: Identity verification for service use, prevention of fraudulent use by problematic members"
+        },
+        "article2": {
+          "title": "Article 2 (Items of Personal Information Processed)",
+          "content": "The Company collects the following information for fortune analysis.",
+          "item1": "Required Items: Name (or nickname), date of birth, time of birth, gender, solar/lunar calendar distinction",
+          "item2": "Payment Related (Entrusted to PG Company): Payment approval details, purchase tokens (Sensitive information such as card numbers is not directly stored by the Company.)"
+        },
+        "article3": {
+          "title": "Article 3 (Processing and Retention Period of Personal Information)",
+          "content": "The Company processes and retains personal information within the period of retention and use of personal information under applicable laws or within the period agreed upon when collecting personal information from the data subject.",
+          "item1": "Service Usage Data: Until membership withdrawal (However, permanent storage is provided for re-viewing convenience unless the user deletes their profile)",
+          "item2": "Information retention under applicable laws:",
+          "item2a": "Records on payment and supply of goods: 5 years (Act on Consumer Protection in Electronic Commerce)",
+          "item2b": "Records on consumer complaints or dispute resolution: 3 years"
+        },
+        "article4": {
+          "title": "Article 4 (Provision of Personal Information to Third Parties)",
+          "content": "The Company processes personal information of data subjects only within the scope specified in Article 1 (Purpose of Processing Personal Information) and provides personal information to third parties only in cases falling under Articles 17 and 18 of the Personal Information Protection Act, such as consent of the data subject or special provisions of law."
+        },
+        "article5": {
+          "title": "Article 5 (Destruction of Personal Information)",
+          "item1": "The Company destroys personal information without delay when it becomes unnecessary due to expiration of the retention period or achievement of processing purposes.",
+          "item2": "For information in electronic file format, technical methods that prevent record reproduction are used."
+        },
+        "article6": {
+          "title": "Article 6 (Personal Information Protection Officer)",
+          "content": "The Company designates a Personal Information Protection Officer as follows to oversee personal information processing and handle complaints and damage relief related to personal information.",
+          "name": "Name: Jaehyuk Yoon",
+          "email": "Email: ttja.when@gmail.com"
+        },
+        "article7": {
+          "title": "Article 7 (Matters Concerning Installation, Operation and Rejection of Automatic Personal Information Collection Devices)",
+          "content": "① The Company uses 'cookies' to store and retrieve usage information to provide personalized services to users. ② Cookies are small pieces of information sent by the server (http) operating the website to the user's computer browser and may be stored on the hard disk of the user's PC.",
+          "purpose": "Purpose of Cookie Use: Analysis of user access frequency and visit times, utilized for service improvements",
+          "settings": "Cookie Installation, Operation and Rejection: You can refuse cookie storage through Tools > Internet Options > Privacy menu option settings at the top of your web browser.",
+          "warning": "If you refuse to store cookies, you may have difficulty using personalized services."
+        }
+      }
     }
   },
   "ja": {
@@ -722,7 +924,8 @@
     "login": {
       "logoAlt": "ライフスポイラー ロゴ",
       "kakaoButton": "カカオで続ける",
-      "googleButton": "Googleで続ける"
+      "googleButton": "Googleで続ける",
+      "agreement": "続行すると、ライフスポイラーの<terms>利用規約</terms>に同意し、<privacy>プライバシーポリシー</privacy>を読んだことを認めるものとします。"
     },
     "profiles": {
       "loading": "読み込み中...",
@@ -990,6 +1193,106 @@
       "next": "次へ",
       "back": "戻る",
       "close": "閉じる"
+    },
+    "policy": {
+      "terms": {
+        "title": "サービス利用規約",
+        "metaTitle": "サービス利用規約 - ライフスポイラー",
+        "metaDescription": "ライフスポイラー サービス利用規約",
+        "closeButton": "閉じる",
+        "article1": {
+          "title": "第1条（目的）",
+          "content": "この規約は、ウェンカンパニー（以下「会社」）が提供する運勢分析サービス「ライフスポイラー」（以下「サービス」）の利用に関して、会社と会員間の権利、義務及び責任事項を規定することを目的とします。"
+        },
+        "article2": {
+          "title": "第2条（用語の定義）",
+          "item1": "「利用者」とは、サービスにアクセスし、この規約に基づいて会社が提供するサービスを受ける会員及び非会員を指します。",
+          "item2": "「有料サービス」とは、会社が有料で提供する詳細運勢分析レポート及び関連サービスを意味します。",
+          "item3": "「コンテンツ」とは、サービスで提供されるテキスト、画像、グラフなど、すべての形態の情報を意味します。"
+        },
+        "article3": {
+          "title": "第3条（サービスの提供及び変更）",
+          "item1": "会社は利用者に紫微斗数及び占星術に基づく個人運勢分析サービスを提供します。",
+          "item2": "【免責】本サービスが提供する運勢情報は、統計と学問的理論に基づく解釈であり、その正確性を保証せず、人生の吉凶禍福を断定しません。サービス利用の結果に対する最終的な判断と責任は利用者本人にあります。"
+        },
+        "article4": {
+          "title": "第4条（利用契約の締結及び情報入力）",
+          "item1": "利用者はサービスが定める手続きに従って、名前、生年月日、生まれた時間、性別などの情報を入力することで利用契約が締結されます。",
+          "item2": "利用者が入力した生年月日及び生まれた時間の情報が不正確な場合、分析結果の精度が低下する可能性があり、これについて会社は責任を負いません。"
+        },
+        "article5": {
+          "title": "第5条（利用料金及び決済）",
+          "item1": "詳細運勢レポートの閲覧費用は1件あたり99円（税込）です。",
+          "item2": "決済はクレジットカード、簡単決済など、会社が提供する決済手段を通じて行われます。"
+        },
+        "article6": {
+          "title": "第6条（申込撤回及び返金）",
+          "item1": "会社が提供する有料サービスは、電子商取引法及びコンテンツ産業振興法に基づく申込撤回制限事由に該当する「デジタルコンテンツ」です。",
+          "item2": "利用者が決済を完了し、詳細レポート画面を閲覧（またはレポート生成完了）した場合、サービス提供が完了したものとみなし、返金はできません。",
+          "item3": "ただし、会社のシステムエラーによりレポートが生成されなかった場合、またはレポート内容が全く表示されないなど明らかな欠陥がある場合は、全額返金いたします。"
+        },
+        "article7": {
+          "title": "第7条（データの保管及び閲覧）",
+          "item1": "会員は購入したレポートを退会するまで「マイ保管庫」等で回数制限なく再閲覧できます。",
+          "item2": "会員が自ら退会したり、データを削除した場合、復旧できない可能性があります。"
+        },
+        "article8": {
+          "title": "第8条（著作権の帰属及び利用制限）",
+          "item1": "会社が作成した著作物に対する著作権及びその他の知的財産権は会社に帰属します。",
+          "item2": "利用者はサービスを通じて得た情報を個人的な用途（SNS共有など）でのみ使用でき、これを営利目的で複製、送信、出版、配布、放送その他の方法で利用したり、第三者に利用させてはなりません。"
+        },
+        "effectiveDate": "本規約は2026年1月18日より適用されます。"
+      },
+      "privacy": {
+        "title": "個人情報処理方針",
+        "metaTitle": "個人情報処理方針 - ライフスポイラー",
+        "metaDescription": "ライフスポイラー 個人情報処理方針",
+        "closeButton": "閉じる",
+        "intro": "ウェンカンパニー（'https://life-spoiler.com'、以下「ライフスポイラー」）は、「個人情報保護法」第30条に基づき、情報主体の個人情報を保護し、これに関連する苦情を迅速かつ円滑に処理できるよう、次のとおり個人情報処理方針を策定・公開します。",
+        "article1": {
+          "title": "第1条（個人情報の処理目的）",
+          "content": "会社は以下の目的のために個人情報を処理します。処理している個人情報は以下の目的以外の用途には使用されず、利用目的が変更される場合は別途同意を得るなど必要な措置を実施する予定です。",
+          "item1": "サービス提供：紫微斗数命盤分析、運勢結果導出、コンテンツ提供",
+          "item2": "財貨またはサービス提供：有料決済管理、購入履歴提供",
+          "item3": "会員管理：サービス利用に伴う本人確認、不良会員の不正利用防止"
+        },
+        "article2": {
+          "title": "第2条（処理する個人情報の項目）",
+          "content": "会社は運勢分析のため、以下の情報を収集します。",
+          "item1": "必須項目：名前（またはニックネーム）、生年月日、生まれた時間、性別、新暦/旧暦区分",
+          "item2": "決済関連（PG会社委託）：決済承認内訳、購入トークン（カード番号等の機密情報は会社が直接保存しません。）"
+        },
+        "article3": {
+          "title": "第3条（個人情報の処理及び保有期間）",
+          "content": "会社は法令に基づく個人情報保有・利用期間または情報主体から個人情報を収集する際に同意を得た個人情報保有・利用期間内で個人情報を処理・保有します。",
+          "item1": "サービス利用データ：退会時まで（ただし、ユーザーがプロフィールを削除しない限り、永久保管して再閲覧の便宜を提供）",
+          "item2": "関連法令による情報保有：",
+          "item2a": "代金決済及び財貨等の供給に関する記録：5年（電子商取引等における消費者保護に関する法律）",
+          "item2b": "消費者の苦情または紛争処理に関する記録：3年"
+        },
+        "article4": {
+          "title": "第4条（個人情報の第三者提供）",
+          "content": "会社は情報主体の個人情報を第1条（個人情報の処理目的）で明示した範囲内でのみ処理し、情報主体の同意、法律の特別な規定等「個人情報保護法」第17条及び第18条に該当する場合にのみ個人情報を第三者に提供します。"
+        },
+        "article5": {
+          "title": "第5条（個人情報の破棄）",
+          "item1": "会社は個人情報保有期間の経過、処理目的達成等により個人情報が不要になった場合は、遅滞なく当該個人情報を破棄します。",
+          "item2": "電子ファイル形態の情報は記録を再生できない技術的方法を使用します。"
+        },
+        "article6": {
+          "title": "第6条（個人情報保護責任者）",
+          "content": "会社は個人情報処理に関する業務を総括し、個人情報に関する苦情処理及び被害救済等のため、以下のとおり個人情報保護責任者を指定しています。",
+          "name": "氏名：ユン・ジェヒョク",
+          "email": "メール：ttja.when@gmail.com"
+        },
+        "article7": {
+          "title": "第7条（個人情報自動収集装置の設置・運営及び拒否に関する事項）",
+          "content": "① 会社は利用者に個別的なカスタマイズサービスを提供するため、利用情報を保存し随時呼び出す「クッキー（cookie）」を使用します。② クッキーはウェブサイトを運営するのに利用されるサーバー（http）が利用者のコンピュータブラウザに送る少量の情報であり、利用者のPCコンピュータ内のハードディスクに保存されることもあります。",
+          "purpose": "クッキーの使用目的：利用者の接続頻度や訪問時間等を分析、サービス改編等に活用",
+          "settings": "クッキーの設置・運営及び拒否：ウェブブラウザ上部のツール > インターネットオプション > プライバシーメニューのオプション設定を通じてクッキー保存を拒否できます。",
+          "warning": "クッキー保存を拒否する場合、カスタマイズサービスの利用に困難が生じる可能性があります。"
+        }
+      }
     }
   }
 }

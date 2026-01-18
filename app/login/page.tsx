@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { createBrowserClient } from "@/libs/supabase/browser";
@@ -58,6 +59,13 @@ export default function LoginPage() {
               {t("googleButton", { default: "Google로 계속하기" })}
             </span>
           </button>
+
+          <p className={styles.agreement}>
+            {t.rich("agreement", {
+              terms: (chunks) => <Link href="/policy/terms">{chunks}</Link>,
+              privacy: (chunks) => <Link href="/policy/privacy">{chunks}</Link>,
+            })}
+          </p>
         </div>
       </div>
     </div>
