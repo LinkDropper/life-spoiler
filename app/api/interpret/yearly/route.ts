@@ -28,7 +28,6 @@ import {
   calculateDayun,
   calculateYearlyFortune,
   getCurrentDayun,
-  getLuckyAndCautionMonths,
 } from "@/libs/zi-wei-dou-shu/calculators";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
 import type { ZiweiInput } from "@/libs/zi-wei-dou-shu/types";
@@ -134,10 +133,6 @@ export async function POST(request: NextRequest) {
     );
 
     // 응답 데이터 구조 (재사용)
-    const { luckyMonths, cautionMonths } = getLuckyAndCautionMonths(
-      yearlyFortune.monthlyFortunes
-    );
-
     const buildResponseData = (
       interpretation: YearlyFortuneInterpretation
     ): YearlyFortuneData => ({
@@ -147,14 +142,11 @@ export async function POST(request: NextRequest) {
         wuxingJu: WUXING_JU_NAMES[chart.wuxingJu],
         mingGong: EARTHLY_BRANCHES[chart.mingGong],
       },
+      rawChart: chart,
       yearlySihua: yearlyFortune.sihua,
       yearlyPalaces: yearlyFortune.yearlyPalaces,
       peachBlossom: yearlyFortune.peachBlossom,
       currentDayun: yearlyFortune.currentDayun,
-      scores: yearlyFortune.scores,
-      monthlyFortunes: yearlyFortune.monthlyFortunes,
-      luckyMonths,
-      cautionMonths,
       interpretation,
     });
 
@@ -239,7 +231,6 @@ export async function POST(request: NextRequest) {
             mainStars: currentDayunPeriod.palace.mainStars.map((s) => s.name),
           }
         : undefined,
-      scores: yearlyFortune.scores,
       language,
     };
 

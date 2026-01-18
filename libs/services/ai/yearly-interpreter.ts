@@ -4,6 +4,7 @@ import { AIError } from "./errors";
 import { getPrompts } from "./prompts";
 import type {
   YearlyCategoryResponse,
+  YearlyCoreScenarioResponse,
   YearlyFortuneInterpretation,
   YearlyInterpretationRequest,
   YearlyMonthlyFortune,
@@ -11,6 +12,7 @@ import type {
 } from "./types";
 import {
   YearlyCategoryResponseSchema,
+  YearlyCoreScenarioResponseSchema,
   YearlyMonthlyFortuneSchema,
   YearlyOverviewResponseSchema,
 } from "./types";
@@ -68,7 +70,6 @@ const formatYearlyDataForAI = (
     yearlyPalaces,
     peachBlossom,
     currentDayun,
-    scores,
     language,
   } = request;
 
@@ -157,16 +158,6 @@ const formatYearlyDataForAI = (
 - mainStars: ${mainStarsStr}`;
   }
 
-  // 점수 정보 추가 (AI가 참고할 수 있도록)
-  dataStr += `
-
-## Yearly Scores (reference)
-- overall: ${scores.overall}
-- wealth: ${scores.wealth}
-- career: ${scores.career}
-- relationship: ${scores.relationship}
-- health: ${scores.health}`;
-
   return dataStr;
 };
 
@@ -220,7 +211,7 @@ ${userPrompt}`;
 // ============================================================
 
 /**
- * 연간 총평 해석 요청
+ * 연간 총평 해석 요청 (올해 스포일러)
  */
 export const interpretYearlyOverview = async (
   request: Omit<YearlyInterpretationRequest, "requestType">
@@ -228,6 +219,18 @@ export const interpretYearlyOverview = async (
   return requestYearlyInterpretation(
     { ...request, requestType: "yearly_overview" },
     YearlyOverviewResponseSchema
+  );
+};
+
+/**
+ * 핵심 시나리오 해석 요청
+ */
+export const interpretYearlyCore = async (
+  request: Omit<YearlyInterpretationRequest, "requestType">
+): Promise<YearlyCoreScenarioResponse> => {
+  return requestYearlyInterpretation(
+    { ...request, requestType: "yearly_core" },
+    YearlyCoreScenarioResponseSchema
   );
 };
 
@@ -303,20 +306,23 @@ export const interpretYearlyMonthly = async (
 export const generateYearlyInterpretation = async (
   request: Omit<YearlyInterpretationRequest, "requestType">
 ): Promise<YearlyFortuneInterpretation> => {
-  // 1단계: overview + 4개 카테고리
-  const [overview, wealth, career, relationship, health] = await Promise.all([
-    interpretYearlyOverview(request),
-    interpretYearlyWealth(request),
-    interpretYearlyCareer(request),
-    interpretYearlyRelationship(request),
-    interpretYearlyHealth(request),
-  ]);
+  // 1단계: overview + coreScenario + 4개 카테고리
+  const [overview, coreScenario, wealth, career, relationship, health] =
+    await Promise.all([
+      interpretYearlyOverview(request),
+      interpretYearlyCore(request),
+      interpretYearlyWealth(request),
+      interpretYearlyCareer(request),
+      interpretYearlyRelationship(request),
+      interpretYearlyHealth(request),
+    ]);
 
   // 2단계: 월별 운세 (프롬프트가 길어서 분리)
   const monthlyResult = await interpretYearlyMonthly(request);
 
   return {
     overview,
+    coreScenario,
     categories: {
       wealth,
       career,
@@ -355,38 +361,32 @@ export const createYearlyFallbackInterpretation = (
     overview: {
       headline: `🔮 ${targetYear}년 운세 분석 준비 중`,
       summary: fallbackMessage,
-      keywords: [],
-      luckyMonths: [],
-      cautionMonths: [],
+    },
+    coreScenario: {
+      content: fallbackMessage,
     },
     categories: {
       wealth: {
-        title: `💰 ${targetYear}년 재물운`,
         content: fallbackMessage,
-        advice: "",
+        tags: ["준비 중", "잠시만요"],
       },
       career: {
-        title: `💼 ${targetYear}년 직업운`,
         content: fallbackMessage,
-        advice: "",
+        tags: ["준비 중", "잠시만요"],
       },
       relationship: {
-        title: `💕 ${targetYear}년 인연운`,
         content: fallbackMessage,
-        advice: "",
+        tags: ["준비 중", "잠시만요"],
       },
       health: {
-        title: `🏃 ${targetYear}년 건강운`,
         content: fallbackMessage,
-        advice: "",
+        tags: ["준비 중", "잠시만요"],
       },
     },
     monthlyFortunes: Array.from({ length: 12 }, (_, i) => ({
       month: i + 1,
-      score: 50,
-      theme: "준비 중",
+      headline: "준비 중",
       content: fallbackMessage,
-      tip: "",
     })),
     meta: {
       year: targetYear,

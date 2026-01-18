@@ -7,8 +7,6 @@ import type {
 } from "@/libs/services/ai";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
 import type {
-  MonthlyFortune,
-  YearlyFortuneResult,
   YearlyPalaceInfo,
   YearlyPeachBlossomInfo,
   YearlySihua,
@@ -56,6 +54,7 @@ export interface YearlyFortuneData {
     wuxingJu: string;
     mingGong: string;
   };
+  rawChart: ZiweiChart;
   yearlySihua: YearlySihua;
   yearlyPalaces: YearlyPalaceInfo;
   peachBlossom: YearlyPeachBlossomInfo;
@@ -64,10 +63,6 @@ export interface YearlyFortuneData {
     palaceName: string;
     mainStars: string[];
   } | null;
-  scores: YearlyFortuneResult["scores"];
-  monthlyFortunes: MonthlyFortune[];
-  luckyMonths: number[];
-  cautionMonths: number[];
   interpretation: YearlyFortuneInterpretation;
 }
 

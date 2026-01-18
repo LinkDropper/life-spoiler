@@ -44,12 +44,13 @@ export interface UpstageResponse {
 // ============================================================
 
 export type InterpretationType =
-  | "preview"
-  | "wealth"
-  | "career"
-  | "relationship"
-  | "health"
-  | "summary";
+  | "life_spoiler"
+  | "lifetime_core"
+  | "lifetime_wealth"
+  | "lifetime_career"
+  | "lifetime_relationship"
+  | "lifetime_health"
+  | "lifetime_age_scenarios";
 
 export interface StarData {
   name: string;
@@ -113,8 +114,8 @@ export interface ZiweiInterpretationRequest {
     shenGongPosition: string;
     sihua: SihuaData;
   };
-  targetPalace: PalaceData;
-  oppositePalace?: PalaceData;
+  /** 모든 12궁 데이터 (궁 이름 → 궁 데이터) */
+  palaces: Record<string, PalaceData>;
   dayunPeriods?: DayunData[];
   requestType: InterpretationType;
   /** 응답 언어 (기본값: ko) */
@@ -122,43 +123,67 @@ export interface ZiweiInterpretationRequest {
 }
 
 // ============================================================
-// 해석 결과 타입
+// 해석 결과 타입 (인생 운세)
 // ============================================================
 
-export const PreviewResponseSchema = z.object({
+// 인생 스포일러 응답 스키마 (제목 + 본문 300~400자)
+export const LifeSpoilerResponseSchema = z.object({
   headline: z.string(),
-  description: z.string(),
-});
-
-export type PreviewResponse = z.infer<typeof PreviewResponseSchema>;
-
-export const SectionResponseSchema = z.object({
-  title: z.string(),
-  content: z.string(),
-  highlights: z.array(z.string()),
-});
-
-export type SectionResponse = z.infer<typeof SectionResponseSchema>;
-
-export const SummaryResponseSchema = z.object({
   summary: z.string(),
 });
 
-export type SummaryResponse = z.infer<typeof SummaryResponseSchema>;
+export type LifeSpoilerResponse = z.infer<typeof LifeSpoilerResponseSchema>;
+
+// 핵심 시나리오 응답 스키마 (본문 700~800자)
+export const LifetimeCoreScenarioResponseSchema = z.object({
+  content: z.string(),
+});
+
+export type LifetimeCoreScenarioResponse = z.infer<
+  typeof LifetimeCoreScenarioResponseSchema
+>;
+
+// 상세 시나리오 카테고리 응답 스키마 (본문 200~300자 + 태그 2개)
+export const LifetimeCategoryResponseSchema = z.object({
+  content: z.string(),
+  tags: z.array(z.string()).min(2).max(2),
+});
+
+export type LifetimeCategoryResponse = z.infer<
+  typeof LifetimeCategoryResponseSchema
+>;
+
+// 나이대별 시나리오 응답 스키마 (제목 + 본문 200~300자)
+export const AgeScenarioResponseSchema = z.object({
+  ageScenarios: z.array(
+    z.object({
+      period: z.string(), // "4~13세", "14~23세" 등
+      headline: z.string(),
+      content: z.string(),
+    })
+  ),
+});
+
+export type AgeScenarioResponse = z.infer<typeof AgeScenarioResponseSchema>;
 
 // ============================================================
 // 최종 결과 타입 (인생 운세)
 // ============================================================
 
 export interface FortuneInterpretation {
-  preview: PreviewResponse;
-  details: {
-    summary: string;
-    wealth: SectionResponse;
-    career: SectionResponse;
-    relationship: SectionResponse;
-    health: SectionResponse;
-  } | null;
+  /** 인생 스포일러 (제목 + 본문 300~400자) */
+  lifeSpoiler: LifeSpoilerResponse;
+  /** 핵심 시나리오 (본문 700~800자) */
+  coreScenario: LifetimeCoreScenarioResponse;
+  /** 상세 시나리오 (본문 200~300자 + 태그 2개) */
+  categories: {
+    wealth: LifetimeCategoryResponse;
+    career: LifetimeCategoryResponse;
+    relationship: LifetimeCategoryResponse;
+    health: LifetimeCategoryResponse;
+  };
+  /** 나이대별 시나리오 (제목 + 본문 200~300자) */
+  ageScenarios: AgeScenarioResponse["ageScenarios"];
   meta: {
     generatedAt: string;
     model: string;
@@ -166,12 +191,35 @@ export interface FortuneInterpretation {
   };
 }
 
+// 레거시 타입 (하위 호환성)
+/** @deprecated Use LifeSpoilerResponse instead */
+export const PreviewResponseSchema = LifeSpoilerResponseSchema;
+/** @deprecated Use LifeSpoilerResponse instead */
+export type PreviewResponse = LifeSpoilerResponse;
+
+/** @deprecated Use LifetimeCategoryResponseSchema instead */
+export const SectionResponseSchema = z.object({
+  title: z.string(),
+  content: z.string(),
+  highlights: z.array(z.string()),
+});
+/** @deprecated */
+export type SectionResponse = z.infer<typeof SectionResponseSchema>;
+
+/** @deprecated */
+export const SummaryResponseSchema = z.object({
+  summary: z.string(),
+});
+/** @deprecated */
+export type SummaryResponse = z.infer<typeof SummaryResponseSchema>;
+
 // ============================================================
 // 올해 운세(유년) 타입
 // ============================================================
 
 export type YearlyInterpretationType =
   | "yearly_overview"
+  | "yearly_core"
   | "yearly_wealth"
   | "yearly_career"
   | "yearly_relationship"
@@ -234,49 +282,47 @@ export interface YearlyInterpretationRequest {
     palaceName: string;
     mainStars: string[];
   };
-  scores: {
-    overall: number;
-    wealth: number;
-    career: number;
-    relationship: number;
-    health: number;
-  };
   requestType: YearlyInterpretationType;
   /** 응답 언어 (기본값: ko) */
   language?: Locale;
 }
 
-// 올해 운세 응답 스키마
+// 올해 스포일러 응답 스키마
 export const YearlyOverviewResponseSchema = z.object({
   headline: z.string(),
   summary: z.string(),
-  keywords: z.array(z.string()),
-  luckyMonths: z.array(z.number()),
-  cautionMonths: z.array(z.number()),
 });
 
 export type YearlyOverviewResponse = z.infer<
   typeof YearlyOverviewResponseSchema
 >;
 
-export const YearlyCategoryResponseSchema = z.object({
-  title: z.string(),
+// 핵심 시나리오 응답 스키마
+export const YearlyCoreScenarioResponseSchema = z.object({
   content: z.string(),
-  advice: z.string(),
+});
+
+export type YearlyCoreScenarioResponse = z.infer<
+  typeof YearlyCoreScenarioResponseSchema
+>;
+
+// 상세 시나리오 카테고리 응답 스키마 (재물운, 직업운, 인연운, 건강운)
+export const YearlyCategoryResponseSchema = z.object({
+  content: z.string(),
+  tags: z.array(z.string()).min(2).max(2),
 });
 
 export type YearlyCategoryResponse = z.infer<
   typeof YearlyCategoryResponseSchema
 >;
 
+// 월별 시나리오 응답 스키마
 export const YearlyMonthlyFortuneSchema = z.object({
   monthlyFortunes: z.array(
     z.object({
       month: z.number(),
-      score: z.number(),
-      theme: z.string().optional().default(""),
+      headline: z.string(),
       content: z.string(),
-      tip: z.string().optional().default(""),
     })
   ),
 });
@@ -285,13 +331,18 @@ export type YearlyMonthlyFortune = z.infer<typeof YearlyMonthlyFortuneSchema>;
 
 // 올해 운세 최종 결과
 export interface YearlyFortuneInterpretation {
+  /** 올해 스포일러 (제목 + 본문) */
   overview: YearlyOverviewResponse;
+  /** 핵심 시나리오 (본문만) */
+  coreScenario: YearlyCoreScenarioResponse;
+  /** 상세 시나리오 (본문 + 태그 2개) */
   categories: {
     wealth: YearlyCategoryResponse;
     career: YearlyCategoryResponse;
     relationship: YearlyCategoryResponse;
     health: YearlyCategoryResponse;
   };
+  /** 월별 시나리오 (제목 + 본문) */
   monthlyFortunes: YearlyMonthlyFortune["monthlyFortunes"];
   meta: {
     year: number;

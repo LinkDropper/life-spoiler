@@ -2,11 +2,24 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 import styles from "./Header.module.css";
+import { useUser } from "@/libs/stores/user";
 
 export const HeaderClient = () => {
   const t = useTranslations("landing.header");
+  const router = useRouter();
+
+  const user = useUser();
+
+  const handleLogoClick = () => {
+    if (user?.id) {
+      router.push("/profiles");
+      return;
+    }
+    router.push("/");
+  };
 
   return (
     <header className={styles.header}>
@@ -17,6 +30,7 @@ export const HeaderClient = () => {
         height={32}
         priority
         quality={100}
+        onClick={handleLogoClick}
       />
       <button
         type="button"

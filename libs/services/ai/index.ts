@@ -6,15 +6,17 @@ export type { AIErrorCode, AIErrorContext } from "./errors";
 
 // 타입
 export type {
+  // 인생 운세 타입
+  AgeScenarioResponse,
   DayunData,
   FortuneInterpretation,
   InterpretationType,
+  LifeSpoilerResponse,
+  LifetimeCategoryResponse,
+  LifetimeCoreScenarioResponse,
   PalaceData,
-  PreviewResponse,
-  SectionResponse,
   SihuaData,
   StarData,
-  SummaryResponse,
   UpstageMessage,
   ZiweiInterpretationRequest,
   // 유년 운세 타입
@@ -37,12 +39,13 @@ export type { ChatCompletionOptions } from "./upstage";
 export {
   createFallbackInterpretation,
   generateFullInterpretation,
-  interpretCareer,
-  interpretHealth,
-  interpretPreview,
-  interpretRelationship,
-  interpretSummary,
-  interpretWealth,
+  interpretAgeScenarios,
+  interpretLifeSpoiler,
+  interpretLifetimeCareer,
+  interpretLifetimeCore,
+  interpretLifetimeHealth,
+  interpretLifetimeRelationship,
+  interpretLifetimeWealth,
 } from "./ziwei-interpreter";
 export type { FullInterpretationOptions } from "./ziwei-interpreter";
 

@@ -112,20 +112,36 @@ export default function ProfilesPage() {
   ): FortuneType[] => {
     if (!fortunes) return [];
     const types: FortuneType[] = [];
-    if (fortunes.some((f) => f.fortune_type === "lifetime")) {
+    if (fortunes.some((f) => f.fortune_type === "lifetime" && f.paid_at)) {
       types.push("lifetime");
     }
-    if (fortunes.some((f) => f.fortune_type === "yearly")) {
+    if (fortunes.some((f) => f.fortune_type === "yearly" && f.paid_at)) {
       types.push("yearly");
     }
     return types;
   };
+
+  // const hasPaidFortune = (fortuneType: "lifetime" | "yearly"): boolean => {
+  //   if (!selectedProfileId) return false;
+  //   const selectedProfile = profiles.find((p) => p.id === selectedProfileId);
+  //   if (!selectedProfile?.fortunes) return false;
+  //   // paid_at이 있는지 확인
+  //   return selectedProfile.fortunes.some(
+  //     (f) => f.fortune_type === fortuneType && f.paid_at !== null
+  //   );
+  // };
 
   const handleLifetimeFortune = () => {
     if (!selectedProfileId) {
       alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
       return;
     }
+    // TODO: 결제 기능 추가 후 수정
+    // if (hasPaidFortune("lifetime")) {
+    //   router.push(`/fortune/lifetime/${selectedProfileId}`);
+    // } else {
+    //   router.push(`/fortune/lifetime/preview/${selectedProfileId}`);
+    // }
     router.push(`/fortune/lifetime/${selectedProfileId}`);
   };
 
@@ -134,6 +150,12 @@ export default function ProfilesPage() {
       alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
       return;
     }
+    // TODO: 결제 기능 추가 후 수정
+    // if (hasPaidFortune("yearly")) {
+    //   router.push(`/fortune/yearly/${selectedProfileId}`);
+    // } else {
+    //   router.push(`/fortune/yearly/preview/${selectedProfileId}`);
+    // }
     router.push(`/fortune/yearly/${selectedProfileId}`);
   };
 
