@@ -3,18 +3,20 @@ import type { Locale } from "@/i18n/config";
 import { AIError } from "./errors";
 import { getPrompts } from "./prompts";
 import type {
+  AgeScenarioResponse,
   FortuneInterpretation,
   InterpretationType,
+  LifeSpoilerResponse,
+  LifetimeCategoryResponse,
+  LifetimeCoreScenarioResponse,
   PalaceData,
-  PreviewResponse,
-  SectionResponse,
-  SummaryResponse,
   ZiweiInterpretationRequest,
 } from "./types";
 import {
-  PreviewResponseSchema,
-  SectionResponseSchema,
-  SummaryResponseSchema,
+  AgeScenarioResponseSchema,
+  LifeSpoilerResponseSchema,
+  LifetimeCategoryResponseSchema,
+  LifetimeCoreScenarioResponseSchema,
 } from "./types";
 import { chatCompletion, parseJsonResponse } from "./upstage";
 
@@ -22,14 +24,29 @@ import { chatCompletion, parseJsonResponse } from "./upstage";
 // 자미두수 해석 서비스
 // ============================================================
 
-/** 대운 정보가 필요한 해석 유형 (summary만 대운 맥락 필요) */
-const DAYUN_REQUIRED_TYPES = ["summary"] as const;
+/** 대운 정보가 필요한 해석 유형 */
+const DAYUN_REQUIRED_TYPES: InterpretationType[] = [
+  "lifetime_core",
+  "lifetime_age_scenarios",
+];
 
 /** 대운 정보가 필요한 해석 유형인지 확인하는 타입 가드 */
-const isDayunRequired = (
-  type: InterpretationType
-): type is (typeof DAYUN_REQUIRED_TYPES)[number] => {
-  return (DAYUN_REQUIRED_TYPES as readonly string[]).includes(type);
+const isDayunRequired = (type: InterpretationType): boolean => {
+  return DAYUN_REQUIRED_TYPES.includes(type);
+};
+
+/** 해석 유형별 대상 궁과 대궁 매핑 */
+const PALACE_MAPPING: Record<
+  InterpretationType,
+  { target: string; opposite: string }
+> = {
+  life_spoiler: { target: "명궁", opposite: "천이궁" },
+  lifetime_core: { target: "명궁", opposite: "천이궁" },
+  lifetime_wealth: { target: "재백궁", opposite: "복덕궁" },
+  lifetime_career: { target: "관록궁", opposite: "부처궁" },
+  lifetime_relationship: { target: "부처궁", opposite: "관록궁" },
+  lifetime_health: { target: "질액궁", opposite: "부모궁" },
+  lifetime_age_scenarios: { target: "명궁", opposite: "천이궁" },
 };
 
 /**
@@ -70,15 +87,7 @@ const getOccupationStatusLabel = (
  * 명반 데이터를 AI에게 전달할 문자열로 포맷팅
  */
 const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
-  const {
-    user,
-    chart,
-    targetPalace,
-    oppositePalace,
-    dayunPeriods,
-    requestType,
-    language,
-  } = request;
+  const { user, chart, palaces, dayunPeriods, requestType, language } = request;
 
   const prompts = getPrompts(language);
 
@@ -104,6 +113,11 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
     userStatusStr += `\n- occupationStatus: ${occupationLabel}`;
   }
 
+  // 해석 유형에 맞는 대상 궁과 대궁 선택
+  const palaceNames = PALACE_MAPPING[requestType];
+  const targetPalace = palaces[palaceNames.target];
+  const oppositePalace = palaces[palaceNames.opposite];
+
   let dataStr = `## User Info
 - gender: ${genderLabel}
 - lunarBirthInfo: ${user.lunarBirthInfo}${user.currentAge ? `\n- currentAge: ${user.currentAge}` : ""}${userStatusStr}
@@ -119,11 +133,11 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
 - huake: ${chart.sihua.huake.star} (${chart.sihua.huake.palace})
 - huaji: ${chart.sihua.huaji.star} (${chart.sihua.huaji.palace})
 
-## Target Palace: ${prompts.palaceNameMap[requestType]}
-${formatPalaceData(targetPalace)}`;
+## Target Palace: ${prompts.palaceNameMap[requestType]} (${palaceNames.target})
+${targetPalace ? formatPalaceData(targetPalace) : "Palace data not available"}`;
 
   if (oppositePalace) {
-    dataStr += `\n\n## Opposite Palace
+    dataStr += `\n\n## Opposite Palace (${palaceNames.opposite})
 ${formatPalaceData(oppositePalace)}`;
   }
 
@@ -207,74 +221,86 @@ ${userPrompt}`;
 };
 
 /**
- * 미리보기 해석 요청
+ * 인생 스포일러 해석 요청
  */
-export const interpretPreview = async (
+export const interpretLifeSpoiler = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<PreviewResponse> => {
+): Promise<LifeSpoilerResponse> => {
   return requestInterpretation(
-    { ...request, requestType: "preview" },
-    PreviewResponseSchema
+    { ...request, requestType: "life_spoiler" },
+    LifeSpoilerResponseSchema
+  );
+};
+
+/**
+ * 핵심 시나리오 해석 요청
+ */
+export const interpretLifetimeCore = async (
+  request: Omit<ZiweiInterpretationRequest, "requestType">
+): Promise<LifetimeCoreScenarioResponse> => {
+  return requestInterpretation(
+    { ...request, requestType: "lifetime_core" },
+    LifetimeCoreScenarioResponseSchema
   );
 };
 
 /**
  * 재물운 해석 요청
  */
-export const interpretWealth = async (
+export const interpretLifetimeWealth = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<SectionResponse> => {
+): Promise<LifetimeCategoryResponse> => {
   return requestInterpretation(
-    { ...request, requestType: "wealth" },
-    SectionResponseSchema
+    { ...request, requestType: "lifetime_wealth" },
+    LifetimeCategoryResponseSchema
   );
 };
 
 /**
  * 직업운 해석 요청
  */
-export const interpretCareer = async (
+export const interpretLifetimeCareer = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<SectionResponse> => {
+): Promise<LifetimeCategoryResponse> => {
   return requestInterpretation(
-    { ...request, requestType: "career" },
-    SectionResponseSchema
+    { ...request, requestType: "lifetime_career" },
+    LifetimeCategoryResponseSchema
   );
 };
 
 /**
  * 인연운 해석 요청
  */
-export const interpretRelationship = async (
+export const interpretLifetimeRelationship = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<SectionResponse> => {
+): Promise<LifetimeCategoryResponse> => {
   return requestInterpretation(
-    { ...request, requestType: "relationship" },
-    SectionResponseSchema
+    { ...request, requestType: "lifetime_relationship" },
+    LifetimeCategoryResponseSchema
   );
 };
 
 /**
  * 건강운 해석 요청
  */
-export const interpretHealth = async (
+export const interpretLifetimeHealth = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<SectionResponse> => {
+): Promise<LifetimeCategoryResponse> => {
   return requestInterpretation(
-    { ...request, requestType: "health" },
-    SectionResponseSchema
+    { ...request, requestType: "lifetime_health" },
+    LifetimeCategoryResponseSchema
   );
 };
 
 /**
- * 종합 해석 요청
+ * 나이대별 시나리오 해석 요청
  */
-export const interpretSummary = async (
+export const interpretAgeScenarios = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<SummaryResponse> => {
+): Promise<AgeScenarioResponse> => {
   return requestInterpretation(
-    { ...request, requestType: "summary" },
-    SummaryResponseSchema
+    { ...request, requestType: "lifetime_age_scenarios" },
+    AgeScenarioResponseSchema
   );
 };
 
@@ -299,30 +325,37 @@ export const generateFullInterpretation = async (
   const { includeDetails = false } = options;
 
   if (includeDetails) {
-    const [preview, wealth] = await Promise.all([
-      interpretPreview(request),
-      interpretWealth(request),
+    // 1단계: 인생 스포일러 + 핵심 시나리오
+    const [lifeSpoiler, coreScenario] = await Promise.all([
+      interpretLifeSpoiler(request),
+      interpretLifetimeCore(request),
     ]);
 
-    const [career, relationship] = await Promise.all([
-      interpretCareer(request),
-      interpretRelationship(request),
+    // 2단계: 상세 시나리오 (재물, 직업)
+    const [wealth, career] = await Promise.all([
+      interpretLifetimeWealth(request),
+      interpretLifetimeCareer(request),
     ]);
 
-    const [health, summaryResult] = await Promise.all([
-      interpretHealth(request),
-      interpretSummary(request),
+    // 3단계: 상세 시나리오 (인연, 건강)
+    const [relationship, health] = await Promise.all([
+      interpretLifetimeRelationship(request),
+      interpretLifetimeHealth(request),
     ]);
+
+    // 4단계: 나이대별 시나리오
+    const ageResult = await interpretAgeScenarios(request);
 
     return {
-      preview,
-      details: {
-        summary: summaryResult.summary,
+      lifeSpoiler,
+      coreScenario,
+      categories: {
         wealth,
         career,
         relationship,
         health,
       },
+      ageScenarios: ageResult.ageScenarios,
       meta: {
         generatedAt: new Date().toISOString(),
         model: "solar-pro",
@@ -331,11 +364,19 @@ export const generateFullInterpretation = async (
     };
   }
 
-  const preview = await interpretPreview(request);
+  // 미리보기만 (결제 전)
+  const lifeSpoiler = await interpretLifeSpoiler(request);
 
   return {
-    preview,
-    details: null,
+    lifeSpoiler,
+    coreScenario: { content: "" },
+    categories: {
+      wealth: { content: "", tags: [] },
+      career: { content: "", tags: [] },
+      relationship: { content: "", tags: [] },
+      health: { content: "", tags: [] },
+    },
+    ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
       model: "solar-pro",
@@ -358,13 +399,20 @@ export const createFallbackInterpretation = (
     error instanceof AIError && error.code === "RATE_LIMITED";
 
   return {
-    preview: {
+    lifeSpoiler: {
       headline: "🔮 운세 분석 준비 중",
-      description: isRateLimited
+      summary: isRateLimited
         ? "현재 많은 분들이 이용 중입니다. 잠시 후 다시 시도해주세요."
         : "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
     },
-    details: null,
+    coreScenario: { content: "" },
+    categories: {
+      wealth: { content: "", tags: [] },
+      career: { content: "", tags: [] },
+      relationship: { content: "", tags: [] },
+      health: { content: "", tags: [] },
+    },
+    ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
       model: "solar-pro",

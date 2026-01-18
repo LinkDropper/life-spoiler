@@ -114,6 +114,7 @@ export interface FortuneRow {
   fortune_type: FortuneType;
   year: number; // 0 for lifetime, actual year for yearly
   result: Json;
+  paid_at: string | null; // 결제 완료 시간 (NULL이면 미결제)
   created_at: string;
   updated_at: string;
 }
@@ -124,6 +125,7 @@ export interface FortuneInsert {
   fortune_type: FortuneType;
   year?: number;
   result: Json;
+  paid_at?: string | null;
   created_at?: string;
   updated_at?: string;
 }
