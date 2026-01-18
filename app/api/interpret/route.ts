@@ -150,15 +150,11 @@ const convertChartToRequest = (
     huaji: { star: sihua.huaji, palace: findPalaceForStar(sihua.huaji) },
   };
 
-  // 명궁 찾기
-  const mingGongPalace = palaces.find((p) => p.name === "명궁");
-  if (!mingGongPalace) {
-    throw new Error("명반에서 명궁을 찾을 수 없습니다.");
+  // 모든 12궁 데이터를 맵으로 변환
+  const palacesMap: Record<string, PalaceData> = {};
+  for (const palace of palaces) {
+    palacesMap[palace.name] = convertToPalaceData(palace);
   }
-  const targetPalace = convertToPalaceData(mingGongPalace);
-
-  // 대궁 (명궁의 반대편 = 천이궁)
-  const oppositePalace = palaces.find((p) => p.name === "천이궁");
 
   return {
     user: {
@@ -176,10 +172,7 @@ const convertChartToRequest = (
       shenGongPosition: EARTHLY_BRANCHES[shenGong],
       sihua: sihuaData,
     },
-    targetPalace,
-    oppositePalace: oppositePalace
-      ? convertToPalaceData(oppositePalace)
-      : undefined,
+    palaces: palacesMap,
     dayunPeriods,
   };
 };
