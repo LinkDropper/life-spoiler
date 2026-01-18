@@ -238,7 +238,11 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
         {/* Footer */}
         <footer className={styles.footer}>
           <div className={styles.footerLinks}>
-            <Link href="/policy/terms" className={styles.footerLink} onClick={onClose}>
+            <Link
+              href="/policy/terms"
+              className={styles.footerLink}
+              onClick={onClose}
+            >
               {tFooter("terms")}
             </Link>
             <span className={styles.divider}>|</span>
