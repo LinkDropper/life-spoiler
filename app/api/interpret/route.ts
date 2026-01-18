@@ -150,10 +150,13 @@ const convertChartToRequest = (
     huaji: { star: sihua.huaji, palace: findPalaceForStar(sihua.huaji) },
   };
 
-  // 모든 12궁 데이터를 맵으로 변환
   const palacesMap: Record<string, PalaceData> = {};
   for (const palace of palaces) {
     palacesMap[palace.name] = convertToPalaceData(palace);
+  }
+
+  if (!palacesMap["명궁"]) {
+    throw new Error("명반에서 명궁을 찾을 수 없습니다.");
   }
 
   return {

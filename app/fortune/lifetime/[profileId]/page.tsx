@@ -312,15 +312,20 @@ export default function LifetimeFortunePage() {
       setShowCopyToast(true);
       setTimeout(() => setShowCopyToast(false), 2000);
     } catch {
-      // Fallback for older browsers
-      const textArea = document.createElement("textarea");
-      textArea.value = shareUrl;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      setShowCopyToast(true);
-      setTimeout(() => setShowCopyToast(false), 2000);
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        setShowCopyToast(true);
+        setTimeout(() => setShowCopyToast(false), 2000);
+      } catch {
+        alert(
+          `링크 복사에 실패했습니다. 다음 주소를 직접 복사해주세요: ${shareUrl}`
+        );
+      }
     }
   };
 
