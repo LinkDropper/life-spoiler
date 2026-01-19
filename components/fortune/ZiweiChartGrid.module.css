@@ -34,8 +34,11 @@
   border-right: none;
 }
 
-.palaceCell[data-row="4"][data-col="2"],
-.palaceCell[data-row="3"][data-col="2"] {
+.palaceCell[data-row="3"] {
+  border-bottom: none;
+}
+
+.palaceCell[data-row="4"] {
   border-top: 1px solid rgba(255, 255, 255, 0.16);
 }
 
@@ -49,7 +52,7 @@
   position: absolute;
   top: 6px;
   left: 6px;
-  width: 73px;
+  width: calc(100% - 12px);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -129,7 +132,7 @@
   position: absolute;
   top: 63px;
   left: 6px;
-  width: 73px;
+  width: calc(100% - 12px);
   padding-bottom: 2px;
   border-top: 1px dashed rgba(255, 255, 255, 0.16);
 }

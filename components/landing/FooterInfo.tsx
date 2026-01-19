@@ -25,10 +25,9 @@ export const FooterInfo = async () => {
           default: "사업자등록번호: 430-05-03654",
         })}
         <br />
-        {/* {t("businessInfo.salesNumber", {
+        {t("businessInfo.salesNumber", {
           default: "통신판매번호: 2026-서울노원-1503",
-        })} */}
-        통신판매번호: 아직 미신청
+        })}
         <br />
         {t("businessInfo.address", { default: "서울시 관악구 봉천동 672-23" })}
         <br />
