@@ -22,6 +22,10 @@ const envSchema = z
     NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+
+    // TossPayments
+    NEXT_PUBLIC_TOSS_CLIENT_KEY: z.string().optional(),
+    TOSS_SECRET_KEY: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (!!data.OAUTH_GOOGLE_CLIENT_ID !== !!data.OAUTH_GOOGLE_CLIENT_SECRET) {

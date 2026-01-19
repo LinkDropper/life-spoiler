@@ -328,10 +328,7 @@ export const parseJsonResponse = <T>(content: string): T => {
 
   // 4차 시도: 줄바꿈을 공백으로 치환하고 다시 시도
   try {
-    const singleLine = jsonStr
-      .replace(/\n/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+    const singleLine = jsonStr.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
     return JSON.parse(singleLine) as T;
   } catch (finalError) {
     // 디버깅을 위해 원본 응답의 일부 로깅

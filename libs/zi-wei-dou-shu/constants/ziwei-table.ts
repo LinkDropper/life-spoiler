@@ -62,7 +62,7 @@ export const ZIWEI_POSITION_TABLE: Record<
 > = {
   // 수이국 (水二局)
   2: generateTable(2),
-  
+
   // 목삼국 (木三局)
   3: generateTable(3),
 
