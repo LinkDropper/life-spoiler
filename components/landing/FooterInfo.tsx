@@ -17,6 +17,8 @@ export const FooterInfo = async () => {
         className={styles.logo}
       />
       <p className={styles.businessInfo}>
+        상호: 웬 컴퍼니 (When Company)
+        <br />
         {t("businessInfo.ceo", { default: "대표: 윤재혁" })}
         <br />
         {t("businessInfo.businessNumber", {
