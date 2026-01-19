@@ -27,7 +27,7 @@ export interface InterpretationCacheInsert {
 export type AnalysisResultRow = InterpretationCacheRow;
 export type AnalysisResultInsert = InterpretationCacheInsert;
 
-export type OAuthProvider = "kakao" | "google";
+export type OAuthProvider = "kakao" | "google" | "email";
 export type CalendarType = "solar" | "lunar";
 export type Gender = "male" | "female";
 export type FortuneType = "lifetime" | "yearly";
