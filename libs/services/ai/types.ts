@@ -143,10 +143,10 @@ export type LifetimeCoreScenarioResponse = z.infer<
   typeof LifetimeCoreScenarioResponseSchema
 >;
 
-// 상세 시나리오 카테고리 응답 스키마 (본문 200~300자 + 태그 2개)
+// 상세 시나리오 카테고리 응답 스키마 (본문 200~300자 + 태그 1~2개)
 export const LifetimeCategoryResponseSchema = z.object({
   content: z.string(),
-  tags: z.array(z.string()).min(2).max(2),
+  tags: z.array(z.string()).min(1).max(2),
 });
 
 export type LifetimeCategoryResponse = z.infer<
@@ -175,7 +175,7 @@ export interface FortuneInterpretation {
   lifeSpoiler: LifeSpoilerResponse;
   /** 핵심 시나리오 (본문 700~800자) */
   coreScenario: LifetimeCoreScenarioResponse;
-  /** 상세 시나리오 (본문 200~300자 + 태그 2개) */
+  /** 상세 시나리오 (본문 200~300자 + 태그 1~2개) */
   categories: {
     wealth: LifetimeCategoryResponse;
     career: LifetimeCategoryResponse;
@@ -309,7 +309,7 @@ export type YearlyCoreScenarioResponse = z.infer<
 // 상세 시나리오 카테고리 응답 스키마 (재물운, 직업운, 인연운, 건강운)
 export const YearlyCategoryResponseSchema = z.object({
   content: z.string(),
-  tags: z.array(z.string()).min(2).max(2),
+  tags: z.array(z.string()).min(1).max(2),
 });
 
 export type YearlyCategoryResponse = z.infer<
@@ -335,7 +335,7 @@ export interface YearlyFortuneInterpretation {
   overview: YearlyOverviewResponse;
   /** 핵심 시나리오 (본문만) */
   coreScenario: YearlyCoreScenarioResponse;
-  /** 상세 시나리오 (본문 + 태그 2개) */
+  /** 상세 시나리오 (본문 + 태그 1~2개) */
   categories: {
     wealth: YearlyCategoryResponse;
     career: YearlyCategoryResponse;
