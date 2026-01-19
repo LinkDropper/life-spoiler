@@ -20,7 +20,7 @@ export const FooterInfo = async () => {
         {t("businessInfo.ceo", { default: "대표: 윤재혁" })}
         <br />
         {t("businessInfo.businessNumber", {
-          default: "사업자등록번호: 123-45-67890",
+          default: "사업자등록번호: 430-05-03654",
         })}
         <br />
         {t("businessInfo.salesNumber", {
@@ -29,9 +29,9 @@ export const FooterInfo = async () => {
         <br />
         {t("businessInfo.address", { default: "서울시 버드나루로 12길 8" })}
         <br />
-        {t("businessInfo.email", { default: "ttja@gmail.com" })}
+        {t("businessInfo.email", { default: "ttja.when@gmail.com" })}
         <br />
-        {t("businessInfo.phone", { default: "070-8094-3030" })}
+        {t("businessInfo.phone", { default: "010-6670-1354" })}
       </p>
       <div className={styles.links}>
         <Link href="/policy/terms">{t("terms", { default: "이용약관" })}</Link>
