@@ -48,15 +48,15 @@ function PaymentSuccessContent() {
           }),
         });
 
-        const data = await response.json();
+        await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || tPayment("confirmError"));
+          throw new Error(tPayment("confirmError"));
         }
 
         setIsConfirmed(true);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : tPayment("confirmError"));
+      } catch {
+        setError(tPayment("confirmError"));
       } finally {
         setIsConfirming(false);
       }

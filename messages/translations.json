@@ -389,7 +389,8 @@
       "failDescription": "결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.",
       "errorCode": "에러 코드",
       "retry": "다시 결제하기",
-      "goBack": "이전으로 돌아가기"
+      "goBack": "이전으로 돌아가기",
+      "paymentError": "결제 처리 중 오류가 발생했습니다."
     },
     "policy": {
       "terms": {
@@ -882,7 +883,8 @@
       "failDescription": "There was a problem processing your payment. Please try again.",
       "errorCode": "Error Code",
       "retry": "Try Again",
-      "goBack": "Go Back"
+      "goBack": "Go Back",
+      "paymentError": "An error occurred during payment processing."
     },
     "policy": {
       "terms": {
@@ -1375,7 +1377,8 @@
       "failDescription": "決済処理中に問題が発生しました。もう一度お試しください。",
       "errorCode": "エラーコード",
       "retry": "もう一度決済する",
-      "goBack": "戻る"
+      "goBack": "戻る",
+      "paymentError": "決済処理中にエラーが発生しました。"
     },
     "policy": {
       "terms": {

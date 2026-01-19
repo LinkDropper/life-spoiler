@@ -17,9 +17,7 @@ import { useAuthStatus, useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
 
-const CLIENT_KEY =
-  process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ||
-  "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+const CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
 
 const PAYMENT_AMOUNT = 990;
 
@@ -185,7 +183,13 @@ export default function PaymentPage() {
           },
         });
       }
-    } catch {
+    } catch (err) {
+      if (
+        err instanceof Error &&
+        err.message !== "사용자가 결제를 취소했습니다"
+      ) {
+        setError(tPayment("paymentError"));
+      }
       setIsProcessing(false);
     }
   };

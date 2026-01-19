@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const SECRET_KEY =
-  process.env.TOSS_SECRET_KEY || "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
+const SECRET_KEY = process.env.TOSS_SECRET_KEY;
+
+if (!SECRET_KEY) {
+  throw new Error("TOSS_SECRET_KEY environment variable is required");
+}
 const EXPECTED_AMOUNT = 990;
 
 interface TossPaymentConfirmRequest {
