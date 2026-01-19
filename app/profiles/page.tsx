@@ -43,7 +43,17 @@ export default function ProfilesPage() {
     }
   }, [profiles, selectedProfileId]);
 
-  if (authStatus === "loading" || isProfilesLoading) {
+  useEffect(() => {
+    if (authStatus === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [authStatus, router]);
+
+  if (
+    authStatus === "loading" ||
+    isProfilesLoading ||
+    authStatus === "unauthenticated"
+  ) {
     return (
       <div className={styles.page}>
         <HeaderClient />
@@ -52,11 +62,6 @@ export default function ProfilesPage() {
         </div>
       </div>
     );
-  }
-
-  if (authStatus === "unauthenticated") {
-    router.replace("/login");
-    return null;
   }
 
   const handleProfileSelect = (profileId: string) => {
