@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -64,7 +64,13 @@ export default function ProfileSetupPage() {
     useState<StepTwoData>(initialStepTwoData);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (authStatus === "loading") {
+  useEffect(() => {
+    if (authStatus === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [authStatus, router]);
+
+  if (authStatus === "loading" || authStatus === "unauthenticated") {
     return (
       <div className={styles.page}>
         <div className={styles.loading}>
@@ -72,11 +78,6 @@ export default function ProfileSetupPage() {
         </div>
       </div>
     );
-  }
-
-  if (authStatus === "unauthenticated") {
-    router.replace("/login");
-    return null;
   }
 
   const handleStepOneNext = (data: StepOneData) => {
