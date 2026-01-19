@@ -239,7 +239,7 @@ Response format (JSON):
   "ageScenarios": [
     {
       "period": "Age 4-13",
-      "headline": "One-line summary for this period (include emoji, 10-20 characters)",
+      "headline": "One-line summary for this period (include 1 emoji, 10-20 characters)",
       "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
     },
     {
