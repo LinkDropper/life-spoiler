@@ -34,7 +34,15 @@ export default function ProfilesPage() {
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
-  const { deleteProfile: deleteProfileFromStore } = useProfileActions();
+  const { fetchProfiles, deleteProfile: deleteProfileFromStore } =
+    useProfileActions();
+
+  // 페이지 접근 시 프로필 정보를 다시 가져옴 (강제 새로고침)
+  useEffect(() => {
+    if (authStatus === "authenticated") {
+      fetchProfiles(true);
+    }
+  }, [authStatus, fetchProfiles]);
 
   const [selectedProfileId, setSelectedProfileId] = useState<string | null>(
     null
