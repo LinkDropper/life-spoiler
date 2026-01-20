@@ -26,7 +26,7 @@ export const FooterInfo = async () => {
         })}
         <br />
         {t("businessInfo.salesNumber", {
-          default: "통신판매번호: 2026-서울노원-1503",
+          default: "통신판매번호: 2026-서울관악-0200",
         })}
         <br />
         {t("businessInfo.address", { default: "서울시 관악구 봉천동 672-23" })}
