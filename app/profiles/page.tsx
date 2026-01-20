@@ -28,10 +28,9 @@ export default function ProfilesPage() {
   const authStatus = useAuthStatus();
   const t = useTranslations("profiles");
 
-  const fortuneType = searchParams.get("type") as
-    | "lifetime"
-    | "yearly"
-    | null;
+  const typeParam = searchParams.get("type");
+  const fortuneType: "lifetime" | "yearly" | null =
+    typeParam === "lifetime" || typeParam === "yearly" ? typeParam : null;
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
