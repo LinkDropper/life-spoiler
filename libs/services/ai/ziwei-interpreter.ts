@@ -369,12 +369,12 @@ export const generateFullInterpretation = async (
 
   return {
     lifeSpoiler,
-    coreScenario: { content: "" },
+    coreScenario: { headline: "", content: "" },
     categories: {
-      wealth: { content: "", tags: [] },
-      career: { content: "", tags: [] },
-      relationship: { content: "", tags: [] },
-      health: { content: "", tags: [] },
+      wealth: { headline: "", content: "", tags: [] },
+      career: { headline: "", content: "", tags: [] },
+      relationship: { headline: "", content: "", tags: [] },
+      health: { headline: "", content: "", tags: [] },
     },
     ageScenarios: [],
     meta: {
@@ -405,12 +405,12 @@ export const createFallbackInterpretation = (
         ? "현재 많은 분들이 이용 중입니다. 잠시 후 다시 시도해주세요."
         : "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
     },
-    coreScenario: { content: "" },
+    coreScenario: { headline: "", content: "" },
     categories: {
-      wealth: { content: "", tags: [] },
-      career: { content: "", tags: [] },
-      relationship: { content: "", tags: [] },
-      health: { content: "", tags: [] },
+      wealth: { headline: "", content: "", tags: [] },
+      career: { headline: "", content: "", tags: [] },
+      relationship: { headline: "", content: "", tags: [] },
+      health: { headline: "", content: "", tags: [] },
     },
     ageScenarios: [],
     meta: {

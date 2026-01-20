@@ -363,22 +363,27 @@ export const createYearlyFallbackInterpretation = (
       summary: fallbackMessage,
     },
     coreScenario: {
+      headline: "",
       content: fallbackMessage,
     },
     categories: {
       wealth: {
+        headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
       },
       career: {
+        headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
       },
       relationship: {
+        headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
       },
       health: {
+        headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
       },
