@@ -136,7 +136,7 @@ export default function YearlyFortunePreviewPage() {
               occupationStatusCustom: targetProfile.occupation_status_custom,
             }),
             targetYear: currentYear,
-            includeDetails: false,
+            includeDetails: true,
             profileId: targetProfile.id,
             language: locale,
           }),

@@ -284,6 +284,7 @@ export default function YearlyFortunePage() {
               occupationStatusCustom: targetProfile.occupation_status_custom,
             }),
             targetYear: currentYear,
+            includeDetails: true,
             profileId: targetProfile.id,
             language: locale,
           }),
