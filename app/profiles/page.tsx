@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
@@ -24,8 +24,14 @@ import styles from "./page.module.css";
 
 export default function ProfilesPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
   const t = useTranslations("profiles");
+
+  const fortuneType = searchParams.get("type") as
+    | "lifetime"
+    | "yearly"
+    | null;
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
@@ -190,22 +196,26 @@ export default function ProfilesPage() {
       </main>
 
       <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.primaryButton}
-          onClick={handleLifetimeFortune}
-          disabled={!selectedProfileId}
-        >
-          {t("lifetimeFortune", { default: "인생 운세 보기" })}
-        </button>
-        <button
-          type="button"
-          className={styles.secondaryButton}
-          onClick={handleYearlyFortune}
-          disabled={!selectedProfileId}
-        >
-          {t("yearlyFortune", { default: "올해 운세 보기" })}
-        </button>
+        {(!fortuneType || fortuneType === "lifetime") && (
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleLifetimeFortune}
+            disabled={!selectedProfileId}
+          >
+            {t("lifetimeFortune", { default: "인생 운세 보기" })}
+          </button>
+        )}
+        {(!fortuneType || fortuneType === "yearly") && (
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={handleYearlyFortune}
+            disabled={!selectedProfileId}
+          >
+            {t("yearlyFortune", { default: "올해 운세 보기" })}
+          </button>
+        )}
       </footer>
 
       <DeleteConfirmModal

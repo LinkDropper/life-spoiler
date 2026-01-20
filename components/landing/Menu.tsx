@@ -86,6 +86,18 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
     [onClose, router]
   );
 
+  const handleFortuneNavigate = useCallback(
+    (fortuneType: "lifetime" | "yearly") => {
+      onClose();
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+      router.push(`/profiles?type=${fortuneType}`);
+    },
+    [onClose, router, user]
+  );
+
   // ESC 키로 메뉴 닫기
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -152,7 +164,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
               <button
                 type="button"
                 className={styles.menuItem}
-                onClick={() => handleNavigate("/profiles?type=lifetime")}
+                onClick={() => handleFortuneNavigate("lifetime")}
               >
                 <span className={styles.menuItemText}>
                   {t("lifetimeFortune")}
@@ -169,7 +181,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
               <button
                 type="button"
                 className={styles.menuItem}
-                onClick={() => handleNavigate("/profiles?type=yearly")}
+                onClick={() => handleFortuneNavigate("yearly")}
               >
                 <span className={styles.menuItemText}>
                   {t("yearlyFortune")}
