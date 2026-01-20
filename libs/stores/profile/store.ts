@@ -18,11 +18,15 @@ export const createProfileStore = () => {
 
     setError: (error) => set({ error }),
 
-    fetchProfiles: async () => {
+    fetchProfiles: async (force = false) => {
       const currentStatus = get().status;
 
-      // 이미 로딩 중이거나 로드된 경우 스킵
-      if (currentStatus === "loading" || currentStatus === "loaded") {
+      // 이미 로딩 중이면 스킵 (로드된 경우는 force 시 다시 fetch)
+      if (currentStatus === "loading") {
+        return;
+      }
+
+      if (currentStatus === "loaded" && !force) {
         return;
       }
 

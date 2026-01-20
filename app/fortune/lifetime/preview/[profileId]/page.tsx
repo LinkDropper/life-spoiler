@@ -136,7 +136,7 @@ export default function LifetimeFortunePreviewPage() {
             ...(targetProfile.occupation_status_custom && {
               occupationStatusCustom: targetProfile.occupation_status_custom,
             }),
-            includeDetails: false,
+            includeDetails: true,
             profileId: targetProfile.id,
             language: locale,
           }),

@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
     if (cachedResult) {
       const responseData = buildResponseData(cachedResult);
 
-      // 캐시 히트 시에도 fortunes에 전체 데이터 저장
+      // 캐시 히트 시에도 fortunes에 전체 데이터 저장 (profileId가 있으면 저장)
       if (profileId) {
         saveFortune({
           profileId,
@@ -250,7 +250,7 @@ export async function POST(request: NextRequest) {
 
     const responseData = buildResponseData(result);
 
-    // fortunes에 전체 데이터 저장 (AI 성공 시에만)
+    // fortunes에 전체 데이터 저장 (AI 성공 시, profileId가 있으면 저장)
     if (profileId && isAISuccess) {
       saveFortune({
         profileId,

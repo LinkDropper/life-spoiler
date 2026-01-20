@@ -16,7 +16,7 @@ export interface ProfileActions {
   setProfiles: (profiles: ProfileWithFortunes[]) => void;
   setStatus: (status: ProfileLoadStatus) => void;
   setError: (error: string | null) => void;
-  fetchProfiles: () => Promise<void>;
+  fetchProfiles: (force?: boolean) => Promise<void>;
   addProfile: (profile: ProfileWithFortunes) => void;
   updateProfile: (profile: ProfileWithFortunes) => void;
   deleteProfile: (profileId: string) => void;

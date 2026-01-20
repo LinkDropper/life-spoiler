@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { updateFortunePaidAt } from "@/libs/supabase";
+import type { FortuneType } from "@/libs/supabase";
+
 const SECRET_KEY = process.env.TOSS_SECRET_KEY;
 
 if (!SECRET_KEY) {
@@ -11,6 +14,9 @@ interface TossPaymentConfirmRequest {
   paymentKey: string;
   orderId: string;
   amount: number;
+  profileId?: string;
+  fortuneType?: FortuneType;
+  year?: number;
 }
 
 interface TossPaymentResponse {
@@ -31,7 +37,7 @@ interface TossPaymentError {
 export async function POST(request: NextRequest) {
   try {
     const body: TossPaymentConfirmRequest = await request.json();
-    const { paymentKey, orderId, amount } = body;
+    const { paymentKey, orderId, amount, profileId, fortuneType, year } = body;
 
     if (!paymentKey || !orderId || amount === undefined) {
       return NextResponse.json(
@@ -89,6 +95,24 @@ export async function POST(request: NextRequest) {
     }
 
     const paymentData = data as TossPaymentResponse;
+
+    // 결제 승인 성공 시 fortunes 테이블의 paid_at 업데이트
+    if (profileId && fortuneType) {
+      const yearValue =
+        fortuneType === "yearly" ? (year ?? new Date().getFullYear()) : 0;
+      const updateSuccess = await updateFortunePaidAt(
+        profileId,
+        fortuneType,
+        yearValue
+      );
+      if (!updateSuccess) {
+        console.error("paid_at 업데이트 실패:", {
+          profileId,
+          fortuneType,
+          year: yearValue,
+        });
+      }
+    }
 
     return NextResponse.json({
       success: true,

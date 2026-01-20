@@ -24,6 +24,7 @@ export {
   getFortune,
   getFortunesByProfile,
   saveFortune,
+  updateFortunePaidAt,
   type FortuneResultType,
   type FortuneType,
   type LifetimeFortuneData,

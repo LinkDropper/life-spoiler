@@ -213,13 +213,11 @@ export async function POST(request: NextRequest) {
         ? (requestedLanguage as Locale)
         : defaultLocale;
 
-    // 캐시 키에 언어 포함
-    const cacheKey = (
-      includeDetails ? `full-${language}` : `preview-${language}`
-    ) as `full-${Locale}` | `preview-${Locale}`;
+    // 캐시 키에 언어 포함 (항상 full 타입으로 저장)
+    const cacheKey = `full-${language}` as `full-${Locale}`;
 
     // 1. profileId가 있으면 저장된 fortune 먼저 확인
-    if (profileId && includeDetails) {
+    if (profileId) {
       const existingFortune = await getFortune(profileId, "lifetime", 0);
       if (existingFortune?.result) {
         const storedData =
@@ -277,8 +275,8 @@ export async function POST(request: NextRequest) {
     if (cachedResult) {
       const responseData = buildResponseData(cachedResult);
 
-      // 캐시 히트 시에도 fortunes에 전체 데이터 저장 (인생운세인 경우)
-      if (profileId && includeDetails) {
+      // 캐시 히트 시에도 fortunes에 전체 데이터 저장 (profileId가 있으면 저장)
+      if (profileId) {
         saveFortune({
           profileId,
           fortuneType: "lifetime",
@@ -321,8 +319,8 @@ export async function POST(request: NextRequest) {
 
     const responseData = buildResponseData(result);
 
-    // fortunes에 전체 데이터 저장 (AI 성공 시에만)
-    if (profileId && includeDetails && isAISuccess) {
+    // fortunes에 전체 데이터 저장 (AI 성공 시, profileId가 있으면 저장)
+    if (profileId && isAISuccess) {
       saveFortune({
         profileId,
         fortuneType: "lifetime",
