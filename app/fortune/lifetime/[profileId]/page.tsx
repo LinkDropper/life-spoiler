@@ -102,7 +102,7 @@ const CategoryItem = ({
       {expanded && (
         <>
           {category.headline && (
-            <p className={styles.categoryHeadline}>{category.headline}</p>
+            <h4 className={styles.categoryHeadline}>{category.headline}</h4>
           )}
           <p className={styles.categoryContent}>{category.content}</p>
           {category.tags && category.tags.length > 0 && (
