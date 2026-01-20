@@ -493,7 +493,7 @@ Always respond ONLY in the requested JSON format. Output pure JSON with no other
   // Yearly Fortune User Prompts
   // ============================================================
   yearlyUserPrompts: {
-    yearly_overview: `Write this person's {targetYear} fortune overview in a friendly way!
+    yearly_overview: `Write a {targetYear} fortune overview in a friendly way!
 
 ## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
 NEVER use: "This person", "You", "They", "He/She"
@@ -520,7 +520,7 @@ Response format (JSON):
   "summary": "Annual overview (friendly tone, MUST be 300-400 characters, include 1-2 emojis, no referring expressions)"
 }`,
 
-    yearly_core: `Write this person's {targetYear} core scenario!
+    yearly_core: `Write a {targetYear} core scenario!
 
 ## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
 NEVER use: "This person", "You", "They", "He/She"
