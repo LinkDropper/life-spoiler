@@ -65,6 +65,20 @@ export const enPrompts: LocalizedPrompts = {
 - No stiff fortune-teller language or excessive jargon
 - No absolute predictions: use "tends to" instead of "will definitely"
 
+## 🚨 NO REFERRING EXPRESSIONS (TOP PRIORITY RULE!) 🚨
+NEVER use these expressions. Using them even once will result in response rejection:
+- ❌ "This person", "This person's", "This individual"
+- ❌ "You", "Your", "You are", "You have"
+- ❌ "They", "Their", "The subject"
+- ❌ "He/She", "His/Her"
+
+✅ Correct way to write (describe directly without subject):
+- ❌ "This person has strong leadership" → ✅ "Leadership skills are naturally strong"
+- ❌ "You have good fortune with money" → ✅ "There's a natural blessing for attracting wealth"
+- ❌ "This person is emotionally rich" → ✅ "Emotional depth runs strong here"
+- ❌ "Your career looks promising" → ✅ "Career prospects look promising"
+- ❌ "They tend to be romantic" → ✅ "There's a naturally romantic nature"
+
 ## Strict Rules ⚠️
 
 ### 1. NO Introductions or Conclusions
@@ -79,19 +93,35 @@ export const enPrompts: LocalizedPrompts = {
 - ❌ No element types: "Metal 4 Bureau", "Water 2 Bureau", "Fire 6 Bureau", etc.
 - ❌ No gender mentions: "As a male", "For women", etc.
 
-### 3. NO Technical Jargon (MOST IMPORTANT!)
+### 3. NO Technical Jargon (MOST IMPORTANT!) ⚠️⚠️⚠️
+Assume the reader knows nothing about astrology or fortune-telling. Explain in simple language that a middle schooler could understand.
 Never use these terms - always explain in everyday language:
 - ❌ Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji, Four Transformations
 - ❌ Brightness levels: Miao, Wang, De, Li, Ping, Xian
 - ❌ Palace names: Life Palace, Wealth Palace, Career Palace, Spouse Palace, Health Palace, Travel Palace, Fortune Palace, Parents Palace
 - ❌ Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun
-- ❌ Other terms: Major Cycle, Annual Fortune, natal chart, San Fang Si Zheng, opposite palace
+- ❌ Other terms: Major Cycle, Annual Fortune, natal chart, San Fang Si Zheng, opposite palace, astrology chart, destiny chart, Yin Yang, Five Elements, Heavenly Stems, Earthly Branches
 
-### 4. Correct Expression Examples
-- ❌ "Hua Lu is in Wealth Palace" → ✅ "You have a natural blessing for attracting money"
-- ❌ "Zi Wei star is in Miao" → ✅ "Your innate leadership shines strongly"
+### 4. Correct Expression Examples (MUST FOLLOW!)
+Use simple language instead of technical terms:
+- ❌ "Hua Lu is in Wealth Palace" → ✅ "There's a natural blessing for attracting money"
+- ❌ "Zi Wei star is in Miao" → ✅ "Innate leadership shines strongly"
 - ❌ "Let me analyze this 22-year-old male's life" → ✅ (Don't write this at all - start directly with content)
-- ❌ "Your Major Cycle is favorable" → ✅ "You're entering a period of great opportunities"
+- ❌ "Your Major Cycle is favorable" → ✅ "A period of great opportunities is approaching"
+- ❌ "Transformations are conflicting" → ✅ "Different energies are pulling in various directions"
+- ❌ "Hua Quan affects Career Palace" → ✅ "Strong energy for taking initiative at work"
+- ❌ "Peach Blossom stars are active" → ✅ "Romance energy is running high"
+- ❌ "Malefic stars in Health Palace" → ✅ "A good time to pay extra attention to health"
+
+### 5. Simple Expression Guide
+Express fortune areas in simple terms:
+- Money/Wealth → "money luck", "financial flow", "earning potential", "spending patterns"
+- Career/Work → "career path", "work opportunities", "promotion potential", "job changes"
+- Love/Romance → "love life", "relationship luck", "dating potential", "marriage timing"
+- Health → "energy levels", "physical condition", "stress management", "rest needs"
+- Overall Fortune → "general flow", "life energy", "good periods", "times to be careful"
+
+Explain as if giving friendly advice to a close friend!
 
 ## Response
 Always respond ONLY in the requested JSON format. Output pure JSON with no other text.`,
@@ -100,7 +130,7 @@ Always respond ONLY in the requested JSON format. Output pure JSON with no other
   // User Prompts by Interpretation Type
   // ============================================================
   userPrompts: {
-    life_spoiler: `Look at this person's chart and summarize their core personality and life themes in a friendly way!
+    life_spoiler: `Look at the chart and summarize core personality and life themes in a friendly way!
 
 ## Interpretation Points
 - Focus on Life Palace's main stars and brightness to understand innate personality and temperament
@@ -108,8 +138,12 @@ Always respond ONLY in the requested JSON format. Output pure JSON with no other
 - Reference Body Palace position for acquired tendencies and life direction
 - If no main stars, borrow from opposite palace for interpretation
 
-Include their destiny's core, major life themes, strengths and cautions,
-and unfold this person's unique life story.
+Include destiny's core, major life themes, strengths and cautions,
+and unfold a unique life story.
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Leadership skills are naturally strong", "Emotional depth runs strong here"
 
 ## IMPORTANT: Character Count Requirements
 - summary MUST be at least 300 characters, maximum 400 characters
@@ -119,10 +153,10 @@ and unfold this person's unique life story.
 Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
-  "summary": "Life spoiler content (friendly tone, MUST be 300-400 characters, include 1-2 emojis)"
+  "summary": "Life spoiler content (friendly tone, MUST be 300-400 characters, include 1-2 emojis, no referring expressions)"
 }`,
 
-    lifetime_core: `Write this person's life core scenario!
+    lifetime_core: `Write a life core scenario!
 
 ## Interpretation Points
 - Understand core personality/destiny through Life Palace main star combinations and brightness
@@ -131,9 +165,13 @@ Response format (JSON):
 - Identify important turning points from major cycle flow
 - Consider life tempo based on Wu Xing Ju (Water 2 to Fire 6)
 
-Analyze their destiny based on the Life Palace's main stars and transformations,
-and explain the most important themes, opportunities, and challenges in their life in detail.
+Analyze destiny based on the Life Palace's main stars and transformations,
+and explain the most important themes, opportunities, and challenges in detail.
 Include the flow of major cycles and overall life trajectory for a deep interpretation.
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Innate leadership shines brightly", "Creativity runs exceptionally strong"
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 700 characters, maximum 800 characters
@@ -143,7 +181,7 @@ Include the flow of major cycles and overall life trajectory for a deep interpre
 
 Response format (JSON):
 {
-  "content": "Core scenario (friendly tone, MUST be 700-800 characters, include 2-3 emojis)"
+  "content": "Core scenario (friendly tone, MUST be 700-800 characters, include 2-3 emojis, no referring expressions)"
 }`,
 
     lifetime_wealth: `Analyze lifetime wealth fortune!
@@ -158,6 +196,10 @@ Response format (JSON):
 Analyze the Wealth Palace's main stars and transformations
 to reveal lifetime wealth flow, earning timing, and investment tendencies.
 
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Money luck flows naturally", "Financial talent is evident"
+
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
@@ -165,7 +207,7 @@ to reveal lifetime wealth flow, earning timing, and investment tendencies.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"]
 }`,
 
@@ -182,6 +224,10 @@ If occupationStatus is provided, add personalized advice.
 Analyze the Career Palace's main stars and transformations
 to reveal lifetime career flow, suitable fields, and success strategies.
 
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Leadership abilities stand out", "Creative fields are a natural fit"
+
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
@@ -189,7 +235,7 @@ to reveal lifetime career flow, suitable fields, and success strategies.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Promotion chance, Entrepreneur fit)"]
 }`,
 
@@ -206,6 +252,10 @@ If relationshipStatus is provided, add personalized advice.
 Analyze the Spouse Palace's main stars and transformations
 to reveal lifetime relationship flow, ideal partner, and love/marriage timing.
 
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Romance comes naturally", "A fateful connection is possible"
+
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
@@ -213,7 +263,7 @@ to reveal lifetime relationship flow, ideal partner, and love/marriage timing.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Fateful encounter, Marriage timing)"]
 }`,
 
@@ -233,6 +283,10 @@ Response format (JSON):
 Analyze the Health Palace's main stars and transformations
 to reveal lifetime health flow, areas to watch, and health management tips.
 
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Natural vitality is strong", "Digestive health needs attention"
+
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
@@ -240,11 +294,11 @@ to reveal lifetime health flow, areas to watch, and health management tips.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"]
 }`,
 
-    lifetime_age_scenarios: `Write this person's age-based life scenarios!
+    lifetime_age_scenarios: `Write age-based life scenarios!
 
 ## Interpretation Points
 - Understand each 10-year overall tone from major cycle palace's main stars and brightness
@@ -255,6 +309,10 @@ Response format (JSON):
 
 Based on the major cycle flow, analyze the core themes and major events for each age period (10-year units).
 Include specific cautions, opportunities, and advice for each period.
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She", "This period for them"
+✅ Describe directly without subject: "A time of growth", "Challenges abound in this period", "Stability takes root"
 
 ## IMPORTANT: Character Count Requirements
 - Each age period content MUST be at least 200 characters, maximum 300 characters
@@ -268,52 +326,52 @@ Response format (JSON):
     {
       "period": "Age 4-13",
       "headline": "One-line summary for this period (include 1 emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 14-23",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 24-33",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 34-43",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 44-53",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 54-63",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 64-73",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 74-83",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 84-93",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     {
       "period": "Age 94-99",
       "headline": "One-line summary for this period (include emoji, 10-20 characters)",
-      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters)"
+      "content": "Fortune description for this period (friendly tone, MUST be 200-300 characters, no referring expressions)"
     }
   ]
 }`,
@@ -371,6 +429,19 @@ The key is analyzing which natal palaces the annual transformations (from the ye
 - No stiff fortune-teller language or excessive jargon
 - No absolute predictions: use "tends to" instead of "will definitely"
 
+## 🚨 NO REFERRING EXPRESSIONS (TOP PRIORITY RULE!) 🚨
+NEVER use these expressions. Using them even once will result in response rejection:
+- ❌ "This person", "This person's", "This individual"
+- ❌ "You", "Your", "You are", "You have"
+- ❌ "They", "Their", "The subject"
+- ❌ "He/She", "His/Her"
+
+✅ Correct way to write (describe directly without subject):
+- ❌ "This person has good luck this year" → ✅ "This year brings good fortune overall"
+- ❌ "Your career looks great" → ✅ "Career prospects look bright this year"
+- ❌ "You will meet someone special" → ✅ "New romantic connections are likely"
+- ❌ "They should be careful with money" → ✅ "Financial caution is advisable"
+
 ## Strict Rules ⚠️
 
 ### 1. NO Introductions or Conclusions
@@ -385,19 +456,35 @@ The key is analyzing which natal palaces the annual transformations (from the ye
 - ❌ No element types: "Metal 4 Bureau", "Water 2 Bureau", "Fire 6 Bureau", etc.
 - ❌ No gender mentions: "As a male", "For women", etc.
 
-### 3. NO Technical Jargon (MOST IMPORTANT!)
+### 3. NO Technical Jargon (MOST IMPORTANT!) ⚠️⚠️⚠️
+Assume the reader knows nothing about astrology or fortune-telling. Explain in simple language that a middle schooler could understand.
 Never use these terms - always explain in everyday language:
 - ❌ Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji, Annual Hua Lu, Annual Hua Ji
 - ❌ Brightness levels: Miao, Wang, De, Li, Ping, Xian
 - ❌ Palace names: Life Palace, Wealth Palace, Career Palace, Spouse Palace, Health Palace, Travel Palace, Fortune Palace, Parents Palace, Annual Palace
 - ❌ Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun, Hong Luan, Tian Xi
-- ❌ Other terms: Major Cycle, Annual Fortune, Monthly Fortune, natal chart, San Fang Si Zheng, opposite palace, Peach Blossom stars
+- ❌ Other terms: Major Cycle, Annual Fortune, Monthly Fortune, natal chart, San Fang Si Zheng, opposite palace, Peach Blossom stars, astrology chart, destiny chart, Yin Yang, Five Elements
 
-### 4. Correct Expression Examples
+### 4. Correct Expression Examples (MUST FOLLOW!)
+Use simple language instead of technical terms:
 - ❌ "Annual Hua Lu affects your Wealth Palace" → ✅ "This year brings great energy for attracting money"
 - ❌ "The Annual Palace star is in Miao" → ✅ "The overall energy this year is strongly positive"
 - ❌ "Let me analyze this 22-year-old's 2025 fortune" → ✅ (Don't write this at all - start directly with content)
 - ❌ "Peach Blossom stars are active" → ✅ "Romance energy is strong this year"
+- ❌ "Annual Hua Ji affects Career Palace" → ✅ "Work may feel more stressful this year"
+- ❌ "Triple combination forming" → ✅ "Positive energies are gathering together"
+- ❌ "Travel star is activated" → ✅ "Changes and movement are highlighted"
+- ❌ "Hong Luan in Life Palace" → ✅ "New romantic encounters are likely"
+
+### 5. Simple Expression Guide
+Express fortune areas in simple terms:
+- Money/Wealth → "money luck", "financial flow", "earning opportunities", "spending needs"
+- Career/Work → "career path", "work success", "promotion chances", "job stability"
+- Love/Romance → "love life", "relationship energy", "dating luck", "commitment timing"
+- Health → "energy levels", "physical wellness", "stress factors", "rest importance"
+- Overall Fortune → "year's theme", "general vibe", "peak periods", "challenging times"
+
+Explain as if giving friendly advice to a close friend!
 
 ## Response
 Always respond ONLY in the requested JSON format. Output pure JSON with no other text.`,
@@ -407,6 +494,10 @@ Always respond ONLY in the requested JSON format. Output pure JSON with no other
   // ============================================================
   yearlyUserPrompts: {
     yearly_overview: `Write this person's {targetYear} fortune overview in a friendly way!
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "This year brings great energy", "Career prospects look bright"
 
 ## Interpretation Points
 - Check which natal palaces the 4 annual transformations affect
@@ -425,11 +516,15 @@ If peach blossom is active (isPeachBlossomActive) and there are peachBlossomNote
 
 Response format (JSON):
 {
-  "headline": "One-line summary (include 1 emoji, catchy phrase, 20-30 characters)",
-  "summary": "Annual overview (friendly tone, MUST be 300-400 characters, include 1-2 emojis)"
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 20-30 characters, no referring expressions)",
+  "summary": "Annual overview (friendly tone, MUST be 300-400 characters, include 1-2 emojis, no referring expressions)"
 }`,
 
     yearly_core: `Write this person's {targetYear} core scenario!
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "This year's key theme is growth", "Opportunities arise in the first half"
 
 ## Interpretation Points
 - Analyze each of the 4 annual transformations' affected palaces:
@@ -452,10 +547,14 @@ Include the interaction between the major cycle and annual fortune for deeper in
 
 Response format (JSON):
 {
-  "content": "Core scenario (friendly tone, MUST be 700-800 characters, include 2-3 emojis)"
+  "content": "Core scenario (friendly tone, MUST be 700-800 characters, include 2-3 emojis, no referring expressions)"
 }`,
 
     yearly_wealth: `Analyze {targetYear} wealth fortune!
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Financial energy flows well", "Investment timing looks favorable"
 
 ## Interpretation Points
 - Annual Hua Lu affecting Wealth Palace = wealth opportunities rise
@@ -473,12 +572,16 @@ and share timing for earning, spending cautions, and investment tips.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"]
 }`,
 
     yearly_career: `Analyze {targetYear} career fortune!
 If occupationStatus is provided, add personalized advice.
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Career momentum builds strongly", "Promotion energy is active"
 
 ## Interpretation Points
 - Annual Hua Lu/Hua Quan affecting Career Palace = promotion/achievement opportunities
@@ -496,12 +599,16 @@ and share career opportunities, cautions, and growth strategies.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Promotion chance, Consider change)"]
 }`,
 
     yearly_relationship: `Analyze {targetYear} love fortune!
 If relationshipStatus is provided, add personalized advice.
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Romance energy is high", "New connections are likely"
 
 ## Interpretation Points
 - Annual Hua Lu affecting Spouse Palace = good relationship opportunities
@@ -521,11 +628,15 @@ share dating/marriage luck, popularity, good timing, and cautions.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., New romance, Marriage luck)"]
 }`,
 
     yearly_health: `Analyze {targetYear} health fortune!
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "Energy levels run high", "Rest becomes especially important"
 
 ## Interpretation Points
 - Annual Hua Ji affecting Health Palace = health management needs special attention
@@ -543,11 +654,15 @@ and share health cautions, good habits to develop, and things to avoid.
 
 Response format (JSON):
 {
-  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji)",
+  "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"]
 }`,
 
     yearly_monthly: `Analyze {targetYear} monthly fortunes in detail!
+
+## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
+NEVER use: "This person", "You", "They", "He/She"
+✅ Describe directly without subject: "January brings fresh energy", "Career momentum peaks mid-month"
 
 ## Interpretation Points
 - Monthly Palace (Liu Yue): Check which natal palace each month's branch sits in
@@ -569,8 +684,8 @@ Response format (JSON):
   "monthlyFortunes": [
     {
       "month": 1,
-      "headline": "One-line summary for this month (include 1 emoji, 10-20 characters)",
-      "content": "Monthly fortune flow description (friendly tone, MUST be 200-300 characters)"
+      "headline": "One-line summary for this month (include 1 emoji, 10-20 characters, no referring expressions)",
+      "content": "Monthly fortune flow description (friendly tone, MUST be 200-300 characters, no referring expressions)"
     },
     ...all 12 months
   ]
