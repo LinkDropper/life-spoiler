@@ -134,6 +134,36 @@ export const getFortune = async (
 };
 
 /**
+ * 운세 결제 완료 처리 (paid_at 업데이트)
+ */
+export const updateFortunePaidAt = async (
+  profileId: string,
+  fortuneType: FortuneType,
+  year: number = 0
+): Promise<boolean> => {
+  try {
+    const supabase = createServerClient() as SupabaseDB;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase.from("fortunes") as any)
+      .update({ paid_at: new Date().toISOString() })
+      .eq("profile_id", profileId)
+      .eq("fortune_type", fortuneType)
+      .eq("year", year);
+
+    if (error) {
+      console.error("Fortune paid_at 업데이트 실패:", error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Fortune paid_at 업데이트 실패:", error);
+    return false;
+  }
+};
+
+/**
  * 프로필의 모든 운세 결과 조회
  */
 export const getFortunesByProfile = async (

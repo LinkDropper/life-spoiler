@@ -45,6 +45,10 @@ function PaymentSuccessContent() {
             paymentKey,
             orderId,
             amount: Number(amount),
+            profileId: profileId ?? undefined,
+            fortuneType: fortuneType ?? undefined,
+            year:
+              fortuneType === "yearly" ? new Date().getFullYear() : undefined,
           }),
         });
 
@@ -63,7 +67,7 @@ function PaymentSuccessContent() {
     };
 
     confirmPayment();
-  }, [paymentKey, orderId, amount, tPayment]);
+  }, [paymentKey, orderId, amount, profileId, fortuneType, tPayment]);
 
   const handleViewFortune = () => {
     if (profileId && fortuneType) {
