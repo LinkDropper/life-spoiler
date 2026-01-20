@@ -394,6 +394,7 @@
   font-weight: 500;
   line-height: 140%;
   letter-spacing: 0;
+  white-space: nowrap;
 }
 
 @keyframes fadeInOut {
