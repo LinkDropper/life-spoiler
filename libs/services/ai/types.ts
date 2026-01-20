@@ -134,8 +134,9 @@ export const LifeSpoilerResponseSchema = z.object({
 
 export type LifeSpoilerResponse = z.infer<typeof LifeSpoilerResponseSchema>;
 
-// 핵심 시나리오 응답 스키마 (본문 700~800자)
+// 핵심 시나리오 응답 스키마 (제목 + 본문 700~800자)
 export const LifetimeCoreScenarioResponseSchema = z.object({
+  headline: z.string(),
   content: z.string(),
 });
 
@@ -143,8 +144,9 @@ export type LifetimeCoreScenarioResponse = z.infer<
   typeof LifetimeCoreScenarioResponseSchema
 >;
 
-// 상세 시나리오 카테고리 응답 스키마 (본문 200~300자 + 태그 1~2개)
+// 상세 시나리오 카테고리 응답 스키마 (제목 + 본문 200~300자 + 태그 1~2개)
 export const LifetimeCategoryResponseSchema = z.object({
+  headline: z.string(),
   content: z.string(),
   tags: z.array(z.string()).min(1).max(2),
 });
@@ -297,8 +299,9 @@ export type YearlyOverviewResponse = z.infer<
   typeof YearlyOverviewResponseSchema
 >;
 
-// 핵심 시나리오 응답 스키마
+// 핵심 시나리오 응답 스키마 (제목 + 본문)
 export const YearlyCoreScenarioResponseSchema = z.object({
+  headline: z.string(),
   content: z.string(),
 });
 
@@ -306,8 +309,9 @@ export type YearlyCoreScenarioResponse = z.infer<
   typeof YearlyCoreScenarioResponseSchema
 >;
 
-// 상세 시나리오 카테고리 응답 스키마 (재물운, 직업운, 인연운, 건강운)
+// 상세 시나리오 카테고리 응답 스키마 (제목 + 재물운, 직업운, 인연운, 건강운)
 export const YearlyCategoryResponseSchema = z.object({
+  headline: z.string(),
   content: z.string(),
   tags: z.array(z.string()).min(1).max(2),
 });

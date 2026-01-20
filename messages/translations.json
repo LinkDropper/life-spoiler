@@ -242,25 +242,6 @@
             "health": "건강"
           }
         },
-        "lifestyle": {
-          "title": "라이프스타일 추천",
-          "luckyColors": "Lucky Colors",
-          "luckyDirection": "Lucky Direction",
-          "luckyNumbers": "Lucky Numbers",
-          "careerFit": "직업 적합도",
-          "compatibility": "궁합 좋은 띠",
-          "incompatible": "상극",
-          "elementBalance": "오행 밸런스",
-          "dominant": "강",
-          "lacking": "약",
-          "elements": {
-            "water": "수",
-            "wood": "목",
-            "fire": "화",
-            "earth": "토",
-            "metal": "금"
-          }
-        },
         "details": {
           "summary": "종합 운세"
         }
@@ -736,25 +717,6 @@
             "health": "Health"
           }
         },
-        "lifestyle": {
-          "title": "Lifestyle Recommendations",
-          "luckyColors": "Lucky Colors",
-          "luckyDirection": "Lucky Direction",
-          "luckyNumbers": "Lucky Numbers",
-          "careerFit": "Career Compatibility",
-          "compatibility": "Compatible Signs",
-          "incompatible": "Incompatible",
-          "elementBalance": "Element Balance",
-          "dominant": "Strong",
-          "lacking": "Weak",
-          "elements": {
-            "water": "Water",
-            "wood": "Wood",
-            "fire": "Fire",
-            "earth": "Earth",
-            "metal": "Metal"
-          }
-        },
         "details": {
           "summary": "Overall Fortune"
         }
@@ -1228,25 +1190,6 @@
             "career": "職業",
             "relationship": "縁",
             "health": "健康"
-          }
-        },
-        "lifestyle": {
-          "title": "ライフスタイル推薦",
-          "luckyColors": "ラッキーカラー",
-          "luckyDirection": "ラッキー方位",
-          "luckyNumbers": "ラッキーナンバー",
-          "careerFit": "職業適合度",
-          "compatibility": "相性の良い干支",
-          "incompatible": "相克",
-          "elementBalance": "五行バランス",
-          "dominant": "強",
-          "lacking": "弱",
-          "elements": {
-            "water": "水",
-            "wood": "木",
-            "fire": "火",
-            "earth": "土",
-            "metal": "金"
           }
         },
         "details": {

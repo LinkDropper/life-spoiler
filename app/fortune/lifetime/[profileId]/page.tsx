@@ -17,7 +17,6 @@ import { useAuthStatus } from "@/libs/stores/user";
 import type { FortuneInterpretation } from "@/libs/services/ai";
 import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
-import type { LifestyleRecommendation } from "@/libs/zi-wei-dou-shu/lifestyle";
 
 import styles from "./page.module.css";
 
@@ -49,7 +48,6 @@ interface FortuneResult {
   };
   rawChart: ZiweiChart;
   dayun: DayunResult;
-  lifestyle: LifestyleRecommendation;
   interpretation: FortuneInterpretation;
 }
 
@@ -61,7 +59,7 @@ const CategoryItem = ({
   t,
 }: {
   categoryKey: CategoryKey;
-  category: { content: string; tags: string[] };
+  category: { headline: string; content: string; tags: string[] };
   t: ReturnType<typeof useTranslations>;
 }) => {
   const [expanded, setExpanded] = useState(true);
@@ -103,12 +101,15 @@ const CategoryItem = ({
       </button>
       {expanded && (
         <>
+          {category.headline && (
+            <p className={styles.categoryHeadline}>{category.headline}</p>
+          )}
           <p className={styles.categoryContent}>{category.content}</p>
           {category.tags && category.tags.length > 0 && (
             <div className={styles.categoryTags}>
               {category.tags.map((tag, idx) => (
                 <span key={idx} className={styles.tag}>
-                  #{tag}
+                  {tag}
                 </span>
               ))}
             </div>
@@ -479,6 +480,11 @@ export default function LifetimeFortunePage() {
         {coreExpanded && interpretation.coreScenario.content && (
           <section className={styles.section}>
             <div className={styles.coreScenario}>
+              {interpretation.coreScenario.headline && (
+                <h3 className={styles.coreHeadline}>
+                  {interpretation.coreScenario.headline}
+                </h3>
+              )}
               <p>{interpretation.coreScenario.content}</p>
             </div>
           </section>

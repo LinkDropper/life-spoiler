@@ -121,6 +121,9 @@
 
 .coreScenario {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .coreScenario p {
@@ -130,6 +133,14 @@
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   white-space: pre-wrap;
+}
+
+.coreHeadline {
+  color: var(--color-text-default, #FFF);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: 0;
 }
 
 /* ============================================================
@@ -170,6 +181,14 @@
   font-size: 16px;
   font-weight: 700;
   color: #ffffff;
+}
+
+.categoryHeadline {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.4;
 }
 
 .categoryContent {

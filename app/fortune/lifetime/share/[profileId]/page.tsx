@@ -11,7 +11,6 @@ import { ProfileInfo, ZiweiChartGrid } from "@/components/fortune";
 import type { FortuneInterpretation } from "@/libs/services/ai";
 import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
-import type { LifestyleRecommendation } from "@/libs/zi-wei-dou-shu/lifestyle";
 
 import styles from "../../[profileId]/page.module.css";
 
@@ -38,7 +37,6 @@ interface FortuneResult {
   };
   rawChart: ZiweiChart;
   dayun: DayunResult;
-  lifestyle: LifestyleRecommendation;
   interpretation: FortuneInterpretation;
 }
 

@@ -186,6 +186,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "핵심 시나리오 (존댓말 + 친근한 말투로 반드시 700-800자, 이모지 2-3개 포함, 지칭 표현 금지)"
 }`,
 
@@ -212,6 +213,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 투자 기회, 절약 필수)"]
 }`,
@@ -240,6 +242,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 승진 기회, 창업 적성)"]
 }`,
@@ -268,6 +271,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 운명적 만남, 결혼 적기)"]
 }`,
@@ -299,6 +303,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 운동 필수, 스트레스 주의)"]
 }`,
@@ -557,6 +562,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "핵심 시나리오 (존댓말 + 친근한 말투로 반드시 700-800자, 이모지 2-3개 포함, 지칭 표현 금지)"
 }`,
 
@@ -582,6 +588,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 투자 기회, 절약 필수)"]
 }`,
@@ -609,6 +616,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 승진 기회, 이직 고려)"]
 }`,
@@ -638,6 +646,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 새 인연, 결혼 운)"]
 }`,
@@ -664,6 +673,7 @@ export const koPrompts: LocalizedPrompts = {
 
 응답 형식 (JSON):
 {
+  "headline": "한 줄 요약 (이모지 1개 포함, 15-25자)",
   "content": "상세 해석 (존댓말 + 친근한 말투로 반드시 200-300자, 이모지 1개 포함, 지칭 표현 금지)",
   "tags": ["핵심 키워드 2개 (예: 운동 필수, 스트레스 주의)"]
 }`,

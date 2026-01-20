@@ -183,6 +183,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "核心シナリオ（敬語+親しみやすい口調で必ず700-800文字、絵文字2-3個含む、指示表現禁止）"
 }`,
 
@@ -209,6 +210,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：投資チャンス、節約必須）"]
 }`,
@@ -237,6 +239,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：昇進チャンス、起業適性）"]
 }`,
@@ -265,6 +268,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：運命的な出会い、結婚適期）"]
 }`,
@@ -296,6 +300,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：運動必須、ストレス注意）"]
 }`,
@@ -551,6 +556,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "核心シナリオ（敬語+親しみやすい口調で必ず700-800文字、絵文字2-3個含む、指示表現禁止）"
 }`,
 
@@ -576,6 +582,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：投資チャンス、節約必須）"]
 }`,
@@ -603,6 +610,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：昇進チャンス、転職検討）"]
 }`,
@@ -632,6 +640,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：新しい出会い、結婚運）"]
 }`,
@@ -658,6 +667,7 @@ export const jaPrompts: LocalizedPrompts = {
 
 回答形式 (JSON):
 {
+  "headline": "一行まとめ（絵文字1つ含む、15-25文字）",
   "content": "詳細な解釈（敬語+親しみやすい口調で必ず200-300文字、絵文字1個含む、指示表現禁止）",
   "tags": ["キーワード2つ（例：運動必須、ストレス注意）"]
 }`,

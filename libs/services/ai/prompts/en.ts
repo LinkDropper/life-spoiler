@@ -181,6 +181,7 @@ NEVER use: "This person", "You", "They", "He/She"
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Core scenario (friendly tone, MUST be 700-800 characters, include 2-3 emojis, no referring expressions)"
 }`,
 
@@ -207,6 +208,7 @@ NEVER use: "This person", "You", "They", "He/She"
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"]
 }`,
@@ -235,6 +237,7 @@ NEVER use: "This person", "You", "They", "He/She"
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Promotion chance, Entrepreneur fit)"]
 }`,
@@ -263,6 +266,7 @@ NEVER use: "This person", "You", "They", "He/She"
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Fateful encounter, Marriage timing)"]
 }`,
@@ -294,6 +298,7 @@ NEVER use: "This person", "You", "They", "He/She"
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"]
 }`,
@@ -547,6 +552,7 @@ Include the interaction between the major cycle and annual fortune for deeper in
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Core scenario (friendly tone, MUST be 700-800 characters, include 2-3 emojis, no referring expressions)"
 }`,
 
@@ -572,6 +578,7 @@ and share timing for earning, spending cautions, and investment tips.
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"]
 }`,
@@ -599,6 +606,7 @@ and share career opportunities, cautions, and growth strategies.
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Promotion chance, Consider change)"]
 }`,
@@ -628,6 +636,7 @@ share dating/marriage luck, popularity, good timing, and cautions.
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., New romance, Marriage luck)"]
 }`,
@@ -654,6 +663,7 @@ and share health cautions, good habits to develop, and things to avoid.
 
 Response format (JSON):
 {
+  "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
   "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"]
 }`,
