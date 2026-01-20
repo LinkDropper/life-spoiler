@@ -11,7 +11,6 @@ import type {
   YearlyPeachBlossomInfo,
   YearlySihua,
 } from "@/libs/zi-wei-dou-shu/calculators";
-import type { LifestyleRecommendation } from "@/libs/zi-wei-dou-shu/lifestyle";
 import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 
 import { createServerClient } from "./client";
@@ -39,7 +38,6 @@ export interface LifetimeFortuneData {
   };
   rawChart: ZiweiChart;
   dayun: DayunResult;
-  lifestyle: LifestyleRecommendation;
   interpretation: FortuneInterpretation;
 }
 

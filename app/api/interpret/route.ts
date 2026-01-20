@@ -29,7 +29,6 @@ import {
   type DayunResult,
 } from "@/libs/zi-wei-dou-shu/calculators";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
-import { generateLifestyleRecommendation } from "@/libs/zi-wei-dou-shu/lifestyle";
 import type {
   Palace,
   ZiweiChart,
@@ -252,7 +251,6 @@ export async function POST(request: NextRequest) {
     const dayunResult = calculateAllDayunScores(
       calculateDayun(chart, 100, language)
     );
-    const lifestyle = generateLifestyleRecommendation(chart, language);
     const cachedResult = await getCachedResult(chartHash, cacheKey);
 
     // 응답 데이터 구조 (재사용)
@@ -268,7 +266,6 @@ export async function POST(request: NextRequest) {
       },
       rawChart: chart,
       dayun: dayunResult,
-      lifestyle,
       interpretation,
     });
 
