@@ -9,6 +9,8 @@ export interface UseImageDownloadOptions {
   quality?: number;
   /** 픽셀 비율 (기본값: 2 for retina) */
   pixelRatio?: number;
+  /** 이미지 로드 대기 여부 (기본값: true) */
+  waitForImages?: boolean;
 }
 
 export interface UseImageDownloadReturn {
@@ -43,10 +45,32 @@ export interface UseImageDownloadReturn {
  * );
  * ```
  */
+/**
+ * 복제된 DOM 내의 모든 이미지가 로드될 때까지 대기
+ */
+const waitForImagesToLoad = (clone: HTMLElement): Promise<void> => {
+  const images = clone.querySelectorAll("img");
+  if (images.length === 0) {
+    return Promise.resolve();
+  }
+
+  const imagePromises = Array.from(images).map((img) => {
+    if (img.complete && img.naturalHeight !== 0) {
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve) => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+  });
+
+  return Promise.all(imagePromises).then(() => undefined);
+};
+
 export const useImageDownload = (
   options: UseImageDownloadOptions = {}
 ): UseImageDownloadReturn => {
-  const { filename = "fortune", pixelRatio = 2 } = options;
+  const { filename = "fortune", pixelRatio = 2, waitForImages = true } = options;
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -72,6 +96,10 @@ export const useImageDownload = (
         backgroundColor: undefined,
         // 이미지 로딩 대기
         skipAutoScale: false,
+        // DOM 복제 후 이미지 로드 대기
+        onclone: waitForImages
+          ? (_doc, clone) => waitForImagesToLoad(clone)
+          : undefined,
       });
 
       // 다운로드 링크 생성
@@ -85,7 +113,7 @@ export const useImageDownload = (
     } finally {
       setIsDownloading(false);
     }
-  }, [filename, pixelRatio]);
+  }, [filename, pixelRatio, waitForImages]);
 
   return {
     ref,

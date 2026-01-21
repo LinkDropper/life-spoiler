@@ -93,7 +93,8 @@ export default function LifetimeFortunePage() {
   // 이미지 다운로드 핸들러
   const handleDownloadImage = useCallback(async () => {
     setShowStoryCard(true);
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    // requestAnimationFrame으로 DOM 렌더링 완료 대기
+    await new Promise((resolve) => requestAnimationFrame(resolve));
 
     try {
       await downloadStoryImage();
