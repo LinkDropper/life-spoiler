@@ -23,7 +23,7 @@ const PAYMENT_AMOUNT = 990;
 
 type FortuneType = "yearly" | "lifetime";
 
-type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY" | "NAVERPAY";
+type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY";
 
 interface PaymentMethodOption {
   id: PaymentMethod;
@@ -42,7 +42,6 @@ const generateOrderId = () => {
 const EASY_PAY_MAP: Record<string, string> = {
   TOSSPAY: "토스페이",
   KAKAOPAY: "카카오페이",
-  NAVERPAY: "네이버페이",
 };
 
 const PAYMENT_METHODS: PaymentMethodOption[] = [
@@ -52,13 +51,6 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
     logo: "/images/payment/kakaopay-logo.png",
     logoWidth: 44,
     logoHeight: 18,
-  },
-  {
-    id: "NAVERPAY",
-    labelKey: "methodNaverPay",
-    logo: "/images/payment/naverpay-logo.svg",
-    logoWidth: 44,
-    logoHeight: 17,
   },
   {
     id: "TOSSPAY",
