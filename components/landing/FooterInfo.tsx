@@ -29,7 +29,9 @@ export const FooterInfo = async () => {
           default: "통신판매번호: 2026-서울관악-0200",
         })}
         <br />
-        {t("businessInfo.address", { default: "서울특별시 관악구 봉천로13나길 19(봉천동)" })}
+        {t("businessInfo.address", {
+          default: "서울특별시 관악구 봉천로13나길 19(봉천동)",
+        })}
         <br />
         <a href="mailto:ttja.when@gmail.com">
           {t("businessInfo.email", { default: "ttja.when@gmail.com" })}
