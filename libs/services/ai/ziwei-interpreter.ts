@@ -371,10 +371,10 @@ export const generateFullInterpretation = async (
     lifeSpoiler,
     coreScenario: { headline: "", content: "" },
     categories: {
-      wealth: { headline: "", content: "", tags: [] },
-      career: { headline: "", content: "", tags: [] },
-      relationship: { headline: "", content: "", tags: [] },
-      health: { headline: "", content: "", tags: [] },
+      wealth: { headline: "", content: "", tags: [], score: 0 },
+      career: { headline: "", content: "", tags: [], score: 0 },
+      relationship: { headline: "", content: "", tags: [], score: 0 },
+      health: { headline: "", content: "", tags: [], score: 0 },
     },
     ageScenarios: [],
     meta: {
@@ -407,10 +407,10 @@ export const createFallbackInterpretation = (
     },
     coreScenario: { headline: "", content: "" },
     categories: {
-      wealth: { headline: "", content: "", tags: [] },
-      career: { headline: "", content: "", tags: [] },
-      relationship: { headline: "", content: "", tags: [] },
-      health: { headline: "", content: "", tags: [] },
+      wealth: { headline: "", content: "", tags: [], score: 0 },
+      career: { headline: "", content: "", tags: [], score: 0 },
+      relationship: { headline: "", content: "", tags: [], score: 0 },
+      health: { headline: "", content: "", tags: [], score: 0 },
     },
     ageScenarios: [],
     meta: {

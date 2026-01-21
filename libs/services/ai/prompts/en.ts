@@ -210,7 +210,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"]
+  "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"],
+  "score": Integer 0-100 (wealth fortune score, objectively calculated based on chart analysis)
 }`,
 
     lifetime_career: `Analyze lifetime career fortune!
@@ -239,7 +240,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., Promotion chance, Entrepreneur fit)"]
+  "tags": ["2 key keywords (e.g., Promotion chance, Entrepreneur fit)"],
+  "score": Integer 0-100 (career fortune score, objectively calculated based on chart analysis)
 }`,
 
     lifetime_relationship: `Analyze lifetime relationship fortune!
@@ -268,7 +270,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., Fateful encounter, Marriage timing)"]
+  "tags": ["2 key keywords (e.g., Fateful encounter, Marriage timing)"],
+  "score": Integer 0-100 (relationship fortune score, objectively calculated based on chart analysis)
 }`,
 
     lifetime_health: `Analyze lifetime health fortune!
@@ -300,7 +303,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"]
+  "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"],
+  "score": Integer 0-100 (health fortune score, objectively calculated based on chart analysis)
 }`,
 
     lifetime_age_scenarios: `Write age-based life scenarios!
@@ -580,7 +584,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"]
+  "tags": ["2 key keywords (e.g., Investment opportunity, Save money)"],
+  "score": Integer 0-100 (yearly wealth fortune score, objectively calculated based on annual transformation analysis)
 }`,
 
     yearly_career: `Analyze {targetYear} career fortune!
@@ -608,7 +613,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., Promotion chance, Consider change)"]
+  "tags": ["2 key keywords (e.g., Promotion chance, Consider change)"],
+  "score": Integer 0-100 (yearly career fortune score, objectively calculated based on annual transformation analysis)
 }`,
 
     yearly_relationship: `Analyze {targetYear} love fortune!
@@ -638,7 +644,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., New romance, Marriage luck)"]
+  "tags": ["2 key keywords (e.g., New romance, Marriage luck)"],
+  "score": Integer 0-100 (yearly relationship fortune score, objectively calculated based on annual transformation analysis)
 }`,
 
     yearly_health: `Analyze {targetYear} health fortune!
@@ -665,7 +672,8 @@ Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
   "content": "Detailed interpretation (friendly tone, MUST be 200-300 characters, include 1 emoji, no referring expressions)",
-  "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"]
+  "tags": ["2 key keywords (e.g., Exercise essential, Watch stress)"],
+  "score": Integer 0-100 (yearly health fortune score, objectively calculated based on annual transformation analysis)
 }`,
 
     yearly_monthly: `Analyze {targetYear} monthly fortunes in detail!
