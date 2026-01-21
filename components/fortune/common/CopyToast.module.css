@@ -1,0 +1,45 @@
+.copyToast {
+  position: fixed;
+  align-items: center;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  z-index: 200;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+.copyToastContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-default, #fff);
+  text-align: center;
+  font-family: var(--Type-Brand, Pretendard);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  85% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}

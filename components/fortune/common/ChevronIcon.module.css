@@ -1,0 +1,19 @@
+.chevron {
+  color: #ffffff;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.medium {
+  width: 20px;
+  height: 20px;
+}
+
+.small {
+  width: 20px;
+  height: 20px;
+}
