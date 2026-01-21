@@ -324,6 +324,7 @@ export default function YearlyFortunePage() {
             year={currentYear}
             mainStars={mainStarNames}
             headline={interpretation.overview.headline}
+            description={interpretation.overview.description}
             scores={storyScores}
             labels={storyLabels}
           />

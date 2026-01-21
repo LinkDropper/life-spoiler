@@ -126,9 +126,10 @@ export interface ZiweiInterpretationRequest {
 // 해석 결과 타입 (인생 운세)
 // ============================================================
 
-// 인생 스포일러 응답 스키마 (제목 + 본문 300~400자)
+// 인생 스포일러 응답 스키마 (제목 + 설명 + 본문 300~400자)
 export const LifeSpoilerResponseSchema = z.object({
   headline: z.string(),
+  description: z.string(),
   summary: z.string(),
 });
 
@@ -290,9 +291,10 @@ export interface YearlyInterpretationRequest {
   language?: Locale;
 }
 
-// 올해 스포일러 응답 스키마
+// 올해 스포일러 응답 스키마 (제목 + 설명 + 본문)
 export const YearlyOverviewResponseSchema = z.object({
   headline: z.string(),
+  description: z.string(),
   summary: z.string(),
 });
 
