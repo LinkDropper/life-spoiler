@@ -25,6 +25,38 @@ export interface UseImageDownloadReturn {
 }
 
 /**
+ * 요소 내의 모든 이미지가 로드될 때까지 대기 (타임아웃 포함)
+ */
+const waitForImagesToLoad = (
+  element: HTMLElement,
+  timeout = 3000
+): Promise<void> => {
+  const images = element.querySelectorAll("img");
+  if (images.length === 0) {
+    return Promise.resolve();
+  }
+
+  const imagePromises = Array.from(images).map((img) => {
+    if (img.complete && img.naturalHeight !== 0) {
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve) => {
+      const timer = setTimeout(resolve, timeout);
+      img.onload = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      img.onerror = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+    });
+  });
+
+  return Promise.all(imagePromises).then(() => undefined);
+};
+
+/**
  * HTML 요소를 이미지로 변환하여 다운로드하는 훅
  *
  * html-to-image 라이브러리를 사용합니다.
@@ -45,27 +77,6 @@ export interface UseImageDownloadReturn {
  * );
  * ```
  */
-/**
- * 복제된 DOM 내의 모든 이미지가 로드될 때까지 대기
- */
-const waitForImagesToLoad = (clone: HTMLElement): Promise<void> => {
-  const images = clone.querySelectorAll("img");
-  if (images.length === 0) {
-    return Promise.resolve();
-  }
-
-  const imagePromises = Array.from(images).map((img) => {
-    if (img.complete && img.naturalHeight !== 0) {
-      return Promise.resolve();
-    }
-    return new Promise<void>((resolve) => {
-      img.onload = () => resolve();
-      img.onerror = () => resolve();
-    });
-  });
-
-  return Promise.all(imagePromises).then(() => undefined);
-};
 
 export const useImageDownload = (
   options: UseImageDownloadOptions = {}
@@ -86,20 +97,19 @@ export const useImageDownload = (
     setError(null);
 
     try {
+      // 이미지 로드 대기
+      if (waitForImages) {
+        await waitForImagesToLoad(ref.current);
+      }
+
       // 동적 import로 번들 사이즈 최적화
       const { toPng } = await import("html-to-image");
 
       const dataUrl = await toPng(ref.current, {
         pixelRatio,
         cacheBust: true,
-        // 배경 포함
         backgroundColor: undefined,
-        // 이미지 로딩 대기
         skipAutoScale: false,
-        // DOM 복제 후 이미지 로드 대기
-        onclone: waitForImages
-          ? (_doc, clone) => waitForImagesToLoad(clone)
-          : undefined,
       });
 
       // 다운로드 링크 생성

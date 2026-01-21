@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { forwardRef } from "react";
 
 import { getFirstStarImagePath } from "@/libs/utils";
@@ -75,23 +74,19 @@ export const InstagramStoryCard = forwardRef<
       }}
     >
       {/* 로고 */}
-      <div
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/images/logo.png"
+        alt="인생스포"
+        width={76}
+        height={28}
         style={{
           position: "absolute",
           top: 14,
           left: 16,
-          width: 76,
-          height: 28,
+          objectFit: "contain",
         }}
-      >
-        <Image
-          src="/images/logo.png"
-          alt="인생스포"
-          width={76}
-          height={28}
-          style={{ objectFit: "contain" }}
-        />
-      </div>
+      />
 
       {/* 상단: 주성 이미지 + 뱃지 */}
       <div
@@ -104,20 +99,14 @@ export const InstagramStoryCard = forwardRef<
         }}
       >
         {/* 주성 이미지 */}
-        <div
-          style={{
-            width: 295,
-            height: 161,
-            position: "relative",
-          }}
-        >
-          <Image
-            src={starImagePath}
-            alt={mainStarName}
-            fill
-            style={{ objectFit: "contain" }}
-          />
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={starImagePath}
+          alt={mainStarName}
+          width={295}
+          height={161}
+          style={{ objectFit: "contain" }}
+        />
 
         {/* 주성 뱃지 */}
         <div
