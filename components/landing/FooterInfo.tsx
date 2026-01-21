@@ -31,9 +31,13 @@ export const FooterInfo = async () => {
         <br />
         {t("businessInfo.address", { default: "서울시 관악구 봉천동 672-23" })}
         <br />
-        {t("businessInfo.email", { default: "ttja.when@gmail.com" })}
+        <a href="mailto:ttja.when@gmail.com">
+          {t("businessInfo.email", { default: "ttja.when@gmail.com" })}
+        </a>
         <br />
-        {t("businessInfo.phone", { default: "010-6670-1354" })}
+        <a href="tel:070-8098-6285">
+          {t("businessInfo.phone", { default: "070-8098-6285" })}
+        </a>
       </p>
       <div className={styles.links}>
         <Link href="/policy/terms">{t("terms", { default: "이용약관" })}</Link>
