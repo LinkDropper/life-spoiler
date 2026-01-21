@@ -1,245 +1,66 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
-import { ProfileInfo, ZiweiChartGrid } from "@/components/fortune";
-
-import type { YearlyFortuneInterpretation } from "@/libs/services/ai";
-import type {
-  YearlyPalaceInfo,
-  YearlyPeachBlossomInfo,
-  YearlySihua,
-} from "@/libs/zi-wei-dou-shu/calculators";
-import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
+import {
+  ProfileInfo,
+  ZiweiChartGrid,
+  SectionHeader,
+  CategoryItem,
+  ScenarioItem,
+  ScenarioList,
+  ErrorState,
+  type CategoryKey,
+} from "@/components/fortune";
+import { useYearlyShare } from "@/libs/hooks/fortune";
 
 import styles from "../../[profileId]/page.module.css";
 
-interface ProfileData {
-  name: string;
-  birth_date: string;
-  birth_time: string | null;
-  birth_time_unknown: boolean;
-  calendar_type: "solar" | "lunar";
-  gender: "male" | "female";
-}
+const CATEGORY_KEYS: CategoryKey[] = [
+  "wealth",
+  "career",
+  "relationship",
+  "health",
+];
 
-interface YearlyFortuneResult {
-  year: number;
-  chart: {
-    wuxingJu: string;
-    mingGong: string;
-  };
-  rawChart: ZiweiChart;
-  yearlySihua: YearlySihua;
-  yearlyPalaces: YearlyPalaceInfo;
-  peachBlossom: YearlyPeachBlossomInfo;
-  currentDayun: {
-    period: string;
-    palaceName: string;
-    mainStars: string[];
-  } | null;
-  interpretation: YearlyFortuneInterpretation;
-}
-
-type CategoryKey = "wealth" | "career" | "relationship" | "health";
-
-const CategoryItem = ({
-  categoryKey,
-  category,
-  t,
-}: {
-  categoryKey: CategoryKey;
-  category: { content: string; tags: string[] };
-  t: ReturnType<typeof useTranslations>;
-}) => {
-  const [expanded, setExpanded] = useState(true);
-
-  const defaultLabels: Record<CategoryKey, string> = {
-    wealth: "재물운",
-    career: "직업운",
-    relationship: "인연운",
-    health: "건강운",
-  };
-
-  const label = t(`categories.${categoryKey}`, {
-    default: defaultLabels[categoryKey],
-  });
-
-  return (
-    <div className={styles.categoryCard}>
-      <button
-        type="button"
-        className={styles.categoryHeader}
-        onClick={() => setExpanded(!expanded)}
-      >
-        <span className={styles.categoryLabel}>{label}</span>
-        <svg
-          className={`${styles.chevronSmall} ${expanded ? styles.expanded : ""}`}
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-        >
-          <path
-            d="M5 12.5L10 7.5L15 12.5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-      {expanded && (
-        <>
-          <p className={styles.categoryContent}>{category.content}</p>
-          {category.tags && category.tags.length > 0 && (
-            <div className={styles.categoryTags}>
-              {category.tags.map((tag, idx) => (
-                <span key={idx} className={styles.tag}>
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-};
-
-const MonthlyScenarioItem = ({
-  fortune,
-  monthUnit,
-}: {
-  fortune: YearlyFortuneInterpretation["monthlyFortunes"][number];
-  monthUnit: string;
-}) => {
-  const [expanded, setExpanded] = useState(true);
-
-  return (
-    <div className={styles.scenarioItem}>
-      <button
-        type="button"
-        className={styles.scenarioHeader}
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className={styles.scenarioHeaderLeft}>
-          <div className={styles.scenarioMonth}>
-            {fortune.month}
-            {monthUnit}
-          </div>
-          <div className={styles.scenarioHeadline}>{fortune.headline}</div>
-        </div>
-        <svg
-          className={`${styles.chevronSmall} ${expanded ? styles.expanded : ""}`}
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-        >
-          <path
-            d="M5 12.5L10 7.5L15 12.5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-      {expanded && (
-        <div className={styles.scenarioContent}>{fortune.content}</div>
-      )}
-    </div>
-  );
-};
-
-const MonthlyScenarioList = ({
-  monthlyFortunes,
-  t,
-}: {
-  monthlyFortunes: YearlyFortuneInterpretation["monthlyFortunes"];
-  t: ReturnType<typeof useTranslations>;
-}) => {
-  const monthUnit = t("monthly.monthUnit", { default: "월" });
-
-  return (
-    <div className={styles.monthlyScenario}>
-      <div className={styles.scenarioList}>
-        {monthlyFortunes.map((fortune) => (
-          <MonthlyScenarioItem
-            key={fortune.month}
-            fortune={fortune}
-            monthUnit={monthUnit}
-          />
-        ))}
-      </div>
-    </div>
-  );
+const DEFAULT_LABELS: Record<CategoryKey, string> = {
+  wealth: "재물운",
+  career: "직업운",
+  relationship: "인연운",
+  health: "건강운",
 };
 
 export default function YearlyFortuneSharePage() {
-  const params = useParams();
-  const router = useRouter();
-  const profileId = params.profileId as string;
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
 
-  const currentYear = new Date().getFullYear();
+  const {
+    isLoading,
+    error,
+    result,
+    profile,
+    currentYear,
+    handleCheckMyFortune,
+  } = useYearlyShare({
+    onFortuneNotFound: () =>
+      tCommon("fortuneNotFound", {
+        default: "운세 데이터를 찾을 수 없습니다.",
+      }),
+    onUnknownError: () =>
+      tCommon("unknownError", {
+        default: "알 수 없는 오류가 발생했습니다.",
+      }),
+  });
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<YearlyFortuneResult | null>(null);
-  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
   const [coreExpanded, setCoreExpanded] = useState(true);
   const [detailExpanded, setDetailExpanded] = useState(true);
   const [monthlyExpanded, setMonthlyExpanded] = useState(true);
-
-  useEffect(() => {
-    const fetchYearlyFortune = async () => {
-      try {
-        const response = await fetch(
-          `/api/fortune/${profileId}?type=yearly&year=${currentYear}`
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.error ||
-              tCommon("fortuneNotFound", {
-                default: "운세 데이터를 찾을 수 없습니다.",
-              })
-          );
-        }
-
-        const data = await response.json();
-        setProfile(data.data.profile);
-        setResult(data.data.fortune);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : tCommon("unknownError", {
-                default: "알 수 없는 오류가 발생했습니다.",
-              })
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchYearlyFortune();
-  }, [profileId, currentYear, tCommon]);
-
-  const handleCheckMyFortune = () => {
-    router.push("/");
-  };
 
   if (isLoading) {
     return <Loading />;
@@ -250,18 +71,13 @@ export default function YearlyFortuneSharePage() {
       <div className={styles.page}>
         <HeaderClient />
         <main className={styles.main}>
-          <div className={styles.error}>
-            <p>{error}</p>
-            <button
-              type="button"
-              className={styles.backButton}
-              onClick={handleCheckMyFortune}
-            >
-              {tCommon("checkMyFortune", {
-                default: "내 운세도 확인해보기",
-              })}
-            </button>
-          </div>
+          <ErrorState
+            message={error}
+            buttonText={tCommon("checkMyFortune", {
+              default: "내 운세도 확인해보기",
+            })}
+            onButtonClick={handleCheckMyFortune}
+          />
         </main>
       </div>
     );
@@ -291,30 +107,11 @@ export default function YearlyFortuneSharePage() {
         />
 
         {/* 자미두수 명반 섹션 */}
-        <button
-          type="button"
-          className={styles.sectionHeader}
-          onClick={() => setChartExpanded(!chartExpanded)}
-        >
-          <h3 className={styles.sectionTitle}>
-            {tPreview("chartTitle", { default: "자미두수 명반" })}
-          </h3>
-          <svg
-            className={`${styles.chevron} ${chartExpanded ? styles.expanded : ""}`}
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              d="M5 12.5L10 7.5L15 12.5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <SectionHeader
+          title={tPreview("chartTitle", { default: "자미두수 명반" })}
+          expanded={chartExpanded}
+          onToggle={() => setChartExpanded(!chartExpanded)}
+        />
 
         {chartExpanded && rawChart && (
           <section className={styles.chartSection}>
@@ -328,30 +125,11 @@ export default function YearlyFortuneSharePage() {
         )}
 
         {/* 올해 스포일러 섹션 */}
-        <button
-          type="button"
-          className={styles.sectionHeader}
-          onClick={() => setSpoilerExpanded(!spoilerExpanded)}
-        >
-          <h3 className={styles.sectionTitle}>
-            {tPreview("yearlySpoilerTitle", { default: "올해 스포일러" })}
-          </h3>
-          <svg
-            className={`${styles.chevron} ${spoilerExpanded ? styles.expanded : ""}`}
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              d="M5 12.5L10 7.5L15 12.5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <SectionHeader
+          title={tPreview("yearlySpoilerTitle", { default: "올해 스포일러" })}
+          expanded={spoilerExpanded}
+          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
+        />
 
         {spoilerExpanded && (
           <section className={styles.overviewSection}>
@@ -365,114 +143,71 @@ export default function YearlyFortuneSharePage() {
         )}
 
         {/* 핵심 시나리오 섹션 */}
-        <button
-          type="button"
-          className={styles.sectionHeader}
-          onClick={() => setCoreExpanded(!coreExpanded)}
-        >
-          <h3 className={styles.sectionTitle}>
-            {t("coreScenario.title", { default: "핵심 시나리오" })}
-          </h3>
-          <svg
-            className={`${styles.chevron} ${coreExpanded ? styles.expanded : ""}`}
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              d="M5 12.5L10 7.5L15 12.5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <SectionHeader
+          title={t("coreScenario.title", { default: "핵심 시나리오" })}
+          expanded={coreExpanded}
+          onToggle={() => setCoreExpanded(!coreExpanded)}
+        />
 
-        {coreExpanded && (
+        {coreExpanded && interpretation.coreScenario.content && (
           <section className={styles.section}>
             <div className={styles.coreScenario}>
+              {interpretation.coreScenario.headline && (
+                <h3 className={styles.coreHeadline}>
+                  {interpretation.coreScenario.headline}
+                </h3>
+              )}
               <p>{interpretation.coreScenario.content}</p>
             </div>
           </section>
         )}
 
         {/* 상세 시나리오 섹션 */}
-        <button
-          type="button"
-          className={styles.sectionHeader}
-          onClick={() => setDetailExpanded(!detailExpanded)}
-        >
-          <h3 className={styles.sectionTitle}>
-            {t("detailScenario.title", { default: "상세 시나리오" })}
-          </h3>
-          <svg
-            className={`${styles.chevron} ${detailExpanded ? styles.expanded : ""}`}
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              d="M5 12.5L10 7.5L15 12.5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <SectionHeader
+          title={t("detailScenario.title", { default: "상세 시나리오" })}
+          expanded={detailExpanded}
+          onToggle={() => setDetailExpanded(!detailExpanded)}
+        />
 
         {detailExpanded && (
           <section className={styles.section}>
             <div className={styles.categoriesContainer}>
-              {(["wealth", "career", "relationship", "health"] as const).map(
-                (key) => (
-                  <CategoryItem
-                    key={key}
-                    categoryKey={key}
-                    category={interpretation.categories[key]}
-                    t={t}
-                  />
-                )
-              )}
+              {CATEGORY_KEYS.map((key) => (
+                <CategoryItem
+                  key={key}
+                  categoryKey={key}
+                  label={t(`categories.${key}`, {
+                    default: DEFAULT_LABELS[key],
+                  })}
+                  headline={interpretation.categories[key].headline}
+                  content={interpretation.categories[key].content}
+                  tags={interpretation.categories[key].tags}
+                  showHashtag={true}
+                />
+              ))}
             </div>
           </section>
         )}
 
         {/* 월별 시나리오 섹션 */}
-        <button
-          type="button"
-          className={styles.sectionHeader}
-          onClick={() => setMonthlyExpanded(!monthlyExpanded)}
-        >
-          <h3 className={styles.sectionTitle}>
-            {t("monthly.detailTitle", { default: "월별 시나리오" })}
-          </h3>
-          <svg
-            className={`${styles.chevron} ${monthlyExpanded ? styles.expanded : ""}`}
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-          >
-            <path
-              d="M5 12.5L10 7.5L15 12.5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <SectionHeader
+          title={t("monthly.detailTitle", { default: "월별 시나리오" })}
+          expanded={monthlyExpanded}
+          onToggle={() => setMonthlyExpanded(!monthlyExpanded)}
+        />
 
         {monthlyExpanded && (
           <section className={styles.section}>
-            <MonthlyScenarioList
-              monthlyFortunes={interpretation.monthlyFortunes}
-              t={t}
-            />
+            <ScenarioList>
+              {interpretation.monthlyFortunes.map((fortune) => (
+                <ScenarioItem
+                  key={fortune.month}
+                  label={`${fortune.month}${t("monthly.monthUnit", { default: "월" })}`}
+                  headline={fortune.headline}
+                  content={fortune.content}
+                />
+              ))}
+            </ScenarioList>
           </section>
         )}
       </main>
