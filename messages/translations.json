@@ -315,6 +315,23 @@
           "collapse": "접기",
           "monthUnit": "월"
         }
+      },
+      "instagramStory": {
+        "mainStar": "주성",
+        "downloadButton": "인스타 스토리용 이미지 저장",
+        "downloading": "이미지 생성 중...",
+        "categories": {
+          "wealth": "재물운",
+          "career": "직업운",
+          "relationship": "인연운",
+          "health": "건강운"
+        }
+      },
+      "shareDrawer": {
+        "title": "공유하기",
+        "copyLink": "링크 복사하기",
+        "downloadImage": "프로필 이미지 다운로드",
+        "downloading": "다운로드 중..."
       }
     },
     "common": {
@@ -790,6 +807,23 @@
           "collapse": "Collapse",
           "monthUnit": ""
         }
+      },
+      "instagramStory": {
+        "mainStar": "Main Star",
+        "downloadButton": "Save as Instagram Story Image",
+        "downloading": "Creating image...",
+        "categories": {
+          "wealth": "Wealth",
+          "career": "Career",
+          "relationship": "Relationship",
+          "health": "Health"
+        }
+      },
+      "shareDrawer": {
+        "title": "Share",
+        "copyLink": "Copy Link",
+        "downloadImage": "Download Profile Image",
+        "downloading": "Downloading..."
       }
     },
     "common": {
@@ -1265,6 +1299,23 @@
           "collapse": "閉じる",
           "monthUnit": "月"
         }
+      },
+      "instagramStory": {
+        "mainStar": "主星",
+        "downloadButton": "インスタストーリー用画像を保存",
+        "downloading": "画像生成中...",
+        "categories": {
+          "wealth": "財運",
+          "career": "仕事運",
+          "relationship": "恋愛運",
+          "health": "健康運"
+        }
+      },
+      "shareDrawer": {
+        "title": "シェアする",
+        "copyLink": "リンクをコピー",
+        "downloadImage": "プロフィール画像をダウンロード",
+        "downloading": "ダウンロード中..."
       }
     },
     "common": {
