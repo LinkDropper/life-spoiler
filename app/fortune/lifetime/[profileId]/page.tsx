@@ -313,6 +313,7 @@ export default function LifetimeFortunePage() {
             type="lifetime"
             mainStars={mainStarNames}
             headline={interpretation.lifeSpoiler.headline}
+            description={interpretation.lifeSpoiler.description}
             scores={storyScores}
             labels={storyLabels}
           />

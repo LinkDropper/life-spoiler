@@ -25,6 +25,8 @@ export interface InstagramStoryCardProps {
   mainStars: string[];
   /** 한줄 제목 (headline) */
   headline: string;
+  /** 한줄 설명 (description) */
+  description?: string;
   /** 4개 카테고리 점수 */
   scores: {
     wealth: number;
@@ -44,7 +46,7 @@ export interface InstagramStoryCardProps {
 export const InstagramStoryCard = forwardRef<
   HTMLDivElement,
   InstagramStoryCardProps
->(({ type, mainStars, headline, scores, labels }, ref) => {
+>(({ type, mainStars, headline, description, scores, labels }, ref) => {
   const starImagePath = getFirstStarImagePath(mainStars);
   const mainStarName = mainStars[0] || "자미";
 
@@ -147,16 +149,17 @@ export const InstagramStoryCard = forwardRef<
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: 24,
+          gap: 12,
           width: 327,
           marginTop: 16,
         }}
       >
-        {/* 한줄 제목 */}
+        {/* 한줄 제목 + 설명 */}
         <div
           style={{
             display: "flex",
-            alignItems: "center",
+            flexDirection: "column",
+            gap: 12,
             width: "100%",
           }}
         >
@@ -170,6 +173,18 @@ export const InstagramStoryCard = forwardRef<
           >
             {cleanHeadline}
           </span>
+          {description && (
+            <span
+              style={{
+                color: "#fff",
+                fontSize: 14,
+                fontWeight: 400,
+                lineHeight: 1.4,
+              }}
+            >
+              {description}
+            </span>
+          )}
         </div>
 
         {/* 4개 그래프 */}
