@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -15,9 +15,15 @@ import {
   ScenarioList,
   CopyToast,
   ErrorState,
+  ShareDrawer,
   type CategoryKey,
 } from "@/components/fortune";
+import {
+  InstagramStoryCard,
+  type InstagramStoryCardLabels,
+} from "@/components/fortune/InstagramStoryCard";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
+import { useImageDownload } from "@/libs/hooks/useImageDownload";
 
 import styles from "./page.module.css";
 
@@ -40,6 +46,7 @@ export default function LifetimeFortunePage() {
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
+  const tStory = useTranslations("fortune.instagramStory");
 
   const { isLoading, error, result, profile, showCopyToast, handleShare } =
     useLifetimeFortune({
@@ -58,6 +65,46 @@ export default function LifetimeFortunePage() {
   const [coreExpanded, setCoreExpanded] = useState(true);
   const [detailExpanded, setDetailExpanded] = useState(true);
   const [ageExpanded, setAgeExpanded] = useState(true);
+
+  // 공유 드로어 상태
+  const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
+  const [showStoryCard, setShowStoryCard] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 이미지 다운로드 훅
+  const {
+    ref: storyCardRef,
+    download: downloadStoryImage,
+    isDownloading,
+  } = useImageDownload({
+    filename: "life_spoiler_lifetime",
+    pixelRatio: 2,
+  });
+
+  // cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  // 이미지 다운로드 핸들러
+  const handleDownloadImage = useCallback(async () => {
+    setShowStoryCard(true);
+    // requestAnimationFrame으로 DOM 렌더링 완료 대기
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    try {
+      await downloadStoryImage();
+    } finally {
+      timeoutRef.current = setTimeout(() => {
+        setShowStoryCard(false);
+        setIsShareDrawerOpen(false);
+      }, 500);
+    }
+  }, [downloadStoryImage]);
 
   if (isLoading) {
     return <Loading />;
@@ -85,6 +132,29 @@ export default function LifetimeFortunePage() {
   }
 
   const { interpretation, rawChart } = result;
+
+  // 명궁의 주성 이름 목록
+  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
+  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
+
+  // 인스타 스토리용 점수
+  const storyScores = {
+    wealth: interpretation.categories.wealth.score ?? 0,
+    career: interpretation.categories.career.score ?? 0,
+    relationship: interpretation.categories.relationship.score ?? 0,
+    health: interpretation.categories.health.score ?? 0,
+  };
+
+  // 인스타 스토리용 레이블
+  const storyLabels: InstagramStoryCardLabels = {
+    mainStar: tStory("mainStar"),
+    categories: {
+      wealth: tStory("categories.wealth"),
+      career: tStory("categories.career"),
+      relationship: tStory("categories.relationship"),
+      health: tStory("categories.health"),
+    },
+  };
 
   return (
     <div className={styles.page}>
@@ -212,11 +282,42 @@ export default function LifetimeFortunePage() {
         <button
           type="button"
           className={styles.shareButton}
-          onClick={handleShare}
+          onClick={() => setIsShareDrawerOpen(true)}
         >
           {t("shareButton", { default: "공유하기" })}
         </button>
       </footer>
+
+      {/* 공유 드로어 */}
+      <ShareDrawer
+        isOpen={isShareDrawerOpen}
+        onClose={() => setIsShareDrawerOpen(false)}
+        onCopyLink={handleShare}
+        onDownloadImage={handleDownloadImage}
+        isDownloading={isDownloading}
+      />
+
+      {/* 이미지 생성용 숨겨진 카드 */}
+      {showStoryCard && (
+        <div
+          style={{
+            position: "fixed",
+            left: -9999,
+            top: 0,
+            opacity: 0,
+            pointerEvents: "none",
+          }}
+        >
+          <InstagramStoryCard
+            ref={storyCardRef}
+            type="lifetime"
+            mainStars={mainStarNames}
+            headline={interpretation.lifeSpoiler.headline}
+            scores={storyScores}
+            labels={storyLabels}
+          />
+        </div>
+      )}
 
       {/* 복사 완료 토스트 */}
       {showCopyToast && <CopyToast message={tCommon("copySuccess")} />}

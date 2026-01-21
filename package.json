@@ -16,6 +16,7 @@
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
     "@tosspayments/tosspayments-sdk": "^2.5.0",
+    "html-to-image": "^1.11.13",
     "korean-lunar-calendar": "^0.3.6",
     "lottie-react": "^2.4.1",
     "next": "15.5.9",

@@ -371,21 +371,25 @@ export const createYearlyFallbackInterpretation = (
         headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
+        score: 0,
       },
       career: {
         headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
+        score: 0,
       },
       relationship: {
         headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
+        score: 0,
       },
       health: {
         headline: "",
         content: fallbackMessage,
         tags: ["준비 중", "잠시만요"],
+        score: 0,
       },
     },
     monthlyFortunes: Array.from({ length: 12 }, (_, i) => ({

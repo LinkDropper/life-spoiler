@@ -137,7 +137,7 @@ export const useLifetimePreview = (
           err instanceof Error
             ? err.message
             : (optionsRef.current.onUnknownError?.() ??
-              "알 수 없는 오류가 발생했습니다.")
+                "알 수 없는 오류가 발생했습니다.")
         );
       } finally {
         setIsLoading(false);
