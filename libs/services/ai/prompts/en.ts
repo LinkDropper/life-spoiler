@@ -153,6 +153,7 @@ NEVER use: "This person", "You", "They", "He/She"
 Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 15-25 characters)",
+  "description": "Supplementary description of destiny traits (no emoji, 30-40 chars. Describe innate personality/nature. e.g., 'Strong outside but fragile when alone', 'Outer appearance is deep but clumsy at expressing feelings')",
   "summary": "Life spoiler content (friendly tone, MUST be 300-400 characters, include 1-2 emojis, no referring expressions)"
 }`,
 
@@ -526,6 +527,7 @@ If peach blossom is active (isPeachBlossomActive) and there are peachBlossomNote
 Response format (JSON):
 {
   "headline": "One-line summary (include 1 emoji, catchy phrase, 20-30 characters, no referring expressions)",
+  "description": "Supplementary description of this year's fortune (no emoji, 30-40 chars. Describe yearly flow/opportunities. e.g., 'Existing bonds shine brighter than new ones', 'Many challenges but rewards follow along')",
   "summary": "Annual overview (friendly tone, MUST be 300-400 characters, include 1-2 emojis, no referring expressions)"
 }`,
 

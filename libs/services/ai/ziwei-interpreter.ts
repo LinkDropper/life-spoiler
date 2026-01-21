@@ -401,6 +401,7 @@ export const createFallbackInterpretation = (
   return {
     lifeSpoiler: {
       headline: "🔮 운세 분석 준비 중",
+      description: "잠시 후 다시 시도해주세요",
       summary: isRateLimited
         ? "현재 많은 분들이 이용 중입니다. 잠시 후 다시 시도해주세요."
         : "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
