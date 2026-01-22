@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import { trackPurchase } from "@/libs/analytics";
 
 import styles from "./page.module.css";
 
@@ -59,6 +60,26 @@ function PaymentSuccessContent() {
         }
 
         setIsConfirmed(true);
+
+        // GA 결제 이벤트 전송
+        if (orderId && amount && fortuneType) {
+          trackPurchase({
+            transaction_id: orderId,
+            value: Number(amount),
+            currency: "KRW",
+            items: [
+              {
+                item_id: fortuneType,
+                item_name:
+                  fortuneType === "yearly"
+                    ? tPayment("productNameYearly")
+                    : tPayment("productNameLifetime"),
+                price: Number(amount),
+                quantity: 1,
+              },
+            ],
+          });
+        }
       } catch {
         setError(tPayment("confirmError"));
       } finally {
