@@ -325,25 +325,18 @@ export const generateFullInterpretation = async (
   const { includeDetails = false } = options;
 
   if (includeDetails) {
-    // 1단계: 인생 스포일러 + 핵심 시나리오
-    const [lifeSpoiler, coreScenario] = await Promise.all([
-      interpretLifeSpoiler(request),
-      interpretLifetimeCore(request),
-    ]);
+    // 1단계: 인생 스포일러 + 핵심 시나리오 + 4개 카테고리 (6개 병렬)
+    const [lifeSpoiler, coreScenario, wealth, career, relationship, health] =
+      await Promise.all([
+        interpretLifeSpoiler(request),
+        interpretLifetimeCore(request),
+        interpretLifetimeWealth(request),
+        interpretLifetimeCareer(request),
+        interpretLifetimeRelationship(request),
+        interpretLifetimeHealth(request),
+      ]);
 
-    // 2단계: 상세 시나리오 (재물, 직업)
-    const [wealth, career] = await Promise.all([
-      interpretLifetimeWealth(request),
-      interpretLifetimeCareer(request),
-    ]);
-
-    // 3단계: 상세 시나리오 (인연, 건강)
-    const [relationship, health] = await Promise.all([
-      interpretLifetimeRelationship(request),
-      interpretLifetimeHealth(request),
-    ]);
-
-    // 4단계: 나이대별 시나리오
+    // 2단계: 나이대별 시나리오
     const ageResult = await interpretAgeScenarios(request);
 
     return {
