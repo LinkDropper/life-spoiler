@@ -105,8 +105,8 @@ export const InstagramStoryCard = forwardRef<
         <img
           src={starImagePath}
           alt={mainStarName}
-          width={295}
-          height={161}
+          width={251}
+          height={137}
           style={{ objectFit: "contain" }}
         />
 
@@ -116,7 +116,7 @@ export const InstagramStoryCard = forwardRef<
             display: "flex",
             justifyContent: "center",
             gap: 8,
-            width: 295,
+            width: 251,
           }}
         >
           <div
