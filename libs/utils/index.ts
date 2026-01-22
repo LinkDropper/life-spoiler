@@ -5,3 +5,4 @@ export {
   isMainStar,
   MAIN_STARS,
 } from "./star-image";
+export { isKakaoTalkBrowser, openWithExternalBrowser } from "./browser";
