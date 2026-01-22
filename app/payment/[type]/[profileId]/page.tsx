@@ -23,7 +23,7 @@ const PAYMENT_AMOUNT = 990;
 
 type FortuneType = "yearly" | "lifetime";
 
-type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY";
+type PaymentMethod = "CARD" | "TOSSPAY";
 
 interface PaymentMethodOption {
   id: PaymentMethod;
@@ -41,17 +41,9 @@ const generateOrderId = () => {
 
 const EASY_PAY_MAP: Record<string, string> = {
   TOSSPAY: "토스페이",
-  KAKAOPAY: "카카오페이",
 };
 
 const PAYMENT_METHODS: PaymentMethodOption[] = [
-  {
-    id: "KAKAOPAY",
-    labelKey: "methodKakaoPay",
-    logo: "/images/payment/kakaopay-logo.png",
-    logoWidth: 44,
-    logoHeight: 18,
-  },
   {
     id: "TOSSPAY",
     labelKey: "methodTossPay",
