@@ -97,8 +97,8 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body>
-        <BrowserRedirect />
         <NextIntlClientProvider messages={messages}>
+          <BrowserRedirect />
           <UserProvider>
             <ProfileProvider>{children}</ProfileProvider>
           </UserProvider>
