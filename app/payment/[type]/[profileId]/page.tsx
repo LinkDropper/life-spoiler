@@ -288,6 +288,7 @@ export default function PaymentPage() {
         </div>
 
         <p className={styles.refundNotice}>{tPayment("refundPolicy")}</p>
+        <p className={styles.refundNotice}>본 상품의 열람 기간은 결제일로부터 1년입니다.</p>
       </main>
 
       <footer className={styles.footer}>
