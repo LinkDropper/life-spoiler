@@ -24,6 +24,13 @@ export default function BrowserRedirect() {
 
       // 즉시 외부 브라우저로 리다이렉트 시도
       openWithExternalBrowser();
+
+      // 3초 후에도 리다이렉트되지 않았다면, 수동 버튼을 표시합니다.
+      const redirectTimer = setTimeout(() => {
+        setIsRedirecting(false);
+      }, 3000);
+
+      return () => clearTimeout(redirectTimer);
     }
   }, []);
 
