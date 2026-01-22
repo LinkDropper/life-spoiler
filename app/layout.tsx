@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
@@ -6,6 +7,7 @@ import { ProfileProvider } from "@/libs/stores/profile";
 import { UserProvider } from "@/libs/stores/user";
 import BrowserRedirect from "@/components/BrowserRedirect";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { NavigationEvents } from "@/libs/analytics";
 
 import "./globals.css";
 
@@ -99,6 +101,9 @@ export default async function RootLayout({
     <html lang={locale}>
       <body>
         <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <NavigationEvents />
+        </Suspense>
         <NextIntlClientProvider messages={messages}>
           <BrowserRedirect />
           <UserProvider>
