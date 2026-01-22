@@ -346,6 +346,17 @@
       "back": "이전",
       "close": "닫기"
     },
+    "browserRedirect": {
+      "redirecting": "외부 브라우저로 이동 중...",
+      "openExternal": "외부 브라우저에서 열기",
+      "description": "더 나은 사용 경험을 위해",
+      "chromeOrSafari": "Chrome 또는 Safari에서 열어주세요.",
+      "openButton": "외부 브라우저로 열기",
+      "redirectingStatus": "리다이렉트 중...",
+      "manualHelp": "자동으로 열리지 않는 경우,",
+      "menuInstruction": "우측 상단 ⋯ 메뉴에서",
+      "selectBrowser": "\"Chrome으로 열기\" 또는 \"Safari로 열기\"를 선택해주세요."
+    },
     "payment": {
       "orderTitle": "주문 상품",
       "productName": "상품명",
@@ -837,6 +848,17 @@
       "back": "Back",
       "close": "Close"
     },
+    "browserRedirect": {
+      "redirecting": "Redirecting to external browser...",
+      "openExternal": "Open in External Browser",
+      "description": "For a better experience,",
+      "chromeOrSafari": "please open in Chrome or Safari.",
+      "openButton": "Open in External Browser",
+      "redirectingStatus": "Redirecting...",
+      "manualHelp": "If it doesn't open automatically,",
+      "menuInstruction": "tap the ⋯ menu at the top right",
+      "selectBrowser": "and select \"Open in Chrome\" or \"Open in Safari\"."
+    },
     "payment": {
       "orderTitle": "Order Product",
       "productName": "Product",
@@ -1327,6 +1349,17 @@
       "next": "次へ",
       "back": "戻る",
       "close": "閉じる"
+    },
+    "browserRedirect": {
+      "redirecting": "外部ブラウザに移動中...",
+      "openExternal": "外部ブラウザで開く",
+      "description": "より良い体験のため、",
+      "chromeOrSafari": "ChromeまたはSafariで開いてください。",
+      "openButton": "外部ブラウザで開く",
+      "redirectingStatus": "リダイレクト中...",
+      "manualHelp": "自動的に開かない場合、",
+      "menuInstruction": "右上の ⋯ メニューから",
+      "selectBrowser": "「Chromeで開く」または「Safariで開く」を選択してください。"
     },
     "payment": {
       "orderTitle": "注文商品",
