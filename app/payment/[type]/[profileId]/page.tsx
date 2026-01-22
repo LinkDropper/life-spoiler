@@ -178,10 +178,7 @@ export default function PaymentPage() {
     } catch (err) {
       // 사용자 취소인 경우 에러 표시하지 않음
       const isCanceled =
-        err instanceof Error &&
-        (err.message.includes("취소") ||
-          err.message.includes("cancel") ||
-          err.message.includes("Cancel"));
+        err instanceof Error && /취소|cancel/i.test(err.message);
 
       if (!isCanceled) {
         setError(tPayment("paymentError"));
