@@ -141,6 +141,7 @@ export default function LifetimeFortunePreviewPage() {
           type="button"
           className={styles.paymentButton}
           onClick={handlePayment}
+          disabled={!!error}
         >
           {tPreview("ctaButton")}
         </button>
