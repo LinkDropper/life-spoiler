@@ -4,6 +4,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
 import { ProfileProvider } from "@/libs/stores/profile";
 import { UserProvider } from "@/libs/stores/user";
+import BrowserRedirect from "@/components/BrowserRedirect";
 
 import "./globals.css";
 
@@ -96,6 +97,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body>
+        <BrowserRedirect />
         <NextIntlClientProvider messages={messages}>
           <UserProvider>
             <ProfileProvider>{children}</ProfileProvider>
