@@ -91,6 +91,21 @@ export const useLifetimeFortune = (
 
     const fetchFortuneData = async () => {
       try {
+        // 결제 상태 확인
+        const paymentStatusRes = await fetch(
+          `/api/fortune/${profileId}/payment-status?type=lifetime`
+        );
+
+        if (paymentStatusRes.ok) {
+          const paymentStatus = await paymentStatusRes.json();
+
+          // 결제 정보가 없으면 preview로 리다이렉트
+          if (!paymentStatus.data?.paid) {
+            router.replace(`/fortune/lifetime/preview/${profileId}`);
+            return;
+          }
+        }
+
         const targetProfile = cachedProfile;
 
         const interpretRes = await fetch("/api/interpret", {
