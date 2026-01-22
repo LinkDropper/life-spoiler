@@ -137,6 +137,12 @@
   background: #ffdde6;
 }
 
+.paymentButton:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
 /* 에러 상태 */
 .error {
   display: flex;
