@@ -26,6 +26,9 @@ const envSchema = z
     // TossPayments
     NEXT_PUBLIC_TOSS_CLIENT_KEY: z.string().optional(),
     TOSS_SECRET_KEY: z.string().optional(),
+
+    // Google Analytics
+    NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (!!data.OAUTH_GOOGLE_CLIENT_ID !== !!data.OAUTH_GOOGLE_CLIENT_SECRET) {
