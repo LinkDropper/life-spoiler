@@ -11,7 +11,7 @@ const UPSTAGE_CONFIG = {
   baseUrl: "https://api.upstage.ai/v1/solar",
   model: "solar-pro",
   defaultTemperature: 0.7,
-  defaultMaxTokens: 2000,
+  defaultMaxTokens: 4000, // 영어 등 긴 응답을 위해 4000으로 증가
   timeout: 35000, // 35초 (Upstage API 불안정 대응)
   maxRetries: 2, // 2회 재시도 (총 3회 시도)
   retryDelay: 1000, // 1초 대기 후 재시도
