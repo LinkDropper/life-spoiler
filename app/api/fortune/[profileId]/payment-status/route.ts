@@ -17,14 +17,18 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const { profileId } = await context.params;
     const { searchParams } = new URL(request.url);
 
-    const fortuneType = (searchParams.get("type") || "lifetime") as FortuneType;
-    const year =
-      fortuneType === "yearly"
-        ? parseInt(
-            searchParams.get("year") || String(new Date().getFullYear()),
-            10
-          )
-        : 0;
+    const typeParam = searchParams.get("type") || "lifetime";
+    const fortuneType: FortuneType =
+      typeParam === "lifetime" || typeParam === "yearly" ? typeParam : "lifetime";
+
+    let year = 0;
+    if (fortuneType === "yearly") {
+      const yearParam = searchParams.get("year");
+      const parsedYear = yearParam
+        ? parseInt(yearParam, 10)
+        : new Date().getFullYear();
+      year = Number.isNaN(parsedYear) ? new Date().getFullYear() : parsedYear;
+    }
 
     const fortune = await getFortune(profileId, fortuneType, year);
 

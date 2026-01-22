@@ -96,14 +96,18 @@ export const useLifetimeFortune = (
           `/api/fortune/${profileId}/payment-status?type=lifetime`
         );
 
-        if (paymentStatusRes.ok) {
-          const paymentStatus = await paymentStatusRes.json();
+        if (!paymentStatusRes.ok) {
+          // API 실패 시 preview로 안전하게 리다이렉트
+          router.replace(`/fortune/lifetime/preview/${profileId}`);
+          return;
+        }
 
-          // 결제 정보가 없으면 preview로 리다이렉트
-          if (!paymentStatus.data?.paid) {
-            router.replace(`/fortune/lifetime/preview/${profileId}`);
-            return;
-          }
+        const paymentStatus = await paymentStatusRes.json();
+
+        // 결제 정보가 없으면 preview로 리다이렉트
+        if (!paymentStatus.data?.paid) {
+          router.replace(`/fortune/lifetime/preview/${profileId}`);
+          return;
         }
 
         const targetProfile = cachedProfile;
