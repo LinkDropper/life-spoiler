@@ -1,0 +1,49 @@
+/**
+ * 브라우저 관련 유틸리티 함수
+ */
+
+/**
+ * 카카오톡 인앱 브라우저인지 확인
+ */
+export const isKakaoTalkBrowser = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return /KAKAOTALK/i.test(navigator.userAgent);
+};
+
+/**
+ * 외부 브라우저로 열기 (크롬 우선, 사파리 대체)
+ */
+export const openWithExternalBrowser = () => {
+  if (typeof window === 'undefined') return;
+
+  const currentUrl = encodeURIComponent(window.location.href);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
+  if (isIOS) {
+    // iOS: 크롬 시도 후 카카오톡 기본 외부 브라우저(사파리) 실행
+    const chromeUrl = `googlechrome://${window.location.href.replace(/^https?:\/\//, '')}`;
+    
+    // 크롬으로 열기 시도
+    window.location.href = chromeUrl;
+    
+    // 1초 후에도 페이지가 그대로면 카카오톡 외부 브라우저(사파리)로 열기
+    setTimeout(() => {
+      window.location.href = `kakaotalk://web/openExternal?url=${currentUrl}`;
+    }, 1000);
+  } else if (isAndroid) {
+    // Android: intent를 통해 크롬 우선 실행 시도
+    const intentUrl = `intent://${window.location.href.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+    
+    // 크롬으로 열기 시도
+    window.location.href = intentUrl;
+    
+    // 1초 후에도 페이지가 그대로면 카카오톡 외부 브라우저로 열기
+    setTimeout(() => {
+      window.location.href = `kakaotalk://web/openExternal?url=${currentUrl}`;
+    }, 1000);
+  } else {
+    // 기타: 기본 외부 브라우저로 열기
+    window.location.href = `kakaotalk://web/openExternal?url=${currentUrl}`;
+  }
+};
