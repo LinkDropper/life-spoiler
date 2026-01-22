@@ -23,7 +23,7 @@ const PAYMENT_AMOUNT = 990;
 
 type FortuneType = "yearly" | "lifetime";
 
-type PaymentMethod = "CARD" | "TOSSPAY";
+type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY";
 
 interface PaymentMethodOption {
   id: PaymentMethod;
@@ -41,9 +41,17 @@ const generateOrderId = () => {
 
 const EASY_PAY_MAP: Record<string, string> = {
   TOSSPAY: "토스페이",
+  KAKAOPAY: "카카오페이",
 };
 
 const PAYMENT_METHODS: PaymentMethodOption[] = [
+  {
+    id: "KAKAOPAY",
+    labelKey: "methodKakaoPay",
+    logo: "/images/payment/kakaopay-logo.png",
+    logoWidth: 44,
+    logoHeight: 18,
+  },
   {
     id: "TOSSPAY",
     labelKey: "methodTossPay",
@@ -168,10 +176,14 @@ export default function PaymentPage() {
         });
       }
     } catch (err) {
-      if (
+      // 사용자 취소인 경우 에러 표시하지 않음
+      const isCanceled =
         err instanceof Error &&
-        err.message !== "사용자가 결제를 취소했습니다"
-      ) {
+        (err.message.includes("취소") ||
+          err.message.includes("cancel") ||
+          err.message.includes("Cancel"));
+
+      if (!isCanceled) {
         setError(tPayment("paymentError"));
       }
       setIsProcessing(false);
