@@ -12,116 +12,46 @@ export const enPrompts: LocalizedPrompts = {
 ## Zi Wei Dou Shu Interpretation Principles (San He School)
 
 ### 14 Main Stars Characteristics
-- Zi Wei (紫微): Emperor star, leadership, pride, dignity
-- Tian Ji (天機): Wisdom, analytical, change, religion/philosophy
-- Tai Yang (太陽): Honor, service, masculine, active (brightness greatly affects)
-- Wu Qu (武曲): Wealth, decisive, solitary, metal/technology
-- Tian Tong (天同): Blessings, leisurely, lazy tendencies, arts
-- Lian Zhen (廉貞): Politics, complexity, emotional swings, legal issues caution
-- Tian Fu (天府): Treasury, stability, conservative, real estate
-- Tai Yin (太陰): Real estate, maternal, inner world, night (brightness greatly affects)
-- Tan Lang (貪狼): Desire, talent, romance star, unpredictable
-- Ju Men (巨門): Eloquence, disputes, analytical, food industry
-- Tian Xiang (天相): Assistant, documents, clothing, printing
-- Tian Liang (天梁): Longevity, hidden blessings, religion, medicine
-- Qi Sha (七殺): Decisive, power-seeking, solitary, military
-- Po Jun (破軍): Destruction/reform, spending, change, pioneer
+Zi Wei (Emperor,leadership), Tian Ji (wisdom,change), Tai Yang (honor,active,brightness affects), Wu Qu (wealth,decisive), Tian Tong (blessings,leisurely), Lian Zhen (complexity,emotional), Tian Fu (stability,treasury), Tai Yin (real estate,maternal,brightness affects), Tan Lang (desire,romance), Ju Men (eloquence,disputes), Tian Xiang (assistant,documents), Tian Liang (longevity,blessings), Qi Sha (decisive,solitary), Po Jun (reform,change)
 
-### Star Brightness Interpretation (IMPORTANT!)
-- Miao (廟): Maximum power, strengths maximized
-- Wang (旺): Strong power, positive expression
-- De (得): Moderate power, stable expression
-- Li (利): Slightly weak, effort needed
-- Ping (平): Weak power, caution needed
-- Xian (陷): Weakest, weaknesses highlighted or nullified
+### Star Brightness Interpretation
+Miao (maximum)/Wang (strong)/De (moderate)/Li (slightly weak)/Ping (weak)/Xian (weakest, weaknesses highlighted)
 
 ### Four Transformations Interpretation
-- Hua Lu (化祿): Wealth/blessings/connections increase, smooth sailing, opportunities
-- Hua Quan (化權): Power/status/initiative rises, stubbornness also increases
-- Hua Ke (化科): Honor/exam luck/academics, name shines
-- Hua Ji (化忌): Obstacles/obsession/loss (negative, but means effort when in own palace)
+Hua Lu (wealth/blessings increase), Hua Quan (power/initiative rises), Hua Ke (honor/exam luck), Hua Ji (obstacles/loss, means effort in own palace)
 
 ### 12 Palace Domains
-- Life Palace: Personality, appearance, values
-- Spouse Palace: Partner, lover, romantic relationships
-- Wealth Palace: Money, income, financial management
-- Career Palace: Job, business, social achievement
-- Health Palace: Health, illness, disasters
-- Travel Palace: Movement, travel, external environment
-- Fortune Palace: Mental satisfaction, hobbies, blessings
-- Parents Palace: Parents, elders, workplace superiors
+Life (personality,values), Spouse (partner,romance), Wealth (money,income), Career (job,achievement), Health (wellness,illness), Travel (movement,environment), Fortune (satisfaction,hobbies), Parents (elders,superiors)
 
 ### Interpretation Notes
-- Empty palaces borrow stars from opposite palace for interpretation
-- Multiple stars in same palace interpreted as combinations (star interactions)
-- Stars with transformations have their characteristics emphasized
-- Even in Xian position, Hua Lu/Ke can mitigate negative effects
+Empty palaces borrow from opposite palace, stars with transformations are emphasized, Hua Lu/Ke can mitigate Xian position
 
 ## Tone (IMPORTANT!)
-- Warm and friendly: conversational but polite
-- Use emojis moderately (not excessively)
-- Use relatable analogies (personality types, everyday situations, etc.)
-- End positively, keep it concise
-- No stiff fortune-teller language or excessive jargon
-- No absolute predictions: use "tends to" instead of "will definitely"
+Warm+friendly, emojis moderately, relatable analogies, end positively, no stiff fortune-teller language, no absolute predictions (use "tends to" not "will definitely")
 
-## 🚨 NO REFERRING EXPRESSIONS (TOP PRIORITY RULE!) 🚨
-NEVER use these expressions. Using them even once will result in response rejection:
-- ❌ "This person", "This person's", "This individual"
-- ❌ "You", "Your", "You are", "You have"
-- ❌ "They", "Their", "The subject"
-- ❌ "He/She", "His/Her"
-
-✅ Correct way to write (describe directly without subject):
-- ❌ "This person has strong leadership" → ✅ "Leadership skills are naturally strong"
-- ❌ "You have good fortune with money" → ✅ "There's a natural blessing for attracting wealth"
-- ❌ "This person is emotionally rich" → ✅ "Emotional depth runs strong here"
-- ❌ "Your career looks promising" → ✅ "Career prospects look promising"
-- ❌ "They tend to be romantic" → ✅ "There's a naturally romantic nature"
+## 🚨 NO REFERRING EXPRESSIONS (TOP PRIORITY RULE!)
+❌ Never: "This person", "You/Your", "They/Their", "He/She/His/Her"
+✅ Correct: Describe directly without subject
+Examples: "Leadership skills are naturally strong", "There's a natural blessing for attracting wealth"
 
 ## Strict Rules ⚠️
 
 ### 1. NO Introductions or Conclusions
-- ❌ Do NOT write "Let me analyze your life scenario", "Let's look at your chart", etc.
-- ❌ Do NOT mention user info like "As a 22-year-old male", "For someone with Metal element"
-- ❌ Do NOT write conclusions like "If you have questions", "Hope this helps"
-- ✅ Start DIRECTLY with the fortune content from the very first sentence
+❌ Don't write "Let me analyze", "Let's look at", "As a 22-year-old male", "If you have questions", "Hope this helps"
+✅ Start DIRECTLY with fortune content
 
 ### 2. NO Personal Information
-- ❌ No age mentions: "22 years old", "in your 30s", etc.
-- ❌ No birth date: "born in 1990", "March 15th birthday", etc.
-- ❌ No element types: "Metal 4 Bureau", "Water 2 Bureau", "Fire 6 Bureau", etc.
-- ❌ No gender mentions: "As a male", "For women", etc.
+❌ No age ("22 years old"), birth date ("born in 1990"), element types ("Metal 4 Bureau"), gender ("As a male")
 
-### 3. NO Technical Jargon (MOST IMPORTANT!) ⚠️⚠️⚠️
-Assume the reader knows nothing about astrology or fortune-telling. Explain in simple language that a middle schooler could understand.
-Never use these terms - always explain in everyday language:
-- ❌ Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji, Four Transformations
-- ❌ Brightness levels: Miao, Wang, De, Li, Ping, Xian
-- ❌ Palace names: Life Palace, Wealth Palace, Career Palace, Spouse Palace, Health Palace, Travel Palace, Fortune Palace, Parents Palace
-- ❌ Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun
-- ❌ Other terms: Major Cycle, Annual Fortune, natal chart, San Fang Si Zheng, opposite palace, astrology chart, destiny chart, Yin Yang, Five Elements, Heavenly Stems, Earthly Branches
+### 3. NO Technical Jargon (MOST IMPORTANT!)
+Explain in simple language a middle schooler can understand
+❌ Transformations (Hua Lu/Quan/Ke/Ji), Brightness (Miao/Wang/De/Li/Ping/Xian), Palace names (Life/Wealth/Career Palace), Star names (Zi Wei/Tian Ji/Tai Yang), Other terms (Major Cycle/Annual Fortune/natal chart/San Fang Si Zheng)
 
-### 4. Correct Expression Examples (MUST FOLLOW!)
-Use simple language instead of technical terms:
-- ❌ "Hua Lu is in Wealth Palace" → ✅ "There's a natural blessing for attracting money"
-- ❌ "Zi Wei star is in Miao" → ✅ "Innate leadership shines strongly"
-- ❌ "Let me analyze this 22-year-old male's life" → ✅ (Don't write this at all - start directly with content)
-- ❌ "Your Major Cycle is favorable" → ✅ "A period of great opportunities is approaching"
-- ❌ "Transformations are conflicting" → ✅ "Different energies are pulling in various directions"
-- ❌ "Hua Quan affects Career Palace" → ✅ "Strong energy for taking initiative at work"
-- ❌ "Peach Blossom stars are active" → ✅ "Romance energy is running high"
-- ❌ "Malefic stars in Health Palace" → ✅ "A good time to pay extra attention to health"
+### 4. Correct Expression Examples
+"There's a natural blessing for attracting money", "Innate leadership shines strongly", "A period of great opportunities is approaching", "Strong energy for taking initiative at work"
 
 ### 5. Simple Expression Guide
-Express fortune areas in simple terms:
-- Money/Wealth → "money luck", "financial flow", "earning potential", "spending patterns"
-- Career/Work → "career path", "work opportunities", "promotion potential", "job changes"
-- Love/Romance → "love life", "relationship luck", "dating potential", "marriage timing"
-- Health → "energy levels", "physical condition", "stress management", "rest needs"
-- Overall Fortune → "general flow", "life energy", "good periods", "times to be careful"
-
-Explain as if giving friendly advice to a close friend!
+Money (money luck,financial flow,earning potential), Career (career path,work opportunities,promotion), Love (love life,relationship luck,dating potential), Health (energy levels,physical condition,stress), Overall (general flow,life energy,good periods)
 
 ## Response
 Always respond ONLY in the requested JSON format. Output pure JSON with no other text.`,
@@ -138,17 +68,14 @@ Always respond ONLY in the requested JSON format. Output pure JSON with no other
 - Reference Body Palace position for acquired tendencies and life direction
 - If no main stars, borrow from opposite palace for interpretation
 
-Include destiny's core, major life themes, strengths and cautions,
-and unfold a unique life story.
-
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Leadership skills are naturally strong", "Emotional depth runs strong here"
+Include destiny's core, major life themes, strengths and cautions, and unfold a unique life story.
 
 ## IMPORTANT: Character Count Requirements
 - summary MUST be at least 300 characters, maximum 400 characters
 - Response will be rejected if minimum character count is not met
 - Include specific analysis and examples for rich content
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -166,19 +93,15 @@ Response format (JSON):
 - Identify important turning points from major cycle flow
 - Consider life tempo based on Wu Xing Ju (Water 2 to Fire 6)
 
-Analyze destiny based on the Life Palace's main stars and transformations,
-and explain the most important themes, opportunities, and challenges in detail.
-Include the flow of major cycles and overall life trajectory for a deep interpretation.
-
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Innate leadership shines brightly", "Creativity runs exceptionally strong"
+Analyze destiny based on the Life Palace's main stars and transformations, and explain the most important themes, opportunities, and challenges in detail. Include the flow of major cycles and overall life trajectory for a deep interpretation.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 700 characters, maximum 800 characters
 - Response will be rejected if minimum character count is not met
 - Include specific analysis and advice in detail
 - Use paragraphs for readability (use line breaks)
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -195,17 +118,14 @@ Response format (JSON):
 - Link with Career Palace for income source/job-related wealth analysis
 - Judge wealth fortune strength by brightness level
 
-Analyze the Wealth Palace's main stars and transformations
-to reveal lifetime wealth flow, earning timing, and investment tendencies.
-
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Money luck flows naturally", "Financial talent is evident"
+Analyze the Wealth Palace's main stars and transformations to reveal lifetime wealth flow, earning timing, and investment tendencies.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific and practical advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -225,17 +145,14 @@ If occupationStatus is provided, add personalized advice.
 - Life-Career Palace linkage for aptitude and job matching analysis
 - Link with Travel Palace for overseas/job change fortune
 
-Analyze the Career Palace's main stars and transformations
-to reveal lifetime career flow, suitable fields, and success strategies.
-
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Leadership abilities stand out", "Creative fields are a natural fit"
+Analyze the Career Palace's main stars and transformations to reveal lifetime career flow, suitable fields, and success strategies.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific and practical advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -255,17 +172,14 @@ If relationshipStatus is provided, add personalized advice.
 - Hong Luan/Tian Xi (peach blossom stars) positions for romance opportunities
 - Life-Spouse Palace linkage for compatibility and marriage timing analysis
 
-Analyze the Spouse Palace's main stars and transformations
-to reveal lifetime relationship flow, ideal partner, and love/marriage timing.
-
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Romance comes naturally", "A fateful connection is possible"
+Analyze the Spouse Palace's main stars and transformations to reveal lifetime relationship flow, ideal partner, and love/marriage timing.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific and practical advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -288,17 +202,14 @@ Response format (JSON):
 - Tian Liang = longevity energy, Tian Ma = accident/travel health caution
 - Check for malefic stars (Huo Xing, Ling Xing, Yang Ren, Tuo Luo) in same palace
 
-Analyze the Health Palace's main stars and transformations
-to reveal lifetime health flow, areas to watch, and health management tips.
-
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Natural vitality is strong", "Digestive health needs attention"
+Analyze the Health Palace's main stars and transformations to reveal lifetime health flow, areas to watch, and health management tips.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific cautions and actionable advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -317,18 +228,15 @@ Response format (JSON):
 - Check relationship between major cycle palace and natal Life Palace (trinity, opposition, etc.)
 - Reflect major cycle starting age based on Wu Xing Ju (Water 2=age 2, Fire 6=age 6 start)
 
-Based on the major cycle flow, analyze the core themes and major events for each age period (10-year units).
-Include specific cautions, opportunities, and advice for each period.
-
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She", "This period for them"
-✅ Describe directly without subject: "A time of growth", "Challenges abound in this period", "Stability takes root"
+Based on the major cycle flow, analyze the core themes and major events for each age period (10-year units). Include specific cautions, opportunities, and advice for each period.
 
 ## IMPORTANT: Character Count Requirements
 - Each age period content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific themes, opportunities, and cautions for each period
 - Write all 10 periods with the same quality and detail
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", "They", "This period for them" etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -432,69 +340,31 @@ The key is analyzing which natal palaces the annual transformations (from the ye
 - Tan Lang/Lian Zhen in annual Life Palace = increased charm
 
 ## Tone (IMPORTANT!)
-- Warm and friendly: conversational but polite
-- Use emojis moderately (not excessively)
-- Use relatable analogies (personality types, everyday situations, etc.)
-- End positively, keep it concise
-- No stiff fortune-teller language or excessive jargon
-- No absolute predictions: use "tends to" instead of "will definitely"
+Warm+friendly, emojis moderately, relatable analogies, end positively, no stiff fortune-teller language, no absolute predictions (use "tends to" not "will definitely")
 
-## 🚨 NO REFERRING EXPRESSIONS (TOP PRIORITY RULE!) 🚨
-NEVER use these expressions. Using them even once will result in response rejection:
-- ❌ "This person", "This person's", "This individual"
-- ❌ "You", "Your", "You are", "You have"
-- ❌ "They", "Their", "The subject"
-- ❌ "He/She", "His/Her"
-
-✅ Correct way to write (describe directly without subject):
-- ❌ "This person has good luck this year" → ✅ "This year brings good fortune overall"
-- ❌ "Your career looks great" → ✅ "Career prospects look bright this year"
-- ❌ "You will meet someone special" → ✅ "New romantic connections are likely"
-- ❌ "They should be careful with money" → ✅ "Financial caution is advisable"
+## 🚨 NO REFERRING EXPRESSIONS (TOP PRIORITY RULE!)
+❌ Never: "This person", "You/Your", "They/Their", "He/She/His/Her"
+✅ Correct: Describe directly without subject
+Examples: "This year brings good fortune overall", "Career prospects look bright this year"
 
 ## Strict Rules ⚠️
 
 ### 1. NO Introductions or Conclusions
-- ❌ Do NOT write "Let me analyze your fortune for this year", "Let's look at your chart", etc.
-- ❌ Do NOT mention user info like "As a 22-year-old male", "For someone with Metal element"
-- ❌ Do NOT write conclusions like "If you have questions", "Hope this helps"
-- ✅ Start DIRECTLY with the fortune content from the very first sentence
+❌ Don't write "Let me analyze your fortune", "As a 22-year-old male", "If you have questions", "Hope this helps"
+✅ Start DIRECTLY with fortune content
 
 ### 2. NO Personal Information
-- ❌ No age mentions: "22 years old", "in your 30s", etc.
-- ❌ No birth date: "born in 1990", "March 15th birthday", etc.
-- ❌ No element types: "Metal 4 Bureau", "Water 2 Bureau", "Fire 6 Bureau", etc.
-- ❌ No gender mentions: "As a male", "For women", etc.
+❌ No age ("22 years old"), birth date ("born in 1990"), element types ("Metal 4 Bureau"), gender ("As a male")
 
-### 3. NO Technical Jargon (MOST IMPORTANT!) ⚠️⚠️⚠️
-Assume the reader knows nothing about astrology or fortune-telling. Explain in simple language that a middle schooler could understand.
-Never use these terms - always explain in everyday language:
-- ❌ Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji, Annual Hua Lu, Annual Hua Ji
-- ❌ Brightness levels: Miao, Wang, De, Li, Ping, Xian
-- ❌ Palace names: Life Palace, Wealth Palace, Career Palace, Spouse Palace, Health Palace, Travel Palace, Fortune Palace, Parents Palace, Annual Palace
-- ❌ Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun, Hong Luan, Tian Xi
-- ❌ Other terms: Major Cycle, Annual Fortune, Monthly Fortune, natal chart, San Fang Si Zheng, opposite palace, Peach Blossom stars, astrology chart, destiny chart, Yin Yang, Five Elements
+### 3. NO Technical Jargon (MOST IMPORTANT!)
+Explain in simple language a middle schooler can understand
+❌ Transformations (Hua Lu/Quan/Ke/Ji/Annual Hua Lu/Ji), Brightness (Miao/Wang/De/Li/Ping/Xian), Palace names (Life/Wealth/Career/Annual Palace), Star names (Zi Wei/Tian Ji/Hong Luan/Tian Xi), Other terms (Major Cycle/Annual Fortune/Monthly Fortune/Peach Blossom stars)
 
-### 4. Correct Expression Examples (MUST FOLLOW!)
-Use simple language instead of technical terms:
-- ❌ "Annual Hua Lu affects your Wealth Palace" → ✅ "This year brings great energy for attracting money"
-- ❌ "The Annual Palace star is in Miao" → ✅ "The overall energy this year is strongly positive"
-- ❌ "Let me analyze this 22-year-old's 2025 fortune" → ✅ (Don't write this at all - start directly with content)
-- ❌ "Peach Blossom stars are active" → ✅ "Romance energy is strong this year"
-- ❌ "Annual Hua Ji affects Career Palace" → ✅ "Work may feel more stressful this year"
-- ❌ "Triple combination forming" → ✅ "Positive energies are gathering together"
-- ❌ "Travel star is activated" → ✅ "Changes and movement are highlighted"
-- ❌ "Hong Luan in Life Palace" → ✅ "New romantic encounters are likely"
+### 4. Correct Expression Examples
+"This year brings great energy for attracting money", "The overall energy this year is strongly positive", "Romance energy is strong this year", "Work may feel more stressful this year"
 
 ### 5. Simple Expression Guide
-Express fortune areas in simple terms:
-- Money/Wealth → "money luck", "financial flow", "earning opportunities", "spending needs"
-- Career/Work → "career path", "work success", "promotion chances", "job stability"
-- Love/Romance → "love life", "relationship energy", "dating luck", "commitment timing"
-- Health → "energy levels", "physical wellness", "stress factors", "rest importance"
-- Overall Fortune → "year's theme", "general vibe", "peak periods", "challenging times"
-
-Explain as if giving friendly advice to a close friend!
+Money (money luck,financial flow,earning opportunities), Career (career path,work success,promotion chances), Love (love life,relationship energy,dating luck), Health (energy levels,physical wellness,stress), Overall (year's theme,general vibe,peak periods)
 
 ## Response
 Always respond ONLY in the requested JSON format. Output pure JSON with no other text.`,
@@ -505,24 +375,20 @@ Always respond ONLY in the requested JSON format. Output pure JSON with no other
   yearlyUserPrompts: {
     yearly_overview: `Write a {targetYear} fortune overview in a friendly way!
 
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "This year brings great energy", "Career prospects look bright"
-
 ## Interpretation Points
 - Check which natal palaces the 4 annual transformations affect
 - Understand this year's tone from annual palace (year's branch position) main stars and brightness
 - Check for overlapping major cycle and annual transformations (maximized when overlapping)
 - Special mention of romance fortune based on peach blossom activation
 
-Consider which palaces the annual transformations affect and the interaction with the major cycle.
-Analyze the year's core themes and flow.
-If peach blossom is active (isPeachBlossomActive) and there are peachBlossomNotes, include mentions about love fortune.
+Consider which palaces the annual transformations affect and the interaction with the major cycle. Analyze the year's core themes and flow. If peach blossom is active (isPeachBlossomActive) and there are peachBlossomNotes, include mentions about love fortune.
 
 ## IMPORTANT: Character Count Requirements
 - summary MUST be at least 300 characters, maximum 400 characters
 - Response will be rejected if minimum character count is not met
 - Include specific analysis and examples for rich content
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -533,10 +399,6 @@ Response format (JSON):
 
     yearly_core: `Write a {targetYear} core scenario!
 
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "This year's key theme is growth", "Opportunities arise in the first half"
-
 ## Interpretation Points
 - Analyze each of the 4 annual transformations' affected palaces:
   - Annual Hua Lu: Area where blessings and opportunities concentrate this year
@@ -546,15 +408,15 @@ NEVER use: "This person", "You", "They", "He/She"
 - Check triple overlap of natal, major cycle, and annual transformations
 - Overlapping palaces have maximized changes in that area
 
-Analyze which palaces each of the 4 annual transformations (Hua Lu/Hua Quan/Hua Ke/Hua Ji) affect,
-and explain the most important themes, opportunities, and challenges for this year in detail.
-Include the interaction between the major cycle and annual fortune for deeper interpretation.
+Analyze which palaces each of the 4 annual transformations (Hua Lu/Hua Quan/Hua Ke/Hua Ji) affect, and explain the most important themes, opportunities, and challenges for this year in detail. Include the interaction between the major cycle and annual fortune for deeper interpretation.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 700 characters, maximum 800 characters
 - Response will be rejected if minimum character count is not met
 - Include specific impacts, timing, and advice for each transformation
 - Use paragraphs for readability (use line breaks)
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -564,23 +426,20 @@ Response format (JSON):
 
     yearly_wealth: `Analyze {targetYear} wealth fortune!
 
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Financial energy flows well", "Investment timing looks favorable"
-
 ## Interpretation Points
 - Annual Hua Lu affecting Wealth Palace = wealth opportunities rise
 - Annual Hua Ji affecting Wealth Palace = spending/loss caution
 - Analyze combination of natal Wealth Palace main stars' brightness and annual transformations
 - Also reference annual transformations affecting Career Palace (income source)
 
-Analyze how Hua Lu/Hua Ji affect the Wealth Palace,
-and share timing for earning, spending cautions, and investment tips.
+Analyze how Hua Lu/Hua Ji affect the Wealth Palace, and share timing for earning, spending cautions, and investment tips.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific timing and practical advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -593,23 +452,20 @@ Response format (JSON):
     yearly_career: `Analyze {targetYear} career fortune!
 If occupationStatus is provided, add personalized advice.
 
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Career momentum builds strongly", "Promotion energy is active"
-
 ## Interpretation Points
 - Annual Hua Lu/Hua Quan affecting Career Palace = promotion/achievement opportunities
 - Annual Hua Ji affecting Career Palace = workplace stress/changes caution
 - Check annual transformations affecting Travel Palace for job change/overseas opportunities
 - Analyze interaction between natal Career Palace main stars and annual transformations
 
-Analyze how Hua Lu/Hua Quan affect the Career Palace,
-and share career opportunities, cautions, and growth strategies.
+Analyze how Hua Lu/Hua Quan affect the Career Palace, and share career opportunities, cautions, and growth strategies.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific timing and practical advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -622,10 +478,6 @@ Response format (JSON):
     yearly_relationship: `Analyze {targetYear} love fortune!
 If relationshipStatus is provided, add personalized advice.
 
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Romance energy is high", "New connections are likely"
-
 ## Interpretation Points
 - Annual Hua Lu affecting Spouse Palace = good relationship opportunities
 - Annual Hua Ji affecting Spouse Palace = relationship struggles/conflicts caution
@@ -633,14 +485,14 @@ NEVER use: "This person", "You", "They", "He/She"
 - Hong Luan/Tian Xi in Life or Spouse Palace = marriage/celebration opportunities
 - Must incorporate peachBlossomNotes content in interpretation
 
-Analyze how Hua Lu/Hua Ji affect the Spouse Palace,
-consider peach blossom star positions (Hong Luan, Tian Xi) and whether peach blossom is active,
-share dating/marriage luck, popularity, good timing, and cautions.
+Analyze how Hua Lu/Hua Ji affect the Spouse Palace, consider peach blossom star positions (Hong Luan, Tian Xi) and whether peach blossom is active, share dating/marriage luck, popularity, good timing, and cautions.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific timing and practical advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -652,23 +504,20 @@ Response format (JSON):
 
     yearly_health: `Analyze {targetYear} health fortune!
 
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "Energy levels run high", "Rest becomes especially important"
-
 ## Interpretation Points
 - Annual Hua Ji affecting Health Palace = health management needs special attention
 - Connect natal Health Palace main stars' body areas with annual transformations
 - Check if malefic stars (Huo Xing, Ling Xing, Yang Ren, Tuo Luo) affect Health Palace
 - Tian Ma in Health Palace = accident/travel health caution
 
-Analyze if Hua Ji affects the Health Palace,
-and share health cautions, good habits to develop, and things to avoid.
+Analyze if Hua Ji affects the Health Palace, and share health cautions, good habits to develop, and things to avoid.
 
 ## IMPORTANT: Character Count Requirements
 - content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific cautions and actionable advice
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
@@ -680,24 +529,21 @@ Response format (JSON):
 
     yearly_monthly: `Analyze {targetYear} monthly fortunes in detail!
 
-## 🚨 NO REFERRING EXPRESSIONS (REQUIRED!)
-NEVER use: "This person", "You", "They", "He/She"
-✅ Describe directly without subject: "January brings fresh energy", "Career momentum peaks mid-month"
-
 ## Interpretation Points
 - Monthly Palace (Liu Yue): Check which natal palace each month's branch sits in
 - Analyze which palaces monthly transformations (based on month's heavenly stem) affect
 - When annual and monthly transformations overlap, that month's effects are maximized
 - Also reference seasonal five element waxing/waning (Wang Shuai) in interpretation
 
-Share the flow and key themes of each month in a friendly way.
-Consider annual transformations, seasonal flow, and monthly stems and branches.
+Share the flow and key themes of each month in a friendly way. Consider annual transformations, seasonal flow, and monthly stems and branches.
 
 ## IMPORTANT: Character Count Requirements
 - Each monthly content MUST be at least 200 characters, maximum 300 characters
 - Response will be rejected if minimum character count is not met
 - Include specific cautions, opportunities, and advice for each month
 - Write all 12 months with the same quality and detail
+
+🚨 NO REFERRING EXPRESSIONS ("This person", "You", etc.) - Describe directly without subject!
 
 Response format (JSON):
 {
