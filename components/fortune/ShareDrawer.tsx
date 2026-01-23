@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 import styles from "./ShareDrawer.module.css";
 
@@ -9,6 +10,8 @@ interface ShareDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onCopyLink: () => void;
+  onShareKakao?: () => void;
+  onShareLine?: () => void;
   onDownloadImage: () => void;
   isDownloading?: boolean;
 }
@@ -22,6 +25,8 @@ export const ShareDrawer = ({
   isOpen,
   onClose,
   onCopyLink,
+  onShareKakao,
+  onShareLine,
   onDownloadImage,
   isDownloading = false,
 }: ShareDrawerProps) => {
@@ -76,6 +81,38 @@ export const ShareDrawer = ({
           >
             <CopyIcon />
             <span>{t("copyLink", { default: "링크 복사하기" })}</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.menuItem}
+            onClick={onShareKakao}
+            disabled={isDownloading}
+          >
+            <Image
+              src="/images/share/kakao-logo.png"
+              alt="KakaoTalk"
+              width={18}
+              height={18}
+              className={styles.menuIcon}
+            />
+            <span>{t("shareKakao", { default: "카카오톡 공유하기" })}</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.menuItem}
+            onClick={onShareLine}
+            disabled={isDownloading}
+          >
+            <Image
+              src="/images/share/line-logo.png"
+              alt="LINE"
+              width={18}
+              height={18}
+              className={styles.menuIcon}
+            />
+            <span>{t("shareLine", { default: "라인 공유하기" })}</span>
           </button>
 
           <button

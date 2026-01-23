@@ -24,6 +24,7 @@ import {
 } from "@/components/fortune/InstagramStoryCard";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
+import { shareToKakao, shareToLine } from "@/libs/kakao";
 
 import styles from "./page.module.css";
 
@@ -48,8 +49,15 @@ export default function LifetimeFortunePage() {
   const tPreview = useTranslations("fortune.preview");
   const tStory = useTranslations("fortune.instagramStory");
 
-  const { isLoading, error, result, profile, showCopyToast, handleShare } =
-    useLifetimeFortune({
+  const {
+    isLoading,
+    error,
+    result,
+    profile,
+    profileId,
+    showCopyToast,
+    handleShare,
+  } = useLifetimeFortune({
       onProfileNotFound: () =>
         tCommon("profileNotFound", { default: "프로필을 찾을 수 없습니다." }),
       onFetchError: () =>
@@ -105,6 +113,35 @@ export default function LifetimeFortunePage() {
       }, 500);
     }
   }, [downloadStoryImage]);
+
+  // 카카오톡 공유 핸들러
+  const handleShareKakao = useCallback(() => {
+    if (!result || !profile) return;
+
+    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
+    const interpretation = result.interpretation;
+
+    shareToKakao({
+      title: interpretation.lifeSpoiler.headline,
+      description: interpretation.lifeSpoiler.description,
+      name: profile.name,
+      webDomain: shareUrl,
+    });
+
+    setIsShareDrawerOpen(false);
+  }, [result, profile, profileId]);
+
+  // LINE 공유 핸들러
+  const handleShareLine = useCallback(() => {
+    if (!result || !profile) return;
+
+    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
+    const interpretation = result.interpretation;
+    const text = `${interpretation.lifeSpoiler.headline} - ${profile.name}`;
+
+    shareToLine(shareUrl, text);
+    setIsShareDrawerOpen(false);
+  }, [result, profile, profileId]);
 
   if (isLoading) {
     return <Loading />;
@@ -293,6 +330,8 @@ export default function LifetimeFortunePage() {
         isOpen={isShareDrawerOpen}
         onClose={() => setIsShareDrawerOpen(false)}
         onCopyLink={handleShare}
+        onShareKakao={handleShareKakao}
+        onShareLine={handleShareLine}
         onDownloadImage={handleDownloadImage}
         isDownloading={isDownloading}
       />
