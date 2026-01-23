@@ -42,7 +42,7 @@
   color: #ffffff;
   margin: 0;
   line-height: 1.2;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .chevron {
@@ -70,7 +70,7 @@
   color: #ffffff;
   margin: 0 0 16px 0;
   line-height: 1.4;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .previewDescription {
@@ -80,7 +80,7 @@
   color: rgba(255, 255, 255, 0.7);
   margin: 0 0 24px 0;
   white-space: pre-line;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .previewTeaser {
@@ -89,7 +89,7 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 /* 하단 CTA */

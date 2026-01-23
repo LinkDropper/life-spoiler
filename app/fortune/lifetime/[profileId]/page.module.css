@@ -92,7 +92,7 @@
   color: #ffffff;
   margin: 0;
   line-height: 1.4;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .overviewSummary {
@@ -102,7 +102,7 @@
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   white-space: pre-wrap;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 /* ============================================================
@@ -128,7 +128,7 @@
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   white-space: pre-wrap;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .coreHeadline {
@@ -136,7 +136,7 @@
   font-size: 20px;
   font-weight: 700;
   line-height: 140%;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 /* ============================================================
@@ -173,7 +173,7 @@
   font-size: 18px;
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .categoryHeadline {
@@ -182,7 +182,7 @@
   color: #ffffff;
   margin: 0;
   line-height: 1.4;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .categoryContent {
@@ -192,7 +192,7 @@
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   white-space: pre-wrap;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .categoryTags {
@@ -270,7 +270,7 @@
   font-size: 18px;
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .scenarioContent {
@@ -279,7 +279,7 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
   white-space: pre-wrap;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .expandButton {

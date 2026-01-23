@@ -27,6 +27,10 @@ const envSchema = z
     NEXT_PUBLIC_TOSS_CLIENT_KEY: z.string().optional(),
     TOSS_SECRET_KEY: z.string().optional(),
 
+    // TossPayments PayPal (해외 간편결제)
+    NEXT_PUBLIC_TOSS_PAYPAL_CLIENT_KEY: z.string().optional(),
+    TOSS_PAYPAL_SECRET_KEY: z.string().optional(),
+
     // Google Analytics
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
   })

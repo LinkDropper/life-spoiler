@@ -27,6 +27,7 @@ function PaymentSuccessContent() {
     | "yearly"
     | "lifetime"
     | null;
+  const currency = (searchParams.get("currency") as "KRW" | "USD") || "KRW";
 
   useEffect(() => {
     const confirmPayment = async () => {
@@ -50,6 +51,7 @@ function PaymentSuccessContent() {
             fortuneType: fortuneType ?? undefined,
             year:
               fortuneType === "yearly" ? new Date().getFullYear() : undefined,
+            currency,
           }),
         });
 
@@ -66,7 +68,7 @@ function PaymentSuccessContent() {
           trackPurchase({
             transaction_id: orderId,
             value: Number(amount),
-            currency: "KRW",
+            currency,
             items: [
               {
                 item_id: fortuneType,
@@ -88,7 +90,7 @@ function PaymentSuccessContent() {
     };
 
     confirmPayment();
-  }, [paymentKey, orderId, amount, profileId, fortuneType, tPayment]);
+  }, [paymentKey, orderId, amount, profileId, fortuneType, currency, tPayment]);
 
   const handleViewFortune = () => {
     if (profileId && fortuneType) {
@@ -190,8 +192,9 @@ function PaymentSuccessContent() {
                   {tPayment("paidAmount")}
                 </span>
                 <span className={styles.summaryValue}>
-                  {Number(amount).toLocaleString()}
-                  {tPayment("currency")}
+                  {currency === "USD"
+                    ? `$${Number(amount).toFixed(2)}`
+                    : `${Number(amount).toLocaleString()}${tPayment("currency")}`}
                 </span>
               </div>
             </div>

@@ -3,12 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateFortunePaidAt } from "@/libs/supabase";
 import type { FortuneType } from "@/libs/supabase";
 
+// 국내 결제용 시크릿 키
 const SECRET_KEY = process.env.TOSS_SECRET_KEY;
+// PayPal(해외 간편결제) API 개별 연동용 시크릿 키
+const PAYPAL_SECRET_KEY = process.env.TOSS_PAYPAL_SECRET_KEY;
 
 if (!SECRET_KEY) {
   throw new Error("TOSS_SECRET_KEY environment variable is required");
 }
-const EXPECTED_AMOUNT = 990;
+
+// 예상 결제 금액
+const EXPECTED_AMOUNT_KRW = 990;
+const EXPECTED_AMOUNT_USD = 0.99;
+
+type Currency = "KRW" | "USD";
 
 interface TossPaymentConfirmRequest {
   paymentKey: string;
@@ -17,6 +25,7 @@ interface TossPaymentConfirmRequest {
   profileId?: string;
   fortuneType?: FortuneType;
   year?: number;
+  currency?: Currency;
 }
 
 interface TossPaymentResponse {
@@ -37,7 +46,15 @@ interface TossPaymentError {
 export async function POST(request: NextRequest) {
   try {
     const body: TossPaymentConfirmRequest = await request.json();
-    const { paymentKey, orderId, amount, profileId, fortuneType, year } = body;
+    const {
+      paymentKey,
+      orderId,
+      amount,
+      profileId,
+      fortuneType,
+      year,
+      currency = "KRW",
+    } = body;
 
     if (!paymentKey || !orderId || amount === undefined) {
       return NextResponse.json(
@@ -50,7 +67,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (amount !== EXPECTED_AMOUNT) {
+    // 통화에 따른 예상 금액 검증
+    const expectedAmount =
+      currency === "USD" ? EXPECTED_AMOUNT_USD : EXPECTED_AMOUNT_KRW;
+
+    if (amount !== expectedAmount) {
       return NextResponse.json(
         {
           success: false,
@@ -61,7 +82,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const encodedSecretKey = Buffer.from(`${SECRET_KEY}:`).toString("base64");
+    // PayPal(USD) 결제는 별도 시크릿 키 사용
+    const secretKey = currency === "USD" ? PAYPAL_SECRET_KEY : SECRET_KEY;
+
+    if (!secretKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "CONFIGURATION_ERROR",
+          message: "결제 설정이 올바르지 않습니다.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const encodedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
 
     const response = await fetch(
       "https://api.tosspayments.com/v1/payments/confirm",

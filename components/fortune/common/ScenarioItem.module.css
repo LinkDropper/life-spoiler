@@ -51,7 +51,7 @@
   font-size: 18px;
   font-weight: 700;
   color: #ffffff;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .scenarioContent {
@@ -60,5 +60,5 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
   white-space: pre-wrap;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
