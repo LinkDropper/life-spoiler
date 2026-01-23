@@ -30,6 +30,7 @@ export interface KakaoShareParams {
   webDomain: string;
 }
 
+// 카카오톡 공유 피드 템플릿 ID (운세 결과 공유용)
 const TEMPLATE_ID = 128486;
 
 /**
