@@ -7,6 +7,7 @@ import { ProfileProvider } from "@/libs/stores/profile";
 import { UserProvider } from "@/libs/stores/user";
 import BrowserRedirect from "@/components/BrowserRedirect";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { KakaoScript } from "@/components/common/KakaoScript";
 import { NavigationEvents } from "@/libs/analytics";
 
 import "./globals.css";
@@ -104,6 +105,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body>
         <GoogleAnalytics />
+        <KakaoScript />
         <Suspense fallback={null}>
           <NavigationEvents />
         </Suspense>

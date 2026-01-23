@@ -24,6 +24,7 @@ import {
 } from "@/components/fortune/InstagramStoryCard";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
+import { shareToKakao, shareToLine } from "@/libs/kakao";
 
 import styles from "./page.module.css";
 
@@ -53,6 +54,7 @@ export default function YearlyFortunePage() {
     error,
     result,
     profile,
+    profileId,
     currentYear,
     showCopyToast,
     handleShare,
@@ -112,6 +114,35 @@ export default function YearlyFortunePage() {
       }, 500);
     }
   }, [downloadStoryImage]);
+
+  // 카카오톡 공유 핸들러
+  const handleShareKakao = useCallback(() => {
+    if (!result || !profile) return;
+
+    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
+    const interpretation = result.interpretation;
+
+    shareToKakao({
+      title: interpretation.overview.headline,
+      description: interpretation.overview.description,
+      name: profile.name,
+      webDomain: shareUrl,
+    });
+
+    setIsShareDrawerOpen(false);
+  }, [result, profile, profileId]);
+
+  // LINE 공유 핸들러
+  const handleShareLine = useCallback(() => {
+    if (!result || !profile) return;
+
+    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
+    const interpretation = result.interpretation;
+    const text = `${interpretation.overview.headline} - ${profile.name}`;
+
+    shareToLine(shareUrl, text);
+    setIsShareDrawerOpen(false);
+  }, [result, profile, profileId]);
 
   if (isLoading) {
     return <Loading />;
@@ -303,6 +334,8 @@ export default function YearlyFortunePage() {
         isOpen={isShareDrawerOpen}
         onClose={() => setIsShareDrawerOpen(false)}
         onCopyLink={handleShare}
+        onShareKakao={handleShareKakao}
+        onShareLine={handleShareLine}
         onDownloadImage={handleDownloadImage}
         isDownloading={isDownloading}
       />
