@@ -155,12 +155,18 @@ export async function POST(request: NextRequest) {
 
       // 캐시 히트 시에도 fortunes에 전체 데이터 저장 (profileId가 있으면 저장)
       if (profileId) {
-        saveFortune({
+        const saved = await saveFortune({
           profileId,
           fortuneType: "yearly",
           year: targetYear,
           result: responseData,
-        }).catch(console.error);
+        });
+        if (!saved) {
+          console.error("캐시 히트 시 fortune 저장 실패:", {
+            profileId,
+            targetYear,
+          });
+        }
       }
 
       return NextResponse.json({
@@ -242,7 +248,7 @@ export async function POST(request: NextRequest) {
       isAISuccess = true;
 
       // 캐시 저장 (AI 성공 시에만)
-      setCachedResult(chartHash, cacheKey, result).catch(console.error);
+      await setCachedResult(chartHash, cacheKey, result);
     } catch (error) {
       console.error("AI 해석 오류:", error);
       result = createYearlyFallbackInterpretation(targetYear, error as Error);
@@ -252,12 +258,18 @@ export async function POST(request: NextRequest) {
 
     // fortunes에 전체 데이터 저장 (AI 성공 시, profileId가 있으면 저장)
     if (profileId && isAISuccess) {
-      saveFortune({
+      const saved = await saveFortune({
         profileId,
         fortuneType: "yearly",
         year: targetYear,
         result: responseData,
-      }).catch(console.error);
+      });
+      if (!saved) {
+        console.error("AI 성공 후 fortune 저장 실패:", {
+          profileId,
+          targetYear,
+        });
+      }
     }
 
     return NextResponse.json({

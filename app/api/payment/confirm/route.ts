@@ -132,6 +132,7 @@ export async function POST(request: NextRequest) {
     const paymentData = data as TossPaymentResponse;
 
     // 결제 승인 성공 시 fortunes 테이블의 paid_at 업데이트
+    let fortuneUpdateFailed = false;
     if (profileId && fortuneType) {
       const yearValue =
         fortuneType === "yearly" ? (year ?? new Date().getFullYear()) : 0;
@@ -141,6 +142,7 @@ export async function POST(request: NextRequest) {
         yearValue
       );
       if (!updateSuccess) {
+        fortuneUpdateFailed = true;
         console.error("paid_at 업데이트 실패:", {
           profileId,
           fortuneType,
@@ -159,6 +161,9 @@ export async function POST(request: NextRequest) {
         method: paymentData.method,
         approvedAt: paymentData.approvedAt,
       },
+      ...(fortuneUpdateFailed && {
+        warning: "결제는 완료되었으나 데이터 동기화에 실패했습니다.",
+      }),
     });
   } catch (error) {
     console.error("Payment confirmation error:", error);
