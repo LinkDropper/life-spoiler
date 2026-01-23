@@ -84,13 +84,14 @@ export const getCachedResult = async <
       .select("result")
       .eq("chart_hash", chartHash)
       .eq("interpretation_type", interpretationType)
-      .single<Pick<AnalysisResultRow, "result">>();
+      .maybeSingle<Pick<AnalysisResultRow, "result">>();
 
-    if (error || !data) {
+    if (error) {
+      console.error("캐시 조회 실패:", error);
       return null;
     }
 
-    return data.result as unknown as T;
+    return data?.result as unknown as T ?? null;
   } catch {
     // 캐시 조회 실패는 무시하고 새로 생성
     return null;

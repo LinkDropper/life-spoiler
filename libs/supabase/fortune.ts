@@ -133,9 +133,10 @@ export const getFortune = async (
       .eq("profile_id", profileId)
       .eq("fortune_type", fortuneType)
       .eq("year", year)
-      .single<FortuneRow>();
+      .maybeSingle<FortuneRow>();
 
-    if (error || !data) {
+    if (error) {
+      console.error("Fortune 조회 실패:", error);
       return null;
     }
 
