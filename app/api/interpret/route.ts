@@ -67,8 +67,10 @@ const calculateAge = (birthDate: string): number => {
  */
 const convertToDayunData = (dayunResult: DayunResult): DayunData[] => {
   return dayunResult.periods.map((period) => {
-    // 주성 이름 목록
-    const mainStars = period.palace.mainStars.map((s) => s.name);
+    // 주성 이름 + 밝기 목록 (예: "자미(묘)", "천기(왕)")
+    const mainStars = period.palace.mainStars.map(
+      (s) => `${s.name}(${s.brightness})`
+    );
 
     // 사화가 있는 별 목록
     const sihua = period.palace.mainStars
