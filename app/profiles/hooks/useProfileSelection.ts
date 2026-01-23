@@ -23,22 +23,23 @@ export const useProfileSelection = ({
     null
   );
 
-  // 프로필 선택 상태 관리 (단일 effect로 통합하여 race condition 방지)
+  // 프로필 선택 상태 관리 (함수형 업데이트로 현재 상태를 안전하게 참조)
   useEffect(() => {
-    // 프로필이 없으면 선택 해제
-    if (profiles.length === 0) {
-      setSelectedProfileId(null);
-      return;
-    }
+    setSelectedProfileId((currentId) => {
+      if (profiles.length === 0) {
+        return null;
+      }
 
-    // 선택된 프로필이 없거나 삭제된 경우 첫 번째 프로필 자동 선택
-    const isSelectionValid =
-      selectedProfileId && profiles.some((p) => p.id === selectedProfileId);
+      const isSelectionValid =
+        currentId && profiles.some((p) => p.id === currentId);
 
-    if (!isSelectionValid) {
-      setSelectedProfileId(profiles[0].id);
-    }
-  }, [profiles]); // selectedProfileId를 의존성에서 제외하여 불필요한 effect 실행 방지
+      if (!isSelectionValid) {
+        return profiles[0].id;
+      }
+
+      return currentId;
+    });
+  }, [profiles]);
 
   const selectedProfile = useMemo(
     () => profiles.find((p) => p.id === selectedProfileId),
