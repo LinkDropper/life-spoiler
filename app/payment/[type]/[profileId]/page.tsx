@@ -241,8 +241,6 @@ export default function PaymentPage() {
         });
       }
     } catch (err) {
-      console.error("Payment error:", err);
-
       // 사용자 취소인 경우 에러 표시하지 않음
       const isCanceled =
         err instanceof Error && /취소|cancel/i.test(err.message);
