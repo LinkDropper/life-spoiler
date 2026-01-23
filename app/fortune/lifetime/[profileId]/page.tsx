@@ -58,15 +58,15 @@ export default function LifetimeFortunePage() {
     showCopyToast,
     handleShare,
   } = useLifetimeFortune({
-      onProfileNotFound: () =>
-        tCommon("profileNotFound", { default: "프로필을 찾을 수 없습니다." }),
-      onFetchError: () =>
-        t("interpretError", { default: "운세 해석에 실패했습니다." }),
-      onUnknownError: () =>
-        tCommon("unknownError", {
-          default: "알 수 없는 오류가 발생했습니다.",
-        }),
-    });
+    onProfileNotFound: () =>
+      tCommon("profileNotFound", { default: "프로필을 찾을 수 없습니다." }),
+    onFetchError: () =>
+      t("interpretError", { default: "운세 해석에 실패했습니다." }),
+    onUnknownError: () =>
+      tCommon("unknownError", {
+        default: "알 수 없는 오류가 발생했습니다.",
+      }),
+  });
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
@@ -119,7 +119,7 @@ export default function LifetimeFortunePage() {
     if (!result || !profile) return;
 
     const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
-    const interpretation = result.interpretation;
+    const { interpretation } = result;
 
     shareToKakao({
       title: interpretation.lifeSpoiler.headline,
@@ -136,7 +136,7 @@ export default function LifetimeFortunePage() {
     if (!result || !profile) return;
 
     const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
-    const interpretation = result.interpretation;
+    const { interpretation } = result;
     const text = `${interpretation.lifeSpoiler.headline} - ${profile.name}`;
 
     shareToLine(shareUrl, text);

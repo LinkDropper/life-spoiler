@@ -120,7 +120,7 @@ export default function YearlyFortunePage() {
     if (!result || !profile) return;
 
     const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
-    const interpretation = result.interpretation;
+    const { interpretation } = result;
 
     shareToKakao({
       title: interpretation.overview.headline,
@@ -137,7 +137,7 @@ export default function YearlyFortunePage() {
     if (!result || !profile) return;
 
     const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
-    const interpretation = result.interpretation;
+    const { interpretation } = result;
     const text = `${interpretation.overview.headline} - ${profile.name}`;
 
     shareToLine(shareUrl, text);
