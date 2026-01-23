@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import type { ProfileWithFortunes } from "@/libs/stores/profile";
@@ -23,9 +23,6 @@ export const useFortuneNavigation = ({
 }: UseFortuneNavigationProps): UseFortuneNavigationReturn => {
   const router = useRouter();
 
-  // 현재 시간을 메모이제이션 (컴포넌트 마운트 시점 기준)
-  const now = useMemo(() => new Date().toISOString(), []);
-
   const hasPaidFortune = useCallback(
     (fortuneType: FortuneType): boolean => {
       if (!selectedProfile?.fortunes) return false;
@@ -41,13 +38,16 @@ export const useFortuneNavigation = ({
     (fortuneType: FortuneType): boolean => {
       if (!selectedProfile?.profile_free_access) return false;
 
+      // 호출 시점의 현재 시간으로 만료 체크 (정적 시간 사용하지 않음)
+      const now = new Date().toISOString();
+
       return selectedProfile.profile_free_access.some(
         (access) =>
           access.fortune_type === fortuneType &&
           (access.expires_at === null || access.expires_at > now)
       );
     },
-    [selectedProfile, now]
+    [selectedProfile]
   );
 
   const hasAccess = useCallback(

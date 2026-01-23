@@ -23,22 +23,23 @@ export const useProfileSelection = ({
     null
   );
 
-  // 프로필 목록이 변경되고 선택된 프로필이 없으면 첫 번째 프로필 자동 선택
+  // 프로필 선택 상태 관리 (함수형 업데이트로 현재 상태를 안전하게 참조)
   useEffect(() => {
-    if (profiles.length > 0 && !selectedProfileId) {
-      setSelectedProfileId(profiles[0].id);
-    }
-  }, [profiles, selectedProfileId]);
+    setSelectedProfileId((currentId) => {
+      if (profiles.length === 0) {
+        return null;
+      }
 
-  // 선택된 프로필이 삭제되었을 때 처리
-  useEffect(() => {
-    if (
-      selectedProfileId &&
-      !profiles.find((p) => p.id === selectedProfileId)
-    ) {
-      setSelectedProfileId(profiles.length > 0 ? profiles[0].id : null);
-    }
-  }, [profiles, selectedProfileId]);
+      const isSelectionValid =
+        currentId && profiles.some((p) => p.id === currentId);
+
+      if (!isSelectionValid) {
+        return profiles[0].id;
+      }
+
+      return currentId;
+    });
+  }, [profiles]);
 
   const selectedProfile = useMemo(
     () => profiles.find((p) => p.id === selectedProfileId),
