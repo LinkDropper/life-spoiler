@@ -78,8 +78,11 @@ export interface SaveFortuneParams {
  * 운세 결과 저장 (upsert)
  *
  * 동일한 profile_id + fortune_type + year 조합이면 업데이트
+ * @returns 저장 성공 여부
  */
-export const saveFortune = async (params: SaveFortuneParams): Promise<void> => {
+export const saveFortune = async (
+  params: SaveFortuneParams
+): Promise<boolean> => {
   const { profileId, fortuneType, year = 0, result } = params;
 
   try {
@@ -94,11 +97,22 @@ export const saveFortune = async (params: SaveFortuneParams): Promise<void> => {
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase.from("fortunes") as any).upsert(insertData, {
-      onConflict: "profile_id,fortune_type,year",
-    });
+    const { error } = await (supabase.from("fortunes") as any).upsert(
+      insertData,
+      {
+        onConflict: "profile_id,fortune_type,year",
+      }
+    );
+
+    if (error) {
+      console.error("Fortune 저장 실패:", error);
+      return false;
+    }
+
+    return true;
   } catch (error) {
     console.error("Fortune 저장 실패:", error);
+    return false;
   }
 };
 
