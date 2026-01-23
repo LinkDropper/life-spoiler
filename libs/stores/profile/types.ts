@@ -1,7 +1,12 @@
-import type { FortuneRow, ProfileRow } from "@/libs/supabase/types";
+import type {
+  FortuneRow,
+  ProfileFreeAccessRow,
+  ProfileRow,
+} from "@/libs/supabase/types";
 
 export interface ProfileWithFortunes extends ProfileRow {
   fortunes: FortuneRow[];
+  profile_free_access: ProfileFreeAccessRow[];
 }
 
 export type ProfileLoadStatus = "idle" | "loading" | "loaded" | "error";

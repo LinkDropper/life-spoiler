@@ -149,13 +149,26 @@ export default function ProfilesPage() {
     );
   };
 
+  const hasFreeAccess = (fortuneType: "lifetime" | "yearly"): boolean => {
+    if (!selectedProfileId) return false;
+    const selectedProfile = profiles.find((p) => p.id === selectedProfileId);
+    if (!selectedProfile?.profile_free_access) return false;
+
+    const now = new Date().toISOString();
+    return selectedProfile.profile_free_access.some(
+      (access) =>
+        access.fortune_type === fortuneType &&
+        (access.expires_at === null || access.expires_at > now)
+    );
+  };
+
   const handleLifetimeFortune = () => {
     if (!selectedProfileId) {
       alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
       return;
     }
 
-    if (hasPaidFortune("lifetime")) {
+    if (hasPaidFortune("lifetime") || hasFreeAccess("lifetime")) {
       router.push(`/fortune/lifetime/${selectedProfileId}`);
       return;
     }
@@ -169,7 +182,7 @@ export default function ProfilesPage() {
       return;
     }
 
-    if (hasPaidFortune("yearly")) {
+    if (hasPaidFortune("yearly") || hasFreeAccess("yearly")) {
       router.push(`/fortune/yearly/${selectedProfileId}`);
       return;
     }

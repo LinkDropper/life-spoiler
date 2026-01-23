@@ -135,6 +135,7 @@ export default function ProfileSetupPage() {
         created_at: now,
         updated_at: now,
         fortunes: [],
+        profile_free_access: [],
       });
 
       router.push("/profiles");

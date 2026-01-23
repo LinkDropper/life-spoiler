@@ -8,10 +8,12 @@ import type {
   ProfileInsert,
   ProfileRow,
   FortuneRow,
+  ProfileFreeAccessRow,
 } from "@/libs/supabase/types";
 
 export interface ProfileWithFortunes extends ProfileRow {
   fortunes: FortuneRow[];
+  profile_free_access: ProfileFreeAccessRow[];
 }
 
 export const GET = async () => {
@@ -33,7 +35,7 @@ export const GET = async () => {
     const { data: profiles, error: profilesError } =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (supabase.from("profiles") as any)
-        .select("*, fortunes(*)")
+        .select("*, fortunes(*), profile_free_access(*)")
         .eq("user_id", authUser.id)
         .order("created_at", { ascending: false });
 
