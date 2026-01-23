@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
@@ -46,14 +46,35 @@ export const useYearlyFortune = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<YearlyFortuneResult | null>(null);
-  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [showCopyToast, setShowCopyToast] = useState(false);
 
-  const currentYear = new Date().getFullYear();
+  // Memoize currentYear to prevent recalculation on every render
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
-  // Use ref to avoid infinite loop from options object
+  // Use refs to avoid unnecessary re-renders and race conditions
   const optionsRef = useRef(options);
   optionsRef.current = options;
+
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
+
+  const cachedProfileRef = useRef(cachedProfile);
+  cachedProfileRef.current = cachedProfile;
+
+  // Timer ref for cleanup
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Prevent duplicate fetch
+  const hasFetchedRef = useRef(false);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
 
   // Fetch profiles when authenticated
   useEffect(() => {
@@ -61,13 +82,6 @@ export const useYearlyFortune = (
       fetchProfiles();
     }
   }, [authStatus, isProfilesLoaded, fetchProfiles]);
-
-  // Sync cached profile to local state
-  useEffect(() => {
-    if (cachedProfile) {
-      setProfile(cachedProfile);
-    }
-  }, [cachedProfile]);
 
   // Main data fetching effect
   useEffect(() => {
@@ -84,7 +98,9 @@ export const useYearlyFortune = (
       return;
     }
 
-    if (!cachedProfile) {
+    const targetProfile = cachedProfileRef.current;
+
+    if (!targetProfile) {
       setError(
         optionsRef.current.onProfileNotFound?.() ?? "프로필을 찾을 수 없습니다."
       );
@@ -92,9 +108,32 @@ export const useYearlyFortune = (
       return;
     }
 
+    // Prevent duplicate fetch for the same profile
+    if (hasFetchedRef.current) {
+      return;
+    }
+    hasFetchedRef.current = true;
+
     const fetchYearlyFortune = async () => {
       try {
-        const targetProfile = cachedProfile;
+        // 결제 상태 확인
+        const paymentStatusRes = await fetch(
+          `/api/fortune/${profileId}/payment-status?type=yearly&year=${currentYear}`
+        );
+
+        if (!paymentStatusRes.ok) {
+          // API 실패 시 preview로 안전하게 리다이렉트
+          router.replace(`/fortune/yearly/preview/${profileId}`);
+          return;
+        }
+
+        const paymentStatus = await paymentStatusRes.json();
+
+        // 결제 정보가 없으면 preview로 리다이렉트
+        if (!paymentStatus.data?.paid) {
+          router.replace(`/fortune/yearly/preview/${profileId}`);
+          return;
+        }
 
         const res = await fetch("/api/interpret/yearly", {
           method: "POST",
@@ -124,7 +163,7 @@ export const useYearlyFortune = (
             }),
             targetYear: currentYear,
             profileId: targetProfile.id,
-            language: locale,
+            language: localeRef.current,
           }),
         });
 
@@ -150,23 +189,20 @@ export const useYearlyFortune = (
     };
 
     fetchYearlyFortune();
-  }, [
-    authStatus,
-    profileId,
-    router,
-    isProfilesLoaded,
-    cachedProfile,
-    currentYear,
-    locale,
-  ]);
+  }, [authStatus, profileId, router, isProfilesLoaded, currentYear]);
 
   const handleShare = useCallback(async () => {
     const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
 
+    // Clear previous timer if exists
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
+
     try {
       await navigator.clipboard.writeText(shareUrl);
       setShowCopyToast(true);
-      setTimeout(() => setShowCopyToast(false), 2000);
+      toastTimerRef.current = setTimeout(() => setShowCopyToast(false), 2000);
     } catch {
       try {
         const textArea = document.createElement("textarea");
@@ -176,7 +212,7 @@ export const useYearlyFortune = (
         document.execCommand("copy");
         document.body.removeChild(textArea);
         setShowCopyToast(true);
-        setTimeout(() => setShowCopyToast(false), 2000);
+        toastTimerRef.current = setTimeout(() => setShowCopyToast(false), 2000);
       } catch {
         alert(
           `링크 복사에 실패했습니다. 다음 주소를 직접 복사해주세요: ${shareUrl}`
@@ -192,7 +228,7 @@ export const useYearlyFortune = (
     isLoading: isActuallyLoading,
     error,
     result,
-    profile,
+    profile: cachedProfile ?? null,
     profileId,
     currentYear,
     showCopyToast,
