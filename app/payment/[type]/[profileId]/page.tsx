@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 
@@ -17,13 +17,17 @@ import { useAuthStatus, useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
 
+// 국내 결제용 클라이언트 키
 const CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? "";
+// PayPal(해외 간편결제) API 개별 연동용 클라이언트 키
+const PAYPAL_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_PAYPAL_CLIENT_KEY ?? "";
 
-const PAYMENT_AMOUNT = 990;
+const PAYMENT_AMOUNT_KRW = 990;
+const PAYMENT_AMOUNT_USD = 0.99;
 
 type FortuneType = "yearly" | "lifetime";
 
-type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY";
+type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY" | "PAYPAL";
 
 interface PaymentMethodOption {
   id: PaymentMethod;
@@ -44,7 +48,7 @@ const EASY_PAY_MAP: Record<string, string> = {
   KAKAOPAY: "카카오페이",
 };
 
-const PAYMENT_METHODS: PaymentMethodOption[] = [
+const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
   {
     id: "KAKAOPAY",
     labelKey: "methodKakaoPay",
@@ -62,9 +66,20 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
   },
 ];
 
+const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
+  {
+    id: "PAYPAL",
+    labelKey: "methodPayPal",
+    logo: "/images/payment/paypal-logo.svg",
+    logoWidth: 60,
+    logoHeight: 16,
+  },
+];
+
 export default function PaymentPage() {
   const params = useParams();
   const router = useRouter();
+  const locale = useLocale();
   const authStatus = useAuthStatus();
   const user = useUser();
   const profileId = params.profileId as string;
@@ -77,9 +92,19 @@ export default function PaymentPage() {
   const isProfilesLoaded = useIsProfilesLoaded();
   const { fetchProfiles } = useProfileActions();
 
+  const isForeignLocale = locale === "en" || locale === "ja";
+  const paymentMethods = isForeignLocale
+    ? PAYMENT_METHODS_FOREIGN
+    : PAYMENT_METHODS_KO;
+  const paymentAmount = isForeignLocale
+    ? PAYMENT_AMOUNT_USD
+    : PAYMENT_AMOUNT_KRW;
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>("CARD");
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(
+    isForeignLocale ? "PAYPAL" : "CARD"
+  );
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -126,22 +151,62 @@ export default function PaymentPage() {
     setIsProcessing(true);
 
     try {
-      const tossPayments = await loadTossPayments(CLIENT_KEY);
-
-      const payment = tossPayments.payment({
-        customerKey: user?.id ?? ANONYMOUS,
-      });
-
       const orderId = generateOrderId();
       const orderName =
         fortuneType === "yearly"
           ? tPayment("orderNameYearly", { name: cachedProfile.name })
           : tPayment("orderNameLifetime", { name: cachedProfile.name });
 
+      // PayPal 결제 (v2 결제창 - API 개별 연동 방식)
+      if (selectedMethod === "PAYPAL") {
+        const tossPayments = await loadTossPayments(PAYPAL_CLIENT_KEY);
+        const customerKey = user?.id ?? ANONYMOUS;
+        const payment = tossPayments.payment({ customerKey });
+
+        await payment.requestPayment({
+          method: "FOREIGN_EASY_PAY",
+          amount: {
+            currency: "USD",
+            value: PAYMENT_AMOUNT_USD,
+          },
+          orderId,
+          orderName,
+          successUrl: `${window.location.origin}/payment/success?profileId=${profileId}&fortuneType=${fortuneType}&currency=USD`,
+          failUrl: `${window.location.origin}/payment/fail?profileId=${profileId}&fortuneType=${fortuneType}`,
+          customerEmail: user?.email || "customer@example.com",
+          customerName: cachedProfile.name,
+          customerMobilePhone: "01012341234",
+          foreignEasyPay: {
+            provider: "PAYPAL",
+            country: "KR",
+            products: [
+              {
+                name: orderName,
+                quantity: 1,
+                unitAmount: PAYMENT_AMOUNT_USD,
+                currency: "USD",
+                description:
+                  fortuneType === "yearly"
+                    ? "2025 Yearly Fortune"
+                    : "Lifetime Fortune",
+              },
+            ],
+          },
+        });
+        return;
+      }
+
+      // 국내 결제 (KRW)
+      const tossPayments = await loadTossPayments(CLIENT_KEY);
+
+      const payment = tossPayments.payment({
+        customerKey: user?.id ?? ANONYMOUS,
+      });
+
       const basePaymentConfig = {
         amount: {
           currency: "KRW",
-          value: PAYMENT_AMOUNT,
+          value: PAYMENT_AMOUNT_KRW,
         },
         orderId,
         orderName,
@@ -176,6 +241,8 @@ export default function PaymentPage() {
         });
       }
     } catch (err) {
+      console.error("Payment error:", err);
+
       // 사용자 취소인 경우 에러 표시하지 않음
       const isCanceled =
         err instanceof Error && /취소|cancel/i.test(err.message);
@@ -240,7 +307,7 @@ export default function PaymentPage() {
         </div>
 
         <div className={styles.methodList}>
-          {PAYMENT_METHODS.map((method) => (
+          {paymentMethods.map((method) => (
             <button
               key={method.id}
               type="button"
@@ -283,15 +350,14 @@ export default function PaymentPage() {
         <div className={styles.amountCard}>
           <span className={styles.amountLabel}>{tPayment("finalAmount")}</span>
           <span className={styles.amountValue}>
-            {PAYMENT_AMOUNT.toLocaleString()}
-            {tPayment("currency")}
+            {isForeignLocale
+              ? `$${paymentAmount.toFixed(2)}`
+              : `${paymentAmount.toLocaleString()}${tPayment("currency")}`}
           </span>
         </div>
 
         <p className={styles.refundNotice}>{tPayment("refundPolicy")}</p>
-        <p className={styles.refundNotice}>
-          본 상품의 열람 기간은 결제일로부터 1년입니다.
-        </p>
+        <p className={styles.refundNotice}>{tPayment("viewPeriod")}</p>
       </main>
 
       <footer className={styles.footer}>
