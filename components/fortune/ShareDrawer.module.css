@@ -108,3 +108,10 @@
   height: 18px;
   color: #ffffff;
 }
+
+.menuIcon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}

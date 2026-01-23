@@ -330,6 +330,8 @@
       "shareDrawer": {
         "title": "공유하기",
         "copyLink": "링크 복사하기",
+        "shareKakao": "카카오톡 공유하기",
+        "shareLine": "라인 공유하기",
         "downloadImage": "프로필 이미지 다운로드",
         "downloading": "다운로드 중..."
       }
@@ -834,6 +836,8 @@
       "shareDrawer": {
         "title": "Share",
         "copyLink": "Copy Link",
+        "shareKakao": "Share to KakaoTalk",
+        "shareLine": "Share to LINE",
         "downloadImage": "Download Profile Image",
         "downloading": "Downloading..."
       }
@@ -1338,6 +1342,8 @@
       "shareDrawer": {
         "title": "シェアする",
         "copyLink": "リンクをコピー",
+        "shareKakao": "KakaoTalkでシェア",
+        "shareLine": "LINEでシェア",
         "downloadImage": "プロフィール画像をダウンロード",
         "downloading": "ダウンロード中..."
       }
