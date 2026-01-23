@@ -69,7 +69,22 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const fortune = await getFortune(profileId, fortuneType, year);
 
     // fortune이 없으면 아직 운세를 조회하지 않은 상태
+    // 하지만 free access가 있을 수 있으므로 확인 필요
     if (!fortune) {
+      const hasFreeAccess = await checkFreeAccess(profileId, fortuneType);
+
+      if (hasFreeAccess) {
+        // free access가 있으면 결과 페이지에서 fortune 생성 후 접근 가능
+        return NextResponse.json({
+          success: true,
+          data: {
+            exists: false,
+            paid: true, // free access로 인해 결제된 것으로 처리
+            freeAccess: true,
+          },
+        });
+      }
+
       return NextResponse.json({
         success: true,
         data: {
