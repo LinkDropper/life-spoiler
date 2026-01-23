@@ -37,7 +37,7 @@
 }
 
 .sectionTitle {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
@@ -87,20 +87,22 @@
 }
 
 .overviewHeadline {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
   line-height: 1.4;
+  letter-spacing: 1px;
 }
 
 .overviewSummary {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   white-space: pre-wrap;
+  letter-spacing: 1px;
 }
 
 /* ============================================================
@@ -120,20 +122,21 @@
 }
 
 .coreScenario p {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   white-space: pre-wrap;
+  letter-spacing: 1px;
 }
 
 .coreHeadline {
-  color: var(--color-text-default, #FFF);
-  font-size: 18px;
+  color: var(--color-text-default, #fff);
+  font-size: 20px;
   font-weight: 700;
   line-height: 140%;
-  letter-spacing: 0;
+  letter-spacing: 1px;
 }
 
 /* ============================================================
@@ -143,7 +146,7 @@
 .categoriesContainer {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 30px;
   width: 100%;
 }
 
@@ -167,26 +170,29 @@
 }
 
 .categoryLabel {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #ffffff;
+  letter-spacing: 1px;
 }
 
 .categoryHeadline {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: #ffffff;
   margin: 0;
   line-height: 1.4;
+  letter-spacing: 1px;
 }
 
 .categoryContent {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   white-space: pre-wrap;
+  letter-spacing: 1px;
 }
 
 .categoryTags {
@@ -202,7 +208,7 @@
   padding: 2px 6px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -214,14 +220,14 @@
 .ageScenarioContainer {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 30px;
   width: 100%;
 }
 
 .scenarioList {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 30px;
 }
 
 .scenarioItem {
@@ -255,29 +261,31 @@
   padding: 2px 6px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .scenarioHeadline {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #ffffff;
+  letter-spacing: 1px;
 }
 
 .scenarioContent {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.7);
   white-space: pre-wrap;
+  letter-spacing: 1px;
 }
 
 .expandButton {
   width: 100%;
   padding: 12px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
   background: rgba(255, 255, 255, 0.08);
@@ -298,7 +306,7 @@
 .backButton {
   width: 100%;
   padding: 16px 20px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   color: #2d1b4e;
   background: #ffccd9;
@@ -328,7 +336,7 @@
 }
 
 .error p {
-  font-size: 16px;
+  font-size: 18px;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -359,7 +367,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px 20px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   color: #2d1b4e;
   background: #ffccd9;
@@ -395,10 +403,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--color-text-default, #FFF);
+  color: var(--color-text-default, #fff);
   text-align: center;
   font-family: var(--Type-Brand, Pretendard);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 140%;
   letter-spacing: 0;

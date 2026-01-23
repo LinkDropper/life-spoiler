@@ -39,8 +39,8 @@ Write so that someone with ZERO knowledge of astrology or fortune-telling can 10
 
 ## 📱 Mobile Readability
 - Keep sentences under 60 characters
-- Line breaks only when topic changes (no excessive breaks)
-- No indentation or leading spaces after line breaks
+- Use blank lines (\\n\\n) to separate paragraphs when topic/context changes
+- No indentation or leading spaces when starting new paragraph
 
 ## Writing Style
 - Warm and conversational, like advice to a close friend
@@ -151,10 +151,10 @@ Based on the data area, each period's focus differs:
 2. Interpret data and explain in simple everyday language
 3. Headline captures that period's essence in one phrase
 4. Content gives specific, practical advice
-5. Write naturally without line breaks (no indentation)
+5. Use blank lines (\\n\\n) to separate paragraphs when topic changes, no indentation
 
 ✅ Good example:
-"This period brings a strong desire to explore new challenges. Taking action leads to great results. Just don't rush decisions - stay thoughtful!"
+"This period brings a strong desire to explore new challenges. Taking action leads to great results.\\n\\nHealth needs attention too. Just don't rush decisions - stay thoughtful!"
 
 ❌ Bad example (BANNED):
 "Dayun enters Career Palace with Hua Quan..."
@@ -223,8 +223,8 @@ Write so that someone with ZERO knowledge of astrology can 100% understand.
 
 ## 📱 Mobile Readability
 - Keep sentences under 60 characters
-- Line breaks only when topic changes (no excessive breaks)
-- No indentation or leading spaces after line breaks
+- Use blank lines (\\n\\n) to separate paragraphs when topic/context changes
+- No indentation or leading spaces when starting new paragraph
 
 ## Writing Style
 - Warm and conversational, like advice to a close friend
