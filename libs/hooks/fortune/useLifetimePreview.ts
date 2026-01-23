@@ -45,11 +45,19 @@ export const useLifetimePreview = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<LifetimePreviewResult | null>(null);
-  const [profile, setProfile] = useState<ProfileData | null>(null);
 
-  // Use ref to avoid infinite loop from options object
+  // Use refs to avoid unnecessary re-renders and race conditions
   const optionsRef = useRef(options);
   optionsRef.current = options;
+
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
+
+  const cachedProfileRef = useRef(cachedProfile);
+  cachedProfileRef.current = cachedProfile;
+
+  // Prevent duplicate fetch
+  const hasFetchedRef = useRef(false);
 
   // Fetch profiles when authenticated
   useEffect(() => {
@@ -57,13 +65,6 @@ export const useLifetimePreview = (
       fetchProfiles();
     }
   }, [authStatus, isProfilesLoaded, fetchProfiles]);
-
-  // Sync cached profile to local state
-  useEffect(() => {
-    if (cachedProfile) {
-      setProfile(cachedProfile);
-    }
-  }, [cachedProfile]);
 
   // Main data fetching effect
   useEffect(() => {
@@ -80,7 +81,9 @@ export const useLifetimePreview = (
       return;
     }
 
-    if (!cachedProfile) {
+    const targetProfile = cachedProfileRef.current;
+
+    if (!targetProfile) {
       setError(
         optionsRef.current.onProfileNotFound?.() ?? "프로필을 찾을 수 없습니다."
       );
@@ -88,10 +91,14 @@ export const useLifetimePreview = (
       return;
     }
 
+    // Prevent duplicate fetch for the same profile
+    if (hasFetchedRef.current) {
+      return;
+    }
+    hasFetchedRef.current = true;
+
     const fetchPreviewData = async () => {
       try {
-        const targetProfile = cachedProfile;
-
         const interpretRes = await fetch("/api/interpret", {
           method: "POST",
           headers: {
@@ -120,7 +127,7 @@ export const useLifetimePreview = (
             }),
             includeDetails: true,
             profileId: targetProfile.id,
-            language: locale,
+            language: localeRef.current,
           }),
         });
 
@@ -145,7 +152,7 @@ export const useLifetimePreview = (
     };
 
     fetchPreviewData();
-  }, [authStatus, profileId, router, isProfilesLoaded, cachedProfile, locale]);
+  }, [authStatus, profileId, router, isProfilesLoaded]);
 
   const handlePayment = useCallback(() => {
     router.push(`/payment/lifetime/${profileId}`);
@@ -162,7 +169,7 @@ export const useLifetimePreview = (
     isLoading: isActuallyLoading,
     error,
     result,
-    profile,
+    profile: cachedProfile ?? null,
     profileId,
     handlePayment,
     handleBack,

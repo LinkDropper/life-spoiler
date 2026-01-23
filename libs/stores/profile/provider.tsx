@@ -78,10 +78,12 @@ export const useIsProfilesLoaded = () => {
 };
 
 export const useProfileById = (profileId: string | null) => {
-  return useProfileStore((state) =>
-    profileId
-      ? state.profiles.find((profile) => profile.id === profileId)
-      : undefined
+  return useProfileStore(
+    useShallow((state) =>
+      profileId
+        ? state.profiles.find((profile) => profile.id === profileId)
+        : undefined
+    )
   );
 };
 
