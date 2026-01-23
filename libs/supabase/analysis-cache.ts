@@ -91,7 +91,7 @@ export const getCachedResult = async <
       return null;
     }
 
-    return data?.result as unknown as T ?? null;
+    return (data?.result as unknown as T) ?? null;
   } catch {
     // 캐시 조회 실패는 무시하고 새로 생성
     return null;

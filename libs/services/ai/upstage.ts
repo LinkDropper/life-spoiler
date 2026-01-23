@@ -90,7 +90,33 @@ export const chatCompletion = async (
         });
       }
 
-      return data.choices[0].message.content;
+      const [
+        {
+          message: { content },
+        },
+      ] = data.choices;
+
+      // AI 응답이 JSON 형식인지 기본 검증
+      // JSON은 { 또는 [ 로 시작해야 함 (마크다운 코드 블록 허용)
+      const trimmedContent = content.trim();
+      const startsWithJson =
+        trimmedContent.startsWith("{") ||
+        trimmedContent.startsWith("[") ||
+        trimmedContent.startsWith("```json") ||
+        trimmedContent.startsWith("```");
+
+      if (!startsWithJson) {
+        // 응답이 JSON 형식이 아님 - 재시도 가능한 오류로 처리
+        console.warn(
+          "AI 응답이 JSON 형식이 아님 - 재시도 예정. 응답 시작:",
+          trimmedContent.slice(0, 100)
+        );
+        throw new AIError("AI 응답이 유효한 JSON 형식이 아닙니다.", {
+          code: "INVALID_JSON_FORMAT",
+        });
+      }
+
+      return content;
     } catch (error) {
       lastError = error as Error;
 
