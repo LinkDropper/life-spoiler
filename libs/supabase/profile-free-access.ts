@@ -35,7 +35,8 @@ export const getProfileFreeAccess = async (
     }
 
     return data as ProfileFreeAccessRow[];
-  } catch {
+  } catch (error) {
+    console.error("Error fetching profile free access:", error);
     return [];
   }
 };
@@ -71,6 +72,25 @@ export const hasProfileFreeAccess = async (
   profileId: string,
   fortuneType: FortuneType
 ): Promise<boolean> => {
-  const accessMap = await getProfileFreeAccessMap(profileId);
-  return accessMap[fortuneType].granted;
+  try {
+    const supabase = createServerClient() as SupabaseDB;
+    const now = new Date().toISOString();
+
+    const { error, count } = await supabase
+      .from("profile_free_access")
+      .select("*", { count: "exact", head: true })
+      .eq("profile_id", profileId)
+      .eq("fortune_type", fortuneType)
+      .or(`expires_at.is.null,expires_at.gt.${now}`);
+
+    if (error) {
+      console.error("Error checking profile free access:", error);
+      return false;
+    }
+
+    return (count ?? 0) > 0;
+  } catch (error) {
+    console.error("Unexpected error in hasProfileFreeAccess:", error);
+    return false;
+  }
 };
