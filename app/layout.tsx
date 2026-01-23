@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "평생운세",
       "점술",
       "명리학",
-      '인생스포',
+      "인생스포",
       "Zi Wei Dou Shu",
       "fortune telling",
       "life spoiler",
