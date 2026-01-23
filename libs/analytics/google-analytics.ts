@@ -6,8 +6,16 @@
 declare global {
   interface Window {
     gtag?: {
-      (command: "config", targetId: string, config?: Record<string, unknown>): void;
-      (command: "event", eventName: string, eventParams?: Record<string, unknown>): void;
+      (
+        command: "config",
+        targetId: string,
+        config?: Record<string, unknown>
+      ): void;
+      (
+        command: "event",
+        eventName: string,
+        eventParams?: Record<string, unknown>
+      ): void;
       (command: "js", date: Date): void;
     };
   }

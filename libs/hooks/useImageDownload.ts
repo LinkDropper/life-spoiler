@@ -81,7 +81,11 @@ const waitForImagesToLoad = (
 export const useImageDownload = (
   options: UseImageDownloadOptions = {}
 ): UseImageDownloadReturn => {
-  const { filename = "fortune", pixelRatio = 2, waitForImages = true } = options;
+  const {
+    filename = "fortune",
+    pixelRatio = 2,
+    waitForImages = true,
+  } = options;
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);

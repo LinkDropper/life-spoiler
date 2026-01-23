@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -17,9 +17,11 @@ import {
 } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
 
-import type { ProfileWithFortunes } from "@/libs/stores/profile";
-import type { FortuneType } from "@/libs/stores/user";
-
+import {
+  useProfileSelection,
+  useProfileDelete,
+  useFortuneNavigation,
+} from "./hooks";
 import styles from "./page.module.css";
 
 export default function ProfilesPage() {
@@ -34,34 +36,72 @@ export default function ProfilesPage() {
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
-  const { fetchProfiles, deleteProfile: deleteProfileFromStore } =
-    useProfileActions();
+  const { fetchProfiles } = useProfileActions();
 
-  // 페이지 접근 시 프로필 정보를 다시 가져옴 (강제 새로고침)
+  // 커스텀 훅 사용
+  const {
+    selectedProfileId,
+    selectedProfile,
+    handleProfileSelect,
+    getCompletedFortunes,
+  } = useProfileSelection({ profiles });
+
+  const {
+    deleteTargetId,
+    isDeleting,
+    handleDeleteClick,
+    handleDeleteCancel,
+    handleDeleteConfirm,
+  } = useProfileDelete();
+
+  const { navigateToFortune } = useFortuneNavigation({ selectedProfile });
+
+  // 페이지 접근 시 프로필 정보를 다시 가져옴
   useEffect(() => {
     if (authStatus === "authenticated") {
       fetchProfiles(true);
     }
   }, [authStatus, fetchProfiles]);
 
-  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(
-    null
-  );
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    if (profiles.length > 0 && !selectedProfileId) {
-      setSelectedProfileId(profiles[0].id);
-    }
-  }, [profiles, selectedProfileId]);
-
+  // 인증되지 않은 사용자 리다이렉트
   useEffect(() => {
     if (authStatus === "unauthenticated") {
       router.replace("/login");
     }
   }, [authStatus, router]);
 
+  const handleNewProfile = useCallback(() => {
+    router.push("/profile/setup");
+  }, [router]);
+
+  const handleLifetimeFortune = useCallback(() => {
+    if (!selectedProfileId) {
+      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      return;
+    }
+    navigateToFortune("lifetime");
+  }, [selectedProfileId, navigateToFortune, t]);
+
+  const handleYearlyFortune = useCallback(() => {
+    if (!selectedProfileId) {
+      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      return;
+    }
+    navigateToFortune("yearly");
+  }, [selectedProfileId, navigateToFortune, t]);
+
+  const onDeleteConfirm = useCallback(async () => {
+    const success = await handleDeleteConfirm();
+    if (!success) {
+      alert(
+        t("deleteError", {
+          default: "프로필 삭제에 실패했습니다. 다시 시도해주세요.",
+        })
+      );
+    }
+  }, [handleDeleteConfirm, t]);
+
+  // 로딩 상태
   if (
     authStatus === "loading" ||
     isProfilesLoading ||
@@ -76,106 +116,6 @@ export default function ProfilesPage() {
       </div>
     );
   }
-
-  const handleProfileSelect = (profileId: string) => {
-    setSelectedProfileId(profileId);
-  };
-
-  const handleDeleteClick = (profileId: string) => {
-    setDeleteTargetId(profileId);
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteTargetId(null);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteTargetId) return;
-
-    setIsDeleting(true);
-
-    try {
-      const response = await fetch(`/api/profile/${deleteTargetId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete profile");
-      }
-
-      deleteProfileFromStore(deleteTargetId);
-
-      if (selectedProfileId === deleteTargetId) {
-        const remaining = profiles.filter((p) => p.id !== deleteTargetId);
-        setSelectedProfileId(remaining.length > 0 ? remaining[0].id : null);
-      }
-      setDeleteTargetId(null);
-    } catch {
-      alert(
-        t("deleteError", {
-          default: "프로필 삭제에 실패했습니다. 다시 시도해주세요.",
-        })
-      );
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  const handleNewProfile = () => {
-    router.push("/profile/setup");
-  };
-
-  const getCompletedFortunes = (
-    fortunes: ProfileWithFortunes["fortunes"] | undefined
-  ): FortuneType[] => {
-    if (!fortunes) return [];
-    const types: FortuneType[] = [];
-    if (fortunes.some((f) => f.fortune_type === "lifetime" && f.paid_at)) {
-      types.push("lifetime");
-    }
-    if (fortunes.some((f) => f.fortune_type === "yearly" && f.paid_at)) {
-      types.push("yearly");
-    }
-    return types;
-  };
-
-  const hasPaidFortune = (fortuneType: "lifetime" | "yearly"): boolean => {
-    if (!selectedProfileId) return false;
-    const selectedProfile = profiles.find((p) => p.id === selectedProfileId);
-    if (!selectedProfile?.fortunes) return false;
-    // paid_at이 있는지 확인
-    return selectedProfile.fortunes.some(
-      (f) => f.fortune_type === fortuneType && f.paid_at !== null
-    );
-  };
-
-  const handleLifetimeFortune = () => {
-    if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
-      return;
-    }
-
-    if (hasPaidFortune("lifetime")) {
-      router.push(`/fortune/lifetime/${selectedProfileId}`);
-      return;
-    }
-
-    router.push(`/fortune/lifetime/preview/${selectedProfileId}`);
-  };
-
-  const handleYearlyFortune = () => {
-    if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
-      return;
-    }
-
-    if (hasPaidFortune("yearly")) {
-      router.push(`/fortune/yearly/${selectedProfileId}`);
-      return;
-    }
-
-    router.push(`/fortune/yearly/preview/${selectedProfileId}`);
-  };
 
   return (
     <div className={styles.page}>
@@ -193,7 +133,7 @@ export default function ProfilesPage() {
               calendarType={profile.calendar_type}
               gender={profile.gender}
               isSelected={profile.id === selectedProfileId}
-              completedFortunes={getCompletedFortunes(profile.fortunes)}
+              completedFortunes={getCompletedFortunes(profile)}
               onSelect={() => handleProfileSelect(profile.id)}
               onDelete={() => handleDeleteClick(profile.id)}
             />
@@ -228,7 +168,7 @@ export default function ProfilesPage() {
       <DeleteConfirmModal
         isOpen={deleteTargetId !== null}
         onClose={handleDeleteCancel}
-        onConfirm={handleDeleteConfirm}
+        onConfirm={onDeleteConfirm}
         isDeleting={isDeleting}
       />
     </div>
