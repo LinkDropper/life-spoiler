@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import type { ShareProfileData, YearlyFortuneResult } from "./types";
@@ -27,7 +27,8 @@ export const useYearlyShare = (
   const router = useRouter();
   const profileId = params.profileId as string;
 
-  const currentYear = new Date().getFullYear();
+  // Memoize currentYear to prevent recalculation on every render
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

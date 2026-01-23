@@ -45,12 +45,32 @@ export const useLifetimeFortune = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<LifetimeFortuneResult | null>(null);
-  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [showCopyToast, setShowCopyToast] = useState(false);
 
-  // Use ref to avoid infinite loop from options object
+  // Use refs to avoid unnecessary re-renders and race conditions
   const optionsRef = useRef(options);
   optionsRef.current = options;
+
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
+
+  const cachedProfileRef = useRef(cachedProfile);
+  cachedProfileRef.current = cachedProfile;
+
+  // Timer ref for cleanup
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Prevent duplicate fetch
+  const hasFetchedRef = useRef(false);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
 
   // Fetch profiles when authenticated
   useEffect(() => {
@@ -58,13 +78,6 @@ export const useLifetimeFortune = (
       fetchProfiles();
     }
   }, [authStatus, isProfilesLoaded, fetchProfiles]);
-
-  // Sync cached profile to local state
-  useEffect(() => {
-    if (cachedProfile) {
-      setProfile(cachedProfile);
-    }
-  }, [cachedProfile]);
 
   // Main data fetching effect
   useEffect(() => {
@@ -81,13 +94,21 @@ export const useLifetimeFortune = (
       return;
     }
 
-    if (!cachedProfile) {
+    const targetProfile = cachedProfileRef.current;
+
+    if (!targetProfile) {
       setError(
         optionsRef.current.onProfileNotFound?.() ?? "프로필을 찾을 수 없습니다."
       );
       setIsLoading(false);
       return;
     }
+
+    // Prevent duplicate fetch for the same profile
+    if (hasFetchedRef.current) {
+      return;
+    }
+    hasFetchedRef.current = true;
 
     const fetchFortuneData = async () => {
       try {
@@ -109,8 +130,6 @@ export const useLifetimeFortune = (
           router.replace(`/fortune/lifetime/preview/${profileId}`);
           return;
         }
-
-        const targetProfile = cachedProfile;
 
         const interpretRes = await fetch("/api/interpret", {
           method: "POST",
@@ -140,7 +159,7 @@ export const useLifetimeFortune = (
             }),
             includeDetails: true,
             profileId: targetProfile.id,
-            language: locale,
+            language: localeRef.current,
           }),
         });
 
@@ -165,15 +184,20 @@ export const useLifetimeFortune = (
     };
 
     fetchFortuneData();
-  }, [authStatus, profileId, router, isProfilesLoaded, cachedProfile, locale]);
+  }, [authStatus, profileId, router, isProfilesLoaded]);
 
   const handleShare = useCallback(async () => {
     const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
 
+    // Clear previous timer if exists
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
+
     try {
       await navigator.clipboard.writeText(shareUrl);
       setShowCopyToast(true);
-      setTimeout(() => setShowCopyToast(false), 2000);
+      toastTimerRef.current = setTimeout(() => setShowCopyToast(false), 2000);
     } catch {
       try {
         const textArea = document.createElement("textarea");
@@ -183,7 +207,7 @@ export const useLifetimeFortune = (
         document.execCommand("copy");
         document.body.removeChild(textArea);
         setShowCopyToast(true);
-        setTimeout(() => setShowCopyToast(false), 2000);
+        toastTimerRef.current = setTimeout(() => setShowCopyToast(false), 2000);
       } catch {
         alert(
           `링크 복사에 실패했습니다. 다음 주소를 직접 복사해주세요: ${shareUrl}`
@@ -199,7 +223,7 @@ export const useLifetimeFortune = (
     isLoading: isActuallyLoading,
     error,
     result,
-    profile,
+    profile: cachedProfile ?? null,
     profileId,
     showCopyToast,
     handleShare,
