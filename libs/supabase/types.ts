@@ -130,6 +130,28 @@ export interface FortuneInsert {
   updated_at?: string;
 }
 
+export interface ProfileFreeAccessRow {
+  id: string;
+  profile_id: string;
+  fortune_type: FortuneType;
+  granted_at: string;
+  granted_by: string | null;
+  expires_at: string | null;
+  memo: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProfileFreeAccessInsert {
+  id?: string;
+  profile_id: string;
+  fortune_type: FortuneType;
+  granted_at?: string;
+  granted_by?: string | null;
+  expires_at?: string | null;
+  memo?: string | null;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -165,6 +187,19 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "fortunes_profile_id_fkey";
+            columns: ["profile_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      profile_free_access: {
+        Row: ProfileFreeAccessRow;
+        Insert: ProfileFreeAccessInsert;
+        Update: Partial<ProfileFreeAccessInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "profile_free_access_profile_id_fkey";
             columns: ["profile_id"];
             referencedRelation: "profiles";
             referencedColumns: ["id"];
