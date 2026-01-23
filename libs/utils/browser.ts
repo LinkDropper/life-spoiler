@@ -6,7 +6,7 @@
  * 카카오톡 인앱 브라우저인지 확인
  */
 export const isKakaoTalkBrowser = (): boolean => {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === "undefined") return false;
   return /KAKAOTALK/i.test(navigator.userAgent);
 };
 
@@ -14,7 +14,7 @@ export const isKakaoTalkBrowser = (): boolean => {
  * 외부 브라우저로 열기 (크롬 우선, 사파리 대체)
  */
 export const openWithExternalBrowser = () => {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
   const currentUrl = encodeURIComponent(window.location.href);
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -22,7 +22,7 @@ export const openWithExternalBrowser = () => {
 
   if (isIOS) {
     // iOS: 크롬 시도 후 카카오톡 기본 외부 브라우저(사파리) 실행
-    const chromeUrl = `googlechrome://${window.location.href.replace(/^https?:\/\//, '')}`;
+    const chromeUrl = `googlechrome://${window.location.href.replace(/^https?:\/\//, "")}`;
 
     const fallbackTimeout = setTimeout(() => {
       // 1초 후에도 페이지가 그대로면 카카오톡 외부 브라우저(사파리)로 열기
@@ -30,12 +30,12 @@ export const openWithExternalBrowser = () => {
     }, 1000);
 
     const onVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') {
+      if (document.visibilityState === "hidden") {
         clearTimeout(fallbackTimeout);
-        document.removeEventListener('visibilitychange', onVisibilityChange);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
       }
     };
-    document.addEventListener('visibilitychange', onVisibilityChange);
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     // 크롬으로 열기 시도
     window.location.href = chromeUrl;
@@ -50,12 +50,12 @@ export const openWithExternalBrowser = () => {
     }, 1000);
 
     const onVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') {
+      if (document.visibilityState === "hidden") {
         clearTimeout(fallbackTimeout);
-        document.removeEventListener('visibilitychange', onVisibilityChange);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
       }
     };
-    document.addEventListener('visibilitychange', onVisibilityChange);
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     // 크롬으로 열기 시도
     window.location.href = intentUrl;
