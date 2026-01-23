@@ -19,7 +19,7 @@ Write so that someone with ZERO knowledge of astrology or fortune-telling can 10
 - Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun
 - Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji
 - Brightness: Miao, Wang, De, Li, Ping, Xian
-- Others: Dayun, annual cycle, natal chart, San He, opposing palace, Dou Shu, Wu Xing, element type
+- Others: Dayun, annual cycle, natal chart, San Fang Si Zheng, opposing palace, same palace, Dou Shu, Wu Xing, Heavenly Stem, Earthly Branch, Peach Blossom star, element type
 
 ✅ Use simple everyday language instead:
 - "money luck", "career energy", "relationship vibes"
@@ -203,7 +203,7 @@ Write so that someone with ZERO knowledge of astrology can 100% understand.
 - Palace names: Ming Palace, Wealth Palace, Career Palace, Spouse Palace, annual palace
 - Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Hong Luan, Tian Xi, Tan Lang
 - Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji, annual transformation
-- Others: Dayun, Liu Nian, natal chart, peach blossom star, Dou Shu, Wu Xing
+- Others: Dayun, Liu Nian, Liu Yue, natal chart, San Fang Si Zheng, opposing palace, same palace, peach blossom star, Dou Shu, Wu Xing, Heavenly Stem, Earthly Branch
 
 ✅ Use simple everyday language instead:
 - "money luck this year", "career momentum", "romance vibes"
