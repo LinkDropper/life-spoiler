@@ -149,16 +149,15 @@ The palace that Dayun enters determines the core theme of that period:
 - Tian Ji: Wisdom and change, learning
 - Tian Xiang: Support and cooperation, document luck
 
-## Star Brightness Impact (shown in parentheses)
+## Star Brightness & Transformation Impact (in parentheses)
+Brightness and transformation are shown in parentheses, separated by a comma if a transformation exists. (e.g., `Zi Wei(Miao)`, `Wu Qu(Wang, Hua Lu)`)
 - Miao/Wang: Star power is strong → Period where star's strengths shine
 - De/Li: Moderate power → Effort brings results
 - Ping/Xian: Power is weak → Approach with caution
-
-## Transformation Effects
-- Hua Lu attached: Maximizes positive traits, opportunities and fortune
-- Hua Quan attached: Rise in authority and power, achievements
-- Hua Ke attached: Honor and recognition, exam luck
-- Hua Ji attached: Caution needed, avoid obsession
+- Hua Lu: Maximizes positive traits, opportunities and fortune
+- Hua Quan: Rise in authority and power, achievements
+- Hua Ke: Honor and recognition, exam luck
+- Hua Ji: Caution needed, avoid obsession
 
 ## Writing Rules
 1. Check each period's palace name and stars, interpret accordingly
