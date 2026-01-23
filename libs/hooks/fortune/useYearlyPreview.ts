@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
@@ -46,13 +46,22 @@ export const useYearlyPreview = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<YearlyPreviewResult | null>(null);
-  const [profile, setProfile] = useState<ProfileData | null>(null);
 
-  const currentYear = new Date().getFullYear();
+  // Memoize currentYear to prevent recalculation on every render
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
 
-  // Use ref to avoid infinite loop from options object
+  // Use refs to avoid unnecessary re-renders and race conditions
   const optionsRef = useRef(options);
   optionsRef.current = options;
+
+  const localeRef = useRef(locale);
+  localeRef.current = locale;
+
+  const cachedProfileRef = useRef(cachedProfile);
+  cachedProfileRef.current = cachedProfile;
+
+  // Prevent duplicate fetch
+  const hasFetchedRef = useRef(false);
 
   // Fetch profiles when authenticated
   useEffect(() => {
@@ -60,13 +69,6 @@ export const useYearlyPreview = (
       fetchProfiles();
     }
   }, [authStatus, isProfilesLoaded, fetchProfiles]);
-
-  // Sync cached profile to local state
-  useEffect(() => {
-    if (cachedProfile) {
-      setProfile(cachedProfile);
-    }
-  }, [cachedProfile]);
 
   // Main data fetching effect
   useEffect(() => {
@@ -83,7 +85,9 @@ export const useYearlyPreview = (
       return;
     }
 
-    if (!cachedProfile) {
+    const targetProfile = cachedProfileRef.current;
+
+    if (!targetProfile) {
       setError(
         optionsRef.current.onProfileNotFound?.() ?? "프로필을 찾을 수 없습니다."
       );
@@ -91,10 +95,14 @@ export const useYearlyPreview = (
       return;
     }
 
+    // Prevent duplicate fetch for the same profile
+    if (hasFetchedRef.current) {
+      return;
+    }
+    hasFetchedRef.current = true;
+
     const fetchPreviewData = async () => {
       try {
-        const targetProfile = cachedProfile;
-
         const res = await fetch("/api/interpret/yearly", {
           method: "POST",
           headers: {
@@ -123,7 +131,7 @@ export const useYearlyPreview = (
             }),
             targetYear: currentYear,
             profileId: targetProfile.id,
-            language: locale,
+            language: localeRef.current,
           }),
         });
 
@@ -149,15 +157,7 @@ export const useYearlyPreview = (
     };
 
     fetchPreviewData();
-  }, [
-    authStatus,
-    profileId,
-    router,
-    isProfilesLoaded,
-    cachedProfile,
-    currentYear,
-    locale,
-  ]);
+  }, [authStatus, profileId, router, isProfilesLoaded, currentYear]);
 
   const handlePayment = useCallback(() => {
     router.push(`/payment/yearly/${profileId}`);
@@ -174,7 +174,7 @@ export const useYearlyPreview = (
     isLoading: isActuallyLoading,
     error,
     result,
-    profile,
+    profile: cachedProfile ?? null,
     profileId,
     currentYear,
     handlePayment,
