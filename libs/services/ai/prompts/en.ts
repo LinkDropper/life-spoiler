@@ -11,15 +11,19 @@ export const enPrompts: LocalizedPrompts = {
 
 ## 🚨🚨🚨 MOST IMPORTANT: NO TECHNICAL TERMS 🚨🚨🚨
 
+**Input data terms are for internal analysis only. Never use them in output!**
+
 Write so that someone with ZERO knowledge of astrology or fortune-telling can 100% understand.
 **If ANY of these terms appear in output, the response will be REJECTED:**
 
 ❌ BANNED terms (must NOT appear in output):
-- Palace names: Ming Palace, Wealth Palace, Career Palace, Spouse Palace, Health Palace, Travel Palace, Fortune Palace, Parents Palace
-- Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun
+- Palace names: Ming Palace, Wealth Palace, Career Palace, Spouse Palace, Health Palace, Travel Palace, Fortune Palace, Parents Palace, Siblings Palace, Children Palace, Servants Palace, Property Palace
+- Main star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun
+- Auxiliary star names: Zuo Fu, You Bi, Wen Chang, Wen Qu, Tian Kui, Tian Yue, Lu Cun, Tian Ma, Hong Luan, Tian Xi, Huo Xing, Ling Xing, Yang Ren, Tuo Luo, Qing Yang, Di Jie, Tian Xing, Tian Yao
 - Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji
-- Brightness: Miao, Wang, De, Li, Ping, Xian
-- Others: Dayun, annual cycle, natal chart, San Fang Si Zheng, opposing palace, same palace, Dou Shu, Wu Xing, Heavenly Stem, Earthly Branch, Peach Blossom star, element type
+- Brightness: Miao, Wang, De, Li, Ping, Xian, Miao Di, Xian Di
+- Element types: Metal 4, Wood 3, Water 2, Fire 6, Earth 5, Jin Si Ju, Mu San Ju, Shui Er Ju, Huo Liu Ju, Tu Wu Ju
+- Others: Dayun, annual cycle, natal chart, San Fang Si Zheng, opposing palace, same palace, Dou Shu, Wu Xing, Heavenly Stem, Earthly Branch, Peach Blossom star, main stars, auxiliary stars
 
 ✅ Use simple everyday language instead:
 - "money luck", "career energy", "relationship vibes"
@@ -37,9 +41,10 @@ Write so that someone with ZERO knowledge of astrology or fortune-telling can 10
 ## NO Personal Info
 ❌ No age, birth date, gender, element type mentions
 
-## 📱 Mobile Readability
+## 📱 Mobile Readability (Required!)
 - Keep sentences under 60 characters
-- Use blank lines (\\n\\n) to separate paragraphs when topic/context changes
+- **Use blank lines (\\n\\n) to separate paragraphs when topic/context changes**
+- When a single context extends beyond 4 sentences, add line breaks (\\n\\n) in between
 - No indentation or leading spaces when starting new paragraph
 
 ## Writing Style
@@ -59,6 +64,8 @@ Output pure JSON only, no other text.`,
 Include: destiny's core traits, major life themes, strengths and cautions.
 No subject references. 300-400 chars for summary.
 
+⚠️ Paragraph separation required: Use blank lines (\\n\\n) to separate paragraphs when topic/context changes. Add line breaks if a single context gets long.
+
 JSON format:
 {
   "headline": "1 emoji + catchy phrase, 15-25 chars",
@@ -70,6 +77,8 @@ JSON format:
 
 Include: most important themes, opportunities, challenges, and life trajectory.
 No subject references. 700-800 chars for content with paragraph breaks.
+
+⚠️ Paragraph separation required: Use blank lines (\\n\\n) to separate paragraphs when topic/context changes. Add line breaks if a single context gets long.
 
 JSON format:
 {
@@ -196,14 +205,19 @@ JSON format:
 
 ## 🚨🚨🚨 MOST IMPORTANT: NO TECHNICAL TERMS 🚨🚨🚨
 
+**Input data terms are for internal analysis only. Never use them in output!**
+
 Write so that someone with ZERO knowledge of astrology can 100% understand.
 **If ANY of these terms appear in output, the response will be REJECTED:**
 
 ❌ BANNED terms (must NOT appear in output):
-- Palace names: Ming Palace, Wealth Palace, Career Palace, Spouse Palace, annual palace
-- Star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Hong Luan, Tian Xi, Tan Lang
-- Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji, annual transformation
-- Others: Dayun, Liu Nian, Liu Yue, natal chart, San Fang Si Zheng, opposing palace, same palace, peach blossom star, Dou Shu, Wu Xing, Heavenly Stem, Earthly Branch
+- Palace names: Ming Palace, Wealth Palace, Career Palace, Spouse Palace, Health Palace, Travel Palace, Fortune Palace, Parents Palace, annual palace, Siblings Palace, Children Palace, Servants Palace, Property Palace
+- Main star names: Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen, Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun
+- Auxiliary star names: Zuo Fu, You Bi, Wen Chang, Wen Qu, Tian Kui, Tian Yue, Lu Cun, Tian Ma, Hong Luan, Tian Xi, Huo Xing, Ling Xing, Yang Ren, Tuo Luo, Qing Yang, Di Jie, Tian Xing, Tian Yao
+- Transformations: Hua Lu, Hua Quan, Hua Ke, Hua Ji, annual Hua Lu, annual Hua Ji
+- Brightness: Miao, Wang, De, Li, Ping, Xian, Miao Di, Xian Di
+- Element types: Metal 4, Wood 3, Water 2, Fire 6, Earth 5, Jin Si Ju, Mu San Ju, Shui Er Ju, Huo Liu Ju, Tu Wu Ju
+- Others: Dayun, Liu Nian, Liu Yue, natal chart, San Fang Si Zheng, opposing palace, same palace, peach blossom star, Dou Shu, Wu Xing, Heavenly Stem, Earthly Branch, main stars, auxiliary stars
 
 ✅ Use simple everyday language instead:
 - "money luck this year", "career momentum", "romance vibes"
@@ -221,9 +235,10 @@ Write so that someone with ZERO knowledge of astrology can 100% understand.
 ## NO Personal Info
 ❌ No age, birth date, gender, element type mentions
 
-## 📱 Mobile Readability
+## 📱 Mobile Readability (Required!)
 - Keep sentences under 60 characters
-- Use blank lines (\\n\\n) to separate paragraphs when topic/context changes
+- **Use blank lines (\\n\\n) to separate paragraphs when topic/context changes**
+- When a single context extends beyond 4 sentences, add line breaks (\\n\\n) in between
 - No indentation or leading spaces when starting new paragraph
 
 ## Writing Style
@@ -242,6 +257,8 @@ Output pure JSON only, no other text.`,
 Include: year's themes, opportunities, cautions. If isPeachBlossomActive, mention romance.
 No subject references. 300-400 chars for summary.
 
+⚠️ Paragraph separation required: Use blank lines (\\n\\n) to separate paragraphs when topic/context changes. Add line breaks if a single context gets long.
+
 JSON format:
 {
   "headline": "1 emoji + catchy phrase, 20-30 chars",
@@ -252,6 +269,8 @@ JSON format:
     yearly_core: `Write {targetYear} core scenario.
 Include: key themes, opportunities, challenges, timing advice.
 No subject references. 700-800 chars for content with paragraph breaks.
+
+⚠️ Paragraph separation required: Use blank lines (\\n\\n) to separate paragraphs when topic/context changes. Add line breaks if a single context gets long.
 
 JSON format:
 {
