@@ -7,7 +7,8 @@
     "landing": {
       "header": {
         "logoAlt": "인생스포 로고",
-        "menuAriaLabel": "메뉴"
+        "menuAriaLabel": "메뉴",
+        "languageAriaLabel": "언어 변경"
       },
       "menu": {
         "logoAlt": "인생스포 로고",
@@ -513,7 +514,8 @@
     "landing": {
       "header": {
         "logoAlt": "Life Spoiler Logo",
-        "menuAriaLabel": "Menu"
+        "menuAriaLabel": "Menu",
+        "languageAriaLabel": "Change language"
       },
       "menu": {
         "logoAlt": "Life Spoiler Logo",
@@ -1019,7 +1021,8 @@
     "landing": {
       "header": {
         "logoAlt": "ライフスポイラー ロゴ",
-        "menuAriaLabel": "メニュー"
+        "menuAriaLabel": "メニュー",
+        "languageAriaLabel": "言語変更"
       },
       "menu": {
         "logoAlt": "ライフスポイラー ロゴ",

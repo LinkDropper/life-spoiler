@@ -8,6 +8,7 @@ import { useState, useCallback } from "react";
 import { useUser } from "@/libs/stores/user";
 
 import styles from "./Header.module.css";
+import { LanguageSelector } from "./LanguageSelector";
 import { Menu } from "./Menu";
 
 export const HeaderClient = () => {
@@ -46,19 +47,22 @@ export const HeaderClient = () => {
           onClick={handleLogoClick}
           className={styles.logo}
         />
-        <button
-          type="button"
-          className={styles.menuButton}
-          aria-label={t("menuAriaLabel", { default: "메뉴" })}
-          onClick={handleMenuOpen}
-        >
-          <Image
-            src="/images/landing/menu-icon.svg"
-            alt=""
-            width={24}
-            height={24}
-          />
-        </button>
+        <div className={styles.headerRight}>
+          <LanguageSelector />
+          <button
+            type="button"
+            className={styles.menuButton}
+            aria-label={t("menuAriaLabel", { default: "메뉴" })}
+            onClick={handleMenuOpen}
+          >
+            <Image
+              src="/images/landing/menu-icon.svg"
+              alt=""
+              width={24}
+              height={24}
+            />
+          </button>
+        </div>
       </header>
       <Menu isOpen={isMenuOpen} onClose={handleMenuClose} />
     </>
