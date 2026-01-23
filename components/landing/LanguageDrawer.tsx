@@ -24,14 +24,13 @@ export const LanguageDrawer = ({
   const t = useTranslations("landing.header");
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    if (!isOpen) return;
+
+    const originalStyle = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = originalStyle;
     };
   }, [isOpen]);
 
