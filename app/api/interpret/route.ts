@@ -67,19 +67,18 @@ const calculateAge = (birthDate: string): number => {
  */
 const convertToDayunData = (dayunResult: DayunResult): DayunData[] => {
   return dayunResult.periods.map((period) => {
-    // 주성 이름 목록
-    const mainStars = period.palace.mainStars.map((s) => s.name);
-
-    // 사화가 있는 별 목록
-    const sihua = period.palace.mainStars
-      .filter((s) => s.sihua)
-      .map((s) => `${s.name}(${s.sihua})`);
+    // 주성 이름 + 밝기 + 사화 목록 (예: "자미(묘)", "무곡(왕, 화록)")
+    const mainStars = period.palace.mainStars.map((s) => {
+      if (s.sihua) {
+        return `${s.name}(${s.brightness}, ${s.sihua})`;
+      }
+      return `${s.name}(${s.brightness})`;
+    });
 
     return {
       period: `${period.startAge}-${period.endAge}세`,
       palaceName: period.palaceName,
       mainStars,
-      sihua: sihua.length > 0 ? sihua : undefined,
     };
   });
 };

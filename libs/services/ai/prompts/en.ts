@@ -114,14 +114,62 @@ JSON format:
   "score": 0-100 integer
 }`,
 
-    lifetime_age_scenarios: `Write fortune scenarios for each 10-year period based on the Dayun data.
-For each period: themes, opportunities, cautions. No subject references.
-Each content: 200-300 chars.
+    lifetime_age_scenarios: `Analyze each 10-year period's palace and star combinations from Dayun data to write personalized fortune scenarios.
+
+## 🚨 CORE PRINCIPLE: Personalized Interpretation
+- Each Dayun period enters a DIFFERENT palace with DIFFERENT stars
+- MUST reflect the specific palace theme and star combination for that period
+- NEVER write generic advice that could apply to anyone!
+- Same age range should have completely different interpretations based on the chart
+
+## Palace Theme Guide
+The palace that Dayun enters determines the core theme of that period:
+- Life Palace: Self-identity, appearance, personality changes
+- Spouse Palace: Romance, marriage, partnerships are key
+- Wealth Palace: Money, income, investments are central
+- Career Palace: Job, business, social achievements dominate
+- Health Palace: Health management is especially important
+- Travel Palace: Movement, travel, environmental changes abound
+- Fortune Palace: Inner peace, hobbies, spiritual growth
+- Parents Palace: Relationships with parents/superiors matter
+- Siblings Palace: Siblings/colleagues, cooperation is key
+- Children Palace: Children/juniors/creative works
+- Servants Palace: Subordinates/employees/service relationships
+- Property Palace: Real estate, home, stability themes
+
+## Star Combination Guide
+- Zi Wei/Tian Fu: Stability and authority, leadership display
+- Wu Qu/Tian Fu: Wealth accumulation opportunities
+- Tai Yang/Tai Yin: Honor and inner harmony
+- Tan Lang: Desire pursuit, new challenges, romance luck
+- Qi Sha/Po Jun: Change and challenge, reform period
+- Tian Tong/Tian Liang: Leisure and fortune, mental stability
+- Lian Zhen: Emotional ups and downs, complex situations
+- Ju Men: Communication skills, watch for disputes
+- Tian Ji: Wisdom and change, learning
+- Tian Xiang: Support and cooperation, document luck
+
+## Star Brightness & Transformation Impact (in parentheses)
+Brightness and transformation are shown in parentheses, separated by a comma if a transformation exists. (e.g., `Zi Wei(Miao)`, `Wu Qu(Wang, Hua Lu)`)
+- Miao/Wang: Star power is strong → Period where star's strengths shine
+- De/Li: Moderate power → Effort brings results
+- Ping/Xian: Power is weak → Approach with caution
+- Hua Lu: Maximizes positive traits, opportunities and fortune
+- Hua Quan: Rise in authority and power, achievements
+- Hua Ke: Honor and recognition, exam luck
+- Hua Ji: Caution needed, avoid obsession
+
+## Writing Rules
+1. Check each period's palace name and stars, interpret accordingly
+2. Headline must capture that period's unique theme
+3. Content should give specific advice only possible from that star combination
+4. No subject references
+5. Use simple language, no technical terms
 
 JSON format:
 {
   "ageScenarios": [
-    {"period": "Age 4-13", "headline": "1 emoji, 10-20 chars", "content": "200-300 chars"},
+    {"period": "Age 4-13", "headline": "1 emoji + unique theme for this period, 10-20 chars", "content": "Specific interpretation based on palace and star combination, 200-300 chars"},
     {"period": "Age 14-23", "headline": "...", "content": "..."},
     {"period": "Age 24-33", "headline": "...", "content": "..."},
     {"period": "Age 34-43", "headline": "...", "content": "..."},
