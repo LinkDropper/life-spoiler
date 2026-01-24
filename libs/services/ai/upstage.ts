@@ -1,24 +1,24 @@
 import { env } from "@/env";
 
 import { AIError } from "./errors";
-import type { UpstageMessage, UpstageRequest, UpstageResponse } from "./types";
+import type { GeminiMessage, GeminiRequest, GeminiResponse } from "./types";
 
 // ============================================================
 // 설정
 // ============================================================
 
-const UPSTAGE_CONFIG = {
-  baseUrl: "https://api.upstage.ai/v1/solar",
-  model: "solar-pro",
+const GEMINI_CONFIG = {
+  baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
+  model: "gemini-2.0-flash",
   defaultTemperature: 0.7,
-  defaultMaxTokens: 4000, // 영어 등 긴 응답을 위해 4000으로 증가
-  timeout: 35000, // 35초 (Upstage API 불안정 대응)
+  defaultMaxTokens: 4000,
+  timeout: 30000, // 30초
   maxRetries: 2, // 2회 재시도 (총 3회 시도)
   retryDelay: 1000, // 1초 대기 후 재시도
 } as const;
 
 // ============================================================
-// Upstage API 클라이언트
+// Gemini API 클라이언트
 // ============================================================
 
 export interface ChatCompletionOptions {
@@ -27,43 +27,59 @@ export interface ChatCompletionOptions {
 }
 
 /**
- * Upstage API로 채팅 완성 요청
+ * Gemini API로 채팅 완성 요청
  */
 export const chatCompletion = async (
-  messages: UpstageMessage[],
+  messages: GeminiMessage[],
   options: ChatCompletionOptions = {}
 ): Promise<string> => {
-  const apiKey = env.UPSTAGE_API_KEY;
+  const apiKey = env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    throw new AIError("Upstage API 키가 설정되지 않았습니다.", {
+    throw new AIError("Gemini API 키가 설정되지 않았습니다.", {
       code: "API_KEY_MISSING",
     });
   }
 
-  const request: UpstageRequest = {
-    model: UPSTAGE_CONFIG.model,
-    messages,
-    temperature: options.temperature ?? UPSTAGE_CONFIG.defaultTemperature,
-    max_tokens: options.maxTokens ?? UPSTAGE_CONFIG.defaultMaxTokens,
-    stream: false,
+  // OpenAI 형식 메시지를 Gemini 형식으로 변환
+  const systemMessage = messages.find((m) => m.role === "system");
+  const userMessages = messages.filter((m) => m.role !== "system");
+
+  const request: GeminiRequest = {
+    contents: userMessages.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    })),
+    generationConfig: {
+      temperature: options.temperature ?? GEMINI_CONFIG.defaultTemperature,
+      maxOutputTokens: options.maxTokens ?? GEMINI_CONFIG.defaultMaxTokens,
+      responseMimeType: "application/json",
+    },
   };
+
+  // 시스템 프롬프트가 있으면 추가
+  if (systemMessage) {
+    request.systemInstruction = {
+      parts: [{ text: systemMessage.content }],
+    };
+  }
 
   let lastError: Error | null = null;
 
-  for (let attempt = 0; attempt <= UPSTAGE_CONFIG.maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= GEMINI_CONFIG.maxRetries; attempt++) {
     try {
+      const url = `${GEMINI_CONFIG.baseUrl}/${GEMINI_CONFIG.model}:generateContent?key=${apiKey}`;
+
       const response = await fetchWithTimeout(
-        `${UPSTAGE_CONFIG.baseUrl}/chat/completions`,
+        url,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify(request),
         },
-        UPSTAGE_CONFIG.timeout
+        GEMINI_CONFIG.timeout
       );
 
       if (!response.ok) {
@@ -76,28 +92,24 @@ export const chatCompletion = async (
           });
         }
 
-        throw new AIError(`Upstage API 요청 실패: ${errorText}`, {
+        throw new AIError(`Gemini API 요청 실패: ${errorText}`, {
           code: "API_REQUEST_FAILED",
           statusCode: response.status,
         });
       }
 
-      const data: UpstageResponse = await response.json();
+      const data: GeminiResponse = await response.json();
 
-      if (!data.choices || data.choices.length === 0) {
+      if (!data.candidates || data.candidates.length === 0) {
         throw new AIError("AI 응답이 비어있습니다.", {
           code: "INVALID_RESPONSE",
         });
       }
 
-      const [
-        {
-          message: { content },
-        },
-      ] = data.choices;
+      const [candidate] = data.candidates;
+      const content = candidate.content.parts.map((p) => p.text).join("");
 
       // AI 응답이 JSON 형식인지 기본 검증
-      // JSON은 { 또는 [ 로 시작해야 함 (마크다운 코드 블록 허용)
       const trimmedContent = content.trim();
       const startsWithJson =
         trimmedContent.startsWith("{") ||
@@ -106,7 +118,6 @@ export const chatCompletion = async (
         trimmedContent.startsWith("```");
 
       if (!startsWithJson) {
-        // 응답이 JSON 형식이 아님 - 재시도 가능한 오류로 처리
         console.warn(
           "AI 응답이 JSON 형식이 아님 - 재시도 예정. 응답 시작:",
           trimmedContent.slice(0, 100)
@@ -128,8 +139,8 @@ export const chatCompletion = async (
       }
 
       // 재시도 가능한 경우 (타임아웃 포함)
-      if (attempt < UPSTAGE_CONFIG.maxRetries) {
-        await sleep(UPSTAGE_CONFIG.retryDelay);
+      if (attempt < GEMINI_CONFIG.maxRetries) {
+        await sleep(GEMINI_CONFIG.retryDelay);
         continue;
       }
     }
@@ -207,6 +218,12 @@ const sanitizeJsonString = (str: string): string => {
 
   result = result.slice(jsonStart);
 
+  // JSON 끝 이후의 불필요한 텍스트 제거 시도
+  const jsonEnd = findJsonEnd(result);
+  if (jsonEnd !== -1 && jsonEnd < result.length - 1) {
+    result = result.slice(0, jsonEnd + 1);
+  }
+
   // 일반적인 JSON 오류 수정
   // 1. 문자열 내 이스케이프 안 된 줄바꿈 수정
   result = result.replace(/:\s*"([^"]*)\n([^"]*)"/g, (match, p1, p2) => {
@@ -244,7 +261,15 @@ const tryRecoverTruncatedJson = (str: string): string => {
 
   let result = str;
 
-  // 이스케이프된 따옴표를 제외한 실제 따옴표 카운트
+  // 문자열 중간에서 잘린 경우 처리
+  // 마지막으로 열린 따옴표 이후의 불완전한 문자열 값 찾기
+  const lastQuoteIndex = findLastUnmatchedQuote(result);
+  if (lastQuoteIndex !== -1) {
+    // 불완전한 문자열 값을 "..." 로 truncate 표시하고 닫기
+    result = `${result.slice(0, lastQuoteIndex + 1)}..."`;
+  }
+
+  // 이스케이프된 따옴표를 제외한 실제 따옴표 카운트 재확인
   const unescapedQuotes = result.replace(/\\"/g, "").match(/"/g) || [];
   if (unescapedQuotes.length % 2 !== 0) {
     result = `${result}"`;
@@ -267,6 +292,61 @@ const tryRecoverTruncatedJson = (str: string): string => {
   result = result.replace(/,\s*([}\]])/g, "$1");
 
   return result;
+};
+
+/**
+ * JSON 객체의 끝 위치 찾기
+ * 올바르게 닫힌 JSON의 마지막 } 위치 반환
+ */
+const findJsonEnd = (str: string): number => {
+  let depth = 0;
+  let inString = false;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    const prevChar = i > 0 ? str[i - 1] : "";
+
+    if (char === '"' && prevChar !== "\\") {
+      inString = !inString;
+    } else if (!inString) {
+      if (char === "{") {
+        depth++;
+      } else if (char === "}") {
+        depth--;
+        if (depth === 0) {
+          return i;
+        }
+      }
+    }
+  }
+
+  return -1; // JSON이 완전하지 않음
+};
+
+/**
+ * 마지막으로 매칭되지 않은 따옴표의 위치 찾기
+ * 문자열이 중간에 잘린 경우 해당 위치 반환
+ */
+const findLastUnmatchedQuote = (str: string): number => {
+  let inString = false;
+  let lastOpenQuote = -1;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    const prevChar = i > 0 ? str[i - 1] : "";
+
+    if (char === '"' && prevChar !== "\\") {
+      if (!inString) {
+        inString = true;
+        lastOpenQuote = i;
+      } else {
+        inString = false;
+        lastOpenQuote = -1;
+      }
+    }
+  }
+
+  return lastOpenQuote;
 };
 
 /**
