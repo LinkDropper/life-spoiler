@@ -18,7 +18,7 @@ import {
   LifetimeCategoryResponseSchema,
   LifetimeCoreScenarioResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse } from "./upstage";
+import { chatCompletion, parseJsonResponse } from "./gemini";
 
 // ============================================================
 // 자미두수 해석 서비스

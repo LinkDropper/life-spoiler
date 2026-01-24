@@ -32,8 +32,8 @@ export type {
 } from "./types";
 
 // Gemini 클라이언트
-export { chatCompletion, parseJsonResponse } from "./upstage";
-export type { ChatCompletionOptions } from "./upstage";
+export { chatCompletion, parseJsonResponse } from "./gemini";
+export type { ChatCompletionOptions } from "./gemini";
 
 // 자미두수 해석 서비스 (인생 운세)
 export {

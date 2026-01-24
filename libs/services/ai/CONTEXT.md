@@ -1,6 +1,6 @@
 # AI 서비스 모듈
 
-Gemini 1.5 Flash 모델을 사용한 자미두수(紫微斗數) 해석 서비스입니다.
+Gemini 2.0 Flash 모델을 사용한 자미두수(紫微斗數) 해석 서비스입니다.
 
 ## 아키텍처
 
@@ -9,7 +9,7 @@ libs/services/ai/
 ├── index.ts              # Public exports
 ├── types.ts              # 타입 정의 + Zod 스키마
 ├── errors.ts             # AIError 클래스
-├── upstage.ts            # Gemini API 클라이언트 (레거시 파일명)
+├── gemini.ts             # Gemini API 클라이언트
 ├── prompts/              # 다국어 프롬프트
 │   ├── index.ts          # 프롬프트 export
 │   ├── ko.ts             # 한국어 프롬프트

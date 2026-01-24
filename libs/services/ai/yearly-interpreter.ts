@@ -16,7 +16,7 @@ import {
   YearlyMonthlyFortuneSchema,
   YearlyOverviewResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse } from "./upstage";
+import { chatCompletion, parseJsonResponse } from "./gemini";
 
 // ============================================================
 // 올해 운세(유년) 해석 서비스

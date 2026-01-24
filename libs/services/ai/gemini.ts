@@ -68,7 +68,7 @@ export const chatCompletion = async (
 
   for (let attempt = 0; attempt <= GEMINI_CONFIG.maxRetries; attempt++) {
     try {
-      const url = `${GEMINI_CONFIG.baseUrl}/${GEMINI_CONFIG.model}:generateContent?key=${apiKey}`;
+      const url = `${GEMINI_CONFIG.baseUrl}/${GEMINI_CONFIG.model}:generateContent`;
 
       const response = await fetchWithTimeout(
         url,
@@ -76,6 +76,7 @@ export const chatCompletion = async (
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "x-goog-api-key": apiKey,
           },
           body: JSON.stringify(request),
         },
