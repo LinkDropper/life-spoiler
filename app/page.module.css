@@ -12,3 +12,8 @@
   flex: 1;
 }
 
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}

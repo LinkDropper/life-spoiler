@@ -95,3 +95,9 @@
 .closeButton:active {
   opacity: 0.8;
 }
+
+@supports (min-height: 100svh) {
+  .container {
+    min-height: 100svh;
+  }
+}

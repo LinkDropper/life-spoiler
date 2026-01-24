@@ -3,7 +3,6 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  min-height: 100dvh;
   background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
 }
 
@@ -33,4 +32,10 @@
   color: rgba(255, 255, 255, 0.5);
   text-align: center;
   margin: 0;
+}
+
+@supports (min-height: 100svh) {
+  .container {
+    min-height: 100svh;
+  }
 }

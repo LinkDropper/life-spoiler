@@ -1,5 +1,5 @@
 .page {
-  min-height: 100dvh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
@@ -441,5 +441,11 @@
   100% {
     opacity: 0;
     transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
   }
 }

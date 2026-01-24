@@ -431,3 +431,9 @@
     transform: translateX(-50%) translateY(-10px);
   }
 }
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}
