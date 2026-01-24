@@ -16,7 +16,7 @@ import {
   YearlyMonthlyFortuneSchema,
   YearlyOverviewResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse } from "./upstage";
+import { chatCompletion, parseJsonResponse } from "./gemini";
 
 // ============================================================
 // 올해 운세(유년) 해석 서비스
@@ -333,7 +333,7 @@ export const generateYearlyInterpretation = async (
     meta: {
       year: request.targetYear,
       generatedAt: new Date().toISOString(),
-      model: "solar-pro",
+      model: "gemini-2.0-flash",
       isFallback: false,
     },
   };
@@ -401,7 +401,7 @@ export const createYearlyFallbackInterpretation = (
     meta: {
       year: targetYear,
       generatedAt: new Date().toISOString(),
-      model: "solar-pro",
+      model: "gemini-2.0-flash",
       isFallback: true,
     },
   };

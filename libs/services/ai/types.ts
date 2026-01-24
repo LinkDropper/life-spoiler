@@ -3,39 +3,47 @@ import { z } from "zod/v4";
 import type { Locale } from "@/i18n/config";
 
 // ============================================================
-// Upstage API 타입
+// Gemini API 타입
 // ============================================================
 
-export interface UpstageMessage {
+export interface GeminiMessage {
   role: "system" | "user" | "assistant";
   content: string;
 }
 
-export interface UpstageRequest {
-  model: string;
-  messages: UpstageMessage[];
-  temperature?: number;
-  max_tokens?: number;
-  stream?: boolean;
+export interface GeminiPart {
+  text: string;
 }
 
-export interface UpstageResponse {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  choices: Array<{
-    index: number;
-    message: {
+export interface GeminiContent {
+  role: "user" | "model";
+  parts: GeminiPart[];
+}
+
+export interface GeminiRequest {
+  systemInstruction?: {
+    parts: GeminiPart[];
+  };
+  contents: GeminiContent[];
+  generationConfig?: {
+    temperature?: number;
+    maxOutputTokens?: number;
+    responseMimeType?: string;
+  };
+}
+
+export interface GeminiResponse {
+  candidates: Array<{
+    content: {
+      parts: GeminiPart[];
       role: string;
-      content: string;
     };
-    finish_reason: string;
+    finishReason: string;
   }>;
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
+  usageMetadata?: {
+    promptTokenCount: number;
+    candidatesTokenCount: number;
+    totalTokenCount: number;
   };
 }
 
