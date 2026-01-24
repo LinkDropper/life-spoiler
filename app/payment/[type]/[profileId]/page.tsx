@@ -60,10 +60,11 @@ const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
     id: "TOSSPAY",
     labelKey: "methodTossPay",
   },
-  {
-    id: "CARD",
-    labelKey: "methodCard",
-  },
+  // TODO: 카드사 심사 완료 후 주석 해제
+  // {
+  //   id: "CARD",
+  //   labelKey: "methodCard",
+  // },
 ];
 
 const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
@@ -103,7 +104,7 @@ export default function PaymentPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(
-    isForeignLocale ? "PAYPAL" : "CARD"
+    isForeignLocale ? "PAYPAL" : "KAKAOPAY"
   );
   const [isProcessing, setIsProcessing] = useState(false);
 
