@@ -118,7 +118,7 @@ export default function YearlyFortunePreviewPage() {
             <p className={styles.previewDescription}>
               {interpretation.overview.summary}
             </p>
-            <p className={styles.previewTeaser}>{tPreview("teaser")}</p>
+            <p className={styles.previewTeaser}>{tPreview("yearlyTeaser")}</p>
           </section>
         )}
       </main>
