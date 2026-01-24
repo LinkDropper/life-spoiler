@@ -6,6 +6,16 @@
   width: 100%;
   height: 60px;
   border-bottom: 1px solid #ffccd9;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #0C1220;
+  z-index: 100;
+}
+
+.headerSpacer {
+  height: 60px;
+  flex-shrink: 0;
 }
 
 .logo {

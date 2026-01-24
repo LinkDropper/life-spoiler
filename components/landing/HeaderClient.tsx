@@ -64,6 +64,7 @@ export const HeaderClient = () => {
           </button>
         </div>
       </header>
+      <div className={styles.headerSpacer} />
       <Menu isOpen={isMenuOpen} onClose={handleMenuClose} />
     </>
   );
