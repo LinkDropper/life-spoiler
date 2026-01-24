@@ -358,7 +358,7 @@ export const generateFullInterpretation = async (
       ageScenarios: ageResult.ageScenarios,
       meta: {
         generatedAt: new Date().toISOString(),
-        model: "solar-pro",
+        model: "gemini-2.0-flash",
         isFallback: false,
       },
     };
@@ -379,7 +379,7 @@ export const generateFullInterpretation = async (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: "solar-pro",
+      model: "gemini-2.0-flash",
       isFallback: false,
     },
   };
@@ -416,7 +416,7 @@ export const createFallbackInterpretation = (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: "solar-pro",
+      model: "gemini-2.0-flash",
       isFallback: true,
     },
   };

@@ -15,8 +15,8 @@ const envSchema = z
     OAUTH_KAKAO_CLIENT_ID: z.string().optional(),
     OAUTH_KAKAO_CLIENT_SECRET: z.string().optional(),
 
-    // AI - Upstage
-    UPSTAGE_API_KEY: z.string().optional(),
+    // AI - Gemini
+    GEMINI_API_KEY: z.string().optional(),
 
     // Supabase
     NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),

@@ -333,7 +333,7 @@ export const generateYearlyInterpretation = async (
     meta: {
       year: request.targetYear,
       generatedAt: new Date().toISOString(),
-      model: "solar-pro",
+      model: "gemini-2.0-flash",
       isFallback: false,
     },
   };
@@ -401,7 +401,7 @@ export const createYearlyFallbackInterpretation = (
     meta: {
       year: targetYear,
       generatedAt: new Date().toISOString(),
-      model: "solar-pro",
+      model: "gemini-2.0-flash",
       isFallback: true,
     },
   };
