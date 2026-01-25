@@ -172,7 +172,7 @@ export default function YearlyFortunePage() {
   const { interpretation, rawChart, yearlySihua } = result;
   const monthUnit = t("monthly.monthUnit", { default: "월" });
 
-  // 명궁의 주성 이름 목록
+  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
   const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
   const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
 

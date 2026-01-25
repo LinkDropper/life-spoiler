@@ -15,7 +15,10 @@ import {
   useIsProfilesLoading,
   useProfileActions,
 } from "@/libs/stores/profile";
-import { useAuthStatus } from "@/libs/stores/user";
+import { useAuthStatus, useUser } from "@/libs/stores/user";
+
+// 임시: 특정 유저는 프로필 추가/삭제 버튼 숨김
+const RESTRICTED_USER_ID = "97f9d7a9-23f2-4fd8-98cf-ac52aa4fe059";
 
 import {
   useProfileSelection,
@@ -28,7 +31,11 @@ export default function ProfilesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
+  const user = useUser();
   const t = useTranslations("profiles");
+
+  // 임시: 특정 유저는 프로필 추가/삭제 버튼 숨김
+  const isRestrictedUser = user?.id === RESTRICTED_USER_ID;
 
   const typeParam = searchParams.get("type");
   const fortuneType: "lifetime" | "yearly" | null =
@@ -135,10 +142,14 @@ export default function ProfilesPage() {
               isSelected={profile.id === selectedProfileId}
               completedFortunes={getCompletedFortunes(profile)}
               onSelect={() => handleProfileSelect(profile.id)}
-              onDelete={() => handleDeleteClick(profile.id)}
+              onDelete={
+                isRestrictedUser
+                  ? undefined
+                  : () => handleDeleteClick(profile.id)
+              }
             />
           ))}
-          <NewProfileCard onClick={handleNewProfile} />
+          {!isRestrictedUser && <NewProfileCard onClick={handleNewProfile} />}
         </div>
       </main>
 

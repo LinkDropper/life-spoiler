@@ -456,3 +456,294 @@ export const translateDayunDirection = (
   const key = direction === "순행" ? "forward" : "backward";
   return DAYUN_DIRECTION[locale]?.[key] ?? direction;
 };
+
+// ============================================================
+// 14주성 이름
+// ============================================================
+
+export const MAIN_STAR_NAMES_I18N: Record<Locale, Record<string, string>> = {
+  ko: {
+    자미: "자미",
+    천기: "천기",
+    태양: "태양",
+    무곡: "무곡",
+    천동: "천동",
+    염정: "염정",
+    천부: "천부",
+    태음: "태음",
+    탐랑: "탐랑",
+    거문: "거문",
+    천상: "천상",
+    천량: "천량",
+    칠살: "칠살",
+    파군: "파군",
+  },
+  en: {
+    자미: "Zi Wei",
+    천기: "Tian Ji",
+    태양: "Tai Yang",
+    무곡: "Wu Qu",
+    천동: "Tian Tong",
+    염정: "Lian Zhen",
+    천부: "Tian Fu",
+    태음: "Tai Yin",
+    탐랑: "Tan Lang",
+    거문: "Ju Men",
+    천상: "Tian Xiang",
+    천량: "Tian Liang",
+    칠살: "Qi Sha",
+    파군: "Po Jun",
+  },
+  ja: {
+    자미: "紫微",
+    천기: "天機",
+    태양: "太陽",
+    무곡: "武曲",
+    천동: "天同",
+    염정: "廉貞",
+    천부: "天府",
+    태음: "太陰",
+    탐랑: "貪狼",
+    거문: "巨門",
+    천상: "天相",
+    천량: "天梁",
+    칠살: "七殺",
+    파군: "破軍",
+  },
+};
+
+// ============================================================
+// 보조성 이름
+// ============================================================
+
+export const MINOR_STAR_NAMES_I18N: Record<Locale, Record<string, string>> = {
+  ko: {
+    좌보: "좌보",
+    우필: "우필",
+    문창: "문창",
+    문곡: "문곡",
+    천괴: "천괴",
+    천월: "천월",
+    화성: "화성",
+    영성: "영성",
+    양인: "양인",
+    타라: "타라",
+    지겁: "지겁",
+    지공: "지공",
+    천마: "천마",
+    홍란: "홍란",
+    천희: "천희",
+  },
+  en: {
+    좌보: "Zuo Fu",
+    우필: "You Bi",
+    문창: "Wen Chang",
+    문곡: "Wen Qu",
+    천괴: "Tian Kui",
+    천월: "Tian Yue",
+    화성: "Huo Xing",
+    영성: "Ling Xing",
+    양인: "Qing Yang",
+    타라: "Tuo Luo",
+    지겁: "Di Jie",
+    지공: "Di Kong",
+    천마: "Tian Ma",
+    홍란: "Hong Luan",
+    천희: "Tian Xi",
+  },
+  ja: {
+    좌보: "左輔",
+    우필: "右弼",
+    문창: "文昌",
+    문곡: "文曲",
+    천괴: "天魁",
+    천월: "天鉞",
+    화성: "火星",
+    영성: "鈴星",
+    양인: "擎羊",
+    타라: "陀羅",
+    지겁: "地劫",
+    지공: "地空",
+    천마: "天馬",
+    홍란: "紅鸞",
+    천희: "天喜",
+  },
+};
+
+// ============================================================
+// 지지 (Earthly Branches)
+// ============================================================
+
+export const EARTHLY_BRANCHES_I18N: Record<Locale, string[]> = {
+  ko: ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"],
+  en: [
+    "Zi",
+    "Chou",
+    "Yin",
+    "Mao",
+    "Chen",
+    "Si",
+    "Wu",
+    "Wei",
+    "Shen",
+    "You",
+    "Xu",
+    "Hai",
+  ],
+  ja: ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"],
+};
+
+// ============================================================
+// 천간 (Heavenly Stems)
+// ============================================================
+
+export const HEAVENLY_STEMS_I18N: Record<Locale, string[]> = {
+  ko: ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"],
+  en: ["Jia", "Yi", "Bing", "Ding", "Wu", "Ji", "Geng", "Xin", "Ren", "Gui"],
+  ja: ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"],
+};
+
+// ============================================================
+// 밝기 (Brightness)
+// ============================================================
+
+export const BRIGHTNESS_I18N: Record<Locale, Record<string, string>> = {
+  ko: {
+    묘: "묘",
+    왕: "왕",
+    득: "득",
+    리: "리",
+    평: "평",
+    함: "함",
+  },
+  en: {
+    묘: "Bright",
+    왕: "Strong",
+    득: "Gain",
+    리: "Profit",
+    평: "Neutral",
+    함: "Weak",
+  },
+  ja: {
+    묘: "廟",
+    왕: "旺",
+    득: "得",
+    리: "利",
+    평: "平",
+    함: "陥",
+  },
+};
+
+// ============================================================
+// 사화 (Four Transformations)
+// ============================================================
+
+export const SIHUA_MARKERS_I18N: Record<
+  Locale,
+  { hualu: string; huaquan: string; huake: string; huaji: string }
+> = {
+  ko: {
+    hualu: "화록",
+    huaquan: "화권",
+    huake: "화과",
+    huaji: "화기",
+  },
+  en: {
+    hualu: "Lu",
+    huaquan: "Quan",
+    huake: "Ke",
+    huaji: "Ji",
+  },
+  ja: {
+    hualu: "禄",
+    huaquan: "権",
+    huake: "科",
+    huaji: "忌",
+  },
+};
+
+// ============================================================
+// 추가 헬퍼 함수
+// ============================================================
+
+/**
+ * 주성 이름 번역
+ */
+export const translateMainStar = (starName: string, locale: Locale): string => {
+  if (locale === "ko") {
+    return starName;
+  }
+  return MAIN_STAR_NAMES_I18N[locale]?.[starName] ?? starName;
+};
+
+/**
+ * 보조성 이름 번역
+ */
+export const translateMinorStar = (
+  starName: string,
+  locale: Locale
+): string => {
+  if (locale === "ko") {
+    return starName;
+  }
+  return MINOR_STAR_NAMES_I18N[locale]?.[starName] ?? starName;
+};
+
+/**
+ * 지지 번역
+ */
+export const translateBranch = (
+  branchIndex: number,
+  locale: Locale
+): string => {
+  return EARTHLY_BRANCHES_I18N[locale]?.[branchIndex] ?? String(branchIndex);
+};
+
+/**
+ * 천간 번역
+ */
+export const translateStem = (stemIndex: number, locale: Locale): string => {
+  return HEAVENLY_STEMS_I18N[locale]?.[stemIndex] ?? String(stemIndex);
+};
+
+/**
+ * 밝기 번역
+ */
+export const translateBrightness = (
+  brightness: string,
+  locale: Locale
+): string => {
+  if (locale === "ko") {
+    return brightness;
+  }
+  return BRIGHTNESS_I18N[locale]?.[brightness] ?? brightness;
+};
+
+/**
+ * 사화 마커 번역
+ */
+export const translateSihuaMarker = (
+  sihuaType: "hualu" | "huaquan" | "huake" | "huaji",
+  locale: Locale
+): string => {
+  return SIHUA_MARKERS_I18N[locale]?.[sihuaType] ?? sihuaType;
+};
+
+/**
+ * 별 이름 번역 (주성 또는 보조성)
+ */
+export const translateStarName = (starName: string, locale: Locale): string => {
+  if (locale === "ko") {
+    return starName;
+  }
+  // 주성에서 먼저 찾기
+  if (MAIN_STAR_NAMES_I18N[locale]?.[starName]) {
+    return MAIN_STAR_NAMES_I18N[locale][starName];
+  }
+  // 보조성에서 찾기
+  if (MINOR_STAR_NAMES_I18N[locale]?.[starName]) {
+    return MINOR_STAR_NAMES_I18N[locale][starName];
+  }
+  // 둘 다 없으면 원본 반환
+  return starName;
+};
