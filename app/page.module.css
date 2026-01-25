@@ -12,6 +12,10 @@
   flex: 1;
 }
 
+.ctaSpacer {
+  height: 100px;
+}
+
 @supports (min-height: 100svh) {
   .page {
     min-height: 100svh;

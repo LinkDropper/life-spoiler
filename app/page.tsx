@@ -1,7 +1,9 @@
 import {
   MainHero,
   FeatureSection,
+  ProductPreview,
   PromotionBanner,
+  FAQSection,
   DisclaimerSection,
   FooterInfo,
   CTAButton,
@@ -18,10 +20,13 @@ export default function Home() {
         <MainHero />
         <FeatureSection />
         <PromotionBanner />
+        <ProductPreview />
+        <FAQSection />
         <DisclaimerSection />
-        <CTAButton />
         <FooterInfo />
+        <div className={styles.ctaSpacer} />
       </main>
+      <CTAButton />
     </div>
   );
 }
