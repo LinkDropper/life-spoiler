@@ -39,10 +39,10 @@
 }
 
 .title {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   line-height: 1.4;
-  color: #ffffff;
+    color: #ffffff;
   text-align: center;
   margin: 0;
 }
@@ -51,31 +51,41 @@
   color: #ffccd9;
 }
 
+.subtitleCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 24px 0 0;
+  padding: 24px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 204, 217, 0.3);
+  border-radius: 16px;
+}
+
 .subtitleList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 24px 0 0;
+  gap: 12px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .subtitleItem {
-  position: relative;
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: left;
-  padding-left: 16px;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .subtitleItem::before {
   content: "✓";
-  position: absolute;
-  left: 0;
   color: #deff7c;
-  font-size: 12px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .highlight {
@@ -93,8 +103,8 @@
 }
 
 .highlightText {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.4;
-  color: #deff7c;
+    color: #deff7c;
 }

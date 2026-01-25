@@ -25,19 +25,21 @@ export const MainHero = async () => {
             {t("title", { default: "내 인생, 언제가 기회일까?" })}
           </span>
         </h1>
-        <ul className={styles.subtitleList}>
-          <li className={styles.subtitleItem}>
-            {t("subtitle", { default: "10년마다 바뀌는 운의 흐름" })}
-          </li>
-          <li className={styles.subtitleItem}>
-            {t("subtitleLine2", { default: "올해 신경 써야 할 달" })}
-          </li>
-          <li className={styles.subtitleItem}>
-            {t("subtitleLine3", {
-              default: "나에게 맞는 재물·직업·인연 패턴",
-            })}
-          </li>
-        </ul>
+        <div className={styles.subtitleCard}>
+          <ul className={styles.subtitleList}>
+            <li className={styles.subtitleItem}>
+              {t("subtitle", { default: "10년마다 바뀌는 운의 흐름" })}
+            </li>
+            <li className={styles.subtitleItem}>
+              {t("subtitleLine2", { default: "올해 신경 써야 할 달" })}
+            </li>
+            <li className={styles.subtitleItem}>
+              {t("subtitleLine3", {
+                default: "나에게 맞는 재물·직업·인연 패턴",
+              })}
+            </li>
+          </ul>
+        </div>
         <div className={styles.highlight}>
           <Image
             src="/images/landing/star.svg"
