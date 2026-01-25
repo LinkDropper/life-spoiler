@@ -22,16 +22,23 @@ export const MainHero = async () => {
       <div className={styles.textContainer}>
         <h1 className={styles.title}>
           <span className={styles.titleHighlight}>
-            {t("title", { default: "당신의 인생 시나리오" })}
+            {t("title", { default: "내 인생, 언제가 기회일까?" })}
           </span>
-          <br />
-          {t("titleSub", { default: "미리 확인하시겠습니까?" })}
         </h1>
-        <div className={styles.subtitle}>
-          {t("subtitle", { default: "사주보다 더 정밀한" })}{" "}
-          <span className={styles.subtitleHighlight}>
-            {t("subtitleHighlight", { default: "자미두수" })}
-          </span>
+        <ul className={styles.subtitleList}>
+          <li className={styles.subtitleItem}>
+            {t("subtitle", { default: "10년마다 바뀌는 운의 흐름" })}
+          </li>
+          <li className={styles.subtitleItem}>
+            {t("subtitleLine2", { default: "올해 신경 써야 할 달" })}
+          </li>
+          <li className={styles.subtitleItem}>
+            {t("subtitleLine3", {
+              default: "나에게 맞는 재물·직업·인연 패턴",
+            })}
+          </li>
+        </ul>
+        <div className={styles.highlight}>
           <Image
             src="/images/landing/star.svg"
             alt=""
@@ -39,22 +46,11 @@ export const MainHero = async () => {
             height={14}
             className={styles.star}
           />
-          <div className={styles.underlineWrapper}>
-            <Image
-              src="/images/landing/bottom-line1.svg"
-              alt=""
-              width={52}
-              height={4}
-              className={styles.underline1}
-            />
-            <Image
-              src="/images/landing/bottom-line2.svg"
-              alt=""
-              width={49}
-              height={4}
-              className={styles.underline2}
-            />
-          </div>
+          <span className={styles.highlightText}>
+            {t("subtitleHighlight", {
+              default: "114개 별이 말해주는 당신만의 지도",
+            })}
+          </span>
         </div>
       </div>
     </section>
