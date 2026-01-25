@@ -30,37 +30,84 @@
       },
       "hero": {
         "imageAlt": "운명의 별자리",
-        "title": "당신의 인생 시나리오",
-        "titleSub": "미리 확인하시겠습니까?",
-        "subtitle": "사주보다 더 정밀한",
-        "subtitleHighlight": "자미두수"
+        "title": "내 인생, 언제가 기회일까?",
+        "titleSub": "",
+        "subtitle": "10년마다 바뀌는 운의 흐름",
+        "subtitleLine2": "올해 신경 써야 할 달",
+        "subtitleLine3": "나에게 맞는 재물·직업·인연 패턴",
+        "subtitleHighlight": "114개 별이 말해주는 당신만의 지도"
       },
       "promotion": {
-        "text": "990원으로 당신만의 운명을 탐험하세요"
+        "badge": "런칭 특가",
+        "originalPrice": "9,900원",
+        "discountedPrice": "990원",
+        "text": "커피 한 잔 값으로 평생 운세 지도를"
       },
       "cta": {
-        "button": "인생 스포일러 확인하기"
+        "button": "990원으로 내 운세 확인하기",
+        "subtext": "입력 후 바로 결과 확인"
       },
       "features": {
         "feature1": {
-          "title": "114개의 별이 그리는 디테일",
-          "description": "단순한 별자리가 아닙니다. 당신이 태어난 순간, 우주에 존재했던 114개 별들의 정밀한 좌표를 분석하여 당신만의 고유한 운명 지도를 그려냅니다.",
-          "imageAlt": "별자리 이미지"
+          "title": "10년마다 바뀌는 운의 흐름",
+          "question": "지금이 도약의 시기인가, 준비의 시기인가?",
+          "description": "4세부터 99세까지, 10년 단위로 당신의 운세 흐름을 분석합니다. 각 시기별 기회와 주의점을 확인하세요.",
+          "imageAlt": "대운 분석"
         },
         "feature2": {
-          "title": "당신의 엔딩을 바꿀 마지막 한 컷",
-          "description": "운명의 오차를 줄이는 핵심은 시간입니다. 분단위의 정밀한 시간 보정을 통해, 당신조차 몰랐던 인생의 결정적 타이밍과 기회의 순간을 포착합니다.",
-          "imageAlt": "운명의 시계"
+          "title": "재물 · 직업 · 인연 · 건강",
+          "question": "내가 잘할 수 있는 분야는? 어떤 파트너가 맞을까?",
+          "description": "4가지 핵심 영역별로 당신의 타고난 패턴과 성향을 분석합니다.",
+          "imageAlt": "4가지 영역"
         },
         "feature3": {
-          "title": "황제들의 비밀 문서",
-          "description": "고대 황제들만이 독점했던 비밀 점성학 알고리즘. 권력을 유지하고 미래를 예측하기 위해 사용되었던 금기된 해석법을 현대적으로 재해석했습니다.",
-          "imageAlt": "비밀 문서"
+          "title": "올해, 어느 달이 중요할까?",
+          "question": "이번 달은 조심해야 할까, 밀어붙여야 할까?",
+          "description": "1월부터 12월까지 좋은 달과 조심할 달을 구분해서 알려드립니다. 중요한 결정 전에 확인하세요.",
+          "imageAlt": "월별 운세"
+        }
+      },
+      "productPreview": {
+        "title": "990원에 이 모든 것을 받아보세요",
+        "items": {
+          "chart": "나의 자미두수 명반 (12궁 분석)",
+          "spoiler": "인생 스포일러 (타고난 기질 총평)",
+          "wealth": "재물운 분석",
+          "career": "직업운 분석",
+          "relationship": "인연운 분석",
+          "health": "건강운 분석",
+          "ageScenario": "10년 단위 대운 시나리오"
+        },
+        "yearlyTitle": "올해 운세도 함께 확인 가능",
+        "yearlyItems": {
+          "monthly": "월별 운세 흐름 (12개월 분석)",
+          "goodBadMonths": "올해 좋은 달 / 조심할 달"
+        }
+      },
+      "faq": {
+        "title": "자주 묻는 질문",
+        "items": {
+          "q1": {
+            "question": "자미두수가 뭔가요?",
+            "answer": "중국 송나라 때 시작된 동양 점성술입니다. 생년월일과 태어난 시간을 기반으로 114개 별의 위치를 계산해 운세를 분석합니다."
+          },
+          "q2": {
+            "question": "사주와 뭐가 다른가요?",
+            "answer": "사주는 4개의 기둥(년/월/일/시)으로 분석하고, 자미두수는 12개 궁과 114개 별의 조합으로 분석합니다. 더 세밀한 분석이 가능합니다."
+          },
+          "q3": {
+            "question": "결과가 정확한가요?",
+            "answer": "자미두수는 통계적·학문적 이론에 기반합니다. 재미로 참고하시되, 중요한 결정은 본인의 판단을 우선해주세요."
+          },
+          "q4": {
+            "question": "환불이 가능한가요?",
+            "answer": "디지털 콘텐츠 특성상 결과 확인 후에는 환불이 어렵습니다. 단, 시스템 오류로 결과가 생성되지 않은 경우 전액 환불됩니다."
+          }
         }
       },
       "disclaimer": {
         "badge": "FBI WARNING",
-        "text": "본 서비스는 100% 천문 데이터를 기반으로 분석되었습니다.\n운세 결과가 너무 잘 맞아서 생기는 '소름'과 '과호흡'에 대해\n인생스포 측은 책임지지 않습니다."
+        "text": "본 서비스는 자미두수 천문학 알고리즘 + AI 해석을 결합했습니다.\n1,000년 역사의 동양 점성술을 현대 기술로 재해석한 결과물입니다.\n운세 결과가 너무 공감되어 생기는 '소름'에 대해\n인생스포 측은 책임지지 않습니다."
       },
       "footer": {
         "logoAlt": "인생스포 로고",
@@ -537,37 +584,84 @@
       },
       "hero": {
         "imageAlt": "Destiny Constellation",
-        "title": "Your Life Scenario",
-        "titleSub": "Would you like a preview?",
-        "subtitle": "More precise than horoscopes:",
-        "subtitleHighlight": "Zi Wei Dou Shu"
+        "title": "When is my golden opportunity?",
+        "titleSub": "",
+        "subtitle": "Luck changes every 10 years",
+        "subtitleLine2": "Key months to watch this year",
+        "subtitleLine3": "Your wealth, career & relationship patterns",
+        "subtitleHighlight": "Your destiny map drawn by 114 stars"
       },
       "promotion": {
-        "text": "Explore your destiny for just $0.99"
+        "badge": "Launch Special",
+        "originalPrice": "$9.90",
+        "discountedPrice": "$0.99",
+        "text": "Get your lifetime fortune map for the price of a coffee"
       },
       "cta": {
-        "button": "See Your Life Spoiler"
+        "button": "Get My Fortune for $0.99",
+        "subtext": "Results available instantly"
       },
       "features": {
         "feature1": {
-          "title": "Details Drawn by 114 Stars",
-          "description": "This is not just astrology. We analyze the precise coordinates of 114 stars that existed in the universe at the moment you were born to draw your unique destiny map.",
-          "imageAlt": "Constellation Image"
+          "title": "Luck Changes Every 10 Years",
+          "question": "Is now the time to leap or prepare?",
+          "description": "From age 4 to 99, we analyze your fortune flow in 10-year cycles. Discover the opportunities and cautions for each period.",
+          "imageAlt": "10-Year Cycle Analysis"
         },
         "feature2": {
-          "title": "The Last Cut to Change Your Ending",
-          "description": "The key to reducing fate's margin of error is time. Through minute-level precise time calibration, we capture the decisive timing and opportunities in your life that even you didn't know about.",
-          "imageAlt": "Clock of Destiny"
+          "title": "Wealth · Career · Love · Health",
+          "question": "What am I good at? Who's my ideal partner?",
+          "description": "We analyze your innate patterns and tendencies across 4 key areas.",
+          "imageAlt": "Four Categories"
         },
         "feature3": {
-          "title": "The Emperors' Secret Documents",
-          "description": "A secret astrology algorithm exclusively held by ancient emperors. We've modernly reinterpreted the forbidden interpretation methods used to maintain power and predict the future.",
-          "imageAlt": "Secret Document"
+          "title": "Which Months Matter This Year?",
+          "question": "Should I be cautious or go all in this month?",
+          "description": "We identify your lucky months and months to watch from January to December. Check before making important decisions.",
+          "imageAlt": "Monthly Fortune"
+        }
+      },
+      "productPreview": {
+        "title": "All this for just $0.99",
+        "items": {
+          "chart": "Your Zi Wei Dou Shu Chart (12 Palaces)",
+          "spoiler": "Life Spoiler (Personality Summary)",
+          "wealth": "Wealth Analysis",
+          "career": "Career Analysis",
+          "relationship": "Relationship Analysis",
+          "health": "Health Analysis",
+          "ageScenario": "10-Year Cycle Scenarios"
+        },
+        "yearlyTitle": "This Year's Fortune Also Included",
+        "yearlyItems": {
+          "monthly": "Monthly Fortune Flow (12 months)",
+          "goodBadMonths": "Lucky months / Months to watch"
+        }
+      },
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "items": {
+          "q1": {
+            "question": "What is Zi Wei Dou Shu?",
+            "answer": "An ancient Chinese astrology system dating back to the Song Dynasty. It analyzes fortune by calculating the positions of 114 stars based on your birth date and time."
+          },
+          "q2": {
+            "question": "How is it different from regular astrology?",
+            "answer": "While Western astrology uses 12 zodiac signs, Zi Wei Dou Shu uses 12 palaces and 114 stars for more detailed analysis."
+          },
+          "q3": {
+            "question": "How accurate is it?",
+            "answer": "Zi Wei Dou Shu is based on statistical and academic theories. Use it for fun and reference, but always trust your own judgment for important decisions."
+          },
+          "q4": {
+            "question": "Can I get a refund?",
+            "answer": "Due to the nature of digital content, refunds are not available after viewing results. However, full refunds are provided if results fail to generate due to system errors."
+          }
         }
       },
       "disclaimer": {
         "badge": "FBI WARNING",
-        "text": "This service is based on 100% astronomical data analysis.\nLife Spoiler is not responsible for the 'chills' and 'hyperventilation'\ncaused by the fortune results being too accurate."
+        "text": "This service combines Zi Wei Dou Shu algorithms with AI interpretation.\nA 1,000-year-old Eastern astrology tradition reimagined with modern technology.\nLife Spoiler is not responsible for any 'chills'\ncaused by how relatable your results are."
       },
       "footer": {
         "logoAlt": "Life Spoiler Logo",
@@ -1044,37 +1138,84 @@
       },
       "hero": {
         "imageAlt": "運命の星座",
-        "title": "あなたの人生シナリオ",
-        "titleSub": "先に確認してみませんか？",
-        "subtitle": "四柱推命より精密な",
-        "subtitleHighlight": "紫微斗数"
+        "title": "私の人生、いつがチャンス？",
+        "titleSub": "",
+        "subtitle": "10年ごとに変わる運の流れ",
+        "subtitleLine2": "今年注目すべき月",
+        "subtitleLine3": "自分に合った財運・仕事・縁のパターン",
+        "subtitleHighlight": "114個の星が描くあなただけの地図"
       },
       "promotion": {
-        "text": "99円であなただけの運命を探検しましょう"
+        "badge": "ローンチ特価",
+        "originalPrice": "$9.90",
+        "discountedPrice": "$0.99",
+        "text": "コーヒー1杯の値段で一生の運命地図を"
       },
       "cta": {
-        "button": "人生のネタバレを確認する"
+        "button": "$0.99で運勢を確認する",
+        "subtext": "入力後すぐに結果確認"
       },
       "features": {
         "feature1": {
-          "title": "114個の星が描くディテール",
-          "description": "単なる星座ではありません。あなたが生まれた瞬間、宇宙に存在した114個の星々の精密な座標を分析し、あなただけの固有な運命地図を描きます。",
-          "imageAlt": "星座イメージ"
+          "title": "10年ごとに変わる運の流れ",
+          "question": "今は飛躍の時期？それとも準備の時期？",
+          "description": "4歳から99歳まで、10年単位であなたの運勢の流れを分析します。各時期のチャンスと注意点を確認してください。",
+          "imageAlt": "大運分析"
         },
         "feature2": {
-          "title": "あなたのエンディングを変える最後のカット",
-          "description": "運命の誤差を減らす核心は時間です。分単位の精密な時間補正を通じて、あなた自身も知らなかった人生の決定的なタイミングと機会の瞬間を捉えます。",
-          "imageAlt": "運命の時計"
+          "title": "財運・仕事運・縁運・健康運",
+          "question": "自分が得意な分野は？どんなパートナーが合う？",
+          "description": "4つの核心領域ごとに、あなたの生まれ持ったパターンと傾向を分析します。",
+          "imageAlt": "4つの領域"
         },
         "feature3": {
-          "title": "皇帝たちの秘密文書",
-          "description": "古代皇帝たちだけが独占していた秘密占星術アルゴリズム。権力を維持し未来を予測するために使用された禁じられた解釈法を現代的に再解釈しました。",
-          "imageAlt": "秘密文書"
+          "title": "今年、どの月が重要？",
+          "question": "今月は慎重に？それとも攻めるべき？",
+          "description": "1月から12月まで、良い月と注意すべき月を分けてお知らせします。重要な決定の前に確認してください。",
+          "imageAlt": "月別運勢"
+        }
+      },
+      "productPreview": {
+        "title": "$0.99でこれらすべてを受け取れます",
+        "items": {
+          "chart": "紫微斗数命盤（12宮分析）",
+          "spoiler": "人生ネタバレ（生まれ持った気質の総評）",
+          "wealth": "財運分析",
+          "career": "仕事運分析",
+          "relationship": "縁運分析",
+          "health": "健康運分析",
+          "ageScenario": "10年単位の大運シナリオ"
+        },
+        "yearlyTitle": "今年の運勢も一緒に確認可能",
+        "yearlyItems": {
+          "monthly": "月別運勢の流れ（12ヶ月分析）",
+          "goodBadMonths": "今年の良い月 / 注意する月"
+        }
+      },
+      "faq": {
+        "title": "よくある質問",
+        "items": {
+          "q1": {
+            "question": "紫微斗数とは何ですか？",
+            "answer": "中国の宋時代に始まった東洋占星術です。生年月日と生まれた時間を基に、114個の星の位置を計算して運勢を分析します。"
+          },
+          "q2": {
+            "question": "四柱推命との違いは？",
+            "answer": "四柱推命は4つの柱（年/月/日/時）で分析しますが、紫微斗数は12の宮と114個の星の組み合わせで分析します。より詳細な分析が可能です。"
+          },
+          "q3": {
+            "question": "結果は正確ですか？",
+            "answer": "紫微斗数は統計的・学問的理論に基づいています。楽しみとして参考にしていただき、重要な決定はご自身の判断を優先してください。"
+          },
+          "q4": {
+            "question": "返金は可能ですか？",
+            "answer": "デジタルコンテンツの特性上、結果確認後の返金は難しいです。ただし、システムエラーで結果が生成されなかった場合は全額返金いたします。"
+          }
         }
       },
       "disclaimer": {
         "badge": "FBI WARNING",
-        "text": "本サービスは100%天文データに基づいて分析されています。\n運勢結果があまりにも当たって起きる「鳥肌」と「過呼吸」について\nライフスポイラーは責任を負いません。"
+        "text": "本サービスは紫微斗数天文学アルゴリズム + AI解釈を組み合わせています。\n1,000年の歴史を持つ東洋占星術を現代技術で再解釈した結果物です。\n運勢結果があまりにも共感できて起きる「鳥肌」について\nライフスポイラーは責任を負いません。"
       },
       "footer": {
         "logoAlt": "ライフスポイラー ロゴ",
