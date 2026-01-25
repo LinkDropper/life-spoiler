@@ -4,14 +4,14 @@ import { useState } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { createBrowserClient } from "@/libs/supabase/browser";
 import type { UserInsert } from "@/libs/supabase/types";
 
 import styles from "./page.module.css";
 
-type SocialProvider = "kakao" | "google" | "twitter";
+type SocialProvider = "kakao" | "google";
 
 const TEST_ACCOUNT = {
   email: "test@life-spoiler.com",
@@ -20,19 +20,13 @@ const TEST_ACCOUNT = {
 
 export default function LoginPage() {
   const t = useTranslations("login");
-  const locale = useLocale();
   const [isLoading, setIsLoading] = useState(false);
-
-  const isJapanese = locale === "ja";
 
   const handleOAuthLogin = async (provider: SocialProvider) => {
     const supabase = createBrowserClient();
 
-    // Supabase uses 'x' as the provider name for Twitter/X
-    const supabaseProvider = provider === "twitter" ? "x" : provider;
-
     await supabase.auth.signInWithOAuth({
-      provider: supabaseProvider,
+      provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
@@ -113,23 +107,16 @@ export default function LoginPage() {
 
       <div className={styles.buttonGroup}>
         <div className={styles.buttonList}>
-          {!isJapanese && (
-            <button
-              type="button"
-              className={styles.kakaoButton}
-              onClick={() => handleOAuthLogin("kakao")}
-            >
-              <Image
-                src="/icons/kakao-icon.svg"
-                alt=""
-                width={20}
-                height={18}
-              />
-              <span className={styles.buttonText}>
-                {t("kakaoButton", { default: "카카오로 계속하기" })}
-              </span>
-            </button>
-          )}
+          <button
+            type="button"
+            className={styles.kakaoButton}
+            onClick={() => handleOAuthLogin("kakao")}
+          >
+            <Image src="/icons/kakao-icon.svg" alt="" width={20} height={18} />
+            <span className={styles.buttonText}>
+              {t("kakaoButton", { default: "카카오로 계속하기" })}
+            </span>
+          </button>
 
           <button
             type="button"
@@ -141,19 +128,6 @@ export default function LoginPage() {
               {t("googleButton", { default: "Google로 계속하기" })}
             </span>
           </button>
-
-          {isJapanese && (
-            <button
-              type="button"
-              className={styles.xButton}
-              onClick={() => handleOAuthLogin("twitter")}
-            >
-              <Image src="/icons/x-icon.svg" alt="" width={18} height={18} />
-              <span className={styles.buttonText}>
-                {t("xButton", { default: "Xで続ける" })}
-              </span>
-            </button>
-          )}
 
           <button
             type="button"

@@ -38,8 +38,7 @@
 }
 
 .kakaoButton,
-.googleButton,
-.xButton {
+.googleButton {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -59,14 +58,12 @@
 }
 
 .kakaoButton:hover,
-.googleButton:hover,
-.xButton:hover {
+.googleButton:hover {
   opacity: 0.9;
 }
 
 .kakaoButton:active,
-.googleButton:active,
-.xButton:active {
+.googleButton:active {
   opacity: 0.8;
 }
 
@@ -76,11 +73,6 @@
 
 .googleButton {
   background-color: #eeeeee;
-}
-
-.xButton {
-  background-color: #000000;
-  color: #ffffff;
 }
 
 .testButton {
