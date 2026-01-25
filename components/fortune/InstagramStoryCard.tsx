@@ -1,8 +1,11 @@
 "use client";
 
 import { forwardRef } from "react";
+import { useLocale } from "next-intl";
 
 import { getFirstStarImagePath } from "@/libs/utils";
+import { translateMainStar } from "@/libs/zi-wei-dou-shu/i18n";
+import type { Locale } from "@/i18n/config";
 
 export interface InstagramStoryCardLabels {
   /** 주성 레이블 */
@@ -47,8 +50,12 @@ export const InstagramStoryCard = forwardRef<
   HTMLDivElement,
   InstagramStoryCardProps
 >(({ type, mainStars, headline, description, scores, labels }, ref) => {
+  const locale = useLocale() as Locale;
   const starImagePath = getFirstStarImagePath(mainStars);
-  const mainStarName = mainStars[0] || "Zi Wei";
+  // 원본 이름(한국어)을 현재 로케일로 번역하여 표시
+  const mainStarName = mainStars[0]
+    ? translateMainStar(mainStars[0], locale)
+    : "자미";
 
   // 운세 종류에 따른 강조 색상
   const accentColor = type === "yearly" ? "#FFCCD9" : "#B8A4FF";

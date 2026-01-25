@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -25,8 +25,6 @@ import {
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToLine } from "@/libs/kakao";
-import { translateMainStar } from "@/libs/zi-wei-dou-shu/i18n";
-import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
 
@@ -46,7 +44,6 @@ const DEFAULT_LABELS: Record<CategoryKey, string> = {
 
 export default function YearlyFortunePage() {
   const router = useRouter();
-  const locale = useLocale() as Locale;
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -175,11 +172,9 @@ export default function YearlyFortunePage() {
   const { interpretation, rawChart, yearlySihua } = result;
   const monthUnit = t("monthly.monthUnit", { default: "월" });
 
-  // 명궁의 주성 이름 목록 (번역 적용)
+  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
   const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
-  const mainStarNames =
-    mingGongPalace?.mainStars.map((s) => translateMainStar(s.name, locale)) ||
-    [];
+  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
 
   // 인스타 스토리용 점수
   const storyScores = {

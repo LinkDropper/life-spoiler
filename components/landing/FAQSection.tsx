@@ -13,13 +13,7 @@ interface FAQItemProps {
   onToggle: () => void;
 }
 
-const FAQItem = ({
-  id,
-  question,
-  answer,
-  isOpen,
-  onToggle,
-}: FAQItemProps) => {
+const FAQItem = ({ id, question, answer, isOpen, onToggle }: FAQItemProps) => {
   const answerId = `faq-answer-${id}`;
   return (
     <div className={styles.faqItem}>

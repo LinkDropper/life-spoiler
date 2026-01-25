@@ -670,6 +670,9 @@ export const SIHUA_MARKERS_I18N: Record<
  * 주성 이름 번역
  */
 export const translateMainStar = (starName: string, locale: Locale): string => {
+  if (locale === "ko") {
+    return starName;
+  }
   return MAIN_STAR_NAMES_I18N[locale]?.[starName] ?? starName;
 };
 
@@ -680,6 +683,9 @@ export const translateMinorStar = (
   starName: string,
   locale: Locale
 ): string => {
+  if (locale === "ko") {
+    return starName;
+  }
   return MINOR_STAR_NAMES_I18N[locale]?.[starName] ?? starName;
 };
 
@@ -707,6 +713,9 @@ export const translateBrightness = (
   brightness: string,
   locale: Locale
 ): string => {
+  if (locale === "ko") {
+    return brightness;
+  }
   return BRIGHTNESS_I18N[locale]?.[brightness] ?? brightness;
 };
 
@@ -724,6 +733,9 @@ export const translateSihuaMarker = (
  * 별 이름 번역 (주성 또는 보조성)
  */
 export const translateStarName = (starName: string, locale: Locale): string => {
+  if (locale === "ko") {
+    return starName;
+  }
   // 주성에서 먼저 찾기
   if (MAIN_STAR_NAMES_I18N[locale]?.[starName]) {
     return MAIN_STAR_NAMES_I18N[locale][starName];
