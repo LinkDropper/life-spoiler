@@ -5,6 +5,7 @@
   padding: 60px 24px;
   background: transparent;
   border-top: 1px solid #ffccd9;
+  border-bottom: 1px solid #ffccd9;
 }
 
 .warningBadge {
@@ -19,7 +20,7 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 1.19;
-  color: #ffffff;
+    color: #ffffff;
 }
 
 .disclaimerText {
@@ -27,6 +28,6 @@
   text-align: center;
   font-size: 14px;
   font-weight: 500;
-  line-height: 20px;
-  margin-top: 18px;
+  line-height: 22px;
+    margin-top: 18px;
 }

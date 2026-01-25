@@ -14,10 +14,10 @@
 }
 
 .title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.4;
-  color: #ffffff;
+    color: #ffffff;
   text-align: center;
   margin: 0 0 24px;
 }
@@ -43,10 +43,10 @@
 }
 
 .itemText {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .divider {
@@ -57,10 +57,10 @@
 }
 
 .yearlyTitle {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.4;
-  color: #deff7c;
+    color: #deff7c;
   text-align: center;
   margin: 0 0 16px;
 }
