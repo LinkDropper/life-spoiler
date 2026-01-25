@@ -7,16 +7,7 @@ export const PromotionBanner = async () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.badge}>{t("badge", { default: "런칭 특가" })}</div>
-      <div className={styles.priceRow}>
-        <span className={styles.originalPrice}>
-          {t("originalPrice", { default: "9,900원" })}
-        </span>
-        <span className={styles.arrow}>→</span>
-        <span className={styles.discountedPrice}>
-          {t("discountedPrice", { default: "990원" })}
-        </span>
-      </div>
+      <span className={styles.price}>{t("price", { default: "990원" })}</span>
       <p className={styles.text}>
         {t("text", { default: "커피 한 잔 값으로 평생 운세 지도를" })}
       </p>
