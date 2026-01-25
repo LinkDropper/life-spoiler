@@ -10,18 +10,23 @@ export const FeatureSection = async () => {
     <section className={styles.container}>
       <div className={styles.feature}>
         <h2 className={styles.title}>
-          {t("feature1.title", { default: "114개의 별이 그리는 디테일" })}
+          {t("feature1.title", { default: "10년마다 바뀌는 운의 흐름" })}
         </h2>
+        <p className={styles.question}>
+          {t("feature1.question", {
+            default: "지금이 도약의 시기인가, 준비의 시기인가?",
+          })}
+        </p>
         <p className={styles.description}>
           {t("feature1.description", {
             default:
-              "단순한 별자리가 아닙니다. 당신이 태어난 순간, 우주에 존재했던 114개 별들의 정밀한 좌표를 분석하여 당신만의 고유한 운명 지도를 그려냅니다.",
+              "4세부터 99세까지, 10년 단위로 당신의 운세 흐름을 분석합니다. 각 시기별 기회와 주의점을 확인하세요.",
           })}
         </p>
         <div className={styles.imageRight}>
           <Image
             src="/images/landing/section1.png"
-            alt={t("feature1.imageAlt", { default: "별자리 이미지" })}
+            alt={t("feature1.imageAlt", { default: "대운 분석" })}
             width={192}
             height={110}
             className={styles.featureImage}
@@ -31,18 +36,23 @@ export const FeatureSection = async () => {
 
       <div className={styles.feature}>
         <h2 className={`${styles.title} ${styles.titleRight}`}>
-          {t("feature2.title", { default: "당신의 엔딩을 바꿀 마지막 한 컷" })}
+          {t("feature2.title", { default: "재물 · 직업 · 인연 · 건강" })}
         </h2>
+        <p className={`${styles.question} ${styles.questionRight}`}>
+          {t("feature2.question", {
+            default: "내가 잘할 수 있는 분야는? 어떤 파트너가 맞을까?",
+          })}
+        </p>
         <p className={`${styles.description} ${styles.descriptionRight}`}>
           {t("feature2.description", {
             default:
-              "운명의 오차를 줄이는 핵심은 시간입니다. 분단위의 정밀한 시간 보정을 통해, 당신조차 몰랐던 인생의 결정적 타이밍과 기회의 순간을 포착합니다.",
+              "4가지 핵심 영역별로 당신의 타고난 패턴과 성향을 분석합니다. 각 영역별 점수도 함께 제공됩니다.",
           })}
         </p>
         <div className={styles.imageLeft}>
           <Image
             src="/images/landing/section2.png"
-            alt={t("feature2.imageAlt", { default: "운명의 시계" })}
+            alt={t("feature2.imageAlt", { default: "4가지 영역" })}
             width={148}
             height={169}
             className={styles.featureImage}
@@ -52,18 +62,23 @@ export const FeatureSection = async () => {
 
       <div className={styles.feature}>
         <h2 className={styles.title}>
-          {t("feature3.title", { default: "황제들의 비밀 문서" })}
+          {t("feature3.title", { default: "올해, 어느 달이 중요할까?" })}
         </h2>
+        <p className={styles.question}>
+          {t("feature3.question", {
+            default: "이번 달은 조심해야 할까, 밀어붙여야 할까?",
+          })}
+        </p>
         <p className={styles.description}>
           {t("feature3.description", {
             default:
-              "고대 황제들만이 독점했던 비밀 점성학 알고리즘. 권력을 유지하고 미래를 예측하기 위해 사용되었던 금기된 해석법을 현대적으로 재해석했습니다.",
+              "1월부터 12월까지 좋은 달과 조심할 달을 구분해서 알려드립니다. 중요한 결정 전에 확인하세요.",
           })}
         </p>
         <div className={styles.imageRightSmall}>
           <Image
             src="/images/landing/section3.png"
-            alt={t("feature3.imageAlt", { default: "비밀 문서" })}
+            alt={t("feature3.imageAlt", { default: "월별 운세" })}
             width={88}
             height={99}
             className={styles.featureImage}
