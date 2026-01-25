@@ -148,7 +148,7 @@ export default function LoginPage() {
               className={styles.xButton}
               onClick={() => handleOAuthLogin("twitter")}
             >
-              <Image src="/icons/x-icon.svg" alt="X (Twitter) 로그인 아이콘" width={18} height={18} />
+              <Image src="/icons/x-icon.svg" alt="" width={18} height={18} />
               <span className={styles.buttonText}>
                 {t("xButton", { default: "Xで続ける" })}
               </span>
