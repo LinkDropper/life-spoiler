@@ -28,16 +28,20 @@ export const CTAButton = () => {
   };
 
   return (
-    <button type="button" className={styles.button} onClick={handleClick}>
-      <span className={styles.text}>
-        {t("button", { default: "인생 스포일러 확인하기" })}
-      </span>
-      <Image
-        src="/images/landing/arrow-right.svg"
-        alt=""
-        width={24}
-        height={24}
-      />
-    </button>
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <button type="button" className={styles.button} onClick={handleClick}>
+          <span className={styles.text}>
+            {t("button", { default: "990원으로 내 운세 확인하기" })}
+          </span>
+          <Image
+            src="/images/landing/arrow-right.svg"
+            alt=""
+            width={24}
+            height={24}
+          />
+        </button>
+      </div>
+    </div>
   );
 };

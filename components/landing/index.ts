@@ -1,7 +1,9 @@
 export { HeaderClient } from "./HeaderClient";
 export { MainHero } from "./MainHero";
 export { FeatureSection } from "./FeatureSection";
+export { ProductPreview } from "./ProductPreview";
 export { PromotionBanner } from "./PromotionBanner";
+export { FAQSection } from "./FAQSection";
 export { DisclaimerSection } from "./DisclaimerSection";
 export { FooterInfo } from "./FooterInfo";
 export { CTAButton } from "./CTAButton";

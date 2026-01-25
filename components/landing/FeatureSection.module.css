@@ -1,8 +1,8 @@
 .container {
   display: flex;
   flex-direction: column;
-  padding: 98px 24px 80px;
-  gap: 160px;
+  padding: 80px 24px 80px;
+  gap: 140px;
 }
 
 .feature {
@@ -10,22 +10,40 @@
 }
 
 .title {
-  font-size: 18px;
+  position: relative;
+  z-index: 1;
+  font-size: 20px;
   font-weight: 700;
-  line-height: 1.19;
+  line-height: 1.3;
   color: #ffffff;
-  margin: 0 0 12px;
+  margin: 0 0 8px;
 }
 
 .titleRight {
   text-align: right;
 }
 
-.description {
+.question {
+  position: relative;
+  z-index: 1;
   font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #ffccd9;
+  margin: 0 0 12px;
+}
+
+.questionRight {
+  text-align: right;
+}
+
+.description {
+  position: relative;
+  z-index: 1;
+  font-size: 17px;
   font-weight: 400;
-  line-height: 1.625;
-  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
   margin: 0;
 }
 
@@ -36,19 +54,19 @@
 .imageLeft {
   position: absolute;
   left: -16px;
-  top: -118px;
+  top: -100px;
 }
 
 .imageRight {
   position: absolute;
   right: -8px;
-  top: -86px;
+  top: -70px;
 }
 
 .imageRightSmall {
   position: absolute;
   right: 16px;
-  top: -88px;
+  top: -70px;
   width: 78px;
   height: 89px;
 }
