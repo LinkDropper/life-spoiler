@@ -27,23 +27,42 @@ const iconMap = {
   goodBadMonths: Star,
 };
 
+const items: Array<{ key: keyof typeof iconMap }> = [
+  { key: "chart" },
+  { key: "spoiler" },
+  { key: "wealth" },
+  { key: "career" },
+  { key: "relationship" },
+  { key: "health" },
+  { key: "ageScenario" },
+];
+
+const yearlyItems: Array<{ key: keyof typeof iconMap }> = [
+  { key: "monthly" },
+  { key: "goodBadMonths" },
+];
+
+interface FeatureListProps {
+  items: Array<{ key: keyof typeof iconMap }>;
+  getTranslation: (key: string) => string;
+}
+
+const FeatureList = ({ items, getTranslation }: FeatureListProps) => (
+  <ul className={styles.list}>
+    {items.map((item) => {
+      const Icon = iconMap[item.key];
+      return (
+        <li key={item.key} className={styles.item}>
+          <Icon className={styles.icon} size={18} strokeWidth={1.5} />
+          <span className={styles.itemText}>{getTranslation(item.key)}</span>
+        </li>
+      );
+    })}
+  </ul>
+);
+
 export const ProductPreview = () => {
   const t = useTranslations("landing.productPreview");
-
-  const items: Array<{ key: keyof typeof iconMap }> = [
-    { key: "chart" },
-    { key: "spoiler" },
-    { key: "wealth" },
-    { key: "career" },
-    { key: "relationship" },
-    { key: "health" },
-    { key: "ageScenario" },
-  ];
-
-  const yearlyItems: Array<{ key: keyof typeof iconMap }> = [
-    { key: "monthly" },
-    { key: "goodBadMonths" },
-  ];
 
   return (
     <section className={styles.container}>
@@ -51,19 +70,10 @@ export const ProductPreview = () => {
         {t("title", { default: "990원에 이 모든 것을 받아보세요" })}
       </h2>
 
-      <ul className={styles.list}>
-        {items.map((item) => {
-          const Icon = iconMap[item.key];
-          return (
-            <li key={item.key} className={styles.item}>
-              <Icon className={styles.icon} size={18} strokeWidth={1.5} />
-              <span className={styles.itemText}>
-                {t(`items.${item.key}`, { default: item.key })}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      <FeatureList
+        items={items}
+        getTranslation={(key) => t(`items.${key}`, { default: key })}
+      />
 
       <div className={styles.divider} />
 
@@ -71,19 +81,10 @@ export const ProductPreview = () => {
         {t("yearlyTitle", { default: "올해 운세도 함께 확인 가능" })}
       </h3>
 
-      <ul className={styles.list}>
-        {yearlyItems.map((item) => {
-          const Icon = iconMap[item.key];
-          return (
-            <li key={item.key} className={styles.item}>
-              <Icon className={styles.icon} size={18} strokeWidth={1.5} />
-              <span className={styles.itemText}>
-                {t(`yearlyItems.${item.key}`, { default: item.key })}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      <FeatureList
+        items={yearlyItems}
+        getTranslation={(key) => t(`yearlyItems.${key}`, { default: key })}
+      />
     </section>
   );
 };

@@ -6,13 +6,21 @@ import { useTranslations } from "next-intl";
 import styles from "./FAQSection.module.css";
 
 interface FAQItemProps {
+  id: string;
   question: string;
   answer: string;
   isOpen: boolean;
   onToggle: () => void;
 }
 
-const FAQItem = ({ question, answer, isOpen, onToggle }: FAQItemProps) => {
+const FAQItem = ({
+  id,
+  question,
+  answer,
+  isOpen,
+  onToggle,
+}: FAQItemProps) => {
+  const answerId = `faq-answer-${id}`;
   return (
     <div className={styles.faqItem}>
       <button
@@ -20,14 +28,18 @@ const FAQItem = ({ question, answer, isOpen, onToggle }: FAQItemProps) => {
         className={styles.questionButton}
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-controls={answerId}
       >
         <span className={styles.questionText}>{question}</span>
-        <span className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""}`}>
+        <span
+          className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""}`}
+          aria-hidden="true"
+        >
           ›
         </span>
       </button>
       {isOpen && (
-        <div className={styles.answer}>
+        <div className={styles.answer} id={answerId} role="region">
           <p className={styles.answerText}>{answer}</p>
         </div>
       )}
@@ -54,6 +66,7 @@ export const FAQSection = () => {
         {faqItems.map((item, index) => (
           <FAQItem
             key={item.key}
+            id={item.key}
             question={t(`items.${item.key}.question`, { default: "" })}
             answer={t(`items.${item.key}.answer`, { default: "" })}
             isOpen={openIndex === index}
