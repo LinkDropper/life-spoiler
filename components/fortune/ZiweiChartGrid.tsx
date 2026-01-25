@@ -1,10 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
+import {
+  translatePalaceName,
+  translateMainStar,
+  translateMinorStar,
+  translateBranch,
+  translateBrightness,
+  translateSihuaMarker,
+  translateStarName,
+} from "@/libs/zi-wei-dou-shu/i18n";
 
+import type { Locale } from "@/i18n/config";
 import type { YearlySihua } from "@/libs/zi-wei-dou-shu/calculators";
 import type { ZiweiChart, Palace } from "@/libs/zi-wei-dou-shu/types";
 
@@ -51,15 +60,10 @@ const PALACE_GRID_POSITIONS: Record<number, { row: number; col: number }> = {
 };
 
 // ============================================================
-// 유년 사화 마커 매핑
+// 유년 사화 마커 타입
 // ============================================================
 
-const SIHUA_MARKERS: Record<string, string> = {
-  hualu: "화록",
-  huaquan: "화권",
-  huake: "화과",
-  huaji: "화기",
-};
+type SihuaType = "hualu" | "huaquan" | "huake" | "huaji";
 
 // ============================================================
 // 타입 정의
@@ -76,16 +80,16 @@ interface ZiweiChartGridProps {
 // 유틸리티 함수
 // ============================================================
 
-const getYearlySihuaMarker = (
+const getYearlySihuaType = (
   starName: string,
   yearlySihua?: YearlySihua
-): string | null => {
+): SihuaType | null => {
   if (!yearlySihua) return null;
 
-  if (yearlySihua.hualu.star === starName) return SIHUA_MARKERS.hualu;
-  if (yearlySihua.huaquan.star === starName) return SIHUA_MARKERS.huaquan;
-  if (yearlySihua.huake.star === starName) return SIHUA_MARKERS.huake;
-  if (yearlySihua.huaji.star === starName) return SIHUA_MARKERS.huaji;
+  if (yearlySihua.hualu.star === starName) return "hualu";
+  if (yearlySihua.huaquan.star === starName) return "huaquan";
+  if (yearlySihua.huake.star === starName) return "huake";
+  if (yearlySihua.huaji.star === starName) return "huaji";
 
   return null;
 };
@@ -98,10 +102,12 @@ const PalaceCell = ({
   palace,
   isMingGong,
   yearlySihua,
+  locale,
 }: {
   palace: Palace;
   isMingGong: boolean;
   yearlySihua?: YearlySihua;
+  locale: Locale;
 }) => {
   const position = PALACE_GRID_POSITIONS[palace.branch];
   const [firstMainStar, ...additionalMainStars] = palace.mainStars;
@@ -118,9 +124,11 @@ const PalaceCell = ({
     >
       {/* 상단: 궁 이름 + 지지 */}
       <div className={styles.palaceHeader}>
-        <span className={styles.palaceName}>{palace.name}</span>
+        <span className={styles.palaceName}>
+          {translatePalaceName(palace.name, locale)}
+        </span>
         <span className={styles.palaceBranch}>
-          {EARTHLY_BRANCHES[palace.branch]}
+          {translateBranch(palace.branch, locale)}
         </span>
       </div>
 
@@ -128,14 +136,21 @@ const PalaceCell = ({
       {firstMainStar && (
         <div className={styles.mainStarsArea}>
           <div className={styles.mainStarRow}>
-            <span className={styles.mainStarName}>{firstMainStar.name}</span>
+            <span className={styles.mainStarName}>
+              {translateMainStar(firstMainStar.name, locale)}
+            </span>
             <span className={styles.starBrightness}>
-              [{firstMainStar.brightness}]
+              [{translateBrightness(firstMainStar.brightness, locale)}]
             </span>
             {yearlySihua &&
-              getYearlySihuaMarker(firstMainStar.name, yearlySihua) && (
+              getYearlySihuaType(firstMainStar.name, yearlySihua) && (
                 <span className={styles.yearlySihuaMarker}>
-                  [{getYearlySihuaMarker(firstMainStar.name, yearlySihua)}]
+                  [
+                  {translateSihuaMarker(
+                    getYearlySihuaType(firstMainStar.name, yearlySihua)!,
+                    locale
+                  )}
+                  ]
                 </span>
               )}
           </div>
@@ -146,16 +161,18 @@ const PalaceCell = ({
       {additionalMainStars.length > 0 && (
         <div className={styles.additionalStarsArea}>
           {additionalMainStars.map((star, idx) => {
-            const sihuaMarker = getYearlySihuaMarker(star.name, yearlySihua);
+            const sihuaType = getYearlySihuaType(star.name, yearlySihua);
             return (
               <div key={idx} className={styles.mainStarRow}>
-                <span className={styles.mainStarName}>{star.name}</span>
-                <span className={styles.starBrightness}>
-                  [{star.brightness}]
+                <span className={styles.mainStarName}>
+                  {translateMainStar(star.name, locale)}
                 </span>
-                {sihuaMarker && (
+                <span className={styles.starBrightness}>
+                  [{translateBrightness(star.brightness, locale)}]
+                </span>
+                {sihuaType && (
                   <span className={styles.yearlySihuaMarker}>
-                    [{sihuaMarker}]
+                    [{translateSihuaMarker(sihuaType, locale)}]
                   </span>
                 )}
               </div>
@@ -168,7 +185,9 @@ const PalaceCell = ({
       {palace.minorStars.length > 0 && (
         <div className={styles.minorStarsArea}>
           <span className={styles.minorStars}>
-            {palace.minorStars.map((s) => s.name).join(" ")}
+            {palace.minorStars
+              .map((s) => translateMinorStar(s.name, locale))
+              .join(" ")}
           </span>
         </div>
       )}
@@ -185,11 +204,13 @@ const CenterCell = ({
   profileName,
   wuxingJu,
   yearlySihua,
+  locale,
 }: {
   chart: ZiweiChart;
   profileName: string;
   wuxingJu: string;
   yearlySihua?: YearlySihua;
+  locale: Locale;
 }) => {
   const t = useTranslations("fortune.common");
 
@@ -218,7 +239,7 @@ const CenterCell = ({
         <div className={styles.starImageContainer}>
           <Image
             src={starImage}
-            alt={mainStar}
+            alt={translateMainStar(mainStar, locale)}
             width={146}
             height={80}
             className={styles.starImage}
@@ -237,12 +258,16 @@ const CenterCell = ({
       {/* 사화 정보 */}
       <div className={styles.sihuaInfo}>
         <span>
-          {t("hualu", { default: "화록" })}: {sihuaData.hualu} |{" "}
-          {t("huaquan", { default: "화권" })}: {sihuaData.huaquan}
+          {t("hualu", { default: "화록" })}:{" "}
+          {translateStarName(sihuaData.hualu, locale)} |{" "}
+          {t("huaquan", { default: "화권" })}:{" "}
+          {translateStarName(sihuaData.huaquan, locale)}
         </span>
         <span>
-          {t("huake", { default: "화과" })}: {sihuaData.huake} |{" "}
-          {t("huaji", { default: "화기" })}: {sihuaData.huaji}
+          {t("huake", { default: "화과" })}:{" "}
+          {translateStarName(sihuaData.huake, locale)} |{" "}
+          {t("huaji", { default: "화기" })}:{" "}
+          {translateStarName(sihuaData.huaji, locale)}
         </span>
       </div>
     </div>
@@ -259,6 +284,8 @@ export const ZiweiChartGrid = ({
   wuxingJu,
   yearlySihua,
 }: ZiweiChartGridProps) => {
+  const locale = useLocale() as Locale;
+
   // chart가 없으면 렌더링하지 않음
   if (!chart || !chart.palaces) {
     return null;
@@ -283,6 +310,7 @@ export const ZiweiChartGrid = ({
             palace={palace}
             isMingGong={branchIndex === chart.mingGong}
             yearlySihua={yearlySihua}
+            locale={locale}
           />
         );
       })}
@@ -293,6 +321,7 @@ export const ZiweiChartGrid = ({
         profileName={profileName}
         wuxingJu={wuxingJu}
         yearlySihua={yearlySihua}
+        locale={locale}
       />
     </div>
   );
