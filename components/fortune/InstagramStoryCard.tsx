@@ -48,7 +48,7 @@ export const InstagramStoryCard = forwardRef<
   InstagramStoryCardProps
 >(({ type, mainStars, headline, description, scores, labels }, ref) => {
   const starImagePath = getFirstStarImagePath(mainStars);
-  const mainStarName = mainStars[0] || "자미";
+  const mainStarName = mainStars[0] || "Zi Wei";
 
   // 운세 종류에 따른 강조 색상
   const accentColor = type === "yearly" ? "#FFCCD9" : "#B8A4FF";

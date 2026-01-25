@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -25,6 +25,8 @@ import {
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToLine } from "@/libs/kakao";
+import { translateMainStar } from "@/libs/zi-wei-dou-shu/i18n";
+import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
 
@@ -44,6 +46,7 @@ const DEFAULT_LABELS: Record<CategoryKey, string> = {
 
 export default function LifetimeFortunePage() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -170,9 +173,11 @@ export default function LifetimeFortunePage() {
 
   const { interpretation, rawChart } = result;
 
-  // 명궁의 주성 이름 목록
+  // 명궁의 주성 이름 목록 (번역 적용)
   const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
-  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
+  const mainStarNames =
+    mingGongPalace?.mainStars.map((s) => translateMainStar(s.name, locale)) ||
+    [];
 
   // 인스타 스토리용 점수
   const storyScores = {
