@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 
 import styles from "./PromotionBanner.module.css";
@@ -8,21 +7,19 @@ export const PromotionBanner = async () => {
 
   return (
     <div className={styles.container}>
-      <Image
-        src="/images/landing/sparkle-left.svg"
-        alt=""
-        width={16}
-        height={16}
-      />
-      <span className={styles.text}>
-        {t("text", { default: "990원으로 당신만의 운명을 탐험하세요" })}
-      </span>
-      <Image
-        src="/images/landing/sparkle-right.svg"
-        alt=""
-        width={16}
-        height={16}
-      />
+      <div className={styles.badge}>{t("badge", { default: "런칭 특가" })}</div>
+      <div className={styles.priceRow}>
+        <span className={styles.originalPrice}>
+          {t("originalPrice", { default: "9,900원" })}
+        </span>
+        <span className={styles.arrow}>→</span>
+        <span className={styles.discountedPrice}>
+          {t("discountedPrice", { default: "990원" })}
+        </span>
+      </div>
+      <p className={styles.text}>
+        {t("text", { default: "커피 한 잔 값으로 평생 운세 지도를" })}
+      </p>
     </div>
   );
 };
