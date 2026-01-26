@@ -172,6 +172,12 @@ interface SignupNotificationParams {
   signedUpAt: string;
 }
 
+const PROVIDER_LABELS: Record<string, string> = {
+  google: "Google",
+  kakao: "카카오",
+  apple: "Apple",
+};
+
 /**
  * 회원가입 알림 전송
  */
@@ -191,12 +197,6 @@ export const sendSignupNotification = async (
     second: "2-digit",
   });
 
-  const providerLabels: Record<string, string> = {
-    google: "Google",
-    kakao: "카카오",
-    apple: "Apple",
-  };
-
   const embed: DiscordEmbed = {
     title: "👋 신규 회원가입",
     description: "새로운 회원이 가입했습니다!",
@@ -214,7 +214,7 @@ export const sendSignupNotification = async (
       },
       {
         name: "🔐 가입 방법",
-        value: providerLabels[provider] ?? provider,
+        value: PROVIDER_LABELS[provider] ?? provider,
         inline: true,
       },
       {

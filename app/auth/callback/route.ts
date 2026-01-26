@@ -35,6 +35,8 @@ export const GET = async (request: Request) => {
     const name =
       user.user_metadata.full_name ?? user.user_metadata.name ?? null;
 
+    const loginTime = new Date().toISOString();
+
     const userData: UserInsert = {
       id: user.id,
       email,
@@ -42,34 +44,38 @@ export const GET = async (request: Request) => {
       avatar_url: user.user_metadata.avatar_url ?? null,
       provider,
       provider_id: String(providerId),
-      last_login_at: new Date().toISOString(),
+      last_login_at: loginTime,
     };
 
-    // 신규 사용자인지 확인
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: existingUser } = (await (supabase.from("users") as any)
-      .select("id")
-      .eq("id", user.id)
-      .single()) as { data: { id: string } | null };
+    // upsert 실행 후 created_at을 비교하여 신규 사용자 판단 (race condition 방지)
+    const { data: upsertedUser, error: upsertError } =
+      (await // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase.from("users") as any)
+        .upsert(userData, { onConflict: "id" })
+        .select("created_at")
+        .single()) as { data: { created_at: string } | null; error: unknown };
 
-    const isNewUser = !existingUser;
+    if (upsertError) {
+      console.error("User upsert failed:", upsertError);
+    } else if (upsertedUser) {
+      const createdAt = new Date(upsertedUser.created_at);
+      const lastLoginAt = new Date(loginTime);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase.from("users") as any).upsert(userData, {
-      onConflict: "id",
-    });
+      // 생성 시각과 마지막 로그인 시각이 5초 이내면 신규 사용자로 판단
+      const isNewUser =
+        Math.abs(createdAt.getTime() - lastLoginAt.getTime()) < 5000;
 
-    // 신규 회원가입인 경우 Discord 알림 전송
-    if (isNewUser) {
-      sendSignupNotification({
-        userId: user.id,
-        email,
-        name,
-        provider,
-        signedUpAt: new Date().toISOString(),
-      }).catch((error) => {
-        console.error("Discord 회원가입 알림 전송 실패:", error);
-      });
+      if (isNewUser) {
+        sendSignupNotification({
+          userId: user.id,
+          email,
+          name,
+          provider,
+          signedUpAt: loginTime,
+        }).catch((error) => {
+          console.error("Discord 회원가입 알림 전송 실패:", error);
+        });
+      }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
