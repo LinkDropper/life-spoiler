@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { sendPaymentNotification } from "@/libs/discord";
 import { updateFortunePaidAt } from "@/libs/supabase";
 import type { FortuneType } from "@/libs/supabase";
 
@@ -149,6 +150,21 @@ export async function POST(request: NextRequest) {
           year: yearValue,
         });
       }
+    }
+
+    // 디스코드 결제 알림 전송 (비동기로 실행, 실패해도 결제 응답에 영향 없음)
+    if (profileId && fortuneType) {
+      sendPaymentNotification({
+        orderId: paymentData.orderId,
+        amount: paymentData.totalAmount,
+        currency,
+        method: paymentData.method,
+        fortuneType,
+        profileId,
+        approvedAt: paymentData.approvedAt,
+      }).catch((error) => {
+        console.error("디스코드 알림 전송 실패:", error);
+      });
     }
 
     return NextResponse.json({
