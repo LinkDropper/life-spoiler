@@ -4,6 +4,10 @@
 
 import { env } from "@/env";
 
+const DISCORD_EMBED_COLORS = {
+  SUCCESS: 0x4ade80, // 초록색
+};
+
 interface DiscordEmbedField {
   name: string;
   value: string;
@@ -35,7 +39,9 @@ const sendWebhookMessage = async (
   const webhookUrl = env.DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
-    console.log("[Discord] 웹훅 URL이 설정되지 않았습니다.");
+    console.warn(
+      "[Discord] 웹훅 URL이 설정되지 않았습니다. 알림이 전송되지 않습니다."
+    );
     return false;
   }
 
@@ -49,7 +55,11 @@ const sendWebhookMessage = async (
     });
 
     if (!response.ok) {
-      console.error("[Discord] 웹훅 전송 실패:", response.status);
+      const errorBody = await response.text();
+      console.error("[Discord] 웹훅 전송 실패:", {
+        status: response.status,
+        body: errorBody,
+      });
       return false;
     }
 
@@ -68,6 +78,7 @@ interface PaymentNotificationParams {
   fortuneType: "yearly" | "lifetime";
   profileId: string;
   approvedAt: string;
+  year?: number;
 }
 
 /**
@@ -84,9 +95,13 @@ export const sendPaymentNotification = async (
     fortuneType,
     profileId,
     approvedAt,
+    year,
   } = params;
 
-  const productName = fortuneType === "yearly" ? "2025 신년운세" : "평생운세";
+  const productName =
+    fortuneType === "yearly"
+      ? `${year ?? new Date().getFullYear()} 신년운세`
+      : "평생운세";
   const formattedAmount =
     currency === "USD"
       ? `$${amount.toFixed(2)}`
@@ -106,7 +121,7 @@ export const sendPaymentNotification = async (
   const embed: DiscordEmbed = {
     title: "💰 결제 완료",
     description: "새로운 결제가 완료되었습니다!",
-    color: 0x4ade80, // 초록색
+    color: DISCORD_EMBED_COLORS.SUCCESS,
     fields: [
       {
         name: "📦 상품",

@@ -154,6 +154,10 @@ export async function POST(request: NextRequest) {
 
     // 디스코드 결제 알림 전송 (비동기로 실행, 실패해도 결제 응답에 영향 없음)
     if (profileId && fortuneType) {
+      const yearValue =
+        fortuneType === "yearly"
+          ? (year ?? new Date().getFullYear())
+          : undefined;
       sendPaymentNotification({
         orderId: paymentData.orderId,
         amount: paymentData.totalAmount,
@@ -162,6 +166,7 @@ export async function POST(request: NextRequest) {
         fortuneType,
         profileId,
         approvedAt: paymentData.approvedAt,
+        year: yearValue,
       }).catch((error) => {
         console.error("디스코드 알림 전송 실패:", error);
       });
