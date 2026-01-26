@@ -27,7 +27,7 @@ const PAYMENT_AMOUNT_USD = 0.99;
 
 type FortuneType = "yearly" | "lifetime";
 
-type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY" | "PAYPAL";
+type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY" | "APPLEPAY" | "PAYPAL";
 
 interface PaymentMethodOption {
   id: PaymentMethod;
@@ -46,6 +46,7 @@ const generateOrderId = () => {
 const EASY_PAY_MAP: Record<string, string> = {
   TOSSPAY: "토스페이",
   KAKAOPAY: "카카오페이",
+  APPLEPAY: "애플페이",
 };
 
 const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
@@ -55,6 +56,13 @@ const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
     logo: "/images/payment/kakaopay-logo.png",
     logoWidth: 44,
     logoHeight: 18,
+  },
+  {
+    id: "APPLEPAY",
+    labelKey: "methodApplePay",
+    logo: "/images/payment/applepay-logo.svg",
+    logoWidth: 50,
+    logoHeight: 20,
   },
   {
     id: "TOSSPAY",
