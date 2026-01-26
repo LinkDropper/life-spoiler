@@ -314,10 +314,11 @@ export default function PaymentPage() {
             >
               <div className={styles.radioButton}>
                 <div
-                  className={`${styles.radioOuter} ${selectedMethod === method.id
-                    ? styles.radioOuterSelected
-                    : ""
-                    }`}
+                  className={`${styles.radioOuter} ${
+                    selectedMethod === method.id
+                      ? styles.radioOuterSelected
+                      : ""
+                  }`}
                 >
                   {selectedMethod === method.id && (
                     <div className={styles.radioInner} />
