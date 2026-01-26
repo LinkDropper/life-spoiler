@@ -10,7 +10,7 @@ import type { GeminiMessage, GeminiRequest, GeminiResponse } from "./types";
 const GEMINI_CONFIG = {
   baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
   model: "gemini-2.0-flash",
-  defaultTemperature: 0.7,
+  defaultTemperature: 0.5,
   defaultMaxTokens: 4000,
   timeout: 30000, // 30초
   maxRetries: 2, // 2회 재시도 (총 3회 시도)
