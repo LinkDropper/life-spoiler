@@ -36,6 +36,9 @@ const envSchema = z
 
     // Kakao JavaScript SDK
     NEXT_PUBLIC_KAKAO_JS_KEY: z.string().optional(),
+
+    // Discord Webhook
+    DISCORD_WEBHOOK_URL: z.url().optional(),
   })
   .superRefine((data, ctx) => {
     if (!!data.OAUTH_GOOGLE_CLIENT_ID !== !!data.OAUTH_GOOGLE_CLIENT_SECRET) {
