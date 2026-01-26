@@ -60,11 +60,10 @@ const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
     id: "TOSSPAY",
     labelKey: "methodTossPay",
   },
-  // TODO: 카드사 심사 완료 후 주석 해제
-  // {
-  //   id: "CARD",
-  //   labelKey: "methodCard",
-  // },
+  {
+    id: "CARD",
+    labelKey: "methodCard",
+  },
 ];
 
 const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
@@ -315,11 +314,10 @@ export default function PaymentPage() {
             >
               <div className={styles.radioButton}>
                 <div
-                  className={`${styles.radioOuter} ${
-                    selectedMethod === method.id
-                      ? styles.radioOuterSelected
-                      : ""
-                  }`}
+                  className={`${styles.radioOuter} ${selectedMethod === method.id
+                    ? styles.radioOuterSelected
+                    : ""
+                    }`}
                 >
                   {selectedMethod === method.id && (
                     <div className={styles.radioInner} />
