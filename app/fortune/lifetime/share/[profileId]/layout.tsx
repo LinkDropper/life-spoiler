@@ -3,17 +3,12 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { createServerClient } from "@/libs/supabase/client";
 import type { Database, ProfileRow } from "@/libs/supabase/types";
+import { getOpenGraphImage } from "@/libs/utils/og";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type SupabaseDB = SupabaseClient<Database>;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
-
-const getOpenGraphImage = (locale: string): string => {
-  if (locale === "ko") return "/images/open-graph.png";
-  if (locale === "ja") return "/images/open-graph-ja.png";
-  return "/images/open-graph-en.png";
-};
 
 export async function generateMetadata({
   params,

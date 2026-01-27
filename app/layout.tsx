@@ -5,6 +5,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
 import { ProfileProvider } from "@/libs/stores/profile";
 import { UserProvider } from "@/libs/stores/user";
+import { getOpenGraphImage } from "@/libs/utils/og";
 import BrowserRedirect from "@/components/BrowserRedirect";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { KakaoScript } from "@/components/common/KakaoScript";
@@ -13,12 +14,6 @@ import { NavigationEvents } from "@/libs/analytics";
 import "./globals.css";
 
 const SITE_URL = "https://life-spoiler.com";
-
-const getOpenGraphImage = (locale: string): string => {
-  if (locale === "ko") return "/images/open-graph.png";
-  if (locale === "ja") return "/images/open-graph-ja.png";
-  return "/images/open-graph-en.png";
-};
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("metadata");
