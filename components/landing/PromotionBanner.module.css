@@ -14,10 +14,34 @@
   }
 }
 
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.priceWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.originalPrice {
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: line-through;
+}
+
 .price {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 800;
-    color: #ffccd9;
+  color: #ffccd9;
 }
 
 .text {
@@ -25,7 +49,7 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.5;
-    color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.7);
   text-align: center;
   margin: 0;
 }

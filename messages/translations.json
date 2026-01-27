@@ -38,6 +38,8 @@
         "subtitleHighlight": "114개 별이 말해주는 당신만의 지도"
       },
       "promotion": {
+        "badge": "런칭 기념 90% OFF",
+        "originalPrice": "9,900원",
         "price": "990원",
         "text": "커피 한 잔 값으로 평생 운세 지도를"
       },
@@ -591,6 +593,8 @@
         "subtitleHighlight": "Your destiny map drawn by 114 stars"
       },
       "promotion": {
+        "badge": "Launch Special 90% OFF",
+        "originalPrice": "$9.99",
         "price": "$0.99",
         "text": "Get your lifetime fortune map for the price of a coffee"
       },
@@ -1144,6 +1148,8 @@
         "subtitleHighlight": "114個の星が描くあなただけの地図"
       },
       "promotion": {
+        "badge": "ローンチ記念 90% OFF",
+        "originalPrice": "$9.99",
         "price": "$0.99",
         "text": "コーヒー1杯の値段で一生の運命地図を"
       },
