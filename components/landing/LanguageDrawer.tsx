@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 
 import { locales, localeNames } from "@/i18n/config";
@@ -22,6 +23,11 @@ export const LanguageDrawer = ({
   onSelect,
 }: LanguageDrawerProps) => {
   const t = useTranslations("landing.header");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -50,7 +56,7 @@ export const LanguageDrawer = ({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) {
+  if (!mounted || !isOpen) {
     return null;
   }
 
@@ -64,7 +70,7 @@ export const LanguageDrawer = ({
     onSelect(locale);
   };
 
-  return (
+  return createPortal(
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.drawer}>
         <div className={styles.header}>
@@ -91,7 +97,8 @@ export const LanguageDrawer = ({
           ))}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
