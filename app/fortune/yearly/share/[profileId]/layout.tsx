@@ -9,6 +9,12 @@ type SupabaseDB = SupabaseClient<Database>;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
 
+const getOpenGraphImage = (locale: string): string => {
+  if (locale === "ko") return "/images/open-graph.png";
+  if (locale === "ja") return "/images/open-graph-ja.png";
+  return "/images/open-graph-en.png";
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -16,6 +22,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { profileId } = await params;
   const locale = await getLocale();
+  const ogImage = getOpenGraphImage(locale);
   const t = await getTranslations("fortune.yearly");
   const tMeta = await getTranslations("metadata");
 
@@ -59,7 +66,7 @@ export async function generateMetadata({
       description: ogDescription,
       images: [
         {
-          url: "/images/open-graph.png",
+          url: ogImage,
           width: 1200,
           height: 600,
           alt: ogTitle,
@@ -70,7 +77,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: ogTitle,
       description: ogDescription,
-      images: ["/images/open-graph.png"],
+      images: [ogImage],
     },
   };
 }

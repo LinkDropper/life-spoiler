@@ -14,9 +14,16 @@ import "./globals.css";
 
 const SITE_URL = "https://life-spoiler.com";
 
+const getOpenGraphImage = (locale: string): string => {
+  if (locale === "ko") return "/images/open-graph.png";
+  if (locale === "ja") return "/images/open-graph-ja.png";
+  return "/images/open-graph-en.png";
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("metadata");
   const locale = await getLocale();
+  const ogImage = getOpenGraphImage(locale);
 
   const title = t("title", {
     default: "인생스포 - 당신의 인생 시나리오를 미리 확인하세요",
@@ -69,7 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: [
         {
-          url: "/images/open-graph.png",
+          url: ogImage,
           width: 1200,
           height: 600,
           alt: title,
@@ -80,7 +87,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
-      images: ["/images/open-graph.png"],
+      images: [ogImage],
     },
     alternates: {
       canonical: SITE_URL,
