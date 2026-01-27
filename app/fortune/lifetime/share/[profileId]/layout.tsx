@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { createServerClient } from "@/libs/supabase/client";
 import type { Database, ProfileRow } from "@/libs/supabase/types";
+import { getOpenGraphImage } from "@/libs/utils/og";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type SupabaseDB = SupabaseClient<Database>;
@@ -16,6 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { profileId } = await params;
   const locale = await getLocale();
+  const ogImage = getOpenGraphImage(locale);
   const t = await getTranslations("fortune.lifetime");
   const tMeta = await getTranslations("metadata");
 
@@ -57,7 +59,7 @@ export async function generateMetadata({
       description: ogDescription,
       images: [
         {
-          url: "/images/open-graph.png",
+          url: ogImage,
           width: 1200,
           height: 600,
           alt: ogTitle,
@@ -68,7 +70,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: ogTitle,
       description: ogDescription,
-      images: ["/images/open-graph.png"],
+      images: [ogImage],
     },
   };
 }
