@@ -175,16 +175,16 @@ relationshipStatus가 있으면 맞춤 조언 추가.
 응답 형식 (JSON):
 {
   "ageScenarios": [
-    {"period": "4~13세", "headline": "이모지 1개 + 핵심 테마, 10-20자", "content": "쉬운 말로 풀어쓴 해석, 150-200자"},
-    {"period": "14~23세", "headline": "...", "content": "..."},
-    {"period": "24~33세", "headline": "...", "content": "..."},
-    {"period": "34~43세", "headline": "...", "content": "..."},
-    {"period": "44~53세", "headline": "...", "content": "..."},
-    {"period": "54~63세", "headline": "...", "content": "..."},
-    {"period": "64~73세", "headline": "...", "content": "..."},
-    {"period": "74~83세", "headline": "...", "content": "..."},
-    {"period": "84~93세", "headline": "...", "content": "..."},
-    {"period": "94~99세", "headline": "...", "content": "..."}
+    {"period": "4~13세", "headline": "🌱 호기심 폭발 탐험가", "content": "새로운 것에 대한 호기심이 넘치는 시기예요. 다양한 경험을 통해 자신만의 세계를 넓혀가게 됩니다."},
+    {"period": "14~23세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "24~33세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "34~43세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "44~53세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "54~63세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "64~73세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "74~83세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "84~93세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"},
+    {"period": "94~99세", "headline": "이모지 + 핵심 테마", "content": "해당 시기의 해석 내용"}
   ]
 }`,
   },

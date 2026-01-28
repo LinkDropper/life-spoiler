@@ -171,16 +171,16 @@ Based on the data area, each period's focus differs:
 JSON format:
 {
   "ageScenarios": [
-    {"period": "Age 4-13", "headline": "1 emoji + core theme, 10-20 chars", "content": "Simple language interpretation, 150-200 chars"},
-    {"period": "Age 14-23", "headline": "...", "content": "..."},
-    {"period": "Age 24-33", "headline": "...", "content": "..."},
-    {"period": "Age 34-43", "headline": "...", "content": "..."},
-    {"period": "Age 44-53", "headline": "...", "content": "..."},
-    {"period": "Age 54-63", "headline": "...", "content": "..."},
-    {"period": "Age 64-73", "headline": "...", "content": "..."},
-    {"period": "Age 74-83", "headline": "...", "content": "..."},
-    {"period": "Age 84-93", "headline": "...", "content": "..."},
-    {"period": "Age 94-99", "headline": "...", "content": "..."}
+    {"period": "Age 4-13", "headline": "🌱 Curious Little Explorer", "content": "A time full of curiosity about everything new. You expand your world through various experiences."},
+    {"period": "Age 14-23", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 24-33", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 34-43", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 44-53", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 54-63", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 64-73", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 74-83", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 84-93", "headline": "emoji + core theme", "content": "interpretation for this period"},
+    {"period": "Age 94-99", "headline": "emoji + core theme", "content": "interpretation for this period"}
   ]
 }`,
   },

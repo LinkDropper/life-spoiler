@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { sendPaymentNotification } from "@/libs/discord";
-import { updateFortunePaidAt } from "@/libs/supabase";
+import { createServerClient, updateFortunePaidAt } from "@/libs/supabase";
 import type { FortuneType } from "@/libs/supabase";
 
 // 국내 결제용 시크릿 키
@@ -158,6 +158,22 @@ export async function POST(request: NextRequest) {
         fortuneType === "yearly"
           ? (year ?? new Date().getFullYear())
           : undefined;
+
+      // 프로필 이름 조회
+      let profileName: string | undefined;
+      try {
+        const supabase = createServerClient();
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("name")
+          .eq("id", profileId)
+          .single<{ name: string }>();
+        profileName = profile?.name;
+      } catch (error) {
+        // 프로필 조회 실패 시 무시하되, 에러는 기록
+        console.error("프로필 이름 조회 실패:", error);
+      }
+
       sendPaymentNotification({
         orderId: paymentData.orderId,
         amount: paymentData.totalAmount,
@@ -165,6 +181,7 @@ export async function POST(request: NextRequest) {
         method: paymentData.method,
         fortuneType,
         profileId,
+        profileName,
         approvedAt: paymentData.approvedAt,
         year: yearValue,
       }).catch((error) => {
