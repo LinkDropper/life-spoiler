@@ -169,8 +169,9 @@ export async function POST(request: NextRequest) {
           .eq("id", profileId)
           .single<{ name: string }>();
         profileName = profile?.name;
-      } catch {
-        // 프로필 조회 실패 시 무시
+      } catch (error) {
+        // 프로필 조회 실패 시 무시하되, 에러는 기록
+        console.error("프로필 이름 조회 실패:", error);
       }
 
       sendPaymentNotification({

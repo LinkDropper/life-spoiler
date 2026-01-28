@@ -17,6 +17,7 @@ export const openWithExternalBrowser = () => {
   if (typeof window === "undefined") return;
 
   const currentUrl = window.location.href;
+  const encodedUrl = encodeURIComponent(currentUrl);
   const urlWithoutProtocol = currentUrl.replace(/^https?:\/\//, "");
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isAndroid = /Android/i.test(navigator.userAgent);
@@ -27,7 +28,7 @@ export const openWithExternalBrowser = () => {
 
     const fallbackTimeout = setTimeout(() => {
       // 1초 후에도 페이지가 그대로면 카카오톡 외부 브라우저(사파리)로 열기
-      window.location.href = `kakaotalk://web/openExternal?url=${currentUrl}`;
+      window.location.href = `kakaotalk://web/openExternal?url=${encodedUrl}`;
     }, 1000);
 
     const onVisibilityChange = () => {
@@ -47,7 +48,7 @@ export const openWithExternalBrowser = () => {
 
     const fallbackTimeout = setTimeout(() => {
       // 1초 후에도 페이지가 그대로면 카카오톡 외부 브라우저로 열기
-      window.location.href = `kakaotalk://web/openExternal?url=${currentUrl}`;
+      window.location.href = `kakaotalk://web/openExternal?url=${encodedUrl}`;
     }, 1000);
 
     const onVisibilityChange = () => {
@@ -62,6 +63,6 @@ export const openWithExternalBrowser = () => {
     window.location.href = intentUrl;
   } else {
     // 기타: 기본 외부 브라우저로 열기
-    window.location.href = `kakaotalk://web/openExternal?url=${currentUrl}`;
+    window.location.href = `kakaotalk://web/openExternal?url=${encodedUrl}`;
   }
 };
