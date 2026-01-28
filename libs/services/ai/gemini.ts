@@ -132,29 +132,21 @@ export const chatCompletion = async (
     } catch (error) {
       lastError = error as Error;
 
-      // 재시도하지 않는 에러들
-      if (error instanceof AIError) {
-        if (error.code === "API_KEY_MISSING") {
-          throw error;
-        }
-
-        // 429 Rate Limited: exponential backoff로 재시도
-        if (error.code === "RATE_LIMITED") {
-          if (attempt < GEMINI_CONFIG.maxRetries) {
-            const backoffDelay = GEMINI_CONFIG.retryDelay * Math.pow(2, attempt);
-            console.warn(
-              `Rate limited. ${backoffDelay}ms 후 재시도... (${attempt + 1}/${GEMINI_CONFIG.maxRetries})`
-            );
-            await sleep(backoffDelay);
-            continue;
-          }
-          throw error;
-        }
+      // 재시도하지 않는 에러
+      if (error instanceof AIError && error.code === "API_KEY_MISSING") {
+        throw error;
       }
 
-      // 재시도 가능한 경우 (타임아웃, 기타 에러)
+      // 재시도 가능한 경우 exponential backoff 적용
       if (attempt < GEMINI_CONFIG.maxRetries) {
         const backoffDelay = GEMINI_CONFIG.retryDelay * Math.pow(2, attempt);
+
+        if (error instanceof AIError && error.code === "RATE_LIMITED") {
+          console.warn(
+            `Rate limited. ${backoffDelay}ms 후 재시도... (${attempt + 1}/${GEMINI_CONFIG.maxRetries})`
+          );
+        }
+
         await sleep(backoffDelay);
         continue;
       }
