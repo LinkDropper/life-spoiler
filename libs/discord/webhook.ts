@@ -78,6 +78,7 @@ interface PaymentNotificationParams {
   method: string;
   fortuneType: "yearly" | "lifetime";
   profileId: string;
+  profileName?: string;
   approvedAt: string;
   year?: number;
 }
@@ -95,6 +96,7 @@ export const sendPaymentNotification = async (
     method,
     fortuneType,
     profileId,
+    profileName,
     approvedAt,
     year,
   } = params;
@@ -145,8 +147,10 @@ export const sendPaymentNotification = async (
         inline: false,
       },
       {
-        name: "👤 프로필 ID",
-        value: `\`${profileId}\``,
+        name: "👤 프로필",
+        value: profileName
+          ? `${profileName} (\`${profileId}\`)`
+          : `\`${profileId}\``,
         inline: true,
       },
       {
