@@ -183,16 +183,16 @@ relationshipStatusがあればカスタマイズアドバイス追加。
 回答形式 (JSON):
 {
   "ageScenarios": [
-    {"period": "4~13歳", "headline": "絵文字1つ + 核心テーマ、10-20文字", "content": "簡単な言葉で書いた解釈、150-200文字"},
-    {"period": "14~23歳", "headline": "...", "content": "..."},
-    {"period": "24~33歳", "headline": "...", "content": "..."},
-    {"period": "34~43歳", "headline": "...", "content": "..."},
-    {"period": "44~53歳", "headline": "...", "content": "..."},
-    {"period": "54~63歳", "headline": "...", "content": "..."},
-    {"period": "64~73歳", "headline": "...", "content": "..."},
-    {"period": "74~83歳", "headline": "...", "content": "..."},
-    {"period": "84~93歳", "headline": "...", "content": "..."},
-    {"period": "94~99歳", "headline": "...", "content": "..."}
+    {"period": "4~13歳", "headline": "🌱 好奇心いっぱいの冒険家", "content": "新しいことへの好奇心があふれる時期です。様々な経験を通して自分だけの世界を広げていきます。"},
+    {"period": "14~23歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "24~33歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "34~43歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "44~53歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "54~63歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "64~73歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "74~83歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "84~93歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"},
+    {"period": "94~99歳", "headline": "絵文字 + 核心テーマ", "content": "この時期の解釈内容"}
   ]
 }`,
   },

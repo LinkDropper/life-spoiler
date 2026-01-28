@@ -11,7 +11,7 @@ const GEMINI_CONFIG = {
   baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
   model: "gemini-2.5-flash-lite",
   defaultTemperature: 0.5,
-  defaultMaxTokens: 4000,
+  defaultMaxTokens: 6000,
   timeout: 30000, // 30초
   maxRetries: 3, // 3회 재시도 (총 4회 시도)
   retryDelay: 1000, // 기본 1초 대기 (exponential backoff 적용)
