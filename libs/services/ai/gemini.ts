@@ -9,12 +9,12 @@ import type { GeminiMessage, GeminiRequest, GeminiResponse } from "./types";
 
 const GEMINI_CONFIG = {
   baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
-  model: "gemini-2.0-flash",
+  model: "gemini-2.5-flash-lite",
   defaultTemperature: 0.5,
   defaultMaxTokens: 4000,
   timeout: 30000, // 30초
-  maxRetries: 2, // 2회 재시도 (총 3회 시도)
-  retryDelay: 1000, // 1초 대기 후 재시도
+  maxRetries: 3, // 3회 재시도 (총 4회 시도)
+  retryDelay: 1000, // 기본 1초 대기 (exponential backoff 적용)
 } as const;
 
 // ============================================================
@@ -134,14 +134,28 @@ export const chatCompletion = async (
 
       // 재시도하지 않는 에러들
       if (error instanceof AIError) {
-        if (error.code === "API_KEY_MISSING" || error.code === "RATE_LIMITED") {
+        if (error.code === "API_KEY_MISSING") {
+          throw error;
+        }
+
+        // 429 Rate Limited: exponential backoff로 재시도
+        if (error.code === "RATE_LIMITED") {
+          if (attempt < GEMINI_CONFIG.maxRetries) {
+            const backoffDelay = GEMINI_CONFIG.retryDelay * Math.pow(2, attempt);
+            console.warn(
+              `Rate limited. ${backoffDelay}ms 후 재시도... (${attempt + 1}/${GEMINI_CONFIG.maxRetries})`
+            );
+            await sleep(backoffDelay);
+            continue;
+          }
           throw error;
         }
       }
 
-      // 재시도 가능한 경우 (타임아웃 포함)
+      // 재시도 가능한 경우 (타임아웃, 기타 에러)
       if (attempt < GEMINI_CONFIG.maxRetries) {
-        await sleep(GEMINI_CONFIG.retryDelay);
+        const backoffDelay = GEMINI_CONFIG.retryDelay * Math.pow(2, attempt);
+        await sleep(backoffDelay);
         continue;
       }
     }
