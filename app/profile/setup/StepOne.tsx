@@ -64,6 +64,10 @@ export const StepOne = ({ initialData, onNext }: StepOneProps) => {
       newErrors.birthDate = t("birthDate.errorRequired", {
         default: "생년월일을 입력해주세요.",
       });
+    } else if (!/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(formData.birthDate)) {
+      newErrors.birthDate = t("birthDate.errorFormat", {
+        default: "생년월일 형식이 올바르지 않습니다. (예: 1990-01-15)",
+      });
     }
 
     if (!formData.birthTimeUnknown) {
