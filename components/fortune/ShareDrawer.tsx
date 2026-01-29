@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
+import { trackEvent } from "@/libs/analytics";
+
 import styles from "./ShareDrawer.module.css";
 
 interface ShareDrawerProps {
@@ -55,8 +57,24 @@ export const ShareDrawer = ({
   };
 
   const handleCopyLink = () => {
+    trackEvent("share_copy_link");
     onCopyLink();
     onClose();
+  };
+
+  const handleShareKakao = () => {
+    trackEvent("share_kakao");
+    onShareKakao?.();
+  };
+
+  const handleShareLine = () => {
+    trackEvent("share_line");
+    onShareLine?.();
+  };
+
+  const handleDownloadImage = () => {
+    trackEvent("share_download_image");
+    onDownloadImage();
   };
 
   return (
@@ -86,7 +104,7 @@ export const ShareDrawer = ({
           <button
             type="button"
             className={styles.menuItem}
-            onClick={onShareKakao}
+            onClick={handleShareKakao}
             disabled={isDownloading}
           >
             <Image
@@ -102,7 +120,7 @@ export const ShareDrawer = ({
           <button
             type="button"
             className={styles.menuItem}
-            onClick={onShareLine}
+            onClick={handleShareLine}
             disabled={isDownloading}
           >
             <Image
@@ -118,7 +136,7 @@ export const ShareDrawer = ({
           <button
             type="button"
             className={styles.menuItem}
-            onClick={onDownloadImage}
+            onClick={handleDownloadImage}
             disabled={isDownloading}
           >
             <PhotoIcon />

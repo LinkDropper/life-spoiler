@@ -45,6 +45,20 @@ export const trackPageView = (url: string) => {
   });
 };
 
+// 일반 이벤트 추적
+interface EventParams {
+  [key: string]: unknown;
+}
+
+export const trackEvent = (eventName: string, eventParams?: EventParams) => {
+  if (!isGAEnabled()) {
+    console.log("[GA Debug] Event:", eventName, eventParams);
+    return;
+  }
+
+  window.gtag?.("event", eventName, eventParams);
+};
+
 // 결제 완료 이벤트 추적
 interface PurchaseParams {
   transaction_id: string;
