@@ -5,20 +5,12 @@ import { createServerClient } from "@/libs/supabase/client";
 import type { Database, FortuneRow, ProfileRow } from "@/libs/supabase/types";
 import type { LifetimeFortuneData } from "@/libs/supabase/fortune";
 import { getOpenGraphImage } from "@/libs/utils/og";
+import { removeEmoji } from "@/libs/utils/text";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type SupabaseDB = SupabaseClient<Database>;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
-
-/** 이모지 제거 헬퍼 */
-const removeEmoji = (text: string): string =>
-  text
-    .replace(
-      /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu,
-      ""
-    )
-    .trim();
 
 export async function generateMetadata({
   params,
