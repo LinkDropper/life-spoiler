@@ -247,7 +247,9 @@
         "share": {
           "title": "{name}님의 인생 운세",
           "ogTitle": "{name}님의 인생 사주를 확인해보세요",
-          "ogDescription": "자미두수로 분석한 {name}님의 인생 시나리오입니다."
+          "ogTitleWithHeadline": "{name}님의 인생 사주: {headline}",
+          "ogDescription": "자미두수로 분석한 {name}님의 인생 시나리오입니다.",
+          "ogDescriptionWithScores": "{name}님의 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
         },
         "coreScenario": {
           "title": "핵심 시나리오"
@@ -302,7 +304,9 @@
         "share": {
           "title": "{name}님의 {year}년 운세",
           "ogTitle": "{name}님의 올해 사주를 확인해보세요",
-          "ogDescription": "자미두수로 분석한 {name}님의 {year}년 운세입니다."
+          "ogTitleWithHeadline": "{name}님의 {year}년 운세: {headline}",
+          "ogDescription": "자미두수로 분석한 {name}님의 {year}년 운세입니다.",
+          "ogDescriptionWithScores": "{name}님의 {year}년 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
         },
         "coreScenario": {
           "title": "핵심 시나리오"
@@ -802,7 +806,9 @@
         "share": {
           "title": "{name}'s Lifetime Fortune",
           "ogTitle": "Check out {name}'s Life Fortune",
-          "ogDescription": "{name}'s life scenario analyzed by Zi Wei Dou Shu."
+          "ogTitleWithHeadline": "{name}'s Life Fortune: {headline}",
+          "ogDescription": "{name}'s life scenario analyzed by Zi Wei Dou Shu.",
+          "ogDescriptionWithScores": "{name}'s fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
         "coreScenario": {
           "title": "Core Scenario"
@@ -857,7 +863,9 @@
         "share": {
           "title": "{name}'s {year} Fortune",
           "ogTitle": "Check out {name}'s {year} Fortune",
-          "ogDescription": "{name}'s {year} fortune analyzed by Zi Wei Dou Shu."
+          "ogTitleWithHeadline": "{name}'s {year} Fortune: {headline}",
+          "ogDescription": "{name}'s {year} fortune analyzed by Zi Wei Dou Shu.",
+          "ogDescriptionWithScores": "{name}'s {year} fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
         "coreScenario": {
           "title": "Core Scenario"
@@ -1357,7 +1365,9 @@
         "share": {
           "title": "{name}さんの人生運勢",
           "ogTitle": "{name}さんの人生運勢を確認してみてください",
-          "ogDescription": "紫微斗数で分析した{name}さんの人生シナリオです。"
+          "ogTitleWithHeadline": "{name}さんの人生運勢: {headline}",
+          "ogDescription": "紫微斗数で分析した{name}さんの人生シナリオです。",
+          "ogDescriptionWithScores": "{name}さんの運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
         },
         "coreScenario": {
           "title": "核心シナリオ"
@@ -1412,7 +1422,9 @@
         "share": {
           "title": "{name}さんの{year}年運勢",
           "ogTitle": "{name}さんの今年の運勢を確認してみてください",
-          "ogDescription": "紫微斗数で分析した{name}さんの{year}年運勢です。"
+          "ogTitleWithHeadline": "{name}さんの{year}年運勢: {headline}",
+          "ogDescription": "紫微斗数で分析した{name}さんの{year}年運勢です。",
+          "ogDescriptionWithScores": "{name}さんの{year}年運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
         },
         "coreScenario": {
           "title": "核心シナリオ"
