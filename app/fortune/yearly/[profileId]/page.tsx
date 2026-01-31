@@ -23,7 +23,6 @@ import YealryProfileCard from "@/components/fortune/YealryProfileCard";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
-import { uploadShareImage } from "@/libs/supabase/storage";
 
 import styles from "./page.module.css";
 
@@ -165,14 +164,11 @@ export default function YearlyFortunePage() {
         return;
       }
 
-      // Supabase Storage에 업로드
-      const imageUrl = await uploadShareImage(blob, `yearly_${profileId}.png`);
-
       const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
 
-      // 카카오톡 이미지 템플릿으로 공유
-      shareToKakaoWithImage({
-        imageUrl,
+      // 카카오톡 이미지 템플릿으로 공유 (카카오 서버에 이미지 업로드 후 공유)
+      await shareToKakaoWithImage({
+        imageBlob: blob,
         name: profile.name,
         webDomain: shareUrl,
       });

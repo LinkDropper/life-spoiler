@@ -10,11 +10,26 @@ declare global {
   }
 }
 
+interface KakaoUploadImageResponse {
+  infos: {
+    original: {
+      url: string;
+      length: number;
+      content_type: string;
+      width: number;
+      height: number;
+    };
+  };
+}
+
 interface KakaoSDK {
   init: (appKey: string) => void;
   isInitialized: () => boolean;
   Share: {
     sendCustom: (options: KakaoShareOptions) => void;
+    uploadImage: (options: {
+      file: File[];
+    }) => Promise<KakaoUploadImageResponse>;
   };
 }
 
@@ -31,7 +46,7 @@ export interface KakaoShareParams {
 }
 
 export interface KakaoImageShareParams {
-  imageUrl: string;
+  imageBlob: Blob;
   name: string;
   webDomain: string;
 }
@@ -111,13 +126,20 @@ export const shareToKakao = (params: KakaoShareParams): boolean => {
 };
 
 /**
+ * Blob을 File 객체로 변환
+ */
+const blobToFile = (blob: Blob, filename: string): File => {
+  return new File([blob], filename, { type: blob.type || "image/png" });
+};
+
+/**
  * 카카오톡 이미지 템플릿으로 공유하기
  *
- * 프로필 이미지를 포함한 공유에 사용됩니다.
+ * 이미지를 카카오 서버에 업로드한 후 템플릿으로 공유합니다.
  */
-export const shareToKakaoWithImage = (
+export const shareToKakaoWithImage = async (
   params: KakaoImageShareParams
-): boolean => {
+): Promise<boolean> => {
   if (!isKakaoInitialized()) {
     if (!initKakao()) {
       console.error("Kakao SDK is not initialized");
@@ -126,10 +148,21 @@ export const shareToKakaoWithImage = (
   }
 
   try {
+    // Blob을 File로 변환
+    const file = blobToFile(params.imageBlob, "share-image.png");
+
+    // 카카오 서버에 이미지 업로드
+    const uploadResult = await window.Kakao.Share.uploadImage({
+      file: [file],
+    });
+
+    const imageUrl = uploadResult.infos.original.url;
+
+    // 업로드된 이미지 URL로 템플릿 공유
     window.Kakao.Share.sendCustom({
       templateId: IMAGE_TEMPLATE_ID,
       templateArgs: {
-        imageUrl: params.imageUrl,
+        imageUrl,
         name: params.name,
         web_domain: params.webDomain,
       },
