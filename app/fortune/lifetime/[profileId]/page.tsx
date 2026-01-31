@@ -18,13 +18,16 @@ import {
   ShareDrawer,
   type CategoryKey,
 } from "@/components/fortune";
-import {
-  InstagramStoryCard,
-  type InstagramStoryCardLabels,
-} from "@/components/fortune/InstagramStoryCard";
+import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
+import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
+import NewProfileCard from "@/components/fortune/NewProfileCard";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
+import type {
+  FortuneInterpretation,
+  ProfileTraitsResponse,
+} from "@/libs/services/ai/types";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
-import { shareToKakao, shareToLine } from "@/libs/kakao";
+import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
 
 import styles from "./page.module.css";
 
@@ -40,6 +43,17 @@ const DEFAULT_LABELS: Record<CategoryKey, string> = {
   career: "직업운",
   relationship: "인연운",
   health: "건강운",
+};
+
+/**
+ * profileTraits 존재 여부 타입 가드
+ */
+const hasProfileTraits = (
+  interpretation: FortuneInterpretation
+): interpretation is FortuneInterpretation & {
+  profileTraits: ProfileTraitsResponse;
+} => {
+  return !!interpretation.profileTraits?.spectrums;
 };
 
 export default function LifetimeFortunePage() {
@@ -76,16 +90,20 @@ export default function LifetimeFortunePage() {
 
   // 공유 드로어 상태
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
-  const [showStoryCard, setShowStoryCard] = useState(false);
+  // 프로필 이미지 공유 드로어 상태
+  const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
+    useState(false);
+  const [showProfileCard, setShowProfileCard] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 이미지 다운로드 훅
+  // 프로필 카드 이미지 훅
   const {
-    ref: storyCardRef,
-    download: downloadStoryImage,
+    ref: profileCardRef,
+    download: downloadProfileImage,
+    toBlob: profileCardToBlob,
     isDownloading,
   } = useImageDownload({
-    filename: "life_spoiler_lifetime",
+    filename: "life_spoiler_lifetime_profile",
     pixelRatio: 2,
   });
 
@@ -98,21 +116,21 @@ export default function LifetimeFortunePage() {
     };
   }, []);
 
-  // 이미지 다운로드 핸들러
-  const handleDownloadImage = useCallback(async () => {
-    setShowStoryCard(true);
-    // requestAnimationFrame으로 DOM 렌더링 완료 대기
-    await new Promise((resolve) => requestAnimationFrame(resolve));
+  // 프로필 이미지 다운로드 핸들러
+  const handleProfileDownloadImage = useCallback(async () => {
+    setShowProfileCard(true);
+    // React 렌더링이 완료될 시간을 확보
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
-      await downloadStoryImage();
+      await downloadProfileImage();
     } finally {
       timeoutRef.current = setTimeout(() => {
-        setShowStoryCard(false);
-        setIsShareDrawerOpen(false);
+        setShowProfileCard(false);
+        setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [downloadStoryImage]);
+  }, [downloadProfileImage]);
 
   // 카카오톡 공유 핸들러
   const handleShareKakao = useCallback(() => {
@@ -142,6 +160,42 @@ export default function LifetimeFortunePage() {
     shareToLine(shareUrl, text);
     setIsShareDrawerOpen(false);
   }, [result, profile, profileId]);
+
+  // 프로필 이미지 공유 - 카카오톡 핸들러
+  const handleProfileShareKakao = useCallback(async () => {
+    if (!result || !profile) return;
+
+    // 프로필 카드 표시
+    setShowProfileCard(true);
+    // React 렌더링이 완료될 시간을 확보
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    try {
+      // 이미지 Blob 생성
+      const blob = await profileCardToBlob();
+      if (!blob) {
+        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
+        return;
+      }
+
+      const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
+
+      // 카카오톡 이미지 템플릿으로 공유
+      await shareToKakaoWithImage({
+        imageBlob: blob,
+        name: profile.name,
+        webDomain: shareUrl,
+      });
+    } catch (error) {
+      console.error("Failed to share to Kakao with image:", error);
+      alert("공유에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      timeoutRef.current = setTimeout(() => {
+        setShowProfileCard(false);
+        setIsProfileShareDrawerOpen(false);
+      }, 500);
+    }
+  }, [result, profile, profileId, profileCardToBlob]);
 
   if (isLoading) {
     return <Loading />;
@@ -208,6 +262,28 @@ export default function LifetimeFortunePage() {
           calendarType={profile.calendar_type}
           gender={profile.gender}
         />
+
+        <div style={{ width: "100%", height: 16 }} />
+
+        {hasProfileTraits(interpretation) ? (
+          <NewProfileCard
+            mainStars={mainStarNames}
+            headline={interpretation.lifeSpoiler.headline}
+            profileTraits={interpretation.profileTraits}
+            isImage={false}
+            onShareClick={() => setIsProfileShareDrawerOpen(true)}
+          />
+        ) : (
+          <LifetimeProfileCard
+            mainStars={mainStarNames}
+            headline={interpretation.lifeSpoiler.headline}
+            description={interpretation.lifeSpoiler.description}
+            scores={storyScores}
+            labels={storyLabels}
+            isImage={false}
+            onShareClick={() => setIsProfileShareDrawerOpen(true)}
+          />
+        )}
 
         {/* 자미두수 명반 섹션 */}
         <SectionHeader
@@ -332,12 +408,24 @@ export default function LifetimeFortunePage() {
         onCopyLink={handleShare}
         onShareKakao={handleShareKakao}
         onShareLine={handleShareLine}
-        onDownloadImage={handleDownloadImage}
+        showDownloadImage={false}
         isDownloading={isDownloading}
       />
 
-      {/* 이미지 생성용 숨겨진 카드 */}
-      {showStoryCard && (
+      {/* 프로필 이미지 공유 드로어 */}
+      <ShareDrawer
+        isOpen={isProfileShareDrawerOpen}
+        onClose={() => setIsProfileShareDrawerOpen(false)}
+        title={t("profileShareTitle", { default: "프로필 이미지 공유하기" })}
+        showCopyLink={false}
+        showLine={false}
+        onShareKakao={handleProfileShareKakao}
+        onDownloadImage={handleProfileDownloadImage}
+        isDownloading={isDownloading}
+      />
+
+      {/* 이미지 생성용 숨겨진 프로필 카드 */}
+      {showProfileCard && (
         <div
           style={{
             position: "fixed",
@@ -347,15 +435,25 @@ export default function LifetimeFortunePage() {
             pointerEvents: "none",
           }}
         >
-          <InstagramStoryCard
-            ref={storyCardRef}
-            type="lifetime"
-            mainStars={mainStarNames}
-            headline={interpretation.lifeSpoiler.headline}
-            description={interpretation.lifeSpoiler.description}
-            scores={storyScores}
-            labels={storyLabels}
-          />
+          {hasProfileTraits(interpretation) ? (
+            <NewProfileCard
+              ref={profileCardRef}
+              mainStars={mainStarNames}
+              headline={interpretation.lifeSpoiler.headline}
+              profileTraits={interpretation.profileTraits}
+              isImage={true}
+            />
+          ) : (
+            <LifetimeProfileCard
+              ref={profileCardRef}
+              mainStars={mainStarNames}
+              headline={interpretation.lifeSpoiler.headline}
+              description={interpretation.lifeSpoiler.description}
+              scores={storyScores}
+              labels={storyLabels}
+              isImage={true}
+            />
+          )}
         </div>
       )}
 
