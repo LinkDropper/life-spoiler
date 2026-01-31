@@ -105,7 +105,8 @@ export default function YearlyFortunePage() {
   // 프로필 이미지 공유 드로어용 다운로드 핸들러
   const handleProfileDownloadImage = useCallback(async () => {
     setShowProfileCard(true);
-    await new Promise((resolve) => requestAnimationFrame(resolve));
+    // React 렌더링이 완료될 시간을 확보 (requestAnimationFrame보다 안정적)
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
       await downloadProfileImage();
@@ -153,7 +154,8 @@ export default function YearlyFortunePage() {
 
     // 프로필 카드 표시
     setShowProfileCard(true);
-    await new Promise((resolve) => requestAnimationFrame(resolve));
+    // React 렌더링이 완료될 시간을 확보 (requestAnimationFrame보다 안정적)
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
       // 이미지 Blob 생성
