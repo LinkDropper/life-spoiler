@@ -101,15 +101,15 @@ export const YealryProfileCard = forwardRef<
         style={{
           ...(isImage
             ? {
-              width: 375,
-              height: 667,
-            }
+                width: 375,
+                height: 667,
+              }
             : {
-              width: "100%",
-              height: "auto",
-              borderRadius: 8,
-              border: "2px solid rgba(255, 255, 255, 0.16)",
-            }),
+                width: "100%",
+                height: "auto",
+                borderRadius: 8,
+                border: "2px solid rgba(255, 255, 255, 0.16)",
+              }),
           background: isImage
             ? "linear-gradient(180deg, #0C1220 0%, #2E1431 100%)"
             : "transparent",
