@@ -1,6 +1,10 @@
 "use client";
 
 import { forwardRef } from "react";
+import { useLocale } from "next-intl";
+import type { Locale } from "@/i18n/config";
+import { translateMainStar } from "@/libs/zi-wei-dou-shu/i18n";
+import { getFirstStarImagePath } from "@/libs/utils";
 
 export interface InstagramStoryCardLabels {
   /** 주성 레이블 */
@@ -14,16 +18,12 @@ export interface InstagramStoryCardLabels {
   };
 }
 
-export interface YealryProfileCardProps {
-  /** 올해 연도 (yearly인 경우) */
-  year?: number;
+export interface LifetimeProfileCardProps {
   /** 명궁 주성 이름 목록 */
   mainStars: string[];
   /** 한줄 제목 (headline) */
   headline: string;
-  /** 태그 목록 (없으면 description 표시) */
-  tags?: string[];
-  /** 설명 (tags가 없을 때 표시) */
+  /** 설명 */
   description?: string;
   /** 4개 카테고리 점수 */
   scores: {
@@ -40,40 +40,19 @@ export interface YealryProfileCardProps {
   onShareClick?: () => void;
 }
 
-const getHigherScoreCategory = (scores: {
-  wealth: number;
-  career: number;
-  relationship: number;
-  health: number;
-}) => {
-  const higherScoreCategory = Object.keys(scores).reduce(
-    (acc, curr) => {
-      return scores[curr as keyof typeof scores] > acc.score
-        ? { category: curr, score: scores[curr as keyof typeof scores] }
-        : acc;
-    },
-    { category: "wealth", score: 0 }
-  );
-  return higherScoreCategory.category;
-};
-
-const getYearlyCategoryImagePath = (category: string) => {
-  return `/images/category/${category}.png`;
-};
-
 /**
  * 인스타 스토리용 이미지 카드 컴포넌트
  *
  * 375x667 크기로 렌더링되며, html-to-image로 이미지로 변환됩니다.
  */
-export const YealryProfileCard = forwardRef<
+export const LifetimeProfileCard = forwardRef<
   HTMLDivElement,
-  YealryProfileCardProps
+  LifetimeProfileCardProps
 >(
   (
     {
       headline,
-      tags,
+      mainStars,
       description,
       scores,
       labels,
@@ -82,12 +61,14 @@ export const YealryProfileCard = forwardRef<
     },
     ref
   ) => {
-    const higherScoreCategory = getHigherScoreCategory(scores);
-    const yearlyCategoryImagePath = getYearlyCategoryImagePath(
-      higherScoreCategory as string
-    );
+    const locale = useLocale() as Locale;
+    const starImagePath = getFirstStarImagePath(mainStars);
+    // 원본 이름(한국어)을 현재 로케일로 번역하여 표시
+    const mainStarName = mainStars[0]
+      ? translateMainStar(mainStars[0], locale)
+      : "자미";
 
-    const accentColor = "#B8A4FF";
+    const accentColor = "#FFCCD9";
 
     // 제목에서 이모지 제거 (이미지 렌더링 호환성)
     const cleanHeadline = headline.replace(
@@ -101,15 +82,15 @@ export const YealryProfileCard = forwardRef<
         style={{
           ...(isImage
             ? {
-              width: 375,
-              height: 667,
-            }
+                width: 375,
+                height: 667,
+              }
             : {
-              width: "100%",
-              height: "auto",
-              borderRadius: 8,
-              border: "2px solid rgba(255, 255, 255, 0.16)",
-            }),
+                width: "100%",
+                height: "auto",
+                borderRadius: 8,
+                border: "2px solid rgba(255, 255, 255, 0.16)",
+              }),
           background: isImage
             ? "linear-gradient(180deg, #0C1220 0%, #2E1431 100%)"
             : "transparent",
@@ -185,8 +166,8 @@ export const YealryProfileCard = forwardRef<
           {/* 카테고리 이미지 - html-to-image 라이브러리 호환성을 위해 img 태그 사용 */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={yearlyCategoryImagePath}
-            alt={higherScoreCategory}
+            src={starImagePath}
+            alt={mainStarName}
             width={251}
             height={137}
             style={{ objectFit: "contain" }}
@@ -222,49 +203,17 @@ export const YealryProfileCard = forwardRef<
             >
               {cleanHeadline}
             </span>
-            {tags && tags.length > 0 ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                {tags.map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      background: "rgba(255, 255, 255, 0.08)",
-                      borderRadius: "4px",
-                      padding: "2px 6px",
-                      color: "rgba(255, 255, 255, 0.70)",
-                      textAlign: "center",
-                      fontFamily: "Pretendard",
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      lineHeight: "140%",
-                      letterSpacing: "0",
-                    }}
-                  >
-                    # {tag}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              description && (
-                <span
-                  style={{
-                    color: "rgba(255, 255, 255, 0.70)",
-                    fontFamily: "Pretendard",
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    lineHeight: "140%",
-                  }}
-                >
-                  {description}
-                </span>
-              )
-            )}
+            <span
+              style={{
+                color: "rgba(255, 255, 255, 0.70)",
+                fontFamily: "Pretendard",
+                fontSize: "16px",
+                fontWeight: 500,
+                lineHeight: "140%",
+              }}
+            >
+              {description}
+            </span>
           </div>
 
           {/* 4개 그래프 */}
@@ -272,7 +221,7 @@ export const YealryProfileCard = forwardRef<
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 20,
+              gap: 12,
             }}
           >
             <FortuneProgressBar
@@ -306,7 +255,7 @@ export const YealryProfileCard = forwardRef<
   }
 );
 
-YealryProfileCard.displayName = "YealryProfileCard";
+LifetimeProfileCard.displayName = "LifetimeProfileCard";
 
 interface FortuneProgressBarProps {
   label: string;
@@ -410,4 +359,4 @@ const FortuneProgressBar = ({
   );
 };
 
-export default YealryProfileCard;
+export default LifetimeProfileCard;

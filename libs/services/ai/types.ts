@@ -58,7 +58,8 @@ export type InterpretationType =
   | "lifetime_career"
   | "lifetime_relationship"
   | "lifetime_health"
-  | "lifetime_age_scenarios";
+  | "lifetime_age_scenarios"
+  | "lifetime_profile_traits";
 
 export interface StarData {
   name: string;
@@ -179,6 +180,35 @@ export const AgeScenarioResponseSchema = z.object({
 export type AgeScenarioResponse = z.infer<typeof AgeScenarioResponseSchema>;
 
 // ============================================================
+// 프로필 카드용 성향 분석 데이터 (v2)
+// ============================================================
+
+/** 양극성 스펙트럼 데이터 */
+export const PolaritySpectrumSchema = z.object({
+  leftLabel: z.string(),
+  rightLabel: z.string(),
+  leftPercentage: z.number().min(0).max(100),
+});
+
+export type PolaritySpectrum = z.infer<typeof PolaritySpectrumSchema>;
+
+/** 프로필 카드용 성향 분석 응답 스키마 */
+export const ProfileTraitsResponseSchema = z.object({
+  hashtags: z
+    .array(z.string())
+    .min(2)
+    .transform((arr) => [arr[0], arr[1]] as [string, string]),
+  spectrums: z.object({
+    activity: PolaritySpectrumSchema,
+    work: PolaritySpectrumSchema,
+    economy: PolaritySpectrumSchema,
+    romance: PolaritySpectrumSchema,
+  }),
+});
+
+export type ProfileTraitsResponse = z.infer<typeof ProfileTraitsResponseSchema>;
+
+// ============================================================
 // 최종 결과 타입 (인생 운세)
 // ============================================================
 
@@ -196,6 +226,8 @@ export interface FortuneInterpretation {
   };
   /** 나이대별 시나리오 (제목 + 본문 200~300자) */
   ageScenarios: AgeScenarioResponse["ageScenarios"];
+  /** 프로필 카드용 성향 분석 (v2, 신규 유저만) */
+  profileTraits?: ProfileTraitsResponse;
   meta: {
     generatedAt: string;
     model: string;
