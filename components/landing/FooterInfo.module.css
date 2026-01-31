@@ -38,3 +38,21 @@
 .divider {
   margin: 0 8px;
 }
+
+.socialLinks {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s ease;
+}
+
+.socialLink:hover {
+  color: rgba(255, 255, 255, 0.8);
+}

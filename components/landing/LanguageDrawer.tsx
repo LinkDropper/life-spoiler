@@ -75,7 +75,7 @@ export const LanguageDrawer = ({
       <div className={styles.drawer}>
         <div className={styles.header}>
           <span className={styles.title}>
-            {t("languageSettingTitle", { default: "언어 설정" })}
+            {t("languageAriaLabel", { default: "언어 설정" })}
           </span>
         </div>
 

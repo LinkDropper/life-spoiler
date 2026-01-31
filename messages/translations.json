@@ -32,10 +32,10 @@
         "imageAlt": "운명의 별자리",
         "title": "내 전성기, 20대일까 30대일까?",
         "titleSub": "",
-        "subtitle": "10년마다 바뀌는 운의 타이밍",
-        "subtitleLine2": "올해 몰아치는 달 vs 숨 고르는 달",
+        "subtitle": "114개 별로 읽는 당신의 타이밍",
+        "subtitleLine2": "12궁에 펼쳐진 별이 말하는 운의 타이밍",
         "subtitleLine3": "나에게 맞는 돈·직업·인연 패턴",
-        "subtitleHighlight": "114개 별이 그리는 당신만의 인생 지도"
+        "subtitleHighlight": "1,000년 역사 동양 점성술의 정밀 분석"
       },
       "promotion": {
         "badge": "런칭 기념 90% OFF",
@@ -44,26 +44,26 @@
         "text": "노력은 하는데 왜 안 풀릴까? 타이밍을 확인해보세요"
       },
       "cta": {
-        "button": "990원에 내 타이밍 확인하기",
+        "button": "990원에 내 인생 스포 받기",
         "subtext": "3분 입력, 바로 결과 확인"
       },
       "features": {
         "feature1": {
           "title": "10년마다 바뀌는 운의 흐름",
           "question": "지금이 도약의 시기인가, 준비의 시기인가?",
-          "description": "4세부터 99세까지, 10년 단위로 당신의 운세 흐름을 분석합니다. 각 시기별 기회와 주의점을 확인하세요.",
+          "description": "114개 별의 배치를 기반으로, 4세부터 99세까지 10년 단위 운의 흐름을 분석합니다.",
           "imageAlt": "대운 분석"
         },
         "feature2": {
           "title": "재물 · 직업 · 인연 · 건강",
           "question": "내가 잘할 수 있는 분야는? 어떤 파트너가 맞을까?",
-          "description": "4가지 핵심 영역별로 당신의 타고난 패턴과 성향을 분석합니다.",
+          "description": "12개 궁에 배치된 별들의 조합으로 당신의 타고난 패턴과 성향을 분석합니다.",
           "imageAlt": "4가지 영역"
         },
         "feature3": {
           "title": "올해, 어느 달이 중요할까?",
           "question": "이번 달은 조심해야 할까, 밀어붙여야 할까?",
-          "description": "1월부터 12월까지 좋은 달과 조심할 달을 구분해서 알려드립니다. 중요한 결정 전에 확인하세요.",
+          "description": "매달 변화하는 별의 흐름을 분석해, 좋은 달과 조심할 달을 구분해 알려드립니다.",
           "imageAlt": "월별 운세"
         }
       },
@@ -89,11 +89,11 @@
         "items": {
           "q1": {
             "question": "자미두수가 뭔가요?",
-            "answer": "중국 송나라 때 시작된 동양 점성술입니다. 생년월일과 태어난 시간을 기반으로 114개 별의 위치를 계산해 운세를 분석합니다."
+            "answer": "'동양의 별자리 운세'라고 생각하면 쉬워요. 태어난 순간 하늘에 떠 있던 114개 별의 배치로 운세를 분석하는, 1,000년 역사의 점성술입니다."
           },
           "q2": {
             "question": "사주와 뭐가 다른가요?",
-            "answer": "사주는 4개의 기둥(년/월/일/시)으로 분석하고, 자미두수는 12개 궁과 114개 별의 조합으로 분석합니다. 더 세밀한 분석이 가능합니다."
+            "answer": "사주는 4글자(년/월/일/시)로 분석하지만, 자미두수는 12개 궁 × 114개 별 조합으로 훨씬 세밀하게 분석합니다. 같은 생년월일이어도 태어난 '시간'에 따라 결과가 완전히 달라져요."
           },
           "q3": {
             "question": "결과가 정확한가요?",
@@ -591,10 +591,10 @@
         "imageAlt": "Destiny Constellation",
         "title": "My prime years: 20s or 30s?",
         "titleSub": "",
-        "subtitle": "Your luck timing changes every 10 years",
-        "subtitleLine2": "Peak months vs. slow months this year",
+        "subtitle": "Your timing, read through 114 stars",
+        "subtitleLine2": "Your timing revealed through 12 palaces",
         "subtitleLine3": "Your money, career & love patterns",
-        "subtitleHighlight": "Your life map drawn by 114 stars"
+        "subtitleHighlight": "1,000-year-old Eastern astrology, precision analysis"
       },
       "promotion": {
         "badge": "Launch Special 90% OFF",
@@ -603,26 +603,26 @@
         "text": "Working hard but not getting results? Check your timing"
       },
       "cta": {
-        "button": "Check My Timing for $0.99",
+        "button": "Get My Life Spoiler for $0.99",
         "subtext": "3 min input, instant results"
       },
       "features": {
         "feature1": {
           "title": "Luck Changes Every 10 Years",
           "question": "Is now the time to leap or prepare?",
-          "description": "From age 4 to 99, we analyze your fortune flow in 10-year cycles. Discover the opportunities and cautions for each period.",
+          "description": "Based on 114 star positions, we analyze your fortune flow in 10-year cycles from age 4 to 99.",
           "imageAlt": "10-Year Cycle Analysis"
         },
         "feature2": {
           "title": "Wealth · Career · Love · Health",
           "question": "What am I good at? Who's my ideal partner?",
-          "description": "We analyze your innate patterns and tendencies across 4 key areas.",
+          "description": "We analyze your innate patterns through the unique combination of stars across 12 palaces.",
           "imageAlt": "Four Categories"
         },
         "feature3": {
           "title": "Which Months Matter This Year?",
           "question": "Should I be cautious or go all in this month?",
-          "description": "We identify your lucky months and months to watch from January to December. Check before making important decisions.",
+          "description": "We track monthly star movements to identify your lucky months and months to watch.",
           "imageAlt": "Monthly Fortune"
         }
       },
@@ -648,11 +648,11 @@
         "items": {
           "q1": {
             "question": "What is Zi Wei Dou Shu?",
-            "answer": "An ancient Chinese astrology system dating back to the Song Dynasty. It analyzes fortune by calculating the positions of 114 stars based on your birth date and time."
+            "answer": "Think of it as 'Eastern horoscope.' It's a 1,000-year-old astrology system that analyzes fortune based on the positions of 114 stars at the moment you were born."
           },
           "q2": {
             "question": "How is it different from regular astrology?",
-            "answer": "While Western astrology uses 12 zodiac signs, Zi Wei Dou Shu uses 12 palaces and 114 stars for more detailed analysis."
+            "answer": "Western horoscope uses 12 zodiac signs. Zi Wei Dou Shu uses 12 palaces × 114 stars for far more detailed analysis. Even with the same birthday, results differ based on birth 'time'."
           },
           "q3": {
             "question": "How accurate is it?",
@@ -1150,10 +1150,10 @@
         "imageAlt": "運命の星座",
         "title": "私の全盛期、20代？30代？",
         "titleSub": "",
-        "subtitle": "10年ごとに変わる運のタイミング",
-        "subtitleLine2": "今年の勝負月 vs 休息月",
+        "subtitle": "114個の星で読むあなたのタイミング",
+        "subtitleLine2": "12宮に広がる星が語る運のタイミング",
         "subtitleLine3": "自分に合ったお金・仕事・縁のパターン",
-        "subtitleHighlight": "114個の星が描くあなただけの人生地図"
+        "subtitleHighlight": "1,000年の歴史を持つ東洋占星術の精密分析"
       },
       "promotion": {
         "badge": "ローンチ記念 90% OFF",
@@ -1162,26 +1162,26 @@
         "text": "頑張っているのになぜうまくいかない？タイミングを確認しよう"
       },
       "cta": {
-        "button": "$0.99でタイミングを確認",
+        "button": "$0.99で人生ネタバレを受け取る",
         "subtext": "3分入力、すぐに結果確認"
       },
       "features": {
         "feature1": {
           "title": "10年ごとに変わる運の流れ",
           "question": "今は飛躍の時期？それとも準備の時期？",
-          "description": "4歳から99歳まで、10年単位であなたの運勢の流れを分析します。各時期のチャンスと注意点を確認してください。",
+          "description": "114個の星の配置を基に、4歳から99歳まで10年単位の運の流れを分析します。",
           "imageAlt": "大運分析"
         },
         "feature2": {
           "title": "財運・仕事運・縁運・健康運",
           "question": "自分が得意な分野は？どんなパートナーが合う？",
-          "description": "4つの核心領域ごとに、あなたの生まれ持ったパターンと傾向を分析します。",
+          "description": "12の宮に配置された星の組み合わせで、あなたの生まれ持ったパターンと傾向を分析します。",
           "imageAlt": "4つの領域"
         },
         "feature3": {
           "title": "今年、どの月が重要？",
           "question": "今月は慎重に？それとも攻めるべき？",
-          "description": "1月から12月まで、良い月と注意すべき月を分けてお知らせします。重要な決定の前に確認してください。",
+          "description": "毎月変化する星の流れを分析し、良い月と注意すべき月を分けてお知らせします。",
           "imageAlt": "月別運勢"
         }
       },
@@ -1207,11 +1207,11 @@
         "items": {
           "q1": {
             "question": "紫微斗数とは何ですか？",
-            "answer": "中国の宋時代に始まった東洋占星術です。生年月日と生まれた時間を基に、114個の星の位置を計算して運勢を分析します。"
+            "answer": "「東洋の星占い」と考えると分かりやすいです。生まれた瞬間の空に浮かんでいた114個の星の配置で運勢を分析する、1,000年の歴史を持つ占星術です。"
           },
           "q2": {
             "question": "四柱推命との違いは？",
-            "answer": "四柱推命は4つの柱（年/月/日/時）で分析しますが、紫微斗数は12の宮と114個の星の組み合わせで分析します。より詳細な分析が可能です。"
+            "answer": "四柱推命は4文字（年/月/日/時）で分析しますが、紫微斗数は12宮 × 114個の星の組み合わせで、より詳細に分析します。同じ誕生日でも生まれた「時間」で結果が完全に異なります。"
           },
           "q3": {
             "question": "結果は正確ですか？",
