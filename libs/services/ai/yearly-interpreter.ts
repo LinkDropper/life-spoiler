@@ -361,6 +361,7 @@ export const createYearlyFallbackInterpretation = (
     overview: {
       headline: `🔮 ${targetYear}년 운세 분석 준비 중`,
       description: "잠시 후 다시 시도해주세요",
+      tags: [],
       summary: fallbackMessage,
     },
     coreScenario: {
