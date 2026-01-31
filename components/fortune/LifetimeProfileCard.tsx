@@ -18,7 +18,7 @@ export interface InstagramStoryCardLabels {
   };
 }
 
-export interface YealryProfileCardProps {
+export interface LifetimeProfileCardProps {
   /** 명궁 주성 이름 목록 */
   mainStars: string[];
   /** 한줄 제목 (headline) */
@@ -47,7 +47,7 @@ export interface YealryProfileCardProps {
  */
 export const LifetimeProfileCard = forwardRef<
   HTMLDivElement,
-  YealryProfileCardProps
+  LifetimeProfileCardProps
 >(
   (
     {
