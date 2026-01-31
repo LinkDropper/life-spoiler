@@ -14,7 +14,7 @@ export interface InstagramStoryCardLabels {
   };
 }
 
-export interface InstagramStoryCardProps {
+export interface YealryProfileCardProps {
   /** 올해 연도 (yearly인 경우) */
   year?: number;
   /** 명궁 주성 이름 목록 */
@@ -68,7 +68,7 @@ const getYearlyCategoryImagePath = (category: string) => {
  */
 export const YealryProfileCard = forwardRef<
   HTMLDivElement,
-  InstagramStoryCardProps
+  YealryProfileCardProps
 >(
   (
     {
@@ -153,7 +153,7 @@ export const YealryProfileCard = forwardRef<
             </svg>
           </button>
         )}
-        {/* 로고 */}
+        {/* 로고 - html-to-image 라이브러리 호환성을 위해 img 태그 사용 */}
         {isImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -182,7 +182,7 @@ export const YealryProfileCard = forwardRef<
             flex: 1,
           }}
         >
-          {/* 카테고리 이미지 */}
+          {/* 카테고리 이미지 - html-to-image 라이브러리 호환성을 위해 img 태그 사용 */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={yearlyCategoryImagePath}

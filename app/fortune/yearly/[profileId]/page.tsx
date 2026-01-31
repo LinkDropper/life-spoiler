@@ -110,6 +110,7 @@ export default function YearlyFortunePage() {
     try {
       await downloadProfileImage();
     } finally {
+      // 이미지 다운로드 완료 후 UI 정리를 위한 딜레이
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
         setIsProfileShareDrawerOpen(false);
@@ -158,7 +159,7 @@ export default function YearlyFortunePage() {
       // 이미지 Blob 생성
       const blob = await profileCardToBlob();
       if (!blob) {
-        console.error("Failed to generate image blob");
+        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
         return;
       }
 
@@ -175,7 +176,9 @@ export default function YearlyFortunePage() {
       });
     } catch (error) {
       console.error("Failed to share to Kakao with image:", error);
+      alert("공유에 실패했습니다. 다시 시도해주세요.");
     } finally {
+      // 공유 UI가 표시될 시간을 확보하기 위한 딜레이
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
         setIsProfileShareDrawerOpen(false);
@@ -251,7 +254,7 @@ export default function YearlyFortunePage() {
           gender={profile.gender}
         />
 
-        <div style={{ width: "100%", height: 16 }} />
+        <div className={styles.spacer} />
 
         <YealryProfileCard
           year={currentYear}
