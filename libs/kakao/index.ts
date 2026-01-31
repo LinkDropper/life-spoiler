@@ -30,8 +30,17 @@ export interface KakaoShareParams {
   webDomain: string;
 }
 
+export interface KakaoImageShareParams {
+  imageUrl: string;
+  name: string;
+  webDomain: string;
+}
+
 // 카카오톡 공유 피드 템플릿 ID (운세 결과 공유용)
 const TEMPLATE_ID = 128486;
+
+// 카카오톡 이미지 공유 템플릿 ID (프로필 이미지 공유용)
+const IMAGE_TEMPLATE_ID = 128846;
 
 /**
  * Kakao SDK 초기화
@@ -97,6 +106,37 @@ export const shareToKakao = (params: KakaoShareParams): boolean => {
     return true;
   } catch (error) {
     console.error("Failed to share to Kakao:", error);
+    return false;
+  }
+};
+
+/**
+ * 카카오톡 이미지 템플릿으로 공유하기
+ *
+ * 프로필 이미지를 포함한 공유에 사용됩니다.
+ */
+export const shareToKakaoWithImage = (
+  params: KakaoImageShareParams
+): boolean => {
+  if (!isKakaoInitialized()) {
+    if (!initKakao()) {
+      console.error("Kakao SDK is not initialized");
+      return false;
+    }
+  }
+
+  try {
+    window.Kakao.Share.sendCustom({
+      templateId: IMAGE_TEMPLATE_ID,
+      templateArgs: {
+        imageUrl: params.imageUrl,
+        name: params.name,
+        web_domain: params.webDomain,
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error("Failed to share to Kakao with image:", error);
     return false;
   }
 };

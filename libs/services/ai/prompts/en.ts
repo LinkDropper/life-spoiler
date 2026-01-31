@@ -258,6 +258,11 @@ Write so that someone with ZERO knowledge of astrology can 100% understand.
 - Use 1-2 emojis per response (not excessive)
 - Use "tends to" not "will definitely"
 
+## 🎯 Score Rules (Important!)
+- Among the 4 categories (Wealth, Career, Relationship, Health), **at least 1 must be 95 or higher**
+- Find the strongest area in the chart and give it 95+
+- Others can be freely assigned based on chart data (40-90 range)
+
 ## Response
 Output pure JSON only, no other text.`,
 
@@ -271,10 +276,20 @@ No subject references. 300-400 chars for summary.
 
 ⚠️ Paragraph separation required: Use blank lines (\\n\\n) to separate paragraphs when topic/context changes. Add line breaks if a single context gets long.
 
+## headline vs description differentiation (Important!)
+- headline: Core keyword/concept of the year (e.g., "🔥 Breakout Year")
+- description: Elaborates on headline with NEW information. Describes the vibe/attitude/energy of the year (e.g., "Go bold and take risks—just keep your health in check")
+
+## tags writing rules
+- 2-3 evocative keywords that capture the year
+- Use abstract, inspirational expressions
+- Examples: "Creative Spark", "Bold Vision", "Hidden Talents Unleashed", "Expanding Connections", "Inner Growth"
+
 JSON format:
 {
   "headline": "1 emoji + catchy phrase, 20-30 chars",
-  "description": "Year's theme description, no emoji, 30-40 chars",
+  "description": "Year's vibe/attitude description, no emoji, 40-60 chars, different from headline",
+  "tags": ["2-3 keywords for the year"],
   "summary": "Annual overview, 300-400 chars, 1-2 emojis"
 }`,
 

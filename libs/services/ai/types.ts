@@ -299,10 +299,11 @@ export interface YearlyInterpretationRequest {
   language?: Locale;
 }
 
-// 올해 스포일러 응답 스키마 (제목 + 설명 + 본문)
+// 올해 스포일러 응답 스키마 (제목 + 설명 + 태그 + 본문)
 export const YearlyOverviewResponseSchema = z.object({
   headline: z.string(),
   description: z.string(),
+  tags: z.array(z.string()).min(2).max(3),
   summary: z.string(),
 });
 

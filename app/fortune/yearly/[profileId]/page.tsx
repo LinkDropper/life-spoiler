@@ -18,13 +18,12 @@ import {
   ShareDrawer,
   type CategoryKey,
 } from "@/components/fortune";
-import {
-  InstagramStoryCard,
-  type InstagramStoryCardLabels,
-} from "@/components/fortune/InstagramStoryCard";
+import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
+import YealryProfileCard from "@/components/fortune/YealryProfileCard";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
-import { shareToKakao, shareToLine } from "@/libs/kakao";
+import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
+import { uploadShareImage } from "@/libs/supabase/storage";
 
 import styles from "./page.module.css";
 
@@ -77,16 +76,20 @@ export default function YearlyFortunePage() {
 
   // 공유 드로어 상태
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
-  const [showStoryCard, setShowStoryCard] = useState(false);
+  // 프로필 이미지 공유 드로어 상태
+  const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
+    useState(false);
+  const [showProfileCard, setShowProfileCard] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 이미지 다운로드 훅
+  // 프로필 카드 이미지 훅 (프로필 공유용 - YealryProfileCard)
   const {
-    ref: storyCardRef,
-    download: downloadStoryImage,
+    ref: profileCardRef,
+    download: downloadProfileImage,
+    toBlob: profileCardToBlob,
     isDownloading,
   } = useImageDownload({
-    filename: `life_spoiler_${currentYear}_fortune`,
+    filename: `life_spoiler_${currentYear}_profile`,
     pixelRatio: 2,
   });
 
@@ -99,21 +102,21 @@ export default function YearlyFortunePage() {
     };
   }, []);
 
-  // 이미지 다운로드 핸들러
-  const handleDownloadImage = useCallback(async () => {
-    setShowStoryCard(true);
-    // requestAnimationFrame으로 DOM 렌더링 완료 대기
+  // 프로필 이미지 공유 드로어용 다운로드 핸들러
+  const handleProfileDownloadImage = useCallback(async () => {
+    setShowProfileCard(true);
     await new Promise((resolve) => requestAnimationFrame(resolve));
 
     try {
-      await downloadStoryImage();
+      await downloadProfileImage();
     } finally {
+      // 이미지 다운로드 완료 후 UI 정리를 위한 딜레이
       timeoutRef.current = setTimeout(() => {
-        setShowStoryCard(false);
-        setIsShareDrawerOpen(false);
+        setShowProfileCard(false);
+        setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [downloadStoryImage]);
+  }, [downloadProfileImage]);
 
   // 카카오톡 공유 핸들러
   const handleShareKakao = useCallback(() => {
@@ -143,6 +146,45 @@ export default function YearlyFortunePage() {
     shareToLine(shareUrl, text);
     setIsShareDrawerOpen(false);
   }, [result, profile, profileId]);
+
+  // 프로필 이미지 공유 - 카카오톡 핸들러
+  const handleProfileShareKakao = useCallback(async () => {
+    if (!result || !profile) return;
+
+    // 프로필 카드 표시
+    setShowProfileCard(true);
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    try {
+      // 이미지 Blob 생성
+      const blob = await profileCardToBlob();
+      if (!blob) {
+        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
+        return;
+      }
+
+      // Supabase Storage에 업로드
+      const imageUrl = await uploadShareImage(blob, `yearly_${profileId}.png`);
+
+      const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
+
+      // 카카오톡 이미지 템플릿으로 공유
+      shareToKakaoWithImage({
+        imageUrl,
+        name: profile.name,
+        webDomain: shareUrl,
+      });
+    } catch (error) {
+      console.error("Failed to share to Kakao with image:", error);
+      alert("공유에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      // 공유 UI가 표시될 시간을 확보하기 위한 딜레이
+      timeoutRef.current = setTimeout(() => {
+        setShowProfileCard(false);
+        setIsProfileShareDrawerOpen(false);
+      }, 500);
+    }
+  }, [result, profile, profileId, profileCardToBlob]);
 
   if (isLoading) {
     return <Loading />;
@@ -210,6 +252,20 @@ export default function YearlyFortunePage() {
           birthTimeUnknown={profile.birth_time_unknown}
           calendarType={profile.calendar_type}
           gender={profile.gender}
+        />
+
+        <div className={styles.spacer} />
+
+        <YealryProfileCard
+          year={currentYear}
+          mainStars={mainStarNames}
+          headline={interpretation.overview.headline}
+          tags={interpretation.overview.tags}
+          description={interpretation.overview.description}
+          scores={storyScores}
+          labels={storyLabels}
+          isImage={false}
+          onShareClick={() => setIsProfileShareDrawerOpen(true)}
         />
 
         {/* 자미두수 명반 섹션 */}
@@ -336,12 +392,24 @@ export default function YearlyFortunePage() {
         onCopyLink={handleShare}
         onShareKakao={handleShareKakao}
         onShareLine={handleShareLine}
-        onDownloadImage={handleDownloadImage}
+        showDownloadImage={false}
         isDownloading={isDownloading}
       />
 
-      {/* 이미지 생성용 숨겨진 카드 */}
-      {showStoryCard && (
+      {/* 프로필 이미지 공유 드로어 */}
+      <ShareDrawer
+        isOpen={isProfileShareDrawerOpen}
+        onClose={() => setIsProfileShareDrawerOpen(false)}
+        title={t("profileShareTitle", { default: "프로필 이미지 공유하기" })}
+        showCopyLink={false}
+        showLine={false}
+        onShareKakao={handleProfileShareKakao}
+        onDownloadImage={handleProfileDownloadImage}
+        isDownloading={isDownloading}
+      />
+
+      {/* 이미지 생성용 숨겨진 프로필 카드 (YealryProfileCard) */}
+      {showProfileCard && (
         <div
           style={{
             position: "fixed",
@@ -351,15 +419,16 @@ export default function YearlyFortunePage() {
             pointerEvents: "none",
           }}
         >
-          <InstagramStoryCard
-            ref={storyCardRef}
-            type="yearly"
+          <YealryProfileCard
+            ref={profileCardRef}
             year={currentYear}
             mainStars={mainStarNames}
             headline={interpretation.overview.headline}
+            tags={interpretation.overview.tags}
             description={interpretation.overview.description}
             scores={storyScores}
             labels={storyLabels}
+            isImage={true}
           />
         </div>
       )}

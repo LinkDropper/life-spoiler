@@ -301,6 +301,7 @@
         "fetchError": "올해 운세 조회에 실패했습니다.",
         "yearInfo": "{stem}{branch}년",
         "shareButton": "공유하기",
+        "profileShareTitle": "프로필 이미지 공유하기",
         "share": {
           "title": "{name}님의 {year}년 운세",
           "ogTitle": "{name}님의 올해 사주를 확인해보세요",
@@ -860,6 +861,7 @@
         "fetchError": "Failed to fetch this year's fortune.",
         "yearInfo": "Year of {stem}{branch}",
         "shareButton": "Share",
+        "profileShareTitle": "Share Profile Image",
         "share": {
           "title": "{name}'s {year} Fortune",
           "ogTitle": "Check out {name}'s {year} Fortune",
@@ -1419,6 +1421,7 @@
         "fetchError": "今年の運勢取得に失敗しました。",
         "yearInfo": "{stem}{branch}年",
         "shareButton": "シェアする",
+        "profileShareTitle": "プロフィール画像をシェアする",
         "share": {
           "title": "{name}さんの{year}年運勢",
           "ogTitle": "{name}さんの今年の運勢を確認してみてください",
