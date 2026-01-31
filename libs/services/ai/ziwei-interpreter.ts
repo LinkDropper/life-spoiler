@@ -10,6 +10,7 @@ import type {
   LifetimeCategoryResponse,
   LifetimeCoreScenarioResponse,
   PalaceData,
+  ProfileTraitsResponse,
   ZiweiInterpretationRequest,
 } from "./types";
 import {
@@ -17,6 +18,7 @@ import {
   LifeSpoilerResponseSchema,
   LifetimeCategoryResponseSchema,
   LifetimeCoreScenarioResponseSchema,
+  ProfileTraitsResponseSchema,
 } from "./types";
 import { chatCompletion, parseJsonResponse } from "./gemini";
 
@@ -47,6 +49,7 @@ const PALACE_MAPPING: Record<
   lifetime_relationship: { target: "부처궁", opposite: "관록궁" },
   lifetime_health: { target: "질액궁", opposite: "부모궁" },
   lifetime_age_scenarios: { target: "명궁", opposite: "천이궁" },
+  lifetime_profile_traits: { target: "명궁", opposite: "천이궁" },
 };
 
 /**
@@ -304,6 +307,18 @@ export const interpretAgeScenarios = async (
   );
 };
 
+/**
+ * 프로필 성향 분석 요청 (v2)
+ */
+export const interpretProfileTraits = async (
+  request: Omit<ZiweiInterpretationRequest, "requestType">
+): Promise<ProfileTraitsResponse> => {
+  return requestInterpretation(
+    { ...request, requestType: "lifetime_profile_traits" },
+    ProfileTraitsResponseSchema
+  );
+};
+
 // ============================================================
 // 전체 해석 서비스
 // ============================================================
@@ -325,10 +340,11 @@ export const generateFullInterpretation = async (
   const { includeDetails = false } = options;
 
   if (includeDetails) {
-    // 1단계: 인생 스포일러 + 핵심 시나리오
-    const [lifeSpoiler, coreScenario] = await Promise.all([
+    // 1단계: 인생 스포일러 + 핵심 시나리오 + 프로필 성향
+    const [lifeSpoiler, coreScenario, profileTraits] = await Promise.all([
       interpretLifeSpoiler(request),
       interpretLifetimeCore(request),
+      interpretProfileTraits(request),
     ]);
 
     // 2단계: 상세 시나리오 (재물, 직업)
@@ -356,6 +372,7 @@ export const generateFullInterpretation = async (
         health,
       },
       ageScenarios: ageResult.ageScenarios,
+      profileTraits,
       meta: {
         generatedAt: new Date().toISOString(),
         model: "gemini-2.0-flash",
