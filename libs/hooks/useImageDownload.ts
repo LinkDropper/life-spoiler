@@ -18,6 +18,8 @@ export interface UseImageDownloadReturn {
   ref: React.RefObject<HTMLDivElement | null>;
   /** 이미지 다운로드 실행 함수 */
   download: () => Promise<void>;
+  /** 이미지를 Blob으로 생성 (업로드용) */
+  toBlob: () => Promise<Blob | null>;
   /** 다운로드 중 여부 */
   isDownloading: boolean;
   /** 에러 메시지 */
@@ -129,9 +131,45 @@ export const useImageDownload = (
     }
   }, [filename, pixelRatio, waitForImages]);
 
+  const toBlob = useCallback(async (): Promise<Blob | null> => {
+    if (!ref.current) {
+      setError("이미지 생성 대상을 찾을 수 없습니다.");
+      return null;
+    }
+
+    setIsDownloading(true);
+    setError(null);
+
+    try {
+      // 이미지 로드 대기
+      if (waitForImages) {
+        await waitForImagesToLoad(ref.current);
+      }
+
+      // 동적 import로 번들 사이즈 최적화
+      const { toBlob: htmlToBlob } = await import("html-to-image");
+
+      const blob = await htmlToBlob(ref.current, {
+        pixelRatio,
+        cacheBust: true,
+        backgroundColor: undefined,
+        skipAutoScale: false,
+      });
+
+      return blob;
+    } catch (err) {
+      console.error("이미지 생성 실패:", err);
+      setError("이미지 생성에 실패했습니다. 다시 시도해주세요.");
+      return null;
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [pixelRatio, waitForImages]);
+
   return {
     ref,
     download,
+    toBlob,
     isDownloading,
     error,
   };

@@ -11,11 +11,19 @@ import styles from "./ShareDrawer.module.css";
 interface ShareDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onCopyLink: () => void;
+  onCopyLink?: () => void;
   onShareKakao?: () => void;
   onShareLine?: () => void;
-  onDownloadImage: () => void;
+  onDownloadImage?: () => void;
   isDownloading?: boolean;
+  /** 드로어 타이틀 (기본값: "공유하기") */
+  title?: string;
+  /** 링크 복사하기 메뉴 표시 여부 (기본값: true) */
+  showCopyLink?: boolean;
+  /** LINE 공유하기 메뉴 표시 여부 (기본값: true) */
+  showLine?: boolean;
+  /** 이미지 다운로드 메뉴 표시 여부 (기본값: true) */
+  showDownloadImage?: boolean;
 }
 
 /**
@@ -31,8 +39,13 @@ export const ShareDrawer = ({
   onShareLine,
   onDownloadImage,
   isDownloading = false,
+  title,
+  showCopyLink = true,
+  showLine = true,
+  showDownloadImage = true,
 }: ShareDrawerProps) => {
   const t = useTranslations("fortune.shareDrawer");
+  const displayTitle = title ?? t("title", { default: "공유하기" });
 
   useEffect(() => {
     if (isOpen) {
@@ -58,7 +71,7 @@ export const ShareDrawer = ({
 
   const handleCopyLink = () => {
     trackEvent("share_copy_link");
-    onCopyLink();
+    onCopyLink?.();
     onClose();
   };
 
@@ -74,16 +87,14 @@ export const ShareDrawer = ({
 
   const handleDownloadImage = () => {
     trackEvent("share_download_image");
-    onDownloadImage();
+    onDownloadImage?.();
   };
 
   return (
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.drawer}>
         <div className={styles.header}>
-          <span className={styles.title}>
-            {t("title", { default: "공유하기" })}
-          </span>
+          <span className={styles.title}>{displayTitle}</span>
         </div>
 
         <div className={styles.separator}>
@@ -91,15 +102,17 @@ export const ShareDrawer = ({
         </div>
 
         <div className={styles.menuItems}>
-          <button
-            type="button"
-            className={styles.menuItem}
-            onClick={handleCopyLink}
-            disabled={isDownloading}
-          >
-            <CopyIcon />
-            <span>{t("copyLink", { default: "링크 복사하기" })}</span>
-          </button>
+          {showCopyLink && onCopyLink && (
+            <button
+              type="button"
+              className={styles.menuItem}
+              onClick={handleCopyLink}
+              disabled={isDownloading}
+            >
+              <CopyIcon />
+              <span>{t("copyLink", { default: "링크 복사하기" })}</span>
+            </button>
+          )}
 
           <button
             type="button"
@@ -117,35 +130,39 @@ export const ShareDrawer = ({
             <span>{t("shareKakao", { default: "카카오톡 공유하기" })}</span>
           </button>
 
-          <button
-            type="button"
-            className={styles.menuItem}
-            onClick={handleShareLine}
-            disabled={isDownloading}
-          >
-            <Image
-              src="/images/share/line-logo.png"
-              alt="LINE"
-              width={18}
-              height={18}
-              className={styles.menuIcon}
-            />
-            <span>{t("shareLine", { default: "라인 공유하기" })}</span>
-          </button>
+          {showLine && (
+            <button
+              type="button"
+              className={styles.menuItem}
+              onClick={handleShareLine}
+              disabled={isDownloading}
+            >
+              <Image
+                src="/images/share/line-logo.png"
+                alt="LINE"
+                width={18}
+                height={18}
+                className={styles.menuIcon}
+              />
+              <span>{t("shareLine", { default: "라인 공유하기" })}</span>
+            </button>
+          )}
 
-          <button
-            type="button"
-            className={styles.menuItem}
-            onClick={handleDownloadImage}
-            disabled={isDownloading}
-          >
-            <PhotoIcon />
-            <span>
-              {isDownloading
-                ? t("downloading", { default: "다운로드 중..." })
-                : t("downloadImage", { default: "프로필 이미지 다운로드" })}
-            </span>
-          </button>
+          {showDownloadImage && onDownloadImage && (
+            <button
+              type="button"
+              className={styles.menuItem}
+              onClick={handleDownloadImage}
+              disabled={isDownloading}
+            >
+              <PhotoIcon />
+              <span>
+                {isDownloading
+                  ? t("downloading", { default: "다운로드 중..." })
+                  : t("downloadImage", { default: "프로필 이미지 다운로드" })}
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>
