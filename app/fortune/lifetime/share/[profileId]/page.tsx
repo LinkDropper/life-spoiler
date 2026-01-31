@@ -15,9 +15,27 @@ import {
   ErrorState,
   type CategoryKey,
 } from "@/components/fortune";
+import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
+import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
+import NewProfileCard from "@/components/fortune/NewProfileCard";
 import { useLifetimeShare } from "@/libs/hooks/fortune";
+import type {
+  FortuneInterpretation,
+  ProfileTraitsResponse,
+} from "@/libs/services/ai/types";
 
 import styles from "../../[profileId]/page.module.css";
+
+/**
+ * profileTraits 존재 여부 타입 가드
+ */
+const hasProfileTraits = (
+  interpretation: FortuneInterpretation
+): interpretation is FortuneInterpretation & {
+  profileTraits: ProfileTraitsResponse;
+} => {
+  return !!interpretation.profileTraits?.spectrums;
+};
 
 const CATEGORY_KEYS: CategoryKey[] = [
   "wealth",
@@ -37,6 +55,7 @@ export default function LifetimeFortuneSharePage() {
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
+  const tStory = useTranslations("fortune.instagramStory");
 
   const { isLoading, error, result, profile, handleCheckMyFortune } =
     useLifetimeShare({
@@ -83,6 +102,29 @@ export default function LifetimeFortuneSharePage() {
 
   const { interpretation, rawChart } = result;
 
+  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
+  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
+  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
+
+  // 프로필 카드용 점수
+  const storyScores = {
+    wealth: interpretation.categories.wealth.score ?? 0,
+    career: interpretation.categories.career.score ?? 0,
+    relationship: interpretation.categories.relationship.score ?? 0,
+    health: interpretation.categories.health.score ?? 0,
+  };
+
+  // 프로필 카드용 레이블
+  const storyLabels: InstagramStoryCardLabels = {
+    mainStar: tStory("mainStar"),
+    categories: {
+      wealth: tStory("categories.wealth"),
+      career: tStory("categories.career"),
+      relationship: tStory("categories.relationship"),
+      health: tStory("categories.health"),
+    },
+  };
+
   return (
     <div className={styles.page}>
       <HeaderClient />
@@ -98,6 +140,28 @@ export default function LifetimeFortuneSharePage() {
           calendarType={profile.calendar_type}
           gender={profile.gender}
         />
+
+        <div className={styles.spacer} />
+
+        {hasProfileTraits(interpretation) ? (
+          <NewProfileCard
+            mainStars={mainStarNames}
+            headline={interpretation.lifeSpoiler.headline}
+            profileTraits={interpretation.profileTraits}
+            isImage={false}
+            shouldShowShareButton={false}
+          />
+        ) : (
+          <LifetimeProfileCard
+            mainStars={mainStarNames}
+            headline={interpretation.lifeSpoiler.headline}
+            description={interpretation.lifeSpoiler.description}
+            scores={storyScores}
+            labels={storyLabels}
+            isImage={false}
+            shouldShowShareButton={false}
+          />
+        )}
 
         {/* 자미두수 명반 섹션 */}
         <SectionHeader

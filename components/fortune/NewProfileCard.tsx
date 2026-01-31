@@ -17,6 +17,8 @@ export interface NewProfileCardProps {
   profileTraits: ProfileTraitsResponse;
   /** 이미지 여부 */
   isImage?: boolean;
+  /** 공유 버튼 표시 여부 */
+  shouldShowShareButton?: boolean;
   /** 공유 버튼 클릭 핸들러 */
   onShareClick?: () => void;
 }
@@ -28,7 +30,14 @@ export interface NewProfileCardProps {
  */
 export const NewProfileCard = forwardRef<HTMLDivElement, NewProfileCardProps>(
   (
-    { mainStars, headline, profileTraits, onShareClick, isImage = true },
+    {
+      mainStars,
+      headline,
+      profileTraits,
+      onShareClick,
+      isImage = true,
+      shouldShowShareButton = true,
+    },
     ref
   ) => {
     const locale = useLocale() as Locale;
@@ -83,7 +92,7 @@ export const NewProfileCard = forwardRef<HTMLDivElement, NewProfileCardProps>(
           position: "relative",
         }}
       >
-        {!isImage && (
+        {!isImage && shouldShowShareButton && (
           <button
             type="button"
             onClick={onShareClick}

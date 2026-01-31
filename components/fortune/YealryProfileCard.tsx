@@ -36,6 +36,8 @@ export interface YealryProfileCardProps {
   labels: InstagramStoryCardLabels;
   /** 이미지 여부 */
   isImage?: boolean;
+  /** 공유 버튼 표시 여부 */
+  shouldShowShareButton?: boolean;
   /** 공유 버튼 클릭 핸들러 (isImage=false일 때만 표시) */
   onShareClick?: () => void;
 }
@@ -78,6 +80,7 @@ export const YealryProfileCard = forwardRef<
       scores,
       labels,
       isImage = true,
+      shouldShowShareButton = true,
       onShareClick,
     },
     ref
@@ -121,7 +124,7 @@ export const YealryProfileCard = forwardRef<
           position: "relative",
         }}
       >
-        {!isImage && (
+        {!isImage && shouldShowShareButton && (
           <button
             type="button"
             onClick={onShareClick}

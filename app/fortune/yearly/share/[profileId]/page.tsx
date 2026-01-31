@@ -15,6 +15,8 @@ import {
   ErrorState,
   type CategoryKey,
 } from "@/components/fortune";
+import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
+import YealryProfileCard from "@/components/fortune/YealryProfileCard";
 import { useYearlyShare } from "@/libs/hooks/fortune";
 
 import styles from "../../[profileId]/page.module.css";
@@ -37,6 +39,7 @@ export default function YearlyFortuneSharePage() {
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
+  const tStory = useTranslations("fortune.instagramStory");
 
   const {
     isLoading,
@@ -89,6 +92,29 @@ export default function YearlyFortuneSharePage() {
 
   const { interpretation, rawChart, yearlySihua } = result;
 
+  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
+  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
+  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
+
+  // 프로필 카드용 점수
+  const storyScores = {
+    wealth: interpretation.categories.wealth.score ?? 0,
+    career: interpretation.categories.career.score ?? 0,
+    relationship: interpretation.categories.relationship.score ?? 0,
+    health: interpretation.categories.health.score ?? 0,
+  };
+
+  // 프로필 카드용 레이블
+  const storyLabels: InstagramStoryCardLabels = {
+    mainStar: tStory("mainStar"),
+    categories: {
+      wealth: tStory("categories.wealth"),
+      career: tStory("categories.career"),
+      relationship: tStory("categories.relationship"),
+      health: tStory("categories.health"),
+    },
+  };
+
   return (
     <div className={styles.page}>
       <HeaderClient />
@@ -104,6 +130,20 @@ export default function YearlyFortuneSharePage() {
           birthTimeUnknown={profile.birth_time_unknown}
           calendarType={profile.calendar_type}
           gender={profile.gender}
+        />
+
+        <div className={styles.spacer} />
+
+        <YealryProfileCard
+          year={currentYear}
+          mainStars={mainStarNames}
+          headline={interpretation.overview.headline}
+          tags={interpretation.overview.tags}
+          description={interpretation.overview.description}
+          scores={storyScores}
+          labels={storyLabels}
+          isImage={false}
+          shouldShowShareButton={false}
         />
 
         {/* 자미두수 명반 섹션 */}
