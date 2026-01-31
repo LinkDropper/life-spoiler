@@ -162,7 +162,7 @@ export const shareToKakaoWithImage = async (
     window.Kakao.Share.sendCustom({
       templateId: IMAGE_TEMPLATE_ID,
       templateArgs: {
-        imageUrl,
+        image_url: imageUrl,
         name: params.name,
         web_domain: params.webDomain,
       },
