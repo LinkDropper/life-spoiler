@@ -128,10 +128,7 @@ export const useImageDownload = (
         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
       const file = new File([blob], `${filename}.png`, { type: "image/png" });
-      const canShare =
-        typeof navigator.share === "function" &&
-        typeof navigator.canShare === "function" &&
-        navigator.canShare({ files: [file] });
+      const canShare = navigator.canShare?.({ files: [file] }) ?? false;
 
       if (isIOS && canShare) {
         // iOS: Web Share API로 공유 시트 열기 (이미지 저장 옵션 제공)
@@ -143,7 +140,7 @@ export const useImageDownload = (
         link.download = `${filename}.png`;
         link.href = dataUrl;
         link.click();
-        URL.revokeObjectURL(dataUrl);
+        setTimeout(() => URL.revokeObjectURL(dataUrl), 100);
       }
     } catch (err) {
       // 사용자가 공유를 취소한 경우 (AbortError)는 에러로 처리하지 않음
