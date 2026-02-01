@@ -253,3 +253,7 @@ libs/fetch/CONTEXT.md      # fetch 모듈 컨텍스트
 libs/logger/CONTEXT.md     # logger 모듈 컨텍스트
 libs/services/oauth/CONTEXT.md  # OAuth 서비스 컨텍스트
 ```
+
+# 작업 규칙
+
+허락없이 마음대로 커밋이나 푸쉬 금지.
