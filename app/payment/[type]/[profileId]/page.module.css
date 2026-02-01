@@ -2,7 +2,11 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, rgba(12, 18, 32, 1) 0%, rgba(46, 20, 49, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(12, 18, 32, 1) 0%,
+    rgba(46, 20, 49, 1) 100%
+  );
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
@@ -23,7 +27,10 @@
 }
 
 .sectionTitle {
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.2;
@@ -46,7 +53,10 @@
 }
 
 .productName {
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
@@ -99,7 +109,8 @@
 }
 
 .radioOuterSelected {
-  border-color: #ffffff;
+  background: #ffccd9;
+  border-color: #ffccd9;
 }
 
 .radioInner {
@@ -110,7 +121,10 @@
 }
 
 .methodLabel {
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
@@ -119,6 +133,121 @@
 
 .methodLogo {
   flex-shrink: 0;
+}
+
+/* 쿠폰 입력 영역 */
+.promoInputContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.promoInput {
+  flex: 1;
+  height: 44px;
+  padding: 0 16px;
+  background: #18181b;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #ffffff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.promoInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.promoInput:focus {
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.promoInputApplied {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* 쿠폰 적용 성공 토스트 */
+.promoToast {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #18181b;
+  border-radius: 8px;
+  box-shadow: 0px 4px 24px -5px rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  animation: fadeInOut 3s ease-in-out;
+  white-space: nowrap;
+}
+
+.promoToast span {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+.promoSubmitBtn {
+  height: 44px;
+  padding: 12px 16px;
+  background: #ffccd9;
+  border: none;
+  border-radius: 8px;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.promoSubmitBtn:hover:not(:disabled) {
+  background: #ffdde6;
+}
+
+.promoSubmitBtn:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
 }
 
 /* 결제 금액 카드 */
@@ -136,7 +265,10 @@
 }
 
 .amountLabel {
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
@@ -144,7 +276,39 @@
 }
 
 .amountValue {
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #ffdde6;
+}
+
+.amountWithDiscount {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.originalAmount {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: line-through;
+}
+
+.discountedAmount {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
@@ -153,7 +317,10 @@
 
 /* 환불 정책 안내 */
 .refundNotice {
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 1.4;
@@ -208,7 +375,10 @@
   background: #ffccd9;
   border: none;
   border-radius: 8px;
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
@@ -239,14 +409,20 @@
 }
 
 .error p {
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 16px;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .backButton {
   padding: 12px 24px;
-  font-family: "Pretendard", -apple-system, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: #ffffff;

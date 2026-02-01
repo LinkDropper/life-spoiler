@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
@@ -27,7 +27,13 @@ const PAYMENT_AMOUNT_USD = 0.99;
 
 type FortuneType = "yearly" | "lifetime";
 
-type PaymentMethod = "CARD" | "TOSSPAY" | "KAKAOPAY" | "APPLEPAY" | "PAYPAL";
+type PaymentMethod =
+  | "CARD"
+  | "TOSSPAY"
+  | "KAKAOPAY"
+  | "APPLEPAY"
+  | "PAYPAL"
+  | "PROMO";
 
 interface PaymentMethodOption {
   id: PaymentMethod;
@@ -47,6 +53,11 @@ const EASY_PAY_MAP: Record<string, string> = {
   TOSSPAY: "토스페이",
   KAKAOPAY: "카카오페이",
   APPLEPAY: "애플페이",
+};
+
+const PAYMENT_METHOD_PROMO: PaymentMethodOption = {
+  id: "PROMO",
+  labelKey: "methodPromo",
 };
 
 const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
@@ -72,6 +83,7 @@ const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
     id: "CARD",
     labelKey: "methodCard",
   },
+  PAYMENT_METHOD_PROMO,
 ];
 
 const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
@@ -82,6 +94,7 @@ const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
     logoWidth: 60,
     logoHeight: 16,
   },
+  PAYMENT_METHOD_PROMO,
 ];
 
 export default function PaymentPage() {
@@ -114,6 +127,28 @@ export default function PaymentPage() {
     isForeignLocale ? "PAYPAL" : "KAKAOPAY"
   );
   const [isProcessing, setIsProcessing] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [isPromoValidating, setIsPromoValidating] = useState(false);
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [showPromoToast, setShowPromoToast] = useState(false);
+  const [promoErrorMessage, setPromoErrorMessage] = useState<string | null>(
+    null
+  );
+
+  const promoToastTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const promoErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (promoToastTimerRef.current) {
+        clearTimeout(promoToastTimerRef.current);
+      }
+      if (promoErrorTimerRef.current) {
+        clearTimeout(promoErrorTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (authStatus === "authenticated" && !isProfilesLoaded) {
@@ -152,6 +187,31 @@ export default function PaymentPage() {
     router,
     tPayment,
   ]);
+
+  // 프로모 코드 적용 여부 확인
+  useEffect(() => {
+    const checkPromoApplied = async () => {
+      if (authStatus !== "authenticated" || !profileId || !fortuneType) {
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `/api/promo/check?profileId=${profileId}&fortuneType=${fortuneType}`
+        );
+        const result = await response.json();
+
+        if (result.success && result.hasPromo) {
+          setPromoApplied(true);
+          setSelectedMethod("PROMO");
+        }
+      } catch {
+        // 에러 시 무시 (쿠폰 미적용 상태로 유지)
+      }
+    };
+
+    checkPromoApplied();
+  }, [authStatus, profileId, fortuneType]);
 
   const handlePayment = async () => {
     if (!cachedProfile || isProcessing) return;
@@ -271,6 +331,59 @@ export default function PaymentPage() {
     return tPayment("productNameLifetime");
   };
 
+  const showPromoError = (message: string) => {
+    if (promoErrorTimerRef.current) {
+      clearTimeout(promoErrorTimerRef.current);
+    }
+    setPromoErrorMessage(message);
+    promoErrorTimerRef.current = setTimeout(() => {
+      setPromoErrorMessage(null);
+    }, 3000);
+  };
+
+  const handlePromoSubmit = async () => {
+    if (!promoCode.trim() || isPromoValidating || promoApplied) return;
+
+    setIsPromoValidating(true);
+    setPromoErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/promo/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: promoCode.trim(),
+          profileId,
+          fortuneType,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        showPromoError(result.error || tPayment("promoError"));
+        setIsPromoValidating(false);
+        return;
+      }
+
+      // 쿠폰 적용 성공
+      setPromoApplied(true);
+      setShowPromoToast(true);
+      setIsPromoValidating(false);
+
+      // 3초 후 토스트 숨김
+      if (promoToastTimerRef.current) {
+        clearTimeout(promoToastTimerRef.current);
+      }
+      promoToastTimerRef.current = setTimeout(() => {
+        setShowPromoToast(false);
+      }, 3000);
+    } catch {
+      showPromoError(tPayment("promoError"));
+      setIsPromoValidating(false);
+    }
+  };
+
   if (authStatus === "loading" || isLoading || !isProfilesLoaded) {
     return <Loading />;
   }
@@ -295,9 +408,49 @@ export default function PaymentPage() {
     );
   }
 
+  const handleViewFortune = () => {
+    router.push(`/fortune/${fortuneType}/${profileId}`);
+  };
+
   return (
     <div className={styles.page}>
       <HeaderClient />
+
+      {showPromoToast && (
+        <div className={styles.promoToast}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6.00004 10.78L3.22004 8L2.27337 8.94L6.00004 12.6667L14 4.66667L13.06 3.72667L6.00004 10.78Z"
+              fill="white"
+            />
+          </svg>
+          <span>{tPayment("promoSuccess")}</span>
+        </div>
+      )}
+
+      {promoErrorMessage && (
+        <div className={styles.promoToast}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 1.33334C4.32 1.33334 1.33334 4.32001 1.33334 8.00001C1.33334 11.68 4.32 14.6667 8 14.6667C11.68 14.6667 14.6667 11.68 14.6667 8.00001C14.6667 4.32001 11.68 1.33334 8 1.33334ZM8.66667 11.3333H7.33334V10H8.66667V11.3333ZM8.66667 8.66668H7.33334V4.66668H8.66667V8.66668Z"
+              fill="#FF6B6B"
+            />
+          </svg>
+          <span>{promoErrorMessage}</span>
+        </div>
+      )}
 
       <main className={styles.main}>
         <div className={styles.section}>
@@ -347,6 +500,33 @@ export default function PaymentPage() {
               </div>
             </button>
           ))}
+
+          {selectedMethod === "PROMO" && (
+            <div className={styles.promoInputContainer}>
+              <input
+                type="text"
+                className={`${styles.promoInput} ${promoApplied ? styles.promoInputApplied : ""}`}
+                placeholder={
+                  promoApplied
+                    ? tPayment("promoAppliedPlaceholder")
+                    : tPayment("promoPlaceholder")
+                }
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+                disabled={isPromoValidating || promoApplied}
+              />
+              {!promoApplied && (
+                <button
+                  type="button"
+                  className={styles.promoSubmitBtn}
+                  onClick={handlePromoSubmit}
+                  disabled={!promoCode.trim() || isPromoValidating}
+                >
+                  {tPayment("promoSubmit")}
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <div className={styles.section}>
@@ -355,11 +535,24 @@ export default function PaymentPage() {
 
         <div className={styles.amountCard}>
           <span className={styles.amountLabel}>{tPayment("finalAmount")}</span>
-          <span className={styles.amountValue}>
-            {isForeignLocale
-              ? `$${paymentAmount.toFixed(2)}`
-              : `${paymentAmount.toLocaleString()}${tPayment("currency")}`}
-          </span>
+          {promoApplied ? (
+            <div className={styles.amountWithDiscount}>
+              <span className={styles.originalAmount}>
+                {isForeignLocale
+                  ? `$${paymentAmount.toFixed(2)}`
+                  : `${paymentAmount.toLocaleString()}${tPayment("currency")}`}
+              </span>
+              <span className={styles.discountedAmount}>
+                {isForeignLocale ? "$0.00" : `0${tPayment("currency")}`}
+              </span>
+            </div>
+          ) : (
+            <span className={styles.amountValue}>
+              {isForeignLocale
+                ? `$${paymentAmount.toFixed(2)}`
+                : `${paymentAmount.toLocaleString()}${tPayment("currency")}`}
+            </span>
+          )}
         </div>
 
         <p className={styles.refundNotice}>{tPayment("refundPolicy")}</p>
@@ -389,10 +582,16 @@ export default function PaymentPage() {
         <button
           type="button"
           className={styles.paymentButton}
-          onClick={handlePayment}
-          disabled={isProcessing}
+          onClick={promoApplied ? handleViewFortune : handlePayment}
+          disabled={
+            isProcessing || (selectedMethod === "PROMO" && !promoApplied)
+          }
         >
-          {isProcessing ? tPayment("processing") : tPayment("payButtonSimple")}
+          {isProcessing
+            ? tPayment("processing")
+            : promoApplied
+              ? tPayment("viewFortune")
+              : tPayment("payButtonSimple")}
         </button>
       </footer>
     </div>

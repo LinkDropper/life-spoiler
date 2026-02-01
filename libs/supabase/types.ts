@@ -152,6 +152,70 @@ export interface ProfileFreeAccessInsert {
   memo?: string | null;
 }
 
+// Promo Code Types
+export type PromoCodeType = "common" | "single_use";
+export type PromoBenefitType = "free_fortune" | "discount";
+export type PromoFortuneType = "lifetime" | "yearly" | "all";
+
+export interface PromoCodeRow {
+  id: string;
+  code: string;
+  code_type: PromoCodeType;
+  benefit_type: PromoBenefitType;
+  fortune_type: PromoFortuneType;
+  discount_percent: number | null;
+  max_uses: number | null;
+  current_uses: number;
+  max_uses_per_user: number;
+  valid_from: string;
+  valid_until: string | null;
+  is_active: boolean;
+  campaign_name: string | null;
+  memo: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PromoCodeInsert {
+  id?: string;
+  code: string;
+  code_type: PromoCodeType;
+  benefit_type?: PromoBenefitType;
+  fortune_type?: PromoFortuneType;
+  discount_percent?: number | null;
+  max_uses?: number | null;
+  current_uses?: number;
+  max_uses_per_user?: number;
+  valid_from?: string;
+  valid_until?: string | null;
+  is_active?: boolean;
+  campaign_name?: string | null;
+  memo?: string | null;
+  created_by?: string | null;
+}
+
+export interface PromoCodeUsageRow {
+  id: string;
+  promo_code_id: string;
+  user_id: string;
+  profile_id: string;
+  fortune_type: FortuneType;
+  free_access_id: string | null;
+  used_at: string;
+  created_at: string;
+}
+
+export interface PromoCodeUsageInsert {
+  id?: string;
+  promo_code_id: string;
+  user_id: string;
+  profile_id: string;
+  fortune_type: FortuneType;
+  free_access_id?: string | null;
+  used_at?: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -202,6 +266,43 @@ export type Database = {
             foreignKeyName: "profile_free_access_profile_id_fkey";
             columns: ["profile_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      promo_codes: {
+        Row: PromoCodeRow;
+        Insert: PromoCodeInsert;
+        Update: Partial<PromoCodeInsert>;
+        Relationships: [];
+      };
+      promo_code_usages: {
+        Row: PromoCodeUsageRow;
+        Insert: PromoCodeUsageInsert;
+        Update: Partial<PromoCodeUsageInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "promo_code_usages_promo_code_id_fkey";
+            columns: ["promo_code_id"];
+            referencedRelation: "promo_codes";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "promo_code_usages_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "promo_code_usages_profile_id_fkey";
+            columns: ["profile_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "promo_code_usages_free_access_id_fkey";
+            columns: ["free_access_id"];
+            referencedRelation: "profile_free_access";
             referencedColumns: ["id"];
           },
         ];
