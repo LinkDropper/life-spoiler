@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
@@ -134,6 +134,21 @@ export default function PaymentPage() {
   const [promoErrorMessage, setPromoErrorMessage] = useState<string | null>(
     null
   );
+
+  const promoToastTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const promoErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (promoToastTimerRef.current) {
+        clearTimeout(promoToastTimerRef.current);
+      }
+      if (promoErrorTimerRef.current) {
+        clearTimeout(promoErrorTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (authStatus === "authenticated" && !isProfilesLoaded) {
@@ -317,8 +332,11 @@ export default function PaymentPage() {
   };
 
   const showPromoError = (message: string) => {
+    if (promoErrorTimerRef.current) {
+      clearTimeout(promoErrorTimerRef.current);
+    }
     setPromoErrorMessage(message);
-    setTimeout(() => {
+    promoErrorTimerRef.current = setTimeout(() => {
       setPromoErrorMessage(null);
     }, 3000);
   };
@@ -354,7 +372,10 @@ export default function PaymentPage() {
       setIsPromoValidating(false);
 
       // 3초 후 토스트 숨김
-      setTimeout(() => {
+      if (promoToastTimerRef.current) {
+        clearTimeout(promoToastTimerRef.current);
+      }
+      promoToastTimerRef.current = setTimeout(() => {
         setShowPromoToast(false);
       }, 3000);
     } catch {
@@ -414,7 +435,7 @@ export default function PaymentPage() {
       )}
 
       {promoErrorMessage && (
-        <div className={styles.promoErrorToast}>
+        <div className={styles.promoToast}>
           <svg
             width="16"
             height="16"

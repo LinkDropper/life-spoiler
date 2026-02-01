@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod/v4";
 
 import { createAuthClient } from "@/libs/supabase";
 import { hasPromoAppliedToProfile, PromoError } from "@/libs/services/promo";
 import type { FortuneType } from "@/libs/supabase/types";
+
+const QuerySchema = z.object({
+  profileId: z.string().uuid(),
+  fortuneType: z.enum(["lifetime", "yearly"]),
+});
 
 /**
  * 프로필에 프로모션 코드 적용 여부 확인 API
@@ -25,24 +31,24 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const profileId = searchParams.get("profileId");
-    const fortuneType = searchParams.get("fortuneType");
+    const parseResult = QuerySchema.safeParse({
+      profileId: searchParams.get("profileId"),
+      fortuneType: searchParams.get("fortuneType"),
+    });
 
-    if (!profileId || !fortuneType) {
+    if (!parseResult.success) {
       return NextResponse.json(
-        { success: false, error: "profileId와 fortuneType이 필요합니다." },
+        { success: false, error: "잘못된 요청입니다." },
         { status: 400 }
       );
     }
 
-    if (fortuneType !== "yearly" && fortuneType !== "lifetime") {
-      return NextResponse.json(
-        { success: false, error: "잘못된 fortuneType입니다." },
-        { status: 400 }
-      );
-    }
+    const { profileId, fortuneType } = parseResult.data;
 
-    const hasPromo = await hasPromoAppliedToProfile(profileId, fortuneType);
+    const hasPromo = await hasPromoAppliedToProfile(
+      profileId,
+      fortuneType as FortuneType
+    );
 
     return NextResponse.json({
       success: true,

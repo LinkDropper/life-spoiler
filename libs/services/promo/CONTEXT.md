@@ -141,6 +141,7 @@ used_at TIMESTAMPTZ -- 사용 시간
 |--------|------|------|
 | POST | `/api/promo/validate` | 코드 유효성 검증 |
 | POST | `/api/promo/apply` | 코드 적용 |
+| GET | `/api/promo/check` | 적용 여부 확인 |
 | GET | `/api/promo/history` | 사용 내역 조회 |
 
 ## 연동

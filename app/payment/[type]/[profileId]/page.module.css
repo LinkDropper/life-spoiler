@@ -221,35 +221,6 @@
   }
 }
 
-/* 쿠폰 적용 실패 토스트 */
-.promoErrorToast {
-  position: fixed;
-  top: 84px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: #18181b;
-  border-radius: 8px;
-  box-shadow: 0px 4px 24px -5px rgba(0, 0, 0, 0.7);
-  z-index: 100;
-  animation: fadeInOut 3s ease-in-out;
-  white-space: nowrap;
-}
-
-.promoErrorToast span {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #ffffff;
-}
-
 .promoSubmitBtn {
   height: 44px;
   padding: 12px 16px;

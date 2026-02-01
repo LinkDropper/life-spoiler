@@ -2,11 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 
 import { createAuthClient } from "@/libs/supabase";
-import {
-  validatePromoCode,
-  getPromoCodeInfo,
-  PromoError,
-} from "@/libs/services/promo";
+import { validatePromoCode, PromoError } from "@/libs/services/promo";
 
 import type { FortuneType } from "@/libs/supabase/types";
 
@@ -49,23 +45,21 @@ export async function POST(request: Request) {
 
     const { code, profileId, fortuneType } = parseResult.data;
 
-    const result = await validatePromoCode({
+    const { promoCode } = await validatePromoCode({
       code,
       userId: user.id,
       profileId,
       fortuneType: fortuneType as FortuneType,
     });
 
-    const codeInfo = await getPromoCodeInfo(code);
-
     return NextResponse.json({
       success: true,
       data: {
-        isValid: result.isValid,
-        code: codeInfo?.code,
-        benefitType: codeInfo?.benefitType,
-        fortuneType: codeInfo?.fortuneType,
-        campaignName: codeInfo?.campaignName,
+        isValid: true,
+        code: promoCode.code,
+        benefitType: promoCode.benefit_type,
+        fortuneType: promoCode.fortune_type,
+        campaignName: promoCode.campaign_name,
       },
     });
   } catch (error) {
