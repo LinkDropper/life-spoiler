@@ -109,21 +109,44 @@ export const useImageDownload = (
       }
 
       // 동적 import로 번들 사이즈 최적화
-      const { toPng } = await import("html-to-image");
+      const { toBlob: htmlToBlob } = await import("html-to-image");
 
-      const dataUrl = await toPng(ref.current, {
+      const blob = await htmlToBlob(ref.current, {
         pixelRatio,
         cacheBust: true,
         backgroundColor: undefined,
         skipAutoScale: false,
       });
 
-      // 다운로드 링크 생성
-      const link = document.createElement("a");
-      link.download = `${filename}.png`;
-      link.href = dataUrl;
-      link.click();
+      if (!blob) {
+        throw new Error("Blob 생성 실패");
+      }
+
+      // iOS에서는 Web Share API를 사용하여 갤러리에 저장 가능하게 함
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+      const file = new File([blob], `${filename}.png`, { type: "image/png" });
+      const canShare = navigator.canShare?.({ files: [file] }) ?? false;
+
+      if (isIOS && canShare) {
+        // iOS: Web Share API로 공유 시트 열기 (이미지 저장 옵션 제공)
+        await navigator.share({ files: [file] });
+      } else {
+        // 기타 브라우저: 기존 다운로드 방식
+        const dataUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = `${filename}.png`;
+        link.href = dataUrl;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(dataUrl), 100);
+      }
     } catch (err) {
+      // 사용자가 공유를 취소한 경우 (AbortError)는 에러로 처리하지 않음
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
       console.error("이미지 생성 실패:", err);
       setError("이미지 생성에 실패했습니다. 다시 시도해주세요.");
     } finally {
