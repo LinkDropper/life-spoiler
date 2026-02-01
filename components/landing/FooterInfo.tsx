@@ -36,6 +36,22 @@ const XIcon = () => (
   </svg>
 );
 
+const KakaoIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 3C6.477 3 2 6.463 2 10.691c0 2.72 1.794 5.108 4.508 6.457-.199.749-.72 2.712-.825 3.132-.128.514.188.506.396.368.163-.109 2.593-1.76 3.643-2.473.737.104 1.498.159 2.278.159 5.523 0 10-3.463 10-7.643C22 6.463 17.523 3 12 3z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 export const FooterInfo = async () => {
   const t = await getTranslations("landing.footer");
 
@@ -98,6 +114,15 @@ export const FooterInfo = async () => {
           className={styles.socialLink}
         >
           <XIcon />
+        </a>
+        <a
+          href="https://pf.kakao.com/_lVfAX"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="KakaoTalk Channel"
+          className={styles.socialLink}
+        >
+          <KakaoIcon />
         </a>
       </div>
     </section>

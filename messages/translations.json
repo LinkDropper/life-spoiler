@@ -244,6 +244,7 @@
         "title": "{name}님의 인생 운세",
         "interpretError": "운세 해석에 실패했습니다.",
         "shareButton": "공유하기",
+        "profileShareTitle": "프로필 이미지 공유하기",
         "share": {
           "title": "{name}님의 인생 운세",
           "ogTitle": "{name}님의 인생 사주를 확인해보세요",
@@ -810,6 +811,7 @@
         "title": "{name}'s Lifetime Fortune",
         "interpretError": "Failed to interpret fortune.",
         "shareButton": "Share",
+        "profileShareTitle": "Share Profile Image",
         "share": {
           "title": "{name}'s Lifetime Fortune",
           "ogTitle": "Check out {name}'s Life Fortune",
@@ -1376,6 +1378,7 @@
         "title": "{name}さんの人生運勢",
         "interpretError": "運勢解釈に失敗しました。",
         "shareButton": "シェアする",
+        "profileShareTitle": "プロフィール画像をシェアする",
         "share": {
           "title": "{name}さんの人生運勢",
           "ogTitle": "{name}さんの人生運勢を確認してみてください",
