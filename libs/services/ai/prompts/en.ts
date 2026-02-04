@@ -14,8 +14,13 @@ Deeply analyze the chart data to create **unique, personalized life fortunes** t
 **"Generic statements that apply to everyone" are STRICTLY FORBIDDEN!**
 Interpret the unique combination of chart data to create specific stories that only apply to this person.
 
-### Personalization Patterns (Data → Story)
-Create completely different stories based on the main stars, transformations, and palace combinations:
+### Personalization Principles
+1. **Directly interpret the input chart data**: Analyze the combination of main stars, transformations, and palaces to derive unique characteristics
+2. **Consider star and palace interactions**: The same star has completely different meanings depending on which palace it's in
+3. **Reflect transformation influences**: Which star has which transformation (Hua Lu/Hua Quan/Hua Ke/Hua Ji) is key
+4. **Create fresh expressions each time**: Examples below are for reference only - don't use them directly, create new expressions that match the chart
+
+### Expression Style Examples (⚠️ DO NOT USE AS-IS, create new ones with this tone and specificity!)
 
 **If leadership/authority energy is strong:**
 - "The type who naturally says 'So what's the conclusion?' in meetings"
@@ -91,76 +96,94 @@ Output pure JSON only, no other text.`,
   userPrompts: {
     life_spoiler: `Find **this person's unique life theme** based on the chart!
 
-## 🎯 Core: Personalized Life Story
-Assign **completely different life concepts** based on chart data:
+## 🎯 Role: Life's Core Summary at a Glance!
+"What kind of person, what are the strengths and weaknesses" - make it easy to understand at once.
+(Detailed age-by-age stories are covered in the core scenario)
 
 ### headline writing (one-line life concept)
+Identify the strongest energy in the chart and create a fresh phrase.
+**(⚠️ DO NOT USE examples below as-is, only reference and create new ones for the chart!)**
 - Leadership energy strong: "👑 Born for the Throne", "🎯 Master Life Planner"
 - Wealth energy strong: "💰 Money Magnet DNA", "📈 Investment Instinct in the Blood"
 - Artistic energy strong: "🎨 Sees the World Differently", "🌙 Shines Brighter at Night"
 - Adventure energy strong: "🚀 Shark Life: Stop and Die", "🌊 Surfer Who Loves Big Waves"
 - Analytical energy strong: "🔬 Fact-Checker to the Core", "📚 Alone Time is Golden"
 
-### description writing (different info from headline)
-Expand the theme with **specific behaviors/traits:**
-- "The one who says 'So what's the point?' in meetings"
-- "Bank balance checking is a hobby - total realist"
-- "Makes strangers feel like decade-old friends - magnetic charm"
+### description writing (why this life theme - the reason!)
+**Explain in one sentence why they are this type based on chart energy.**
+**(⚠️ DO NOT USE examples below as-is, create fresh for the chart!)**
+- "Born with the strongest leader energy from birth"
+- "Has the 'explosion star' sitting in the wealth area"
+- "Creativity and artistic energy is particularly strong"
+- "Chart is full of change and challenge energy"
 
-### summary writing (300-400 chars, paragraphs required)
-**Cover 4 things specifically:**
+❌ No simple trait description: "The type who organizes meetings"
+✅ Reason-focused: Explain "why they are this type" based on chart energy
 
-Para 1: Core innate trait (strongest characteristic)
-Para 2: Area that shines in life (wealth/career/love)
-Para 3: Patterns to watch out for (specifically!)
-Para 4: One tip for living well
+### summary writing (600-700 chars, paragraph separation required)
+**6 paragraphs focused on core summary:**
 
-**Example style:**
-- "Naturally ends up as treasurer at every gathering."
-- "Can't stand being told what to do, but commits 100% when it's their own choice."
-- "But 'I'll handle everything' can lead to burnout."
+Para 1: **Why this life theme - the reason** - What energy makes them this type (100-120 chars)
+Para 2: **Brightest area in life** - Wealth/Career/Love/Health + why it's strong (100-120 chars)
+Para 3: **Second strongest area** - What else is good (80-100 chars)
+Para 4: **Patterns to watch out for** - What's weak and why caution is needed (100-120 chars)
+Para 5: **Tips for living well** - Specific action guide (100-120 chars)
+Para 6: **Life core keyword** - Summarize in one phrase (80-100 chars)
+
+**Reference examples (⚠️ DO NOT USE AS-IS, create fresh with this specificity and tone!):**
+Para 1: "Chart has overwhelmingly strong leadership and drive energy. Born with 'front runner' DNA."
+Para 2: "Career/work area shines especially. Whatever you do, you'll end up in leader positions."
+Para 3: "Wealth isn't bad either. Money naturally follows as position rises."
+Para 4: "But 'I'll handle everything' can lead to burnout. Can get exhausted carrying everything alone."
+Para 5: "In 20s-30s build experience, after 40s focus on growing people."
+Para 6: "'Don't do everything alone' is the life keyword."
 
 JSON format:
 {
   "headline": "1 emoji + life theme concept, 15-25 chars",
-  "description": "specific behavior/trait different from headline, 30-40 chars",
-  "summary": "300-400 chars, 4 paragraphs, specific and vivid"
+  "description": "reason why this type, 30-40 chars",
+  "summary": "600-700 chars, 6 paragraphs, core summary focused"
 }`,
 
-    lifetime_core: `Write the life core scenario **like a movie script**!
+    lifetime_core: `Write **the story of life**!
 
-## 🎯 Core: This Person's Life Movie Script
-Create **completely different life stories** based on chart data.
+## 🎯 Role: Life as a Movie!
+"What story unfolds in life" - present it like a movie trailer.
+(Age-by-age details are covered in 10-year scenarios, focus on life's grand narrative here!)
 
-### content writing (700-800 chars, 5-6 paragraphs)
+### content writing (700-800 chars, 4 paragraphs)
 
-**Para 1: Life's Opening (innate temperament)**
-- "Born with 'Why should I listen to others?' DNA"
-- "Probably heard 'That kid is different' since childhood"
+**Para 1: 🌱 Prologue - Innate Life Theme (150-200 chars)**
+- The energy and theme that runs through entire life
+- What direction of life was born with
 
-**Para 2: 20s-30s Flow (growth period)**
-- "Early career 'Is this right?' wandering happens, but becomes nourishment later"
-- "Late 20s to early 30s brings a moment that sets life's direction"
+**Para 2: 🔥 Main Event - Life's Highlight (200-250 chars)**
+- The most shining period in life (when, what area, specific situation)
+- Why this period is important
 
-**Para 3: 40s-50s Flow (prime time)**
-- "40s bring 'Ah, that's why' puzzle pieces falling into place"
-- "50s are the real prime! Everything built starts to shine"
+**Para 3: ⛈️ Trial - Challenges to Overcome (200-250 chars)**
+- Period and situation to watch out for (when, why it's tough)
+- How to handle it
 
-**Para 4: Life's Highlight (strongest area)**
-- Focus on brightest area among wealth/career/love/health
-- Include specific situation examples
+**Para 4: 🎬 Epilogue - What Life Leaves Behind (150-200 chars)**
+- Looking back in later years, what kind of life was it
+- What's left behind, how will be remembered
 
-**Para 5: Life's Caution (weak area)**
-- Be honest about what to watch out for
-- "'I'll handle everything myself' can lead to loneliness"
+**Reference examples (⚠️ DO NOT USE AS-IS, create fresh with this tone and specificity for the chart!):**
+Para 1: "The keyword running through life is 'pioneering'. There's an instinct to take roads others haven't taken. Creating your own path instead of ordinary life is in the DNA."
+Para 2: "40s are life's highlight. Everything built up explodes at once. The moment of 'Finally, my time has come' arrives."
+Para 3: "Late 20s to early 30s brings 'Am I going the right way?' wandering. Can get shaken comparing with others. But this period's struggles become the foundation for 40s success."
+Para 4: "Looking back in later years, it'll feel like 'It was wild but no regrets'. Will be remembered as 'someone who went their own way'."
 
-**Para 6: One Life Tip**
-- "'It's okay not to be perfect' is the life keyword"
+### headline writing
+Write from a **different angle** than life spoiler's headline:
+- If spoiler is "👑 Born for the Throne"
+- Scenario should be story perspective like "🎬 Pioneering → Achievement → Legend Drama"
 
 JSON format:
 {
-  "headline": "1 emoji + core life message, 15-25 chars",
-  "content": "700-800 chars, 5-6 paragraphs, vivid like a movie script"
+  "headline": "1 emoji + life story message, 15-25 chars",
+  "content": "700-800 chars, 4 paragraphs, story arc focused"
 }`,
 
     lifetime_wealth: `Analyze lifetime wealth fortune with **specific money scenarios**!
@@ -168,7 +191,7 @@ JSON format:
 ## 🎯 Personalized Money Story
 Explain **completely different wealth patterns** based on chart data.
 
-### Money-Making Style (choose based on chart)
+### Money-Making Style (⚠️ DO NOT USE examples below as-is, create fresh for the chart!)
 **Stability-seeking type:**
 - "Payday is the happiest day! Auto-transfer system is life's joy"
 - "Savings interest calculation is more exciting than risky investments"
@@ -205,7 +228,7 @@ JSON format:
 ## 🎯 Personalized Career Story
 Explain **completely different work patterns** based on chart data.
 
-### Working Style (choose based on chart)
+### Working Style (⚠️ DO NOT USE examples below as-is, create fresh for the chart!)
 **Leader/Boss type:**
 - "Naturally becomes team leader in every group project"
 - "'I'll do it' is a catchphrase, ends up responsible for everything"
@@ -246,7 +269,7 @@ JSON format:
 ## 🎯 Personalized Love Story
 Explain **completely different romance patterns** based on chart data.
 
-### Dating Style (choose based on chart)
+### Dating Style (⚠️ DO NOT USE examples below as-is, create fresh for the chart!)
 **Direct/Passionate type:**
 - "Says 'I like you' immediately when interested - straight shooter"
 - "Push-pull games? Can't do that. Like is like!"
@@ -267,7 +290,7 @@ Explain **completely different romance patterns** based on chart data.
 - "'Did you eat?' 'Tough day?' is the daily greeting"
 - "More comfortable giving than receiving - devoted type"
 
-### Ideal Partner Type (be specific!)
+### Ideal Partner Type (⚠️ DO NOT USE AS-IS, create fresh for the chart!)
 - "Someone who reads the room without being told"
 - "Someone who provides growth stimulation"
 - "Someone who's quietly there - comfortable presence"
@@ -288,7 +311,7 @@ JSON format:
 ## 🎯 Personalized Health Story
 Explain **completely different health patterns** based on chart data.
 
-### Energy Style (choose based on chart)
+### Energy Style (⚠️ DO NOT USE examples below as-is, create fresh for the chart!)
 **High energy type:**
 - "Stamina is power! Fine the next day even after all-nighters"
 - "Body gets restless staying still - needs to move"
@@ -304,7 +327,7 @@ Explain **completely different health patterns** based on chart data.
 - "Body immediately reacts to food, environment, weather"
 - "Consistent life rhythm is the key to health"
 
-### Specific Body Areas (based on data!)
+### Specific Body Areas (⚠️ DO NOT USE examples AS-IS, adapt to the chart!)
 **Fire energy strong:** "Heart, blood pressure, eyes - deep breaths when face gets red!"
 **Water energy strong:** "Kidneys, bladder, lower back - drink water, stretch that back!"
 **Wood energy strong:** "Liver, nerves, muscles - hangovers hit extra hard"
@@ -327,14 +350,13 @@ JSON format:
 Create **completely different trait combinations** based on chart data.
 
 ## Hashtag Writing (Important!)
-**Boring hashtags FORBIDDEN!** Reveal this person's unique identity:
+**8 characters or less, noun phrase format!**
 
-❌ Boring examples: "#Leadership", "#Emotional", "#Realistic"
-✅ Good examples:
-- "#Meeting_Summary_Master", "#Bank_Balance_Addict"
-- "#Homebody_Who_Loves_Alone", "#Anxious_Without_Plans"
-- "#3_Second_Decision_Maker", "#Fact_Check_Obsessed"
-- "#Strong_Taste_Stubborn", "#Everyone's_Social_Butterfly"
+❌ Sentence format forbidden: "Prefers alone time", "Anxious without plans"
+❌ Too generic: "Leadership", "Emotional", "Realistic"
+✅ Good format reference (⚠️ DO NOT USE AS-IS, create fresh for the chart!): "Creative Spark", "Solid Worldview", "Lucky One", "Born Competitor"
+- Noun + Noun or Adjective + Noun format
+- Keywords that reveal this person's unique identity
 
 ## Spectrum Analysis Criteria
 Different ratios for each area based on chart data:
@@ -376,7 +398,7 @@ JSON format:
 **"Generic advice that applies to everyone" is STRICTLY FORBIDDEN!**
 Assign completely different themes and vibes to each period based on chart data.
 
-## headline examples (different for each period!)
+## headline reference examples (⚠️ DO NOT USE AS-IS, create fresh for each period based on chart!)
 - "🌱 When the World Was a Playground" / "📚 The Study-Was-Everything Days"
 - "🔥 The 20s When Anything Felt Possible" / "💔 First Taste of Failure"
 - "💰 Discovering the Taste of Money" / "💑 Meeting the Fated One"
@@ -384,7 +406,7 @@ Assign completely different themes and vibes to each period based on chart data.
 - "🏠 Finding Stability" / "🌊 Unexpected Waves of Change"
 
 ## content writing (200-300 chars, 2 paragraphs)
-**No boring statements! Use specific situations:**
+**No boring statements! Use specific situations (⚠️ DO NOT USE examples below AS-IS!):**
 
 ❌ "Good things happen during this period"
 ✅ "Late 20s 'Is this the right path?' wandering comes, but it becomes nourishment later"
@@ -501,100 +523,255 @@ Output pure JSON only, no other text.`,
   // Yearly Fortune User Prompts
   // ============================================================
   yearlyUserPrompts: {
-    yearly_overview: `Write {targetYear} fortune overview.
-Include: year's themes, opportunities, cautions. If isPeachBlossomActive, mention romance.
-No subject references. 300-400 chars for summary.
+    yearly_overview: `Write {targetYear} fortune **at-a-glance core summary**.
 
-⚠️ Paragraph separation required: Use blank lines (\\n\\n) to separate paragraphs when topic/context changes. Add line breaks if a single context gets long.
+## 🎯 Role: Year's Core at a Glance!
+"What's good this year, what needs caution?" - make it easy to see at once.
+(Detailed monthly/period stories are covered in the core scenario)
 
-## headline vs description differentiation (Important!)
-- headline: Core keyword/concept of the year (e.g., "🔥 Breakout Year")
-- description: Elaborates on headline with NEW information. Describes the vibe/attitude/energy of the year (e.g., "Go bold and take risks—just keep your health in check")
+### headline writing (year's one-line concept)
+Identify the strongest energy in this year's data and create a fresh phrase.
+**(⚠️ DO NOT USE examples below as-is, only reference and create new for the year!)**
+- Wealth energy strong: "🎰 Life is a Game, Results are Jackpot!", "💰 Wallet is Smiling Year"
+- Career energy strong: "🚀 Value Soaring Career Prime", "👔 Boss Notices First This Year"
+- Romance energy strong: "💕 Heart Racing Year", "🌹 Fated Encounter Awaits"
+- Change energy strong: "🌊 Ride the Wave and Go Far", "🔄 Game-Changing Turning Point"
+- Growth energy strong: "🌱 Quietly Preparing Then Exploding", "📚 Building Inner Power Time"
 
-## tags writing rules
-- 2-3 evocative keywords that capture the year
-- Use abstract, inspirational expressions
-- Examples: "Creative Spark", "Bold Vision", "Hidden Talents Unleashed", "Expanding Connections", "Inner Growth"
+### description writing (why this year is like this!)
+**Explain in one sentence why this is that kind of year.**
+**(⚠️ DO NOT USE examples below as-is, create fresh for the year!)**
+- "This year has the strongest energy in 10 years entering the wealth area"
+- "Career area has 'explosion energy' attached"
+- "Romance area is full of fated encounter energy"
+- "This year's star placement perfectly matches change and challenge"
+
+❌ No simple action advice: "Trust your instincts", "Be proactive"
+✅ Reason-focused: Explain "why this is that kind of year"
+
+### summary writing (600-700 chars, paragraph separation required)
+**6 paragraphs focused on core summary:**
+
+Para 1: **Why this year is like this** - What energy is coming in to make this theme (100-120 chars)
+Para 2: **Best area this year** - Wealth/Career/Romance/Health + why it's good (100-120 chars)
+Para 3: **Second best area** - What else is good (80-100 chars)
+Para 4: **Area needing caution** - What's weak and why be careful (100-120 chars)
+Para 5: **Tips for a good year** - Specific action guide (100-120 chars)
+Para 6: **Year's core keyword** - Summarize in one phrase (80-100 chars)
+
+**Reference examples (⚠️ DO NOT USE AS-IS, create fresh with this specificity for the year!):**
+Para 1: "This year has 'explosion energy' in the wealth area. Time for things you've prepared to turn into cash."
+Para 2: "Investment and side income are especially strong. Money comes from bonuses, winnings, investment gains rather than salary."
+Para 3: "Career is also decent. Money coming in makes work more fun too, and recognition from boss happens."
+Para 4: "But watch health. Can collapse from overdoing it in excitement."
+Para 5: "First half actively grab opportunities, second half strategy is to protect what you've earned."
+Para 6: "'Challenge with restraint' is this year's keyword."
+
+### tags writing
+**Noun phrase format within 8 characters, 2-3 keywords!**
+
+❌ Sentence format forbidden: "Win with sense", "Heart racing"
+✅ Good format reference (⚠️ DO NOT USE AS-IS, create fresh!): "Lucky One", "Passive Income Year", "Building Inner Power"
 
 JSON format:
 {
-  "headline": "1 emoji + catchy phrase, 20-30 chars",
-  "description": "Year's vibe/attitude description, no emoji, 40-60 chars, different from headline",
-  "tags": ["2-3 keywords for the year"],
-  "summary": "Annual overview, 300-400 chars, 1-2 emojis"
+  "headline": "1 emoji + year theme concept, 15-25 chars",
+  "description": "reason why this year, 40-60 chars",
+  "tags": ["year keywords 2-3"],
+  "summary": "600-700 chars, 6 paragraphs, core summary focused"
 }`,
 
-    yearly_core: `Write {targetYear} core scenario.
-Include: key themes, opportunities, challenges, timing advice.
-No subject references. 700-800 chars for content with paragraph breaks.
+    yearly_core: `Write {targetYear} **story of the year**!
 
-⚠️ Paragraph separation required: Use blank lines (\\n\\n) to separate paragraphs when topic/context changes. Add line breaks if a single context gets long.
+## 🎯 Role: This Year as a Movie!
+"What story unfolds this year" - present it like a movie trailer.
+(Monthly details are in monthly fortune, focus on year's grand narrative here!)
+
+### content writing (700-800 chars, 4 paragraphs)
+
+**Para 1: 🌱 Prologue - Year's Opening Vibe (150-200 chars)**
+- Energy and theme running through the whole year
+- What emotions and impulses rise up
+
+**Para 2: 🔥 Main Event - Year's Highlight (200-250 chars)**
+- The most shining moment this year (when, what area, specific situation)
+- Why this moment is important
+
+**Para 3: ⛈️ Trial - Challenge to Overcome (200-250 chars)**
+- Period and situation to watch (when, why it's tough)
+- How to handle it
+
+**Para 4: 🎬 Epilogue - When Year Ends (150-200 chars)**
+- Looking back in December, what kind of year was it
+- What this year leaves behind, what carries to next year
+
+**Reference examples (⚠️ DO NOT USE AS-IS, create fresh with this tone for the year!):**
+Para 1: "The word 'challenge' follows this year around. Urge to start something new keeps rising. Things you've been putting off whisper 'if not now, when?'."
+Para 2: "Around May, 'Wait, this is working?' moment arrives. Something prepared explodes or unexpected opportunity 'plops' down."
+Para 3: "Around September, slight wavering comes. 'Am I doing this right?' doubts may arise. Hasty decisions are forbidden here."
+Para 4: "Looking back at year-end, 'came further than expected' feeling. This year's experiences become solid foundation for next year."
+
+### headline writing
+Write from **different angle** than year overview's headline:
+- If overview is "💰 Money Flowing In Year"
+- Scenario should be story perspective like "🎬 Preparation → Explosion → Harvest Drama"
 
 JSON format:
 {
-  "headline": "1 emoji + catchy phrase, 15-25 chars",
-  "content": "Core scenario, 700-800 chars, 2-3 emojis"
+  "headline": "1 emoji + year story message, 15-25 chars",
+  "content": "700-800 chars, 4 paragraphs, story arc focused"
 }`,
 
     yearly_wealth: `Analyze {targetYear} wealth fortune.
-Include: earning timing, spending cautions, investment advice.
-No subject references. 200-300 chars for content.
+
+## 🎯 Personalized Money Story
+Create **specific money scenario** based on chart data.
+
+### Good energy present (⚠️ DO NOT USE examples AS-IS, create fresh for the year!):
+- "'Bonus', 'winnings', 'investment gains' passive income energy stronger than 'salary'"
+- "Good year to buy a lottery ticket"
+- "Time when money makes money. Try rolling your seed money"
+- "Unexpected 'jackpot' moments from surprising places"
+
+### Caution energy present (⚠️ DO NOT USE examples AS-IS!):
+- "Think 3 seconds before opening wallet"
+- "Politely decline friend's loan requests and investment pitches!"
+- "Lending money means lending your heart too"
+
+Content 200-300 chars, 2-3 paragraphs.
 
 JSON format:
 {
-  "headline": "1 emoji + catchy phrase, 15-25 chars",
-  "content": "Wealth analysis, 200-300 chars, 1 emoji",
-  "tags": ["2 keywords"],
+  "headline": "1 emoji + wealth core, 15-25 chars",
+  "content": "200-300 chars, specific money scenario",
+  "tags": ["2 wealth keywords"],
   "score": 0-100 integer
 }`,
 
     yearly_career: `Analyze {targetYear} career fortune.
-Include: opportunities, cautions, growth strategies.
-If occupationStatus provided, add personalized advice.
-No subject references. 200-300 chars for content.
+
+## 🎯 Personalized Career Story
+Create **specific work/business scenario** based on chart data.
+
+### Good energy present (⚠️ DO NOT USE examples AS-IS, create fresh for the year!):
+- "One idea gets 'amazing' review"
+- "Boss treats lunch first and subtly pushes you forward"
+- "Year to win with 'brain' and 'sense' rather than body"
+- "Job change or department transfer actually becomes a gain"
+
+### Caution energy present (⚠️ DO NOT USE examples AS-IS!):
+- "Worked hard yourself but credit goes to someone else"
+- "Watch words! Gossip goes around and back to your ears"
+- "Better to quietly build skills than stand out now"
+
+If occupationStatus provided, add tailored advice.
+Content 200-300 chars, 2-3 paragraphs.
 
 JSON format:
 {
-  "headline": "1 emoji + catchy phrase, 15-25 chars",
-  "content": "Career analysis, 200-300 chars, 1 emoji",
-  "tags": ["2 keywords"],
+  "headline": "1 emoji + career core, 15-25 chars",
+  "content": "200-300 chars, specific career scenario",
+  "tags": ["2 career keywords"],
   "score": 0-100 integer
 }`,
 
     yearly_relationship: `Analyze {targetYear} love fortune.
-Include: dating/marriage luck, timing, cautions. Include peachBlossomNotes if provided.
-If relationshipStatus provided, add personalized advice.
-No subject references. 200-300 chars for content.
+
+## 🎯 Personalized Romance Story
+Create **specific dating/relationship scenario** based on chart data and peachBlossomNotes.
+
+### Good energy present (⚠️ DO NOT USE examples AS-IS, create fresh for the year!):
+- "Heart-racing encounter is waiting"
+- "Connection 'plops' in from who knows where"
+- "Romance cells exploding year! Fine to be proactive"
+- "Fated meeting could come from SNS DMs or blind dates"
+
+### Caution energy present (⚠️ DO NOT USE examples AS-IS!):
+- "Relationships could get complicated. Watch for playing field or love triangles!"
+- "Emotional drain could be high. Cool relationships are better"
+- "Honesty works better than push-pull this time"
+
+Tailored advice by relationshipStatus:
+- Single: New meeting scenario
+- Dating: Relationship progress/crisis scenario
+- Married: Couple relationship scenario
+
+Content 200-300 chars, 2-3 paragraphs.
 
 JSON format:
 {
-  "headline": "1 emoji + catchy phrase, 15-25 chars",
-  "content": "Love analysis, 200-300 chars, 1 emoji",
-  "tags": ["2 keywords"],
+  "headline": "1 emoji + romance core, 15-25 chars",
+  "content": "200-300 chars, specific romance scenario",
+  "tags": ["2 romance keywords"],
   "score": 0-100 integer
 }`,
 
     yearly_health: `Analyze {targetYear} health fortune.
-Include: areas to watch, good habits, things to avoid.
-No subject references. 200-300 chars for content.
+
+## 🎯 Personalized Health Story
+Create **specific health scenario** based on chart data.
+
+### Strong energy present (⚠️ DO NOT USE examples AS-IS, create fresh for the year!):
+- "Stamina overflowing, recover quick even if you push"
+- "Perfect year to start exercising! Body profile challenge?"
+- "Energy is abundant so spend it actively"
+
+### Caution energy present (⚠️ DO NOT USE examples AS-IS!):
+- "So excited could party all night and regret next day"
+- "Easy to fall into games/smartphones and break life rhythm"
+- "Eyes, shoulders, back - reduce digital device use"
+- "'Restraint' is health's only homework this year"
+
+**Mention specific body areas to watch** (based on data):
+- Fire energy: Heart, blood pressure, eyes
+- Water energy: Kidneys, bladder, lower back
+- Wood energy: Liver, nerves, muscles
+- Metal energy: Lungs, skin, intestines
+- Earth energy: Stomach, digestion
+
+Content 200-300 chars, 2-3 paragraphs.
 
 JSON format:
 {
-  "headline": "1 emoji + catchy phrase, 15-25 chars",
-  "content": "Health analysis, 200-300 chars, 1 emoji",
-  "tags": ["2 keywords"],
+  "headline": "1 emoji + health core, 15-25 chars",
+  "content": "200-300 chars, specific health scenario",
+  "tags": ["2 health keywords"],
   "score": 0-100 integer
 }`,
 
     yearly_monthly: `Analyze {targetYear} monthly fortunes.
-For each month: themes, opportunities, cautions.
-No subject references. Each content: 200-300 chars.
+
+## 🎯 Core: 12 Months, 12 Different Stories
+Assign **completely different theme and vibe** to each month.
+
+### headline reference examples (⚠️ DO NOT USE AS-IS, create fresh for each month based on year!)
+- "🔥 Blazing Start" / "🌸 Exciting Encounters" / "💰 Wallet Smiling Month"
+- "😌 Catch Your Breath Time" / "🚀 Turning Point" / "⚠️ Caution Mode ON"
+- "🎯 Focus MAX" / "💕 Romance Cells Activated" / "🏃 Sprint Month"
+
+### content writing (200-300 chars, 2 paragraphs)
+**No boring statements! Specific situations (⚠️ DO NOT USE examples AS-IS!):**
+
+❌ "Good things happen this month"
+✅ "Unexpected deposit might come early month. Watch spending after mid-month!"
+
+❌ "Career luck is good"
+✅ "Boss quietly assigns important project. It's opportunity, but could be pressure too."
+
+❌ "Watch health"
+✅ "Month of frequent company dinners. Watch that liver, rest well on weekends."
+
+**Monthly differentiation points:**
+- Good month: "One of the best months this year!"
+- Caution month: "Catch breath this month. Big decisions wait until next month!"
+- Turning point: "Flow changes this month. New attempts OK"
 
 JSON format:
 {
   "monthlyFortunes": [
-    {"month": 1, "headline": "1 emoji, 10-20 chars", "content": "200-300 chars"},
-    ...all 12 months
+    {"month": 1, "headline": "emoji + month's theme, 10-20 chars", "content": "200-300 chars, specific situation"},
+    {"month": 2, "headline": "...", "content": "..."},
+    ...all 12 months (each with different theme!)
   ]
 }`,
   },
