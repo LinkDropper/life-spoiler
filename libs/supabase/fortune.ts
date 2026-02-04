@@ -148,6 +148,8 @@ export const getFortune = async (
 
 /**
  * 운세 결제 완료 처리 (paid_at 업데이트)
+ *
+ * @returns 업데이트 성공 여부 (레코드가 없으면 false)
  */
 export const updateFortunePaidAt = async (
   profileId: string,
@@ -157,15 +159,27 @@ export const updateFortunePaidAt = async (
   try {
     const supabase = createServerClient() as SupabaseDB;
 
+    // select()를 추가하여 실제로 업데이트된 데이터를 반환받음
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error } = await (supabase.from("fortunes") as any)
+    const { data, error } = await (supabase.from("fortunes") as any)
       .update({ paid_at: new Date().toISOString() })
       .eq("profile_id", profileId)
       .eq("fortune_type", fortuneType)
-      .eq("year", year);
+      .eq("year", year)
+      .select("id");
 
     if (error) {
       console.error("Fortune paid_at 업데이트 실패:", error);
+      return false;
+    }
+
+    // 업데이트된 행이 없으면 실패로 처리
+    if (!data || data.length === 0) {
+      console.error("Fortune paid_at 업데이트 실패: 해당 레코드 없음", {
+        profileId,
+        fortuneType,
+        year,
+      });
       return false;
     }
 
