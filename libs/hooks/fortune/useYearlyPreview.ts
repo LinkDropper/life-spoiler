@@ -147,6 +147,13 @@ export const useYearlyPreview = (
         }
 
         const fortuneData = await res.json();
+
+        // 이미 결제한 경우 결과 페이지로 리다이렉트
+        if (fortuneData.isPaid) {
+          router.replace(`/fortune/yearly/${profileId}`);
+          return;
+        }
+
         setResult(fortuneData.data);
         setIsAIGenerated(fortuneData.isAIGenerated ?? false);
 

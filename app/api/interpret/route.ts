@@ -230,6 +230,7 @@ export async function POST(request: NextRequest) {
             success: true,
             data: storedData,
             isAIGenerated: true, // 저장된 데이터는 AI 성공 시에만 저장되므로 true
+            isPaid: !!existingFortune.paid_at,
           });
         }
       }
@@ -289,6 +290,7 @@ export async function POST(request: NextRequest) {
         success: true,
         data: responseData,
         isAIGenerated: true,
+        isPaid: false,
       });
     }
 
@@ -337,6 +339,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: responseData,
       isAIGenerated: isAISuccess,
+      isPaid: false,
     });
   } catch (error) {
     console.error("API 오류:", error);
