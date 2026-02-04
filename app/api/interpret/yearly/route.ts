@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
             success: true,
             data: storedData,
+            isAIGenerated: true, // 저장된 데이터는 AI 성공 시에만 저장되므로 true
           });
         }
       }
@@ -172,6 +173,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         data: responseData,
+        isAIGenerated: true,
       });
     }
 
@@ -275,6 +277,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: responseData,
+      isAIGenerated: isAISuccess,
     });
   } catch (error) {
     console.error("API 오류:", error);

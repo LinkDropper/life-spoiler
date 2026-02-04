@@ -19,12 +19,20 @@ export default function LifetimeFortunePreviewPage() {
   const tPreview = useTranslations("fortune.preview");
   const tLifetime = useTranslations("fortune.lifetime");
 
-  const { isLoading, error, result, profile, handlePayment, handleBack } =
-    useLifetimePreview({
-      onProfileNotFound: () => tCommon("profileNotFound"),
-      onFetchError: () => tLifetime("interpretError"),
-      onUnknownError: () => tCommon("unknownError"),
-    });
+  const {
+    isLoading,
+    error,
+    result,
+    profile,
+    isAIGenerated,
+    handlePayment,
+    handleBack,
+  } = useLifetimePreview({
+    onProfileNotFound: () => tCommon("profileNotFound"),
+    onFetchError: () => tLifetime("interpretError"),
+    onUnknownError: () => tCommon("unknownError"),
+    onAIGenerationFailed: () => tLifetime("interpretError"),
+  });
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
@@ -141,7 +149,7 @@ export default function LifetimeFortunePreviewPage() {
           type="button"
           className={styles.paymentButton}
           onClick={handlePayment}
-          disabled={!!error}
+          disabled={!!error || !isAIGenerated}
         >
           {tPreview("ctaButton")}
         </button>

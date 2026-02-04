@@ -25,12 +25,14 @@ export default function YearlyFortunePreviewPage() {
     result,
     profile,
     currentYear,
+    isAIGenerated,
     handlePayment,
     handleBack,
   } = useYearlyPreview({
     onProfileNotFound: () => tCommon("profileNotFound"),
     onFetchError: () => tYearly("fetchError"),
     onUnknownError: () => tCommon("unknownError"),
+    onAIGenerationFailed: () => tYearly("fetchError"),
   });
 
   const [chartExpanded, setChartExpanded] = useState(true);
@@ -150,6 +152,7 @@ export default function YearlyFortunePreviewPage() {
           type="button"
           className={styles.paymentButton}
           onClick={handlePayment}
+          disabled={!!error || !isAIGenerated}
         >
           {tPreview("ctaButton")}
         </button>

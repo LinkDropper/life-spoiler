@@ -17,6 +17,7 @@ interface UseLifetimePreviewOptions {
   onProfileNotFound?: () => string;
   onFetchError?: () => string;
   onUnknownError?: () => string;
+  onAIGenerationFailed?: () => string;
 }
 
 interface UseLifetimePreviewReturn {
@@ -25,6 +26,8 @@ interface UseLifetimePreviewReturn {
   result: LifetimePreviewResult | null;
   profile: ProfileData | null;
   profileId: string;
+  /** AI 해석 성공 여부 (false면 결제 불가) */
+  isAIGenerated: boolean;
   handlePayment: () => void;
   handleBack: () => void;
 }
@@ -45,6 +48,7 @@ export const useLifetimePreview = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<LifetimePreviewResult | null>(null);
+  const [isAIGenerated, setIsAIGenerated] = useState(false);
 
   // Use refs to avoid unnecessary re-renders and race conditions
   const optionsRef = useRef(options);
@@ -139,6 +143,15 @@ export const useLifetimePreview = (
 
         const fortuneData = await interpretRes.json();
         setResult(fortuneData.data);
+        setIsAIGenerated(fortuneData.isAIGenerated ?? false);
+
+        // AI 생성 실패 시 에러 표시
+        if (!fortuneData.isAIGenerated) {
+          setError(
+            optionsRef.current.onAIGenerationFailed?.() ??
+              "운세 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+          );
+        }
       } catch (err) {
         setError(
           err instanceof Error
@@ -155,8 +168,12 @@ export const useLifetimePreview = (
   }, [authStatus, profileId, router, isProfilesLoaded]);
 
   const handlePayment = useCallback(() => {
+    // AI 생성 실패 시 결제 페이지로 이동하지 않음
+    if (!isAIGenerated) {
+      return;
+    }
     router.push(`/payment/lifetime/${profileId}`);
-  }, [router, profileId]);
+  }, [router, profileId, isAIGenerated]);
 
   const handleBack = useCallback(() => {
     router.push("/profiles");
@@ -171,6 +188,7 @@ export const useLifetimePreview = (
     result,
     profile: cachedProfile ?? null,
     profileId,
+    isAIGenerated,
     handlePayment,
     handleBack,
   };
