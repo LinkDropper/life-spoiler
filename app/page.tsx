@@ -11,6 +11,7 @@ import {
 } from "@/components/landing";
 
 import styles from "./page.module.css";
+import EventSection from "@/components/landing/EventSection";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
         <FeatureSection />
         <PromotionBanner />
         <ProductPreview />
+        <EventSection />
         <FAQSection />
         <DisclaimerSection />
         <FooterInfo />

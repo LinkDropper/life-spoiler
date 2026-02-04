@@ -20,6 +20,7 @@ import {
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
 import YealryProfileCard from "@/components/fortune/YealryProfileCard";
+import EventSection from "@/components/landing/EventSection";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
@@ -371,6 +372,8 @@ export default function YearlyFortunePage() {
           </section>
         )}
       </main>
+
+      <EventSection isResultPage />
 
       {/* 하단 공유하기 버튼 */}
       <footer className={styles.footer}>

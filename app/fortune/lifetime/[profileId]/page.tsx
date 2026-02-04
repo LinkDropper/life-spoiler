@@ -21,6 +21,7 @@ import {
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
 import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
 import NewProfileCard from "@/components/fortune/NewProfileCard";
+import EventSection from "@/components/landing/EventSection";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import type {
   FortuneInterpretation,
@@ -388,6 +389,8 @@ export default function LifetimeFortunePage() {
             </ScenarioList>
           </section>
         )}
+
+        <EventSection isResultPage />
       </main>
 
       {/* 하단 공유하기 버튼 */}
