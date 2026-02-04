@@ -3,10 +3,12 @@ import type { Locale } from "@/i18n/config";
 import { AIError } from "./errors";
 import { getPrompts } from "./prompts";
 import type {
+  GeminiResponseSchema,
   YearlyCategoryResponse,
   YearlyCoreScenarioResponse,
   YearlyFortuneInterpretation,
   YearlyInterpretationRequest,
+  YearlyInterpretationType,
   YearlyMonthlyFortune,
   YearlyOverviewResponse,
 } from "./types";
@@ -17,6 +19,84 @@ import {
   YearlyOverviewResponseSchema,
 } from "./types";
 import { chatCompletion, parseJsonResponse } from "./gemini";
+
+// ============================================================
+// Gemini responseSchema 정의 (유년)
+// ============================================================
+
+/** 올해 스포일러 스키마 */
+const YEARLY_OVERVIEW_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    headline: { type: "string" },
+    description: { type: "string" },
+    tags: {
+      type: "array",
+      items: { type: "string" },
+    },
+    summary: { type: "string" },
+  },
+  required: ["headline", "description", "tags", "summary"],
+};
+
+/** 올해 핵심 시나리오 스키마 */
+const YEARLY_CORE_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    headline: { type: "string" },
+    content: { type: "string" },
+  },
+  required: ["headline", "content"],
+};
+
+/** 올해 카테고리 응답 스키마 (재물/직업/인연/건강) */
+const YEARLY_CATEGORY_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    headline: { type: "string" },
+    content: { type: "string" },
+    tags: {
+      type: "array",
+      items: { type: "string" },
+    },
+    score: { type: "integer", minimum: 0, maximum: 100 },
+  },
+  required: ["headline", "content", "tags", "score"],
+};
+
+/** 월별 시나리오 스키마 */
+const YEARLY_MONTHLY_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    monthlyFortunes: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          month: { type: "integer", minimum: 1, maximum: 12 },
+          headline: { type: "string" },
+          content: { type: "string" },
+        },
+        required: ["month", "headline", "content"],
+      },
+    },
+  },
+  required: ["monthlyFortunes"],
+};
+
+/** 유년 해석 유형별 스키마 매핑 */
+const YEARLY_RESPONSE_SCHEMA_MAP: Record<
+  YearlyInterpretationType,
+  GeminiResponseSchema
+> = {
+  yearly_overview: YEARLY_OVERVIEW_SCHEMA,
+  yearly_core: YEARLY_CORE_SCHEMA,
+  yearly_wealth: YEARLY_CATEGORY_SCHEMA,
+  yearly_career: YEARLY_CATEGORY_SCHEMA,
+  yearly_relationship: YEARLY_CATEGORY_SCHEMA,
+  yearly_health: YEARLY_CATEGORY_SCHEMA,
+  yearly_monthly: YEARLY_MONTHLY_SCHEMA,
+};
 
 // ============================================================
 // 올해 운세(유년) 해석 서비스
@@ -188,10 +268,15 @@ const requestYearlyInterpretation = async <T>(
 
 ${userPrompt}`;
 
-  const response = await chatCompletion([
-    { role: "system", content: prompts.yearlySystemPrompt },
-    { role: "user", content: fullUserPrompt },
-  ]);
+  const responseSchema = YEARLY_RESPONSE_SCHEMA_MAP[request.requestType];
+
+  const response = await chatCompletion(
+    [
+      { role: "system", content: prompts.yearlySystemPrompt },
+      { role: "user", content: fullUserPrompt },
+    ],
+    { responseSchema }
+  );
 
   const parsed = parseJsonResponse<unknown>(response);
 

@@ -5,6 +5,7 @@ import { getPrompts } from "./prompts";
 import type {
   AgeScenarioResponse,
   FortuneInterpretation,
+  GeminiResponseSchema,
   InterpretationType,
   LifeSpoilerResponse,
   LifetimeCategoryResponse,
@@ -21,6 +22,132 @@ import {
   ProfileTraitsResponseSchema,
 } from "./types";
 import { chatCompletion, parseJsonResponse } from "./gemini";
+
+// ============================================================
+// Gemini responseSchema 정의
+// ============================================================
+
+/** 인생 스포일러 스키마 */
+const LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    headline: { type: "string" },
+    description: { type: "string" },
+    summary: { type: "string" },
+  },
+  required: ["headline", "description", "summary"],
+};
+
+/** 핵심 시나리오 스키마 */
+const LIFETIME_CORE_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    headline: { type: "string" },
+    content: { type: "string" },
+  },
+  required: ["headline", "content"],
+};
+
+/** 카테고리 응답 스키마 (재물/직업/인연/건강) */
+const LIFETIME_CATEGORY_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    headline: { type: "string" },
+    content: { type: "string" },
+    tags: {
+      type: "array",
+      items: { type: "string" },
+    },
+    score: { type: "integer", minimum: 0, maximum: 100 },
+  },
+  required: ["headline", "content", "tags", "score"],
+};
+
+/** 나이대별 시나리오 스키마 */
+const AGE_SCENARIOS_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    ageScenarios: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          period: { type: "string" },
+          headline: { type: "string" },
+          content: { type: "string" },
+        },
+        required: ["period", "headline", "content"],
+      },
+    },
+  },
+  required: ["ageScenarios"],
+};
+
+/** 프로필 성향 분석 스키마 */
+const PROFILE_TRAITS_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    hashtags: {
+      type: "array",
+      items: { type: "string" },
+    },
+    spectrums: {
+      type: "object",
+      properties: {
+        activity: {
+          type: "object",
+          properties: {
+            leftLabel: { type: "string" },
+            rightLabel: { type: "string" },
+            leftPercentage: { type: "integer", minimum: 0, maximum: 100 },
+          },
+          required: ["leftLabel", "rightLabel", "leftPercentage"],
+        },
+        work: {
+          type: "object",
+          properties: {
+            leftLabel: { type: "string" },
+            rightLabel: { type: "string" },
+            leftPercentage: { type: "integer", minimum: 0, maximum: 100 },
+          },
+          required: ["leftLabel", "rightLabel", "leftPercentage"],
+        },
+        economy: {
+          type: "object",
+          properties: {
+            leftLabel: { type: "string" },
+            rightLabel: { type: "string" },
+            leftPercentage: { type: "integer", minimum: 0, maximum: 100 },
+          },
+          required: ["leftLabel", "rightLabel", "leftPercentage"],
+        },
+        romance: {
+          type: "object",
+          properties: {
+            leftLabel: { type: "string" },
+            rightLabel: { type: "string" },
+            leftPercentage: { type: "integer", minimum: 0, maximum: 100 },
+          },
+          required: ["leftLabel", "rightLabel", "leftPercentage"],
+        },
+      },
+      required: ["activity", "work", "economy", "romance"],
+    },
+  },
+  required: ["hashtags", "spectrums"],
+};
+
+/** 해석 유형별 스키마 매핑 */
+const RESPONSE_SCHEMA_MAP: Record<InterpretationType, GeminiResponseSchema> = {
+  life_spoiler: LIFE_SPOILER_SCHEMA,
+  lifetime_core: LIFETIME_CORE_SCHEMA,
+  lifetime_wealth: LIFETIME_CATEGORY_SCHEMA,
+  lifetime_career: LIFETIME_CATEGORY_SCHEMA,
+  lifetime_relationship: LIFETIME_CATEGORY_SCHEMA,
+  lifetime_health: LIFETIME_CATEGORY_SCHEMA,
+  lifetime_age_scenarios: AGE_SCENARIOS_SCHEMA,
+  lifetime_profile_traits: PROFILE_TRAITS_SCHEMA,
+};
 
 // ============================================================
 // 자미두수 해석 서비스
@@ -205,10 +332,15 @@ const requestInterpretation = async <T>(
 
 ${userPrompt}`;
 
-  const response = await chatCompletion([
-    { role: "system", content: prompts.ziweiSystemPrompt },
-    { role: "user", content: fullUserPrompt },
-  ]);
+  const responseSchema = RESPONSE_SCHEMA_MAP[request.requestType];
+
+  const response = await chatCompletion(
+    [
+      { role: "system", content: prompts.ziweiSystemPrompt },
+      { role: "user", content: fullUserPrompt },
+    ],
+    { responseSchema }
+  );
 
   const parsed = parseJsonResponse<unknown>(response);
 
