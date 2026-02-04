@@ -17,6 +17,7 @@ interface UseYearlyPreviewOptions {
   onProfileNotFound?: () => string;
   onFetchError?: () => string;
   onUnknownError?: () => string;
+  onAIGenerationFailed?: () => string;
 }
 
 interface UseYearlyPreviewReturn {
@@ -26,6 +27,8 @@ interface UseYearlyPreviewReturn {
   profile: ProfileData | null;
   profileId: string;
   currentYear: number;
+  /** AI 해석 성공 여부 (false면 결제 불가) */
+  isAIGenerated: boolean;
   handlePayment: () => void;
   handleBack: () => void;
 }
@@ -46,6 +49,7 @@ export const useYearlyPreview = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<YearlyPreviewResult | null>(null);
+  const [isAIGenerated, setIsAIGenerated] = useState(false);
 
   // Memoize currentYear to prevent recalculation on every render
   const currentYear = useMemo(() => new Date().getFullYear(), []);
@@ -143,7 +147,23 @@ export const useYearlyPreview = (
         }
 
         const fortuneData = await res.json();
+
+        // 이미 결제한 경우 결과 페이지로 리다이렉트
+        if (fortuneData.isPaid) {
+          router.replace(`/fortune/yearly/${profileId}`);
+          return;
+        }
+
         setResult(fortuneData.data);
+        setIsAIGenerated(fortuneData.isAIGenerated ?? false);
+
+        // AI 생성 실패 시 에러 표시
+        if (!fortuneData.isAIGenerated) {
+          setError(
+            optionsRef.current.onAIGenerationFailed?.() ??
+              "운세 생성에 실패했습니다. 잠시 후 다시 시도해주세요."
+          );
+        }
       } catch (err) {
         setError(
           err instanceof Error
@@ -160,8 +180,12 @@ export const useYearlyPreview = (
   }, [authStatus, profileId, router, isProfilesLoaded, currentYear]);
 
   const handlePayment = useCallback(() => {
+    // AI 생성 실패 시 결제 페이지로 이동하지 않음
+    if (!isAIGenerated) {
+      return;
+    }
     router.push(`/payment/yearly/${profileId}`);
-  }, [router, profileId]);
+  }, [router, profileId, isAIGenerated]);
 
   const handleBack = useCallback(() => {
     router.push("/profiles");
@@ -177,6 +201,7 @@ export const useYearlyPreview = (
     profile: cachedProfile ?? null,
     profileId,
     currentYear,
+    isAIGenerated,
     handlePayment,
     handleBack,
   };

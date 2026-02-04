@@ -19,12 +19,20 @@ export default function LifetimeFortunePreviewPage() {
   const tPreview = useTranslations("fortune.preview");
   const tLifetime = useTranslations("fortune.lifetime");
 
-  const { isLoading, error, result, profile, handlePayment, handleBack } =
-    useLifetimePreview({
-      onProfileNotFound: () => tCommon("profileNotFound"),
-      onFetchError: () => tLifetime("interpretError"),
-      onUnknownError: () => tCommon("unknownError"),
-    });
+  const {
+    isLoading,
+    error,
+    result,
+    profile,
+    isAIGenerated,
+    handlePayment,
+    handleBack,
+  } = useLifetimePreview({
+    onProfileNotFound: () => tCommon("profileNotFound"),
+    onFetchError: () => tLifetime("interpretError"),
+    onUnknownError: () => tCommon("unknownError"),
+    onAIGenerationFailed: () => tLifetime("interpretError"),
+  });
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
@@ -34,19 +42,40 @@ export default function LifetimeFortunePreviewPage() {
   }
 
   if (error) {
+    const handleRefresh = () => {
+      window.location.reload();
+    };
+
     return (
       <div className={styles.page}>
         <HeaderClient />
         <main className={styles.main}>
           <div className={styles.error}>
-            <p>{error}</p>
-            <button
-              type="button"
-              className={styles.backButton}
-              onClick={handleBack}
-            >
-              {tCommon("backToProfiles")}
-            </button>
+            <div className={styles.errorIcon}>⏳</div>
+            <h2 className={styles.errorTitle}>
+              일시적으로 접속이 원활하지 않아요
+            </h2>
+            <p className={styles.errorDescription}>
+              현재 이용자가 많아 운세 생성에 실패했어요.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </p>
+            <div className={styles.errorButtons}>
+              <button
+                type="button"
+                className={styles.refreshButton}
+                onClick={handleRefresh}
+              >
+                새로고침
+              </button>
+              <button
+                type="button"
+                className={styles.backButton}
+                onClick={handleBack}
+              >
+                {tCommon("backToProfiles")}
+              </button>
+            </div>
           </div>
         </main>
       </div>
@@ -141,7 +170,7 @@ export default function LifetimeFortunePreviewPage() {
           type="button"
           className={styles.paymentButton}
           onClick={handlePayment}
-          disabled={!!error}
+          disabled={!!error || !isAIGenerated}
         >
           {tPreview("ctaButton")}
         </button>

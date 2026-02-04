@@ -184,6 +184,7 @@ export async function POST(request: NextRequest) {
         profileName,
         approvedAt: paymentData.approvedAt,
         year: yearValue,
+        fortuneUpdateFailed,
       }).catch((error) => {
         console.error("디스코드 알림 전송 실패:", error);
       });

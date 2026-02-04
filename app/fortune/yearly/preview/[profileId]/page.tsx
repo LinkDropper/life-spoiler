@@ -25,12 +25,14 @@ export default function YearlyFortunePreviewPage() {
     result,
     profile,
     currentYear,
+    isAIGenerated,
     handlePayment,
     handleBack,
   } = useYearlyPreview({
     onProfileNotFound: () => tCommon("profileNotFound"),
     onFetchError: () => tYearly("fetchError"),
     onUnknownError: () => tCommon("unknownError"),
+    onAIGenerationFailed: () => tYearly("fetchError"),
   });
 
   const [chartExpanded, setChartExpanded] = useState(true);
@@ -41,19 +43,40 @@ export default function YearlyFortunePreviewPage() {
   }
 
   if (error) {
+    const handleRefresh = () => {
+      window.location.reload();
+    };
+
     return (
       <div className={styles.page}>
         <HeaderClient />
         <main className={styles.main}>
           <div className={styles.error}>
-            <p>{error}</p>
-            <button
-              type="button"
-              className={styles.backButton}
-              onClick={handleBack}
-            >
-              {tCommon("backToProfiles")}
-            </button>
+            <div className={styles.errorIcon}>⏳</div>
+            <h2 className={styles.errorTitle}>
+              일시적으로 접속이 원활하지 않아요
+            </h2>
+            <p className={styles.errorDescription}>
+              현재 이용자가 많아 운세 생성에 실패했어요.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </p>
+            <div className={styles.errorButtons}>
+              <button
+                type="button"
+                className={styles.refreshButton}
+                onClick={handleRefresh}
+              >
+                새로고침
+              </button>
+              <button
+                type="button"
+                className={styles.backButton}
+                onClick={handleBack}
+              >
+                {tCommon("backToProfiles")}
+              </button>
+            </div>
           </div>
         </main>
       </div>
@@ -150,6 +173,7 @@ export default function YearlyFortunePreviewPage() {
           type="button"
           className={styles.paymentButton}
           onClick={handlePayment}
+          disabled={!!error || !isAIGenerated}
         >
           {tPreview("ctaButton")}
         </button>

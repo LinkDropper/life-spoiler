@@ -7,6 +7,7 @@ import { env } from "@/env";
 const DISCORD_EMBED_COLORS = {
   SUCCESS: 0x4ade80, // 초록색
   INFO: 0x60a5fa, // 파란색
+  WARNING: 0xfbbf24, // 노란색
 };
 
 interface DiscordEmbedField {
@@ -81,6 +82,8 @@ interface PaymentNotificationParams {
   profileName?: string;
   approvedAt: string;
   year?: number;
+  /** paid_at 업데이트 실패 여부 (true면 DB 동기화 실패) */
+  fortuneUpdateFailed?: boolean;
 }
 
 /**
@@ -99,6 +102,7 @@ export const sendPaymentNotification = async (
     profileName,
     approvedAt,
     year,
+    fortuneUpdateFailed,
   } = params;
 
   const productName =
@@ -121,44 +125,60 @@ export const sendPaymentNotification = async (
     second: "2-digit",
   });
 
+  const fields: DiscordEmbedField[] = [
+    {
+      name: "📦 상품",
+      value: productName,
+      inline: true,
+    },
+    {
+      name: "💵 결제 금액",
+      value: formattedAmount,
+      inline: true,
+    },
+    {
+      name: "💳 결제 수단",
+      value: method,
+      inline: true,
+    },
+    {
+      name: "🧾 주문번호",
+      value: `\`${orderId}\``,
+      inline: false,
+    },
+    {
+      name: "👤 프로필",
+      value: profileName
+        ? `${profileName} (\`${profileId}\`)`
+        : `\`${profileId}\``,
+      inline: true,
+    },
+    {
+      name: "🕐 결제 시각",
+      value: formattedDate,
+      inline: true,
+    },
+  ];
+
+  // paid_at 업데이트 실패 시 경고 필드 추가
+  if (fortuneUpdateFailed) {
+    fields.push({
+      name: "⚠️ 동기화 실패",
+      value:
+        "fortunes 테이블에 paid_at 업데이트 실패!\n수동 확인 필요: 운세 레코드가 없을 수 있음",
+      inline: false,
+    });
+  }
+
   const embed: DiscordEmbed = {
-    title: "💰 결제 완료",
-    description: "새로운 결제가 완료되었습니다!",
-    color: DISCORD_EMBED_COLORS.SUCCESS,
-    fields: [
-      {
-        name: "📦 상품",
-        value: productName,
-        inline: true,
-      },
-      {
-        name: "💵 결제 금액",
-        value: formattedAmount,
-        inline: true,
-      },
-      {
-        name: "💳 결제 수단",
-        value: method,
-        inline: true,
-      },
-      {
-        name: "🧾 주문번호",
-        value: `\`${orderId}\``,
-        inline: false,
-      },
-      {
-        name: "👤 프로필",
-        value: profileName
-          ? `${profileName} (\`${profileId}\`)`
-          : `\`${profileId}\``,
-        inline: true,
-      },
-      {
-        name: "🕐 결제 시각",
-        value: formattedDate,
-        inline: true,
-      },
-    ],
+    title: fortuneUpdateFailed ? "⚠️ 결제 완료 (동기화 실패)" : "💰 결제 완료",
+    description: fortuneUpdateFailed
+      ? "결제는 완료되었으나 DB 동기화에 실패했습니다!"
+      : "새로운 결제가 완료되었습니다!",
+    color: fortuneUpdateFailed
+      ? DISCORD_EMBED_COLORS.WARNING
+      : DISCORD_EMBED_COLORS.SUCCESS,
+    fields,
     footer: {
       text: "Life Spoiler",
     },
