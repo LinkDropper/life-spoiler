@@ -98,7 +98,7 @@ export const FooterInfo = async () => {
       </div>
       <div className={styles.socialLinks}>
         <a
-          href="https://www.instagram.com/link.__.dropper/"
+          href="https://www.instagram.com/life.spoiler_?igsh=MTluajNqeTVhZjFrNQ%3D%3D&utm_source=qr"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Instagram"

@@ -105,6 +105,20 @@
           }
         }
       },
+      "event": {
+        "title": "인생스포",
+        "badge": "+2000",
+        "subTitle": "회원가입 이벤트",
+        "timerPrefix": "⏳ 할인 혜택 마감까지",
+        "timerTime": "{hours}시간 {minutes}분",
+        "timerSuffix": "남았어요!",
+        "instruction1": "1. 결과 화면을 인스타 스토리에 공유해주세요.",
+        "instruction2Prefix": "2.",
+        "instruction2Suffix": "태그 필수!",
+        "instruction3Prefix": "3. 저에게 DM으로",
+        "instruction3Keyword": "'참여완료'",
+        "instruction3Suffix": "라고 보내주세요."
+      },
       "disclaimer": {
         "badge": "FBI WARNING",
         "text": "본 서비스는 자미두수 천문학 알고리즘 + AI 해석을 결합했습니다.\n1,000년 역사의 동양 점성술을 현대 기술로 재해석한 결과물입니다.\n운세 결과가 너무 공감되어 생기는 '소름'에 대해\n인생스포 측은 책임지지 않습니다."
@@ -672,6 +686,20 @@
           }
         }
       },
+      "event": {
+        "title": "Life Spoiler",
+        "badge": "+2000",
+        "subTitle": "Sign-up Event",
+        "timerPrefix": "⏳ Discount ends in",
+        "timerTime": "{hours}h {minutes}m",
+        "timerSuffix": "left!",
+        "instruction1": "1. Share your result on Instagram Story.",
+        "instruction2Prefix": "2.",
+        "instruction2Suffix": "Tag required!",
+        "instruction3Prefix": "3. DM me",
+        "instruction3Keyword": "'Done'",
+        "instruction3Suffix": "to participate."
+      },
       "disclaimer": {
         "badge": "FBI WARNING",
         "text": "This service combines Zi Wei Dou Shu algorithms with AI interpretation.\nA 1,000-year-old Eastern astrology tradition reimagined with modern technology.\nLife Spoiler is not responsible for any 'chills'\ncaused by how relatable your results are."
@@ -1238,6 +1266,20 @@
             "answer": "デジタルコンテンツの特性上、結果確認後の返金は難しいです。ただし、システムエラーで結果が生成されなかった場合は全額返金いたします。"
           }
         }
+      },
+      "event": {
+        "title": "ライフスポイラー",
+        "badge": "+2000",
+        "subTitle": "会員登録イベント",
+        "timerPrefix": "⏳ 割引終了まで",
+        "timerTime": "{hours}時間 {minutes}分",
+        "timerSuffix": "残っています！",
+        "instruction1": "1. 結果画面をインスタストーリーにシェアしてください。",
+        "instruction2Prefix": "2.",
+        "instruction2Suffix": "タグ必須！",
+        "instruction3Prefix": "3. DMで",
+        "instruction3Keyword": "「参加完了」",
+        "instruction3Suffix": "と送ってください。"
       },
       "disclaimer": {
         "badge": "FBI WARNING",
