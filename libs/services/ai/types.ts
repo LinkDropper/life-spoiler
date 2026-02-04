@@ -30,6 +30,8 @@ export interface GeminiSchemaProperty {
   enum?: string[];
   minimum?: number;
   maximum?: number;
+  minItems?: number;
+  maxItems?: number;
 }
 
 export interface GeminiResponseSchema {
