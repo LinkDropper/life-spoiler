@@ -20,6 +20,25 @@ export interface GeminiContent {
   parts: GeminiPart[];
 }
 
+/** Gemini JSON Schema 타입 */
+export interface GeminiSchemaProperty {
+  type: "string" | "number" | "integer" | "boolean" | "array" | "object";
+  description?: string;
+  items?: GeminiSchemaProperty;
+  properties?: Record<string, GeminiSchemaProperty>;
+  required?: string[];
+  enum?: string[];
+  minimum?: number;
+  maximum?: number;
+}
+
+export interface GeminiResponseSchema {
+  type: "object" | "array";
+  properties?: Record<string, GeminiSchemaProperty>;
+  items?: GeminiSchemaProperty;
+  required?: string[];
+}
+
 export interface GeminiRequest {
   systemInstruction?: {
     parts: GeminiPart[];
@@ -29,6 +48,7 @@ export interface GeminiRequest {
     temperature?: number;
     maxOutputTokens?: number;
     responseMimeType?: string;
+    responseSchema?: GeminiResponseSchema;
   };
 }
 

@@ -1,7 +1,12 @@
 import { env } from "@/env";
 
 import { AIError } from "./errors";
-import type { GeminiMessage, GeminiRequest, GeminiResponse } from "./types";
+import type {
+  GeminiMessage,
+  GeminiRequest,
+  GeminiResponse,
+  GeminiResponseSchema,
+} from "./types";
 
 // ============================================================
 // 설정
@@ -24,6 +29,7 @@ const GEMINI_CONFIG = {
 export interface ChatCompletionOptions {
   temperature?: number;
   maxTokens?: number;
+  responseSchema?: GeminiResponseSchema;
 }
 
 /**
@@ -54,6 +60,7 @@ export const chatCompletion = async (
       temperature: options.temperature ?? GEMINI_CONFIG.defaultTemperature,
       maxOutputTokens: options.maxTokens ?? GEMINI_CONFIG.defaultMaxTokens,
       responseMimeType: "application/json",
+      ...(options.responseSchema && { responseSchema: options.responseSchema }),
     },
   };
 
