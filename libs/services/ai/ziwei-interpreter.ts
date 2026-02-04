@@ -375,7 +375,7 @@ export const generateFullInterpretation = async (
       profileTraits,
       meta: {
         generatedAt: new Date().toISOString(),
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash-lite",
         isFallback: false,
       },
     };
@@ -396,7 +396,7 @@ export const generateFullInterpretation = async (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash-lite",
       isFallback: false,
     },
   };
@@ -433,7 +433,7 @@ export const createFallbackInterpretation = (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash-lite",
       isFallback: true,
     },
   };
