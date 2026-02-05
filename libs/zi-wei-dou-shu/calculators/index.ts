@@ -87,3 +87,7 @@ export {
   type MonthlyFortune,
   type YearlyFortuneResult,
 } from "./yearly";
+
+export { calculateSamBangSaJeong, type SamBangSaJeong } from "./sam-bang";
+
+export { identifyGeokGuk, type IdentifiedGeokGuk } from "./geok-guk";

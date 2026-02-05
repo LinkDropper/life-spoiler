@@ -44,3 +44,6 @@ export {
 
 // 점수 계산
 export { PALACE_CATEGORY_WEIGHTS, type CategoryScores } from "./scoring";
+
+// 격국 패턴
+export { GEOK_GUK_PATTERNS, type GeokGukPattern } from "./geok-guk-patterns";

@@ -1,4 +1,7 @@
 import type { Locale } from "@/i18n/config";
+import { BRANCH_INDEX_MAP } from "@/libs/zi-wei-dou-shu/constants/branches";
+import { calculateSamBangSaJeong } from "@/libs/zi-wei-dou-shu/calculators/sam-bang";
+import type { BranchIndex, Palace } from "@/libs/zi-wei-dou-shu/types";
 
 import { AIError } from "./errors";
 import { getPrompts } from "./prompts";
@@ -21,7 +24,7 @@ import {
   LifetimeCoreScenarioResponseSchema,
   ProfileTraitsResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse } from "./gemini";
+import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
 
 // ============================================================
 // Gemini responseSchema 정의
@@ -164,19 +167,16 @@ const isDayunRequired = (type: InterpretationType): boolean => {
   return DAYUN_REQUIRED_TYPES.includes(type);
 };
 
-/** 해석 유형별 대상 궁과 대궁 매핑 */
-const PALACE_MAPPING: Record<
-  InterpretationType,
-  { target: string; opposite: string }
-> = {
-  life_spoiler: { target: "명궁", opposite: "천이궁" },
-  lifetime_core: { target: "명궁", opposite: "천이궁" },
-  lifetime_wealth: { target: "재백궁", opposite: "복덕궁" },
-  lifetime_career: { target: "관록궁", opposite: "부처궁" },
-  lifetime_relationship: { target: "부처궁", opposite: "관록궁" },
-  lifetime_health: { target: "질액궁", opposite: "부모궁" },
-  lifetime_age_scenarios: { target: "명궁", opposite: "천이궁" },
-  lifetime_profile_traits: { target: "명궁", opposite: "천이궁" },
+/** 해석 유형별 대상 궁 매핑 */
+const PALACE_MAPPING: Record<InterpretationType, string> = {
+  life_spoiler: "명궁",
+  lifetime_core: "명궁",
+  lifetime_wealth: "재백궁",
+  lifetime_career: "관록궁",
+  lifetime_relationship: "부처궁",
+  lifetime_health: "질액궁",
+  lifetime_age_scenarios: "명궁",
+  lifetime_profile_traits: "명궁",
 };
 
 /**
@@ -214,10 +214,49 @@ const getOccupationStatusLabel = (
 };
 
 /**
+ * PalaceData의 branch(문자열)를 BranchIndex로 변환
+ */
+const branchStringToIndex = (branch: string): BranchIndex | null => {
+  const index = BRANCH_INDEX_MAP[branch];
+  return index !== undefined ? index : null;
+};
+
+/**
+ * PalaceData를 Palace 유사 객체로 변환 (삼방사정 계산용)
+ */
+const palaceDataToPalace = (
+  palaceData: PalaceData,
+  branchIndex: BranchIndex
+): Palace => ({
+  name: palaceData.name,
+  branch: branchIndex,
+  stem: 0 as Palace["stem"],
+  mainStars: palaceData.mainStars.map((s) => ({
+    name: s.name,
+    brightness: s.brightness as Palace["mainStars"][0]["brightness"],
+    sihua: s.sihua as Palace["mainStars"][0]["sihua"],
+  })),
+  minorStars: palaceData.minorStars.map((name) => ({
+    name: name.replace(/\[.*\]/, ""),
+    brightness: "평" as const,
+  })),
+  isShenGong: false,
+});
+
+/**
  * 명반 데이터를 AI에게 전달할 문자열로 포맷팅
  */
 const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
-  const { user, chart, palaces, dayunPeriods, requestType, language } = request;
+  const {
+    user,
+    chart,
+    palaces,
+    dayunPeriods,
+    geokGuk,
+    previousContext,
+    requestType,
+    language,
+  } = request;
 
   const prompts = getPrompts(language);
 
@@ -243,10 +282,9 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
     userStatusStr += `\n- occupationStatus: ${occupationLabel}`;
   }
 
-  // 해석 유형에 맞는 대상 궁과 대궁 선택
-  const palaceNames = PALACE_MAPPING[requestType];
-  const targetPalace = palaces[palaceNames.target];
-  const oppositePalace = palaces[palaceNames.opposite];
+  // 해석 유형에 맞는 대상 궁 선택
+  const targetPalaceName = PALACE_MAPPING[requestType];
+  const targetPalace = palaces[targetPalaceName];
 
   let dataStr = `## User Info
 - gender: ${genderLabel}
@@ -261,14 +299,49 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
 - hualu: ${chart.sihua.hualu.star} (${chart.sihua.hualu.palace})
 - huaquan: ${chart.sihua.huaquan.star} (${chart.sihua.huaquan.palace})
 - huake: ${chart.sihua.huake.star} (${chart.sihua.huake.palace})
-- huaji: ${chart.sihua.huaji.star} (${chart.sihua.huaji.palace})
+- huaji: ${chart.sihua.huaji.star} (${chart.sihua.huaji.palace})`;
 
-## Target Palace: ${prompts.palaceNameMap[requestType]} (${palaceNames.target})
+  // 격국 분석 데이터 추가
+  if (geokGuk && geokGuk.length > 0) {
+    dataStr += `\n\n## Geok-Guk Analysis (격국)`;
+    for (const gk of geokGuk) {
+      dataStr += `\n- ${gk.name} [${gk.grade}] (${gk.palaceName}): ${gk.meaning}`;
+    }
+  }
+
+  // 대상 궁 + 삼방사정 데이터
+  dataStr += `\n\n## Target Palace: ${prompts.palaceNameMap[requestType]} (${targetPalaceName})
 ${targetPalace ? formatPalaceData(targetPalace) : "Palace data not available"}`;
 
-  if (oppositePalace) {
-    dataStr += `\n\n## Opposite Palace (${palaceNames.opposite})
-${formatPalaceData(oppositePalace)}`;
+  // 삼방사정 계산 및 추가
+  if (targetPalace) {
+    const branchIndex = branchStringToIndex(targetPalace.branch);
+    if (branchIndex !== null) {
+      // PalaceData를 Palace로 변환
+      const palaceArray: Palace[] = Object.values(palaces)
+        .map((pd) => {
+          const bi = branchStringToIndex(pd.branch);
+          if (bi === null) return null;
+          return palaceDataToPalace(pd, bi);
+        })
+        .filter((p): p is Palace => p !== null);
+
+      const samBang = calculateSamBangSaJeong(palaceArray, branchIndex);
+      if (samBang) {
+        dataStr += `\n\n## 삼방사정 Palaces (본궁 + 대궁 + 삼합1 + 삼합2)`;
+        dataStr += `\n### Opposite (대궁: ${samBang.opposite.name})
+${formatPalaceFromPalaceType(samBang.opposite)}`;
+        dataStr += `\n### Triangle 1 (삼합: ${samBang.triangle1.name})
+${formatPalaceFromPalaceType(samBang.triangle1)}`;
+        dataStr += `\n### Triangle 2 (삼합: ${samBang.triangle2.name})
+${formatPalaceFromPalaceType(samBang.triangle2)}`;
+      }
+    }
+  }
+
+  // 이전 해석 맥락 (섹션 간 중복 방지)
+  if (previousContext) {
+    dataStr += `\n\n${previousContext}`;
   }
 
   // 대운 정보 추가 (timeline이 필요한 해석 유형에서만)
@@ -283,7 +356,11 @@ ${formatPalaceData(oppositePalace)}`;
         period.sihua && period.sihua.length > 0
           ? ` [${period.sihua.join(", ")}]`
           : "";
-      dataStr += `\n- ${period.period} (${period.palaceName}): ${starsStr}${sihuaStr}`;
+      let dayunSihuaStr = "";
+      if (period.dayunSihua) {
+        dayunSihuaStr = ` | dayunSihua: 록→${period.dayunSihua.hualu}, 권→${period.dayunSihua.huaquan}, 과→${period.dayunSihua.huake}, 기→${period.dayunSihua.huaji}`;
+      }
+      dataStr += `\n- ${period.period} (${period.palaceName}): ${starsStr}${sihuaStr}${dayunSihuaStr}`;
     }
     if (user.currentAge) {
       dataStr += `\n- **Focus on current age ${user.currentAge} Dayun period!**`;
@@ -291,6 +368,29 @@ ${formatPalaceData(oppositePalace)}`;
   }
 
   return dataStr;
+};
+
+/**
+ * Palace 타입에서 궁 데이터를 문자열로 포맷팅 (삼방사정용)
+ */
+const formatPalaceFromPalaceType = (palace: Palace): string => {
+  const mainStarsStr = palace.mainStars
+    .map((star) => {
+      let str = `${star.name} (${star.brightness})`;
+      if (star.sihua) {
+        str += ` [${star.sihua}]`;
+      }
+      return str;
+    })
+    .join(", ");
+
+  const minorStarsStr =
+    palace.minorStars.length > 0
+      ? palace.minorStars.map((s) => s.name).join(", ")
+      : "None";
+
+  return `- Main Stars: ${mainStarsStr || "None"}
+- Minor Stars: ${minorStarsStr}`;
 };
 
 /**
@@ -479,20 +579,42 @@ export const generateFullInterpretation = async (
       interpretProfileTraits(request),
     ]);
 
-    // 2단계: 상세 시나리오 (재물, 직업)
+    // 이전 해석 맥락 생성 (섹션 간 중복 방지)
+    const stage1Context = `## 이미 사용한 표현 (절대 반복 금지!)
+- 스포일러 headline: "${lifeSpoiler.headline}"
+- 시나리오 headline: "${coreScenario.headline}"
+- 스포일러 첫 문장: "${lifeSpoiler.summary.split("\n\n")[0]?.slice(0, 80)}"
+위 headline과 같은 구조·어휘·패턴을 사용하지 마세요. 완전히 다른 표현을 창작하세요.`;
+    const requestWithContext = { ...request, previousContext: stage1Context };
+
+    // 2단계: 상세 시나리오 (재물, 직업) - 맥락 전달
     const [wealth, career] = await Promise.all([
-      interpretLifetimeWealth(request),
-      interpretLifetimeCareer(request),
+      interpretLifetimeWealth(requestWithContext),
+      interpretLifetimeCareer(requestWithContext),
     ]);
 
-    // 3단계: 상세 시나리오 (인연, 건강)
+    // 3단계: 상세 시나리오 (인연, 건강) - 이전 headline 모두 전달
+    const stage2Context = `## 이미 사용한 표현 (절대 반복 금지!)
+- 스포일러 headline: "${lifeSpoiler.headline}"
+- 시나리오 headline: "${coreScenario.headline}"
+- 재물 headline: "${wealth.headline}"
+- 직업 headline: "${career.headline}"
+- 스포일러 첫 문장: "${lifeSpoiler.summary.split("\n\n")[0]?.slice(0, 80)}"
+- 재물 첫 문장: "${wealth.content.split("\n\n")[0]?.slice(0, 60)}"
+- 직업 첫 문장: "${career.content.split("\n\n")[0]?.slice(0, 60)}"
+위 headline·첫 문장과 같은 구조·어휘·패턴을 사용하지 마세요.`;
+    const requestWithStage2Context = {
+      ...request,
+      previousContext: stage2Context,
+    };
+
     const [relationship, health] = await Promise.all([
-      interpretLifetimeRelationship(request),
-      interpretLifetimeHealth(request),
+      interpretLifetimeRelationship(requestWithStage2Context),
+      interpretLifetimeHealth(requestWithStage2Context),
     ]);
 
-    // 4단계: 나이대별 시나리오
-    const ageResult = await interpretAgeScenarios(request);
+    // 4단계: 나이대별 시나리오 - 맥락 전달
+    const ageResult = await interpretAgeScenarios(requestWithContext);
 
     return {
       lifeSpoiler,
@@ -507,7 +629,7 @@ export const generateFullInterpretation = async (
       profileTraits,
       meta: {
         generatedAt: new Date().toISOString(),
-        model: "gemini-2.5-flash-lite",
+        model: GEMINI_MODEL_NAME,
         isFallback: false,
       },
     };
@@ -528,7 +650,7 @@ export const generateFullInterpretation = async (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: "gemini-2.5-flash-lite",
+      model: GEMINI_MODEL_NAME,
       isFallback: false,
     },
   };
@@ -565,7 +687,7 @@ export const createFallbackInterpretation = (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: "gemini-2.5-flash-lite",
+      model: GEMINI_MODEL_NAME,
       isFallback: true,
     },
   };
