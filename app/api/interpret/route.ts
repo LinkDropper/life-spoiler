@@ -189,16 +189,7 @@ const convertChartToRequest = (
     },
     palaces: palacesMap,
     dayunPeriods,
-    geokGuk:
-      geokGukResults.length > 0
-        ? geokGukResults.map((g) => ({
-            name: g.name,
-            meaning: g.meaning,
-            grade: g.grade,
-            palaceName: g.palaceName,
-            stars: g.stars,
-          }))
-        : undefined,
+    geokGuk: geokGukResults.length > 0 ? geokGukResults : undefined,
   };
 };
 
