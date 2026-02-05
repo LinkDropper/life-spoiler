@@ -94,13 +94,6 @@ const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
     logoWidth: 60,
     logoHeight: 16,
   },
-  {
-    id: "APPLEPAY",
-    labelKey: "methodApplePay",
-    logo: "/images/payment/applepay-logo.svg",
-    logoWidth: 50,
-    logoHeight: 20,
-  },
   PAYMENT_METHOD_PROMO,
 ];
 
