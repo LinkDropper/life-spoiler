@@ -68,13 +68,13 @@ const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
     logoWidth: 44,
     logoHeight: 18,
   },
-  // {
-  //   id: "APPLEPAY",
-  //   labelKey: "methodApplePay",
-  //   logo: "/images/payment/applepay-logo.svg",
-  //   logoWidth: 50,
-  //   logoHeight: 20,
-  // },
+  {
+    id: "APPLEPAY",
+    labelKey: "methodApplePay",
+    logo: "/images/payment/applepay-logo.svg",
+    logoWidth: 50,
+    logoHeight: 20,
+  },
   {
     id: "TOSSPAY",
     labelKey: "methodTossPay",
@@ -93,6 +93,13 @@ const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
     logo: "/images/payment/paypal-logo.svg",
     logoWidth: 60,
     logoHeight: 16,
+  },
+  {
+    id: "APPLEPAY",
+    labelKey: "methodApplePay",
+    logo: "/images/payment/applepay-logo.svg",
+    logoWidth: 50,
+    logoHeight: 20,
   },
   PAYMENT_METHOD_PROMO,
 ];
