@@ -12,10 +12,12 @@ import type {
 // 설정
 // ============================================================
 
+export const GEMINI_MODEL_NAME = "gemini-2.5-flash-lite";
+
 const GEMINI_CONFIG = {
   baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
-  model: "gemini-2.5-flash-lite",
-  defaultTemperature: 0.5,
+  model: GEMINI_MODEL_NAME,
+  defaultTemperature: 0.8,
   defaultMaxTokens: 6000,
   timeout: 30000, // 30초
   maxRetries: 3, // 3회 재시도 (총 4회 시도)
