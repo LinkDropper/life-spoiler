@@ -26,6 +26,8 @@ import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 import {
   calculateDayun,
   calculateAllDayunScores,
+  calculateSihua,
+  identifyGeokGuk,
   type DayunResult,
 } from "@/libs/zi-wei-dou-shu/calculators";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
@@ -75,10 +77,19 @@ const convertToDayunData = (dayunResult: DayunResult): DayunData[] => {
       return `${s.name}(${s.brightness})`;
     });
 
+    // 대운 천간으로부터 사화 계산
+    const dayunSihuaResult = calculateSihua(period.stemIndex);
+
     return {
       period: `${period.startAge}-${period.endAge}세`,
       palaceName: period.palaceName,
       mainStars,
+      dayunSihua: {
+        hualu: dayunSihuaResult.hualu,
+        huaquan: dayunSihuaResult.huaquan,
+        huake: dayunSihuaResult.huake,
+        huaji: dayunSihuaResult.huaji,
+      },
     };
   });
 };
@@ -157,6 +168,9 @@ const convertChartToRequest = (
     throw new Error("명반에서 명궁을 찾을 수 없습니다.");
   }
 
+  // 격국 분석
+  const geokGukResults = identifyGeokGuk(chart);
+
   return {
     user: {
       gender: input.gender,
@@ -175,6 +189,16 @@ const convertChartToRequest = (
     },
     palaces: palacesMap,
     dayunPeriods,
+    geokGuk:
+      geokGukResults.length > 0
+        ? geokGukResults.map((g) => ({
+            name: g.name,
+            meaning: g.meaning,
+            grade: g.grade,
+            palaceName: g.palaceName,
+            stars: g.stars,
+          }))
+        : undefined,
   };
 };
 

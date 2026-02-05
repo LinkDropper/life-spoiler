@@ -109,6 +109,12 @@ export interface DayunData {
   palaceName: string;
   mainStars: string[];
   sihua?: string[];
+  dayunSihua?: {
+    hualu: string;
+    huaquan: string;
+    huake: string;
+    huaji: string;
+  };
 }
 
 // 사용자 상태 정보 (프로필 기반)
@@ -133,6 +139,15 @@ export interface UserStatusInfo {
   occupationStatusCustom?: string | null;
 }
 
+/** 격국 분석 결과 (AI 전달용) */
+export interface GeokGukData {
+  name: string;
+  meaning: string;
+  grade: "대격" | "중격" | "소격";
+  palaceName: string;
+  stars: string[];
+}
+
 export interface ZiweiInterpretationRequest {
   user: {
     gender: "male" | "female";
@@ -148,6 +163,10 @@ export interface ZiweiInterpretationRequest {
   /** 모든 12궁 데이터 (궁 이름 → 궁 데이터) */
   palaces: Record<string, PalaceData>;
   dayunPeriods?: DayunData[];
+  /** 격국 분석 결과 */
+  geokGuk?: GeokGukData[];
+  /** 이전 섹션 해석 맥락 (섹션 간 일관성용) */
+  previousContext?: string;
   requestType: InterpretationType;
   /** 응답 언어 (기본값: ko) */
   language?: Locale;
@@ -349,6 +368,8 @@ export interface YearlyInterpretationRequest {
     mainStars: string[];
   };
   requestType: YearlyInterpretationType;
+  /** 이전 섹션 해석 맥락 (섹션 간 중복 방지) */
+  previousContext?: string;
   /** 응답 언어 (기본값: ko) */
   language?: Locale;
 }
