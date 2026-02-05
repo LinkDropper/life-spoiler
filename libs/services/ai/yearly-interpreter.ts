@@ -18,7 +18,7 @@ import {
   YearlyMonthlyFortuneSchema,
   YearlyOverviewResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse } from "./gemini";
+import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
 
 // ============================================================
 // Gemini responseSchema 정의 (유년)
@@ -238,6 +238,11 @@ const formatYearlyDataForAI = (
 - mainStars: ${mainStarsStr}`;
   }
 
+  // 이전 해석 맥락 (섹션 간 중복 방지)
+  if (request.previousContext) {
+    dataStr += `\n\n${request.previousContext}`;
+  }
+
   return dataStr;
 };
 
@@ -391,18 +396,44 @@ export const interpretYearlyMonthly = async (
 export const generateYearlyInterpretation = async (
   request: Omit<YearlyInterpretationRequest, "requestType">
 ): Promise<YearlyFortuneInterpretation> => {
-  // 1단계: overview + coreScenario + 4개 카테고리
-  const [overview, coreScenario, wealth, career, relationship, health] =
-    await Promise.all([
-      interpretYearlyOverview(request),
-      interpretYearlyCore(request),
-      interpretYearlyWealth(request),
-      interpretYearlyCareer(request),
-      interpretYearlyRelationship(request),
-      interpretYearlyHealth(request),
-    ]);
+  // 1단계: overview + coreScenario (병렬)
+  const [overview, coreScenario] = await Promise.all([
+    interpretYearlyOverview(request),
+    interpretYearlyCore(request),
+  ]);
 
-  // 2단계: 월별 운세 (프롬프트가 길어서 분리)
+  // 2단계: 재물 + 직업 (이전 headline 전달)
+  const stage1Context = `## 이미 사용한 표현 (절대 반복 금지!)
+- 올해 스포일러 headline: "${overview.headline}"
+- 올해 시나리오 headline: "${coreScenario.headline}"
+- 스포일러 첫 문장: "${overview.summary.split("\n\n")[0]?.slice(0, 80)}"
+위 headline과 같은 구조·어휘·패턴을 사용하지 마세요. 완전히 다른 표현을 창작하세요.`;
+
+  const [wealth, career] = await Promise.all([
+    interpretYearlyWealth({ ...request, previousContext: stage1Context }),
+    interpretYearlyCareer({ ...request, previousContext: stage1Context }),
+  ]);
+
+  // 3단계: 인연 + 건강 (모든 이전 headline 전달)
+  const stage2Context = `## 이미 사용한 표현 (절대 반복 금지!)
+- 올해 스포일러 headline: "${overview.headline}"
+- 올해 시나리오 headline: "${coreScenario.headline}"
+- 재물 headline: "${wealth.headline}"
+- 직업 headline: "${career.headline}"
+- 스포일러 첫 문장: "${overview.summary.split("\n\n")[0]?.slice(0, 80)}"
+- 재물 첫 문장: "${wealth.content.split("\n\n")[0]?.slice(0, 60)}"
+- 직업 첫 문장: "${career.content.split("\n\n")[0]?.slice(0, 60)}"
+위 headline·첫 문장과 같은 구조·어휘·패턴을 사용하지 마세요.`;
+
+  const [relationship, health] = await Promise.all([
+    interpretYearlyRelationship({
+      ...request,
+      previousContext: stage2Context,
+    }),
+    interpretYearlyHealth({ ...request, previousContext: stage2Context }),
+  ]);
+
+  // 4단계: 월별 운세 (프롬프트가 길어서 분리)
   const monthlyResult = await interpretYearlyMonthly(request);
 
   return {
@@ -418,7 +449,7 @@ export const generateYearlyInterpretation = async (
     meta: {
       year: request.targetYear,
       generatedAt: new Date().toISOString(),
-      model: "gemini-2.5-flash-lite",
+      model: GEMINI_MODEL_NAME,
       isFallback: false,
     },
   };
@@ -487,7 +518,7 @@ export const createYearlyFallbackInterpretation = (
     meta: {
       year: targetYear,
       generatedAt: new Date().toISOString(),
-      model: "gemini-2.5-flash-lite",
+      model: GEMINI_MODEL_NAME,
       isFallback: true,
     },
   };
