@@ -29,34 +29,34 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
   // 자미 (황제성 - 리더십, 품격) - 6개
   // ========================================
   자미_묘: {
-    ko: "타고난 대장 기질",
-    en: "Born Leader",
-    ja: "生まれながらのリーダー気質",
+    ko: "태생이 센터상",
+    en: "Born to be Center",
+    ja: "生まれつきのセンター",
   },
   자미_왕: {
-    ko: "직진 화법의 매력",
-    en: "Charm of Direct Speech",
-    ja: "直球話法の魅力",
+    ko: "근거 있는 근자감",
+    en: "Confidence backed by Facts",
+    ja: "根拠のある自信",
   },
   자미_득: {
-    ko: "든든한 맏이 바이브",
-    en: "Reliable Eldest Vibe",
-    ja: "頼れる長子バイブ",
+    ko: "K-장녀/장남 바이브",
+    en: "K-Eldest Sibling Vibe",
+    ja: "韓国の長女・長男バイブ",
   },
   자미_리: {
-    ko: "오지랖 대마왕",
-    en: "Meddling Master",
-    ja: "おせっかい大王",
+    ko: "훈수 두기 1급 자격증",
+    en: "Certified Backseat Driver",
+    ja: "説教１級資格",
   },
   자미_평: {
-    ko: "말만 번지르르",
-    en: "All Talk No Walk",
-    ja: "口だけ番長",
+    ko: "입으로 천하 통일",
+    en: "Conquering World with Mouth",
+    ja: "口先だけで天下統一",
   },
   자미_함: {
-    ko: "잠재적 꼰대력",
-    en: "Latent Boomer Energy",
-    ja: "潜在的老害力",
+    ko: "젊은 꼰대 꿈나무",
+    en: "Promising Young Boomer",
+    ja: "若き老害の有望株",
   },
 
   // ========================================
@@ -73,43 +73,43 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "歩くウィキペディア",
   },
   천기_득: {
-    ko: "계획충의 미학",
-    en: "Beauty of Planning Mania",
-    ja: "計画マニアの美学",
+    ko: "파워 J의 계획표",
+    en: "Power J's Planner",
+    ja: "超几帳面な計画表",
   },
   천기_리: {
-    ko: "생각 과잉 체질",
-    en: "Overthinking Constitution",
-    ja: "考えすぎ体質",
+    ko: "닥터 스트레인지급 시뮬레이션",
+    en: "Dr. Strange-level Simulation",
+    ja: "ドクター・ストレンジ級シミュレーション",
   },
   천기_평: {
-    ko: "계획 부자 실행 거지",
-    en: "Rich in Plans, Poor in Action",
-    ja: "計画リッチ実行プア",
+    ko: "상상 속에선 이미 재벌",
+    en: "Already Billionaire in Imagination",
+    ja: "想像の中では既に財閥",
   },
   천기_함: {
-    ko: "티끌 모아 빚더미",
-    en: "Pennies to Debt Mountain",
-    ja: "ちりも積もれば借金の山",
+    ko: "걱정 인형 빙의 중",
+    en: "Possessed by Worry Doll",
+    ja: "心配人形憑依中",
   },
 
   // ========================================
   // 태양 (광명성 - 명예, 활동) - 4개
   // ========================================
   태양_묘: {
-    ko: "사랑받는 관종",
-    en: "Lovable Attention Seeker",
-    ja: "愛されるかまってちゃん",
+    ko: "스포트라이트 중독",
+    en: "Spotlight Addict",
+    ja: "スポットライト中毒",
   },
   태양_왕: {
-    ko: "감성 마케터 기질",
-    en: "Emotional Marketer Vibes",
-    ja: "エモマーケター気質",
+    ko: "연예인병 초기 증상",
+    en: "Early Symptoms of Celebrity Disease",
+    ja: "芸能人病の初期症状",
   },
   태양_득: {
-    ko: "어디서든 주인공",
-    en: "Main Character Anywhere",
-    ja: "どこでも主人公",
+    ko: "자발적 골든벨",
+    en: "Voluntary Bill Payer",
+    ja: "自発的なおごり魔",
   },
   태양_함: {
     ko: "겉바속촉 츤데레",
@@ -141,43 +141,43 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "散財セラピー信者",
   },
   무곡_평: {
-    ko: "월급? 있었는데요 없습니다",
-    en: "Salary? Gone Before You Know It",
-    ja: "給料？あったのになくなりました",
+    ko: "월급은 통장을 스칠 뿐",
+    en: "Salary Just Grazes the Account",
+    ja: "給料は通帳をかすめるだけ",
   },
 
   // ========================================
   // 천동 (복성 - 행복, 여유) - 6개
   // ========================================
   천동_묘: {
-    ko: "팔자가 상팔자",
-    en: "Born Under Lucky Stars",
-    ja: "運命が上々",
+    ko: "조물주가 사랑한 베짱이",
+    en: "Grasshopper Loved by God",
+    ja: "神に愛されたキリギリス",
   },
   천동_왕: {
-    ko: "쾌락주의자",
-    en: "Hedonist",
-    ja: "快楽主義者",
+    ko: "뽀로로 유전자 (노는 게 제일 좋아)",
+    en: "Pororo Gene (Loves Playing)",
+    ja: "ポロロ遺伝子（遊ぶのが一番好き）",
   },
   천동_득: {
-    ko: "소확행 장인",
-    en: "Small Happiness Expert",
-    ja: "小さな幸せの達人",
+    ko: "소확행 수집가",
+    en: "Small Happiness Collector",
+    ja: "小さな幸せ収集家",
   },
   천동_리: {
-    ko: "현실도피형 낭만",
-    en: "Escapist Romance",
-    ja: "現実逃避型ロマン",
+    ko: "망상 회로 풀가동",
+    en: "Delusion Circuit Full Throttle",
+    ja: "妄想回路フル稼働",
   },
   천동_평: {
-    ko: "무기력의 늪",
-    en: "Swamp of Lethargy",
-    ja: "無気力の沼",
+    ko: "숨 쉬는 것도 귀찮음",
+    en: "Too Lazy to Breathe",
+    ja: "息をするのも面倒",
   },
   천동_함: {
-    ko: "휴식 불능 체질",
-    en: "Rest-Disabled Constitution",
-    ja: "休息不能体質",
+    ko: "강박적 갓생 중독자",
+    en: "Compulsive 'God-saeng' Addict",
+    ja: "強迫的な人生頑張り中毒",
   },
 
   // ========================================
@@ -209,18 +209,18 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "ソロ界のレジェンド",
   },
   염정_함: {
-    ko: "감정 올인형",
-    en: "Emotional All-In Type",
-    ja: "感情オールイン型",
+    ko: "감정 기복 롤러코스터",
+    en: "Emotional Rollercoaster",
+    ja: "感情起伏ジェットコースター",
   },
 
   // ========================================
   // 천부 (재고성 - 안정, 관리) - 5개
   // ========================================
   천부_묘: {
-    ko: "금수저 DNA",
-    en: "Silver Spoon DNA",
-    ja: "金のスプーンDNA",
+    ko: "귀족 영혼의 소유자",
+    en: "Owner of a Noble Soul",
+    ja: "貴族の魂の持ち主",
   },
   천부_왕: {
     ko: "가격표는 장식일 뿐",
@@ -233,9 +233,9 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "可愛いゴミ収集家",
   },
   천부_리: {
-    ko: "소비 후 죄책감형",
-    en: "Post-Purchase Guilt Type",
-    ja: "消費後罪悪感型",
+    ko: "있어 보이는 척 만렙",
+    en: "Pretending to Have It All",
+    ja: "持ってるふりレベルMAX",
   },
   천부_평: {
     ko: "극한의 절약정신",
@@ -252,92 +252,92 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "エモ売りの達人",
   },
   태음_왕: {
-    ko: "눈물샘 풍부",
-    en: "Abundant Tear Ducts",
-    ja: "涙腺豊富",
+    ko: "수도꼭지 눈물샘",
+    en: "Faucet Tear Ducts",
+    ja: "蛇口のような涙腺",
   },
   태음_득: {
-    ko: "공감 능력 만렙",
-    en: "Empathy Level Max",
-    ja: "共感能力MAX",
+    ko: "프로 공감러",
+    en: "Pro Empathizer",
+    ja: "プロ共感ラー",
   },
   태음_리: {
-    ko: "셀프 감동형",
-    en: "Self-Touching Type",
-    ja: "セルフ感動型",
+    ko: "자기 연민 만취 상태",
+    en: "Drunk on Self-Pity",
+    ja: "自己憐憫泥酔状態",
   },
   태음_함: {
-    ko: "유리멘탈 주의보",
-    en: "Glass Mental Warning",
-    ja: "ガラスメンタル注意報",
+    ko: "쿠크다스 멘탈",
+    en: "Cookie Crumb Mental",
+    ja: "クックダスメンタル（脆い精神）",
   },
 
   // ========================================
   // 탐랑 (욕망성 - 다재다능, 도화) - 6개
   // ========================================
   탐랑_묘: {
-    ko: "만능 엔터테이너",
-    en: "All-Round Entertainer",
-    ja: "万能エンターテイナー",
-  },
-  탐랑_왕: {
-    ko: "재능 낭비류 甲",
-    en: "Top-Tier Talent Waster",
+    ko: "재능 낭비류 갑",
+    en: "Top Tier Talent Waster",
     ja: "才能の無駄遣い甲",
   },
+  탐랑_왕: {
+    ko: "알코올 요정",
+    en: "Alcohol Fairy",
+    ja: "アルコールの妖精",
+  },
   탐랑_득: {
-    ko: "취미 부자",
-    en: "Hobby Millionaire",
-    ja: "趣味リッチ",
+    ko: "취미 수집가",
+    en: "Hobby Collector",
+    ja: "趣味収集家",
   },
   탐랑_리: {
-    ko: "찍먹 인생관",
-    en: "Sampling Life Philosophy",
-    ja: "つまみ食い人生観",
+    ko: "금사빠 금사식",
+    en: "Falling Fast, Cooling Fast",
+    ja: "熱しやすく冷めやすい",
   },
   탐랑_평: {
-    ko: "3일 열정형",
-    en: "3-Day Passion Type",
-    ja: "3日熱情型",
+    ko: "작심삼일 프로",
+    en: "Pro Quitter in 3 Days",
+    ja: "三日坊主のプロ",
   },
   탐랑_함: {
-    ko: "야망만 재벌급",
-    en: "Chaebol-Level Ambition Only",
-    ja: "野望だけ財閥級",
+    ko: "욕망의 항아리",
+    en: "Pot of Greed",
+    ja: "欲望の壺",
   },
 
   // ========================================
   // 거문 (구설성 - 언변, 분석) - 6개
   // ========================================
   거문_묘: {
-    ko: "말빨로 먹고 삼",
-    en: "Lives on Eloquence",
-    ja: "話術で食っていく",
+    ko: "언어의 마술사",
+    en: "Magician of Words",
+    ja: "言葉の魔術師",
   },
   거문_왕: {
-    ko: "토론 무패 전설",
-    en: "Undefeated Debate Legend",
-    ja: "討論無敗伝説",
+    ko: "논리왕 말대꾸",
+    en: "Logic King Backtalker",
+    ja: "論理王口答え",
   },
   거문_득: {
-    ko: "팩폭 장인",
-    en: "Fact Bomb Master",
-    ja: "ファクト爆撃の達人",
+    ko: "뼈 때리는 팩트 폭격기",
+    en: "Bone-Hitting Fact Bomber",
+    ja: "骨を叩くファクト爆撃機",
   },
   거문_리: {
-    ko: "할말하않 장인",
-    en: "Bites Tongue Expert",
-    ja: "言いたいこと我慢達人",
+    ko: "입만 열면 깸",
+    en: "Breaks Illusion When Speaking",
+    ja: "口を開けば幻滅",
   },
   거문_평: {
-    ko: "읽씹의 미학",
-    en: "Art of Leaving on Read",
-    ja: "既読スルーの美学",
+    ko: "읽씹이 일상",
+    en: "Leaving on Read Daily",
+    ja: "既読スルーが日常",
   },
   거문_함: {
-    ko: "TMI 폭격기",
-    en: "TMI Bomber",
-    ja: "TMI爆撃機",
+    ko: "걸어 다니는 구설수",
+    en: "Walking Gossip Magnet",
+    ja: "歩くゴシップ磁石",
   },
 
   // ========================================
@@ -364,14 +364,14 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "いい人症候群",
   },
   천상_평: {
-    ko: "호구 체질",
-    en: "Pushover Constitution",
-    ja: "カモ体質",
+    ko: "자발적 호구",
+    en: "Voluntary Pushover",
+    ja: "自発的なカモ",
   },
   천상_함: {
-    ko: "민폐형 선의",
-    en: "Nuisance-Type Goodwill",
-    ja: "迷惑型善意",
+    ko: "남 좋은 일만 함",
+    en: "Only Doing Good for Others",
+    ja: "他人のためだけの善行",
   },
 
   // ========================================
@@ -393,23 +393,23 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "ご先祖様がハードキャリー",
   },
   천량_리: {
-    ko: "운빨 의존형",
-    en: "Luck-Dependent Type",
-    ja: "運頼み型",
+    ko: "운만 믿고 나댐",
+    en: "Acting Up Trusting Luck",
+    ja: "運だけ信じて調子に乗る",
   },
   천량_함: {
-    ko: "만사 꼬임 체질",
-    en: "Everything-Goes-Wrong Type",
-    ja: "万事こじれ体質",
+    ko: "선비 코스프레",
+    en: "Cosplaying Scholar",
+    ja: "ソンビ（高尚な学者）コスプレ",
   },
 
   // ========================================
   // 칠살 (고독성 - 개척, 결단) - 6개
   // ========================================
   칠살_묘: {
-    ko: "혼자서도 잘해요",
-    en: "Does Well Alone",
-    ja: "一人でも大丈夫",
+    ko: "나 혼자 산다 찍는 중",
+    en: "Filming 'I Live Alone'",
+    ja: "『私は一人で暮らす』撮影中",
   },
   칠살_왕: {
     ko: "행복한 아싸",
@@ -427,9 +427,9 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "選択的社会生活",
   },
   칠살_평: {
-    ko: "결정장애 만렙",
-    en: "Decision Paralysis Max",
-    ja: "決定障害MAX",
+    ko: "고독한 늑대 놀이",
+    en: "Playing Lone Wolf",
+    ja: "孤独な狼ごっこ",
   },
   칠살_함: {
     ko: "인류애 상실",

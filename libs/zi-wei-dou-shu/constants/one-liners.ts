@@ -28,28 +28,32 @@ export const MAIN_STAR_ONE_LINERS: Record<OneLinerKey, OneLinerTranslations> = {
   // 자미 (황제성 - 리더십, 품격)
   // ========================================
   자미_positive: {
-    ko: "타고난 분위기 장악러",
-    en: "Born Atmosphere Controller",
-    ja: "生まれながらの雰囲気メーカー",
+    // 황제의 품격 -> 타고난 그릇이 큼
+    ko: "태생부터 남다른 귀족 DNA",
+    en: "Noble DNA from Birth",
+    ja: "生まれつき格別な貴族DNA",
   },
   자미_negative: {
-    ko: "리더십은 넘치는데 팔로워 부족",
-    en: "Leadership Overflow, Follower Shortage",
-    ja: "リーダーシップは溢れるがフォロワー不足",
+    // 황제가 힘이 없음 -> 허세, 고집, 독단
+    ko: "자존심만 쎈 방구석 황제",
+    en: "Corner Room Emperor with Only Pride",
+    ja: "プライドだけ高い井の中の皇帝",
   },
 
   // ========================================
   // 천기 (지혜성 - 두뇌, 기획)
   // ========================================
   천기_positive: {
-    ko: "걸어다니는 검색엔진",
-    en: "Walking Search Engine",
-    ja: "歩く検索エンジン",
+    // 뛰어난 참모 -> 전략가, 두뇌 회전
+    ko: "인생을 공략하는 전략가",
+    en: "Strategist Conquering Life",
+    ja: "人生を攻略する戦略家",
   },
   천기_negative: {
-    ko: "머릿속에서만 세계정복",
-    en: "World Domination in Mind Only",
-    ja: "頭の中だけで世界征服",
+    // 생각이 너무 많음 -> 예민, 실천 부족
+    ko: "실행력 0%의 망상 시뮬레이터",
+    en: "Delusion Simulator with 0% Action",
+    ja: "実行力0%の妄想シミュレーター",
   },
 
   // ========================================
@@ -89,18 +93,20 @@ export const MAIN_STAR_ONE_LINERS: Record<OneLinerKey, OneLinerTranslations> = {
     ja: "幸せウイルス保菌者",
   },
   천동_negative: {
-    ko: "평화주의 코알라",
-    en: "Pacifist Koala",
-    ja: "平和主義コアラ",
+    // 안주함 -> 의지 박약, 감정 기복
+    ko: "징징거림이 특기인 어른이",
+    en: "Man-child Specialized in Whining",
+    ja: "駄々こねが特技の大人子供",
   },
 
   // ========================================
   // 염정 (정성 - 열정, 매력)
   // ========================================
   염정_positive: {
-    ko: "심쿵 유발 전문가",
-    en: "Heart Flutter Specialist",
-    ja: "胸キュン誘発スペシャリスト",
+    // 뛰어난 수완 -> 매력, 일처리 확실
+    ko: "사람을 홀리는 치명적 매력",
+    en: "Fatal Charm That Bewitches People",
+    ja: "人を惑わす致命的な魅力",
   },
   염정_negative: {
     ko: "감정 롤러코스터 탑승객",
@@ -126,28 +132,32 @@ export const MAIN_STAR_ONE_LINERS: Record<OneLinerKey, OneLinerTranslations> = {
   // 태음 (음성 - 감성, 섬세)
   // ========================================
   태음_positive: {
-    ko: "감성 충만 힐러",
-    en: "Emotional Healer",
-    ja: "感性満タンヒーラー",
+    // 달의 은은함 -> 섬세한 배려, 차곡차곡 모음
+    ko: "조용히 실속 챙기는 알부자",
+    en: "Quietly Accumulating Wealth",
+    ja: "静かに実利を得る隠れ金持ち",
   },
   태음_negative: {
-    ko: "혼자만의 감성여행 중",
-    en: "On a Solo Emotional Journey",
-    ja: "一人だけの感性旅行中",
+    // 어두움 -> 우울, 현실 도피
+    ko: "현실 도피형 방구석 몽상가",
+    en: "Escapist Bedroom Daydreamer",
+    ja: "現実逃避型の引きこもり夢想家",
   },
 
   // ========================================
   // 탐랑 (욕망성 - 다재다능, 도화)
   // ========================================
   탐랑_positive: {
-    ko: "재능 뿜뿜 멀티플레이어",
-    en: "Multi-Talented Player",
-    ja: "才能あふれるマルチプレイヤー",
+    // 다재다능 -> 사교성, 센스
+    ko: "어딜 가나 환영받는 분위기 메이커",
+    en: "Welcome-Everywhere Mood Maker",
+    ja: "どこでも歓迎されるムードメーカー",
   },
   탐랑_negative: {
-    ko: "관심사 무한 확장팩",
-    en: "Infinite Interest Expansion Pack",
-    ja: "興味無限拡張パック",
+    // 욕망 과다 -> 싫증, 유흥
+    ko: "끝없는 욕망의 밑 빠진 독",
+    en: "Bottomless Pit of Endless Desires",
+    ja: "終わりのない欲望の底抜け瓶",
   },
 
   // ========================================
@@ -159,18 +169,20 @@ export const MAIN_STAR_ONE_LINERS: Record<OneLinerKey, OneLinerTranslations> = {
     ja: "AI搭載ファクト爆撃機",
   },
   거문_negative: {
-    ko: "말 아끼는 관찰자",
-    en: "Word-Saving Observer",
-    ja: "言葉を惜しむ観察者",
+    // 구설수 -> 말실수, 부정적, 의심
+    ko: "숨 쉬듯 불평하는 프로 불편러",
+    en: "Professional Complainer Breathing Complaints",
+    ja: "息をするように不平を言うプロ不快者",
   },
 
   // ========================================
   // 천상 (인덕성 - 봉사, 조력)
   // ========================================
   천상_positive: {
-    ko: "인복 터진 인싸",
-    en: "Socially Blessed Insider",
-    ja: "人運爆発の陽キャ",
+    // 도장/신용 -> 신뢰, 조력자
+    ko: "모두가 믿고 맡기는 해결사",
+    en: "Problem Solver Everyone Trusts",
+    ja: "誰もが信じて任せるフィクサー",
   },
   천상_negative: {
     ko: "호의가 습관이 된 사람",
@@ -182,42 +194,45 @@ export const MAIN_STAR_ONE_LINERS: Record<OneLinerKey, OneLinerTranslations> = {
   // 천량 (수복성 - 귀인, 건강)
   // ========================================
   천량_positive: {
-    ko: "복 받은 럭키 바이브",
-    en: "Blessed Lucky Vibe",
-    ja: "福を受けたラッキーバイブ",
+    // 보호/어른 -> 리더십, 해결
+    ko: "위기마다 나타나는 든든한 보호자",
+    en: "Reliable Guardian Appearing in Crisis",
+    ja: "危機のたびに現れる頼もしい保護者",
   },
   천량_negative: {
-    ko: "운이 잠시 쉬어가는 중",
-    en: "Luck Taking a Short Break",
-    ja: "運がちょっと休憩中",
+    // 잔소리/고리타분 -> 꼰대, 고독
+    ko: "원칙만 따지는 고리타분한 선비",
+    en: "Stuffy Scholar Obsessed with Principles",
+    ja: "原則ばかり問う堅苦しいソンビ",
   },
 
   // ========================================
   // 칠살 (고독성 - 개척, 결단)
   // ========================================
   칠살_positive: {
-    ko: "홀로서기의 달인",
-    en: "Master of Standing Alone",
-    ja: "一人立ちの達人",
+    // 장군의 위엄 -> 추진력, 개척
+    ko: "혼자서도 길을 여는 불도저",
+    en: "Bulldozer Paving the Way Alone",
+    ja: "一人でも道を切り開くブルドーザー",
   },
   칠살_negative: {
-    ko: "사회성 절전 모드",
-    en: "Social Skills Power-Saving Mode",
-    ja: "社会性省エネモード",
+    ko: "타협을 모르는 고독한 독불장군",
+    en: "Lonely General Who Knows No Compromise",
+    ja: "妥協を知らない孤独な将軍",
   },
 
   // ========================================
   // 파군 (변동성 - 변화, 혁신)
   // ========================================
   파군_positive: {
-    ko: "변화에 진심인 혁신가",
-    en: "Innovator Serious About Change",
-    ja: "変化に本気の革新家",
+    ko: "판을 뒤집는 과감한 승부사",
+    en: "Bold Gambler Flipping the Table",
+    ja: "盤をひっくり返す果敢な勝負師",
   },
   파군_negative: {
-    ko: "새로운 게 좋아 증후군",
-    en: "New-Things-Are-Better Syndrome",
-    ja: "新しいもの好き症候群",
+    ko: "수습 불가한 무계획 저지르기",
+    en: "Unmanageable Unplanned Action",
+    ja: "収拾不可能な無計画なやらかし",
   },
 };
 
