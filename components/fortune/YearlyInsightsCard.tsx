@@ -53,12 +53,7 @@ export default function YearlyInsightsCard({
   const luckyColorText = insights.luckyColor.primary;
 
   const icon = (name: string) => (
-    <Image
-      src={`/icons/insights/${name}.svg`}
-      alt=""
-      width={20}
-      height={20}
-    />
+    <Image src={`/icons/insights/${name}.svg`} alt="" width={20} height={20} />
   );
 
   const insightItems = [
