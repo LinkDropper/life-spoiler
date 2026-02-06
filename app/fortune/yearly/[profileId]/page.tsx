@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -24,8 +24,6 @@ import EventSection from "@/components/landing/EventSection";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
-import { extractKeywordsFromChart } from "@/libs/zi-wei-dou-shu/calculators";
-import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
 
@@ -45,7 +43,6 @@ const DEFAULT_LABELS: Record<CategoryKey, string> = {
 
 export default function YearlyFortunePage() {
   const router = useRouter();
-  const locale = useLocale() as Locale;
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -104,12 +101,6 @@ export default function YearlyFortunePage() {
       }
     };
   }, []);
-
-  // 키워드 추출 (12궁 주성 + 밝기 기반, 영향력 점수순)
-  const keywords = useMemo(() => {
-    if (!result?.rawChart) return [];
-    return extractKeywordsFromChart(result.rawChart, locale);
-  }, [result?.rawChart, locale]);
 
   // 프로필 이미지 공유 드로어용 다운로드 핸들러
   const handleProfileDownloadImage = useCallback(async () => {
@@ -291,19 +282,6 @@ export default function YearlyFortunePage() {
               wuxingJu={result.chart.wuxingJu}
               yearlySihua={yearlySihua}
             />
-          </section>
-        )}
-
-        {/* 키워드 섹션 */}
-        {keywords.length > 0 && (
-          <section className={styles.keywordSection}>
-            <div className={styles.keywordList}>
-              {keywords.map((keyword) => (
-                <span key={keyword} className={styles.keywordTag}>
-                  {keyword}
-                </span>
-              ))}
-            </div>
           </section>
         )}
 
