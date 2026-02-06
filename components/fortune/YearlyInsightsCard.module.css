@@ -1,0 +1,67 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  padding: 24px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.row:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.labelGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.label {
+  font-family: var(--font-pretendard, Pretendard, sans-serif);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 140%;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.divider {
+  flex: 1;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.3) 8px,
+    transparent 8px
+  );
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+  min-width: 20px;
+}
+
+.value {
+  font-family: var(--font-pretendard, Pretendard, sans-serif);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 140%;
+  color: #ffffff;
+  white-space: nowrap;
+  text-align: right;
+}

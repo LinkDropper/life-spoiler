@@ -278,7 +278,7 @@ export const extractOneLinerFromChart = (
   }
 
   // 명궁의 주성들 중 영향력 점수가 가장 높은 것 선택
-  let topStar = mingGong.mainStars[0];
+  let [topStar] = mingGong.mainStars;
   let topScore = calculateStarScore(topStar.brightness, topStar.sihua);
 
   for (const star of mingGong.mainStars) {
