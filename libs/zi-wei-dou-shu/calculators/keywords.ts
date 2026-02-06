@@ -25,14 +25,15 @@ const PALACE_PRIORITY = [
 
 /**
  * 밝기 점수
+ * @see constants/brightness-table.ts 와 동일한 점수 체계 사용
  */
 const BRIGHTNESS_SCORE: Record<Brightness, number> = {
   묘: 100,
-  왕: 85,
-  득: 70,
-  리: 50,
-  평: 30,
-  함: 10,
+  왕: 80,
+  득: 60,
+  리: 40,
+  평: 20,
+  함: 0,
 };
 
 /**
