@@ -75,6 +75,33 @@
 }
 
 /* ============================================================
+   키워드 섹션
+   ============================================================ */
+
+.keywordSection {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.keywordList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.keywordTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================================
    인생 스포일러 섹션
    ============================================================ */
 
