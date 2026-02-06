@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -16,6 +16,7 @@ import {
   CopyToast,
   ErrorState,
   ShareDrawer,
+  KeywordGrid,
   type CategoryKey,
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
@@ -29,6 +30,11 @@ import type {
 } from "@/libs/services/ai/types";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
+import {
+  extractKeywordsFromChart,
+  extractOneLinerFromChart,
+} from "@/libs/zi-wei-dou-shu/calculators";
+import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
 
@@ -59,6 +65,7 @@ const hasProfileTraits = (
 
 export default function LifetimeFortunePage() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -116,6 +123,18 @@ export default function LifetimeFortunePage() {
       }
     };
   }, []);
+
+  // 키워드 추출 (12궁 주성 + 밝기 기반, 영향력 점수순)
+  const keywords = useMemo(() => {
+    if (!result?.rawChart) return [];
+    return extractKeywordsFromChart(result.rawChart, locale);
+  }, [result?.rawChart, locale]);
+
+  // 한줄 표현 추출 (명궁 대표 주성 기반)
+  const oneLiner = useMemo(() => {
+    if (!result?.rawChart) return null;
+    return extractOneLinerFromChart(result.rawChart, locale);
+  }, [result?.rawChart, locale]);
 
   // 프로필 이미지 다운로드 핸들러
   const handleProfileDownloadImage = useCallback(async () => {
@@ -299,6 +318,17 @@ export default function LifetimeFortunePage() {
               chart={rawChart}
               profileName={profile.name}
               wuxingJu={result.chart.wuxingJu}
+            />
+          </section>
+        )}
+
+        {/* 키워드 그리드 섹션 */}
+        {keywords.length > 0 && oneLiner && (
+          <section className={styles.keywordGridSection}>
+            <KeywordGrid
+              keywords={keywords}
+              oneLiner={oneLiner}
+              name={profile.name}
             />
           </section>
         )}
