@@ -1,0 +1,63 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 80px);
+  gap: 2px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px;
+}
+
+.cellCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px;
+}
+
+.tag {
+  font-family: var(--font-pretendard, Pretendard, sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  word-break: keep-all;
+}
+
+.oneLiner {
+  font-family: var(--Type-Brand, Pretendard, sans-serif);
+  font-size: var(--Type-Size-12, 12px);
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: var(--Type-Letter-spacing-0, 0);
+  color: var(--color-text-primary-secondary, #FFDDE6);
+  text-align: center;
+}
+
+.name {
+  font-family: var(--Type-Brand, Pretendard, sans-serif);
+  font-size: var(--Type-Size-16, 16px);
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: var(--Type-Letter-spacing-0, 0);
+  color: var(--color-text-default, #FFF);
+  text-align: center;
+}
+
+.cellBlurred {
+  filter: blur(8px);
+  user-select: none;
+  pointer-events: none;
+}

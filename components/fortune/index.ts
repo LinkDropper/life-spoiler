@@ -1,6 +1,7 @@
 export { ProfileInfo } from "./ProfileInfo";
 export { ZiweiChartGrid } from "./ZiweiChartGrid";
 export { ShareDrawer } from "./ShareDrawer";
+export { default as KeywordGrid } from "./KeywordGrid";
 
 export {
   ChevronIcon,
