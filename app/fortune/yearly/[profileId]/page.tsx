@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -16,6 +16,7 @@ import {
   CopyToast,
   ErrorState,
   ShareDrawer,
+  YearlyInsightsCard,
   type CategoryKey,
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
@@ -24,6 +25,8 @@ import EventSection from "@/components/landing/EventSection";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
+import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
+import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
 
@@ -43,6 +46,7 @@ const DEFAULT_LABELS: Record<CategoryKey, string> = {
 
 export default function YearlyFortunePage() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -69,6 +73,7 @@ export default function YearlyFortunePage() {
   });
 
   const [chartExpanded, setChartExpanded] = useState(true);
+  const [insightsExpanded, setInsightsExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
   const [coreExpanded, setCoreExpanded] = useState(true);
   const [detailExpanded, setDetailExpanded] = useState(true);
@@ -213,6 +218,9 @@ export default function YearlyFortunePage() {
   const { interpretation, rawChart, yearlySihua } = result;
   const monthUnit = t("monthly.monthUnit", { default: "월" });
 
+  // 행운 키워드 인사이트
+  const insights = calculateYearlyInsights(rawChart, currentYear, locale);
+
   // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
   const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
   const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
@@ -282,6 +290,19 @@ export default function YearlyFortunePage() {
               wuxingJu={result.chart.wuxingJu}
               yearlySihua={yearlySihua}
             />
+          </section>
+        )}
+
+        {/* 행운 키워드 섹션 */}
+        <SectionHeader
+          title={t("luckyKeywordsTitle", { default: "행운 키워드" })}
+          expanded={insightsExpanded}
+          onToggle={() => setInsightsExpanded(!insightsExpanded)}
+        />
+
+        {insightsExpanded && (
+          <section className={styles.section}>
+            <YearlyInsightsCard insights={insights} />
           </section>
         )}
 

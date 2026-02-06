@@ -317,6 +317,7 @@
         "yearInfo": "{stem}{branch}년",
         "shareButton": "공유하기",
         "profileShareTitle": "프로필 이미지 공유하기",
+        "luckyKeywordsTitle": "행운 키워드",
         "share": {
           "title": "{name}님의 {year}년 운세",
           "ogTitle": "{name}님의 올해 사주를 확인해보세요",
@@ -909,6 +910,7 @@
         "yearInfo": "Year of {stem}{branch}",
         "shareButton": "Share",
         "profileShareTitle": "Share Profile Image",
+        "luckyKeywordsTitle": "Lucky Keywords",
         "share": {
           "title": "{name}'s {year} Fortune",
           "ogTitle": "Check out {name}'s {year} Fortune",
@@ -1501,6 +1503,7 @@
         "yearInfo": "{stem}{branch}年",
         "shareButton": "シェアする",
         "profileShareTitle": "プロフィール画像をシェアする",
+        "luckyKeywordsTitle": "幸運キーワード",
         "share": {
           "title": "{name}さんの{year}年運勢",
           "ogTitle": "{name}さんの今年の運勢を確認してみてください",
