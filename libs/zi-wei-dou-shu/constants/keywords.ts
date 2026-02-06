@@ -8,6 +8,7 @@ import type { Locale } from "@/i18n/config";
  * @용도 연간 운세 키워드 8개 추출
  * @추출방식 12궁 주성의 밝기 조합 (영향력 점수순 정렬)
  * @총개수 78개 (주성별 유효 밝기 조합)
+ * @컨셉 현대 사회 풍자 (공감+유머)
  */
 
 type StarBrightnessKey = `${MainStarName}_${Brightness}`;
@@ -28,451 +29,446 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
   // 자미 (황제성 - 리더십, 품격) - 6개
   // ========================================
   자미_묘: {
-    ko: "타고난 대장 사자",
-    en: "Born Leader Lion",
-    ja: "生まれながらのリーダー獅子",
+    ko: "타고난 대장 기질",
+    en: "Born Leader",
+    ja: "生まれながらのリーダー気質",
   },
   자미_왕: {
-    ko: "카리스마 넘치는 백호",
-    en: "Charismatic White Tiger",
-    ja: "カリスマ溢れる白虎",
+    ko: "직진 화법의 매력",
+    en: "Charm of Direct Speech",
+    ja: "直球話法の魅力",
   },
   자미_득: {
-    ko: "듬직한 맏형 코끼리",
-    en: "Reliable Big Bro Elephant",
-    ja: "頼れる長兄ゾウ",
+    ko: "든든한 맏이 바이브",
+    en: "Reliable Eldest Vibe",
+    ja: "頼れる長子バイブ",
   },
   자미_리: {
-    ko: "조용히 이끄는 올빼미",
-    en: "Quietly Leading Owl",
-    ja: "静かに導くフクロウ",
+    ko: "오지랖 대마왕",
+    en: "Meddling Master",
+    ja: "おせっかい大王",
   },
   자미_평: {
-    ko: "왕관 무거운 펭귄",
-    en: "Crown-Burdened Penguin",
-    ja: "王冠が重いペンギン",
+    ko: "말만 번지르르",
+    en: "All Talk No Walk",
+    ja: "口だけ番長",
   },
   자미_함: {
-    ko: "체면 차리느라 바쁜 공작새",
-    en: "Image-Obsessed Peacock",
-    ja: "体面ばかり気にする孔雀",
+    ko: "잠재적 꼰대력",
+    en: "Latent Boomer Energy",
+    ja: "潜在的老害力",
   },
 
   // ========================================
   // 천기 (지혜성 - 두뇌, 기획) - 6개
   // ========================================
   천기_묘: {
-    ko: "천재적 두뇌 문어",
-    en: "Genius-Brained Octopus",
-    ja: "天才的頭脳のタコ",
+    ko: "뇌섹의 정석",
+    en: "Textbook Brain-Sexy",
+    ja: "脳セクの教科書",
   },
   천기_왕: {
-    ko: "전략가 기질 여우",
-    en: "Strategic Fox",
-    ja: "戦略家キツネ",
+    ko: "걸어다니는 위키",
+    en: "Walking Wikipedia",
+    ja: "歩くウィキペディア",
   },
   천기_득: {
-    ko: "눈치 백단 미어캣",
-    en: "Sharp-Eyed Meerkat",
-    ja: "空気を読むミーアキャット",
+    ko: "계획충의 미학",
+    en: "Beauty of Planning Mania",
+    ja: "計画マニアの美学",
   },
   천기_리: {
-    ko: "생각 많은 수달",
-    en: "Overthinking Otter",
-    ja: "考えすぎるカワウソ",
+    ko: "생각 과잉 체질",
+    en: "Overthinking Constitution",
+    ja: "考えすぎ体質",
   },
   천기_평: {
-    ko: "오버씽킹 햄스터",
-    en: "Anxious Hamster",
-    ja: "考えすぎハムスター",
+    ko: "계획 부자 실행 거지",
+    en: "Rich in Plans, Poor in Action",
+    ja: "計画リッチ実行プア",
   },
   천기_함: {
-    ko: "꼼수만 늘어나는 너구리",
-    en: "Scheming Raccoon",
-    ja: "小細工ばかりのタヌキ",
+    ko: "티끌 모아 빚더미",
+    en: "Pennies to Debt Mountain",
+    ja: "ちりも積もれば借金の山",
   },
 
   // ========================================
   // 태양 (광명성 - 명예, 활동) - 4개
-  // 리, 평 없음
   // ========================================
   태양_묘: {
-    ko: "관종끼 다분한 고양이",
-    en: "Attention-Loving Cat",
-    ja: "注目されたがりの猫",
+    ko: "사랑받는 관종",
+    en: "Lovable Attention Seeker",
+    ja: "愛されるかまってちゃん",
   },
   태양_왕: {
-    ko: "어디서든 센터 공작새",
-    en: "Always-Center-Stage Peacock",
-    ja: "どこでもセンターの孔雀",
+    ko: "감성 마케터 기질",
+    en: "Emotional Marketer Vibes",
+    ja: "エモマーケター気質",
   },
   태양_득: {
-    ko: "존재감 뿜뿜 골든리트리버",
-    en: "Scene-Stealing Golden Retriever",
-    ja: "存在感抜群のゴールデンレトリバー",
+    ko: "어디서든 주인공",
+    en: "Main Character Anywhere",
+    ja: "どこでも主人公",
   },
   태양_함: {
-    ko: "기죽은 반딧불이",
-    en: "Dimmed Firefly",
-    ja: "元気のないホタル",
+    ko: "겉바속촉 츤데레",
+    en: "Crispy Outside, Soft Inside",
+    ja: "外カリ中しっとりツンデレ",
   },
 
   // ========================================
   // 무곡 (재성 - 재물, 실행력) - 5개
-  // 함 없음
   // ========================================
   무곡_묘: {
-    ko: "돈 냄새 귀신 하이에나",
-    en: "Money-Sniffing Hyena",
-    ja: "お金の匂いを嗅ぎ分けるハイエナ",
+    ko: "인생은 한방",
+    en: "Life is One Big Shot",
+    ja: "人生は一発勝負",
   },
   무곡_왕: {
-    ko: "재테크 본능 다람쥐",
-    en: "Investment-Savvy Squirrel",
-    ja: "財テク本能のリス",
+    ko: "야망만 재벌 3세",
+    en: "Ambition of a Chaebol Heir",
+    ja: "野望だけ財閥3世",
   },
   무곡_득: {
-    ko: "실속 챙기는 까치",
-    en: "Practical Magpie",
-    ja: "実利を取るカササギ",
+    ko: "가성비 집착",
+    en: "Cost-Effectiveness Obsession",
+    ja: "コスパ執着",
   },
   무곡_리: {
-    ko: "통장 지킴이 거북이",
-    en: "Savings-Guard Turtle",
-    ja: "貯金を守るカメ",
+    ko: "금융치료 신봉자",
+    en: "Retail Therapy Believer",
+    ja: "散財セラピー信者",
   },
   무곡_평: {
-    ko: "돈과 인연 없는 나무늘보",
-    en: "Money-Distant Sloth",
-    ja: "お金に縁のないナマケモノ",
+    ko: "월급? 있었는데요 없습니다",
+    en: "Salary? Gone Before You Know It",
+    ja: "給料？あったのになくなりました",
   },
 
   // ========================================
   // 천동 (복성 - 행복, 여유) - 6개
   // ========================================
   천동_묘: {
-    ko: "팔자 좋은 판다",
-    en: "Lucky-Life Panda",
-    ja: "運のいいパンダ",
+    ko: "팔자가 상팔자",
+    en: "Born Under Lucky Stars",
+    ja: "運命が上々",
   },
   천동_왕: {
-    ko: "행복회로 장착 쿼카",
-    en: "Happiness-Wired Quokka",
-    ja: "幸せ回路搭載クオッカ",
+    ko: "쾌락주의자",
+    en: "Hedonist",
+    ja: "快楽主義者",
   },
   천동_득: {
-    ko: "낙천주의 돌고래",
-    en: "Optimistic Dolphin",
-    ja: "楽天主義のイルカ",
+    ko: "소확행 장인",
+    en: "Small Happiness Expert",
+    ja: "小さな幸せの達人",
   },
   천동_리: {
-    ko: "소확행 추구 고슴도치",
-    en: "Small-Joys Hedgehog",
-    ja: "小さな幸せ追求ハリネズミ",
+    ko: "현실도피형 낭만",
+    en: "Escapist Romance",
+    ja: "現実逃避型ロマン",
   },
   천동_평: {
-    ko: "귀차니즘 만랩 나무늘보",
-    en: "Ultimate Lazy Sloth",
-    ja: "めんどくさがり極めたナマケモノ",
+    ko: "무기력의 늪",
+    en: "Swamp of Lethargy",
+    ja: "無気力の沼",
   },
   천동_함: {
-    ko: "만사 귀찮은 해파리",
-    en: "Everything-Is-Tiresome Jellyfish",
-    ja: "何もかも面倒なクラゲ",
+    ko: "휴식 불능 체질",
+    en: "Rest-Disabled Constitution",
+    ja: "休息不能体質",
   },
 
   // ========================================
   // 염정 (정성 - 열정, 매력) - 6개
   // ========================================
   염정_묘: {
-    ko: "플러팅 장인 여우",
-    en: "Flirting Master Fox",
-    ja: "フラーティングの達人キツネ",
+    ko: "본능적 플러팅",
+    en: "Instinctive Flirting",
+    ja: "本能的フラーティング",
   },
   염정_왕: {
-    ko: "치명적 매력 흑표범",
-    en: "Fatally Charming Panther",
-    ja: "致命的な魅力の黒豹",
+    ko: "연애 만렙",
+    en: "Romance Level Max",
+    ja: "恋愛レベルMAX",
   },
   염정_득: {
-    ko: "분위기 메이커 앵무새",
-    en: "Mood-Maker Parrot",
-    ja: "ムードメーカーのオウム",
+    ko: "인간 비타민",
+    en: "Human Vitamin",
+    ja: "人間ビタミン",
   },
   염정_리: {
-    ko: "은근 끼쟁이 고양이",
-    en: "Subtly Charming Cat",
-    ja: "さりげなく魅力的な猫",
+    ko: "밀당의 희생자",
+    en: "Victim of Push-Pull",
+    ja: "駆け引きの犠牲者",
   },
   염정_평: {
-    ko: "매력 봉인 두더지",
-    en: "Charm-Sealed Mole",
-    ja: "魅力封印モグラ",
+    ko: "솔로계의 전설",
+    en: "Legend of Solo Life",
+    ja: "ソロ界のレジェンド",
   },
   염정_함: {
-    ko: "과몰입 불나방",
-    en: "Obsessive Moth",
-    ja: "のめり込みすぎる蛾",
+    ko: "감정 올인형",
+    en: "Emotional All-In Type",
+    ja: "感情オールイン型",
   },
 
   // ========================================
   // 천부 (재고성 - 안정, 관리) - 5개
-  // 함 없음
   // ========================================
   천부_묘: {
-    ko: "재산관리 철저 개미",
-    en: "Asset-Managing Ant",
-    ja: "資産管理徹底アリ",
+    ko: "금수저 DNA",
+    en: "Silver Spoon DNA",
+    ja: "金のスプーンDNA",
   },
   천부_왕: {
-    ko: "안정 제일주의 바다거북",
-    en: "Stability-First Sea Turtle",
-    ja: "安定第一主義のウミガメ",
+    ko: "가격표는 장식일 뿐",
+    en: "Price Tags Are Just Decoration",
+    ja: "値札は飾りに過ぎない",
   },
   천부_득: {
-    ko: "알뜰살뜰 비버",
-    en: "Thrifty Beaver",
-    ja: "倹約家のビーバー",
+    ko: "예쁜 쓰레기 수집가",
+    en: "Pretty Trash Collector",
+    ja: "可愛いゴミ収集家",
   },
   천부_리: {
-    ko: "현상유지 달팽이",
-    en: "Status-Quo Snail",
-    ja: "現状維持カタツムリ",
+    ko: "소비 후 죄책감형",
+    en: "Post-Purchase Guilt Type",
+    ja: "消費後罪悪感型",
   },
   천부_평: {
-    ko: "변화 극혐 조개",
-    en: "Change-Hating Clam",
-    ja: "変化が大嫌いな貝",
+    ko: "극한의 절약정신",
+    en: "Extreme Frugality Spirit",
+    ja: "極限の節約精神",
   },
 
   // ========================================
   // 태음 (음성 - 감성, 섬세) - 5개
-  // 평 없음
   // ========================================
   태음_묘: {
-    ko: "감성 충만 나이팅게일",
-    en: "Emotional Nightingale",
-    ja: "感性豊かなナイチンゲール",
+    ko: "감성팔이 장인",
+    en: "Emotional Marketing Master",
+    ja: "エモ売りの達人",
   },
   태음_왕: {
-    ko: "섬세함 끝판왕 토끼",
-    en: "Ultra-Sensitive Rabbit",
-    ja: "繊細さ極めたウサギ",
+    ko: "눈물샘 풍부",
+    en: "Abundant Tear Ducts",
+    ja: "涙腺豊富",
   },
   태음_득: {
-    ko: "감수성 풍부한 백조",
-    en: "Sentimental Swan",
-    ja: "感受性豊かな白鳥",
+    ko: "공감 능력 만렙",
+    en: "Empathy Level Max",
+    ja: "共感能力MAX",
   },
   태음_리: {
-    ko: "몽상가 기질 해파리",
-    en: "Dreamy Jellyfish",
-    ja: "夢見がちなクラゲ",
+    ko: "셀프 감동형",
+    en: "Self-Touching Type",
+    ja: "セルフ感動型",
   },
   태음_함: {
-    ko: "유리멘탈 도베르만",
-    en: "Glass-Heart Doberman",
-    ja: "ガラスのハートのドーベルマン",
+    ko: "유리멘탈 주의보",
+    en: "Glass Mental Warning",
+    ja: "ガラスメンタル注意報",
   },
 
   // ========================================
   // 탐랑 (욕망성 - 다재다능, 도화) - 6개
   // ========================================
   탐랑_묘: {
-    ko: "팔방미인 카멜레온",
-    en: "Multi-Talented Chameleon",
-    ja: "八方美人カメレオン",
+    ko: "만능 엔터테이너",
+    en: "All-Round Entertainer",
+    ja: "万能エンターテイナー",
   },
   탐랑_왕: {
-    ko: "뭐든 잘하는 돌고래",
-    en: "Good-At-Everything Dolphin",
-    ja: "何でもできるイルカ",
+    ko: "재능 낭비류 甲",
+    en: "Top-Tier Talent Waster",
+    ja: "才能の無駄遣い甲",
   },
   탐랑_득: {
-    ko: "호기심 대장 수달",
-    en: "Curiosity-King Otter",
-    ja: "好奇心旺盛カワウソ",
+    ko: "취미 부자",
+    en: "Hobby Millionaire",
+    ja: "趣味リッチ",
   },
   탐랑_리: {
-    ko: "취미 부자 라쿤",
-    en: "Hobby-Rich Raccoon",
-    ja: "多趣味なアライグマ",
+    ko: "찍먹 인생관",
+    en: "Sampling Life Philosophy",
+    ja: "つまみ食い人生観",
   },
   탐랑_평: {
-    ko: "이것저것 찍먹 참새",
-    en: "Try-Everything Sparrow",
-    ja: "あれこれつまみ食いスズメ",
+    ko: "3일 열정형",
+    en: "3-Day Passion Type",
+    ja: "3日熱情型",
   },
   탐랑_함: {
-    ko: "욕심만 큰 뻐꾸기",
-    en: "All-Greed Cuckoo",
-    ja: "欲だけ大きいカッコウ",
+    ko: "야망만 재벌급",
+    en: "Chaebol-Level Ambition Only",
+    ja: "野望だけ財閥級",
   },
 
   // ========================================
   // 거문 (구설성 - 언변, 분석) - 6개
   // ========================================
   거문_묘: {
-    ko: "말빨 천재 변호사",
-    en: "Silver-Tongued Lawyer",
-    ja: "弁舌の天才弁護士",
+    ko: "말빨로 먹고 삼",
+    en: "Lives on Eloquence",
+    ja: "話術で食っていく",
   },
   거문_왕: {
-    ko: "논리 끝판왕 까마귀",
-    en: "Logic-Master Crow",
-    ja: "論理の王様カラス",
+    ko: "토론 무패 전설",
+    en: "Undefeated Debate Legend",
+    ja: "討論無敗伝説",
   },
   거문_득: {
-    ko: "팩트폭격 부엉이",
-    en: "Fact-Bombing Owl",
-    ja: "ファクト爆撃フクロウ",
+    ko: "팩폭 장인",
+    en: "Fact Bomb Master",
+    ja: "ファクト爆撃の達人",
   },
   거문_리: {
-    ko: "할말은 하는 스컹크",
-    en: "Speaks-Mind Skunk",
-    ja: "言うべきことは言うスカンク",
+    ko: "할말하않 장인",
+    en: "Bites Tongue Expert",
+    ja: "言いたいこと我慢達人",
   },
   거문_평: {
-    ko: "안 들리는 척하는 곰",
-    en: "Pretends-Not-To-Hear Bear",
-    ja: "聞こえないふりをするクマ",
+    ko: "읽씹의 미학",
+    en: "Art of Leaving on Read",
+    ja: "既読スルーの美学",
   },
   거문_함: {
-    ko: "말실수 장인 앵무새",
-    en: "Foot-In-Mouth Parrot",
-    ja: "失言の達人オウム",
+    ko: "TMI 폭격기",
+    en: "TMI Bomber",
+    ja: "TMI爆撃機",
   },
 
   // ========================================
   // 천상 (인덕성 - 봉사, 조력) - 6개
   // ========================================
   천상_묘: {
-    ko: "인복 터진 래브라도",
-    en: "People-Blessed Labrador",
-    ja: "人福に恵まれたラブラドール",
+    ko: "인복 터진 팔자",
+    en: "Blessed with Good People",
+    ja: "人福爆発の運命",
   },
   천상_왕: {
-    ko: "만인의 친구 골든리트리버",
-    en: "Everyone's Friend Golden Retriever",
-    ja: "万人の友ゴールデンレトリバー",
+    ko: "거절 불가 예스맨",
+    en: "Yes-Man Who Can't Say No",
+    ja: "断れないイエスマン",
   },
   천상_득: {
-    ko: "배려심 갑 알파카",
-    en: "Considerate Alpaca",
-    ja: "思いやり抜群アルパカ",
+    ko: "유해 성분 0%",
+    en: "0% Harmful Ingredients",
+    ja: "有害成分0%",
   },
   천상_리: {
-    ko: "착한 척 물개",
-    en: "Nice-Acting Seal",
-    ja: "いい人ぶるアザラシ",
+    ko: "착한 사람 증후군",
+    en: "Nice Person Syndrome",
+    ja: "いい人症候群",
   },
   천상_평: {
-    ko: "호구 체질 양",
-    en: "Easy-Target Sheep",
-    ja: "カモ体質の羊",
+    ko: "호구 체질",
+    en: "Pushover Constitution",
+    ja: "カモ体質",
   },
   천상_함: {
-    ko: "눈치 없는 조력자",
-    en: "Clueless Helper",
-    ja: "空気の読めない助っ人",
+    ko: "민폐형 선의",
+    en: "Nuisance-Type Goodwill",
+    ja: "迷惑型善意",
   },
 
   // ========================================
   // 천량 (수복성 - 귀인, 건강) - 5개
-  // 평 없음
   // ========================================
   천량_묘: {
-    ko: "귀인 끌어당기는 코알라",
-    en: "Mentor-Attracting Koala",
-    ja: "貴人を引き寄せるコアラ",
+    ko: "운빨 캐리어",
+    en: "Luck Carrier",
+    ja: "運キャリー",
   },
   천량_왕: {
-    ko: "운 좋은 네잎클로버",
-    en: "Lucky Four-Leaf Clover",
-    ja: "幸運の四つ葉のクローバー",
+    ko: "될놈될 표본",
+    en: "Meant-to-Succeed Specimen",
+    ja: "なるべくしてなる見本",
   },
   천량_득: {
-    ko: "든든한 백 있는 펠리컨",
-    en: "Well-Backed Pelican",
-    ja: "頼れるバックのあるペリカン",
+    ko: "조상님이 하드캐리",
+    en: "Ancestors Hard Carrying",
+    ja: "ご先祖様がハードキャリー",
   },
   천량_리: {
-    ko: "버티기 달인 선인장",
-    en: "Endurance-Master Cactus",
-    ja: "耐え忍ぶ達人サボテン",
+    ko: "운빨 의존형",
+    en: "Luck-Dependent Type",
+    ja: "運頼み型",
   },
   천량_함: {
-    ko: "복 나간 검은 고양이",
-    en: "Luck-Drained Black Cat",
-    ja: "運に見放された黒猫",
+    ko: "만사 꼬임 체질",
+    en: "Everything-Goes-Wrong Type",
+    ja: "万事こじれ体質",
   },
 
   // ========================================
   // 칠살 (고독성 - 개척, 결단) - 6개
   // ========================================
   칠살_묘: {
-    ko: "마이웨이 불도저",
-    en: "My-Way Bulldozer",
-    ja: "マイウェイブルドーザー",
+    ko: "혼자서도 잘해요",
+    en: "Does Well Alone",
+    ja: "一人でも大丈夫",
   },
   칠살_왕: {
-    ko: "외로운 늑대",
-    en: "Lone Wolf",
-    ja: "孤高の狼",
+    ko: "행복한 아싸",
+    en: "Happy Loner",
+    ja: "幸せな陰キャ",
   },
   칠살_득: {
-    ko: "개척자 정신 매",
-    en: "Pioneer Hawk",
-    ja: "開拓者精神の鷹",
+    ko: "철벽 독립심",
+    en: "Iron-Wall Independence",
+    ja: "鉄壁の独立心",
   },
   칠살_리: {
-    ko: "혼밥 익숙한 고양이",
-    en: "Solo-Dining Cat",
-    ja: "一人飯に慣れた猫",
+    ko: "선택적 사회생활",
+    en: "Selective Social Life",
+    ja: "選択的社会生活",
   },
   칠살_평: {
-    ko: "우유부단 해마",
-    en: "Indecisive Seahorse",
-    ja: "優柔不断なタツノオトシゴ",
+    ko: "결정장애 만렙",
+    en: "Decision Paralysis Max",
+    ja: "決定障害MAX",
   },
   칠살_함: {
-    ko: "사회성 제로 고슴도치",
-    en: "Zero-Social Hedgehog",
-    ja: "社会性ゼロのハリネズミ",
+    ko: "인류애 상실",
+    en: "Lost Faith in Humanity",
+    ja: "人類愛喪失",
   },
 
   // ========================================
   // 파군 (변동성 - 변화, 혁신) - 6개
   // ========================================
   파군_묘: {
-    ko: "혁신가 기질 독수리",
-    en: "Innovator Eagle",
-    ja: "革新者気質の鷲",
+    ko: "가만있으면 죽는 병",
+    en: "Can't Sit Still Syndrome",
+    ja: "じっとしてると死ぬ病",
   },
   파군_왕: {
-    ko: "집에 못 붙어있는 야생마",
-    en: "Can't-Stay-Home Mustang",
-    ja: "家にいられない野生馬",
+    ko: "급발진의 아이콘",
+    en: "Icon of Sudden Acceleration",
+    ja: "急発進のアイコン",
   },
   파군_득: {
-    ko: "변화 추구 철새",
-    en: "Change-Seeking Migrant Bird",
-    ja: "変化を求める渡り鳥",
+    ko: "뒷일은 내일 생각함",
+    en: "Tomorrow's Problem is Tomorrow's",
+    ja: "後のことは明日考える",
   },
   파군_리: {
-    ko: "가만히 못 있는 원숭이",
-    en: "Can't-Sit-Still Monkey",
-    ja: "じっとしていられない猿",
+    ko: "정착 불가 체질",
+    en: "Can't-Settle-Down Type",
+    ja: "定着不可体質",
   },
   파군_평: {
-    ko: "퇴사 마려운 앵무새",
-    en: "Ready-To-Quit Parrot",
-    ja: "退職したいオウム",
+    ko: "귀막은 마이웨이",
+    en: "Deaf-Eared My Way",
+    ja: "耳を塞いだマイウェイ",
   },
   파군_함: {
-    ko: "불 지르고 다니는 불개미",
-    en: "Bridge-Burning Fire Ant",
-    ja: "火をつけて回るヒアリ",
+    ko: "엎어치기 전문",
+    en: "Flip-the-Table Expert",
+    ja: "ひっくり返し専門",
   },
 };
 
