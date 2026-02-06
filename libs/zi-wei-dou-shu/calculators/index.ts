@@ -98,3 +98,15 @@ export {
   extractOneLinerFromChart,
   type KeywordExtractionResult,
 } from "./keywords";
+
+export {
+  calculateYearlyInsights,
+  type YearlyInsights,
+  type MonthInsight,
+  type WealthStrategy,
+  type RomanceMode,
+  type LuckyPlace,
+  type NobleHelper,
+  type HealthWarning,
+  type LuckyColor,
+} from "./yearly-insights";

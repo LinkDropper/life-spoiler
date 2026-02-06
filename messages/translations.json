@@ -382,6 +382,17 @@
           "expand": "나머지 {count}개월 보기",
           "collapse": "접기",
           "monthUnit": "월"
+        },
+        "insights": {
+          "bestMonth": "최고의 달",
+          "cautionMonth": "조심할 달",
+          "wealth": "재물 공략",
+          "romance": "연애 모드",
+          "luckyPlace": "행운의 장소",
+          "nobleHelper": "나의 귀인",
+          "health": "건강 주의",
+          "luckyColor": "행운의 색상",
+          "monthFormat": "{month}월"
         }
       },
       "instagramStory": {
@@ -963,6 +974,17 @@
           "expand": "View {count} more months",
           "collapse": "Collapse",
           "monthUnit": ""
+        },
+        "insights": {
+          "bestMonth": "Best Month",
+          "cautionMonth": "Month to Watch",
+          "wealth": "Wealth Strategy",
+          "romance": "Romance Mode",
+          "luckyPlace": "Lucky Place",
+          "nobleHelper": "Noble Helper",
+          "health": "Health Watch",
+          "luckyColor": "Lucky Color",
+          "monthFormat": "{month}"
         }
       },
       "instagramStory": {
@@ -1544,6 +1566,17 @@
           "expand": "残り{count}ヶ月を見る",
           "collapse": "閉じる",
           "monthUnit": "月"
+        },
+        "insights": {
+          "bestMonth": "最高の月",
+          "cautionMonth": "注意の月",
+          "wealth": "財運戦略",
+          "romance": "恋愛モード",
+          "luckyPlace": "幸運の場所",
+          "nobleHelper": "私の貴人",
+          "health": "健康注意",
+          "luckyColor": "幸運の色",
+          "monthFormat": "{month}月"
         }
       },
       "instagramStory": {
