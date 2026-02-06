@@ -316,8 +316,8 @@ export default function LifetimeFortunePage() {
         {keywords.length > 0 && (
           <section className={styles.keywordSection}>
             <div className={styles.keywordList}>
-              {keywords.map((keyword, index) => (
-                <span key={index} className={styles.keywordTag}>
+              {keywords.map((keyword) => (
+                <span key={keyword} className={styles.keywordTag}>
                   {keyword}
                 </span>
               ))}

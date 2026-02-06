@@ -63,7 +63,13 @@ interface StarKeywordInfo {
   sihua?: Sihua;
   keyword: string;
   isPositive: boolean;
-  score: number; // 총 영향력 점수
+  score: number;
+}
+
+interface StarInfo {
+  name: string;
+  brightness: Brightness;
+  sihua?: Sihua;
 }
 
 /**
@@ -76,6 +82,19 @@ const calculateStarScore = (brightness: Brightness, sihua?: Sihua): number => {
 };
 
 /**
+ * 별의 상세 정보 계산 (공통 헬퍼)
+ */
+const getStarDetails = (star: StarInfo, locale: Locale) => ({
+  keyword: getStarBrightnessKeyword(
+    star.name as MainStarName,
+    star.brightness,
+    locale
+  ),
+  isPositive: POSITIVE_BRIGHTNESS.includes(star.brightness),
+  score: calculateStarScore(star.brightness, star.sihua),
+});
+
+/**
  * 명반에서 모든 주성+밝기 조합 수집 (점수 포함)
  */
 const collectAllStarKeywords = (
@@ -83,8 +102,6 @@ const collectAllStarKeywords = (
   locale: Locale
 ): StarKeywordInfo[] => {
   const results: StarKeywordInfo[] = [];
-
-  // O(n) lookup을 위한 Map 생성
   const palaceMap = new Map(chart.palaces.map((p) => [p.name, p]));
 
   for (const palaceName of PALACE_PRIORITY) {
@@ -92,21 +109,17 @@ const collectAllStarKeywords = (
     if (!palace) continue;
 
     for (const star of palace.mainStars) {
-      const keyword = getStarBrightnessKeyword(
-        star.name as MainStarName,
-        star.brightness as Brightness,
-        locale
-      );
+      const details = getStarDetails(star, locale);
 
-      if (keyword) {
+      if (details.keyword) {
         results.push({
           palaceName,
           starName: star.name,
           brightness: star.brightness,
           sihua: star.sihua,
-          keyword,
-          isPositive: POSITIVE_BRIGHTNESS.includes(star.brightness),
-          score: calculateStarScore(star.brightness, star.sihua),
+          keyword: details.keyword,
+          isPositive: details.isPositive,
+          score: details.score,
         });
       }
     }
@@ -119,7 +132,6 @@ const collectAllStarKeywords = (
  * 키워드 추출 공통 로직
  */
 const selectKeywords = (allKeywords: StarKeywordInfo[]): string[] => {
-  // 긍정/부정 분리 후 점수 순 정렬 (높은 점수 우선, 원본 변경 방지)
   const positiveKeywords = allKeywords
     .filter((k) => k.isPositive)
     .sort((a, b) => b.score - a.score);
@@ -128,7 +140,6 @@ const selectKeywords = (allKeywords: StarKeywordInfo[]): string[] => {
     .filter((k) => !k.isPositive)
     .sort((a, b) => b.score - a.score);
 
-  // 중복 제거하면서 각각 4개씩 추출 (Set으로 O(1) 조회)
   const selectedSet = new Set<string>();
   const selectedPositive: string[] = [];
   const selectedNegative: string[] = [];
@@ -149,7 +160,6 @@ const selectKeywords = (allKeywords: StarKeywordInfo[]): string[] => {
     if (selectedNegative.length >= NEGATIVE_COUNT) break;
   }
 
-  // 긍정이 부족하면 부정에서 더 채우고, 부정이 부족하면 긍정에서 더 채움
   const result = [...selectedPositive, ...selectedNegative];
 
   if (result.length < MAX_KEYWORDS) {
@@ -217,25 +227,23 @@ export const extractKeywordsWithDetails = (
   const allKeywords = collectAllStarKeywords(chart, locale);
   const palaceMap = new Map(chart.palaces.map((p) => [p.name, p]));
 
-  // 궁별 상세 정보 수집
   const palaceDetails: KeywordExtractionResult["palaceDetails"] = [];
 
   for (const palaceName of PALACE_PRIORITY) {
     const palace = palaceMap.get(palaceName);
     if (!palace) continue;
 
-    const stars = palace.mainStars.map((star) => ({
-      name: star.name,
-      brightness: star.brightness,
-      sihua: star.sihua,
-      keyword: getStarBrightnessKeyword(
-        star.name as MainStarName,
-        star.brightness as Brightness,
-        locale
-      ),
-      isPositive: POSITIVE_BRIGHTNESS.includes(star.brightness),
-      score: calculateStarScore(star.brightness, star.sihua),
-    }));
+    const stars = palace.mainStars.map((star) => {
+      const details = getStarDetails(star, locale);
+      return {
+        name: star.name,
+        brightness: star.brightness,
+        sihua: star.sihua,
+        keyword: details.keyword,
+        isPositive: details.isPositive,
+        score: details.score,
+      };
+    });
 
     palaceDetails.push({ palaceName, stars });
   }
