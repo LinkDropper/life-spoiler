@@ -16,6 +16,7 @@ import {
   CopyToast,
   ErrorState,
   ShareDrawer,
+  KeywordGrid,
   type CategoryKey,
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
@@ -29,7 +30,10 @@ import type {
 } from "@/libs/services/ai/types";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
-import { extractKeywordsFromChart } from "@/libs/zi-wei-dou-shu/calculators";
+import {
+  extractKeywordsFromChart,
+  extractOneLinerFromChart,
+} from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
@@ -124,6 +128,12 @@ export default function LifetimeFortunePage() {
   const keywords = useMemo(() => {
     if (!result?.rawChart) return [];
     return extractKeywordsFromChart(result.rawChart, locale);
+  }, [result?.rawChart, locale]);
+
+  // 한줄 표현 추출 (명궁 대표 주성 기반)
+  const oneLiner = useMemo(() => {
+    if (!result?.rawChart) return null;
+    return extractOneLinerFromChart(result.rawChart, locale);
   }, [result?.rawChart, locale]);
 
   // 프로필 이미지 다운로드 핸들러
@@ -312,16 +322,14 @@ export default function LifetimeFortunePage() {
           </section>
         )}
 
-        {/* 키워드 섹션 */}
-        {keywords.length > 0 && (
-          <section className={styles.keywordSection}>
-            <div className={styles.keywordList}>
-              {keywords.map((keyword) => (
-                <span key={keyword} className={styles.keywordTag}>
-                  {keyword}
-                </span>
-              ))}
-            </div>
+        {/* 키워드 그리드 섹션 */}
+        {keywords.length > 0 && oneLiner && (
+          <section className={styles.keywordGridSection}>
+            <KeywordGrid
+              keywords={keywords}
+              oneLiner={oneLiner}
+              name={profile.name}
+            />
           </section>
         )}
 
