@@ -47,3 +47,10 @@ export { PALACE_CATEGORY_WEIGHTS, type CategoryScores } from "./scoring";
 
 // 격국 패턴
 export { GEOK_GUK_PATTERNS, type GeokGukPattern } from "./geok-guk-patterns";
+
+// 주성 × 밝기 키워드
+export {
+  STAR_BRIGHTNESS_KEYWORDS,
+  getStarBrightnessKeyword,
+  KEYWORD_COUNT,
+} from "./keywords";
