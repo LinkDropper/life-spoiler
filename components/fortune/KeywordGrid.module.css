@@ -44,6 +44,7 @@
   letter-spacing: var(--Type-Letter-spacing-0, 0);
   color: var(--color-text-primary-secondary, #FFDDE6);
   text-align: center;
+  word-break: keep-all;
 }
 
 .name {
@@ -54,6 +55,7 @@
   letter-spacing: var(--Type-Letter-spacing-0, 0);
   color: var(--color-text-default, #FFF);
   text-align: center;
+  word-break: keep-all;
 }
 
 .cellBlurred {
