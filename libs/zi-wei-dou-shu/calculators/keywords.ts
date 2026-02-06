@@ -1,6 +1,7 @@
 import type { Locale } from "@/i18n/config";
 
 import { getStarBrightnessKeyword } from "../constants/keywords";
+import { getOneLiner, getToneFromBrightness } from "../constants/one-liners";
 import type { MainStarName } from "../constants/stars";
 import type { Brightness, Sihua, ZiweiChart } from "../types";
 
@@ -252,4 +253,44 @@ export const extractKeywordsWithDetails = (
     keywords: selectKeywords(allKeywords),
     palaceDetails,
   };
+};
+
+/**
+ * 명반에서 한줄 표현 추출
+ *
+ * @description
+ * 명궁의 대표 주성(영향력 점수가 가장 높은)과 톤(긍정/부정)을 기반으로
+ * "이 사람을 표현하는 한마디"를 반환
+ *
+ * @param chart 자미두수 명반
+ * @param locale 언어 (ko/en/ja)
+ * @returns 한줄 표현 문자열
+ */
+export const extractOneLinerFromChart = (
+  chart: ZiweiChart,
+  locale: Locale = "ko"
+): string | null => {
+  // 명궁 찾기
+  const mingGong = chart.palaces.find((p) => p.name === "명궁");
+  if (!mingGong || mingGong.mainStars.length === 0) {
+    return null;
+  }
+
+  // 명궁의 주성들 중 영향력 점수가 가장 높은 것 선택
+  let topStar = mingGong.mainStars[0];
+  let topScore = calculateStarScore(topStar.brightness, topStar.sihua);
+
+  for (const star of mingGong.mainStars) {
+    const score = calculateStarScore(star.brightness, star.sihua);
+    if (score > topScore) {
+      topStar = star;
+      topScore = score;
+    }
+  }
+
+  // 톤 결정 (밝기 기반)
+  const tone = getToneFromBrightness(topStar.brightness);
+
+  // 한줄 표현 반환
+  return getOneLiner(topStar.name as MainStarName, tone, locale);
 };

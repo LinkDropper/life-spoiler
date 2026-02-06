@@ -95,5 +95,6 @@ export { identifyGeokGuk, type IdentifiedGeokGuk } from "./geok-guk";
 export {
   extractKeywordsFromChart,
   extractKeywordsWithDetails,
+  extractOneLinerFromChart,
   type KeywordExtractionResult,
 } from "./keywords";
