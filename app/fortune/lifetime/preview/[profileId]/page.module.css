@@ -59,6 +59,14 @@
   margin: 16px 0 24px;
 }
 
+/* 키워드 그리드 섹션 */
+.keywordGridSection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
 /* 미리보기 컨텐츠 */
 .previewContent {
   padding: 16px 0 0 0;

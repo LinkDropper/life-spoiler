@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useState, useMemo } from "react";
+import { useTranslations, useLocale } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -9,12 +9,19 @@ import {
   ProfileInfo,
   ZiweiChartGrid,
   SectionHeader,
+  KeywordGrid,
 } from "@/components/fortune";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
+import {
+  extractKeywordsFromChart,
+  extractOneLinerFromChart,
+} from "@/libs/zi-wei-dou-shu/calculators";
+import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
 
 export default function LifetimeFortunePreviewPage() {
+  const locale = useLocale() as Locale;
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
   const tLifetime = useTranslations("fortune.lifetime");
@@ -36,6 +43,18 @@ export default function LifetimeFortunePreviewPage() {
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+
+  // 키워드 추출 (12궁 주성 + 밝기 기반, 영향력 점수순)
+  const keywords = useMemo(() => {
+    if (!result?.rawChart) return [];
+    return extractKeywordsFromChart(result.rawChart, locale);
+  }, [result?.rawChart, locale]);
+
+  // 한줄 표현 추출 (명궁 대표 주성 기반)
+  const oneLiner = useMemo(() => {
+    if (!result?.rawChart) return null;
+    return extractOneLinerFromChart(result.rawChart, locale);
+  }, [result?.rawChart, locale]);
 
   if (isLoading) {
     return <Loading />;
@@ -118,6 +137,18 @@ export default function LifetimeFortunePreviewPage() {
               chart={rawChart}
               profileName={profile.name}
               wuxingJu={result.chart.wuxingJu}
+            />
+          </section>
+        )}
+
+        {/* 키워드 그리드 (미리보기 - 3행 블러) */}
+        {keywords.length > 0 && oneLiner && (
+          <section className={styles.keywordGridSection}>
+            <KeywordGrid
+              keywords={keywords}
+              oneLiner={oneLiner}
+              name={profile.name}
+              isPreview={true}
             />
           </section>
         )}
