@@ -466,9 +466,9 @@ export const STAR_BRIGHTNESS_KEYWORDS: Partial<
     ja: "耳を塞いだマイウェイ",
   },
   파군_함: {
-    ko: "엎어치기 전문",
-    en: "Flip-the-Table Expert",
-    ja: "ひっくり返し専門",
+    ko: "프로 급발진러",
+    en: "Loose Cannon",
+    ja: "暴走機関車", // 폭주기관차
   },
 };
 
