@@ -59,6 +59,29 @@
   margin: 16px 0 24px;
 }
 
+/* 블러 처리된 섹션 (프리뷰) - 하단 절반만 블러 */
+.blurredSection {
+  margin: 16px 0 24px;
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.blurredSection::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70%;
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(12px);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+}
+
 /* 미리보기 컨텐츠 */
 .previewContent {
   padding: 16px 0 0 0;
