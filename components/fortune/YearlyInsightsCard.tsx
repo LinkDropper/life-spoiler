@@ -7,6 +7,8 @@ import type { YearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
 
 import styles from "./YearlyInsightsCard.module.css";
 
+const PREVIEW_PLACEHOLDER = "???";
+
 interface YearlyInsightsCardProps {
   insights: YearlyInsights;
   /** 미리보기 모드 - 하단 3개 항목 값 마스킹 */
@@ -57,8 +59,6 @@ export default function YearlyInsightsCard({
   // 행운의 색상
   const luckyColorText = insights.luckyColor.primary;
 
-  const masked = "???";
-
   const icon = (name: string) => (
     <Image src={`/icons/insights/${name}.svg`} alt="" width={20} height={20} />
   );
@@ -92,17 +92,17 @@ export default function YearlyInsightsCard({
     {
       icon: icon("mood-happy-filled"),
       label: t("nobleHelper"),
-      value: preview ? masked : nobleText,
+      value: preview ? PREVIEW_PLACEHOLDER : nobleText,
     },
     {
       icon: icon("health-filled"),
       label: t("health"),
-      value: preview ? masked : healthText,
+      value: preview ? PREVIEW_PLACEHOLDER : healthText,
     },
     {
       icon: icon("circle-filled"),
       label: t("luckyColor"),
-      value: preview ? masked : luckyColorText,
+      value: preview ? PREVIEW_PLACEHOLDER : luckyColorText,
     },
   ];
 
