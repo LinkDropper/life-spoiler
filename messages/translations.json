@@ -387,11 +387,11 @@
         "insights": {
           "bestMonth": "최고의 달",
           "cautionMonth": "조심할 달",
-          "wealth": "재물 공략",
-          "romance": "연애 모드",
+          "wealth": "재물",
+          "romance": "연애",
           "luckyPlace": "행운의 장소",
-          "nobleHelper": "나의 귀인",
-          "health": "건강 주의",
+          "nobleHelper": "귀인",
+          "health": "건강",
           "luckyColor": "행운의 색상",
           "monthFormat": "{month}월"
         }

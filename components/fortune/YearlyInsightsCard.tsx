@@ -9,6 +9,8 @@ import styles from "./YearlyInsightsCard.module.css";
 
 interface YearlyInsightsCardProps {
   insights: YearlyInsights;
+  /** 미리보기 모드 - 하단 3개 항목 값 마스킹 */
+  preview?: boolean;
 }
 
 /**
@@ -20,6 +22,7 @@ interface YearlyInsightsCardProps {
  */
 export default function YearlyInsightsCard({
   insights,
+  preview = false,
 }: YearlyInsightsCardProps) {
   const t = useTranslations("fortune.yearly.insights");
 
@@ -29,8 +32,10 @@ export default function YearlyInsightsCard({
   // 조심할 달 (1순위)
   const cautionMonth = insights.cautionMonths[0]?.month;
 
-  // 재물 공략 (추천 분야 중 첫 번째)
-  const wealthArea = insights.wealthStrategy.recommendedAreas[0] || "";
+  // 재물 공략 (추천 분야 우선, 없으면 핵심 전략)
+  const wealthArea =
+    insights.wealthStrategy.recommendedAreas[0] ||
+    insights.wealthStrategy.mainStrategy;
 
   // 연애 모드
   const romanceMode = insights.romanceMode.mode;
@@ -51,6 +56,8 @@ export default function YearlyInsightsCard({
 
   // 행운의 색상
   const luckyColorText = insights.luckyColor.primary;
+
+  const masked = "???";
 
   const icon = (name: string) => (
     <Image src={`/icons/insights/${name}.svg`} alt="" width={20} height={20} />
@@ -85,17 +92,17 @@ export default function YearlyInsightsCard({
     {
       icon: icon("mood-happy-filled"),
       label: t("nobleHelper"),
-      value: nobleText,
+      value: preview ? masked : nobleText,
     },
     {
       icon: icon("health-filled"),
       label: t("health"),
-      value: healthText,
+      value: preview ? masked : healthText,
     },
     {
       icon: icon("circle-filled"),
       label: t("luckyColor"),
-      value: luckyColorText,
+      value: preview ? masked : luckyColorText,
     },
   ];
 

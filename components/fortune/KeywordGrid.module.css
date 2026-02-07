@@ -42,7 +42,7 @@
   font-weight: 700;
   line-height: 140%;
   letter-spacing: var(--Type-Letter-spacing-0, 0);
-  color: var(--color-text-primary-secondary, #FFDDE6);
+  color: var(--color-text-primary-secondary, #ffdde6);
   text-align: center;
   word-break: keep-all;
 }
@@ -53,13 +53,25 @@
   font-weight: 700;
   line-height: 140%;
   letter-spacing: var(--Type-Letter-spacing-0, 0);
-  color: var(--color-text-default, #FFF);
+  color: var(--color-text-default, #fff);
   text-align: center;
   word-break: keep-all;
 }
 
-.cellBlurred {
-  filter: blur(8px);
-  user-select: none;
+.gridPreview {
+  position: relative;
+}
+
+.gridPreview::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
   pointer-events: none;
 }
