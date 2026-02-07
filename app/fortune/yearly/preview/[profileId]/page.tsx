@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -9,12 +9,16 @@ import {
   ProfileInfo,
   ZiweiChartGrid,
   SectionHeader,
+  YearlyInsightsCard,
 } from "@/components/fortune";
 import { useYearlyPreview } from "@/libs/hooks/fortune";
+import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
+import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
 
 export default function YearlyFortunePreviewPage() {
+  const locale = useLocale() as Locale;
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
   const tYearly = useTranslations("fortune.yearly");
@@ -36,6 +40,7 @@ export default function YearlyFortunePreviewPage() {
   });
 
   const [chartExpanded, setChartExpanded] = useState(true);
+  const [insightsExpanded, setInsightsExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
 
   if (isLoading) {
@@ -89,6 +94,8 @@ export default function YearlyFortunePreviewPage() {
 
   const { interpretation, rawChart, yearlySihua } = result;
 
+  const insights = calculateYearlyInsights(rawChart, currentYear, locale);
+
   return (
     <div className={styles.page}>
       <HeaderClient />
@@ -122,6 +129,19 @@ export default function YearlyFortunePreviewPage() {
               wuxingJu={result.chart.wuxingJu}
               yearlySihua={yearlySihua}
             />
+          </section>
+        )}
+
+        {/* 행운 키워드 섹션 */}
+        <SectionHeader
+          title={tYearly("luckyKeywordsTitle")}
+          expanded={insightsExpanded}
+          onToggle={() => setInsightsExpanded(!insightsExpanded)}
+        />
+
+        {insightsExpanded && (
+          <section className={styles.blurredSection}>
+            <YearlyInsightsCard insights={insights} preview />
           </section>
         )}
 

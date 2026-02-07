@@ -50,8 +50,12 @@ export default function KeywordGrid({
     ? [PREVIEW_PLACEHOLDER, PREVIEW_PLACEHOLDER, PREVIEW_PLACEHOLDER]
     : [gridKeywords[0], gridKeywords[1], gridKeywords[2]];
 
+  const gridClass = isPreview
+    ? `${styles.grid} ${styles.gridPreview}`
+    : styles.grid;
+
   return (
-    <div className={styles.grid}>
+    <div className={gridClass}>
       {/* 1행 - 낮은 우선순위 */}
       <div className={styles.cell}>
         <span className={styles.tag}>#{gridKeywords[5]}</span>
@@ -76,13 +80,13 @@ export default function KeywordGrid({
       </div>
 
       {/* 3행 - 높은 우선순위 (미리보기 시 블러) */}
-      <div className={`${styles.cell} ${isPreview ? styles.cellBlurred : ""}`}>
+      <div className={styles.cell}>
         <span className={styles.tag}>#{row3Keywords[0]}</span>
       </div>
-      <div className={`${styles.cell} ${isPreview ? styles.cellBlurred : ""}`}>
+      <div className={styles.cell}>
         <span className={styles.tag}>#{row3Keywords[1]}</span>
       </div>
-      <div className={`${styles.cell} ${isPreview ? styles.cellBlurred : ""}`}>
+      <div className={styles.cell}>
         <span className={styles.tag}>#{row3Keywords[2]}</span>
       </div>
     </div>
