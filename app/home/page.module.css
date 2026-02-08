@@ -1,0 +1,25 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  gap: 16px;
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}
