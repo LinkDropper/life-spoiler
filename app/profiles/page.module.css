@@ -48,6 +48,22 @@
   );
 }
 
+.backButton {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.backButton:hover {
+  opacity: 0.9;
+}
+
 .primaryButton {
   flex: 1;
   display: flex;

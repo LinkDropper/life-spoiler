@@ -204,7 +204,7 @@ export default function YearlyFortunePage() {
             buttonText={tCommon("backToProfiles", {
               default: "프로필 목록으로 돌아가기",
             })}
-            onButtonClick={() => router.push("/profiles")}
+            onButtonClick={() => router.push("/profiles?type=yearly")}
           />
         </main>
       </div>

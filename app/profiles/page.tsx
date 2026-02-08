@@ -4,6 +4,8 @@ import { useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+import Image from "next/image";
+
 import { HeaderClient } from "@/components/landing";
 import {
   ProfileCard,
@@ -77,9 +79,16 @@ export default function ProfilesPage() {
     }
   }, [authStatus, router]);
 
-  const handleNewProfile = useCallback(() => {
-    router.push("/profile/setup");
+  const handleBack = useCallback(() => {
+    router.push("/home");
   }, [router]);
+
+  const handleNewProfile = useCallback(() => {
+    const path = fortuneType
+      ? `/profile/setup?type=${fortuneType}`
+      : "/profile/setup";
+    router.push(path);
+  }, [router, fortuneType]);
 
   const handleLifetimeFortune = useCallback(() => {
     if (!selectedProfileId) {
@@ -154,6 +163,21 @@ export default function ProfilesPage() {
       </main>
 
       <footer className={styles.footer}>
+        {fortuneType && (
+          <button
+            type="button"
+            className={styles.backButton}
+            onClick={handleBack}
+            aria-label={t("back", { default: "뒤로가기" })}
+          >
+            <Image
+              src="/images/common/back-button.svg"
+              alt=""
+              width={52}
+              height={52}
+            />
+          </button>
+        )}
         {(!fortuneType || fortuneType === "lifetime") && (
           <button
             type="button"

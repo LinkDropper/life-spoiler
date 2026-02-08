@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { useProfileActions } from "@/libs/stores/profile";
@@ -53,7 +53,9 @@ const initialStepTwoData: StepTwoData = {
 
 export default function ProfileSetupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
+  const typeParam = searchParams.get("type");
   const { addProfile } = useProfileActions();
   const t = useTranslations("profileSetup");
 
@@ -138,7 +140,10 @@ export default function ProfileSetupPage() {
         profile_free_access: [],
       });
 
-      router.push("/profiles");
+      const redirectPath = typeParam
+        ? `/profiles?type=${typeParam}`
+        : "/profiles";
+      router.push(redirectPath);
     } catch {
       alert(
         t("saveError", {
