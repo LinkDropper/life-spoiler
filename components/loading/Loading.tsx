@@ -65,6 +65,14 @@ export const Loading = () => {
 
   return (
     <div className={styles.container}>
+      <video
+        className={styles.background}
+        src="/video/loading.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
       <div className={styles.content}>
         <div className={styles.lottieWrapper}>
           <Lottie
