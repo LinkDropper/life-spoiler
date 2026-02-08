@@ -78,15 +78,7 @@ export const GET = async (request: Request) => {
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { count } = (await (supabase.from("profiles") as any)
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)) as { count: number | null };
-
-    const hasProfile = (count ?? 0) > 0;
-    const redirectPath = hasProfile ? "/profiles" : "/profile/setup";
-
-    return NextResponse.redirect(`${origin}${redirectPath}`);
+    return NextResponse.redirect(`${origin}/home`);
   } catch (error) {
     console.error("OAuth callback error:", error);
     return NextResponse.redirect(`${origin}/login?error=auth_failed`);
