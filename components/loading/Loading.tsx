@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lottie from "lottie-react";
 import { useLocale } from "next-intl";
 
@@ -9,6 +9,12 @@ import loadingAnimation from "./loading.json";
 import styles from "./Loading.module.css";
 
 const MESSAGE_CHANGE_INTERVAL_MS = 3000;
+
+const LOADING_VIDEOS = [
+  "/video/loading.mp4",
+  "/video/loading2.mp4",
+  "/video/loading3.mp4",
+];
 
 const LOADING_MESSAGES: Record<string, string[]> = {
   ko: [
@@ -52,6 +58,9 @@ const LOADING_MESSAGES: Record<string, string[]> = {
 export const Loading = () => {
   const locale = useLocale();
   const [messageIndex, setMessageIndex] = useState(0);
+  const videoSrc = useRef(
+    LOADING_VIDEOS[Math.floor(Math.random() * LOADING_VIDEOS.length)]
+  );
 
   const messages = LOADING_MESSAGES[locale] || LOADING_MESSAGES.ko;
 
@@ -65,6 +74,14 @@ export const Loading = () => {
 
   return (
     <div className={styles.container}>
+      <video
+        className={styles.background}
+        src={videoSrc.current}
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
       <div className={styles.content}>
         <div className={styles.lottieWrapper}>
           <Lottie
