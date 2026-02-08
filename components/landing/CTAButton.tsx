@@ -20,11 +20,7 @@ export const CTAButton = () => {
       return;
     }
 
-    if (user.profileCompleted) {
-      router.push("/profiles");
-    } else {
-      router.push("/profile/setup");
-    }
+    router.push("/home");
   };
 
   return (

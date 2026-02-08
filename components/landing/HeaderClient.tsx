@@ -20,7 +20,7 @@ export const HeaderClient = () => {
 
   const handleLogoClick = () => {
     if (user?.id) {
-      router.push("/profiles");
+      router.push("/home");
       return;
     }
     router.push("/");

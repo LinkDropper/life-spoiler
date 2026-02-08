@@ -183,7 +183,7 @@ export const useLifetimePreview = (
   }, [router, profileId, isAIGenerated]);
 
   const handleBack = useCallback(() => {
-    router.push("/profiles");
+    router.push("/profiles?type=lifetime");
   }, [router]);
 
   const isActuallyLoading =

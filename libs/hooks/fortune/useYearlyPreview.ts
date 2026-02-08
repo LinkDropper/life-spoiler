@@ -188,7 +188,7 @@ export const useYearlyPreview = (
   }, [router, profileId, isAIGenerated]);
 
   const handleBack = useCallback(() => {
-    router.push("/profiles");
+    router.push("/profiles?type=yearly");
   }, [router]);
 
   const isActuallyLoading =
