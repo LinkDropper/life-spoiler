@@ -13,9 +13,7 @@ export const YearlyFortuneCard = ({ onClick }: YearlyFortuneCardProps) => {
   return (
     <button type="button" className={styles.card} onClick={onClick}>
       <div className={styles.content}>
-        <h2 className={styles.title}>
-          {t("title", { default: "올해 운세" })}
-        </h2>
+        <h2 className={styles.title}>{t("title", { default: "올해 운세" })}</h2>
         <p className={styles.subtitle}>
           {t("subtitle", { default: "올해 공략 방법 보기" })}
         </p>
