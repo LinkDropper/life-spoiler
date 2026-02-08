@@ -235,19 +235,15 @@ const CenterCell = ({
   return (
     <div className={styles.centerCell}>
       {/* 주성 이미지 */}
-      {starImage ? (
-        <div className={styles.starImageContainer}>
-          <Image
-            src={starImage}
-            alt={translateMainStar(mainStar, locale)}
-            width={146}
-            height={80}
-            className={styles.starImage}
-          />
-        </div>
-      ) : (
-        <div className={styles.starImagePlaceholder} />
-      )}
+      <div className={styles.starImageContainer}>
+        <Image
+          src={starImage || "/images/star/mu.png"}
+          alt={mainStar ? translateMainStar(mainStar, locale) : "empty"}
+          width={146}
+          height={80}
+          className={styles.starImage}
+        />
+      </div>
 
       {/* 프로필 이름 + 오행국 */}
       <div className={styles.profileInfo}>
