@@ -1,0 +1,302 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 프로필 요약 카드 */
+.profileSummary {
+  background: #18181b;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profileNames {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+}
+
+.profileScore {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.relationshipTag {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 6px;
+  align-self: flex-start;
+}
+
+/* 섹션 */
+.sectionContent {
+  margin-top: 0;
+}
+
+/* 명반 섹션 */
+.chartSection {
+  margin-top: 0;
+}
+
+/* 인사이트 컨테이너 */
+.insightsContainer {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 8px;
+  padding: 24px 16px;
+}
+
+.insightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.insightItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insightIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.insightLabel {
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.insightDivider {
+  flex: 1;
+  border: none;
+  border-top: 2px dashed rgba(255, 255, 255, 0.16);
+  margin: 0;
+  min-width: 16px;
+}
+
+.insightValue {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* 블러 처리된 섹션 (미리보기) */
+.blurredSection {
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.blurredSection::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+}
+
+/* 스포일러 섹션 */
+.spoilerContent {
+  padding: 0;
+}
+
+.spoilerHeadline {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.spoilerText {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  white-space: pre-line;
+  letter-spacing: 0.5px;
+}
+
+.spoilerTeaser {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 24px 0 0 0;
+  letter-spacing: 0.5px;
+}
+
+/* 하단 CTA */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: linear-gradient(180deg, transparent 0%, #2e1431 30%);
+}
+
+.backButton {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.ctaButton {
+  flex: 1;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffccd9;
+  border: none;
+  border-radius: 8px;
+  color: #2d1b4e;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ctaButton:hover {
+  background: #ffdde6;
+}
+
+.ctaButton:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+/* 에러 상태 */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 400px;
+  text-align: center;
+  padding: 24px;
+}
+
+.errorIcon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.errorTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.errorDescription {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.errorButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 8px;
+}
+
+.refreshButton {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2d1b4e;
+  background: #ffccd9;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.refreshButton:hover {
+  background: #ffdde6;
+}
+
+.errorBackButton {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.errorBackButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}
