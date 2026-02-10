@@ -56,6 +56,7 @@ export default function ProfileSetupPage() {
   const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
   const typeParam = searchParams.get("type");
+  const redirectParam = searchParams.get("redirect");
   const { addProfile } = useProfileActions();
   const t = useTranslations("profileSetup");
 
@@ -140,9 +141,12 @@ export default function ProfileSetupPage() {
         profile_free_access: [],
       });
 
-      const redirectPath = typeParam
-        ? `/profiles?type=${typeParam}`
-        : "/profiles";
+      const redirectPath =
+        redirectParam && redirectParam.startsWith("/")
+          ? redirectParam
+          : typeParam
+            ? `/profiles?type=${typeParam}`
+            : "/profiles";
       router.push(redirectPath);
     } catch {
       alert(

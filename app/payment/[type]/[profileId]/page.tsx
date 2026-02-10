@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useState, useRef } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
@@ -25,7 +25,7 @@ const PAYPAL_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_PAYPAL_CLIENT_KEY ?? "";
 const PAYMENT_AMOUNT_KRW = 990;
 const PAYMENT_AMOUNT_USD = 0.99;
 
-type FortuneType = "yearly" | "lifetime";
+type FortuneType = "yearly" | "lifetime" | "compatibility";
 
 type PaymentMethod =
   | "CARD"
@@ -97,19 +97,27 @@ const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
   PAYMENT_METHOD_PROMO,
 ];
 
-export default function PaymentPage() {
+function PaymentPageContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const locale = useLocale();
   const authStatus = useAuthStatus();
   const user = useUser();
   const profileId = params.profileId as string;
   const fortuneType = params.type as FortuneType;
 
+  const isCompatibility = fortuneType === "compatibility";
+
+  // 궁합: URL 쿼리 파라미터에서 이름 가져오기
+  const nameA = searchParams.get("nameA") ?? "";
+  const nameB = searchParams.get("nameB") ?? "";
+
   const tPayment = useTranslations("payment");
   const tCommon = useTranslations("common");
 
-  const cachedProfile = useProfileById(profileId);
+  // 궁합일 때는 프로필 스토어 조회를 스킵
+  const cachedProfile = useProfileById(isCompatibility ? "" : profileId);
   const isProfilesLoaded = useIsProfilesLoaded();
   const { fetchProfiles } = useProfileActions();
 
@@ -166,14 +174,19 @@ export default function PaymentPage() {
       return;
     }
 
-    if (!cachedProfile) {
-      setError(tPayment("profileNotFound"));
+    if (
+      fortuneType !== "yearly" &&
+      fortuneType !== "lifetime" &&
+      fortuneType !== "compatibility"
+    ) {
+      setError(tPayment("invalidFortuneType"));
       setIsLoading(false);
       return;
     }
 
-    if (fortuneType !== "yearly" && fortuneType !== "lifetime") {
-      setError(tPayment("invalidFortuneType"));
+    // 궁합이 아닌 경우에만 프로필 확인
+    if (!isCompatibility && !cachedProfile) {
+      setError(tPayment("profileNotFound"));
       setIsLoading(false);
       return;
     }
@@ -182,16 +195,22 @@ export default function PaymentPage() {
   }, [
     authStatus,
     isProfilesLoaded,
+    isCompatibility,
     cachedProfile,
     fortuneType,
     router,
     tPayment,
   ]);
 
-  // 프로모 코드 적용 여부 확인
+  // 프로모 코드 적용 여부 확인 (궁합은 프로모 미지원)
   useEffect(() => {
     const checkPromoApplied = async () => {
-      if (authStatus !== "authenticated" || !profileId || !fortuneType) {
+      if (
+        isCompatibility ||
+        authStatus !== "authenticated" ||
+        !profileId ||
+        !fortuneType
+      ) {
         return;
       }
 
@@ -211,19 +230,24 @@ export default function PaymentPage() {
     };
 
     checkPromoApplied();
-  }, [authStatus, profileId, fortuneType]);
+  }, [authStatus, profileId, fortuneType, isCompatibility]);
 
   const handlePayment = async () => {
-    if (!cachedProfile || isProcessing) return;
+    if (isProcessing) return;
+    if (!isCompatibility && !cachedProfile) return;
 
     setIsProcessing(true);
 
     try {
       const orderId = generateOrderId();
-      const orderName =
-        fortuneType === "yearly"
-          ? tPayment("orderNameYearly", { name: cachedProfile.name })
-          : tPayment("orderNameLifetime", { name: cachedProfile.name });
+      const customerName = isCompatibility
+        ? `${nameA} × ${nameB}`
+        : cachedProfile!.name;
+      const orderName = isCompatibility
+        ? tPayment("orderNameCompatibility", { nameA, nameB })
+        : fortuneType === "yearly"
+          ? tPayment("orderNameYearly", { name: cachedProfile!.name })
+          : tPayment("orderNameLifetime", { name: cachedProfile!.name });
 
       // PayPal 결제 (v2 결제창 - API 개별 연동 방식)
       if (selectedMethod === "PAYPAL") {
@@ -242,7 +266,7 @@ export default function PaymentPage() {
           successUrl: `${window.location.origin}/payment/success?profileId=${profileId}&fortuneType=${fortuneType}&currency=USD`,
           failUrl: `${window.location.origin}/payment/fail?profileId=${profileId}&fortuneType=${fortuneType}`,
           customerEmail: user?.email || "customer@example.com",
-          customerName: cachedProfile.name,
+          customerName,
           customerMobilePhone: "01012341234",
           foreignEasyPay: {
             provider: "PAYPAL",
@@ -253,8 +277,9 @@ export default function PaymentPage() {
                 quantity: 1,
                 unitAmount: PAYMENT_AMOUNT_USD,
                 currency: "USD",
-                description:
-                  fortuneType === "yearly"
+                description: isCompatibility
+                  ? "Compatibility Fortune"
+                  : fortuneType === "yearly"
                     ? "2025 Yearly Fortune"
                     : "Lifetime Fortune",
               },
@@ -281,7 +306,7 @@ export default function PaymentPage() {
         successUrl: `${window.location.origin}/payment/success?profileId=${profileId}&fortuneType=${fortuneType}`,
         failUrl: `${window.location.origin}/payment/fail?profileId=${profileId}&fortuneType=${fortuneType}`,
         customerEmail: user?.email || undefined,
-        customerName: cachedProfile.name,
+        customerName,
       };
 
       if (selectedMethod === "CARD") {
@@ -321,10 +346,17 @@ export default function PaymentPage() {
   };
 
   const handleBack = () => {
-    router.push(`/fortune/${fortuneType}/preview/${profileId}`);
+    if (isCompatibility) {
+      router.push(`/compatibility/${profileId}/fortune/preview`);
+    } else {
+      router.push(`/fortune/${fortuneType}/preview/${profileId}`);
+    }
   };
 
   const getProductName = () => {
+    if (isCompatibility) {
+      return tPayment("productNameCompatibility");
+    }
     if (fortuneType === "yearly") {
       return tPayment("productNameYearly");
     }
@@ -409,7 +441,11 @@ export default function PaymentPage() {
   }
 
   const handleViewFortune = () => {
-    router.push(`/fortune/${fortuneType}/${profileId}`);
+    if (isCompatibility) {
+      router.push(`/compatibility/${profileId}`);
+    } else {
+      router.push(`/fortune/${fortuneType}/${profileId}`);
+    }
   };
 
   return (
@@ -595,5 +631,13 @@ export default function PaymentPage() {
         </button>
       </footer>
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <PaymentPageContent />
+    </Suspense>
   );
 }

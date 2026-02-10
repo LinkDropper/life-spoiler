@@ -26,6 +26,7 @@ function PaymentSuccessContent() {
   const fortuneType = searchParams.get("fortuneType") as
     | "yearly"
     | "lifetime"
+    | "compatibility"
     | null;
   const currency = (searchParams.get("currency") as "KRW" | "USD") || "KRW";
 
@@ -73,9 +74,11 @@ function PaymentSuccessContent() {
               {
                 item_id: fortuneType,
                 item_name:
-                  fortuneType === "yearly"
-                    ? tPayment("productNameYearly")
-                    : tPayment("productNameLifetime"),
+                  fortuneType === "compatibility"
+                    ? tPayment("productNameCompatibility")
+                    : fortuneType === "yearly"
+                      ? tPayment("productNameYearly")
+                      : tPayment("productNameLifetime"),
                 price: Number(amount),
                 quantity: 1,
               },
@@ -94,7 +97,11 @@ function PaymentSuccessContent() {
 
   const handleViewFortune = () => {
     if (profileId && fortuneType) {
-      router.push(`/fortune/${fortuneType}/${profileId}`);
+      if (fortuneType === "compatibility") {
+        router.push(`/compatibility/${profileId}`);
+      } else {
+        router.push(`/fortune/${fortuneType}/${profileId}`);
+      }
     } else {
       router.push("/profiles");
     }

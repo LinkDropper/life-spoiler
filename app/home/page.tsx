@@ -4,7 +4,12 @@ import { useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { HeaderClient } from "@/components/landing";
-import { LifetimeFortuneCard, YearlyFortuneCard } from "@/components/home";
+import {
+  CompatibilityBanner,
+  CompatibilityFortuneCard,
+  LifetimeFortuneCard,
+  YearlyFortuneCard,
+} from "@/components/home";
 import { useAuthStatus } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
@@ -27,6 +32,10 @@ export default function HomePage() {
     router.push("/profiles?type=yearly");
   }, [router]);
 
+  const handleCompatibilityFortune = useCallback(() => {
+    router.push("/compatibility");
+  }, [router]);
+
   if (authStatus === "loading" || authStatus === "unauthenticated") {
     return null;
   }
@@ -37,7 +46,9 @@ export default function HomePage() {
       <main className={styles.main}>
         <LifetimeFortuneCard onClick={handleLifetimeFortune} />
         <YearlyFortuneCard onClick={handleYearlyFortune} />
+        <CompatibilityFortuneCard onClick={handleCompatibilityFortune} />
       </main>
+      <CompatibilityBanner onClick={handleCompatibilityFortune} />
     </div>
   );
 }
