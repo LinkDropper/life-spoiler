@@ -10,6 +10,7 @@ export {
   CategoryItem,
   ScenarioItem,
   ScenarioList,
+  FormattedText,
   CopyToast,
   ErrorState,
   type CategoryKey,
