@@ -242,12 +242,12 @@ function PaymentPageContent() {
       const orderId = generateOrderId();
       const customerName = isCompatibility
         ? `${nameA} × ${nameB}`
-        : cachedProfile!.name;
+        : (cachedProfile?.name ?? "");
       const orderName = isCompatibility
         ? tPayment("orderNameCompatibility", { nameA, nameB })
         : fortuneType === "yearly"
-          ? tPayment("orderNameYearly", { name: cachedProfile!.name })
-          : tPayment("orderNameLifetime", { name: cachedProfile!.name });
+          ? tPayment("orderNameYearly", { name: cachedProfile?.name ?? "" })
+          : tPayment("orderNameLifetime", { name: cachedProfile?.name ?? "" });
 
       // PayPal 결제 (v2 결제창 - API 개별 연동 방식)
       if (selectedMethod === "PAYPAL") {

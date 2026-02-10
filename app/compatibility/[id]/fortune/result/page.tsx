@@ -144,7 +144,7 @@ export default function CompatibilityResultPage() {
         <HeaderClient />
         <main className={styles.main}>
           <div className={styles.error}>
-            <div className={styles.errorIcon}>⏳</div>
+            <div className={styles.errorIcon}>❌</div>
             <h2 className={styles.errorTitle}>{tFortune("errorTitle")}</h2>
             <p className={styles.errorDescription}>
               {tFortune("errorDescription")}
