@@ -153,6 +153,15 @@
         "title": "올해 운세",
         "subtitle": "올해 공략 방법 보기",
         "button": "올해 운세 확인하기"
+      },
+      "compatibility": {
+        "title": "궁합 운세",
+        "subtitle": "내 인간관계 분석하기",
+        "button": "궁합 운세 확인하기"
+      },
+      "banner": {
+        "title": "궁합 운세 새롭게 오픈!",
+        "subtitle": "2월 25일까지 궁합 운세 1회 무료!"
       }
     },
     "profiles": {
@@ -178,6 +187,94 @@
         "deleteAriaLabel": "프로필 삭제",
         "lifetimeFortune": "인생 운세",
         "yearlyFortune": "올해 운세"
+      }
+    },
+    "compatibility": {
+      "loading": "로딩 중...",
+      "title": "궁합 리스트",
+      "newPair": "새 궁합 만들기",
+      "viewFortune": "궁합 운세 보기",
+      "back": "뒤로가기",
+      "selectPair": "궁합을 선택해주세요.",
+      "deleteError": "궁합 삭제에 실패했습니다. 다시 시도해주세요.",
+      "card": {
+        "score": "궁합 점수",
+        "scoreUnit": "점",
+        "deleteAriaLabel": "궁합 삭제",
+        "relationshipTypes": {
+          "lover": "연인",
+          "friend": "친구",
+          "colleague": "동료",
+          "family": "가족",
+          "ex_partner": "전남친/전여친",
+          "ex_spouse": "전남편/전아내",
+          "cat_owner": "집사/고양이",
+          "dog_owner": "집사/강아지",
+          "custom": "기타"
+        }
+      },
+      "deleteModal": {
+        "title": "정말 삭제하시겠어요?",
+        "description": "삭제 후에는 복구가 불가능 합니다. 선택한 궁합의 운세 기록도 모두 삭제됩니다."
+      },
+      "setup": {
+        "loading": "로딩 중...",
+        "profileSelection": "프로필 선택",
+        "addProfile": "프로필 추가",
+        "change": "변경",
+        "edit": "수정하기",
+        "relationshipSelection": "관계 선택",
+        "modalTitle": "프로필 2개를 선택해 주세요",
+        "newProfile": "새 프로필 만들기",
+        "cancel": "취소",
+        "confirm": "확인",
+        "selectBothProfiles": "두 프로필을 모두 선택해주세요.",
+        "createError": "궁합 생성에 실패했습니다. 다시 시도해주세요.",
+        "back": "뒤로가기",
+        "viewFortune": "궁합 운세 보기",
+        "submitting": "생성 중...",
+        "customRelationshipPlaceholder": "관계를 입력해주세요",
+        "save": "저장하기"
+      },
+      "fortune": {
+        "loading": "궁합 분석 중...",
+        "error": "궁합 분석에 실패했습니다.",
+        "refresh": "새로고침",
+        "back": "뒤로가기",
+        "ctaButton": "전체 스포 확인하기 (990원)",
+        "ctaButtonFree": "무료로 결과 보기",
+        "claiming": "처리 중...",
+        "score": "궁합 점수",
+        "insightsTitle": "궁합 인사이트",
+        "spoilerTitle": "궁합 스포일러",
+        "teaser": "지금 보신 건 '예고편'에 불과해요. 소통/재물/감정/위기별 상세 궁합과 핵심 시나리오는 본편에서만 몰래 스포해 드릴게요. 🤫",
+        "scoreUnit": "{score}점",
+        "chartTitle": "{name}님의 자미두수 명반",
+        "errorTitle": "일시적으로 접속이 원활하지 않아요",
+        "errorDescription": "현재 이용자가 많아 궁합 분석에 실패했어요.\n잠시 후 다시 시도해 주세요.",
+        "insights": {
+          "overall": "궁합 점수",
+          "zodiac": "띠 궁합",
+          "fiveElement": "오행 궁합",
+          "chemistry": "성격 케미",
+          "communication": "소통 점수",
+          "growthSynergy": "성장 시너지",
+          "trustIndex": "신뢰 지수",
+          "crisisResilience": "위기 극복력"
+        },
+        "result": {
+          "shareButton": "공유하기",
+          "profileShareTitle": "프로필 이미지 공유하기",
+          "coreScenarioTitle": "핵심 시나리오",
+          "detailScenarioTitle": "상세 시나리오",
+          "adviceTitle": "종합 조언",
+          "categories": {
+            "communication": "소통 & 갈등",
+            "growth": "재물 & 성장",
+            "emotion": "감정 & 신뢰",
+            "crisis": "위기 & 극복"
+          }
+        }
       }
     },
     "profileSetup": {
@@ -478,11 +575,13 @@
       "processing": "결제 처리 중...",
       "productNameYearly": "올해 운세 스포일러",
       "productNameLifetime": "인생 운세 스포일러",
+      "productNameCompatibility": "궁합 스포일러",
       "loading": "결제 준비 중...",
       "refundPolicy": "디지털 콘텐츠 특성상 결제 후 결과 확인 시 환불이 불가능합니다.",
       "viewPeriod": "본 상품의 열람 기간은 결제일로부터 1년입니다.",
       "orderNameYearly": "{name}님의 올해 운세 스포일러",
       "orderNameLifetime": "{name}님의 인생 스포일러",
+      "orderNameCompatibility": "{nameA} X {nameB} 궁합 스포일러",
       "profileNotFound": "프로필을 찾을 수 없습니다.",
       "invalidFortuneType": "유효하지 않은 운세 유형입니다.",
       "initError": "결제 모듈 초기화에 실패했습니다.",
@@ -758,6 +857,15 @@
         "title": "This Year's Fortune",
         "subtitle": "See how to navigate this year",
         "button": "View This Year's Fortune"
+      },
+      "compatibility": {
+        "title": "Compatibility",
+        "subtitle": "Analyze my relationships",
+        "button": "View Compatibility Fortune"
+      },
+      "banner": {
+        "title": "Compatibility Fortune Now Open!",
+        "subtitle": "Free compatibility reading until Feb 25!"
       }
     },
     "profiles": {
@@ -783,6 +891,94 @@
         "deleteAriaLabel": "Delete Profile",
         "lifetimeFortune": "Lifetime Fortune",
         "yearlyFortune": "Yearly Fortune"
+      }
+    },
+    "compatibility": {
+      "loading": "Loading...",
+      "title": "Compatibility List",
+      "newPair": "Create New Pair",
+      "viewFortune": "View Compatibility Fortune",
+      "back": "Back",
+      "selectPair": "Please select a compatibility pair.",
+      "deleteError": "Failed to delete compatibility pair. Please try again.",
+      "card": {
+        "score": "Compatibility Score",
+        "scoreUnit": "",
+        "deleteAriaLabel": "Delete Compatibility",
+        "relationshipTypes": {
+          "lover": "Lover",
+          "friend": "Friend",
+          "colleague": "Colleague",
+          "family": "Family",
+          "ex_partner": "Ex-Partner",
+          "ex_spouse": "Ex-Spouse",
+          "cat_owner": "Cat Owner",
+          "dog_owner": "Dog Owner",
+          "custom": "Other"
+        }
+      },
+      "deleteModal": {
+        "title": "Are you sure you want to delete?",
+        "description": "This cannot be undone. All fortune records for this compatibility pair will also be deleted."
+      },
+      "setup": {
+        "loading": "Loading...",
+        "profileSelection": "Profile Selection",
+        "addProfile": "Add Profile",
+        "change": "Change",
+        "edit": "Edit",
+        "relationshipSelection": "Relationship Selection",
+        "modalTitle": "Please select 2 profiles",
+        "newProfile": "Create New Profile",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "selectBothProfiles": "Please select both profiles.",
+        "createError": "Failed to create compatibility pair. Please try again.",
+        "back": "Back",
+        "viewFortune": "View Compatibility Fortune",
+        "submitting": "Creating...",
+        "customRelationshipPlaceholder": "Enter your relationship",
+        "save": "Save"
+      },
+      "fortune": {
+        "loading": "Analyzing compatibility...",
+        "error": "Compatibility analysis failed.",
+        "refresh": "Refresh",
+        "back": "Back",
+        "ctaButton": "View Full Spoiler (990 KRW)",
+        "ctaButtonFree": "View Results for Free",
+        "claiming": "Processing...",
+        "score": "Compatibility Score",
+        "insightsTitle": "Compatibility Insights",
+        "spoilerTitle": "Compatibility Spoiler",
+        "teaser": "What you've seen is just the 'trailer'. Detailed compatibility analysis by communication, growth, emotion, and crisis, plus core scenarios, are revealed only in the full version. 🤫",
+        "scoreUnit": "{score}pts",
+        "chartTitle": "{name}'s Zi Wei Dou Shu Chart",
+        "errorTitle": "Temporarily unavailable",
+        "errorDescription": "Too many users are currently accessing the service.\nPlease try again shortly.",
+        "insights": {
+          "overall": "Overall Score",
+          "zodiac": "Zodiac Match",
+          "fiveElement": "Five Elements",
+          "chemistry": "Chemistry",
+          "communication": "Communication",
+          "growthSynergy": "Growth Synergy",
+          "trustIndex": "Trust Index",
+          "crisisResilience": "Crisis Resilience"
+        },
+        "result": {
+          "shareButton": "Share",
+          "profileShareTitle": "Share Profile Image",
+          "coreScenarioTitle": "Key Scenarios",
+          "detailScenarioTitle": "Detailed Scenarios",
+          "adviceTitle": "Overall Advice",
+          "categories": {
+            "communication": "Communication & Conflict",
+            "growth": "Wealth & Growth",
+            "emotion": "Emotion & Trust",
+            "crisis": "Crisis & Overcoming"
+          }
+        }
       }
     },
     "profileSetup": {
@@ -1083,11 +1279,13 @@
       "processing": "Processing payment...",
       "productNameYearly": "Yearly Fortune Spoiler",
       "productNameLifetime": "Lifetime Fortune Spoiler",
+      "productNameCompatibility": "Compatibility Spoiler",
       "loading": "Preparing payment...",
       "refundPolicy": "Due to the nature of digital content, refunds are not available after viewing the results.",
       "viewPeriod": "This product can be viewed for 1 year from the date of purchase.",
       "orderNameYearly": "{name}'s Yearly Fortune Spoiler",
       "orderNameLifetime": "{name}'s Life Spoiler",
+      "orderNameCompatibility": "{nameA} X {nameB} Compatibility Spoiler",
       "profileNotFound": "Profile not found.",
       "invalidFortuneType": "Invalid fortune type.",
       "initError": "Failed to initialize payment module.",
@@ -1363,6 +1561,15 @@
         "title": "今年の運勢",
         "subtitle": "今年の攻略法を見る",
         "button": "今年の運勢を見る"
+      },
+      "compatibility": {
+        "title": "相性占い",
+        "subtitle": "人間関係を分析する",
+        "button": "相性占いを見る"
+      },
+      "banner": {
+        "title": "相性占い 新しくオープン!",
+        "subtitle": "2月25日まで相性占い1回無料!"
       }
     },
     "profiles": {
@@ -1388,6 +1595,94 @@
         "deleteAriaLabel": "プロフィール削除",
         "lifetimeFortune": "人生運勢",
         "yearlyFortune": "今年の運勢"
+      }
+    },
+    "compatibility": {
+      "loading": "読み込み中...",
+      "title": "相性リスト",
+      "newPair": "新しい相性を作成",
+      "viewFortune": "相性占いを見る",
+      "back": "戻る",
+      "selectPair": "相性を選択してください。",
+      "deleteError": "相性の削除に失敗しました。もう一度お試しください。",
+      "card": {
+        "score": "相性スコア",
+        "scoreUnit": "点",
+        "deleteAriaLabel": "相性削除",
+        "relationshipTypes": {
+          "lover": "恋人",
+          "friend": "友達",
+          "colleague": "同僚",
+          "family": "家族",
+          "ex_partner": "元カレ/元カノ",
+          "ex_spouse": "元夫/元妻",
+          "cat_owner": "飼い主/猫",
+          "dog_owner": "飼い主/犬",
+          "custom": "その他"
+        }
+      },
+      "deleteModal": {
+        "title": "本当に削除しますか？",
+        "description": "削除後は復元できません。選択した相性の占い記録もすべて削除されます。"
+      },
+      "setup": {
+        "loading": "読み込み中...",
+        "profileSelection": "プロフィール選択",
+        "addProfile": "プロフィール追加",
+        "change": "変更",
+        "edit": "修正する",
+        "relationshipSelection": "関係選択",
+        "modalTitle": "プロフィールを2つ選択してください",
+        "newProfile": "新しいプロフィールを作成",
+        "cancel": "キャンセル",
+        "confirm": "確認",
+        "selectBothProfiles": "両方のプロフィールを選択してください。",
+        "createError": "相性の作成に失敗しました。もう一度お試しください。",
+        "back": "戻る",
+        "viewFortune": "相性占いを見る",
+        "submitting": "作成中...",
+        "customRelationshipPlaceholder": "関係を入力してください",
+        "save": "保存する"
+      },
+      "fortune": {
+        "loading": "相性分析中...",
+        "error": "相性分析に失敗しました。",
+        "refresh": "更新",
+        "back": "戻る",
+        "ctaButton": "全スポ確認する（990ウォン）",
+        "ctaButtonFree": "無料で結果を見る",
+        "claiming": "処理中...",
+        "score": "相性スコア",
+        "insightsTitle": "相性インサイト",
+        "spoilerTitle": "相性スポイラー",
+        "teaser": "今ご覧になったのは「予告編」に過ぎません。コミュニケーション・成長・感情・危機別の詳細相性と核心シナリオは本編でのみこっそりネタバレします。🤫",
+        "scoreUnit": "{score}点",
+        "chartTitle": "{name}さんの紫微斗数命盤",
+        "errorTitle": "一時的にアクセスが困難です",
+        "errorDescription": "現在利用者が多く、相性分析に失敗しました。\nしばらくしてからもう一度お試しください。",
+        "insights": {
+          "overall": "相性スコア",
+          "zodiac": "干支相性",
+          "fiveElement": "五行相性",
+          "chemistry": "性格ケミ",
+          "communication": "コミュニケーション",
+          "growthSynergy": "成長シナジー",
+          "trustIndex": "信頼指数",
+          "crisisResilience": "危機克服力"
+        },
+        "result": {
+          "shareButton": "シェアする",
+          "profileShareTitle": "プロフィール画像をシェアする",
+          "coreScenarioTitle": "核心シナリオ",
+          "detailScenarioTitle": "詳細シナリオ",
+          "adviceTitle": "総合アドバイス",
+          "categories": {
+            "communication": "コミュニケーション＆葛藤",
+            "growth": "財運＆成長",
+            "emotion": "感情＆信頼",
+            "crisis": "危機＆克服"
+          }
+        }
       }
     },
     "profileSetup": {
@@ -1688,11 +1983,13 @@
       "processing": "決済処理中...",
       "productNameYearly": "今年の運勢ネタバレ",
       "productNameLifetime": "人生運勢ネタバレ",
+      "productNameCompatibility": "相性ネタバレ",
       "loading": "決済準備中...",
       "refundPolicy": "デジタルコンテンツの特性上、決済後に結果を確認すると返金ができません。",
       "viewPeriod": "本商品の閲覧期間は決済日から1年間です。",
       "orderNameYearly": "{name}さんの今年の運勢ネタバレ",
       "orderNameLifetime": "{name}さんの人生ネタバレ",
+      "orderNameCompatibility": "{nameA} X {nameB} 相性ネタバレ",
       "profileNotFound": "プロフィールが見つかりません。",
       "invalidFortuneType": "無効な運勢タイプです。",
       "initError": "決済モジュールの初期化に失敗しました。",
