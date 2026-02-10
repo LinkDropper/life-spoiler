@@ -27,10 +27,21 @@ export interface InterpretationCacheInsert {
 export type AnalysisResultRow = InterpretationCacheRow;
 export type AnalysisResultInsert = InterpretationCacheInsert;
 
+export type CompatibilityRelationshipType =
+  | "lover"
+  | "friend"
+  | "colleague"
+  | "family"
+  | "ex_partner"
+  | "ex_spouse"
+  | "cat_owner"
+  | "dog_owner"
+  | "custom";
+
 export type OAuthProvider = "kakao" | "google" | "email";
 export type CalendarType = "solar" | "lunar";
 export type Gender = "male" | "female";
-export type FortuneType = "lifetime" | "yearly";
+export type FortuneType = "lifetime" | "yearly" | "compatibility";
 export type RelationshipStatus =
   | "solo"
   | "dating"
@@ -216,6 +227,36 @@ export interface PromoCodeUsageInsert {
   used_at?: string;
 }
 
+export interface CompatibilityPairRow {
+  id: string;
+  user_id: string;
+  profile_a_id: string;
+  profile_b_id: string;
+  relationship_type: CompatibilityRelationshipType;
+  relationship_type_custom: string | null;
+  score: number | null;
+  result: Json | null;
+  paid_at: string | null;
+  is_free_promotion: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CompatibilityPairInsert {
+  id?: string;
+  user_id: string;
+  profile_a_id: string;
+  profile_b_id: string;
+  relationship_type: CompatibilityRelationshipType;
+  relationship_type_custom?: string | null;
+  score?: number | null;
+  result?: Json | null;
+  paid_at?: string | null;
+  is_free_promotion?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -303,6 +344,31 @@ export type Database = {
             foreignKeyName: "promo_code_usages_free_access_id_fkey";
             columns: ["free_access_id"];
             referencedRelation: "profile_free_access";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      compatibility_pairs: {
+        Row: CompatibilityPairRow;
+        Insert: CompatibilityPairInsert;
+        Update: Partial<CompatibilityPairInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "compatibility_pairs_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "compatibility_pairs_profile_a_id_fkey";
+            columns: ["profile_a_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "compatibility_pairs_profile_b_id_fkey";
+            columns: ["profile_b_id"];
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];

@@ -101,6 +101,10 @@ export {
 
 export {
   calculateYearlyInsights,
+  SAMHAP_GROUPS,
+  YUKHAP_PAIRS,
+  BRANCH_TO_ANIMAL,
+  ELEMENT_GENERATES,
   type YearlyInsights,
   type MonthInsight,
   type WealthStrategy,
@@ -110,3 +114,12 @@ export {
   type HealthWarning,
   type LuckyColor,
 } from "./yearly-insights";
+
+export {
+  analyzeZodiacCompatibility,
+  analyzeFiveElementCompatibility,
+  calculateBaseScoreRange,
+  type ZodiacCompatibility,
+  type FiveElementCompatibility,
+  type ScoreRange,
+} from "./compatibility";

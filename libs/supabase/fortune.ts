@@ -22,7 +22,7 @@ import type { Database, FortuneInsert, FortuneRow } from "./types";
 
 type SupabaseDB = SupabaseClient<Database>;
 
-export type FortuneType = "lifetime" | "yearly";
+export type FortuneType = "lifetime" | "yearly" | "compatibility";
 
 /**
  * 인생 운세 전체 데이터 (저장용)
@@ -186,6 +186,129 @@ export const updateFortunePaidAt = async (
     return true;
   } catch (error) {
     console.error("Fortune paid_at 업데이트 실패:", error);
+    return false;
+  }
+};
+
+/**
+ * 궁합 결제 완료 처리 (compatibility_pairs.paid_at 업데이트)
+ *
+ * @returns 업데이트 성공 여부 (레코드가 없으면 false)
+ */
+export const updateCompatibilityPaidAt = async (
+  pairId: string
+): Promise<boolean> => {
+  try {
+    const supabase = createServerClient() as SupabaseDB;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from("compatibility_pairs") as any)
+      .update({ paid_at: new Date().toISOString() })
+      .eq("id", pairId)
+      .select("id");
+
+    if (error) {
+      console.error("Compatibility paid_at 업데이트 실패:", error);
+      return false;
+    }
+
+    if (!data || data.length === 0) {
+      console.error("Compatibility paid_at 업데이트 실패: 해당 레코드 없음", {
+        pairId,
+      });
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Compatibility paid_at 업데이트 실패:", error);
+    return false;
+  }
+};
+
+// ============================================================
+// 궁합 무료 프로모션
+// ============================================================
+
+const COMPATIBILITY_FREE_PROMO_DEADLINE = "2026-02-26T00:00:00+09:00";
+
+/**
+ * 유저가 이미 궁합 무료 프로모션을 사용했는지 확인
+ */
+export const hasUsedFreeCompatibility = async (
+  userId: string
+): Promise<boolean> => {
+  try {
+    const supabase = createServerClient() as SupabaseDB;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { count, error } = await (supabase.from("compatibility_pairs") as any)
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("is_free_promotion", true);
+
+    if (error) {
+      console.error("무료 궁합 사용 확인 실패:", error);
+      return false;
+    }
+
+    return (count ?? 0) > 0;
+  } catch (error) {
+    console.error("무료 궁합 사용 확인 실패:", error);
+    return false;
+  }
+};
+
+/**
+ * 유저가 궁합 무료 프로모션 대상인지 확인
+ * - 프로모션 기한 내인지
+ * - 아직 무료 프로모션을 사용하지 않았는지
+ */
+export const isCompatibilityFreeEligible = async (
+  userId: string
+): Promise<boolean> => {
+  const now = new Date();
+  const deadline = new Date(COMPATIBILITY_FREE_PROMO_DEADLINE);
+
+  if (now >= deadline) {
+    return false;
+  }
+
+  const used = await hasUsedFreeCompatibility(userId);
+  return !used;
+};
+
+/**
+ * 궁합 무료 프로모션 청구 (paid_at + is_free_promotion 업데이트)
+ */
+export const claimFreeCompatibility = async (
+  pairId: string
+): Promise<boolean> => {
+  try {
+    const supabase = createServerClient() as SupabaseDB;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from("compatibility_pairs") as any)
+      .update({
+        paid_at: new Date().toISOString(),
+        is_free_promotion: true,
+      })
+      .eq("id", pairId)
+      .select("id");
+
+    if (error) {
+      console.error("무료 궁합 청구 실패:", error);
+      return false;
+    }
+
+    if (!data || data.length === 0) {
+      console.error("무료 궁합 청구 실패: 해당 레코드 없음", { pairId });
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("무료 궁합 청구 실패:", error);
     return false;
   }
 };

@@ -187,7 +187,7 @@ const ELEMENT_TO_COLORS: Record<
 };
 
 /** 오행 상생 관계 */
-const ELEMENT_GENERATES: Record<string, string> = {
+export const ELEMENT_GENERATES: Record<string, string> = {
   목: "화",
   화: "토",
   토: "금",
@@ -196,7 +196,7 @@ const ELEMENT_GENERATES: Record<string, string> = {
 };
 
 /** 지지 → 띠 동물 (다국어) */
-const BRANCH_TO_ANIMAL: Record<BranchIndex, I18nText> = {
+export const BRANCH_TO_ANIMAL: Record<BranchIndex, I18nText> = {
   0: { ko: "쥐", en: "Rat", ja: "子（ねずみ）" },
   1: { ko: "소", en: "Ox", ja: "丑（うし）" },
   2: { ko: "호랑이", en: "Tiger", ja: "寅（とら）" },
@@ -212,7 +212,7 @@ const BRANCH_TO_ANIMAL: Record<BranchIndex, I18nText> = {
 };
 
 /** 삼합 그룹 */
-const SAMHAP_GROUPS: BranchIndex[][] = [
+export const SAMHAP_GROUPS: BranchIndex[][] = [
   [8, 0, 4],
   [2, 6, 10],
   [5, 9, 1],
@@ -220,7 +220,7 @@ const SAMHAP_GROUPS: BranchIndex[][] = [
 ];
 
 /** 육합 쌍 */
-const YUKHAP_PAIRS: Record<BranchIndex, BranchIndex> = {
+export const YUKHAP_PAIRS: Record<BranchIndex, BranchIndex> = {
   0: 1,
   1: 0,
   2: 11,
