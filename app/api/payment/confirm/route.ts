@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { sendPaymentNotification } from "@/libs/discord";
-import { createServerClient, updateFortunePaidAt } from "@/libs/supabase";
+import {
+  createServerClient,
+  updateCompatibilityPaidAt,
+  updateFortunePaidAt,
+} from "@/libs/supabase";
 import type { FortuneType } from "@/libs/supabase";
 
 // 국내 결제용 시크릿 키
@@ -132,23 +136,35 @@ export async function POST(request: NextRequest) {
 
     const paymentData = data as TossPaymentResponse;
 
-    // 결제 승인 성공 시 fortunes 테이블의 paid_at 업데이트
+    // 결제 승인 성공 시 paid_at 업데이트
     let fortuneUpdateFailed = false;
     if (profileId && fortuneType) {
-      const yearValue =
-        fortuneType === "yearly" ? (year ?? new Date().getFullYear()) : 0;
-      const updateSuccess = await updateFortunePaidAt(
-        profileId,
-        fortuneType,
-        yearValue
-      );
-      if (!updateSuccess) {
-        fortuneUpdateFailed = true;
-        console.error("paid_at 업데이트 실패:", {
+      if (fortuneType === "compatibility") {
+        // 궁합: compatibility_pairs 테이블의 paid_at 업데이트 (profileId에 pairId가 전달됨)
+        const updateSuccess = await updateCompatibilityPaidAt(profileId);
+        if (!updateSuccess) {
+          fortuneUpdateFailed = true;
+          console.error("Compatibility paid_at 업데이트 실패:", {
+            pairId: profileId,
+          });
+        }
+      } else {
+        // 일반 운세: fortunes 테이블의 paid_at 업데이트
+        const yearValue =
+          fortuneType === "yearly" ? (year ?? new Date().getFullYear()) : 0;
+        const updateSuccess = await updateFortunePaidAt(
           profileId,
           fortuneType,
-          year: yearValue,
-        });
+          yearValue
+        );
+        if (!updateSuccess) {
+          fortuneUpdateFailed = true;
+          console.error("paid_at 업데이트 실패:", {
+            profileId,
+            fortuneType,
+            year: yearValue,
+          });
+        }
       }
     }
 
@@ -163,12 +179,38 @@ export async function POST(request: NextRequest) {
       let profileName: string | undefined;
       try {
         const supabase = createServerClient();
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("name")
-          .eq("id", profileId)
-          .single<{ name: string }>();
-        profileName = profile?.name;
+
+        if (fortuneType === "compatibility") {
+          // 궁합: compatibility_pairs → profiles 조인으로 두 이름 조회
+          const { data: pair } = await supabase
+            .from("compatibility_pairs")
+            .select("profile_a_id, profile_b_id")
+            .eq("id", profileId)
+            .single();
+
+          if (pair) {
+            const { data: profileA } = await supabase
+              .from("profiles")
+              .select("name")
+              .eq("id", (pair as { profile_a_id: string }).profile_a_id)
+              .single<{ name: string }>();
+            const { data: profileB } = await supabase
+              .from("profiles")
+              .select("name")
+              .eq("id", (pair as { profile_b_id: string }).profile_b_id)
+              .single<{ name: string }>();
+            const nameA = profileA?.name ?? "?";
+            const nameB = profileB?.name ?? "?";
+            profileName = `${nameA} × ${nameB}`;
+          }
+        } else {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("name")
+            .eq("id", profileId)
+            .single<{ name: string }>();
+          profileName = profile?.name;
+        }
       } catch (error) {
         // 프로필 조회 실패 시 무시하되, 에러는 기록
         console.error("프로필 이름 조회 실패:", error);

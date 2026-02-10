@@ -1,0 +1,327 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.main {
+  flex: 1;
+  padding: 24px 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ============================================================
+   프로필 요약 카드
+   ============================================================ */
+
+.profileSummary {
+  background: #18181b;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profileNames {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+}
+
+.profileScore {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.relationshipTag {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 6px;
+  align-self: flex-start;
+}
+
+/* ============================================================
+   명반 섹션
+   ============================================================ */
+
+.chartSection {
+  margin-top: 0;
+}
+
+/* ============================================================
+   인사이트 섹션
+   ============================================================ */
+
+.insightsContainer {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 24px 16px;
+}
+
+.insightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.insightItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insightIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.insightLabel {
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.insightDivider {
+  flex: 1;
+  border: none;
+  border-top: 2px dashed rgba(255, 255, 255, 0.16);
+  margin: 0;
+  min-width: 16px;
+}
+
+.insightValue {
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   궁합 스포일러 섹션
+   ============================================================ */
+
+.spoilerContent {
+  padding: 0;
+}
+
+.spoilerHeadline {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.spoilerText {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  white-space: pre-line;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   핵심 시나리오 섹션
+   ============================================================ */
+
+.section {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.coreScenario {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coreScenario p {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  white-space: pre-wrap;
+  letter-spacing: 0.5px;
+}
+
+.coreHeadline {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   상세 시나리오 섹션
+   ============================================================ */
+
+.categoriesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+/* ============================================================
+   종합 조언 섹션
+   ============================================================ */
+
+.adviceContent {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  white-space: pre-line;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   하단 Footer (공유하기 버튼)
+   ============================================================ */
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(180deg, transparent 0%, #2e1431 20%);
+  padding-top: 32px;
+  z-index: 100;
+}
+
+.shareButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #2d1b4e;
+  background: #ffccd9;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 52px;
+  transition: opacity 0.2s;
+}
+
+.shareButton:hover {
+  opacity: 0.9;
+}
+
+/* ============================================================
+   에러 상태
+   ============================================================ */
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 400px;
+  text-align: center;
+  padding: 24px;
+}
+
+.errorIcon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.errorTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.errorDescription {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.errorButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 8px;
+}
+
+.refreshButton {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2d1b4e;
+  background: #ffccd9;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.refreshButton:hover {
+  background: #ffdde6;
+}
+
+.errorBackButton {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.errorBackButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}

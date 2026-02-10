@@ -77,7 +77,7 @@ interface PaymentNotificationParams {
   amount: number;
   currency: "KRW" | "USD";
   method: string;
-  fortuneType: "yearly" | "lifetime";
+  fortuneType: "yearly" | "lifetime" | "compatibility";
   profileId: string;
   profileName?: string;
   approvedAt: string;
@@ -106,9 +106,11 @@ export const sendPaymentNotification = async (
   } = params;
 
   const productName =
-    fortuneType === "yearly"
-      ? `${year ?? new Date().getFullYear()} 신년운세`
-      : "평생운세";
+    fortuneType === "compatibility"
+      ? "궁합"
+      : fortuneType === "yearly"
+        ? `${year ?? new Date().getFullYear()} 신년운세`
+        : "평생운세";
   const formattedAmount =
     currency === "USD"
       ? `$${amount.toFixed(2)}`
@@ -183,6 +185,71 @@ export const sendPaymentNotification = async (
       text: "Life Spoiler",
     },
     timestamp: approvedAt,
+  };
+
+  return sendWebhookMessage({ embeds: [embed] });
+};
+
+interface FreePromoNotificationParams {
+  userId: string;
+  pairId: string;
+  profileNames?: string;
+  claimedAt: string;
+}
+
+/**
+ * 궁합 무료 프로모션 사용 알림 전송
+ */
+export const sendFreePromoNotification = async (
+  params: FreePromoNotificationParams
+): Promise<boolean> => {
+  const { userId, pairId, profileNames, claimedAt } = params;
+
+  const claimedDate = new Date(claimedAt);
+  const formattedDate = claimedDate.toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  const embed: DiscordEmbed = {
+    title: "🎁 궁합 무료 프로모션 사용",
+    description: "궁합 무료 프로모션이 사용되었습니다!",
+    color: DISCORD_EMBED_COLORS.INFO,
+    fields: [
+      {
+        name: "👤 사용자 ID",
+        value: `\`${userId}\``,
+        inline: true,
+      },
+      {
+        name: "💑 궁합 ID",
+        value: `\`${pairId}\``,
+        inline: true,
+      },
+      ...(profileNames
+        ? [
+            {
+              name: "📝 프로필",
+              value: profileNames,
+              inline: false,
+            },
+          ]
+        : []),
+      {
+        name: "🕐 사용 시각",
+        value: formattedDate,
+        inline: true,
+      },
+    ],
+    footer: {
+      text: "Life Spoiler",
+    },
+    timestamp: claimedAt,
   };
 
   return sendWebhookMessage({ embeds: [embed] });

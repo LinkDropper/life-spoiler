@@ -94,6 +94,7 @@ export interface PalaceData {
   branch: string;
   mainStars: StarData[];
   minorStars: string[];
+  isShenGong?: boolean;
 }
 
 export interface SihuaData {
@@ -101,6 +102,15 @@ export interface SihuaData {
   huaquan: { star: string; palace: string };
   huake: { star: string; palace: string };
   huaji: { star: string; palace: string };
+}
+
+/** 화기 교차 분석 (궁합용) */
+export interface HuajiCrossAnalysis {
+  huajiPalaceA: string;
+  huajiPalaceB: string;
+  aHuajiAffectsBPalaces: string[];
+  bHuajiAffectsAPalaces: string[];
+  bothHuajiSameArea: boolean;
 }
 
 // 대운 데이터
@@ -443,3 +453,117 @@ export interface YearlyFortuneInterpretation {
     isFallback: boolean;
   };
 }
+
+// ============================================================
+// 궁합 운세 타입
+// ============================================================
+
+export type CompatibilityInterpretationType =
+  | "compatibility_overview"
+  | "compatibility_insights"
+  | "compatibility_core_scenarios"
+  | "compatibility_communication"
+  | "compatibility_growth"
+  | "compatibility_emotion"
+  | "compatibility_crisis";
+
+export interface CompatibilityInterpretationRequest {
+  profileA: {
+    name: string;
+    gender: "male" | "female";
+    lunarBirthInfo: string;
+  };
+  profileB: {
+    name: string;
+    gender: "male" | "female";
+    lunarBirthInfo: string;
+  };
+  chartA: {
+    wuxingJu: string;
+    mingGongPosition: string;
+    shenGongPosition: string;
+    sihua: SihuaData;
+  };
+  chartB: {
+    wuxingJu: string;
+    mingGongPosition: string;
+    shenGongPosition: string;
+    sihua: SihuaData;
+  };
+  palacesA: Record<string, PalaceData>;
+  palacesB: Record<string, PalaceData>;
+  huajiCrossAnalysis?: HuajiCrossAnalysis;
+  relationshipType: string;
+  zodiacCompatibility: string;
+  fiveElementCompatibility: string;
+  scoreRange?: { min: number; max: number };
+  requestType: CompatibilityInterpretationType;
+  previousContext?: string;
+  language?: Locale;
+}
+
+// 궁합 오버뷰 응답 스키마 (headline + tags + spoiler)
+export const CompatibilityOverviewResponseSchema = z.object({
+  headline: z.string(),
+  tags: z.array(z.string()).min(2).max(4),
+  spoiler: z.string(),
+  profileASummary: z.string(),
+  profileBSummary: z.string(),
+});
+
+export type CompatibilityOverviewResponse = z.infer<
+  typeof CompatibilityOverviewResponseSchema
+>;
+
+// 궁합 인사이트 항목 스키마
+const CompatibilityInsightItemSchema = z.object({
+  score: z.number().min(0).max(100),
+  label: z.string(),
+  headline: z.string(),
+  content: z.string(),
+});
+
+// 궁합 인사이트 응답 스키마 (8개 항목)
+export const CompatibilityInsightsResponseSchema = z.object({
+  overall: CompatibilityInsightItemSchema,
+  zodiac: CompatibilityInsightItemSchema,
+  fiveElement: CompatibilityInsightItemSchema,
+  chemistry: CompatibilityInsightItemSchema,
+  communication: CompatibilityInsightItemSchema,
+  growthSynergy: CompatibilityInsightItemSchema,
+  trustIndex: CompatibilityInsightItemSchema,
+  crisisResilience: CompatibilityInsightItemSchema,
+});
+
+export type CompatibilityInsightsResponse = z.infer<
+  typeof CompatibilityInsightsResponseSchema
+>;
+
+// 궁합 핵심 시나리오 + 종합 조언 응답 스키마
+export const CompatibilityScenariosResponseSchema = z.object({
+  coreScenarios: z
+    .array(
+      z.object({
+        title: z.string(),
+        content: z.string(),
+      })
+    )
+    .min(2)
+    .max(4),
+  advice: z.string(),
+});
+
+export type CompatibilityScenariosResponse = z.infer<
+  typeof CompatibilityScenariosResponseSchema
+>;
+
+// 궁합 카테고리 응답 스키마 (소통/성장/감정/위기)
+export const CompatibilityCategoryResponseSchema = z.object({
+  headline: z.string(),
+  content: z.string(),
+  tags: z.array(z.string()).min(1).max(3),
+});
+
+export type CompatibilityCategoryResponse = z.infer<
+  typeof CompatibilityCategoryResponseSchema
+>;

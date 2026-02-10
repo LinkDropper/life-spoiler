@@ -60,3 +60,14 @@ export {
   interpretYearlyRelationship,
   interpretYearlyWealth,
 } from "./yearly-interpreter";
+
+// 궁합 해석 서비스
+export {
+  generateCompatibilityInterpretation,
+  createCompatibilityFallbackResult,
+} from "./compatibility-interpreter";
+export type {
+  CompatibilityInterpretationRequest,
+  CompatibilityInterpretationType,
+  HuajiCrossAnalysis,
+} from "./types";

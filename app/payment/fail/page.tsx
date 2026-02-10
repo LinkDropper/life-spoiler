@@ -20,6 +20,7 @@ function PaymentFailContent() {
   const fortuneType = searchParams.get("fortuneType") as
     | "yearly"
     | "lifetime"
+    | "compatibility"
     | null;
 
   const handleRetry = () => {
@@ -32,7 +33,11 @@ function PaymentFailContent() {
 
   const handleGoBack = () => {
     if (profileId && fortuneType) {
-      router.push(`/fortune/${fortuneType}/preview/${profileId}`);
+      if (fortuneType === "compatibility") {
+        router.push(`/compatibility/${profileId}/fortune/preview`);
+      } else {
+        router.push(`/fortune/${fortuneType}/preview/${profileId}`);
+      }
     } else {
       router.push("/profiles");
     }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { ChevronIcon } from "./ChevronIcon";
+import { FormattedText } from "./FormattedText";
 
 import styles from "./ScenarioItem.module.css";
 
@@ -34,7 +35,11 @@ export const ScenarioItem = ({
         </div>
         <ChevronIcon expanded={expanded} size="small" />
       </button>
-      {expanded && <div className={styles.scenarioContent}>{content}</div>}
+      {expanded && (
+        <FormattedText as="div" className={styles.scenarioContent}>
+          {content}
+        </FormattedText>
+      )}
     </div>
   );
 };

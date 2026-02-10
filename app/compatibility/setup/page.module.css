@@ -1,0 +1,467 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 16px;
+  padding-bottom: 100px;
+}
+
+.loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+}
+
+/* Section */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionLabel {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+  padding: 4px 0;
+}
+
+/* Profile Selection - "프로필 추가" 버튼 */
+.profileSelectButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 52px;
+  padding: 16px 20px;
+  background: transparent;
+  border: 1px solid #ffccd9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.profileSelectButton:hover {
+  opacity: 0.9;
+}
+
+.profileSelectButtonLabel {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffccd9;
+}
+
+/* Selected profiles display */
+.selectedProfiles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selectedProfileCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 20px;
+  background: transparent;
+  border-radius: 8px;
+  border: 2px solid var(--Color-Border-Default, rgba(255, 255, 255, 0.16));
+}
+
+.changeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: 1px solid #ffccd9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.changeButton:hover {
+  opacity: 0.9;
+}
+
+.changeButtonLabel {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffccd9;
+}
+
+/* Shared profile card content (used in selected profiles & modal) */
+.profileCardNameRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.profileCardName {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.profileCardInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.profileCardDateTime {
+  display: flex;
+  gap: 8px;
+}
+
+.profileCardInfoText {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profileCardTags {
+  display: flex;
+  gap: 8px;
+}
+
+.profileCardTag {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Profile Selection Modal */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 12px;
+  background: rgba(17, 17, 28, 0.6);
+}
+
+.modal {
+  width: 100%;
+  max-width: 432px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background: #18181b;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+/* Modal profile cards */
+.modalProfileCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 20px;
+  background: #18181b;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modalProfileCard:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.modalProfileCard.modalProfileSelected {
+  border-color: #ffccd9;
+}
+
+/* Modal new profile card */
+.modalNewProfileCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 52px;
+  padding: 20px;
+  background: #18181b;
+  border: 2px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  color: #ffffff;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modalNewProfileCard:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.modalNewProfileLabel {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+/* Modal footer */
+.modalButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.modalCancelButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 52px;
+  padding: 16px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modalCancelButton:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.modalConfirmButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 52px;
+  padding: 16px 20px;
+  background: #ffccd9;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modalConfirmButton:hover {
+  opacity: 0.9;
+}
+
+.modalConfirmButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Radio Buttons */
+.radioGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radioRow {
+  display: flex;
+  gap: 8px;
+}
+
+.radioButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.radioButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.radioIndicator {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background: #18181b;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.radioIndicator.checked {
+  background: #ffccd9;
+  border: none;
+}
+
+.radioLabel {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+/* Custom relationship input */
+.customRelationshipInput {
+  width: 100%;
+  height: 52px;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.customRelationshipInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.customRelationshipInput:focus {
+  border-color: #ffccd9;
+}
+
+/* Footer */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(46, 20, 49, 0) 0%,
+    rgba(46, 20, 49, 1) 20%
+  );
+}
+
+.backButton {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.backButton:hover {
+  opacity: 0.9;
+}
+
+.primaryButton {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 52px;
+  padding: 16px 20px;
+  background: #57ecc2;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #18181b;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.primaryButton:hover {
+  opacity: 0.9;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}
