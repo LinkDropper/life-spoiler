@@ -312,7 +312,7 @@ export default function CompatibilitySetupPage() {
           value={relationshipType}
           customValue={relationshipTypeCustom}
           onChange={(value, customValue) => {
-            setRelationshipType(value as CompatibilityRelationshipType);
+            setRelationshipType(value);
             setRelationshipTypeCustom(customValue ?? "");
           }}
           columns={2}
