@@ -16,6 +16,8 @@ import {
   analyzeZodiacCompatibility,
   analyzeFiveElementCompatibility,
   calculateBaseScoreRange,
+  buildPersonalityProfile,
+  analyzeCompatibility,
 } from "@/libs/zi-wei-dou-shu/calculators";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
@@ -316,6 +318,18 @@ export async function POST(
       chartDataB.palacesMap
     );
 
+    // 11. 성격 프로필 사전 계산
+    const personalityA = buildPersonalityProfile(chartA);
+    const personalityB = buildPersonalityProfile(chartB);
+
+    // 12. 교차 분석 사전 계산
+    const compatAnalysis = analyzeCompatibility(
+      chartA,
+      chartB,
+      personalityA,
+      personalityB
+    );
+
     const interpretRequest: Omit<
       CompatibilityInterpretationRequest,
       "requestType"
@@ -335,6 +349,9 @@ export async function POST(
       palacesA: chartDataA.palacesMap,
       palacesB: chartDataB.palacesMap,
       huajiCrossAnalysis,
+      personalityA,
+      personalityB,
+      analysis: compatAnalysis,
       relationshipType: relationshipLabel,
       zodiacCompatibility: zodiacCompat.description,
       fiveElementCompatibility: fiveElementCompat.description,

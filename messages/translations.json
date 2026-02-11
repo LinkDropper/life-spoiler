@@ -275,6 +275,12 @@
             "emotion": "감정 & 신뢰",
             "crisis": "위기 & 극복"
           }
+        },
+        "share": {
+          "ogTitle": "{nameA}님과 {nameB}님의 궁합을 확인해보세요",
+          "ogTitleWithHeadline": "{nameA} & {nameB} 궁합: {headline}",
+          "ogDescription": "자미두수로 분석한 {nameA}님과 {nameB}님의 궁합입니다.",
+          "ogDescriptionWithScore": "{nameA} & {nameB} 궁합 점수 {score}점 - 소통: {communication}점 | 성장: {growth}점 | 신뢰: {trust}점 | 극복력: {crisis}점"
         }
       }
     },
@@ -979,6 +985,12 @@
             "emotion": "Emotion & Trust",
             "crisis": "Crisis & Overcoming"
           }
+        },
+        "share": {
+          "ogTitle": "Check out {nameA} & {nameB}'s Compatibility",
+          "ogTitleWithHeadline": "{nameA} & {nameB} Compatibility: {headline}",
+          "ogDescription": "Zi Wei Dou Shu compatibility analysis of {nameA} and {nameB}.",
+          "ogDescriptionWithScore": "{nameA} & {nameB} compatibility score {score}pts - Communication: {communication} | Growth: {growth} | Trust: {trust} | Resilience: {crisis}"
         }
       }
     },
@@ -1683,6 +1695,12 @@
             "emotion": "感情＆信頼",
             "crisis": "危機＆克服"
           }
+        },
+        "share": {
+          "ogTitle": "{nameA}さんと{nameB}さんの相性をチェック",
+          "ogTitleWithHeadline": "{nameA} & {nameB} 相性: {headline}",
+          "ogDescription": "紫微斗数で分析した{nameA}さんと{nameB}さんの相性です。",
+          "ogDescriptionWithScore": "{nameA} & {nameB} 相性スコア {score}点 - コミュニケーション: {communication}点 | 成長: {growth}点 | 信頼: {trust}点 | 克服力: {crisis}点"
         }
       }
     },
