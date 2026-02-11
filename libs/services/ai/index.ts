@@ -70,4 +70,7 @@ export type {
   CompatibilityInterpretationRequest,
   CompatibilityInterpretationType,
   HuajiCrossAnalysis,
+  PreAnalyzedPersonality,
+  PreAnalyzedCompatibility,
+  PreAnalyzedCategory,
 } from "./types";

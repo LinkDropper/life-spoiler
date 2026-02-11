@@ -467,6 +467,43 @@ export type CompatibilityInterpretationType =
   | "compatibility_emotion"
   | "compatibility_crisis";
 
+/** 사전 분석된 성격 프로필 (궁합용) */
+export interface PreAnalyzedPersonality {
+  coreTraits: string[];
+  communicationStyle: string[];
+  emotionalPattern: string[];
+  conflictStyle: string[];
+  valueOrientation: string[];
+  strengths: string[];
+  weaknesses: string[];
+  dominantElement: string;
+  summary: string;
+}
+
+/** 카테고리별 사전 분석 결과 (궁합용) */
+export interface PreAnalyzedCategory {
+  relevantTraitsA: string[];
+  relevantTraitsB: string[];
+  starInteractions: string[];
+  suggestedScore: number;
+  analysisPoints: string[];
+}
+
+/** 사전 분석된 궁합 데이터 */
+export interface PreAnalyzedCompatibility {
+  communication: PreAnalyzedCategory;
+  growth: PreAnalyzedCategory;
+  emotion: PreAnalyzedCategory;
+  crisis: PreAnalyzedCategory;
+  scoreConstraints: Record<
+    string,
+    { min: number; max: number; suggested: number }
+  >;
+  keyDynamics: string[];
+  synergyPoints: string[];
+  tensionPoints: string[];
+}
+
 export interface CompatibilityInterpretationRequest {
   profileA: {
     name: string;
@@ -497,6 +534,12 @@ export interface CompatibilityInterpretationRequest {
   zodiacCompatibility: string;
   fiveElementCompatibility: string;
   scoreRange?: { min: number; max: number };
+  /** 사전 분석된 성격 프로필 A */
+  personalityA?: PreAnalyzedPersonality;
+  /** 사전 분석된 성격 프로필 B */
+  personalityB?: PreAnalyzedPersonality;
+  /** 사전 분석된 교차 분석 결과 */
+  analysis?: PreAnalyzedCompatibility;
   requestType: CompatibilityInterpretationType;
   previousContext?: string;
   language?: Locale;
@@ -566,4 +609,16 @@ export const CompatibilityCategoryResponseSchema = z.object({
 
 export type CompatibilityCategoryResponse = z.infer<
   typeof CompatibilityCategoryResponseSchema
+>;
+
+// 4개 카테고리 통합 응답 스키마
+export const CompatibilityCategoriesCombinedResponseSchema = z.object({
+  communication: CompatibilityCategoryResponseSchema,
+  growth: CompatibilityCategoryResponseSchema,
+  emotion: CompatibilityCategoryResponseSchema,
+  crisis: CompatibilityCategoryResponseSchema,
+});
+
+export type CompatibilityCategoriesCombinedResponse = z.infer<
+  typeof CompatibilityCategoriesCombinedResponseSchema
 >;
