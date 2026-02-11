@@ -8,6 +8,7 @@ export const getRelationshipLabel = (
 ): string => {
   const labels: Record<CompatibilityRelationshipType, string> = {
     lover: t("relationshipTypes.lover", { default: "연인" }),
+    some: t("relationshipTypes.some", { default: "썸" }),
     friend: t("relationshipTypes.friend", {
       default: "친구",
     }),

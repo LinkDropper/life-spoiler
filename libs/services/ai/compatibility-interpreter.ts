@@ -211,12 +211,12 @@ const formatCompatibilityDataForAI = (
     ? [...new Set([...BASE_PALACES, ...categoryPalaces])]
     : BROAD_PALACES;
 
-  let dataStr = `## Profile A Info
+  let dataStr = `## Profile A (${profileA.name}) Info
 - name: ${profileA.name}
 - gender: ${profileA.gender === "male" ? "남성" : "여성"}
 - lunarBirthInfo: ${profileA.lunarBirthInfo}
 
-## Profile A Chart
+## Profile A (${profileA.name}) Chart
 - wuxingJu: ${chartA.wuxingJu}
 - mingGongPosition: ${chartA.mingGongPosition}
 - shenGongPosition: ${chartA.shenGongPosition}
@@ -229,16 +229,16 @@ const formatCompatibilityDataForAI = (
   for (const palaceName of palaceNames) {
     const palace = palacesA[palaceName];
     if (palace) {
-      dataStr += `\n\n### Profile A ${palaceName}\n${formatPalaceData(palace)}`;
+      dataStr += `\n\n### Profile A (${profileA.name}) ${palaceName}\n${formatPalaceData(palace)}`;
     }
   }
 
-  dataStr += `\n\n## Profile B Info
+  dataStr += `\n\n## Profile B (${profileB.name}) Info
 - name: ${profileB.name}
 - gender: ${profileB.gender === "male" ? "남성" : "여성"}
 - lunarBirthInfo: ${profileB.lunarBirthInfo}
 
-## Profile B Chart
+## Profile B (${profileB.name}) Chart
 - wuxingJu: ${chartB.wuxingJu}
 - mingGongPosition: ${chartB.mingGongPosition}
 - shenGongPosition: ${chartB.shenGongPosition}
@@ -251,7 +251,7 @@ const formatCompatibilityDataForAI = (
   for (const palaceName of palaceNames) {
     const palace = palacesB[palaceName];
     if (palace) {
-      dataStr += `\n\n### Profile B ${palaceName}\n${formatPalaceData(palace)}`;
+      dataStr += `\n\n### Profile B (${profileB.name}) ${palaceName}\n${formatPalaceData(palace)}`;
     }
   }
 

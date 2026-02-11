@@ -203,6 +203,7 @@
         "deleteAriaLabel": "궁합 삭제",
         "relationshipTypes": {
           "lover": "연인",
+          "some": "썸",
           "friend": "친구",
           "colleague": "동료",
           "family": "가족",

@@ -29,6 +29,7 @@ export type AnalysisResultInsert = InterpretationCacheInsert;
 
 export type CompatibilityRelationshipType =
   | "lover"
+  | "some"
   | "friend"
   | "colleague"
   | "family"
