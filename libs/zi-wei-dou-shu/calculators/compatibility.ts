@@ -305,7 +305,7 @@ export const calculateBaseScoreRange = (
   zodiac: ZodiacCompatibility,
   fiveElement: FiveElementCompatibility
 ): ScoreRange => {
-  let center = 50;
+  let center = 55;
 
   // 띠 보정
   if (zodiac.relationship === "none") {
@@ -318,7 +318,7 @@ export const calculateBaseScoreRange = (
   // 오행 보정
   center += FIVE_ELEMENT_SCORE_OFFSET[fiveElement.relationship];
 
-  const HALF_RANGE = 15;
+  const HALF_RANGE = 20;
   const min = Math.max(15, center - HALF_RANGE);
   const max = Math.min(95, center + HALF_RANGE);
 
