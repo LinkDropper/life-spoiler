@@ -123,3 +123,15 @@ export {
   type FiveElementCompatibility,
   type ScoreRange,
 } from "./compatibility";
+
+export {
+  buildPersonalityProfile,
+  type PersonalityProfile,
+} from "./personality-profile";
+
+export {
+  analyzeCompatibility,
+  type CompatibilityAnalysis,
+  type CategoryAnalysis,
+  type ScoreConstraint,
+} from "./compatibility-analysis";

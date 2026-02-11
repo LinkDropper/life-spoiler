@@ -54,3 +54,18 @@ export {
   getStarBrightnessKeyword,
   KEYWORD_COUNT,
 } from "./keywords";
+
+// 주성 × 밝기 성격 특성 (궁합 분석용)
+export {
+  STAR_TRAITS,
+  toBrightnessGroup,
+  type StarTraitSet,
+  type BrightnessGroup,
+} from "./star-traits";
+
+// 주성 간 궁합 상성 테이블
+export {
+  getStarCompatibility,
+  type CompatLevel,
+  type StarCompatEntry,
+} from "./star-compatibility-table";
