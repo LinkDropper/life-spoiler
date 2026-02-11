@@ -17,6 +17,8 @@ interface SelectableChipsProps {
   onChange: (value: string, customValue?: string) => void;
   columns?: 2 | 3;
   error?: string;
+  customPlaceholder?: string;
+  customMaxLength?: number;
 }
 
 export const SelectableChips = ({
@@ -27,6 +29,8 @@ export const SelectableChips = ({
   onChange,
   columns = 2,
   error,
+  customPlaceholder = "직접 입력해주세요",
+  customMaxLength = 50,
 }: SelectableChipsProps) => {
   const [localCustomValue, setLocalCustomValue] = useState(customValue);
   const isCustomSelected = value === "custom";
@@ -75,9 +79,9 @@ export const SelectableChips = ({
           type="text"
           value={localCustomValue}
           onChange={handleCustomInputChange}
-          placeholder="직접 입력해주세요"
+          placeholder={customPlaceholder}
           className={styles.customInput}
-          maxLength={50}
+          maxLength={customMaxLength}
         />
       )}
       {error && <p className={styles.error}>{error}</p>}

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import { HeaderClient } from "@/components/landing";
+import { SelectableChips } from "@/components/form";
 import { getRelationshipLabel } from "@/components/compatibility";
 import {
   useProfiles,
@@ -23,6 +24,7 @@ import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
 
 const RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
   "lover",
+  "some",
   "friend",
   "colleague",
   "family",
@@ -181,10 +183,10 @@ export default function CompatibilitySetupPage() {
     );
   }
 
-  const radioRows: CompatibilityRelationshipType[][] = [];
-  for (let i = 0; i < RELATIONSHIP_TYPES.length; i += 2) {
-    radioRows.push(RELATIONSHIP_TYPES.slice(i, i + 2));
-  }
+  const relationshipOptions = RELATIONSHIP_TYPES.map((type) => ({
+    value: type,
+    label: getRelationshipLabel(type, tCard),
+  }));
 
   return (
     <div className={styles.page}>
@@ -304,48 +306,21 @@ export default function CompatibilitySetupPage() {
         </div>
 
         {/* 관계 선택 섹션 */}
-        <div className={styles.section}>
-          <span className={styles.sectionLabel}>
-            {t("relationshipSelection", {
-              default: "관계 선택",
-            })}
-          </span>
-          <div className={styles.radioGrid}>
-            {radioRows.map((row, rowIndex) => (
-              <div key={rowIndex} className={styles.radioRow}>
-                {row.map((type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    className={styles.radioButton}
-                    onClick={() => setRelationshipType(type)}
-                  >
-                    <div
-                      className={[
-                        styles.radioIndicator,
-                        relationshipType === type ? styles.checked : "",
-                      ].join(" ")}
-                    />
-                    <span className={styles.radioLabel}>
-                      {getRelationshipLabel(type, tCard)}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            ))}
-          </div>
-          {relationshipType === "custom" && (
-            <input
-              type="text"
-              className={styles.customRelationshipInput}
-              placeholder={t("customRelationshipPlaceholder")}
-              value={relationshipTypeCustom}
-              onChange={(e) => setRelationshipTypeCustom(e.target.value)}
-              maxLength={20}
-              autoFocus
-            />
-          )}
-        </div>
+        <SelectableChips
+          label={t("relationshipSelection", { default: "관계 선택" })}
+          options={relationshipOptions}
+          value={relationshipType}
+          customValue={relationshipTypeCustom}
+          onChange={(value, customValue) => {
+            setRelationshipType(value as CompatibilityRelationshipType);
+            setRelationshipTypeCustom(customValue ?? "");
+          }}
+          columns={2}
+          customPlaceholder={t("customRelationshipPlaceholder", {
+            default: "직접 입력해주세요",
+          })}
+          customMaxLength={20}
+        />
       </main>
 
       <footer className={styles.footer}>
