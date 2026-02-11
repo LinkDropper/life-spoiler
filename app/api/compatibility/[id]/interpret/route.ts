@@ -297,6 +297,7 @@ export async function POST(
         ? pair.relationship_type_custom || "기타"
         : {
             lover: "연인",
+            some: "썸",
             friend: "친구",
             colleague: "동료",
             family: "가족",
