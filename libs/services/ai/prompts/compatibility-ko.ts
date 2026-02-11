@@ -479,6 +479,7 @@ export const koCompatibilityPrompts: CompatibilityLocalizedPrompts = {
 ### spoiler 작성법 (팩폭 3단 콤보, 총 600자)
 프리뷰 페이지의 메인 텍스트입니다. 3가지 흐름을 자연스럽게 이어쓰세요.
 ⚠️ 아래는 **내부 구조 가이드**이며, 이모지 헤더·글자수·대괄호 표시 등은 절대 출력하지 마세요.
+⚠️ **A/B 성격 혼동 주의!** spoiler에서 각 사람의 성격을 언급할 때, 반드시 해당 인물의 Chart 데이터(Profile A Chart / Profile B Chart)를 참조하세요. A의 명궁 특성을 B에게, B의 명궁 특성을 A에게 잘못 귀속시키면 실패입니다.
 
 - 1단락 (약 200자): 두 사람 기운의 핵심 궁합을 정의하고 양면성까지
 - 2단락 (약 200자): 제3자가 봤을 때 이 두 사람의 모습을 솔직하게 묘사
@@ -494,7 +495,10 @@ export const koCompatibilityPrompts: CompatibilityLocalizedPrompts = {
 부처궁 ↔ 명궁 교차 비교, 사화 교차 위치, 밝기 비교를 적극 활용하세요.
 
 ### profileASummary / profileBSummary 작성법 (성격 앵커)
-각 사람의 **핵심 성격·역할·에너지 스타일**을 20-40자로 압축합니다.
+⚠️ **A/B 혼동 금지! 반드시 올바른 데이터를 참조하세요.**
+- **profileASummary**: 입력 데이터의 **"Profile A Info"와 "Profile A Chart"** 기반으로 작성. Profile A의 명궁 주성·사화를 분석한 성격.
+- **profileBSummary**: 입력 데이터의 **"Profile B Info"와 "Profile B Chart"** 기반으로 작성. Profile B의 명궁 주성·사화를 분석한 성격.
+- 각 사람의 **핵심 성격·역할·에너지 스타일**을 20-40자로 압축
 - 이후 모든 섹션에서 이 설정을 기준으로 일관되게 묘사합니다.
 - 예: "추진력 강한 실행파, 결정 빠르고 직진형"
 - 예: "신중한 분석파, 감정보다 논리 우선"
