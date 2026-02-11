@@ -230,6 +230,14 @@ const sanitizeTerminology = (text: string): string => {
   for (const term of BANNED_TERMS) {
     result = result.replaceAll(term, "");
   }
+  // 괄호 안 밝기 표시 제거: (묘), (왕), (평), (함), (득), (이), (리)
+  result = result.replace(/\([묘왕평함득이리]\)/g, "");
+  // 내부 데이터 레이블 제거 (AI가 복사하는 것 방지)
+  result = result.replace(/풍요 에너지(?: 위치)?/g, "");
+  result = result.replace(/긴장 에너지(?: 위치)?/g, "");
+  // 잔여 구문 정리: "에서 발생하는 과 의", "에서의" 등
+  result = result.replace(/에서 발생하는\s*/g, "");
+  result = result.replace(/에서의\s*/g, "");
   // 연속 공백 정리
   result = result.replace(/\s{2,}/g, " ");
   return result;
@@ -260,9 +268,15 @@ const ensureLineBreaks = (text: string): string => {
   // 짧은 텍스트는 구분 불필요
   if (text.length < 150) return text;
 
-  // 단일 \n만 있으면 → \n\n으로 교체 (단락 구분 강화)
+  // 단일 \n만 있으면 → 문장 종결 뒤에서만 \n\n으로 승격
   if (text.includes("\n")) {
-    return text.replace(/\n/g, "\n\n");
+    let result = text.replace(
+      /([.!?…다요죠까])\s*\n/g,
+      "$1\n\n"
+    );
+    // 남은 단독 \n은 공백으로 교체 (문장 중간의 잘못된 줄바꿈)
+    result = result.replace(/(?<!\n)\n(?!\n)/g, " ");
+    return result;
   }
 
   // 줄바꿈이 전혀 없는 경우: 문장 경계에서 자동 단락 분리
@@ -272,7 +286,7 @@ const ensureLineBreaks = (text: string): string => {
     const next = text[i + 1];
     if (
       next === " " &&
-      (ch === "." || ch === "!" || ch === "?" || ch === "요" || ch === "죠")
+      (ch === "." || ch === "!" || ch === "?" || ch === "요" || ch === "죠" || ch === "다")
     ) {
       boundaries.push(i + 1);
     }
@@ -297,6 +311,60 @@ const ensureLineBreaks = (text: string): string => {
   }
 
   return paragraphs.length > 1 ? paragraphs.join("\n\n") : text;
+};
+
+/** AI가 문장 중간에 잘못 삽입한 \n\n을 정리하는 후처리 함수 */
+const cleanupBrokenLineBreaks = (text: string): string => {
+  if (!text.includes("\n\n")) return text;
+
+  const parts = text.split(/\n\n+/);
+  if (parts.length <= 1) return text;
+
+  const merged: string[] = [];
+  let buffer = parts[0].trim();
+
+  for (let i = 1; i < parts.length; i++) {
+    const next = parts[i].trim();
+    if (!next) continue;
+    if (!buffer) {
+      buffer = next;
+      continue;
+    }
+
+    // buffer가 문장 종결 패턴으로 끝나고 충분히 길면 → 단락 구분 유지
+    const endsWithSentenceEnd =
+      /[.!?…]\s*$/.test(buffer) || /[다요죠까]\s*$/.test(buffer);
+
+    if (endsWithSentenceEnd && buffer.length >= 40) {
+      merged.push(buffer);
+      buffer = next;
+    } else {
+      // 문장 중간이거나 너무 짧은 조각 → 이어붙이기
+      buffer += " " + next;
+    }
+  }
+
+  if (buffer.trim()) merged.push(buffer.trim());
+
+  return merged.join("\n\n");
+};
+
+/** 객체의 모든 문자열 필드에 cleanupBrokenLineBreaks 적용 */
+const cleanupAllBrokenLineBreaks = <T>(obj: T): T => {
+  if (typeof obj === "string") {
+    return cleanupBrokenLineBreaks(obj) as T;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((item) => cleanupAllBrokenLineBreaks(item)) as T;
+  }
+  if (obj !== null && typeof obj === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = cleanupAllBrokenLineBreaks(value);
+    }
+    return result as T;
+  }
+  return obj;
 };
 
 /** 객체의 모든 문자열 필드에 줄바꿈을 보장 (ensureLineBreaks의 길이 체크로 짧은 필드는 무시) */
@@ -435,9 +503,9 @@ ${[
     return labelMap[palace] || palace;
   };
 
-  dataStr += `\n\n## 에너지 분포
-- A (${profileA.name}): 오행국 ${chartA.wuxingJu}, 풍요 에너지 위치: ${palaceToLabel(chartA.sihua.hualu.palace)}, 긴장 에너지 위치: ${palaceToLabel(chartA.sihua.huaji.palace)}
-- B (${profileB.name}): 오행국 ${chartB.wuxingJu}, 풍요 에너지 위치: ${palaceToLabel(chartB.sihua.hualu.palace)}, 긴장 에너지 위치: ${palaceToLabel(chartB.sihua.huaji.palace)}`;
+  dataStr += `\n\n## 타고난 에너지 흐름 (⚠️ 아래 문장은 참고용 — 그대로 출력 금지!)
+- A (${profileA.name}): 타고난 행운이 ${palaceToLabel(chartA.sihua.hualu.palace)}에 모여 있고, 스트레스 요인은 ${palaceToLabel(chartA.sihua.huaji.palace)}에서 생기기 쉬움
+- B (${profileB.name}): 타고난 행운이 ${palaceToLabel(chartB.sihua.hualu.palace)}에 모여 있고, 스트레스 요인은 ${palaceToLabel(chartB.sihua.huaji.palace)}에서 생기기 쉬움`;
 
   // ──── 6. 상성 정보 ────
   dataStr += `\n\n## Zodiac Compatibility
@@ -451,10 +519,10 @@ ${relationshipType}`;
 
   if (request.huajiCrossAnalysis) {
     const h = request.huajiCrossAnalysis;
-    dataStr += `\n\n## 긴장 에너지 교차 분석
-- A의 긴장 에너지 위치: ${palaceToLabel(h.huajiPalaceA)} → B에게 영향: ${h.aHuajiAffectsBPalaces.length > 0 ? h.aHuajiAffectsBPalaces.map(palaceToLabel).join(", ") : "없음"}
-- B의 긴장 에너지 위치: ${palaceToLabel(h.huajiPalaceB)} → A에게 영향: ${h.bHuajiAffectsAPalaces.length > 0 ? h.bHuajiAffectsAPalaces.map(palaceToLabel).join(", ") : "없음"}
-- 양쪽 긴장 에너지 같은 영역: ${h.bothHuajiSameArea ? "예" : "아니오"}`;
+    dataStr += `\n\n## 스트레스 요인 교차 영향 (⚠️ 참고용 — 그대로 출력 금지!)
+- A의 스트레스 요인(${palaceToLabel(h.huajiPalaceA)})이 B의 ${h.aHuajiAffectsBPalaces.length > 0 ? h.aHuajiAffectsBPalaces.map(palaceToLabel).join(", ") : "없음"} 영역에 영향
+- B의 스트레스 요인(${palaceToLabel(h.huajiPalaceB)})이 A의 ${h.bHuajiAffectsAPalaces.length > 0 ? h.bHuajiAffectsAPalaces.map(palaceToLabel).join(", ") : "없음"} 영역에 영향
+- 양쪽 스트레스가 같은 영역에 집중: ${h.bothHuajiSameArea ? "예" : "아니오"}`;
   }
 
   // ──── 7. 점수 제약 ────
@@ -761,11 +829,19 @@ export const generateCompatibilityInterpretation = async (
     }),
   ]);
 
-  // ──── 후처리: 전문용어 필터 + 줄바꿈 보장 ────
-  const sanitizedOverview = ensureAllLineBreaks(sanitizeAllText(overview));
-  const sanitizedInsights = ensureAllLineBreaks(sanitizeAllText(insights));
-  const sanitizedScenarios = ensureAllLineBreaks(sanitizeAllText(scenarios));
-  const sanitizedCategories = ensureAllLineBreaks(sanitizeAllText(categories));
+  // ──── 후처리: 전문용어 필터 + 줄바꿈 보장 + 잘못된 줄바꿈 정리 ────
+  const sanitizedOverview = cleanupAllBrokenLineBreaks(
+    ensureAllLineBreaks(sanitizeAllText(overview))
+  );
+  const sanitizedInsights = cleanupAllBrokenLineBreaks(
+    ensureAllLineBreaks(sanitizeAllText(insights))
+  );
+  const sanitizedScenarios = cleanupAllBrokenLineBreaks(
+    ensureAllLineBreaks(sanitizeAllText(scenarios))
+  );
+  const sanitizedCategories = cleanupAllBrokenLineBreaks(
+    ensureAllLineBreaks(sanitizeAllText(categories))
+  );
 
   return {
     score: sanitizedInsights.overall.score,
