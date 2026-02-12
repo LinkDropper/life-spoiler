@@ -144,121 +144,17 @@ const getCompatibilityPrompts = (_language?: Locale) => {
 };
 
 // ============================================================
-// 전문용어 필터링
+// 프롬프트 입력 데이터 정리
 // ============================================================
 
-/** 전문용어 목록 — AI 응답에서 제거 대상 */
-const BANNED_TERMS = [
-  // 궁 이름
-  "명궁",
-  "재백궁",
-  "관록궁",
-  "부처궁",
-  "질액궁",
-  "천이궁",
-  "복덕궁",
-  "부모궁",
-  "형제궁",
-  "자녀궁",
-  "노복궁",
-  "전택궁",
-  "교우궁",
-  // 별 이름
-  "자미",
-  "천기",
-  "태양",
-  "무곡",
-  "천동",
-  "염정",
-  "천부",
-  "태음",
-  "탐랑",
-  "거문",
-  "천상",
-  "천량",
-  "칠살",
-  "파군",
-  // 보조성
-  "좌보",
-  "우필",
-  "문창",
-  "문곡",
-  "천괴",
-  "천월",
-  "록존",
-  "천마",
-  // 사화/운
-  "화록",
-  "화권",
-  "화과",
-  "화기",
-  "대운",
-  "유년",
-  "원국",
-  "삼방사정",
-  "사주",
-  "명반",
-  "오행국",
-  "천간",
-  "지지",
-  "격국",
-];
-
-/** 별 간 상호작용 문자열에서 별 이름을 제거하는 헬퍼 */
+/** 별 간 상호작용 문자열에서 "= 설명" 부분만 추출하는 헬퍼 */
 const sanitizeStarInteraction = (interaction: string): string => {
-  // 별 이름 패턴 "별이름(밝기)" 또는 "별이름" 제거하고 dynamics 텍스트만 남김
-  let result = interaction;
   // "A 궁이름 별이름(밝기) + B 궁이름 별이름(밝기) = 설명" → "설명" 부분만 추출
-  const equalsIdx = result.indexOf("=");
+  const equalsIdx = interaction.indexOf("=");
   if (equalsIdx !== -1) {
-    result = result.slice(equalsIdx + 1).trim();
+    return interaction.slice(equalsIdx + 1).trim();
   }
-  // 남은 전문용어 제거
-  for (const term of BANNED_TERMS) {
-    result = result.replaceAll(term, "");
-  }
-  // 괄호 안 밝기 표시 제거: (묘), (왕), (평), (함), (득), (이)
-  result = result.replace(/\([묘왕평함득이]\)/g, "");
-  // 연속 공백 정리
-  result = result.replace(/\s{2,}/g, " ").trim();
-  return result;
-};
-
-/** AI 응답의 텍스트에서 전문용어를 제거하는 후처리 함수 */
-const sanitizeTerminology = (text: string): string => {
-  let result = text;
-  for (const term of BANNED_TERMS) {
-    result = result.replaceAll(term, "");
-  }
-  // 괄호 안 밝기 표시 제거: (묘), (왕), (평), (함), (득), (이), (리)
-  result = result.replace(/\([묘왕평함득이리]\)/g, "");
-  // 내부 데이터 레이블 제거 (AI가 복사하는 것 방지)
-  result = result.replace(/풍요 에너지(?: 위치)?/g, "");
-  result = result.replace(/긴장 에너지(?: 위치)?/g, "");
-  // 잔여 구문 정리: "에서 발생하는 과 의", "에서의" 등
-  result = result.replace(/에서 발생하는\s*/g, "");
-  result = result.replace(/에서의\s*/g, "");
-  // 연속 공백 정리
-  result = result.replace(/\s{2,}/g, " ");
-  return result;
-};
-
-/** 객체의 모든 문자열 필드에 sanitizeTerminology 적용 */
-const sanitizeAllText = <T>(obj: T): T => {
-  if (typeof obj === "string") {
-    return sanitizeTerminology(obj) as T;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map((item) => sanitizeAllText(item)) as T;
-  }
-  if (obj !== null && typeof obj === "object") {
-    const result: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(obj)) {
-      result[key] = sanitizeAllText(value);
-    }
-    return result as T;
-  }
-  return obj;
+  return interaction;
 };
 
 /** 긴 텍스트에 줄바꿈이 없으면 자동으로 단락을 삽입하는 후처리 함수 */
@@ -829,18 +725,18 @@ export const generateCompatibilityInterpretation = async (
     }),
   ]);
 
-  // ──── 후처리: 전문용어 필터 + 줄바꿈 보장 + 잘못된 줄바꿈 정리 ────
+  // ──── 후처리: 줄바꿈 보장 + 잘못된 줄바꿈 정리 ────
   const sanitizedOverview = cleanupAllBrokenLineBreaks(
-    ensureAllLineBreaks(sanitizeAllText(overview))
+    ensureAllLineBreaks(overview)
   );
   const sanitizedInsights = cleanupAllBrokenLineBreaks(
-    ensureAllLineBreaks(sanitizeAllText(insights))
+    ensureAllLineBreaks(insights)
   );
   const sanitizedScenarios = cleanupAllBrokenLineBreaks(
-    ensureAllLineBreaks(sanitizeAllText(scenarios))
+    ensureAllLineBreaks(scenarios)
   );
   const sanitizedCategories = cleanupAllBrokenLineBreaks(
-    ensureAllLineBreaks(sanitizeAllText(categories))
+    ensureAllLineBreaks(categories)
   );
 
   return {
