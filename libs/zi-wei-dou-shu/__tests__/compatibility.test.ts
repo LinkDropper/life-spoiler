@@ -151,7 +151,7 @@ describe("analyzeFiveElementCompatibility", () => {
 });
 
 describe("calculateBaseScoreRange", () => {
-  it("삼합 + 상생 → center 72, range [52, 92]", () => {
+  it("삼합 + 상생 → center 88, range [68, 95]", () => {
     const zodiac = analyzeZodiacCompatibility(
       0 as BranchIndex,
       4 as BranchIndex
@@ -162,12 +162,12 @@ describe("calculateBaseScoreRange", () => {
     ); // generating
     const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-    expect(range.center).toBe(72);
-    expect(range.min).toBe(52);
-    expect(range.max).toBe(92);
+    expect(range.center).toBe(88);
+    expect(range.min).toBe(68);
+    expect(range.max).toBe(95);
   });
 
-  it("충 + 상극 → center 38, range [18, 58]", () => {
+  it("충 + 상극 → center 42, range [22, 62]", () => {
     const zodiac = analyzeZodiacCompatibility(
       0 as BranchIndex,
       6 as BranchIndex
@@ -178,12 +178,12 @@ describe("calculateBaseScoreRange", () => {
     ); // overcoming
     const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-    expect(range.center).toBe(38);
-    expect(range.min).toBe(18);
-    expect(range.max).toBe(58);
+    expect(range.center).toBe(42);
+    expect(range.min).toBe(22);
+    expect(range.max).toBe(62);
   });
 
-  it("중립 + 동일 → center 55, range [35, 75]", () => {
+  it("중립 + 동일 → center 68, range [48, 88]", () => {
     const zodiac = analyzeZodiacCompatibility(
       0 as BranchIndex,
       2 as BranchIndex
@@ -194,12 +194,12 @@ describe("calculateBaseScoreRange", () => {
     ); // same
     const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-    expect(range.center).toBe(55);
-    expect(range.min).toBe(35);
-    expect(range.max).toBe(75);
+    expect(range.center).toBe(68);
+    expect(range.min).toBe(48);
+    expect(range.max).toBe(88);
   });
 
-  it("같은 띠(비자형) + 동일 → center 58, range [38, 78]", () => {
+  it("같은 띠(비자형) + 동일 → center 71, range [51, 91]", () => {
     const zodiac = analyzeZodiacCompatibility(
       0 as BranchIndex,
       0 as BranchIndex
@@ -210,9 +210,9 @@ describe("calculateBaseScoreRange", () => {
     ); // same
     const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-    expect(range.center).toBe(58);
-    expect(range.min).toBe(38);
-    expect(range.max).toBe(78);
+    expect(range.center).toBe(71);
+    expect(range.min).toBe(51);
+    expect(range.max).toBe(91);
   });
 
   it("범위가 [15, 95]로 클램핑된다", () => {
@@ -226,7 +226,7 @@ describe("calculateBaseScoreRange", () => {
     ); // overcoming (-5)
     const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-    // center = 38, min = 18, max = 58 — 모두 [15,95] 안
+    // center = 42, min = 22, max = 62 — 모두 [15,95] 안
     expect(range.min).toBeGreaterThanOrEqual(15);
     expect(range.max).toBeLessThanOrEqual(95);
   });

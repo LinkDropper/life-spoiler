@@ -277,24 +277,24 @@ export interface ScoreRange {
 
 const ZODIAC_SCORE_OFFSET: Record<ZodiacCompatibility["relationship"], number> =
   {
-    samhap: 12,
-    yukhap: 8,
+    samhap: 15,
+    yukhap: 10,
     none: 0, // 기본값; 같은 띠/비자형은 +3으로 별도 처리
-    break: -5,
-    harm: -8,
-    punishment: -12,
-    clash: -12,
+    break: -8,
+    harm: -12,
+    punishment: -15,
+    clash: -15,
   };
 
 const FIVE_ELEMENT_SCORE_OFFSET: Record<
   FiveElementCompatibility["relationship"],
   number
 > = {
-  generating: 5,
-  being_generated: 5,
-  same: 0,
-  overcoming: -5,
-  being_overcome: -5,
+  generating: 8,
+  being_generated: 8,
+  same: 3,
+  overcoming: -8,
+  being_overcome: -8,
 };
 
 /**
@@ -305,7 +305,7 @@ export const calculateBaseScoreRange = (
   zodiac: ZodiacCompatibility,
   fiveElement: FiveElementCompatibility
 ): ScoreRange => {
-  let center = 55;
+  let center = 65;
 
   // 띠 보정
   if (zodiac.relationship === "none") {

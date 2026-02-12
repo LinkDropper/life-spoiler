@@ -253,8 +253,8 @@ describe("점수 계산 알고리즘 검증", () => {
       const fiveElement = analyzeFiveElementCompatibility(2, 3);
       const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-      expect(range.center).toBe(55 + 12 + 5);
-      expect(range.center).toBe(72);
+      expect(range.center).toBe(65 + 15 + 8);
+      expect(range.center).toBe(88);
       expect(range.min).toBeLessThan(range.center);
       expect(range.max).toBeGreaterThan(range.center);
     });
@@ -264,8 +264,8 @@ describe("점수 계산 알고리즘 검증", () => {
       const fiveElement = analyzeFiveElementCompatibility(2, 3);
       const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-      expect(range.center).toBe(55 + 8 + 5);
-      expect(range.center).toBe(68);
+      expect(range.center).toBe(65 + 10 + 8);
+      expect(range.center).toBe(83);
     });
   });
 
@@ -275,8 +275,8 @@ describe("점수 계산 알고리즘 검증", () => {
       const fiveElement = analyzeFiveElementCompatibility(2, 6);
       const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-      expect(range.center).toBe(55 - 12 - 5);
-      expect(range.center).toBe(38);
+      expect(range.center).toBe(65 - 15 - 8);
+      expect(range.center).toBe(42);
     });
 
     it("형 + 상극 = 매우 낮은 점수", () => {
@@ -284,8 +284,8 @@ describe("점수 계산 알고리즘 검증", () => {
       const fiveElement = analyzeFiveElementCompatibility(2, 6);
       const range = calculateBaseScoreRange(zodiac, fiveElement);
 
-      expect(range.center).toBe(55 - 12 - 5);
-      expect(range.center).toBe(38);
+      expect(range.center).toBe(65 - 15 - 8);
+      expect(range.center).toBe(42);
     });
   });
 

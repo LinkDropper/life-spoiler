@@ -213,18 +213,18 @@ const calculateCategoryScore = (
   mingGongOffset: number,
   categoryAnalysis: ReturnType<typeof analyzeCategoryPalaces>
 ): number => {
-  const baseScore = 55;
+  const baseScore = 65;
 
   // 명궁 교차 영향
-  const mingEffect = mingGongOffset * 0.5;
+  const mingEffect = mingGongOffset * 0.8;
 
   // 밝기 평균 보정
   const avgBrightness =
     (categoryAnalysis.avgBrightnessA + categoryAnalysis.avgBrightnessB) / 2;
-  const brightnessEffect = (avgBrightness - 50) / 10;
+  const brightnessEffect = (avgBrightness - 50) / 5;
 
   // 사화 충돌 감점
-  const sihuaPenalty = categoryAnalysis.sihuaConflicts.length * -3;
+  const sihuaPenalty = categoryAnalysis.sihuaConflicts.length * -5;
 
   // 좋은 상호작용 보너스
   const goodInteractions = categoryAnalysis.interactions.filter(
@@ -233,7 +233,7 @@ const calculateCategoryScore = (
   const badInteractions = categoryAnalysis.interactions.filter(
     (i) => i.includes("clash") || i.includes("tension")
   ).length;
-  const interactionEffect = (goodInteractions - badInteractions) * 3;
+  const interactionEffect = (goodInteractions - badInteractions) * 5;
 
   const score =
     baseScore +
@@ -242,7 +242,7 @@ const calculateCategoryScore = (
     sihuaPenalty +
     interactionEffect;
 
-  return clamp(Math.round(score), 15, 95);
+  return clamp(Math.round(score), 20, 95);
 };
 
 /**
@@ -463,8 +463,8 @@ const buildAnalysisPoints = (
  * 점수 제약 범위 생성
  */
 const buildScoreConstraint = (suggested: number): ScoreConstraint => ({
-  min: clamp(suggested - 10, 15, 85),
-  max: clamp(suggested + 10, 25, 95),
+  min: clamp(suggested - 15, 20, 80),
+  max: clamp(suggested + 15, 30, 95),
   suggested,
 });
 
