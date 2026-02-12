@@ -30,6 +30,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(SITE_URL),
+    verification: {
+      other: {
+        "naver-site-verification": "b9f55db2e85752f53bee336ab2b11f91cfba35d1",
+      },
+    },
     title,
     description,
     keywords: [
