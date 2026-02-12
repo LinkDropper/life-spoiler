@@ -443,7 +443,12 @@ ${relationshipType}`;
   dataStr += `\n\n## ⚠️ 최종 점검
 1. 출력에 궁 이름(명궁, 부처궁 등), 별 이름(자미, 천기 등), 사화 용어(화록, 화기 등)가 포함되면 실패입니다.
 2. 위의 성격 프로필 데이터를 기반으로 문장을 작성하세요. 별/궁 데이터를 직접 해석하지 마세요.
-3. A와 B의 성격을 절대 혼동하지 마세요. 각 사람의 프로필에 명시된 특성만 해당 인물에 귀속하세요.`;
+3. **A/B 혼동 금지 — 출력 전 반드시 검증!**
+   - A = ${profileA.name}님, B = ${profileB.name}님
+   - ${profileA.name}님에 대해 쓸 때 → 반드시 "A (${profileA.name}) 성격 프로필"에서 가져온 특성만 사용
+   - ${profileB.name}님에 대해 쓸 때 → 반드시 "B (${profileB.name}) 성격 프로필"에서 가져온 특성만 사용
+   - "${profileA.name}님이 ${profileA.name}님을 보완" 같은 자기 자신 참조는 절대 금지 — 반드시 상대방 이름이어야 함
+   - 문장을 쓴 뒤, 주어와 목적어의 이름이 다른지 반드시 확인하세요.`;
 
   return dataStr;
 };
@@ -589,7 +594,7 @@ export const interpretCompatibilityCategoriesCombined = async (
 
 아래 4가지 카테고리를 **하나의 JSON 응답**으로 한번에 작성해주세요.
 ⚠️ 위의 성격 프로필과 교차 분석 결과를 반드시 활용하세요.
-⚠️ 4개 카테고리 간 성격 묘사가 일관되어야 합니다. A와 B의 성격을 절대 혼동하지 마세요.
+⚠️ 4개 카테고리 간 성격 묘사가 일관되어야 합니다. A와 B의 성격을 절대 혼동하지 마세요. 같은 사람이 같은 사람을 보완한다는 문장(예: "A님이 A님을 보완")은 절대 금지!
 
 ### communication (소통 & 갈등)
 ${prompts.userPrompts.compatibility_communication}
