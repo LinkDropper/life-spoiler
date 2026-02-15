@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 
 import type { Locale } from "@/i18n/config";
+import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
 
 // ============================================================
 // Gemini API 타입
@@ -509,11 +510,15 @@ export interface CompatibilityInterpretationRequest {
     name: string;
     gender: "male" | "female";
     lunarBirthInfo: string;
+    birthYear: number;
+    currentAge: number;
   };
   profileB: {
     name: string;
     gender: "male" | "female";
     lunarBirthInfo: string;
+    birthYear: number;
+    currentAge: number;
   };
   chartA: {
     wuxingJu: string;
@@ -531,6 +536,7 @@ export interface CompatibilityInterpretationRequest {
   palacesB: Record<string, PalaceData>;
   huajiCrossAnalysis?: HuajiCrossAnalysis;
   relationshipType: string;
+  relationshipTypeKey: CompatibilityRelationshipType;
   zodiacCompatibility: string;
   fiveElementCompatibility: string;
   scoreRange?: { min: number; max: number };
