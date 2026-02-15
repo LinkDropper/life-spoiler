@@ -304,8 +304,43 @@ const formatCompatibilityDataForAI = (
     previousContext,
   } = request;
 
+  // ──── 0. 관계 맥락 (최상단 — AI가 가장 먼저 읽는 정보) ────
+  const genderLabelA = profileA.gender === "male" ? "남성" : "여성";
+  const genderLabelB = profileB.gender === "male" ? "남성" : "여성";
+  const genderCombo = `${genderLabelA}-${genderLabelB}`;
+  const ageDiff = Math.abs(profileA.currentAge - profileB.currentAge);
+
+  const isPetRelationship =
+    request.relationshipTypeKey === "cat_owner" ||
+    request.relationshipTypeKey === "dog_owner";
+
+  let contextBlock = `## 🔑 관계 맥락 (이 정보를 모든 해석의 기준으로 삼으세요)
+- 관계 유형: **${relationshipType}**
+- 성별 조합: ${genderCombo}
+- ${profileA.name}: ${genderLabelA}, ${profileA.currentAge}세 (${profileA.birthYear}년생)
+- ${profileB.name}: ${genderLabelB}, ${profileB.currentAge}세 (${profileB.birthYear}년생)`;
+
+  if (!isPetRelationship) {
+    if (ageDiff === 0) {
+      contextBlock += `\n- 나이 관계: 동갑 — 수평적 역학을 반영하세요`;
+    } else {
+      const olderName =
+        profileA.currentAge >= profileB.currentAge
+          ? profileA.name
+          : profileB.name;
+      contextBlock += `\n- 나이 차이: ${ageDiff}세 (${olderName}님이 연상)`;
+      if (ageDiff >= 5) {
+        contextBlock += ` — 경험·세대 차이를 구체적 장면에 녹이세요`;
+      }
+    }
+  } else {
+    contextBlock += `\n- ⚠️ 반려동물 관계: 나이 비교 불필요, 사람-동물 역학에 집중`;
+  }
+
+  contextBlock += `\n\n⚠️ 위 관계 맥락을 모든 해석에 일관되게 반영하세요. ${relationshipType} 관계에 맞지 않는 표현을 사용하면 실패입니다.`;
+
   // ──── 1. 사전 분석된 성격 프로필 (핵심 데이터) ────
-  let dataStr = "";
+  let dataStr = contextBlock + "\n\n";
 
   if (request.personalityA && request.personalityB) {
     const pA = request.personalityA;
@@ -371,12 +406,14 @@ ${[
   // ──── 3. 기본 정보 ────
   dataStr += `\n\n## Profile A (${profileA.name}) Info
 - name: ${profileA.name}
-- gender: ${profileA.gender === "male" ? "남성" : "여성"}
+- gender: ${genderLabelA}
+- age: ${profileA.currentAge}세 (${profileA.birthYear}년생)
 - lunarBirthInfo: ${profileA.lunarBirthInfo}
 
 ## Profile B (${profileB.name}) Info
 - name: ${profileB.name}
-- gender: ${profileB.gender === "male" ? "남성" : "여성"}
+- gender: ${genderLabelB}
+- age: ${profileB.currentAge}세 (${profileB.birthYear}년생)
 - lunarBirthInfo: ${profileB.lunarBirthInfo}`;
 
   // ──── 4. 에너지 분포 정보 (전문용어 제거) ────
@@ -408,10 +445,7 @@ ${[
 ${zodiacCompatibility}
 
 ## Five Element Compatibility
-${fiveElementCompatibility}
-
-## Relationship Type
-${relationshipType}`;
+${fiveElementCompatibility}`;
 
   if (request.huajiCrossAnalysis) {
     const h = request.huajiCrossAnalysis;
@@ -464,7 +498,8 @@ const requestCompatibilityInterpretation = async <T>(
 ): Promise<T> => {
   const prompts = getCompatibilityPrompts(request.language);
   const chartData = formatCompatibilityDataForAI(request);
-  const userPrompt = prompts.userPrompts[request.requestType];
+  const typePrompts = prompts.userPrompts[request.relationshipTypeKey];
+  const userPrompt = typePrompts[request.requestType];
 
   const fullUserPrompt = `${chartData}
 
@@ -476,7 +511,10 @@ ${userPrompt}`;
 
   const response = await chatCompletion(
     [
-      { role: "system", content: prompts.systemPrompt },
+      {
+        role: "system",
+        content: prompts.systemPrompts[request.relationshipTypeKey],
+      },
       { role: "user", content: fullUserPrompt },
     ],
     {
@@ -597,16 +635,16 @@ export const interpretCompatibilityCategoriesCombined = async (
 ⚠️ 4개 카테고리 간 성격 묘사가 일관되어야 합니다. A와 B의 성격을 절대 혼동하지 마세요. 같은 사람이 같은 사람을 보완한다는 문장(예: "A님이 A님을 보완")은 절대 금지!
 
 ### communication (소통 & 갈등)
-${prompts.userPrompts.compatibility_communication}
+${prompts.userPrompts[request.relationshipTypeKey].compatibility_communication}
 
 ### growth (재물 & 성장)
-${prompts.userPrompts.compatibility_growth}
+${prompts.userPrompts[request.relationshipTypeKey].compatibility_growth}
 
 ### emotion (감정 & 신뢰)
-${prompts.userPrompts.compatibility_emotion}
+${prompts.userPrompts[request.relationshipTypeKey].compatibility_emotion}
 
 ### crisis (위기 & 극복)
-${prompts.userPrompts.compatibility_crisis}
+${prompts.userPrompts[request.relationshipTypeKey].compatibility_crisis}
 
 응답 형식 (JSON):
 {
@@ -621,7 +659,10 @@ ${prompts.userPrompts.compatibility_crisis}
 
   const response = await chatCompletion(
     [
-      { role: "system", content: prompts.systemPrompt },
+      {
+        role: "system",
+        content: prompts.systemPrompts[request.relationshipTypeKey],
+      },
       { role: "user", content: combinedUserPrompt },
     ],
     {

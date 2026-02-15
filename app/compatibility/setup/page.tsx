@@ -30,6 +30,8 @@ const RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
   "family",
   "ex_partner",
   "ex_spouse",
+  // "cat_owner",
+  // "dog_owner",
   "custom",
 ];
 
@@ -345,9 +347,7 @@ export default function CompatibilitySetupPage() {
         >
           {isSubmitting
             ? t("submitting", { default: "생성 중..." })
-            : t("save", {
-                default: "저장하기",
-              })}
+            : t("save", { default: "저장하기" })}
         </button>
       </footer>
 

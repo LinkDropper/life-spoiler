@@ -8,6 +8,7 @@ import type {
   SihuaData,
   StarData,
 } from "@/libs/services/ai";
+import { calculateAge } from "@/libs/utils";
 import {
   generateCompatibilityInterpretation,
   createCompatibilityFallbackResult,
@@ -318,7 +319,11 @@ export async function POST(
       chartDataB.palacesMap
     );
 
-    // 11. 성격 프로필 사전 계산
+    // 11. 나이 계산
+    const ageA = calculateAge(profileA.birth_date);
+    const ageB = calculateAge(profileB.birth_date);
+
+    // 12. 성격 프로필 사전 계산
     const personalityA = buildPersonalityProfile(chartA);
     const personalityB = buildPersonalityProfile(chartB);
 
@@ -338,11 +343,15 @@ export async function POST(
         name: profileA.name,
         gender: profileA.gender,
         lunarBirthInfo: getLunarBirthInfo(chartA),
+        birthYear: chartA.lunarDate.year,
+        currentAge: ageA,
       },
       profileB: {
         name: profileB.name,
         gender: profileB.gender,
         lunarBirthInfo: getLunarBirthInfo(chartB),
+        birthYear: chartB.lunarDate.year,
+        currentAge: ageB,
       },
       chartA: chartDataA.chartInfo,
       chartB: chartDataB.chartInfo,
@@ -353,6 +362,7 @@ export async function POST(
       personalityB,
       analysis: compatAnalysis,
       relationshipType: relationshipLabel,
+      relationshipTypeKey: pair.relationship_type,
       zodiacCompatibility: zodiacCompat.description,
       fiveElementCompatibility: fiveElementCompat.description,
       scoreRange: { min: scoreRange.min, max: scoreRange.max },
