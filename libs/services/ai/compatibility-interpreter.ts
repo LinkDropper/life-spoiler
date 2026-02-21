@@ -1,7 +1,11 @@
 import type { Locale } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 
 import { AIError } from "./errors";
+import { enCompatibilityPrompts } from "./prompts/compatibility-en";
+import { jaCompatibilityPrompts } from "./prompts/compatibility-ja";
 import { koCompatibilityPrompts } from "./prompts/compatibility-ko";
+import type { CompatibilityLocalizedPrompts } from "./prompts/compatibility-ko";
 import type {
   CompatibilityCategoryResponse,
   CompatibilityCategoriesCombinedResponse,
@@ -138,9 +142,23 @@ const COMPATIBILITY_RESPONSE_SCHEMA_MAP: Record<
 // 프롬프트 가져오기
 // ============================================================
 
-const getCompatibilityPrompts = (_language?: Locale) => {
-  // 현재 한국어만 지원
-  return koCompatibilityPrompts;
+const compatibilityPromptsByLocale: Record<
+  Locale,
+  CompatibilityLocalizedPrompts
+> = {
+  ko: koCompatibilityPrompts,
+  en: enCompatibilityPrompts,
+  ja: jaCompatibilityPrompts,
+};
+
+const getCompatibilityPrompts = (
+  language?: Locale
+): CompatibilityLocalizedPrompts => {
+  const locale = language ?? defaultLocale;
+  return (
+    compatibilityPromptsByLocale[locale] ??
+    compatibilityPromptsByLocale[defaultLocale]
+  );
 };
 
 // ============================================================
