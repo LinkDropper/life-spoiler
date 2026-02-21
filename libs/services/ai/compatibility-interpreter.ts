@@ -155,10 +155,7 @@ const getCompatibilityPrompts = (
   language?: Locale
 ): CompatibilityLocalizedPrompts => {
   const locale = language ?? defaultLocale;
-  return (
-    compatibilityPromptsByLocale[locale] ??
-    compatibilityPromptsByLocale[defaultLocale]
-  );
+  return compatibilityPromptsByLocale[locale];
 };
 
 // ============================================================
