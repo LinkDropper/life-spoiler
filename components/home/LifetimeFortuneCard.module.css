@@ -27,6 +27,8 @@
 }
 
 .title {
+  position: relative;
+  z-index: 1;
   color: var(--Color-Icon-Point, #2d1b4e);
   font-family: "SB AggroOTF";
   font-size: 28px;
@@ -36,6 +38,8 @@
 }
 
 .subtitle {
+  position: relative;
+  z-index: 1;
   font-family: var(--font-pretendard), sans-serif;
   font-size: 16px;
   font-weight: 500;
