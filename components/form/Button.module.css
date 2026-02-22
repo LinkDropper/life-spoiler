@@ -38,6 +38,6 @@
 }
 
 .secondary {
-  background: var(--primitive-white, #ffffff);
+  background: var(--color-button-invert-surface, #ffffff);
   color: #2d1b4e;
 }
