@@ -10,12 +10,16 @@ import {
   CalendarRange,
   Calendar,
   Star,
+  Search,
+  FileText,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import styles from "./ProductPreview.module.css";
 
-const iconMap = {
+import type { LucideIcon } from "lucide-react";
+
+const iconMap: Record<string, LucideIcon> = {
   chart: LayoutGrid,
   spoiler: Sparkles,
   wealth: Coins,
@@ -25,9 +29,13 @@ const iconMap = {
   ageScenario: CalendarRange,
   monthly: Calendar,
   goodBadMonths: Star,
+  score: Heart,
+  insights: Search,
+  scenarios: FileText,
+  categories: LayoutGrid,
 };
 
-const items: Array<{ key: keyof typeof iconMap }> = [
+const items: Array<{ key: string }> = [
   { key: "chart" },
   { key: "spoiler" },
   { key: "wealth" },
@@ -37,13 +45,20 @@ const items: Array<{ key: keyof typeof iconMap }> = [
   { key: "ageScenario" },
 ];
 
-const yearlyItems: Array<{ key: keyof typeof iconMap }> = [
+const yearlyItems: Array<{ key: string }> = [
   { key: "monthly" },
   { key: "goodBadMonths" },
 ];
 
+const compatibilityItems: Array<{ key: string }> = [
+  { key: "score" },
+  { key: "insights" },
+  { key: "scenarios" },
+  { key: "categories" },
+];
+
 interface FeatureListProps {
-  items: Array<{ key: keyof typeof iconMap }>;
+  items: Array<{ key: string }>;
   getTranslation: (key: string) => string;
 }
 
@@ -67,7 +82,7 @@ export const ProductPreview = () => {
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>
-        {t("title", { default: "990원에 이 모든 것을 받아보세요" })}
+        {t("title", { default: "커피 한 잔 값에 이 모든 걸 받아보세요" })}
       </h2>
 
       <FeatureList
@@ -84,6 +99,19 @@ export const ProductPreview = () => {
       <FeatureList
         items={yearlyItems}
         getTranslation={(key) => t(`yearlyItems.${key}`, { default: key })}
+      />
+
+      <div className={styles.divider} />
+
+      <h3 className={styles.compatibilityTitle}>
+        {t("compatibilityTitle", { default: "궁합 분석도 받아보세요" })}
+      </h3>
+
+      <FeatureList
+        items={compatibilityItems}
+        getTranslation={(key) =>
+          t(`compatibilityItems.${key}`, { default: key })
+        }
       />
     </section>
   );
