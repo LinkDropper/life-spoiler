@@ -4,8 +4,8 @@
   align-items: center;
   padding: 60px 24px;
   background: transparent;
-  border-top: 1px solid #ffccd9;
-  border-bottom: 1px solid #ffccd9;
+  border-top: 1px solid var(--primitive-primary, #ffccd9);
+  border-bottom: 1px solid var(--primitive-primary, #ffccd9);
 }
 
 .warningBadge {
@@ -20,11 +20,11 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 1.19;
-    color: #ffffff;
+    color: var(--color-text-default, #ffffff);
 }
 
 .disclaimerText {
-  color: #fff;
+  color: var(--color-text-default, #fff);
   text-align: center;
   font-size: 14px;
   font-weight: 500;

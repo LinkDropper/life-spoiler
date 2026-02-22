@@ -28,7 +28,7 @@
   width: 100%;
   padding: 0 0 12px 0;
   margin: 24px 0 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   background: transparent;
   border-left: none;
   border-right: none;
@@ -39,12 +39,12 @@
 .sectionTitle {
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0;
 }
 
 .chevron {
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   transition: transform 0.2s ease;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .chevronSmall {
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }
@@ -100,7 +100,7 @@
 .overviewHeadline {
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0;
   line-height: 1.4;
   letter-spacing: 0.5px;
@@ -110,7 +110,7 @@
   font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   margin: 0;
   white-space: pre-wrap;
   letter-spacing: 0.5px;
@@ -136,7 +136,7 @@
   font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   margin: 0;
   white-space: pre-wrap;
   letter-spacing: 0.5px;
@@ -183,14 +183,14 @@
 .categoryLabel {
   font-size: 18px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   letter-spacing: 0.5px;
 }
 
 .categoryHeadline {
   font-size: 18px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0;
   line-height: 1.4;
   letter-spacing: 0.5px;
@@ -200,7 +200,7 @@
   font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   margin: 0;
   white-space: pre-wrap;
   letter-spacing: 0.5px;
@@ -217,11 +217,11 @@
   align-items: center;
   justify-content: center;
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
   border-radius: 4px;
   font-size: 16px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
 }
 
 /* ============================================================
@@ -270,17 +270,17 @@
   align-items: center;
   justify-content: center;
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
   border-radius: 4px;
   font-size: 16px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
 }
 
 .scenarioHeadline {
   font-size: 18px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   letter-spacing: 0.5px;
 }
 
@@ -288,7 +288,7 @@
   font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   white-space: pre-wrap;
   letter-spacing: 0.5px;
 }
@@ -298,8 +298,8 @@
   padding: 12px;
   font-size: 16px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -320,7 +320,7 @@
   font-size: 18px;
   font-weight: 500;
   color: #2d1b4e;
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -348,7 +348,7 @@
 
 .error p {
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
 }
 
 /* ============================================================
@@ -381,7 +381,7 @@
   font-size: 18px;
   font-weight: 500;
   color: #2d1b4e;
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   border: none;
   border-radius: 8px;
   cursor: pointer;

@@ -7,11 +7,11 @@
   height: 52px;
   padding: 20px;
   background: transparent;
-  border: 2px dashed rgba(255, 255, 255, 0.16);
+  border: 2px dashed var(--color-border-default, rgba(255, 255, 255, 0.16));
   border-radius: 8px;
   cursor: pointer;
   transition: border-color 0.2s ease;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -23,5 +23,5 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
 }

@@ -33,11 +33,11 @@
 }
 
 .primary {
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   color: #2d1b4e;
 }
 
 .secondary {
-  background: #ffffff;
+  background: var(--primitive-white, #ffffff);
   color: #2d1b4e;
 }

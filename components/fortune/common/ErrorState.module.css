@@ -10,7 +10,7 @@
 
 .error p {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
 }
 
 .backButton {
@@ -19,7 +19,7 @@
   font-size: 16px;
   font-weight: 500;
   color: #2d1b4e;
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   border: none;
   border-radius: 8px;
   cursor: pointer;

@@ -9,12 +9,12 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0;
 }
 
 .required {
-  color: #ffccd9;
+  color: var(--primitive-primary, #ffccd9);
   margin-left: 2px;
 }
 
@@ -31,7 +31,7 @@
   gap: 8px;
   height: 52px;
   padding: 8px 20px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -44,7 +44,7 @@
 }
 
 .selected {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
 }
 
 .radio {
@@ -54,21 +54,21 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #18181b;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--color-surface-default, #18181b);
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   flex-shrink: 0;
 }
 
 .selected .radio {
-  background: #ffccd9;
-  border-color: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
+  border-color: var(--primitive-primary, #ffccd9);
 }
 
 .radioInner {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--primitive-white, #ffffff);
 }
 
 .optionLabel {
@@ -76,7 +76,7 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
 }
 
 .error {

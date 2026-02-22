@@ -21,7 +21,7 @@
   gap: 4px;
   height: 164px;
   padding: 24px;
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   border-bottom: 1px solid #2d1b4e;
   overflow: hidden;
 }
@@ -62,7 +62,7 @@
   align-items: center;
   gap: 8px;
   padding: 16px 20px;
-  background: #ffffff;
+  background: var(--primitive-white, #ffffff);
   font-family: var(--font-pretendard), sans-serif;
   font-size: 16px;
   font-weight: 500;
