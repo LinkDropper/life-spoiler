@@ -38,37 +38,50 @@
         "subtitleHighlight": "1,000년 역사 동양 점성술의 정밀 분석"
       },
       "promotion": {
-        "badge": "런칭 기념 90% OFF",
+        "badge": "오픈 기념 90% 할인",
         "originalPrice": "9,900원",
         "price": "990원",
-        "text": "노력은 하는데 왜 안 풀릴까? 타이밍을 확인해보세요"
+        "text": "커피 한 잔 값으로, 내 인생의 골든타임을 확인하세요"
       },
       "cta": {
-        "button": "990원에 내 인생 스포 받기",
-        "subtext": "3분 입력, 바로 결과 확인"
+        "button": "내 골든타임 확인하기 (990원)",
+        "subtext": "3분이면 충분해요"
       },
       "features": {
         "feature1": {
-          "title": "10년마다 바뀌는 운의 흐름",
-          "question": "지금이 도약의 시기인가, 준비의 시기인가?",
-          "description": "114개 별의 배치를 기반으로, 4세부터 99세까지 10년 단위 운의 흐름을 분석합니다.",
+          "title": "내 전성기는 몇 살일까?",
+          "question": "지금은 뛸 때인가, 숨을 때인가?",
+          "description": "4세부터 99세까지, 10년 단위로 운이 바뀌는 포인트를 짚어드립니다. 전성기가 언제인지 미리 확인하세요.",
           "imageAlt": "대운 분석"
         },
         "feature2": {
-          "title": "재물 · 직업 · 인연 · 건강",
-          "question": "내가 잘할 수 있는 분야는? 어떤 파트너가 맞을까?",
-          "description": "12개 궁에 배치된 별들의 조합으로 당신의 타고난 패턴과 성향을 분석합니다.",
+          "title": "돈 · 직업 · 인연 · 건강",
+          "question": "나한테 맞는 돈 벌기 방식은? 어떤 사람이 내 편일까?",
+          "description": "12궁에 배치된 별의 조합으로 4가지 영역의 타고난 패턴을 분석합니다. 점수도 함께 제공돼요.",
           "imageAlt": "4가지 영역"
         },
         "feature3": {
-          "title": "올해, 어느 달이 중요할까?",
-          "question": "이번 달은 조심해야 할까, 밀어붙여야 할까?",
-          "description": "매달 변화하는 별의 흐름을 분석해, 좋은 달과 조심할 달을 구분해 알려드립니다.",
+          "title": "올해 돈 들어오는 달은?",
+          "question": "언제 밀어붙이고, 언제 숨 고르지?",
+          "description": "1월부터 12월까지, 좋은 달과 조심할 달을 구분해 알려드립니다. 중요한 결정 전에 확인하세요.",
           "imageAlt": "월별 운세"
         }
       },
+      "compatibility": {
+        "title": "이런 결과를 받아볼 수 있어요",
+        "demoHeadline": "타고난 리더, 결단력의 아이콘",
+        "demoMainStarLabel": "명궁 주성",
+        "demoCategories": {
+          "wealth": "재물운",
+          "career": "직업운",
+          "relationship": "인연운",
+          "health": "건강운"
+        },
+        "exampleNote": "예시 결과입니다",
+        "description": "+궁합 분석까지 무료로 확인할 수 있어요"
+      },
       "productPreview": {
-        "title": "990원에 이 모든 것을 받아보세요",
+        "title": "커피 한 잔 값에 이 모든 걸 받아보세요",
         "items": {
           "chart": "나의 자미두수 명반 (12궁 분석)",
           "spoiler": "인생 스포일러 (타고난 기질 총평)",
@@ -82,22 +95,29 @@
         "yearlyItems": {
           "monthly": "월별 운세 흐름 (12개월 분석)",
           "goodBadMonths": "올해 좋은 달 / 조심할 달"
+        },
+        "compatibilityTitle": "궁합 분석도 받아보세요",
+        "compatibilityItems": {
+          "score": "궁합 점수 (0~100점)",
+          "insights": "8가지 궁합 인사이트 분석",
+          "scenarios": "핵심 시나리오 (실제 상황 예측)",
+          "categories": "소통·성장·감정·위기 4대 카테고리"
         }
       },
       "faq": {
         "title": "자주 묻는 질문",
         "items": {
           "q1": {
-            "question": "자미두수가 뭔가요?",
-            "answer": "'동양의 별자리 운세'라고 생각하면 쉬워요. 태어난 순간 하늘에 떠 있던 114개 별의 배치로 운세를 분석하는, 1,000년 역사의 점성술입니다."
+            "question": "자미두수가 뭔가요? 사주랑 다른 건가요?",
+            "answer": "쉽게 말해 '초정밀 동양 별자리 운세'에요. 사주는 4글자로 분석하지만, 자미두수는 12궁 x 114개 별 조합으로 분석해서 같은 생년월일이어도 태어난 '시간'에 따라 결과가 완전히 달라져요. 1,000년 역사의 검증된 점성술입니다."
           },
           "q2": {
-            "question": "사주와 뭐가 다른가요?",
-            "answer": "사주는 4글자(년/월/일/시)로 분석하지만, 자미두수는 12개 궁 × 114개 별 조합으로 훨씬 세밀하게 분석합니다. 같은 생년월일이어도 태어난 '시간'에 따라 결과가 완전히 달라져요."
+            "question": "궁합도 볼 수 있나요?",
+            "answer": "네! 자미두수 기반 궁합 분석이 새롭게 오픈됐어요. 연인, 친구, 동료 등 두 사람의 소통 방식, 성장 시너지, 신뢰 지수, 위기 극복력까지 4가지 핵심 지표로 분석해드립니다."
           },
           "q3": {
-            "question": "결과가 정확한가요?",
-            "answer": "자미두수는 통계적·학문적 이론에 기반합니다. 재미로 참고하시되, 중요한 결정은 본인의 판단을 우선해주세요."
+            "question": "결과를 믿어도 되나요?",
+            "answer": "자미두수는 1,000년간 축적된 통계적·학문적 이론에 기반하고, 여기에 AI 해석을 결합했어요. 재미로 참고하시되, 중요한 결정은 본인의 판단을 우선해주세요."
           },
           "q4": {
             "question": "환불이 가능한가요?",
@@ -121,7 +141,7 @@
       },
       "disclaimer": {
         "badge": "FBI WARNING",
-        "text": "본 서비스는 자미두수 천문학 알고리즘 + AI 해석을 결합했습니다.\n1,000년 역사의 동양 점성술을 현대 기술로 재해석한 결과물입니다.\n운세 결과가 너무 공감되어 생기는 '소름'에 대해\n인생스포 측은 책임지지 않습니다."
+        "text": "본 서비스는 자미두수 천문학 + AI 해석을 결합했습니다.\n1,000년 역사 × 현대 기술의 만남.\n결과가 너무 잘 맞아서 생기는 소름과 심장 두근거림에 대해\n인생스포 측은 일절 책임지지 않습니다."
       },
       "footer": {
         "logoAlt": "인생스포 로고",
@@ -129,7 +149,7 @@
           "ceo": "대표: 윤재혁",
           "businessNumber": "사업자등록번호: 430-05-03654",
           "salesNumber": "통신판매번호: 2026-서울관악-0200",
-          "address": "서울특별시 관악구 봉천로13나길 19(봉천동) 502호",
+          "address": "서울특별시 관악구 봉천로13나길 19(봉천동)",
           "email": "ttja.when@gmail.com",
           "phone": "070-8098-6285"
         },
@@ -248,7 +268,7 @@
         "score": "궁합 점수",
         "insightsTitle": "궁합 인사이트",
         "spoilerTitle": "궁합 스포일러",
-        "teaser": "지금 보신 건 '예고편'에 불과해요. 소통/재물/감정/위기별 상세 궁합과 핵심 시나리오는 본편에서만 몰래 스포해 드릴게요. 🤫",
+        "teaser": "지금 보신 건 '예고편'에 불과해요. 두 사람이 가장 크게 흔들리는 위기의 시기와 그걸 넘기는 결정적 방법은 본편에서만 몰래 스포해 드릴게요. 🤫",
         "scoreUnit": "{score}점",
         "chartTitle": "{name}님의 자미두수 명반",
         "errorTitle": "일시적으로 접속이 원활하지 않아요",
@@ -277,7 +297,7 @@
           }
         },
         "share": {
-          "ogTitle": "{nameA}님과 {nameB}님의 궁합을 확인해보세요",
+          "ogTitle": "별이 스포하는 {nameA}님과 {nameB}님의 궁합 시나리오",
           "ogTitleWithHeadline": "{nameA} & {nameB} 궁합: {headline}",
           "ogDescription": "자미두수로 분석한 {nameA}님과 {nameB}님의 궁합입니다.",
           "ogDescriptionWithScore": "{nameA} & {nameB} 궁합 점수 {score}점 - 소통: {communication}점 | 성장: {growth}점 | 신뢰: {trust}점 | 극복력: {crisis}점"
@@ -377,7 +397,7 @@
         "profileShareTitle": "프로필 이미지 공유하기",
         "share": {
           "title": "{name}님의 인생 운세",
-          "ogTitle": "{name}님의 인생 사주를 확인해보세요",
+          "ogTitle": "114개 별이 스포하는 {name}님의 인생 시나리오",
           "ogTitleWithHeadline": "{name}님의 인생 사주: {headline}",
           "ogDescription": "자미두수로 분석한 {name}님의 인생 시나리오입니다.",
           "ogDescriptionWithScores": "{name}님의 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
@@ -436,7 +456,7 @@
         "luckyKeywordsTitle": "행운 키워드",
         "share": {
           "title": "{name}님의 {year}년 운세",
-          "ogTitle": "{name}님의 올해 사주를 확인해보세요",
+          "ogTitle": "114개 별이 스포하는 {name}님의 올해 시나리오",
           "ogTitleWithHeadline": "{name}님의 {year}년 운세: {headline}",
           "ogDescription": "자미두수로 분석한 {name}님의 {year}년 운세입니다.",
           "ogDescriptionWithScores": "{name}님의 {year}년 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
@@ -743,7 +763,7 @@
         "imageAlt": "Destiny Constellation",
         "title": "My prime years: 20s or 30s?",
         "titleSub": "",
-        "subtitle": "Your timing, read through 114 stars",
+        "subtitle": "Your timing, revealed by 114 stars",
         "subtitleLine2": "Your timing revealed through 12 palaces",
         "subtitleLine3": "Your money, career & love patterns",
         "subtitleHighlight": "1,000-year-old Eastern astrology, precision analysis"
@@ -752,34 +772,47 @@
         "badge": "Launch Special 90% OFF",
         "originalPrice": "$9.99",
         "price": "$0.99",
-        "text": "Working hard but not getting results? Check your timing"
+        "text": "For the price of a coffee, discover your golden years"
       },
       "cta": {
-        "button": "Get My Life Spoiler for $0.99",
-        "subtext": "3 min input, instant results"
+        "button": "Get My Life Scenario ($0.99)",
+        "subtext": "3 minutes is all you need"
       },
       "features": {
         "feature1": {
-          "title": "Luck Changes Every 10 Years",
-          "question": "Is now the time to leap or prepare?",
-          "description": "Based on 114 star positions, we analyze your fortune flow in 10-year cycles from age 4 to 99.",
+          "title": "When Will My Prime Years Be?",
+          "question": "Is it time to push forward or lay low?",
+          "description": "We pinpoint the turning points in your fortune every 10 years, from age 4 to 99. Find out when your prime years are.",
           "imageAlt": "10-Year Cycle Analysis"
         },
         "feature2": {
-          "title": "Wealth · Career · Love · Health",
-          "question": "What am I good at? Who's my ideal partner?",
-          "description": "We analyze your innate patterns through the unique combination of stars across 12 palaces.",
+          "title": "Money · Career · Love · Health",
+          "question": "What's my best way to earn? Who's truly on my side?",
+          "description": "We analyze your innate patterns across 4 key areas through star combinations in 12 palaces. Scores included.",
           "imageAlt": "Four Categories"
         },
         "feature3": {
-          "title": "Which Months Matter This Year?",
-          "question": "Should I be cautious or go all in this month?",
-          "description": "We track monthly star movements to identify your lucky months and months to watch.",
+          "title": "Which Months Bring Money This Year?",
+          "question": "When to push hard, when to take a breath?",
+          "description": "From January to December, we distinguish your lucky months from months to watch. Check before making big decisions.",
           "imageAlt": "Monthly Fortune"
         }
       },
+      "compatibility": {
+        "title": "Here's what you'll get",
+        "demoHeadline": "Born Leader, Icon of Decisiveness",
+        "demoMainStarLabel": "Main Star",
+        "demoCategories": {
+          "wealth": "Wealth",
+          "career": "Career",
+          "relationship": "Relationships",
+          "health": "Health"
+        },
+        "exampleNote": "Sample result",
+        "description": "+Free compatibility analysis included"
+      },
       "productPreview": {
-        "title": "All this for just $0.99",
+        "title": "All this for the price of a coffee",
         "items": {
           "chart": "Your Zi Wei Dou Shu Chart (12 Palaces)",
           "spoiler": "Life Spoiler (Personality Summary)",
@@ -793,22 +826,29 @@
         "yearlyItems": {
           "monthly": "Monthly Fortune Flow (12 months)",
           "goodBadMonths": "Lucky months / Months to watch"
+        },
+        "compatibilityTitle": "Get compatibility analysis too",
+        "compatibilityItems": {
+          "score": "Compatibility Score (0-100)",
+          "insights": "8 Compatibility Insights",
+          "scenarios": "Key Scenarios (Real Situation Predictions)",
+          "categories": "4 Categories: Communication, Growth, Emotion, Crisis"
         }
       },
       "faq": {
         "title": "Frequently Asked Questions",
         "items": {
           "q1": {
-            "question": "What is Zi Wei Dou Shu?",
-            "answer": "Think of it as 'Eastern horoscope.' It's a 1,000-year-old astrology system that analyzes fortune based on the positions of 114 stars at the moment you were born."
+            "question": "What is Zi Wei Dou Shu? How is it different from regular astrology?",
+            "answer": "Think of it as 'ultra-precise Eastern horoscope.' Regular astrology uses 4 characters, but Zi Wei Dou Shu uses 12 palaces x 114 star combinations. Even with the same birthday, results completely differ based on birth 'time.' It's a proven astrology system with 1,000 years of history."
           },
           "q2": {
-            "question": "How is it different from regular astrology?",
-            "answer": "Western horoscope uses 12 zodiac signs. Zi Wei Dou Shu uses 12 palaces × 114 stars for far more detailed analysis. Even with the same birthday, results differ based on birth 'time'."
+            "question": "Can I check compatibility too?",
+            "answer": "Yes! Zi Wei Dou Shu-based compatibility analysis has just launched. We analyze communication style, growth synergy, trust index, and crisis resilience across 4 key indicators for couples, friends, colleagues, and more."
           },
           "q3": {
-            "question": "How accurate is it?",
-            "answer": "Zi Wei Dou Shu is based on statistical and academic theories. Use it for fun and reference, but always trust your own judgment for important decisions."
+            "question": "Can I trust the results?",
+            "answer": "Zi Wei Dou Shu is based on 1,000 years of accumulated statistical and academic theory, combined with AI interpretation. Use it for fun and reference, but always trust your own judgment for important decisions."
           },
           "q4": {
             "question": "Can I get a refund?",
@@ -832,7 +872,7 @@
       },
       "disclaimer": {
         "badge": "FBI WARNING",
-        "text": "This service combines Zi Wei Dou Shu algorithms with AI interpretation.\nA 1,000-year-old Eastern astrology tradition reimagined with modern technology.\nLife Spoiler is not responsible for any 'chills'\ncaused by how relatable your results are."
+        "text": "This service combines Zi Wei Dou Shu astronomy + AI interpretation.\n1,000 years of history meets modern technology.\nLife Spoiler takes absolutely no responsibility for any chills\nor heart palpitations caused by how accurate your results are."
       },
       "footer": {
         "logoAlt": "Life Spoiler Logo",
@@ -840,7 +880,7 @@
           "ceo": "CEO: Jaehyuk Yoon",
           "businessNumber": "Business Registration: 430-05-03654",
           "salesNumber": "Mail Order Sales: 2026-Seoul-Gwangak-0200",
-          "address": "13-na, Bongcheon-dong, Gwang-ak-gu, Seoul, 502th Floor",
+          "address": "19 Bongcheon-ro 13na-gil, Gwanak-gu, Seoul, South Korea",
           "email": "ttja.when@gmail.com",
           "phone": "070-8098-6285"
         },
@@ -914,6 +954,7 @@
         "deleteAriaLabel": "Delete Compatibility",
         "relationshipTypes": {
           "lover": "Lover",
+          "some": "Situationship",
           "friend": "Friend",
           "colleague": "Colleague",
           "family": "Family",
@@ -952,13 +993,13 @@
         "error": "Compatibility analysis failed.",
         "refresh": "Refresh",
         "back": "Back",
-        "ctaButton": "View Full Spoiler (990 KRW)",
+        "ctaButton": "View Full Spoiler ($0.99)",
         "ctaButtonFree": "View Results for Free",
         "claiming": "Processing...",
         "score": "Compatibility Score",
         "insightsTitle": "Compatibility Insights",
         "spoilerTitle": "Compatibility Spoiler",
-        "teaser": "What you've seen is just the 'trailer'. Detailed compatibility analysis by communication, growth, emotion, and crisis, plus core scenarios, are revealed only in the full version. 🤫",
+        "teaser": "What you've seen is just the 'trailer'. When your bond will be tested most and the key to getting through it together are revealed only in the full scenario. 🤫",
         "scoreUnit": "{score}pts",
         "chartTitle": "{name}'s Zi Wei Dou Shu Chart",
         "errorTitle": "Temporarily unavailable",
@@ -987,9 +1028,9 @@
           }
         },
         "share": {
-          "ogTitle": "Check out {nameA} & {nameB}'s Compatibility",
+          "ogTitle": "What the stars say about {nameA} & {nameB}",
           "ogTitleWithHeadline": "{nameA} & {nameB} Compatibility: {headline}",
-          "ogDescription": "Zi Wei Dou Shu compatibility analysis of {nameA} and {nameB}.",
+          "ogDescription": "Compatibility analysis of {nameA} and {nameB} by ancient Eastern astrology.",
           "ogDescriptionWithScore": "{nameA} & {nameB} compatibility score {score}pts - Communication: {communication} | Growth: {growth} | Trust: {trust} | Resilience: {crisis}"
         }
       }
@@ -1069,7 +1110,7 @@
         "huake": "Hua Ke",
         "huaji": "Hua Ji",
         "back": "Back",
-        "checkMyFortune": "Check My Fortune",
+        "checkMyFortune": "Discover What Your Stars Say",
         "fortuneNotFound": "Fortune data not found."
       },
       "preview": {
@@ -1087,9 +1128,9 @@
         "profileShareTitle": "Share Profile Image",
         "share": {
           "title": "{name}'s Lifetime Fortune",
-          "ogTitle": "Check out {name}'s Life Fortune",
+          "ogTitle": "What 114 stars reveal about {name}'s life",
           "ogTitleWithHeadline": "{name}'s Life Fortune: {headline}",
-          "ogDescription": "{name}'s life scenario analyzed by Zi Wei Dou Shu.",
+          "ogDescription": "{name}'s life scenario analyzed by ancient Eastern astrology.",
           "ogDescriptionWithScores": "{name}'s fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
         "coreScenario": {
@@ -1146,9 +1187,9 @@
         "luckyKeywordsTitle": "Lucky Keywords",
         "share": {
           "title": "{name}'s {year} Fortune",
-          "ogTitle": "Check out {name}'s {year} Fortune",
+          "ogTitle": "What the stars predict for {name} in {year}",
           "ogTitleWithHeadline": "{name}'s {year} Fortune: {headline}",
-          "ogDescription": "{name}'s {year} fortune analyzed by Zi Wei Dou Shu.",
+          "ogDescription": "{name}'s {year} fortune analyzed by ancient Eastern astrology.",
           "ogDescriptionWithScores": "{name}'s {year} fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
         "coreScenario": {
@@ -1266,7 +1307,7 @@
       "selectBrowser": "and select \"Open in Chrome\" or \"Open in Safari\"."
     },
     "payment": {
-      "orderTitle": "Order Product",
+      "orderTitle": "Order Details",
       "productName": "Product",
       "productYearly": "{name}'s Yearly Fortune",
       "productLifetime": "{name}'s Lifetime Fortune",
@@ -1459,37 +1500,50 @@
         "subtitleHighlight": "1,000年の歴史を持つ東洋占星術の精密分析"
       },
       "promotion": {
-        "badge": "ローンチ記念 90% OFF",
+        "badge": "オープン記念 90% OFF",
         "originalPrice": "$9.99",
         "price": "$0.99",
-        "text": "頑張っているのになぜうまくいかない？タイミングを確認しよう"
+        "text": "コーヒー1杯の値段で、人生のゴールデンタイムを確認"
       },
       "cta": {
-        "button": "$0.99で人生ネタバレを受け取る",
-        "subtext": "3分入力、すぐに結果確認"
+        "button": "私の運命シナリオを受け取る（$0.99）",
+        "subtext": "3分で十分です"
       },
       "features": {
         "feature1": {
-          "title": "10年ごとに変わる運の流れ",
-          "question": "今は飛躍の時期？それとも準備の時期？",
-          "description": "114個の星の配置を基に、4歳から99歳まで10年単位の運の流れを分析します。",
+          "title": "私の全盛期は何歳？",
+          "question": "今は走る時？それとも身を潜める時？",
+          "description": "4歳から99歳まで、10年単位で運が変わるポイントをお伝えします。全盛期がいつか事前に確認しましょう。",
           "imageAlt": "大運分析"
         },
         "feature2": {
-          "title": "財運・仕事運・縁運・健康運",
-          "question": "自分が得意な分野は？どんなパートナーが合う？",
-          "description": "12の宮に配置された星の組み合わせで、あなたの生まれ持ったパターンと傾向を分析します。",
+          "title": "お金・仕事・縁・健康",
+          "question": "自分に合った稼ぎ方は？誰が味方になる？",
+          "description": "12宮に配置された星の組み合わせで4つの領域の生まれ持ったパターンを分析します。スコアも一緒に提供。",
           "imageAlt": "4つの領域"
         },
         "feature3": {
-          "title": "今年、どの月が重要？",
-          "question": "今月は慎重に？それとも攻めるべき？",
-          "description": "毎月変化する星の流れを分析し、良い月と注意すべき月を分けてお知らせします。",
+          "title": "今年お金が入る月は？",
+          "question": "いつ攻めて、いつ休む？",
+          "description": "1月から12月まで、良い月と注意すべき月を分けてお知らせします。重要な決定の前に確認しましょう。",
           "imageAlt": "月別運勢"
         }
       },
+      "compatibility": {
+        "title": "こんな結果が届きます",
+        "demoHeadline": "生まれながらのリーダー、決断力のアイコン",
+        "demoMainStarLabel": "命宮主星",
+        "demoCategories": {
+          "wealth": "財運",
+          "career": "仕事運",
+          "relationship": "縁運",
+          "health": "健康運"
+        },
+        "exampleNote": "サンプル結果です",
+        "description": "+相性分析も無料で確認できます"
+      },
       "productPreview": {
-        "title": "$0.99でこれらすべてを受け取れます",
+        "title": "コーヒー1杯の値段でこれらすべてを",
         "items": {
           "chart": "紫微斗数命盤（12宮分析）",
           "spoiler": "人生ネタバレ（生まれ持った気質の総評）",
@@ -1503,22 +1557,29 @@
         "yearlyItems": {
           "monthly": "月別運勢の流れ（12ヶ月分析）",
           "goodBadMonths": "今年の良い月 / 注意する月"
+        },
+        "compatibilityTitle": "相性分析もどうぞ",
+        "compatibilityItems": {
+          "score": "相性スコア（0〜100点）",
+          "insights": "8つの相性インサイト分析",
+          "scenarios": "核心シナリオ（実際の状況予測）",
+          "categories": "疎通・成長・感情・危機 4大カテゴリー"
         }
       },
       "faq": {
         "title": "よくある質問",
         "items": {
           "q1": {
-            "question": "紫微斗数とは何ですか？",
-            "answer": "「東洋の星占い」と考えると分かりやすいです。生まれた瞬間の空に浮かんでいた114個の星の配置で運勢を分析する、1,000年の歴史を持つ占星術です。"
+            "question": "紫微斗数とは？四柱推命と何が違う？",
+            "answer": "簡単に言えば「超精密な東洋の星占い」です。四柱推命は4文字で分析しますが、紫微斗数は12宮 x 114個の星の組み合わせで分析するため、同じ誕生日でも生まれた「時間」によって結果が完全に異なります。1,000年の歴史を持つ検証された占星術です。"
           },
           "q2": {
-            "question": "四柱推命との違いは？",
-            "answer": "四柱推命は4文字（年/月/日/時）で分析しますが、紫微斗数は12宮 × 114個の星の組み合わせで、より詳細に分析します。同じ誕生日でも生まれた「時間」で結果が完全に異なります。"
+            "question": "相性も見られますか？",
+            "answer": "はい！紫微斗数ベースの相性分析が新しくオープンしました。恋人、友達、同僚など、二人のコミュニケーション方式、成長シナジー、信頼指数、危機克服力まで4つの核心指標で分析します。"
           },
           "q3": {
-            "question": "結果は正確ですか？",
-            "answer": "紫微斗数は統計的・学問的理論に基づいています。楽しみとして参考にしていただき、重要な決定はご自身の判断を優先してください。"
+            "question": "結果を信じてもいいですか？",
+            "answer": "紫微斗数は1,000年間蓄積された統計的・学問的理論に基づいており、AI解釈を組み合わせています。楽しみとして参考にしていただき、重要な決定はご自身の判断を優先してください。"
           },
           "q4": {
             "question": "返金は可能ですか？",
@@ -1542,15 +1603,15 @@
       },
       "disclaimer": {
         "badge": "FBI WARNING",
-        "text": "本サービスは紫微斗数天文学アルゴリズム + AI解釈を組み合わせています。\n1,000年の歴史を持つ東洋占星術を現代技術で再解釈した結果物です。\n運勢結果があまりにも共感できて起きる「鳥肌」について\nライフスポイラーは責任を負いません。"
+        "text": "本サービスは紫微斗数天文学 + AI解釈を組み合わせています。\n1,000年の歴史 × 現代技術の出会い。\n結果が当たりすぎて起きる鳥肌と心臓のドキドキについて\nライフスポイラーは一切責任を負いません。"
       },
       "footer": {
         "logoAlt": "ライフスポイラー ロゴ",
         "businessInfo": {
           "ceo": "代表: ユン・ジェヒョク",
           "businessNumber": "事業者登録番号: 430-05-03654",
-          "salesNumber": "通信販売番号: 2026-ソウルグワン-0200",
-          "address": "ソウル特別市 グワン区 ヴォンチョン13나길 19(ヴォンチョン동) 502호",
+          "salesNumber": "通信販売番号: 2026-ソウルグァナク-0200",
+          "address": "ソウル特別市 グァナク区 ポンチョンロ13ナギル 19（ポンチョンドン）",
           "email": "ttja.when@gmail.com",
           "phone": "070-8098-6285"
         },
@@ -1624,6 +1685,7 @@
         "deleteAriaLabel": "相性削除",
         "relationshipTypes": {
           "lover": "恋人",
+          "some": "いい感じ",
           "friend": "友達",
           "colleague": "同僚",
           "family": "家族",
@@ -1662,13 +1724,13 @@
         "error": "相性分析に失敗しました。",
         "refresh": "更新",
         "back": "戻る",
-        "ctaButton": "全スポ確認する（990ウォン）",
+        "ctaButton": "全ネタバレを確認（$0.99）",
         "ctaButtonFree": "無料で結果を見る",
         "claiming": "処理中...",
         "score": "相性スコア",
         "insightsTitle": "相性インサイト",
         "spoilerTitle": "相性スポイラー",
-        "teaser": "今ご覧になったのは「予告編」に過ぎません。コミュニケーション・成長・感情・危機別の詳細相性と核心シナリオは本編でのみこっそりネタバレします。🤫",
+        "teaser": "今ご覧になったのは「予告編」に過ぎません。二人が最も大きく揺れる危機の時期と、それを乗り越える決定的な方法は、本編シナリオでのみこっそりネタバレします。🤫",
         "scoreUnit": "{score}点",
         "chartTitle": "{name}さんの紫微斗数命盤",
         "errorTitle": "一時的にアクセスが困難です",
@@ -1697,7 +1759,7 @@
           }
         },
         "share": {
-          "ogTitle": "{nameA}さんと{nameB}さんの相性をチェック",
+          "ogTitle": "星がネタバレする{nameA}さんと{nameB}さんの相性シナリオ",
           "ogTitleWithHeadline": "{nameA} & {nameB} 相性: {headline}",
           "ogDescription": "紫微斗数で分析した{nameA}さんと{nameB}さんの相性です。",
           "ogDescriptionWithScore": "{nameA} & {nameB} 相性スコア {score}点 - コミュニケーション: {communication}点 | 成長: {growth}点 | 信頼: {trust}点 | 克服力: {crisis}点"
@@ -1786,7 +1848,7 @@
         "chartTitle": "紫微斗数命盤",
         "spoilerTitle": "人生ネタバレ",
         "yearlySpoilerTitle": "今年のネタバレ",
-        "ctaButton": "全ネタバレを確認 (99円)",
+        "ctaButton": "全ネタバレを確認 ($0.99)",
         "teaser": "今ご覧になったのは「予告編」に過ぎません。生涯の財運が爆発する年齢と未来の配偶者の驚くべき特徴は、本編シナリオでのみこっそりネタバレします。🤫",
         "yearlyTeaser": "今ご覧になったのは「予告編」に過ぎません。今年の財運が爆発する月と絶対に体を大事にすべき時期は、本編シナリオでのみこっそりネタバレします。🤫"
       },
@@ -1797,7 +1859,7 @@
         "profileShareTitle": "プロフィール画像をシェアする",
         "share": {
           "title": "{name}さんの人生運勢",
-          "ogTitle": "{name}さんの人生運勢を確認してみてください",
+          "ogTitle": "114個の星がネタバレする{name}さんの人生シナリオ",
           "ogTitleWithHeadline": "{name}さんの人生運勢: {headline}",
           "ogDescription": "紫微斗数で分析した{name}さんの人生シナリオです。",
           "ogDescriptionWithScores": "{name}さんの運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
@@ -1811,7 +1873,7 @@
         "categories": {
           "wealth": "財運",
           "career": "仕事運",
-          "relationship": "恋愛運",
+          "relationship": "縁運",
           "health": "健康運"
         },
         "ageScenario": {
@@ -1856,7 +1918,7 @@
         "luckyKeywordsTitle": "幸運キーワード",
         "share": {
           "title": "{name}さんの{year}年運勢",
-          "ogTitle": "{name}さんの今年の運勢を確認してみてください",
+          "ogTitle": "114個の星がネタバレする{name}さんの今年のシナリオ",
           "ogTitleWithHeadline": "{name}さんの{year}年運勢: {headline}",
           "ogDescription": "紫微斗数で分析した{name}さんの{year}年運勢です。",
           "ogDescriptionWithScores": "{name}さんの{year}年運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
@@ -1870,14 +1932,14 @@
         "categories": {
           "wealth": "財運",
           "career": "仕事運",
-          "relationship": "恋愛運",
+          "relationship": "縁運",
           "health": "健康運"
         },
         "scores": {
           "title": "今年の運勢スコア",
           "overall": "総合 {score}点",
           "wealth": "財運",
-          "career": "職業運",
+          "career": "仕事運",
           "relationship": "縁運",
           "health": "健康運",
           "unit": "点"
@@ -1894,7 +1956,7 @@
           },
           "huake": {
             "name": "化科",
-            "desc": "名誉と認定"
+            "desc": "名誉と評価"
           },
           "huaji": {
             "name": "化忌",
@@ -1926,7 +1988,7 @@
           "wealth": "財運戦略",
           "romance": "恋愛モード",
           "luckyPlace": "幸運の場所",
-          "nobleHelper": "私の貴人",
+          "nobleHelper": "貴人",
           "health": "健康注意",
           "luckyColor": "幸運の色",
           "monthFormat": "{month}月"
@@ -1939,7 +2001,7 @@
         "categories": {
           "wealth": "財運",
           "career": "仕事運",
-          "relationship": "恋愛運",
+          "relationship": "縁運",
           "health": "健康運"
         }
       },
@@ -1984,7 +2046,7 @@
       "amount": "決済金額",
       "totalAmount": "決済金額",
       "finalAmount": "最終決済金額",
-      "currency": "円",
+      "currency": "$",
       "paymentMethod": "決済手段",
       "methodCard": "クレジット/デビットカード",
       "methodTossPay": "トスペイ",
@@ -1997,8 +2059,8 @@
       "promoSubmit": "確認",
       "promoError": "クーポンの適用に失敗しました。",
       "promoSuccess": "クーポンが登録されました。",
-      "payButton": "{amount}円を決済する",
-      "payButtonSimple": "99円を決済する",
+      "payButton": "${amount}を決済する",
+      "payButtonSimple": "$0.99を決済する",
       "processing": "決済処理中...",
       "productNameYearly": "今年の運勢ネタバレ",
       "productNameLifetime": "人生運勢ネタバレ",
@@ -2057,7 +2119,7 @@
         },
         "article5": {
           "title": "第5条（利用料金及び決済）",
-          "item1": "詳細運勢レポートの閲覧費用は1件あたり99円（税込）です。",
+          "item1": "詳細運勢レポートの閲覧費用は1件あたり$0.99（税込）です。",
           "item2": "決済はクレジットカード、簡単決済など、会社が提供する決済手段を通じて行われます。"
         },
         "article6": {

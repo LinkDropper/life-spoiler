@@ -60,7 +60,16 @@
   font-size: 17px;
   font-weight: 600;
   line-height: 1.4;
-    color: #deff7c;
+  color: #deff7c;
+  text-align: center;
+  margin: 0 0 16px;
+}
+
+.compatibilityTitle {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #ffccd9;
   text-align: center;
   margin: 0 0 16px;
 }

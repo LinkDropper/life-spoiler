@@ -26,9 +26,12 @@ export const CTAButton = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
+        <p className={styles.tooltip}>
+          {t("subtext", { default: "3분이면 충분해요" })}
+        </p>
         <button type="button" className={styles.button} onClick={handleClick}>
           <span className={styles.text}>
-            {t("button", { default: "990원으로 내 운세 확인하기" })}
+            {t("button", { default: "내 골든타임 확인하기 (990원)" })}
           </span>
           <Image
             src="/images/landing/arrow-right.svg"

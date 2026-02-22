@@ -1,6 +1,7 @@
 import {
   MainHero,
   FeatureSection,
+  CompatibilitySection,
   ProductPreview,
   PromotionBanner,
   FAQSection,
@@ -20,6 +21,7 @@ export default function Home() {
       <main className={styles.main}>
         <MainHero />
         <FeatureSection />
+        <CompatibilitySection />
         <PromotionBanner />
         <ProductPreview />
         <EventSection />
