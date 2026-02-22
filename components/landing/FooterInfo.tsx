@@ -78,7 +78,7 @@ export const FooterInfo = async () => {
         })}
         <br />
         {t("businessInfo.address", {
-          default: "서울특별시 관악구 봉천로13나길 19(봉천동) 502호",
+          default: "서울특별시 관악구 봉천로13나길 19(봉천동)",
         })}
         <br />
         <a href="mailto:ttja.when@gmail.com">
