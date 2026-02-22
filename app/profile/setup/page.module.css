@@ -13,14 +13,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  border-bottom: 1px solid #ffccd9;
+  border-bottom: 1px solid var(--primitive-primary, #ffccd9);
 }
 
 .title {
   font-size: 18px;
   font-weight: 500;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0;
 }
 
@@ -28,7 +28,7 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 1.4;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
 }
 
 .main {
@@ -43,7 +43,7 @@
   justify-content: center;
   flex: 1;
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
 }
 
 @supports (min-height: 100svh) {

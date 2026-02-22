@@ -7,14 +7,461 @@
   font-display: swap;
 }
 
+/* ==========================================================================
+   1. Primitive Tokens (theme-invariant)
+   ========================================================================== */
+
 :root {
+  /* --- Font Family --- */
   --font-pretendard:
     "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
     system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
     "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", sans-serif;
   --font-sb-aggro: "SB AggroOTF", sans-serif;
+
+  /* --- Color / Core --- */
+  --primitive-black: #18181b;
+  --primitive-white: #ffffff;
+  --primitive-primary: #ffccd9;
+
+  /* --- Color / Gray --- */
+  --primitive-gray-f2: #fafafa;
+  --primitive-gray-e: #f4f4f5;
+  --primitive-gray-d: #e4e4e7;
+  --primitive-gray-a: #a1a1aa;
+  --primitive-gray-6: #71717a;
+
+  /* --- Color / White Opacity --- */
+  --primitive-white-0: rgba(255, 255, 255, 0.08);
+  --primitive-white-1: rgba(255, 255, 255, 0.16);
+  --primitive-white-2: rgba(255, 255, 255, 0.3);
+  --primitive-white-3: rgba(255, 255, 255, 0.5);
+  --primitive-white-4: rgba(255, 255, 255, 0.7);
+
+  /* --- Color / Primary Solid --- */
+  --primitive-primary-0: #fff7f9;
+  --primitive-primary-1: #ffeef2;
+  --primitive-primary-2: #ffe6ec;
+  --primitive-primary-3: #ffdde6;
+  --primitive-primary-4: #ffd5df;
+
+  /* --- Color / Primary Opacity --- */
+  --primitive-primary-opacity-0: rgba(255, 204, 217, 0.04);
+  --primitive-primary-opacity-1: rgba(255, 204, 217, 0.08);
+  --primitive-primary-opacity-2: rgba(255, 204, 217, 0.16);
+  --primitive-primary-opacity-3: rgba(255, 204, 217, 0.3);
+  --primitive-primary-opacity-4: rgba(255, 204, 217, 0.5);
+
+  /* --- Color / Red --- */
+  --primitive-red-0: #fff5f5;
+  --primitive-red-1: #ffe3e3;
+  --primitive-red-2: #ffc9c9;
+  --primitive-red-3: #ffa8a8;
+  --primitive-red-4: #ff8787;
+  --primitive-red-5: #ff6b6b;
+  --primitive-red-6: #fa5252;
+  --primitive-red-7: #f03e3e;
+  --primitive-red-8: #e03131;
+  --primitive-red-9: #c92a2a;
+
+  /* --- Color / Pink --- */
+  --primitive-pink-0: #fff0f6;
+  --primitive-pink-1: #ffdeeb;
+  --primitive-pink-2: #fcc2d7;
+  --primitive-pink-3: #faa2c1;
+  --primitive-pink-4: #f783ac;
+  --primitive-pink-5: #f06595;
+  --primitive-pink-6: #e64980;
+  --primitive-pink-7: #d6336c;
+  --primitive-pink-8: #c2255c;
+  --primitive-pink-9: #a61e4d;
+
+  /* --- Color / Grape --- */
+  --primitive-grape-0: #f8f0fc;
+  --primitive-grape-1: #f3d9fa;
+  --primitive-grape-2: #eebefa;
+  --primitive-grape-3: #e599f7;
+  --primitive-grape-4: #da77f2;
+  --primitive-grape-5: #cc5de8;
+  --primitive-grape-6: #be4bdb;
+  --primitive-grape-7: #ae3ec9;
+  --primitive-grape-8: #9c36b5;
+  --primitive-grape-9: #862e9c;
+
+  /* --- Color / Indigo --- */
+  --primitive-indigo-0: #edf2ff;
+  --primitive-indigo-1: #dbe4ff;
+  --primitive-indigo-2: #bac8ff;
+  --primitive-indigo-3: #91a7ff;
+  --primitive-indigo-4: #748ffc;
+  --primitive-indigo-5: #5c7cfa;
+  --primitive-indigo-6: #4c6ef5;
+  --primitive-indigo-7: #4263eb;
+  --primitive-indigo-8: #3b5bdb;
+  --primitive-indigo-9: #364fc7;
+
+  /* --- Color / Blue --- */
+  --primitive-blue-0: #e7f5ff;
+  --primitive-blue-1: #d0ebff;
+  --primitive-blue-2: #a5d8ff;
+  --primitive-blue-3: #74c0fc;
+  --primitive-blue-4: #4dabf7;
+  --primitive-blue-5: #339af0;
+  --primitive-blue-6: #228be6;
+  --primitive-blue-7: #1c7ed6;
+  --primitive-blue-8: #1971c2;
+  --primitive-blue-9: #1864ab;
+
+  /* --- Color / Cyan --- */
+  --primitive-cyan-0: #e3fafc;
+  --primitive-cyan-1: #c5f6fa;
+  --primitive-cyan-2: #99e9f2;
+  --primitive-cyan-3: #66d9e8;
+  --primitive-cyan-4: #3bc9db;
+  --primitive-cyan-5: #22b8cf;
+  --primitive-cyan-6: #15aabf;
+  --primitive-cyan-7: #1098ad;
+  --primitive-cyan-8: #0c8599;
+  --primitive-cyan-9: #0b7285;
+
+  /* --- Color / Teal --- */
+  --primitive-teal-0: #e6fcf5;
+  --primitive-teal-1: #c3fae8;
+  --primitive-teal-2: #96f2d7;
+  --primitive-teal-3: #63e6be;
+  --primitive-teal-4: #38d9a9;
+  --primitive-teal-5: #20c997;
+  --primitive-teal-6: #12b886;
+  --primitive-teal-7: #0ca678;
+  --primitive-teal-8: #099268;
+  --primitive-teal-9: #087f5b;
+
+  /* --- Color / Green --- */
+  --primitive-green-0: #ebfbee;
+  --primitive-green-1: #d3f9d8;
+  --primitive-green-2: #b2f2bb;
+  --primitive-green-3: #8ce99a;
+  --primitive-green-4: #69db7c;
+  --primitive-green-5: #51cf66;
+  --primitive-green-6: #40c057;
+  --primitive-green-7: #37b24d;
+  --primitive-green-8: #2f9e44;
+  --primitive-green-9: #2b8a3e;
+
+  /* --- Color / Lime --- */
+  --primitive-lime-0: #f4fce3;
+  --primitive-lime-1: #e9fac8;
+  --primitive-lime-2: #d8f5a2;
+  --primitive-lime-3: #c0eb75;
+  --primitive-lime-4: #a9e34b;
+  --primitive-lime-5: #94d82d;
+  --primitive-lime-6: #82c91e;
+  --primitive-lime-7: #74b816;
+  --primitive-lime-8: #66a80f;
+  --primitive-lime-9: #5c940d;
+
+  /* --- Color / Yellow --- */
+  --primitive-yellow-0: #fff9db;
+  --primitive-yellow-1: #fff3bf;
+  --primitive-yellow-2: #ffec99;
+  --primitive-yellow-3: #ffe066;
+  --primitive-yellow-4: #ffd43b;
+  --primitive-yellow-5: #fcc419;
+  --primitive-yellow-6: #fab005;
+  --primitive-yellow-7: #f59f00;
+  --primitive-yellow-8: #f08c00;
+  --primitive-yellow-9: #e67700;
+
+  /* --- Color / Orange --- */
+  --primitive-orange-0: #fff4e6;
+  --primitive-orange-1: #ffe8cc;
+  --primitive-orange-2: #ffd8a8;
+  --primitive-orange-3: #ffc078;
+  --primitive-orange-4: #ffa94d;
+  --primitive-orange-5: #ff922b;
+  --primitive-orange-6: #fd7e14;
+  --primitive-orange-7: #f76707;
+  --primitive-orange-8: #e8590c;
+  --primitive-orange-9: #d9480f;
+
+  /* --- Color / Avatars --- */
+  --primitive-avatar-red: #c75f5f;
+  --primitive-avatar-yellow: #e5ab67;
+  --primitive-avatar-green: #62a471;
+  --primitive-avatar-cyan: #68afb3;
+  --primitive-avatar-blue: #6886b3;
+  --primitive-avatar-grape: #9e7ec6;
+  --primitive-avatar-pink: #cc8cba;
+
+  /* --- Color / Effects --- */
+  --primitive-effect-dropdown-shadow-white: rgba(0, 0, 0, 0.24);
+  --primitive-effect-dropdown-shadow-black: rgba(0, 0, 0, 0.7);
+  --primitive-effect-modal-shadow: rgba(0, 0, 0, 0.12);
+  --primitive-effect-dimmed-white: rgba(255, 255, 255, 0.5);
+  --primitive-effect-dimmed-black: rgba(17, 17, 28, 0.6);
+  --primitive-effect-button-action: rgba(0, 0, 0, 0.12);
+
+  /* --- Typography --- */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  --font-size-12: 12px;
+  --font-size-14: 14px;
+  --font-size-16: 16px;
+  --font-size-18: 18px;
+  --font-size-20: 20px;
+  --font-size-24: 24px;
+  --font-size-28: 28px;
+  --font-size-32: 32px;
+  --font-size-36: 36px;
+  --font-size-42: 42px;
+  --font-size-56: 56px;
+
+  --line-height: 1.4;
+
+  /* --- Sizing / Corner Radius --- */
+  --radius-4: 4px;
+  --radius-8: 8px;
+  --radius-10: 10px;
+  --radius-20: 20px;
+  --radius-max: 100px;
+
+  /* --- Sizing / Gap --- */
+  --gap-0: 0px;
+  --gap-4: 4px;
+  --gap-8: 8px;
+  --gap-10: 10px;
+  --gap-12: 12px;
+  --gap-14: 14px;
+  --gap-16: 16px;
+  --gap-18: 18px;
+  --gap-20: 20px;
+  --gap-24: 24px;
+  --gap-32: 32px;
+  --gap-36: 36px;
+  --gap-40: 40px;
+
+  /* --- Sizing / Stroke --- */
+  --stroke-1: 1px;
+  --stroke-3: 3px;
+
+  /* ==========================================================================
+     2. Semantic Tokens — Dark (default)
+     ========================================================================== */
+
+  /* --- Surface --- */
+  --color-surface-default: var(--primitive-black, #18181b);
+  --color-surface-secondary: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-surface-primary: var(--primitive-white, #ffffff);
+  --color-surface-primary-0: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-surface-primary-1: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-surface-primary-2: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
+  --color-surface-primary-3: var(--primitive-white-3, rgba(255, 255, 255, 0.5));
+  --color-surface-primary-4: var(--primitive-white-4, rgba(255, 255, 255, 0.7));
+  --color-surface-error: var(--primitive-white-4, rgba(255, 255, 255, 0.7));
+  --color-surface-link-1: var(--primitive-primary-1, #ffeef2);
+  --color-surface-link-3: var(--primitive-primary-3, #ffdde6);
+  --color-surface-design-complete: var(--primitive-green-1, #d3f9d8);
+  --color-surface-design-incomplete: var(--primitive-gray-f2, #fafafa);
+
+  /* --- Border --- */
+  --color-border-default: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-border-secondary: var(--primitive-white, #ffffff);
+  --color-border-invert: var(--primitive-black, #18181b);
+  --color-border-primary: var(--primitive-white, #ffffff);
+
+  /* --- Icon --- */
+  --color-icon-default: var(--primitive-white, #ffffff);
+  --color-icon-secondary: var(--primitive-white-4, rgba(255, 255, 255, 0.7));
+  --color-icon-tertiary: var(--primitive-white-3, rgba(255, 255, 255, 0.5));
+  --color-icon-primary: var(--primitive-white, #ffffff);
+  --color-icon-primary-secondary: var(--primitive-primary-3, #ffdde6);
+  --color-icon-primary-opacity: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-icon-white: var(--primitive-white, #ffffff);
+  --color-icon-gray: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-icon-invert: var(--primitive-black, #18181b);
+  --color-icon-error: var(--primitive-red-6, #fa5252);
+
+  /* --- Text --- */
+  --color-text-default: var(--primitive-white, #ffffff);
+  --color-text-secondary: var(--primitive-white-4, rgba(255, 255, 255, 0.7));
+  --color-text-tertiary: var(--primitive-white-3, rgba(255, 255, 255, 0.5));
+  --color-text-primary: var(--primitive-white, #ffffff);
+  --color-text-primary-secondary: var(--primitive-primary-3, #ffdde6);
+  --color-text-white: var(--primitive-white, #ffffff);
+  --color-text-invert: var(--primitive-black, #18181b);
+  --color-text-error: var(--primitive-red-6, #fa5252);
+  --color-text-drag: var(--primitive-blue-2, #a5d8ff);
+
+  /* --- Button --- */
+  --color-button-default-surface: var(--primitive-black, #18181b);
+  --color-button-default-action-surface: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-button-primary-surface: var(--primitive-primary, #ffccd9);
+  --color-button-invert-surface: var(--primitive-white, #ffffff);
+  --color-button-disabled-surface: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-button-error-surface: var(--primitive-red-6, #fa5252);
+  --color-button-action-surface: var(--primitive-effect-button-action, rgba(0, 0, 0, 0.12));
+
+  /* --- Input --- */
+  --color-input-default-border: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-input-action-border: var(--primitive-white, #ffffff);
+  --color-input-error-border: var(--primitive-red-6, #fa5252);
+  --color-input-default-surface: var(--primitive-black, #18181b);
+  --color-input-disabled-surface: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+
+  /* --- Checkbox --- */
+  --color-checkbox-default-border: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-checkbox-default-surface: var(--primitive-black, #18181b);
+  --color-checkbox-disabled-surface: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
+  --color-checkbox-action-surface: var(--primitive-primary, #ffccd9);
+  --color-checkbox-default-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-checkbox-action-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+
+  /* --- Radio Button --- */
+  --color-radio-default-border: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-radio-default-circle: var(--primitive-white, #ffffff);
+  --color-radio-disabled-circle: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-radio-default-surface: var(--primitive-black, #18181b);
+  --color-radio-disabled-surface: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
+  --color-radio-action-surface: var(--primitive-primary, #ffccd9);
+  --color-radio-default-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-radio-action-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+
+  /* --- Toggle --- */
+  --color-toggle-default-circle: var(--primitive-white, #ffffff);
+  --color-toggle-disabled-circle: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-toggle-default-surface: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
+  --color-toggle-action-surface: var(--primitive-primary, #ffccd9);
+  --color-toggle-default-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-toggle-action-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-toggle-default-checked-2: var(--primitive-white, #ffffff);
+
+  /* --- Dropdown --- */
+  --color-dropdown-shadow: var(--primitive-effect-dropdown-shadow-black, rgba(0, 0, 0, 0.7));
+
+  /* --- Modal --- */
+  --color-modal-shadow: var(--primitive-effect-modal-shadow, rgba(0, 0, 0, 0.12));
+
+  /* --- Overlay --- */
+  --color-overlay-dimmed: var(--primitive-effect-dimmed-black, rgba(17, 17, 28, 0.6));
+
+  /* --- Avatars --- */
+  --color-avatar-red: var(--primitive-avatar-red, #c75f5f);
+  --color-avatar-yellow: var(--primitive-avatar-yellow, #e5ab67);
+  --color-avatar-green: var(--primitive-avatar-green, #62a471);
+  --color-avatar-cyan: var(--primitive-avatar-cyan, #68afb3);
+  --color-avatar-blue: var(--primitive-avatar-blue, #6886b3);
+  --color-avatar-grape: var(--primitive-avatar-grape, #9e7ec6);
+  --color-avatar-pink: var(--primitive-avatar-pink, #cc8cba);
 }
+
+/* ==========================================================================
+   3. Semantic Tokens — Light
+   ========================================================================== */
+
+[data-theme="light"] {
+  /* --- Surface --- */
+  --color-surface-default: var(--primitive-white, #ffffff);
+  --color-surface-secondary: var(--primitive-gray-f2, #fafafa);
+  --color-surface-primary: var(--primitive-primary, #ffccd9);
+  --color-surface-primary-0: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-surface-primary-1: var(--primitive-primary-opacity-1, rgba(255, 204, 217, 0.08));
+  --color-surface-primary-2: var(--primitive-primary-opacity-2, rgba(255, 204, 217, 0.16));
+  --color-surface-primary-3: var(--primitive-primary-opacity-3, rgba(255, 204, 217, 0.3));
+  --color-surface-primary-4: var(--primitive-primary-opacity-4, rgba(255, 204, 217, 0.5));
+  --color-surface-error: var(--primitive-red-0, #fff5f5);
+  --color-surface-link-1: var(--primitive-primary-1, #ffeef2);
+  --color-surface-link-3: var(--primitive-primary-3, #ffdde6);
+  --color-surface-design-complete: var(--primitive-green-1, #d3f9d8);
+  --color-surface-design-incomplete: var(--primitive-gray-f2, #fafafa);
+
+  /* --- Border --- */
+  --color-border-default: var(--primitive-gray-e, #f4f4f5);
+  --color-border-secondary: var(--primitive-black, #18181b);
+  --color-border-invert: var(--primitive-white, #ffffff);
+  --color-border-primary: var(--primitive-primary, #ffccd9);
+
+  /* --- Icon --- */
+  --color-icon-default: var(--primitive-black, #18181b);
+  --color-icon-secondary: var(--primitive-gray-6, #71717a);
+  --color-icon-tertiary: var(--primitive-gray-a, #a1a1aa);
+  --color-icon-primary: var(--primitive-primary, #ffccd9);
+  --color-icon-primary-secondary: var(--primitive-primary-3, #ffdde6);
+  --color-icon-primary-opacity: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-icon-white: var(--primitive-white, #ffffff);
+  --color-icon-gray: var(--primitive-gray-f2, #fafafa);
+  --color-icon-invert: var(--primitive-white, #ffffff);
+  --color-icon-error: var(--primitive-red-6, #fa5252);
+
+  /* --- Text --- */
+  --color-text-default: var(--primitive-black, #18181b);
+  --color-text-secondary: var(--primitive-gray-6, #71717a);
+  --color-text-tertiary: var(--primitive-gray-a, #a1a1aa);
+  --color-text-primary: var(--primitive-primary, #ffccd9);
+  --color-text-primary-secondary: var(--primitive-primary-3, #ffdde6);
+  --color-text-white: var(--primitive-white, #ffffff);
+  --color-text-invert: var(--primitive-white, #ffffff);
+  --color-text-error: var(--primitive-red-6, #fa5252);
+  --color-text-drag: var(--primitive-blue-2, #a5d8ff);
+
+  /* --- Button --- */
+  --color-button-default-surface: var(--primitive-white, #ffffff);
+  --color-button-default-action-surface: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-button-primary-surface: var(--primitive-primary, #ffccd9);
+  --color-button-invert-surface: var(--primitive-black, #18181b);
+  --color-button-disabled-surface: var(--primitive-gray-f2, #fafafa);
+  --color-button-error-surface: var(--primitive-red-6, #fa5252);
+  --color-button-action-surface: var(--primitive-effect-button-action, rgba(0, 0, 0, 0.12));
+
+  /* --- Input --- */
+  --color-input-default-border: var(--primitive-gray-e, #f4f4f5);
+  --color-input-action-border: var(--primitive-primary, #ffccd9);
+  --color-input-error-border: var(--primitive-red-6, #fa5252);
+  --color-input-default-surface: var(--primitive-white, #ffffff);
+  --color-input-disabled-surface: var(--primitive-gray-f2, #fafafa);
+
+  /* --- Checkbox --- */
+  --color-checkbox-default-border: var(--primitive-gray-e, #f4f4f5);
+  --color-checkbox-default-surface: var(--primitive-white, #ffffff);
+  --color-checkbox-disabled-surface: var(--primitive-gray-d, #e4e4e7);
+  --color-checkbox-action-surface: var(--primitive-primary, #ffccd9);
+  --color-checkbox-default-background: var(--primitive-gray-f2, #fafafa);
+  --color-checkbox-action-background: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+
+  /* --- Radio Button --- */
+  --color-radio-default-border: var(--primitive-gray-e, #f4f4f5);
+  --color-radio-default-circle: var(--primitive-white, #ffffff);
+  --color-radio-disabled-circle: var(--primitive-gray-f2, #fafafa);
+  --color-radio-default-surface: var(--primitive-white, #ffffff);
+  --color-radio-disabled-surface: var(--primitive-gray-d, #e4e4e7);
+  --color-radio-action-surface: var(--primitive-primary, #ffccd9);
+  --color-radio-default-background: var(--primitive-gray-f2, #fafafa);
+  --color-radio-action-background: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+
+  /* --- Toggle --- */
+  --color-toggle-default-circle: var(--primitive-white, #ffffff);
+  --color-toggle-disabled-circle: var(--primitive-gray-f2, #fafafa);
+  --color-toggle-default-surface: var(--primitive-gray-d, #e4e4e7);
+  --color-toggle-action-surface: var(--primitive-primary, #ffccd9);
+  --color-toggle-default-background: var(--primitive-gray-f2, #fafafa);
+  --color-toggle-action-background: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-toggle-default-checked-2: var(--primitive-white, #ffffff);
+
+  /* --- Dropdown --- */
+  --color-dropdown-shadow: var(--primitive-effect-dropdown-shadow-white, rgba(0, 0, 0, 0.24));
+
+  /* --- Modal --- */
+  --color-modal-shadow: var(--primitive-effect-modal-shadow, rgba(0, 0, 0, 0.12));
+
+  /* --- Overlay --- */
+  --color-overlay-dimmed: var(--primitive-effect-dimmed-white, rgba(255, 255, 255, 0.5));
+}
+
+/* ==========================================================================
+   4. Base Styles
+   ========================================================================== */
 
 html,
 body {
@@ -25,7 +472,7 @@ body {
 body {
   font-family: var(--font-pretendard);
   background: #0c1220;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

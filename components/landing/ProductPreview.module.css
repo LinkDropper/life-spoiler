@@ -4,7 +4,7 @@
   padding: 40px 24px;
   margin: 0 24px 40px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 204, 217, 0.3);
+  border: 1px solid var(--primitive-primary-opacity-3, rgba(255, 204, 217, 0.3));
   border-radius: 16px;
 
   @media (max-width: 375px) {
@@ -17,7 +17,7 @@
   font-size: 20px;
   font-weight: 700;
   line-height: 1.4;
-    color: #ffffff;
+    color: var(--color-text-default, #ffffff);
   text-align: center;
   margin: 0 0 24px;
 }
@@ -39,7 +39,7 @@
 
 .icon {
   flex-shrink: 0;
-  color: #ffccd9;
+  color: var(--primitive-primary, #ffccd9);
 }
 
 .itemText {
@@ -69,7 +69,7 @@
   font-size: 17px;
   font-weight: 600;
   line-height: 1.4;
-  color: #ffccd9;
+  color: var(--primitive-primary, #ffccd9);
   text-align: center;
   margin: 0 0 16px;
 }

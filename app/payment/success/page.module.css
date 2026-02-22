@@ -34,13 +34,13 @@
 .title {
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0 0 12px 0;
 }
 
 .description {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   margin: 0 0 24px 0;
   line-height: 1.5;
 }
@@ -60,7 +60,7 @@
 }
 
 .summaryRow:not(:last-child) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--primitive-white-0, rgba(255, 255, 255, 0.08));
 }
 
 .summaryLabel {
@@ -71,7 +71,7 @@
 .summaryValue {
   font-size: 13px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
 }
 
 .buttonGroup {
@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   border: none;
   border-radius: 8px;
   color: #2d1b4e;
@@ -97,7 +97,7 @@
 }
 
 .primaryButton:hover {
-  background: #ffdde6;
+  background: var(--primitive-primary-3, #ffdde6);
 }
 
 .secondaryButton {
@@ -106,10 +106,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;

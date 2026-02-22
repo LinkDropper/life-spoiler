@@ -4,7 +4,7 @@
   gap: 0;
   width: 100%;
   padding: 24px 16px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
   border-radius: 8px;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .row:not(:last-child) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--primitive-white-0, rgba(255, 255, 255, 0.08));
 }
 
 .labelGroup {
@@ -39,7 +39,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 140%;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   white-space: nowrap;
 }
 
@@ -61,7 +61,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 140%;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   white-space: nowrap;
   text-align: right;
 }

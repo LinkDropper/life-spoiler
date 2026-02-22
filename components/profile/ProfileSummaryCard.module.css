@@ -4,8 +4,8 @@
   gap: 8px;
   width: 100%;
   padding: 20px;
-  background: #18181b;
-  border: 2px solid rgba(255, 255, 255, 0.16);
+  background: var(--color-surface-default, #18181b);
+  border: 2px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   border-radius: 8px;
 }
 
@@ -19,7 +19,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
 }
 
 .infoRow {
@@ -38,7 +38,7 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
 }
 
 .tags {
@@ -48,11 +48,11 @@
 
 .tag {
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
   border-radius: 4px;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.4;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
 }
 

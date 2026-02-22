@@ -62,7 +62,7 @@
   align-items: center;
   gap: 8px;
   padding: 16px 20px;
-  background: #ffffff;
+  background: var(--primitive-white, #ffffff);
   font-family: var(--font-pretendard), sans-serif;
   font-size: 16px;
   font-weight: 500;

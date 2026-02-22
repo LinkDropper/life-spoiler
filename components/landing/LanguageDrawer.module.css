@@ -7,7 +7,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: rgba(17, 17, 28, 0.6);
+  background: var(--color-overlay-dimmed, rgba(17, 17, 28, 0.6));
   z-index: 10000;
   animation: fadeIn 0.2s ease-out;
 }
@@ -25,9 +25,9 @@
   width: 100%;
   max-width: 480px;
   padding: 8px;
-  background: #18181b;
+  background: var(--color-surface-default, #18181b);
   border-radius: 20px 20px 0 0;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 4px 20px var(--color-modal-shadow, rgba(0, 0, 0, 0.12));
   animation: slideUp 0.3s ease-out;
 }
 
@@ -51,7 +51,7 @@
   font-size: 18px;
   font-weight: 500;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
 }
 
 .separator {
@@ -61,7 +61,7 @@
 .separatorLine {
   height: 0;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   margin: 0;
 }
 
@@ -83,14 +83,14 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   cursor: pointer;
   transition: background 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .menuItem:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
 }
 
 .menuItem:active {
@@ -101,5 +101,5 @@
   flex-shrink: 0;
   width: 18px;
   height: 18px;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
 }

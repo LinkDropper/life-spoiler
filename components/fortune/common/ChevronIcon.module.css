@@ -1,5 +1,5 @@
 .chevron {
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }

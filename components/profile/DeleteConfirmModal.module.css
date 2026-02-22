@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(17, 17, 28, 0.6);
+  background: var(--color-overlay-dimmed, rgba(17, 17, 28, 0.6));
   z-index: 1000;
 }
 
@@ -16,9 +16,9 @@
   width: 100%;
   max-width: 327px;
   padding: 24px;
-  background: #18181b;
+  background: var(--color-surface-default, #18181b);
   border-radius: 20px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 4px 20px var(--color-modal-shadow, rgba(0, 0, 0, 0.12));
 }
 
 .content {
@@ -43,14 +43,14 @@
   font-size: 18px;
   font-weight: 700;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
 }
 
 .description {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.4;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   margin: 0;
 }
 
@@ -67,20 +67,20 @@
   height: 52px;
   padding: 16px 20px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   border-radius: 8px;
   font-family: var(--font-pretendard), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   cursor: pointer;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .cancelButton:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
 }
 
 .cancelButton:disabled {
@@ -95,14 +95,14 @@
   align-items: center;
   height: 52px;
   padding: 16px 20px;
-  background: #fa5252;
+  background: var(--color-button-error-surface, #fa5252);
   border: none;
   border-radius: 8px;
   font-family: var(--font-pretendard), sans-serif;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.4;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   cursor: pointer;
   transition: opacity 0.2s ease;
   -webkit-tap-highlight-color: transparent;

@@ -26,7 +26,7 @@
   width: 100%;
   padding: 0 0 12px 0;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   background: transparent;
   cursor: pointer;
   margin-bottom: 0;
@@ -39,14 +39,14 @@
 .sectionTitle {
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0;
   line-height: 1.2;
   letter-spacing: 0.5px;
 }
 
 .chevron {
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   transition: transform 0.2s ease;
 }
 
@@ -90,7 +90,7 @@
 .previewHeadline {
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0 0 16px 0;
   line-height: 1.4;
   letter-spacing: 0.5px;
@@ -100,7 +100,7 @@
   font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   margin: 0 0 24px 0;
   white-space: pre-line;
   letter-spacing: 0.5px;
@@ -110,7 +110,7 @@
   font-size: 18px;
   font-weight: 400;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   margin: 0;
   letter-spacing: 0.5px;
 }
@@ -137,11 +137,11 @@
   align-items: center;
   justify-content: center;
   border: none;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   cursor: pointer;
   transition: background-color 0.2s;
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--primitive-white, #ffffff);
 }
 
 .paymentButton {
@@ -150,7 +150,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   border: none;
   border-radius: 8px;
   color: #2d1b4e;
@@ -161,7 +161,7 @@
 }
 
 .paymentButton:hover {
-  background: #ffdde6;
+  background: var(--primitive-primary-3, #ffdde6);
 }
 
 /* 에러 상태 */
@@ -184,13 +184,13 @@
 .errorTitle {
   font-size: 20px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text-default, #ffffff);
   margin: 0;
 }
 
 .errorDescription {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   line-height: 1.6;
   margin: 0;
 }
@@ -209,7 +209,7 @@
   font-size: 16px;
   font-weight: 500;
   color: #2d1b4e;
-  background: #ffccd9;
+  background: var(--color-button-primary-surface, #ffccd9);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -217,16 +217,16 @@
 }
 
 .refreshButton:hover {
-  background: #ffdde6;
+  background: var(--primitive-primary-3, #ffdde6);
 }
 
 .backButton {
   padding: 14px 24px;
   font-size: 16px;
   font-weight: 500;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--color-text-default, #ffffff);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
