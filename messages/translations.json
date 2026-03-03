@@ -104,6 +104,38 @@
           "categories": "소통·성장·감정·위기 4대 카테고리"
         }
       },
+      "reviews": {
+        "items": {
+          "r1": {
+            "name": "이**",
+            "content": "자미두수는 처음인데 사주보다 훨씬 디테일하고, 기존 사주에서 못 들었던 내용도 있어서 좋았어요!!! 이렇게 저렴하게 퀄리티 높은 결과를 볼 수 있어서 오히려 죄송할 따름입니다 😅"
+          },
+          "r2": {
+            "name": "최**",
+            "content": "인생 전반적인 스포일러에 디테일한 연령대별 재물운, 연애운까지 다 봐주네요. 저보고 '고독한 늑대놀이' 한대요 ㅋㅋㅋ 인복 터진 것도 맞아서 대박 신기함!!! 뼈 맞고 갑니다."
+          },
+          "r3": {
+            "name": "박**",
+            "content": "애인이랑 궁합 봤는데요. 제가 어디 가자고 지르면 애인은 현실적인 조언 해주는 편인데, 우리 관계를 완전히 꿰뚫어 봐서 개신기함;; 얼마 전에 수면 패턴이랑 밥 먹는 거 안 맞아서 싸운 것까지 어떻게 안 건지? 무섭슨 ㄷ.ㄷ"
+          },
+          "r4": {
+            "name": "정**",
+            "content": "여친이랑 궁합 봤는데 소름 끼치게 똑같음. 저는 성격 급한 직진 모드, 여친은 신중한 리스크 관리 타입으로 나오더라고요. 구라 안 치고 최근에 여친한테 '내 마음이 어떤지 좀 들어주면 안 될까?' 이 말 똑같이 들었어서 ㄹㅇ 신기했음요..."
+          },
+          "r5": {
+            "name": "강**",
+            "content": "기존 사주 앱이랑 다르게 <키워드 - 핵심 설명 - 구체적 풀이>로 스토리를 풀어주니 이해가 쏙쏙 돼요! 그리고 매번 정보 입력할 필요 없이 프로필 저장이 되는 게 최고 강점입니다. 상대방이랑 어떤 관계인지까지 디테일하게 설정할 수 있어서 너무 편해요."
+          },
+          "r6": {
+            "name": "조**",
+            "content": "제 인생 테마가 '멈추면 죽는 상어 같은 인생'이래요 ㅋㅋㅋㅋ 평소에 쉬는 걸 못 견디고 계속 일 벌이는 스타일인데 #휴식불능체질 해시태그 뜨는 거 보고 소름 돋았어요. 너무 재밌어서 내돈내산으로 올해 운세까지 바로 결제해 버림!"
+          },
+          "r7": {
+            "name": "윤**",
+            "content": "새해마다 5만 원씩 주고 사주 보러 다니는 사람인데, 990원짜리 자미두수가 늘 듣던 사주 결과랑 똑같이 나와서 놀랐어요!! 특히 지금 30대 초반인데 진로 고민 심하게 하는 거랑, 스트레스받으면 몸으로 바로 나타나는 것까지 정확히 짚어내서 '어케 알았음?!' 상태 됨.. 가성비 진짜 미쳤습니다."
+          }
+        }
+      },
       "faq": {
         "title": "자주 묻는 질문",
         "items": {
@@ -835,6 +867,38 @@
           "categories": "4 Categories: Communication, Growth, Emotion, Crisis"
         }
       },
+      "reviews": {
+        "items": {
+          "r1": {
+            "name": "L**",
+            "content": "This is my first time with Zi Wei Dou Shu, but it's way more detailed than regular astrology. I learned things I'd never heard before! I almost feel guilty getting such high-quality results for so cheap 😅"
+          },
+          "r2": {
+            "name": "C**",
+            "content": "It covers everything from life spoilers to detailed wealth and love fortunes by age. It said I'm a 'lonely wolf' lol but the part about my social luck was spot-on! Nailed it."
+          },
+          "r3": {
+            "name": "P**",
+            "content": "I got a compatibility reading with my partner. I'm the impulsive one who suggests trips, and they're the one who gives practical advice. It totally nailed our dynamic. How did it even know we fought about sleep schedules and eating habits?! Creepily accurate."
+          },
+          "r4": {
+            "name": "J**",
+            "content": "Got a compatibility reading with my girlfriend and it was eerily accurate. I'm the impatient go-getter, she's the cautious risk-manager type. Not even kidding, I recently got the exact same \"Can you please listen to how I feel?\" from her. So weird how accurate it was..."
+          },
+          "r5": {
+            "name": "K**",
+            "content": "Unlike other astrology apps, it structures everything as <keyword - key explanation - detailed interpretation>, so it's super easy to follow! And the best part? Profile saving – no re-entering info every time. You can even set your relationship type in detail. So convenient."
+          },
+          "r6": {
+            "name": "J**",
+            "content": "My life theme is 'a shark that dies if it stops' lolol. I can't stand sitting still and am always starting new projects. When I saw the #cantrest hash tag I got chills. So fun that I immediately paid for my yearly fortune too!"
+          },
+          "r7": {
+            "name": "Y**",
+            "content": "I pay 50,000 won every New Year for astrology readings, and the 990 won Zi Wei Dou Shu gave me the exact same result. It nailed my career worries in my early 30s and how stress shows up in my body. 'How did it know?!' The value is insane."
+          }
+        }
+      },
       "faq": {
         "title": "Frequently Asked Questions",
         "items": {
@@ -1564,6 +1628,38 @@
           "insights": "8つの相性インサイト分析",
           "scenarios": "核心シナリオ（実際の状況予測）",
           "categories": "疎通・成長・感情・危機 4大カテゴリー"
+        }
+      },
+      "reviews": {
+        "items": {
+          "r1": {
+            "name": "イ**",
+            "content": "紫微斗数は初めてなんですけど、四柱推命よりずっと詳しくて、今まで聞いたことのない内容もあって良かったです！！！こんなに安くて高品質な結果が見られるなんて、むしろ申し訳ない気持ちです 😅"
+          },
+          "r2": {
+            "name": "チョ**",
+            "content": "人生全般のネタバレに年代別の金運・恋愛運まで細かく見てくれて。『孤独な狼気質』って言われました笑笑 人運の部分もビシッと当たっててビックリ！！！当たってます。"
+          },
+          "r3": {
+            "name": "パ**",
+            "content": "彼氏と相性を見てもらったんです。私が「どこか行こう」って言うと彼氏は現実的なアドバイスしてくれるタイプなんですけど、私たちの関係を完全に把握しててマジでビックリ;; この前、睡眠パターンと食事のタイミングの違いで喧嘩したことまで、どうやって分かったの？怖いほどです…"
+          },
+          "r4": {
+            "name": "チョン**",
+            "content": "彼女と相性見たら鳥肌立つほど同じだった。俺は性急な直進モード、彼女は慎重なリスク管理タイプで出てきた。嘘じゃなくて最近彼女に『俺の気持ち聞いてくれない？』って言われたばかりで、マジでビックリした…"
+          },
+          "r5": {
+            "name": "カン**",
+            "content": "既存の四柱推命アプリとは違って<キーワード - 核心説明 - 具体的な解説>でストーリーを展開してくれるからスッと理解できる！それに毎回情報入力しなくてプロフィール保存できるのが最高の強み。相手との関係性まで細かく設定できてすごく便利。"
+          },
+          "r6": {
+            "name": "チョ**",
+            "content": "俺の人生テーマが『止まると死ぬサメみたいな人生』らしい笑笑 普段から休むのが我慢できなくてずっと仕事探してるタイプなんだけど、#休息不能体質のハッシュタグ見て鳥肌立った。面白すぎて自腹で今年の運勢まで即決済しちゃった！"
+          },
+          "r7": {
+            "name": "ユン**",
+            "content": "毎年5万円払って四柱推命見に行く人なんですけど、990円の紫微斗数がいつも聞いてた四柱の結果と全く同じで驚きました！！特に今30代前半で進路に悩んでるのと、ストレスが体に出やすいところまで正確に当ててくれて『なんで分かったの？！』状態。コスパヤバいです。"
+          }
         }
       },
       "faq": {
