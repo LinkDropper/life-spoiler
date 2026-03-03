@@ -4,6 +4,7 @@ export { FeatureSection } from "./FeatureSection";
 export { CompatibilitySection } from "./CompatibilitySection";
 export { ProductPreview } from "./ProductPreview";
 export { PromotionBanner } from "./PromotionBanner";
+export { ReviewSection } from "./ReviewSection";
 export { FAQSection } from "./FAQSection";
 export { DisclaimerSection } from "./DisclaimerSection";
 export { FooterInfo } from "./FooterInfo";

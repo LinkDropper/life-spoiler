@@ -1,0 +1,51 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 60px 0;
+}
+
+.viewport {
+  overflow: hidden;
+}
+
+.list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slide {
+  flex: 0 0 300px;
+  min-width: 0;
+  padding-left: 12px;
+
+  @media (max-width: 375px) {
+    flex: 0 0 260px;
+  }
+}
+
+.card {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 204, 217, 0.15);
+  border-radius: 12px;
+  height: 100%;
+}
+
+.name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primitive-primary, #ffccd9);
+  margin-bottom: 8px;
+}
+
+.content {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  word-break: keep-all;
+}

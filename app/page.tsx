@@ -1,9 +1,10 @@
 import {
   MainHero,
   FeatureSection,
-  CompatibilitySection,
+  // CompatibilitySection,
   ProductPreview,
   PromotionBanner,
+  ReviewSection,
   FAQSection,
   DisclaimerSection,
   FooterInfo,
@@ -21,8 +22,9 @@ export default function Home() {
       <main className={styles.main}>
         <MainHero />
         <FeatureSection />
-        <CompatibilitySection />
+        {/* <CompatibilitySection /> */}
         <PromotionBanner />
+        <ReviewSection />
         <ProductPreview />
         <EventSection />
         <FAQSection />
