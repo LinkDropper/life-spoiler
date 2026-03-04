@@ -226,7 +226,6 @@ export const updateCompatibilityPaidAt = async (
   }
 };
 
-
 /**
  * 프로필의 모든 운세 결과 조회
  */
