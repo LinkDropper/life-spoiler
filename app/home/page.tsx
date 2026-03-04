@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 import { HeaderClient } from "@/components/landing";
 import {
-  CompatibilityBanner,
   CompatibilityFortuneCard,
   LifetimeFortuneCard,
   YearlyFortuneCard,
@@ -48,7 +47,6 @@ export default function HomePage() {
         <YearlyFortuneCard onClick={handleYearlyFortune} />
         <CompatibilityFortuneCard onClick={handleCompatibilityFortune} />
       </main>
-      <CompatibilityBanner onClick={handleCompatibilityFortune} />
     </div>
   );
 }

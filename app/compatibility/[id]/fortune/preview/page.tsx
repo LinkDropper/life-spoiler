@@ -58,10 +58,7 @@ export default function CompatibilityFortunePage() {
     result,
     isAIGenerated,
     relationshipType,
-    isFreeEligible,
-    isClaimingFree,
     handlePayment,
-    handleClaimFree,
     handleBack,
   } = useCompatibilityFortune();
 
@@ -250,14 +247,10 @@ export default function CompatibilityFortunePage() {
         <button
           type="button"
           className={styles.ctaButton}
-          onClick={isFreeEligible ? handleClaimFree : handlePayment}
-          disabled={!!error || !isAIGenerated || isClaimingFree}
+          onClick={handlePayment}
+          disabled={!!error || !isAIGenerated}
         >
-          {isClaimingFree
-            ? tFortune("claiming")
-            : isFreeEligible
-              ? tFortune("ctaButtonFree")
-              : tFortune("ctaButton")}
+          {tFortune("ctaButton")}
         </button>
       </footer>
     </div>

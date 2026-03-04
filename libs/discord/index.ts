@@ -1,5 +1,1 @@
-export {
-  sendFreePromoNotification,
-  sendPaymentNotification,
-  sendSignupNotification,
-} from "./webhook";
+export { sendPaymentNotification, sendSignupNotification } from "./webhook";

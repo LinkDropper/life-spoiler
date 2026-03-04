@@ -210,10 +210,6 @@
         "title": "궁합 운세",
         "subtitle": "내 인간관계 분석하기",
         "button": "궁합 운세 확인하기"
-      },
-      "banner": {
-        "title": "궁합 운세 새롭게 오픈!",
-        "subtitle": "2월 25일까지 궁합 운세 1회 무료!"
       }
     },
     "profiles": {
@@ -295,8 +291,6 @@
         "refresh": "새로고침",
         "back": "뒤로가기",
         "ctaButton": "전체 스포 확인하기 (990원)",
-        "ctaButtonFree": "무료로 결과 보기",
-        "claiming": "처리 중...",
         "score": "궁합 점수",
         "insightsTitle": "궁합 인사이트",
         "spoilerTitle": "궁합 스포일러",
@@ -973,10 +967,6 @@
         "title": "Compatibility",
         "subtitle": "Analyze my relationships",
         "button": "View Compatibility Fortune"
-      },
-      "banner": {
-        "title": "Compatibility Fortune Now Open!",
-        "subtitle": "Free compatibility reading until Feb 25!"
       }
     },
     "profiles": {
@@ -1058,8 +1048,6 @@
         "refresh": "Refresh",
         "back": "Back",
         "ctaButton": "View Full Spoiler ($0.99)",
-        "ctaButtonFree": "View Results for Free",
-        "claiming": "Processing...",
         "score": "Compatibility Score",
         "insightsTitle": "Compatibility Insights",
         "spoilerTitle": "Compatibility Spoiler",
@@ -1736,10 +1724,6 @@
         "title": "相性占い",
         "subtitle": "人間関係を分析する",
         "button": "相性占いを見る"
-      },
-      "banner": {
-        "title": "相性占い 新しくオープン!",
-        "subtitle": "2月25日まで相性占い1回無料!"
       }
     },
     "profiles": {
@@ -1821,8 +1805,6 @@
         "refresh": "更新",
         "back": "戻る",
         "ctaButton": "全ネタバレを確認（$0.99）",
-        "ctaButtonFree": "無料で結果を見る",
-        "claiming": "処理中...",
         "score": "相性スコア",
         "insightsTitle": "相性インサイト",
         "spoilerTitle": "相性スポイラー",

@@ -15,10 +15,7 @@ interface UseCompatibilityFortuneReturn {
   pairId: string;
   isAIGenerated: boolean;
   relationshipType: CompatibilityRelationshipType | null;
-  isFreeEligible: boolean;
-  isClaimingFree: boolean;
   handlePayment: () => void;
-  handleClaimFree: () => void;
   handleBack: () => void;
 }
 
@@ -34,9 +31,6 @@ export const useCompatibilityFortune = (): UseCompatibilityFortuneReturn => {
   const [isAIGenerated, setIsAIGenerated] = useState(false);
   const [relationshipType, setRelationshipType] =
     useState<CompatibilityRelationshipType | null>(null);
-  const [isFreeEligible, setIsFreeEligible] = useState(false);
-  const [isClaimingFree, setIsClaimingFree] = useState(false);
-
   const hasFetchedRef = useRef(false);
 
   useEffect(() => {
@@ -76,7 +70,6 @@ export const useCompatibilityFortune = (): UseCompatibilityFortuneReturn => {
         setResult(data.data);
         setIsAIGenerated(data.isAIGenerated ?? false);
         setRelationshipType(data.relationshipType ?? null);
-        setIsFreeEligible(data.isFreeEligible ?? false);
 
         if (!data.isAIGenerated) {
           setError("궁합 생성에 실패했습니다. 잠시 후 다시 시도해주세요.");
@@ -104,32 +97,6 @@ export const useCompatibilityFortune = (): UseCompatibilityFortuneReturn => {
     );
   }, [router, pairId, isAIGenerated, result]);
 
-  const handleClaimFree = useCallback(async () => {
-    if (!isAIGenerated || !result || isClaimingFree) {
-      return;
-    }
-
-    setIsClaimingFree(true);
-    try {
-      const res = await fetch(`/api/compatibility/${pairId}/claim-free`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        throw new Error(errorData?.error || "무료 청구에 실패했습니다.");
-      }
-
-      router.push(`/compatibility/${pairId}/fortune/result`);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다."
-      );
-      setIsClaimingFree(false);
-    }
-  }, [router, pairId, isAIGenerated, result, isClaimingFree]);
-
   const handleBack = useCallback(() => {
     router.push("/compatibility");
   }, [router]);
@@ -143,10 +110,7 @@ export const useCompatibilityFortune = (): UseCompatibilityFortuneReturn => {
     pairId,
     isAIGenerated,
     relationshipType,
-    isFreeEligible,
-    isClaimingFree,
     handlePayment,
-    handleClaimFree,
     handleBack,
   };
 };
