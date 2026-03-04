@@ -4,8 +4,12 @@ import { z } from "zod/v4";
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
 import type {
+  PalaceData,
+  SihuaData,
+  StarData,
   YearlyFortuneInterpretation,
   YearlyInterpretationRequest,
+  YearlyMonthlyFortuneData,
   YearlyPalaceData,
   YearlyPeachBlossomData,
   YearlySihuaData,
@@ -52,6 +56,55 @@ const WUXING_JU_NAMES: Record<number, string> = {
   4: "금사국(金四局)",
   5: "토오국(土五局)",
   6: "화육국(火六局)",
+};
+
+// ============================================================
+// 차트 변환 유틸리티
+// ============================================================
+
+/**
+ * Palace를 PalaceData로 변환
+ */
+const convertToPalaceData = (
+  palace: import("@/libs/zi-wei-dou-shu/types").Palace
+): PalaceData => {
+  const mainStars: StarData[] = palace.mainStars.map((star) => ({
+    name: star.name,
+    brightness: star.brightness,
+    sihua: star.sihua,
+  }));
+
+  const minorStars = palace.minorStars.map((star) => {
+    if (star.sihua) {
+      return `${star.name}[${star.sihua}]`;
+    }
+    return star.name;
+  });
+
+  return {
+    name: palace.name,
+    branch: EARTHLY_BRANCHES[palace.branch],
+    mainStars,
+    minorStars,
+  };
+};
+
+/**
+ * 사화가 위치한 궁 찾기
+ */
+const findPalaceForStar = (
+  palaces: import("@/libs/zi-wei-dou-shu/types").Palace[],
+  starName: string
+): string => {
+  for (const palace of palaces) {
+    const found =
+      palace.mainStars.find((s) => s.name === starName) ||
+      palace.minorStars.find((s) => s.name === starName);
+    if (found) {
+      return palace.name;
+    }
+  }
+  return "불명";
 };
 
 // ============================================================
@@ -216,6 +269,42 @@ export async function POST(request: NextRequest) {
       tianxiPalace: yearlyFortune.peachBlossom.tianxi.palaceName,
     };
 
+    // 원국 12궁 데이터 변환 (타고난 기운 vs 올해 기운 비교용)
+    const natalPalaces: Record<string, PalaceData> = {};
+    for (const palace of chart.palaces) {
+      natalPalaces[palace.name] = convertToPalaceData(palace);
+    }
+
+    // 원국 사화 정보 변환
+    const natalSihua: SihuaData = {
+      hualu: {
+        star: chart.sihua.hualu,
+        palace: findPalaceForStar(chart.palaces, chart.sihua.hualu),
+      },
+      huaquan: {
+        star: chart.sihua.huaquan,
+        palace: findPalaceForStar(chart.palaces, chart.sihua.huaquan),
+      },
+      huake: {
+        star: chart.sihua.huake,
+        palace: findPalaceForStar(chart.palaces, chart.sihua.huake),
+      },
+      huaji: {
+        star: chart.sihua.huaji,
+        palace: findPalaceForStar(chart.palaces, chart.sihua.huaji),
+      },
+    };
+
+    // 월별 운세 데이터 변환
+    const monthlyFortunesData: YearlyMonthlyFortuneData[] =
+      yearlyFortune.monthlyFortunes.map((mf) => ({
+        month: mf.month,
+        monthStemName: mf.monthStemName,
+        monthBranchName: mf.monthBranchName,
+        score: mf.score,
+        theme: mf.theme,
+      }));
+
     const interpretRequest: Omit<YearlyInterpretationRequest, "requestType"> = {
       user: {
         gender: input.gender,
@@ -241,6 +330,9 @@ export async function POST(request: NextRequest) {
             mainStars: currentDayunPeriod.palace.mainStars.map((s) => s.name),
           }
         : undefined,
+      natalPalaces,
+      natalSihua,
+      monthlyFortunes: monthlyFortunesData,
       language,
     };
 

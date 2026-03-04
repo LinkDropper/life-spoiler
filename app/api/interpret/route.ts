@@ -67,7 +67,23 @@ const calculateAge = (birthDate: string): number => {
 /**
  * DayunResult를 DayunData[]로 변환
  */
-const convertToDayunData = (dayunResult: DayunResult): DayunData[] => {
+const convertToDayunData = (
+  dayunResult: DayunResult,
+  palaces: Palace[]
+): DayunData[] => {
+  // 별이 위치한 궁 찾기 (대운 사화 궁 매핑용)
+  const findPalaceForStar = (starName: string): string => {
+    for (const palace of palaces) {
+      const found =
+        palace.mainStars.find((s) => s.name === starName) ||
+        palace.minorStars.find((s) => s.name === starName);
+      if (found) {
+        return palace.name;
+      }
+    }
+    return "불명";
+  };
+
   return dayunResult.periods.map((period) => {
     // 주성 이름 + 밝기 + 사화 목록 (예: "자미(묘)", "무곡(왕, 화록)")
     const mainStars = period.palace.mainStars.map((s) => {
@@ -89,6 +105,10 @@ const convertToDayunData = (dayunResult: DayunResult): DayunData[] => {
         huaquan: dayunSihuaResult.huaquan,
         huake: dayunSihuaResult.huake,
         huaji: dayunSihuaResult.huaji,
+        hualuPalace: findPalaceForStar(dayunSihuaResult.hualu),
+        huaquanPalace: findPalaceForStar(dayunSihuaResult.huaquan),
+        huakePalace: findPalaceForStar(dayunSihuaResult.huake),
+        huajiPalace: findPalaceForStar(dayunSihuaResult.huaji),
       },
     };
   });
@@ -310,7 +330,7 @@ export async function POST(request: NextRequest) {
     }
 
     const currentAge = calculateAge(input.birthDate);
-    const dayunPeriods = convertToDayunData(dayunResult);
+    const dayunPeriods = convertToDayunData(dayunResult, chart.palaces);
     const interpretRequest = {
       ...convertChartToRequest(chart, {
         currentAge,
