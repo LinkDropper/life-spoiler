@@ -94,7 +94,7 @@ export interface PalaceData {
   name: string;
   branch: string;
   mainStars: StarData[];
-  minorStars: string[];
+  minorStars: StarData[];
   isShenGong?: boolean;
 }
 

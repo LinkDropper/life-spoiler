@@ -74,12 +74,11 @@ const convertToPalaceData = (
     sihua: star.sihua,
   }));
 
-  const minorStars = palace.minorStars.map((star) => {
-    if (star.sihua) {
-      return `${star.name}[${star.sihua}]`;
-    }
-    return star.name;
-  });
+  const minorStars: StarData[] = palace.minorStars.map((star) => ({
+    name: star.name,
+    brightness: star.brightness,
+    sihua: star.sihua,
+  }));
 
   return {
     name: palace.name,
@@ -90,21 +89,18 @@ const convertToPalaceData = (
 };
 
 /**
- * 사화가 위치한 궁 찾기
+ * 별→궁 맵 생성 (사화 궁 매핑용)
  */
-const findPalaceForStar = (
-  palaces: import("@/libs/zi-wei-dou-shu/types").Palace[],
-  starName: string
-): string => {
+const buildStarToPalaceMap = (
+  palaces: import("@/libs/zi-wei-dou-shu/types").Palace[]
+): Map<string, string> => {
+  const map = new Map<string, string>();
   for (const palace of palaces) {
-    const found =
-      palace.mainStars.find((s) => s.name === starName) ||
-      palace.minorStars.find((s) => s.name === starName);
-    if (found) {
-      return palace.name;
+    for (const star of [...palace.mainStars, ...palace.minorStars]) {
+      map.set(star.name, palace.name);
     }
   }
-  return "불명";
+  return map;
 };
 
 // ============================================================
@@ -276,22 +272,23 @@ export async function POST(request: NextRequest) {
     }
 
     // 원국 사화 정보 변환
+    const starToPalace = buildStarToPalaceMap(chart.palaces);
     const natalSihua: SihuaData = {
       hualu: {
         star: chart.sihua.hualu,
-        palace: findPalaceForStar(chart.palaces, chart.sihua.hualu),
+        palace: starToPalace.get(chart.sihua.hualu) ?? "불명",
       },
       huaquan: {
         star: chart.sihua.huaquan,
-        palace: findPalaceForStar(chart.palaces, chart.sihua.huaquan),
+        palace: starToPalace.get(chart.sihua.huaquan) ?? "불명",
       },
       huake: {
         star: chart.sihua.huake,
-        palace: findPalaceForStar(chart.palaces, chart.sihua.huake),
+        palace: starToPalace.get(chart.sihua.huake) ?? "불명",
       },
       huaji: {
         star: chart.sihua.huaji,
-        palace: findPalaceForStar(chart.palaces, chart.sihua.huaji),
+        palace: starToPalace.get(chart.sihua.huaji) ?? "불명",
       },
     };
 

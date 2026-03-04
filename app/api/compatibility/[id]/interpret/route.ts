@@ -49,12 +49,11 @@ const convertToPalaceData = (palace: Palace): PalaceData => {
     sihua: star.sihua,
   }));
 
-  const minorStars = palace.minorStars.map((star) => {
-    if (star.sihua) {
-      return `${star.name}[${star.sihua}]`;
-    }
-    return star.name;
-  });
+  const minorStars = palace.minorStars.map((star) => ({
+    name: star.name,
+    brightness: star.brightness,
+    sihua: star.sihua,
+  }));
 
   return {
     name: palace.name,
@@ -66,17 +65,14 @@ const convertToPalaceData = (palace: Palace): PalaceData => {
 };
 
 const buildChartData = (chart: ZiweiChart) => {
-  const findPalaceForStar = (starName: string): string => {
-    for (const palace of chart.palaces) {
-      const found =
-        palace.mainStars.find((s) => s.name === starName) ||
-        palace.minorStars.find((s) => s.name === starName);
-      if (found) {
-        return palace.name;
-      }
+  const starToPalaceMap = new Map<string, string>();
+  for (const palace of chart.palaces) {
+    for (const star of [...palace.mainStars, ...palace.minorStars]) {
+      starToPalaceMap.set(star.name, palace.name);
     }
-    return "불명";
-  };
+  }
+  const findPalaceForStar = (starName: string): string =>
+    starToPalaceMap.get(starName) ?? "불명";
 
   const sihuaData: SihuaData = {
     hualu: {

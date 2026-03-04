@@ -71,18 +71,15 @@ const convertToDayunData = (
   dayunResult: DayunResult,
   palaces: Palace[]
 ): DayunData[] => {
-  // 별이 위치한 궁 찾기 (대운 사화 궁 매핑용)
-  const findPalaceForStar = (starName: string): string => {
-    for (const palace of palaces) {
-      const found =
-        palace.mainStars.find((s) => s.name === starName) ||
-        palace.minorStars.find((s) => s.name === starName);
-      if (found) {
-        return palace.name;
-      }
+  // 별→궁 맵을 한 번만 생성하여 조회 성능 개선
+  const starToPalaceMap = new Map<string, string>();
+  for (const palace of palaces) {
+    for (const star of [...palace.mainStars, ...palace.minorStars]) {
+      starToPalaceMap.set(star.name, palace.name);
     }
-    return "불명";
-  };
+  }
+  const findPalaceForStar = (starName: string): string =>
+    starToPalaceMap.get(starName) ?? "불명";
 
   return dayunResult.periods.map((period) => {
     // 주성 이름 + 밝기 + 사화 목록 (예: "자미(묘)", "무곡(왕, 화록)")
@@ -124,12 +121,11 @@ const convertToPalaceData = (palace: Palace): PalaceData => {
     sihua: star.sihua,
   }));
 
-  const minorStars = palace.minorStars.map((star) => {
-    if (star.sihua) {
-      return `${star.name}[${star.sihua}]`;
-    }
-    return star.name;
-  });
+  const minorStars: StarData[] = palace.minorStars.map((star) => ({
+    name: star.name,
+    brightness: star.brightness,
+    sihua: star.sihua,
+  }));
 
   return {
     name: palace.name,

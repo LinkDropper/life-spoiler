@@ -240,9 +240,9 @@ const palaceDataToPalace = (
     brightness: s.brightness as Palace["mainStars"][0]["brightness"],
     sihua: s.sihua as Palace["mainStars"][0]["sihua"],
   })),
-  minorStars: palaceData.minorStars.map((name) => ({
-    name: name.replace(/\[.*\]/, ""),
-    brightness: "평" as const,
+  minorStars: palaceData.minorStars.map((s) => ({
+    name: s.name,
+    brightness: (s.brightness || "평") as Palace["minorStars"][0]["brightness"],
   })),
   isShenGong: false,
 });
@@ -415,7 +415,15 @@ const formatPalaceData = (palace: PalaceData): string => {
     .join(", ");
 
   const minorStarsStr =
-    palace.minorStars.length > 0 ? palace.minorStars.join(", ") : "None";
+    palace.minorStars.length > 0
+      ? palace.minorStars
+          .map((s) => {
+            let str = s.name;
+            if (s.sihua) str += `[${s.sihua}]`;
+            return str;
+          })
+          .join(", ")
+      : "None";
 
   return `- Branch: ${palace.branch}
 - Main Stars: ${mainStarsStr || "None"}
