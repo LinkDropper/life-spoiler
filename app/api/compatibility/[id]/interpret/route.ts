@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createAuthClient, isCompatibilityFreeEligible } from "@/libs/supabase";
+import { createAuthClient } from "@/libs/supabase";
 import type {
   CompatibilityInterpretationRequest,
   HuajiCrossAnalysis,
@@ -223,16 +223,11 @@ export async function POST(
 
     // 4. 이미 결과가 있으면 기존 결과 반환
     if (pair.result !== null) {
-      const freeEligible = !pair.paid_at
-        ? await isCompatibilityFreeEligible(authUser.id)
-        : false;
-
       return NextResponse.json({
         success: true,
         data: pair.result as unknown as CompatibilityResult,
         isAIGenerated: true,
         isPaid: !!pair.paid_at,
-        isFreeEligible: freeEligible,
         relationshipType: pair.relationship_type,
       });
     }
@@ -433,18 +428,12 @@ export async function POST(
       }
     }
 
-    // 11. 무료 프로모션 자격 확인
-    const freeEligible = !pair.paid_at
-      ? await isCompatibilityFreeEligible(authUser.id)
-      : false;
-
-    // 12. 결과 반환
+    // 11. 결과 반환
     return NextResponse.json({
       success: true,
       data: result,
       isAIGenerated: isAISuccess,
       isPaid: !!pair.paid_at,
-      isFreeEligible: freeEligible,
       relationshipType: pair.relationship_type,
     });
   } catch (error) {
