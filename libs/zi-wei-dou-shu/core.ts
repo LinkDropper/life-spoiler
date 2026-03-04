@@ -81,7 +81,7 @@ export const generateZiweiChart = (input: ZiweiInput): ZiweiChart => {
     const minorStarNames = getMinorStarsInPalace(minorStarsMap, branch);
     let minorStars: StarInfo[] = minorStarNames.map((name) => ({
       name,
-      brightness: "평",
+      brightness: getStarBrightness(name, branch),
     }));
 
     minorStars = applySihuaToStars(minorStars, sihua);

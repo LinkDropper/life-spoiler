@@ -281,12 +281,12 @@ export const calculateYearlyPalaces = (
   // 유년 명궁 = 해당 연도 지지 위치의 궁
   const yearlyMingPalace = findPalaceByBranch(chart, yearBranch);
 
-  // 유년 부처궁 = 유년 명궁에서 +4 (시계 반대 방향)
-  const yearlySpouseBranch = ((yearBranch + 4) % 12) as BranchIndex;
+  // 유년 부처궁 = 유년 명궁에서 반시계 방향 2칸 (PALACE_ORDER index 2)
+  const yearlySpouseBranch = ((yearBranch - 2 + 12) % 12) as BranchIndex;
   const yearlySpousePalace = findPalaceByBranch(chart, yearlySpouseBranch);
 
-  // 유년 재백궁 = 유년 명궁에서 +8
-  const yearlyWealthBranch = ((yearBranch + 8) % 12) as BranchIndex;
+  // 유년 재백궁 = 유년 명궁에서 반시계 방향 4칸 (PALACE_ORDER index 4)
+  const yearlyWealthBranch = ((yearBranch - 4 + 12) % 12) as BranchIndex;
   const yearlyWealthPalace = findPalaceByBranch(chart, yearlyWealthBranch);
 
   return {

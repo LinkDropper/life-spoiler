@@ -39,6 +39,7 @@ export {
   calculateWenqu,
   calculateTiankui,
   calculateTianyue,
+  calculateLucun,
   calculateHuoxing,
   calculateLingxing,
   calculateQingyang,
