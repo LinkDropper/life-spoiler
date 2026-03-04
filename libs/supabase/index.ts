@@ -21,10 +21,8 @@ export {
   setCachedResult,
 } from "./analysis-cache";
 export {
-  claimFreeCompatibility,
   getFortune,
   getFortunesByProfile,
-  isCompatibilityFreeEligible,
   saveFortune,
   updateCompatibilityPaidAt,
   updateFortunePaidAt,
