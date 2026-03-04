@@ -559,7 +559,8 @@ ${userPrompt}`;
 // - overview: spoiler 600-700자 → ~1,500 토큰
 // - insights: 8항목 × 350자 → ~6,000+ 토큰
 // - scenarios: 3×650자 + advice 650자 → ~5,500+ 토큰
-const LARGE_RESPONSE_MAX_TOKENS = 10000;
+// - categories combined: 4개 × 400자 → ~8,000+ 토큰
+const LARGE_RESPONSE_MAX_TOKENS = 12000;
 
 export const interpretCompatibilityOverview = async (
   request: Omit<CompatibilityInterpretationRequest, "requestType">

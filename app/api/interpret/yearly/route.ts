@@ -4,8 +4,12 @@ import { z } from "zod/v4";
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
 import type {
+  PalaceData,
+  SihuaData,
+  StarData,
   YearlyFortuneInterpretation,
   YearlyInterpretationRequest,
+  YearlyMonthlyFortuneData,
   YearlyPalaceData,
   YearlyPeachBlossomData,
   YearlySihuaData,
@@ -52,6 +56,51 @@ const WUXING_JU_NAMES: Record<number, string> = {
   4: "금사국(金四局)",
   5: "토오국(土五局)",
   6: "화육국(火六局)",
+};
+
+// ============================================================
+// 차트 변환 유틸리티
+// ============================================================
+
+/**
+ * Palace를 PalaceData로 변환
+ */
+const convertToPalaceData = (
+  palace: import("@/libs/zi-wei-dou-shu/types").Palace
+): PalaceData => {
+  const mainStars: StarData[] = palace.mainStars.map((star) => ({
+    name: star.name,
+    brightness: star.brightness,
+    sihua: star.sihua,
+  }));
+
+  const minorStars: StarData[] = palace.minorStars.map((star) => ({
+    name: star.name,
+    brightness: star.brightness,
+    sihua: star.sihua,
+  }));
+
+  return {
+    name: palace.name,
+    branch: EARTHLY_BRANCHES[palace.branch],
+    mainStars,
+    minorStars,
+  };
+};
+
+/**
+ * 별→궁 맵 생성 (사화 궁 매핑용)
+ */
+const buildStarToPalaceMap = (
+  palaces: import("@/libs/zi-wei-dou-shu/types").Palace[]
+): Map<string, string> => {
+  const map = new Map<string, string>();
+  for (const palace of palaces) {
+    for (const star of [...palace.mainStars, ...palace.minorStars]) {
+      map.set(star.name, palace.name);
+    }
+  }
+  return map;
 };
 
 // ============================================================
@@ -216,6 +265,43 @@ export async function POST(request: NextRequest) {
       tianxiPalace: yearlyFortune.peachBlossom.tianxi.palaceName,
     };
 
+    // 원국 12궁 데이터 변환 (타고난 기운 vs 올해 기운 비교용)
+    const natalPalaces: Record<string, PalaceData> = {};
+    for (const palace of chart.palaces) {
+      natalPalaces[palace.name] = convertToPalaceData(palace);
+    }
+
+    // 원국 사화 정보 변환
+    const starToPalace = buildStarToPalaceMap(chart.palaces);
+    const natalSihua: SihuaData = {
+      hualu: {
+        star: chart.sihua.hualu,
+        palace: starToPalace.get(chart.sihua.hualu) ?? "불명",
+      },
+      huaquan: {
+        star: chart.sihua.huaquan,
+        palace: starToPalace.get(chart.sihua.huaquan) ?? "불명",
+      },
+      huake: {
+        star: chart.sihua.huake,
+        palace: starToPalace.get(chart.sihua.huake) ?? "불명",
+      },
+      huaji: {
+        star: chart.sihua.huaji,
+        palace: starToPalace.get(chart.sihua.huaji) ?? "불명",
+      },
+    };
+
+    // 월별 운세 데이터 변환
+    const monthlyFortunesData: YearlyMonthlyFortuneData[] =
+      yearlyFortune.monthlyFortunes.map((mf) => ({
+        month: mf.month,
+        monthStemName: mf.monthStemName,
+        monthBranchName: mf.monthBranchName,
+        score: mf.score,
+        theme: mf.theme,
+      }));
+
     const interpretRequest: Omit<YearlyInterpretationRequest, "requestType"> = {
       user: {
         gender: input.gender,
@@ -241,6 +327,9 @@ export async function POST(request: NextRequest) {
             mainStars: currentDayunPeriod.palace.mainStars.map((s) => s.name),
           }
         : undefined,
+      natalPalaces,
+      natalSihua,
+      monthlyFortunes: monthlyFortunesData,
       language,
     };
 

@@ -1,4 +1,5 @@
 import {
+  LUCUN_TABLE,
   QINGYANG_TABLE,
   TIANKUI_TABLE,
   TIANMA_TABLE,
@@ -55,6 +56,15 @@ export const calculateTiankui = (yearStem: StemIndex): BranchIndex => {
  */
 export const calculateTianyue = (yearStem: StemIndex): BranchIndex => {
   return TIANYUE_TABLE[yearStem];
+};
+
+/**
+ * 록존 위치 조회 (연간 기준)
+ *
+ * @출처 삼합파(三合派)
+ */
+export const calculateLucun = (yearStem: StemIndex): BranchIndex => {
+  return LUCUN_TABLE[yearStem];
 };
 
 // ============================================================
@@ -200,6 +210,7 @@ export const arrangeMinorStars = (
   stars.set("문곡", calculateWenqu(timeBranch));
   stars.set("천괴", calculateTiankui(lunarDate.yearStem));
   stars.set("천월", calculateTianyue(lunarDate.yearStem));
+  stars.set("록존", calculateLucun(lunarDate.yearStem));
 
   // 살성
   stars.set("화성", calculateHuoxing(lunarDate.yearBranch, timeBranch));

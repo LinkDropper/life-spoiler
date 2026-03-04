@@ -117,11 +117,11 @@ ${FORBIDDEN_EXPRESSIONS_BY_TYPE[type]}
    - "determines the depth of the relationship", "makes the relationship stronger"
    - "the shortcut to~", "the key to~", "the secret to~"
    -> Replace with specific actions: "[Name] should do [specific action] when [Name] does [specific behavior]"
-11. **Total ban on direct quotes/dialogue** (all forms):
-   - No "Name: dialogue" (script format)
-   - No Name said "dialogue" (indirect quotes)
-   - No 'dialogue' they said (single-quote citations)
-   -> Instead use **behavioral descriptions**: "When Jake, the quick decision-maker, tries to jump straight into action, Mina pulls back and starts reviewing the full picture."
+11. **No long scripts/quotes, but short action phrases are OK**:
+   - No "Name: dialogue" (script format) — no multi-line scripts/scenarios
+   - No long quotes (4+ words of dialogue)
+   - ✅ Short action phrases (3 words or fewer) are allowed: "Jake mutters 'let's just go' and dives in"
+   -> Default to **behavioral descriptions**: "When Jake, the quick decision-maker, tries to jump straight into action, Mina pulls back and starts reviewing the full picture."
 12. **No stiff/formal phrasing** (using even one = failure):
    - No: "It is imperative that", "One must consider", "It should be noted that", "It is essential to", "This necessitates", "The aforementioned", "In conclusion"
    - Yes: "here's the thing", "you know what I mean?", "the deal is", "so basically", "look", "thing is"`;
@@ -515,9 +515,10 @@ Not a prim counselor. An honest, razor-sharp friend who's genuinely fun to read.
 
 ### Banned Expression Techniques (Violation = instant failure!)
 - No parenthetical asides: (brutal honesty), (for real though), (just saying), etc.
-- No **direct quotes/dialogue of any kind**:
-  "Name: dialogue" format, Name said "dialogue" format, 'dialogue' they said format
-  -> Instead use **behavioral description**: "When Jake, the quick decision-maker, tries to jump straight into action, Mina pulls back and starts reviewing the full picture."
+- No **long scripts/quotes** (script format, 4+ words of dialogue):
+  "Name: dialogue" format scripts and long quoted sentences are banned
+  ✅ Short action phrases (3 words or fewer) are OK: "Jake mutters 'let's just go' and dives in"
+  -> Default to **behavioral description**: "When Jake, the quick decision-maker, tries to jump straight into action, Mina pulls back and starts reviewing the full picture."
 - No internet meme overload: "literally dying", "iconic", "slay", "no cap", "period" etc.
 - No counselor-speak: "respect each other", "effort is needed", "the relationship will become stronger", etc.
 

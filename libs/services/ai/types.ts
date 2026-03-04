@@ -94,7 +94,7 @@ export interface PalaceData {
   name: string;
   branch: string;
   mainStars: StarData[];
-  minorStars: string[];
+  minorStars: StarData[];
   isShenGong?: boolean;
 }
 
@@ -114,18 +114,26 @@ export interface HuajiCrossAnalysis {
   bothHuajiSameArea: boolean;
 }
 
+// 대운 사화 궁 매핑 (별 → 궁)
+export interface DayunSihuaMapping {
+  hualu: string;
+  huaquan: string;
+  huake: string;
+  huaji: string;
+  /** 사화가 위치한 궁 매핑 (예: "화록: 탐랑 → 재백궁") */
+  hualuPalace?: string;
+  huaquanPalace?: string;
+  huakePalace?: string;
+  huajiPalace?: string;
+}
+
 // 대운 데이터
 export interface DayunData {
   period: string; // "2-11세", "12-21세" 등
   palaceName: string;
   mainStars: string[];
   sihua?: string[];
-  dayunSihua?: {
-    hualu: string;
-    huaquan: string;
-    huake: string;
-    huaji: string;
-  };
+  dayunSihua?: DayunSihuaMapping;
 }
 
 // 사용자 상태 정보 (프로필 기반)
@@ -357,6 +365,15 @@ export interface YearlyPalaceData {
   };
 }
 
+/** 월별 운세 데이터 (AI 프롬프트용) */
+export interface YearlyMonthlyFortuneData {
+  month: number;
+  monthStemName: string;
+  monthBranchName: string;
+  score: number;
+  theme: string;
+}
+
 export interface YearlyInterpretationRequest {
   user: {
     gender: "male" | "female";
@@ -378,6 +395,12 @@ export interface YearlyInterpretationRequest {
     palaceName: string;
     mainStars: string[];
   };
+  /** 원국 12궁 데이터 (타고난 기운 vs 올해 기운 비교용) */
+  natalPalaces?: Record<string, PalaceData>;
+  /** 원국 사화 정보 */
+  natalSihua?: SihuaData;
+  /** 월별 운세 데이터 */
+  monthlyFortunes?: YearlyMonthlyFortuneData[];
   requestType: YearlyInterpretationType;
   /** 이전 섹션 해석 맥락 (섹션 간 중복 방지) */
   previousContext?: string;

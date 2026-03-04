@@ -25,6 +25,7 @@ export type {
   YearlyInterpretationRequest,
   YearlyInterpretationType,
   YearlyMonthlyFortune,
+  YearlyMonthlyFortuneData,
   YearlyOverviewResponse,
   YearlyPalaceData,
   YearlyPeachBlossomData,

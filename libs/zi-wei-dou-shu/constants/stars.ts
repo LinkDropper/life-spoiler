@@ -95,6 +95,7 @@ export const MINOR_STAR_NAMES = [
   "문곡",
   "천괴",
   "천월",
+  "록존",
   "화성",
   "영성",
   "양인",
@@ -107,6 +108,25 @@ export const MINOR_STAR_NAMES = [
 ] as const;
 
 export type MinorStarName = (typeof MINOR_STAR_NAMES)[number];
+
+/**
+ * 록존 위치 테이블 (연간 기준)
+ *
+ * @출처 삼합파(三合派)
+ * @구결 갑록재인, 을록재묘, 병무록재사, 정기록재오, 경록재신, 신록재유, 임록재해, 계록재자
+ */
+export const LUCUN_TABLE: Record<StemIndex, BranchIndex> = {
+  0: 2, // 갑 → 인
+  1: 3, // 을 → 묘
+  2: 5, // 병 → 사
+  3: 6, // 정 → 오
+  4: 5, // 무 → 사
+  5: 6, // 기 → 오
+  6: 8, // 경 → 신
+  7: 9, // 신 → 유
+  8: 11, // 임 → 해
+  9: 0, // 계 → 자
+};
 
 /**
  * 천괴 위치 테이블 (연간 기준)

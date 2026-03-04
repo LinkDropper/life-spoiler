@@ -1,7 +1,11 @@
 import type { Locale } from "@/i18n/config";
+import { BRANCH_INDEX_MAP } from "@/libs/zi-wei-dou-shu/constants/branches";
+import { calculateSamBangSaJeong } from "@/libs/zi-wei-dou-shu/calculators/sam-bang";
+import type { BranchIndex, Palace } from "@/libs/zi-wei-dou-shu/types";
 
 import { AIError } from "./errors";
 import { getPrompts } from "./prompts";
+import type { PalaceData } from "./types";
 import type {
   GeminiResponseSchema,
   YearlyCategoryResponse,
@@ -137,6 +141,88 @@ const getOccupationStatusLabel = (
 };
 
 /**
+ * PalaceData의 branch(문자열)를 BranchIndex로 변환
+ */
+const branchStringToIndex = (branch: string): BranchIndex | null => {
+  const index = BRANCH_INDEX_MAP[branch];
+  return index !== undefined ? index : null;
+};
+
+/**
+ * PalaceData를 Palace 유사 객체로 변환 (삼방사정 계산용)
+ */
+const palaceDataToPalace = (
+  palaceData: PalaceData,
+  branchIndex: BranchIndex
+): Palace => ({
+  name: palaceData.name,
+  branch: branchIndex,
+  stem: 0 as Palace["stem"],
+  mainStars: palaceData.mainStars.map((s) => ({
+    name: s.name,
+    brightness: s.brightness as Palace["mainStars"][0]["brightness"],
+    sihua: s.sihua as Palace["mainStars"][0]["sihua"],
+  })),
+  minorStars: palaceData.minorStars.map((s) => ({
+    name: s.name,
+    brightness: (s.brightness || "평") as Palace["minorStars"][0]["brightness"],
+  })),
+  isShenGong: false,
+});
+
+/**
+ * Palace 타입에서 궁 데이터를 문자열로 포맷팅 (삼방사정용)
+ */
+const formatPalaceFromPalaceType = (palace: Palace): string => {
+  const mainStarsStr = palace.mainStars
+    .map((star) => {
+      let str = `${star.name} (${star.brightness})`;
+      if (star.sihua) {
+        str += ` [${star.sihua}]`;
+      }
+      return str;
+    })
+    .join(", ");
+
+  const minorStarsStr =
+    palace.minorStars.length > 0
+      ? palace.minorStars.map((s) => s.name).join(", ")
+      : "None";
+
+  return `- Main Stars: ${mainStarsStr || "None"}
+- Minor Stars: ${minorStarsStr}`;
+};
+
+/**
+ * 궁 데이터를 문자열로 포맷팅 (PalaceData용)
+ */
+const formatPalaceData = (palace: PalaceData): string => {
+  const mainStarsStr = palace.mainStars
+    .map((star) => {
+      let str = `${star.name} (${star.brightness})`;
+      if (star.sihua) {
+        str += ` [${star.sihua}]`;
+      }
+      return str;
+    })
+    .join(", ");
+
+  const minorStarsStr =
+    palace.minorStars.length > 0
+      ? palace.minorStars
+          .map((s) => {
+            let str = s.name;
+            if (s.sihua) str += `[${s.sihua}]`;
+            return str;
+          })
+          .join(", ")
+      : "None";
+
+  return `- Main Stars: ${mainStarsStr || "None"}
+- Minor Stars: ${minorStarsStr}`;
+};
+
+/**
  * 유년 운세 데이터를 AI에게 전달할 문자열로 포맷팅
  */
 const formatYearlyDataForAI = (
@@ -150,6 +236,9 @@ const formatYearlyDataForAI = (
     yearlyPalaces,
     peachBlossom,
     currentDayun,
+    natalPalaces,
+    natalSihua,
+    monthlyFortunes,
     language,
   } = request;
 
@@ -236,6 +325,70 @@ const formatYearlyDataForAI = (
 - period: ${currentDayun.period}
 - palace: ${currentDayun.palaceName}
 - mainStars: ${mainStarsStr}`;
+  }
+
+  // 원국 사화 정보 (타고난 에너지 흐름)
+  if (natalSihua) {
+    dataStr += `
+
+## Natal Sihua (원국 사화 - 타고난 기운)
+- hualu: ${natalSihua.hualu.star} (${natalSihua.hualu.palace})
+- huaquan: ${natalSihua.huaquan.star} (${natalSihua.huaquan.palace})
+- huake: ${natalSihua.huake.star} (${natalSihua.huake.palace})
+- huaji: ${natalSihua.huaji.star} (${natalSihua.huaji.palace})`;
+  }
+
+  // 원국 주요 궁 데이터 (타고난 기운 vs 올해 기운 비교)
+  if (natalPalaces) {
+    const keyPalaces = ["명궁", "재백궁", "관록궁", "부처궁", "질액궁"];
+    const availablePalaces = keyPalaces.filter((name) => natalPalaces[name]);
+
+    if (availablePalaces.length > 0) {
+      dataStr += `\n\n## Natal Key Palaces (원국 주요 궁 - 타고난 기운)`;
+      for (const name of availablePalaces) {
+        const palace = natalPalaces[name];
+        dataStr += `\n### ${name}
+${formatPalaceData(palace)}`;
+      }
+
+      // 유년 명궁의 삼방사정 계산
+      if (yearlyPalaces) {
+        const yearlyMingPalaceName = yearlyPalaces.yearlyMingGong.palaceName;
+        const yearlyMingPalace = natalPalaces[yearlyMingPalaceName];
+
+        if (yearlyMingPalace) {
+          const branchIndex = branchStringToIndex(yearlyMingPalace.branch);
+          if (branchIndex !== null) {
+            const palaceArray: Palace[] = Object.values(natalPalaces)
+              .map((pd) => {
+                const bi = branchStringToIndex(pd.branch);
+                if (bi === null) return null;
+                return palaceDataToPalace(pd, bi);
+              })
+              .filter((p): p is Palace => p !== null);
+
+            const samBang = calculateSamBangSaJeong(palaceArray, branchIndex);
+            if (samBang) {
+              dataStr += `\n\n## 유년 명궁 삼방사정 (${yearlyMingPalaceName} 기준)`;
+              dataStr += `\n### Opposite (대궁: ${samBang.opposite.name})
+${formatPalaceFromPalaceType(samBang.opposite)}`;
+              dataStr += `\n### Triangle 1 (삼합: ${samBang.triangle1.name})
+${formatPalaceFromPalaceType(samBang.triangle1)}`;
+              dataStr += `\n### Triangle 2 (삼합: ${samBang.triangle2.name})
+${formatPalaceFromPalaceType(samBang.triangle2)}`;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 월별 운세 데이터 (차별화된 12개월 해석 근거)
+  if (monthlyFortunes && monthlyFortunes.length > 0) {
+    dataStr += `\n\n## Monthly Fortune Data (월별 운세 점수)`;
+    for (const mf of monthlyFortunes) {
+      dataStr += `\n- ${mf.month}월 (${mf.monthStemName}${mf.monthBranchName}): score=${mf.score}, theme="${mf.theme}"`;
+    }
   }
 
   // 이전 해석 맥락 (섹션 간 중복 방지)

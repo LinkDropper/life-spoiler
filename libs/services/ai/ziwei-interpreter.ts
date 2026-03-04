@@ -159,6 +159,10 @@ const RESPONSE_SCHEMA_MAP: Record<InterpretationType, GeminiResponseSchema> = {
 /** 대운 정보가 필요한 해석 유형 */
 const DAYUN_REQUIRED_TYPES: InterpretationType[] = [
   "lifetime_core",
+  "lifetime_wealth",
+  "lifetime_career",
+  "lifetime_relationship",
+  "lifetime_health",
   "lifetime_age_scenarios",
 ];
 
@@ -236,9 +240,9 @@ const palaceDataToPalace = (
     brightness: s.brightness as Palace["mainStars"][0]["brightness"],
     sihua: s.sihua as Palace["mainStars"][0]["sihua"],
   })),
-  minorStars: palaceData.minorStars.map((name) => ({
-    name: name.replace(/\[.*\]/, ""),
-    brightness: "평" as const,
+  minorStars: palaceData.minorStars.map((s) => ({
+    name: s.name,
+    brightness: (s.brightness || "평") as Palace["minorStars"][0]["brightness"],
   })),
   isShenGong: false,
 });
@@ -358,7 +362,10 @@ ${formatPalaceFromPalaceType(samBang.triangle2)}`;
           : "";
       let dayunSihuaStr = "";
       if (period.dayunSihua) {
-        dayunSihuaStr = ` | dayunSihua: 록→${period.dayunSihua.hualu}, 권→${period.dayunSihua.huaquan}, 과→${period.dayunSihua.huake}, 기→${period.dayunSihua.huaji}`;
+        const palaceMapping = period.dayunSihua.hualuPalace
+          ? ` | 록→${period.dayunSihua.hualu}(${period.dayunSihua.hualuPalace}), 권→${period.dayunSihua.huaquan}(${period.dayunSihua.huaquanPalace}), 과→${period.dayunSihua.huake}(${period.dayunSihua.huakePalace}), 기→${period.dayunSihua.huaji}(${period.dayunSihua.huajiPalace})`
+          : ` | dayunSihua: 록→${period.dayunSihua.hualu}, 권→${period.dayunSihua.huaquan}, 과→${period.dayunSihua.huake}, 기→${period.dayunSihua.huaji}`;
+        dayunSihuaStr = palaceMapping;
       }
       dataStr += `\n- ${period.period} (${period.palaceName}): ${starsStr}${sihuaStr}${dayunSihuaStr}`;
     }
@@ -408,7 +415,15 @@ const formatPalaceData = (palace: PalaceData): string => {
     .join(", ");
 
   const minorStarsStr =
-    palace.minorStars.length > 0 ? palace.minorStars.join(", ") : "None";
+    palace.minorStars.length > 0
+      ? palace.minorStars
+          .map((s) => {
+            let str = s.name;
+            if (s.sihua) str += `[${s.sihua}]`;
+            return str;
+          })
+          .join(", ")
+      : "None";
 
   return `- Branch: ${palace.branch}
 - Main Stars: ${mainStarsStr || "None"}

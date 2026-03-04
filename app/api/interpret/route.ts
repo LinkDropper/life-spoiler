@@ -67,7 +67,20 @@ const calculateAge = (birthDate: string): number => {
 /**
  * DayunResult를 DayunData[]로 변환
  */
-const convertToDayunData = (dayunResult: DayunResult): DayunData[] => {
+const convertToDayunData = (
+  dayunResult: DayunResult,
+  palaces: Palace[]
+): DayunData[] => {
+  // 별→궁 맵을 한 번만 생성하여 조회 성능 개선
+  const starToPalaceMap = new Map<string, string>();
+  for (const palace of palaces) {
+    for (const star of [...palace.mainStars, ...palace.minorStars]) {
+      starToPalaceMap.set(star.name, palace.name);
+    }
+  }
+  const findPalaceForStar = (starName: string): string =>
+    starToPalaceMap.get(starName) ?? "불명";
+
   return dayunResult.periods.map((period) => {
     // 주성 이름 + 밝기 + 사화 목록 (예: "자미(묘)", "무곡(왕, 화록)")
     const mainStars = period.palace.mainStars.map((s) => {
@@ -89,6 +102,10 @@ const convertToDayunData = (dayunResult: DayunResult): DayunData[] => {
         huaquan: dayunSihuaResult.huaquan,
         huake: dayunSihuaResult.huake,
         huaji: dayunSihuaResult.huaji,
+        hualuPalace: findPalaceForStar(dayunSihuaResult.hualu),
+        huaquanPalace: findPalaceForStar(dayunSihuaResult.huaquan),
+        huakePalace: findPalaceForStar(dayunSihuaResult.huake),
+        huajiPalace: findPalaceForStar(dayunSihuaResult.huaji),
       },
     };
   });
@@ -104,12 +121,11 @@ const convertToPalaceData = (palace: Palace): PalaceData => {
     sihua: star.sihua,
   }));
 
-  const minorStars = palace.minorStars.map((star) => {
-    if (star.sihua) {
-      return `${star.name}[${star.sihua}]`;
-    }
-    return star.name;
-  });
+  const minorStars: StarData[] = palace.minorStars.map((star) => ({
+    name: star.name,
+    brightness: star.brightness,
+    sihua: star.sihua,
+  }));
 
   return {
     name: palace.name,
@@ -310,7 +326,7 @@ export async function POST(request: NextRequest) {
     }
 
     const currentAge = calculateAge(input.birthDate);
-    const dayunPeriods = convertToDayunData(dayunResult);
+    const dayunPeriods = convertToDayunData(dayunResult, chart.palaces);
     const interpretRequest = {
       ...convertChartToRequest(chart, {
         currentAge,

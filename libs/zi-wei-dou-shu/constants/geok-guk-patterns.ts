@@ -12,6 +12,13 @@ export interface GeokGukPattern {
   type: "동궁" | "삼방";
   /** 필요한 주성 목록 (모두 포함해야 함) */
   requiredMainStars: string[];
+  /** 필요한 보조성 목록 (모두 포함해야 함, 하나라도 있으면 매칭) */
+  requiredMinorStars?: string[];
+  /** 밝기 조건: 지정된 별이 특정 밝기 이상이어야 함 */
+  brightnessCondition?: {
+    star: string;
+    minBrightness: "묘" | "왕" | "득" | "리";
+  };
   /** 격국 의미 (AI 해석용) */
   meaning: string;
   /** 격국 등급 */
@@ -128,6 +135,56 @@ export const GEOK_GUK_PATTERNS: GeokGukPattern[] = [
     meaning:
       "표현력과 분석력이 결합. 말과 글로 사람을 설득하는 능력이 뛰어남. 교육/방송/법률 분야에 적합",
     grade: "중격",
+  },
+
+  // ============================================================
+  // 보조성 조건 동궁 격국
+  // ============================================================
+  {
+    name: "자미재상격",
+    type: "동궁",
+    requiredMainStars: ["자미"],
+    requiredMinorStars: ["좌보", "우필"],
+    meaning:
+      "자미에 좌보·우필이 함께하여 보좌를 받는 격. 리더십이 빛을 발하며 조직에서 높은 직위에 오를 상",
+    grade: "대격",
+  },
+  {
+    name: "부성조원격",
+    type: "동궁",
+    requiredMainStars: ["천부"],
+    requiredMinorStars: ["좌보", "우필"],
+    meaning:
+      "천부에 좌보·우필이 보좌하여 재물과 관리 능력이 극대화되는 격. 안정적 부와 높은 사회적 지위를 얻음",
+    grade: "대격",
+  },
+  {
+    name: "화탐격",
+    type: "동궁",
+    requiredMainStars: ["탐랑"],
+    requiredMinorStars: ["화성"],
+    meaning:
+      "탐랑과 화성이 동궁하여 폭발적 행동력과 야망이 결합. 기복이 크지만 대성할 수 있는 격",
+    grade: "중격",
+  },
+  {
+    name: "영탐격",
+    type: "동궁",
+    requiredMainStars: ["탐랑"],
+    requiredMinorStars: ["영성"],
+    meaning:
+      "탐랑과 영성이 동궁하여 재빠른 판단력과 강한 욕구가 결합. 돌발적 기회를 잡는 능력이 뛰어남",
+    grade: "중격",
+  },
+  {
+    name: "쌍록격",
+    type: "동궁",
+    requiredMainStars: [],
+    requiredMinorStars: ["록존"],
+    brightnessCondition: { star: "록존", minBrightness: "묘" },
+    meaning:
+      "록존과 화록이 같은 궁에서 만나 재물운이 극대화되는 격. 안정적이면서도 큰 재물을 축적할 수 있음",
+    grade: "대격",
   },
 
   // ============================================================
