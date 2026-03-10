@@ -89,7 +89,7 @@ export default function CompatibilitySetupPage() {
 
   const selectedProfiles = selectedIds
     .map((id) => profiles.find((p) => p.id === id))
-    .filter(Boolean) as typeof profiles;
+    .filter((p): p is (typeof profiles)[number] => !!p);
 
   const handleBack = useCallback(() => {
     router.push("/compatibility");
