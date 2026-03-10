@@ -283,7 +283,12 @@
         "viewFortune": "궁합 운세 보기",
         "submitting": "생성 중...",
         "customRelationshipPlaceholder": "관계를 입력해주세요",
-        "save": "저장하기"
+        "save": "저장하기",
+        "petRoleOwner": "집사",
+        "petRoleCat": "고양이",
+        "petRoleDog": "강아지",
+        "petSwap": "집사/반려동물 순서 바꾸기",
+        "petSwapLabel": "순서 바꾸기"
       },
       "fortune": {
         "loading": "궁합 분석 중...",
@@ -1040,7 +1045,12 @@
         "viewFortune": "View Compatibility Fortune",
         "submitting": "Creating...",
         "customRelationshipPlaceholder": "Enter your relationship",
-        "save": "Save"
+        "save": "Save",
+        "petRoleOwner": "Owner",
+        "petRoleCat": "Cat",
+        "petRoleDog": "Dog",
+        "petSwap": "Swap owner/pet order",
+        "petSwapLabel": "Swap order"
       },
       "fortune": {
         "loading": "Analyzing compatibility...",
@@ -1797,7 +1807,12 @@
         "viewFortune": "相性占いを見る",
         "submitting": "作成中...",
         "customRelationshipPlaceholder": "関係を入力してください",
-        "save": "保存する"
+        "save": "保存する",
+        "petRoleOwner": "飼い主",
+        "petRoleCat": "猫",
+        "petRoleDog": "犬",
+        "petSwap": "飼い主/ペットの順序を入れ替える",
+        "petSwapLabel": "順序を入れ替える"
       },
       "fortune": {
         "loading": "相性分析中...",

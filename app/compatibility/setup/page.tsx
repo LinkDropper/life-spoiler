@@ -22,6 +22,14 @@ import styles from "./page.module.css";
 
 import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
 
+const PET_RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
+  "cat_owner",
+  "dog_owner",
+];
+
+const isPetRelationship = (type: CompatibilityRelationshipType): boolean =>
+  PET_RELATIONSHIP_TYPES.includes(type);
+
 const RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
   "lover",
   "some",
@@ -30,8 +38,8 @@ const RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
   "family",
   "ex_partner",
   "ex_spouse",
-  // "cat_owner",
-  // "dog_owner",
+  "cat_owner",
+  "dog_owner",
   "custom",
 ];
 
@@ -79,7 +87,9 @@ export default function CompatibilitySetupPage() {
     }
   }, [searchParams, isProfilesLoading, router]);
 
-  const selectedProfiles = profiles.filter((p) => selectedIds.includes(p.id));
+  const selectedProfiles = selectedIds
+    .map((id) => profiles.find((p) => p.id === id))
+    .filter(Boolean) as typeof profiles;
 
   const handleBack = useCallback(() => {
     router.push("/compatibility");
@@ -108,6 +118,13 @@ export default function CompatibilitySetupPage() {
     setSelectedIds(tempSelectedIds);
     setIsModalOpen(false);
   }, [tempSelectedIds]);
+
+  const handleSwapProfiles = useCallback(() => {
+    setSelectedIds((prev) => {
+      if (prev.length !== 2) return prev;
+      return [prev[1], prev[0]];
+    });
+  }, []);
 
   const handleNewProfile = useCallback(() => {
     const path = "/compatibility/setup?modal=open";
@@ -162,6 +179,16 @@ export default function CompatibilitySetupPage() {
       : tProfile("female", { default: "여성" });
   };
 
+  const getPetRoleLabel = (index: number): string | null => {
+    if (!isPetRelationship(relationshipType)) return null;
+    if (index === 0) {
+      return t("petRoleOwner", { default: "집사" });
+    }
+    return relationshipType === "cat_owner"
+      ? t("petRoleCat", { default: "고양이" })
+      : t("petRoleDog", { default: "강아지" });
+  };
+
   const isFormValid =
     selectedIds.length === MAX_SELECTED &&
     !isSubmitting &&
@@ -205,37 +232,99 @@ export default function CompatibilitySetupPage() {
 
           {selectedProfiles.length > 0 && (
             <div className={styles.selectedProfiles}>
-              {selectedProfiles.map((profile) => (
-                <div key={profile.id} className={styles.selectedProfileCard}>
-                  <div className={styles.profileCardNameRow}>
-                    <span className={styles.profileCardName}>
-                      {profile.name}
-                    </span>
-                  </div>
-                  <div className={styles.profileCardInfoRow}>
-                    <div className={styles.profileCardDateTime}>
-                      <span className={styles.profileCardInfoText}>
-                        {formatBirthDate(profile.birth_date)}
-                      </span>
-                      <span className={styles.profileCardInfoText}>
-                        {formatBirthTime(
-                          profile.birth_time,
-                          profile.birth_time_unknown,
-                          timeUnknownLabel
-                        )}
-                      </span>
+              {selectedProfiles.map((profile, index) => {
+                const petRole = getPetRoleLabel(index);
+                return (
+                  <div key={profile.id}>
+                    {index === 1 &&
+                      isPetRelationship(relationshipType) &&
+                      selectedProfiles.length === 2 && (
+                        <button
+                          type="button"
+                          className={styles.swapButton}
+                          onClick={handleSwapProfiles}
+                          aria-label={t("petSwap", {
+                            default: "집사/반려동물 순서 바꾸기",
+                          })}
+                        >
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M5.25 3L2.25 6L5.25 9"
+                              stroke="#FFCCD9"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M2.25 6H12.75"
+                              stroke="#FFCCD9"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M12.75 15L15.75 12L12.75 9"
+                              stroke="#FFCCD9"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M15.75 12H5.25"
+                              stroke="#FFCCD9"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          <span className={styles.swapButtonLabel}>
+                            {t("petSwapLabel", {
+                              default: "순서 바꾸기",
+                            })}
+                          </span>
+                        </button>
+                      )}
+                    <div className={styles.selectedProfileCard}>
+                      {petRole && (
+                        <span className={styles.petRoleLabel}>{petRole}</span>
+                      )}
+                      <div className={styles.profileCardNameRow}>
+                        <span className={styles.profileCardName}>
+                          {profile.name}
+                        </span>
+                      </div>
+                      <div className={styles.profileCardInfoRow}>
+                        <div className={styles.profileCardDateTime}>
+                          <span className={styles.profileCardInfoText}>
+                            {formatBirthDate(profile.birth_date)}
+                          </span>
+                          <span className={styles.profileCardInfoText}>
+                            {formatBirthTime(
+                              profile.birth_time,
+                              profile.birth_time_unknown,
+                              timeUnknownLabel
+                            )}
+                          </span>
+                        </div>
+                        <div className={styles.profileCardTags}>
+                          <span className={styles.profileCardTag}>
+                            {getCalendarLabel(profile.calendar_type)}
+                          </span>
+                          <span className={styles.profileCardTag}>
+                            {getGenderLabel(profile.gender)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className={styles.profileCardTags}>
-                      <span className={styles.profileCardTag}>
-                        {getCalendarLabel(profile.calendar_type)}
-                      </span>
-                      <span className={styles.profileCardTag}>
-                        {getGenderLabel(profile.gender)}
-                      </span>
-                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               <button
                 type="button"
                 className={styles.changeButton}
