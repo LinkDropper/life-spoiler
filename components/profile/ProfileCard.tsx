@@ -60,6 +60,7 @@ export const ProfileCard = ({
 
   const hasLifetimeFortune = completedFortunes.includes("lifetime");
   const hasYearlyFortune = completedFortunes.includes("yearly");
+  const hasPastLifeFortune = completedFortunes.includes("past_life");
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -115,7 +116,7 @@ export const ProfileCard = ({
           </div>
         </div>
       </div>
-      {(hasLifetimeFortune || hasYearlyFortune) && (
+      {(hasLifetimeFortune || hasYearlyFortune || hasPastLifeFortune) && (
         <div className={styles.fortuneTags}>
           {hasLifetimeFortune && (
             <span className={styles.fortuneTag}>
@@ -155,6 +156,26 @@ export const ProfileCard = ({
                 />
               </svg>
               {t("yearlyFortune", { default: "올해 운세" })}
+            </span>
+          )}
+          {hasPastLifeFortune && (
+            <span className={styles.fortuneTag}>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.6667 3.5L5.25 9.91667L2.33333 7"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {t("pastLifeFortune", { default: "전생 운세" })}
             </span>
           )}
         </div>

@@ -7,8 +7,8 @@ import styles from "./ProfileInfo.module.css";
 interface ProfileInfoProps {
   /** 프로필 이름 */
   name: string;
-  /** 제목 타입: "lifetime" | "yearly" */
-  fortuneType: "lifetime" | "yearly";
+  /** 제목 타입: "lifetime" | "yearly" | "past_life" */
+  fortuneType: "lifetime" | "yearly" | "past_life";
   /** 연도 (yearly 타입일 때만 사용) */
   year?: number;
   /** 생년월일 (YYYY-MM-DD 형식) */
@@ -40,7 +40,9 @@ export const ProfileInfo = ({
   const title =
     fortuneType === "yearly" && year
       ? t("yearly.title", { name, year })
-      : t("lifetime.title", { name });
+      : fortuneType === "past_life"
+        ? t("pastLife.title")
+        : t("lifetime.title", { name });
 
   // 생년월일 포맷팅 (YYYY-MM-DD → YYYY.MM.DD)
   const formattedDate = birthDate.replace(/-/g, ".");
