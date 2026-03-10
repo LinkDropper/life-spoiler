@@ -651,3 +651,203 @@ export const CompatibilityCategoriesCombinedResponseSchema = z.object({
 export type CompatibilityCategoriesCombinedResponse = z.infer<
   typeof CompatibilityCategoriesCombinedResponseSchema
 >;
+
+// ============================================================
+// 전생 운세 타입
+// ============================================================
+
+export type PastLifeInterpretationType =
+  | "past_life_spoiler"
+  | "past_life_birth"
+  | "past_life_journey"
+  | "past_life_end"
+  | "past_life_connections"
+  | "past_life_profile_card"
+  | "past_life_stats"
+  | "past_life_contrast"
+  | "past_life_lessons"
+  | "past_life_world"
+  | "past_life_traces";
+
+// 전생 스포일러 + 이미지 프롬프트
+export const PastLifeSpoilerResponseSchema = z.object({
+  headline: z.string(),
+  existenceType: z.enum(["human", "animal", "plant", "insect", "nature"]),
+  description: z.string(),
+  summary: z.string(),
+  imagePrompt: z.string(),
+});
+
+export type PastLifeSpoilerResponse = z.infer<
+  typeof PastLifeSpoilerResponseSchema
+>;
+
+// 전생 스토리 — 탄생
+export const PastLifeBirthResponseSchema = z.object({
+  headline: z.string(),
+  content: z.string(),
+});
+
+export type PastLifeBirthResponse = z.infer<typeof PastLifeBirthResponseSchema>;
+
+// 전생 스토리 — 삶
+export const PastLifeJourneyResponseSchema = z.object({
+  headline: z.string(),
+  events: z
+    .array(
+      z.object({
+        period: z.string(),
+        event: z.string(),
+      })
+    )
+    .min(3)
+    .max(5),
+  content: z.string(),
+});
+
+export type PastLifeJourneyResponse = z.infer<
+  typeof PastLifeJourneyResponseSchema
+>;
+
+// 전생 스토리 — 죽음과 카르마
+export const PastLifeEndResponseSchema = z.object({
+  headline: z.string(),
+  content: z.string(),
+  lastWords: z.string(),
+});
+
+export type PastLifeEndResponse = z.infer<typeof PastLifeEndResponseSchema>;
+
+// 전생 인연
+export const PastLifeConnectionsResponseSchema = z.object({
+  headline: z.string(),
+  content: z.string(),
+});
+
+export type PastLifeConnectionsResponse = z.infer<
+  typeof PastLifeConnectionsResponseSchema
+>;
+
+// 전생 프로필 카드
+export const PastLifeProfileCardResponseSchema = z.object({
+  hashtags: z.array(z.string()).length(3),
+  spectrums: z
+    .array(
+      z.object({
+        label: z.string(),
+        leftLabel: z.string(),
+        rightLabel: z.string(),
+        score: z.number(),
+      })
+    )
+    .length(4),
+  epitaph: z.string(),
+});
+
+export type PastLifeProfileCardResponse = z.infer<
+  typeof PastLifeProfileCardResponseSchema
+>;
+
+// 전생 능력치 (RPG 스탯)
+export const PastLifeStatsResponseSchema = z.object({
+  title: z.string(),
+  stats: z
+    .array(
+      z.object({
+        label: z.string(),
+        score: z.number().min(0).max(100),
+      })
+    )
+    .length(5),
+});
+
+export type PastLifeStatsResponse = z.infer<
+  typeof PastLifeStatsResponseSchema
+>;
+
+// 전생 vs 현생 대비
+export const PastLifeContrastResponseSchema = z.object({
+  contrasts: z
+    .array(
+      z.object({
+        aspect: z.string(),
+        pastLife: z.string(),
+        presentLife: z.string(),
+      })
+    )
+    .min(3)
+    .max(4),
+});
+
+export type PastLifeContrastResponse = z.infer<
+  typeof PastLifeContrastResponseSchema
+>;
+
+// 전생 교훈
+export const PastLifeLessonsResponseSchema = z.object({
+  lessons: z
+    .array(
+      z.object({
+        headline: z.string(),
+        content: z.string(),
+      })
+    )
+    .min(2)
+    .max(3),
+});
+
+export type PastLifeLessonsResponse = z.infer<
+  typeof PastLifeLessonsResponseSchema
+>;
+
+// 전생 세계관
+export const PastLifeWorldResponseSchema = z.object({
+  era: z.string(),
+  location: z.string(),
+  atmosphere: z.string(),
+  socialRole: z.string(),
+  description: z.string(),
+});
+
+export type PastLifeWorldResponse = z.infer<
+  typeof PastLifeWorldResponseSchema
+>;
+
+// 전생의 흔적 (현생에 남은 것들)
+export const PastLifeTracesResponseSchema = z.object({
+  traces: z
+    .array(
+      z.object({
+        category: z.string(),
+        trace: z.string(),
+        origin: z.string(),
+      })
+    )
+    .min(3)
+    .max(4),
+});
+
+export type PastLifeTracesResponse = z.infer<
+  typeof PastLifeTracesResponseSchema
+>;
+
+// 전생 운세 최종 결과
+export interface PastLifeFortuneInterpretation {
+  spoiler: PastLifeSpoilerResponse;
+  birth: PastLifeBirthResponse;
+  journey: PastLifeJourneyResponse;
+  end: PastLifeEndResponse;
+  connections: PastLifeConnectionsResponse;
+  profileCard: PastLifeProfileCardResponse;
+  stats: PastLifeStatsResponse;
+  contrast: PastLifeContrastResponse;
+  lessons: PastLifeLessonsResponse;
+  world: PastLifeWorldResponse;
+  traces: PastLifeTracesResponse;
+  imageUrl: string | null;
+  meta: {
+    generatedAt: string;
+    model: string;
+    isFallback: boolean;
+  };
+}

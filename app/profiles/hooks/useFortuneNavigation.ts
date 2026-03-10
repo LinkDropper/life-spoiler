@@ -5,7 +5,12 @@ import { useRouter } from "next/navigation";
 
 import type { ProfileWithFortunes } from "@/libs/stores/profile";
 
-type FortuneType = "lifetime" | "yearly";
+type FortuneType = "lifetime" | "yearly" | "past-life";
+
+const toDbFortuneType = (
+  type: FortuneType
+): "lifetime" | "yearly" | "past_life" =>
+  type === "past-life" ? "past_life" : type;
 
 interface UseFortuneNavigationProps {
   selectedProfile: ProfileWithFortunes | undefined;
@@ -27,8 +32,9 @@ export const useFortuneNavigation = ({
     (fortuneType: FortuneType): boolean => {
       if (!selectedProfile?.fortunes) return false;
 
+      const dbType = toDbFortuneType(fortuneType);
       return selectedProfile.fortunes.some(
-        (f) => f.fortune_type === fortuneType && f.paid_at !== null
+        (f) => f.fortune_type === dbType && f.paid_at !== null
       );
     },
     [selectedProfile]
@@ -41,9 +47,10 @@ export const useFortuneNavigation = ({
       // 호출 시점의 현재 시간으로 만료 체크 (정적 시간 사용하지 않음)
       const now = new Date().toISOString();
 
+      const dbType = toDbFortuneType(fortuneType);
       return selectedProfile.profile_free_access.some(
         (access) =>
-          access.fortune_type === fortuneType &&
+          access.fortune_type === dbType &&
           (access.expires_at === null || access.expires_at > now)
       );
     },

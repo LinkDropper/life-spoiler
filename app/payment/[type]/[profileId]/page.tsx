@@ -25,7 +25,7 @@ const PAYPAL_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_PAYPAL_CLIENT_KEY ?? "";
 const PAYMENT_AMOUNT_KRW = 990;
 const PAYMENT_AMOUNT_USD = 0.99;
 
-type FortuneType = "yearly" | "lifetime" | "compatibility";
+type FortuneType = "yearly" | "lifetime" | "compatibility" | "past_life";
 
 type PaymentMethod =
   | "CARD"
@@ -177,7 +177,8 @@ function PaymentPageContent() {
     if (
       fortuneType !== "yearly" &&
       fortuneType !== "lifetime" &&
-      fortuneType !== "compatibility"
+      fortuneType !== "compatibility" &&
+      fortuneType !== "past_life"
     ) {
       setError(tPayment("invalidFortuneType"));
       setIsLoading(false);
@@ -246,8 +247,16 @@ function PaymentPageContent() {
       const orderName = isCompatibility
         ? tPayment("orderNameCompatibility", { nameA, nameB })
         : fortuneType === "yearly"
-          ? tPayment("orderNameYearly", { name: cachedProfile?.name ?? "" })
-          : tPayment("orderNameLifetime", { name: cachedProfile?.name ?? "" });
+          ? tPayment("orderNameYearly", {
+              name: cachedProfile?.name ?? "",
+            })
+          : fortuneType === "past_life"
+            ? tPayment("orderNamePastLife", {
+                name: cachedProfile?.name ?? "",
+              })
+            : tPayment("orderNameLifetime", {
+                name: cachedProfile?.name ?? "",
+              });
 
       // PayPal 결제 (v2 결제창 - API 개별 연동 방식)
       if (selectedMethod === "PAYPAL") {
@@ -281,7 +290,9 @@ function PaymentPageContent() {
                   ? "Compatibility Fortune"
                   : fortuneType === "yearly"
                     ? "2025 Yearly Fortune"
-                    : "Lifetime Fortune",
+                    : fortuneType === "past_life"
+                      ? "Past Life Fortune"
+                      : "Lifetime Fortune",
               },
             ],
           },
@@ -348,6 +359,8 @@ function PaymentPageContent() {
   const handleBack = () => {
     if (isCompatibility) {
       router.push(`/compatibility/${profileId}/fortune/preview`);
+    } else if (fortuneType === "past_life") {
+      router.push(`/fortune/past-life/preview/${profileId}`);
     } else {
       router.push(`/fortune/${fortuneType}/preview/${profileId}`);
     }
@@ -359,6 +372,9 @@ function PaymentPageContent() {
     }
     if (fortuneType === "yearly") {
       return tPayment("productNameYearly");
+    }
+    if (fortuneType === "past_life") {
+      return tPayment("productNamePastLife");
     }
     return tPayment("productNameLifetime");
   };
@@ -443,6 +459,8 @@ function PaymentPageContent() {
   const handleViewFortune = () => {
     if (isCompatibility) {
       router.push(`/compatibility/${profileId}`);
+    } else if (fortuneType === "past_life") {
+      router.push(`/fortune/past-life/${profileId}`);
     } else {
       router.push(`/fortune/${fortuneType}/${profileId}`);
     }

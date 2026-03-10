@@ -7,6 +7,7 @@ import { HeaderClient } from "@/components/landing";
 import {
   CompatibilityFortuneCard,
   LifetimeFortuneCard,
+  PastLifeCard,
   YearlyFortuneCard,
 } from "@/components/home";
 import { useAuthStatus } from "@/libs/stores/user";
@@ -35,6 +36,10 @@ export default function HomePage() {
     router.push("/compatibility");
   }, [router]);
 
+  const handlePastLifeFortune = useCallback(() => {
+    router.push("/profiles?type=past-life");
+  }, [router]);
+
   if (authStatus === "loading" || authStatus === "unauthenticated") {
     return null;
   }
@@ -46,6 +51,7 @@ export default function HomePage() {
         <LifetimeFortuneCard onClick={handleLifetimeFortune} />
         <YearlyFortuneCard onClick={handleYearlyFortune} />
         <CompatibilityFortuneCard onClick={handleCompatibilityFortune} />
+        <PastLifeCard onClick={handlePastLifeFortune} />
       </main>
     </div>
   );

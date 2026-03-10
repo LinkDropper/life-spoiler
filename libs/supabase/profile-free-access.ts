@@ -53,6 +53,7 @@ export const getProfileFreeAccessMap = async (
     lifetime: { granted: false, expiresAt: null, grantedBy: null },
     yearly: { granted: false, expiresAt: null, grantedBy: null },
     compatibility: { granted: false, expiresAt: null, grantedBy: null },
+    past_life: { granted: false, expiresAt: null, grantedBy: null },
   };
 
   for (const access of accessList) {

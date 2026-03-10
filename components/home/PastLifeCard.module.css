@@ -1,0 +1,71 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:hover {
+  opacity: 0.95;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 164px;
+  padding: 24px;
+  background: #d9c8f0;
+  border-bottom: 1px solid #2d1b4e;
+  overflow: hidden;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  color: #2d1b4e;
+  font-family: "SB AggroOTF";
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: 0;
+}
+
+.subtitle {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+}
+
+.illustration {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  width: 180px;
+  height: 200px;
+  pointer-events: none;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  background: var(--primitive-white, #ffffff);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+}

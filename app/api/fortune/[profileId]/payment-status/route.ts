@@ -53,7 +53,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
     const typeParam = searchParams.get("type") || "lifetime";
     const fortuneType: FortuneType =
-      typeParam === "lifetime" || typeParam === "yearly"
+      typeParam === "lifetime" ||
+      typeParam === "yearly" ||
+      typeParam === "past_life"
         ? typeParam
         : "lifetime";
 

@@ -210,6 +210,11 @@
         "title": "궁합 운세",
         "subtitle": "내 인간관계 분석하기",
         "button": "궁합 운세 확인하기"
+      },
+      "pastLife": {
+        "title": "전생 운세",
+        "subtitle": "전생의 나를 만나보기",
+        "button": "전생 운세 확인하기"
       }
     },
     "profiles": {
@@ -218,6 +223,7 @@
       "selectProfile": "프로필을 선택해주세요.",
       "lifetimeFortune": "인생 운세 보기",
       "yearlyFortune": "올해 운세 보기",
+      "pastLifeFortune": "전생 운세 보기",
       "newProfile": "새 프로필 만들기",
       "deleteModal": {
         "title": "정말 삭제하시겠어요?",
@@ -234,7 +240,8 @@
         "female": "여성",
         "deleteAriaLabel": "프로필 삭제",
         "lifetimeFortune": "인생 운세",
-        "yearlyFortune": "올해 운세"
+        "yearlyFortune": "올해 운세",
+        "pastLifeFortune": "전생 운세"
       }
     },
     "compatibility": {
@@ -478,6 +485,37 @@
           "summary": "종합 운세"
         }
       },
+      "pastLife": {
+        "title": "전생 운세",
+        "subtitle": "당신의 전생은?",
+        "spoilerTitle": "전생 스포일러",
+        "birthTitle": "탄생 스토리",
+        "journeyTitle": "삶의 여정",
+        "endTitle": "죽음과 카르마",
+        "connectionsTitle": "전생 인연",
+        "profileCardTitle": "전생 프로필 카드",
+        "chartTitle": "자미두수 명반",
+        "statsTitle": "전생 능력치",
+        "contrastTitle": "전생 vs 현생",
+        "contrastPastLife": "전생",
+        "contrastPresentLife": "현생",
+        "lessonsTitle": "전생이 남긴 교훈",
+        "worldTitle": "전생의 세계",
+        "tracesTitle": "전생의 흔적",
+        "disclaimer": "전생 해석은 자미두수 명반의 창의적 재해석이며, 학술적 정설이 아닌 엔터테인먼트 콘텐츠입니다.",
+        "interpretError": "전생 운세 생성에 실패했어요.",
+        "ctaButton": "전생 확인하기 (990원)",
+        "shareButton": "공유하기",
+        "profileShareTitle": "프로필 이미지 공유하기",
+        "imageBlurText": "결제 후 이미지를 확인할 수 있어요",
+        "imagePlaceholder": "전생 이미지 준비 중",
+        "blurredPlaceholder": "결제 후 확인할 수 있습니다.",
+        "previewTeaser": "지금 보신 건 '예고편'에 불과해요. 전생의 탄생 스토리, 삶의 여정, 그리고 현생과의 연결은 결제 후 확인할 수 있어요.",
+        "errorTitle": "일시적으로 접속이 원활하지 않아요",
+        "errorDescription": "현재 이용자가 많아 전생 운세 생성에 실패했어요. 잠시 후 다시 시도해 주세요.",
+        "refresh": "새로고침",
+        "loading": "전생을 탐색하고 있어요..."
+      },
       "yearly": {
         "title": "{name}님의 {year}년 운세",
         "fetchError": "올해 운세 조회에 실패했습니다.",
@@ -633,12 +671,14 @@
       "processing": "결제 처리 중...",
       "productNameYearly": "올해 운세 스포일러",
       "productNameLifetime": "인생 운세 스포일러",
+      "productNamePastLife": "전생 운세 스포일러",
       "productNameCompatibility": "궁합 스포일러",
       "loading": "결제 준비 중...",
       "refundPolicy": "디지털 콘텐츠 특성상 결제 후 결과 확인 시 환불이 불가능합니다.",
       "viewPeriod": "본 상품의 열람 기간은 결제일로부터 1년입니다.",
       "orderNameYearly": "{name}님의 올해 운세 스포일러",
       "orderNameLifetime": "{name}님의 인생 스포일러",
+      "orderNamePastLife": "{name}님의 전생 운세 스포일러",
       "orderNameCompatibility": "{nameA} X {nameB} 궁합 스포일러",
       "profileNotFound": "프로필을 찾을 수 없습니다.",
       "invalidFortuneType": "유효하지 않은 운세 유형입니다.",
@@ -972,6 +1012,11 @@
         "title": "Compatibility",
         "subtitle": "Analyze my relationships",
         "button": "View Compatibility Fortune"
+      },
+      "pastLife": {
+        "title": "Past Life Fortune",
+        "subtitle": "Meet Who You Once Were",
+        "button": "Check Past Life Fortune"
       }
     },
     "profiles": {
@@ -980,6 +1025,7 @@
       "selectProfile": "Please select a profile.",
       "lifetimeFortune": "View Lifetime Fortune",
       "yearlyFortune": "View This Year's Fortune",
+      "pastLifeFortune": "View Past Life Fortune",
       "newProfile": "Create New Profile",
       "deleteModal": {
         "title": "Are you sure you want to delete?",
@@ -996,7 +1042,8 @@
         "female": "Female",
         "deleteAriaLabel": "Delete Profile",
         "lifetimeFortune": "Lifetime Fortune",
-        "yearlyFortune": "Yearly Fortune"
+        "yearlyFortune": "Yearly Fortune",
+        "pastLifeFortune": "Past Life Fortune"
       }
     },
     "compatibility": {
@@ -1240,6 +1287,37 @@
           "summary": "Overall Fortune"
         }
       },
+      "pastLife": {
+        "title": "Past Life Fortune",
+        "subtitle": "What was your past life?",
+        "spoilerTitle": "Past Life Spoiler",
+        "birthTitle": "Birth Story",
+        "journeyTitle": "Life Journey",
+        "endTitle": "Death & Karma",
+        "connectionsTitle": "Past Life Connections",
+        "profileCardTitle": "Past Life Profile Card",
+        "chartTitle": "Zi Wei Dou Shu Chart",
+        "statsTitle": "Past Life Stats",
+        "contrastTitle": "Past vs Present",
+        "contrastPastLife": "Past Life",
+        "contrastPresentLife": "Present Life",
+        "lessonsTitle": "Lessons from Past Life",
+        "worldTitle": "World of Past Life",
+        "tracesTitle": "Traces of Past Life",
+        "disclaimer": "Past life interpretation is a creative reimagining of the Zi Wei Dou Shu chart, not an academic theory. This is entertainment content.",
+        "interpretError": "Failed to generate past life fortune.",
+        "ctaButton": "Discover Past Life ($0.99)",
+        "shareButton": "Share",
+        "profileShareTitle": "Share Profile Image",
+        "imageBlurText": "Unlock image after payment",
+        "imagePlaceholder": "Past life image in progress",
+        "blurredPlaceholder": "Available after payment.",
+        "previewTeaser": "What you've seen is just the 'trailer'. Your past life's birth story, life journey, and connection to your present life are revealed only after payment.",
+        "errorTitle": "Temporarily unavailable",
+        "errorDescription": "Too many users at the moment. Please try again shortly.",
+        "refresh": "Refresh",
+        "loading": "Exploring your past life..."
+      },
       "yearly": {
         "title": "{name}'s {year} Fortune",
         "fetchError": "Failed to fetch this year's fortune.",
@@ -1395,12 +1473,14 @@
       "processing": "Processing payment...",
       "productNameYearly": "Yearly Fortune Spoiler",
       "productNameLifetime": "Lifetime Fortune Spoiler",
+      "productNamePastLife": "Past Life Fortune Spoiler",
       "productNameCompatibility": "Compatibility Spoiler",
       "loading": "Preparing payment...",
       "refundPolicy": "Due to the nature of digital content, refunds are not available after viewing the results.",
       "viewPeriod": "This product can be viewed for 1 year from the date of purchase.",
       "orderNameYearly": "{name}'s Yearly Fortune Spoiler",
       "orderNameLifetime": "{name}'s Life Spoiler",
+      "orderNamePastLife": "{name}'s Past Life Fortune Spoiler",
       "orderNameCompatibility": "{nameA} X {nameB} Compatibility Spoiler",
       "profileNotFound": "Profile not found.",
       "invalidFortuneType": "Invalid fortune type.",
@@ -1734,6 +1814,11 @@
         "title": "相性占い",
         "subtitle": "人間関係を分析する",
         "button": "相性占いを見る"
+      },
+      "pastLife": {
+        "title": "前世占い",
+        "subtitle": "前世の自分に会いに行く",
+        "button": "前世占いを確認する"
       }
     },
     "profiles": {
@@ -1742,6 +1827,7 @@
       "selectProfile": "プロフィールを選択してください。",
       "lifetimeFortune": "人生運勢を見る",
       "yearlyFortune": "今年の運勢を見る",
+      "pastLifeFortune": "前世占いを見る",
       "newProfile": "新しいプロフィールを作成",
       "deleteModal": {
         "title": "本当に削除しますか？",
@@ -1758,7 +1844,8 @@
         "female": "女性",
         "deleteAriaLabel": "プロフィール削除",
         "lifetimeFortune": "人生運勢",
-        "yearlyFortune": "今年の運勢"
+        "yearlyFortune": "今年の運勢",
+        "pastLifeFortune": "前世運勢"
       }
     },
     "compatibility": {
@@ -2002,6 +2089,37 @@
           "summary": "総合運勢"
         }
       },
+      "pastLife": {
+        "title": "前世運勢",
+        "subtitle": "あなたの前世は？",
+        "spoilerTitle": "前世ネタバレ",
+        "birthTitle": "誕生ストーリー",
+        "journeyTitle": "人生の旅路",
+        "endTitle": "死とカルマ",
+        "connectionsTitle": "前世の縁",
+        "profileCardTitle": "前世プロフィールカード",
+        "chartTitle": "紫微斗数命盤",
+        "statsTitle": "前世の能力値",
+        "contrastTitle": "前世 vs 現世",
+        "contrastPastLife": "前世",
+        "contrastPresentLife": "現世",
+        "lessonsTitle": "前世が残した教訓",
+        "worldTitle": "前世の世界",
+        "tracesTitle": "前世の痕跡",
+        "disclaimer": "前世解釈は紫微斗数命盤の創造的な再解釈であり、学術的な定説ではなくエンターテインメントコンテンツです。",
+        "interpretError": "前世運勢の生成に失敗しました。",
+        "ctaButton": "前世を確認する ($0.99)",
+        "shareButton": "シェアする",
+        "profileShareTitle": "プロフィール画像をシェアする",
+        "imageBlurText": "決済後にイメージを確認できます",
+        "imagePlaceholder": "前世イメージ準備中",
+        "blurredPlaceholder": "決済後に確認できます。",
+        "previewTeaser": "今ご覧になったのは「予告編」に過ぎません。前世の誕生ストーリー、人生の旅路、そして現世との繋がりは決済後に確認できます。",
+        "errorTitle": "一時的にアクセスが困難です",
+        "errorDescription": "現在利用者が多く、前世運勢の生成に失敗しました。しばらく後にもう一度お試しください。",
+        "refresh": "再読み込み",
+        "loading": "前世を探索しています..."
+      },
       "yearly": {
         "title": "{name}さんの{year}年運勢",
         "fetchError": "今年の運勢取得に失敗しました。",
@@ -2157,12 +2275,14 @@
       "processing": "決済処理中...",
       "productNameYearly": "今年の運勢ネタバレ",
       "productNameLifetime": "人生運勢ネタバレ",
+      "productNamePastLife": "前世運勢ネタバレ",
       "productNameCompatibility": "相性ネタバレ",
       "loading": "決済準備中...",
       "refundPolicy": "デジタルコンテンツの特性上、決済後に結果を確認すると返金ができません。",
       "viewPeriod": "本商品の閲覧期間は決済日から1年間です。",
       "orderNameYearly": "{name}さんの今年の運勢ネタバレ",
       "orderNameLifetime": "{name}さんの人生ネタバレ",
+      "orderNamePastLife": "{name}さんの前世運勢ネタバレ",
       "orderNameCompatibility": "{nameA} X {nameB} 相性ネタバレ",
       "profileNotFound": "プロフィールが見つかりません。",
       "invalidFortuneType": "無効な運勢タイプです。",

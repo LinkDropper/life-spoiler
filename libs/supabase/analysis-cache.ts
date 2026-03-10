@@ -6,6 +6,7 @@ import type { Locale } from "@/i18n/config";
 import type {
   FortuneInterpretation,
   InterpretationType,
+  PastLifeFortuneInterpretation,
   YearlyFortuneInterpretation,
 } from "@/libs/services/ai";
 
@@ -33,6 +34,7 @@ type CacheKeyType =
   | `yearly-${number}`
   | `preview-${Locale}`
   | `full-${Locale}`
+  | `full-past_life-${Locale}`
   | `yearly-${number}-${Locale}`;
 
 /**
@@ -64,8 +66,11 @@ export const generateChartHash = (params: {
   return createHash("sha256").update(key).digest("hex").slice(0, 16);
 };
 
-/** 캐시 결과 타입 (인생 운세 또는 올해 운세) */
-type CacheResultType = FortuneInterpretation | YearlyFortuneInterpretation;
+/** 캐시 결과 타입 (인생 운세, 올해 운세 또는 전생 운세) */
+type CacheResultType =
+  | FortuneInterpretation
+  | YearlyFortuneInterpretation
+  | PastLifeFortuneInterpretation;
 
 /**
  * 캐시된 분석 결과 조회
