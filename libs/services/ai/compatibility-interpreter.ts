@@ -329,13 +329,25 @@ const formatCompatibilityDataForAI = (
     request.relationshipTypeKey === "cat_owner" ||
     request.relationshipTypeKey === "dog_owner";
 
-  let contextBlock = `## 🔑 관계 맥락 (이 정보를 모든 해석의 기준으로 삼으세요)
+  const petAnimalLabel =
+    request.relationshipTypeKey === "cat_owner" ? "고양이" : "강아지";
+
+  let contextBlock: string;
+
+  if (isPetRelationship) {
+    contextBlock = `## 🔑 관계 맥락 (이 정보를 모든 해석의 기준으로 삼으세요)
+- 관계 유형: **${relationshipType}**
+- 집사: ${profileA.name}님 (${profileA.currentAge}세, ${genderLabelA})
+- 반려${petAnimalLabel}: ${profileB.name}
+- ⚠️ 반려동물 관계: 나이·성별 비교 불필요, 사람-동물 역학에 집중
+- ⚠️ ${profileB.name}은(는) ${petAnimalLabel}입니다. "님", "분", "씨" 등 경칭을 절대 붙이지 마세요.`;
+  } else {
+    contextBlock = `## 🔑 관계 맥락 (이 정보를 모든 해석의 기준으로 삼으세요)
 - 관계 유형: **${relationshipType}**
 - 성별 조합: ${genderCombo}
 - ${profileA.name}: ${genderLabelA}, ${profileA.currentAge}세 (${profileA.birthYear}년생)
 - ${profileB.name}: ${genderLabelB}, ${profileB.currentAge}세 (${profileB.birthYear}년생)`;
 
-  if (!isPetRelationship) {
     if (ageDiff === 0) {
       contextBlock += `\n- 나이 관계: 동갑 — 수평적 역학을 반영하세요`;
     } else {
@@ -348,8 +360,6 @@ const formatCompatibilityDataForAI = (
         contextBlock += ` — 경험·세대 차이를 구체적 장면에 녹이세요`;
       }
     }
-  } else {
-    contextBlock += `\n- ⚠️ 반려동물 관계: 나이 비교 불필요, 사람-동물 역학에 집중`;
   }
 
   contextBlock += `\n\n⚠️ 위 관계 맥락을 모든 해석에 일관되게 반영하세요. ${relationshipType} 관계에 맞지 않는 표현을 사용하면 실패입니다.`;
@@ -361,7 +371,31 @@ const formatCompatibilityDataForAI = (
     const pA = request.personalityA;
     const pB = request.personalityB;
 
-    dataStr += `## ⭐ A (${profileA.name}) 성격 프로필 (사전 분석 완료)
+    if (isPetRelationship) {
+      dataStr += `## ⭐ 집사 (${profileA.name}) 성격 프로필 (사전 분석 완료)
+- 핵심 성격: ${pA.coreTraits.join(", ")}
+- 소통 스타일: ${pA.communicationStyle.join(", ")}
+- 감정 패턴: ${pA.emotionalPattern.join(", ")}
+- 갈등 대처: ${pA.conflictStyle.join(", ")}
+- 가치관: ${pA.valueOrientation.join(", ")}
+- 관계 강점: ${pA.strengths.join(", ")}
+- 관계 약점: ${pA.weaknesses.join(", ")}
+- 지배 오행: ${pA.dominantElement}
+- 종합: ${pA.summary}
+
+## ⭐ 반려${petAnimalLabel} (${profileB.name}) 기운 프로필 (사전 분석 완료)
+⚠️ 아래 특성은 동물의 기질·기운으로 해석하세요. 인간 성격처럼 해석하면 실패입니다.
+- 핵심 기질: ${pB.coreTraits.join(", ")}
+- 표현 방식: ${pB.communicationStyle.join(", ")}
+- 감정 기운: ${pB.emotionalPattern.join(", ")}
+- 스트레스 반응: ${pB.conflictStyle.join(", ")}
+- 에너지 성향: ${pB.valueOrientation.join(", ")}
+- 강점 기운: ${pB.strengths.join(", ")}
+- 약점 기운: ${pB.weaknesses.join(", ")}
+- 지배 오행: ${pB.dominantElement}
+- 종합: ${pB.summary}`;
+    } else {
+      dataStr += `## ⭐ A (${profileA.name}) 성격 프로필 (사전 분석 완료)
 - 핵심 성격: ${pA.coreTraits.join(", ")}
 - 소통 스타일: ${pA.communicationStyle.join(", ")}
 - 감정 패턴: ${pA.emotionalPattern.join(", ")}
@@ -382,6 +416,7 @@ const formatCompatibilityDataForAI = (
 - 관계 약점: ${pB.weaknesses.join(", ")}
 - 지배 오행: ${pB.dominantElement}
 - 종합: ${pB.summary}`;
+    }
   }
 
   // ──── 2. 사전 분석된 교차 분석 결과 ────
@@ -419,7 +454,18 @@ ${[
   }
 
   // ──── 3. 기본 정보 ────
-  dataStr += `\n\n## Profile A (${profileA.name}) Info
+  if (isPetRelationship) {
+    dataStr += `\n\n## 집사 (${profileA.name}) Info
+- name: ${profileA.name}
+- gender: ${genderLabelA}
+- age: ${profileA.currentAge}세 (${profileA.birthYear}년생)
+- lunarBirthInfo: ${profileA.lunarBirthInfo}
+
+## 반려${petAnimalLabel} (${profileB.name}) Info
+- name: ${profileB.name}
+- lunarBirthInfo: ${profileB.lunarBirthInfo}`;
+  } else {
+    dataStr += `\n\n## Profile A (${profileA.name}) Info
 - name: ${profileA.name}
 - gender: ${genderLabelA}
 - age: ${profileA.currentAge}세 (${profileA.birthYear}년생)
@@ -430,6 +476,7 @@ ${[
 - gender: ${genderLabelB}
 - age: ${profileB.currentAge}세 (${profileB.birthYear}년생)
 - lunarBirthInfo: ${profileB.lunarBirthInfo}`;
+  }
 
   // ──── 4. 에너지 분포 정보 (전문용어 제거) ────
   const palaceToLabel = (palace: string): string => {
@@ -489,7 +536,20 @@ ${fiveElementCompatibility}`;
     dataStr += `\n\n${previousContext}`;
   }
 
-  dataStr += `\n\n## ⚠️ 최종 점검
+  if (isPetRelationship) {
+    dataStr += `\n\n## ⚠️ 최종 점검
+1. 출력에 궁 이름(명궁, 부처궁 등), 별 이름(자미, 천기 등), 사화 용어(화록, 화기 등)가 포함되면 실패입니다.
+2. 위의 프로필 데이터를 기반으로 문장을 작성하세요. 별/궁 데이터를 직접 해석하지 마세요.
+3. **집사/반려동물 혼동 금지 — 출력 전 반드시 검증!**
+   - 집사 = ${profileA.name}님, 반려${petAnimalLabel} = ${profileB.name}
+   - ${profileA.name}님에 대해 쓸 때 → 반드시 "집사 (${profileA.name}) 성격 프로필"에서 가져온 특성만 사용
+   - ${profileB.name}에 대해 쓸 때 → 반드시 "반려${petAnimalLabel} (${profileB.name}) 기운 프로필"에서 가져온 특성만 사용
+4. **⚠️ 반려동물 경칭 금지 — ${profileB.name}에 "님", "분", "씨" 절대 금지!**
+   - ✅ "${profileB.name}는", "${profileB.name}가", "${profileB.name}이"
+   - ❌ "${profileB.name}님은", "${profileB.name}님이", "${profileB.name}님의"
+5. **⚠️ 인간 관계 표현 금지 — "연인", "친구", "동료", "소통 방식" 등 인간 대 인간 관계 표현 사용 금지!**`;
+  } else {
+    dataStr += `\n\n## ⚠️ 최종 점검
 1. 출력에 궁 이름(명궁, 부처궁 등), 별 이름(자미, 천기 등), 사화 용어(화록, 화기 등)가 포함되면 실패입니다.
 2. 위의 성격 프로필 데이터를 기반으로 문장을 작성하세요. 별/궁 데이터를 직접 해석하지 마세요.
 3. **A/B 혼동 금지 — 출력 전 반드시 검증!**
@@ -498,6 +558,7 @@ ${fiveElementCompatibility}`;
    - ${profileB.name}님에 대해 쓸 때 → 반드시 "B (${profileB.name}) 성격 프로필"에서 가져온 특성만 사용
    - "${profileA.name}님이 ${profileA.name}님을 보완" 같은 자기 자신 참조는 절대 금지 — 반드시 상대방 이름이어야 함
    - 문장을 쓴 뒤, 주어와 목적어의 이름이 다른지 반드시 확인하세요.`;
+  }
 
   return dataStr;
 };
