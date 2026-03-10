@@ -8,6 +8,7 @@ export type PromoErrorCode =
   | "ALREADY_APPLIED"
   | "FORTUNE_TYPE_MISMATCH"
   | "PROFILE_NOT_FOUND"
+  | "NOT_STAR_BONUS_CODE"
   | "DATABASE_ERROR";
 
 export interface PromoErrorDetails {
@@ -28,6 +29,7 @@ const ERROR_MESSAGES: Record<PromoErrorCode, string> = {
   ALREADY_APPLIED: "이미 이 프로필에 적용된 코드입니다.",
   FORTUNE_TYPE_MISMATCH: "이 운세 유형에는 적용할 수 없는 코드입니다.",
   PROFILE_NOT_FOUND: "프로필을 찾을 수 없습니다.",
+  NOT_STAR_BONUS_CODE: "별조각 보너스 코드가 아닙니다.",
   DATABASE_ERROR: "데이터베이스 오류가 발생했습니다.",
 };
 

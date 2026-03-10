@@ -395,6 +395,130 @@ export const getUserPromoUsages = async (
 /**
  * 프로필에 프로모션 코드가 적용되었는지 확인
  */
+/**
+ * 별조각 보너스 쿠폰 사용
+ * profileId/fortuneType 없이 계정 단위로 적용
+ */
+export const redeemStarCoupon = async (
+  code: string,
+  userId: string
+): Promise<{ starAmount: number; campaignName: string | null }> => {
+  // 1. 코드 존재 여부 확인
+  const promoCode = await findPromoCode(code);
+  if (!promoCode) {
+    throw new PromoError("INVALID_CODE", { promoCode: code });
+  }
+
+  // 2. 활성화 여부
+  if (!promoCode.is_active) {
+    throw new PromoError("CODE_INACTIVE", { promoCode: code });
+  }
+
+  // 3. 유효 기간
+  const now = new Date();
+  if (now < new Date(promoCode.valid_from)) {
+    throw new PromoError("CODE_NOT_YET_VALID", { promoCode: code });
+  }
+  if (promoCode.valid_until && now > new Date(promoCode.valid_until)) {
+    throw new PromoError("CODE_EXPIRED", { promoCode: code });
+  }
+
+  // 4. 전체 사용 횟수
+  if (
+    promoCode.max_uses !== null &&
+    promoCode.current_uses >= promoCode.max_uses
+  ) {
+    throw new PromoError("CODE_EXHAUSTED", { promoCode: code });
+  }
+
+  // 5. star_bonus_amount 확인
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const starAmount = (promoCode as any).star_bonus_amount as number | null;
+  if (!starAmount || starAmount <= 0) {
+    throw new PromoError("NOT_STAR_BONUS_CODE", { promoCode: code });
+  }
+
+  // 6. 유저당 사용 횟수
+  const userUsageCount = await getUserCodeUsageCount(promoCode.id, userId);
+  if (userUsageCount >= promoCode.max_uses_per_user) {
+    throw new PromoError("USER_LIMIT_EXCEEDED", { promoCode: code });
+  }
+
+  const supabase = createServerClient() as SupabaseDB;
+
+  // 7. 지갑 upsert + 별조각 추가
+  interface WalletData {
+    id: string;
+    bonus_balance: number;
+  }
+  const { data: wallet } = await supabase
+    .from("wallets")
+    .select("id, bonus_balance")
+    .eq("user_id", userId)
+    .single<WalletData>();
+
+  if (wallet) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase.from("wallets") as any)
+      .update({
+        bonus_balance: wallet.bonus_balance + starAmount,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", wallet.id);
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase.from("wallets") as any).insert({
+      user_id: userId,
+      paid_balance: 0,
+      bonus_balance: starAmount,
+    });
+  }
+
+  // 8. wallet_transactions 기록
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase.from("wallet_transactions") as any).insert({
+    wallet_id: wallet?.id,
+    type: "coupon_bonus",
+    paid_delta: 0,
+    bonus_delta: starAmount,
+    paid_balance_after: wallet ? 0 : 0,
+    bonus_balance_after: (wallet?.bonus_balance ?? 0) + starAmount,
+    description: `쿠폰: ${promoCode.code}`,
+  });
+
+  // 9. 사용 이력 (profile_id, fortune_type = null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase.from("promo_code_usages") as any).insert({
+    promo_code_id: promoCode.id,
+    user_id: userId,
+  });
+
+  // 10. 사용 횟수 증가
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase.from("promo_codes") as any)
+    .update({
+      current_uses: promoCode.current_uses + 1,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", promoCode.id);
+
+  // 11. 1회성 코드 비활성화
+  if (promoCode.code_type === "single_use") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase.from("promo_codes") as any)
+      .update({
+        is_active: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", promoCode.id);
+  }
+
+  return {
+    starAmount,
+    campaignName: promoCode.campaign_name,
+  };
+};
+
 export const hasPromoAppliedToProfile = async (
   profileId: string,
   fortuneType: FortuneType
