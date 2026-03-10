@@ -71,6 +71,7 @@ export const PastLifeProfileCard = forwardRef<
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: isImage ? "center" : "flex-start",
           padding: isImage ? "40px 24px 24px" : "20px 20px 24px 20px",
           fontFamily: "Pretendard, -apple-system, sans-serif",
           position: "relative",
