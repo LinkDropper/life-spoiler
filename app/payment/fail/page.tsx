@@ -22,8 +22,15 @@ function PaymentFailContent() {
     | "lifetime"
     | "compatibility"
     | null;
+  const packageId = searchParams.get("packageId");
+
+  const isStarPurchase = !!packageId;
 
   const handleRetry = () => {
+    if (isStarPurchase) {
+      router.push(`/payment/star/${packageId}`);
+      return;
+    }
     if (profileId && fortuneType) {
       router.push(`/payment/${fortuneType}/${profileId}`);
     } else {
@@ -32,6 +39,10 @@ function PaymentFailContent() {
   };
 
   const handleGoBack = () => {
+    if (isStarPurchase) {
+      router.push("/packages");
+      return;
+    }
     if (profileId && fortuneType) {
       if (fortuneType === "compatibility") {
         router.push(`/compatibility/${profileId}/fortune/preview`);

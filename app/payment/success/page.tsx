@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import { STAR_PACKAGES } from "@/libs/star-packages";
+import type { StarPackageId } from "@/libs/star-packages";
 import { trackPurchase } from "@/libs/analytics";
 
 import styles from "./page.module.css";
@@ -30,6 +32,11 @@ function PaymentSuccessContent() {
     | "past_life"
     | null;
   const currency = (searchParams.get("currency") as "KRW" | "USD") || "KRW";
+  const packageId = searchParams.get("packageId") as StarPackageId | null;
+
+  const isStarPurchase = !!packageId;
+  const starPackage =
+    packageId && STAR_PACKAGES[packageId] ? STAR_PACKAGES[packageId] : null;
 
   useEffect(() => {
     const confirmPayment = async () => {
@@ -40,51 +47,94 @@ function PaymentSuccessContent() {
       }
 
       try {
-        const response = await fetch("/api/payment/confirm", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            paymentKey,
-            orderId,
-            amount: Number(amount),
-            profileId: profileId ?? undefined,
-            fortuneType: fortuneType ?? undefined,
-            year:
-              fortuneType === "yearly" ? new Date().getFullYear() : undefined,
-            currency,
-          }),
-        });
-
-        await response.json();
-
-        if (!response.ok) {
-          throw new Error(tPayment("confirmError"));
-        }
-
-        setIsConfirmed(true);
-
-        // GA 결제 이벤트 전송
-        if (orderId && amount && fortuneType) {
-          trackPurchase({
-            transaction_id: orderId,
-            value: Number(amount),
-            currency,
-            items: [
-              {
-                item_id: fortuneType,
-                item_name:
-                  fortuneType === "compatibility"
-                    ? tPayment("productNameCompatibility")
-                    : fortuneType === "yearly"
-                      ? tPayment("productNameYearly")
-                      : tPayment("productNameLifetime"),
-                price: Number(amount),
-                quantity: 1,
-              },
-            ],
+        // 별조각 결제인 경우 confirm-star API 호출
+        if (isStarPurchase && packageId) {
+          const response = await fetch("/api/payment/confirm-star", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              paymentKey,
+              orderId,
+              amount: Number(amount),
+              packageId,
+              currency,
+            }),
           });
+
+          await response.json();
+
+          if (!response.ok) {
+            throw new Error(tPayment("confirmError"));
+          }
+
+          setIsConfirmed(true);
+
+          // GA 결제 이벤트 전송
+          if (orderId && amount && starPackage) {
+            trackPurchase({
+              transaction_id: orderId,
+              value: Number(amount),
+              currency,
+              items: [
+                {
+                  item_id: `star_${packageId}`,
+                  item_name: `Star Package - ${packageId}`,
+                  price: Number(amount),
+                  quantity: 1,
+                },
+              ],
+            });
+          }
+        } else {
+          // 기존 운세 결제 흐름
+          const response = await fetch("/api/payment/confirm", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              paymentKey,
+              orderId,
+              amount: Number(amount),
+              profileId: profileId ?? undefined,
+              fortuneType: fortuneType ?? undefined,
+              year:
+                fortuneType === "yearly" ? new Date().getFullYear() : undefined,
+              currency,
+            }),
+          });
+
+          await response.json();
+
+          if (!response.ok) {
+            throw new Error(tPayment("confirmError"));
+          }
+
+          setIsConfirmed(true);
+
+          // GA 결제 이벤트 전송
+          if (orderId && amount && fortuneType) {
+            trackPurchase({
+              transaction_id: orderId,
+              value: Number(amount),
+              currency,
+              items: [
+                {
+                  item_id: fortuneType,
+                  item_name:
+                    fortuneType === "compatibility"
+                      ? tPayment("productNameCompatibility")
+                      : fortuneType === "yearly"
+                        ? tPayment("productNameYearly")
+                        : tPayment("productNameLifetime"),
+                  price: Number(amount),
+                  quantity: 1,
+                },
+              ],
+            });
+          }
         }
       } catch {
         setError(tPayment("confirmError"));
@@ -94,9 +144,43 @@ function PaymentSuccessContent() {
     };
 
     confirmPayment();
-  }, [paymentKey, orderId, amount, profileId, fortuneType, currency, tPayment]);
+  }, [
+    paymentKey,
+    orderId,
+    amount,
+    profileId,
+    fortuneType,
+    currency,
+    tPayment,
+    isStarPurchase,
+    packageId,
+    starPackage,
+  ]);
+
+  // 별조각 결제 후 운세 프리뷰로 돌아갈 경로
+  const returnPath = (() => {
+    if (!isStarPurchase) return null;
+    try {
+      return sessionStorage.getItem("starChargeReturnPath");
+    } catch {
+      return null;
+    }
+  })();
 
   const handleViewFortune = () => {
+    if (isStarPurchase) {
+      if (returnPath) {
+        try {
+          sessionStorage.removeItem("starChargeReturnPath");
+        } catch {
+          // ignore
+        }
+        router.push(returnPath);
+      } else {
+        router.push("/packages");
+      }
+      return;
+    }
     if (profileId && fortuneType) {
       if (fortuneType === "compatibility") {
         router.push(`/compatibility/${profileId}`);
@@ -111,6 +195,10 @@ function PaymentSuccessContent() {
   };
 
   const handleGoHome = () => {
+    if (isStarPurchase) {
+      router.push("/packages");
+      return;
+    }
     router.push("/profiles");
   };
 
@@ -186,8 +274,18 @@ function PaymentSuccessContent() {
               />
             </svg>
           </div>
-          <h2 className={styles.title}>{tPayment("successTitle")}</h2>
-          <p className={styles.description}>{tPayment("successDescription")}</p>
+          <h2 className={styles.title}>
+            {isStarPurchase
+              ? tPayment("starSuccessTitle")
+              : tPayment("successTitle")}
+          </h2>
+          <p className={styles.description}>
+            {isStarPurchase && starPackage
+              ? tPayment("starSuccessDescription", {
+                  count: starPackage.totalFragments,
+                })
+              : tPayment("successDescription")}
+          </p>
 
           {isConfirmed && (
             <div className={styles.orderSummary}>
@@ -216,15 +314,30 @@ function PaymentSuccessContent() {
               className={styles.primaryButton}
               onClick={handleViewFortune}
             >
-              {tPayment("viewFortune")}
+              {isStarPurchase
+                ? returnPath
+                  ? tPayment("goToFortune")
+                  : tPayment("goToPackages")
+                : tPayment("viewFortune")}
             </button>
-            <button
-              type="button"
-              className={styles.secondaryButton}
-              onClick={handleGoHome}
-            >
-              {tPayment("goToProfiles")}
-            </button>
+            {!isStarPurchase && (
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleGoHome}
+              >
+                {tPayment("goToProfiles")}
+              </button>
+            )}
+            {isStarPurchase && returnPath && (
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleGoHome}
+              >
+                {tPayment("goToPackages")}
+              </button>
+            )}
           </div>
         </div>
       </main>

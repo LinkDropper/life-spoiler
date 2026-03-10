@@ -1,0 +1,300 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 18, 32, 1) 0%,
+    rgba(46, 20, 49, 1) 100%
+  );
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.main {
+  flex: 1;
+  padding: 24px 16px;
+  padding-bottom: 100px;
+}
+
+/* 섹션 타이틀 */
+.section {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+}
+
+/* 주문 상품 카드 */
+.productCard {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--color-surface-default, #18181b);
+  border: 2px solid var(--primitive-primary, #ffccd9);
+  border-radius: 8px;
+  padding: 20px;
+  height: 52px;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+}
+
+.productName {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text-primary-secondary, #ffdde6);
+}
+
+/* 결제 수단 목록 */
+.methodList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.methodItem {
+  display: flex;
+  align-items: center;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  height: 52px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.methodItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.radioButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radioOuter {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: 10px;
+  background: var(--color-surface-default, #18181b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 1px;
+  box-sizing: border-box;
+}
+
+.radioOuterSelected {
+  background: var(--color-button-primary-surface, #ffccd9);
+  border-color: var(--primitive-primary, #ffccd9);
+}
+
+.radioInner {
+  width: 8px;
+  height: 8px;
+  background: var(--primitive-white, #ffffff);
+  border-radius: 4px;
+}
+
+.methodLabel {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+}
+
+.methodLogo {
+  flex-shrink: 0;
+}
+
+/* 결제 금액 카드 */
+.amountCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-surface-default, #18181b);
+  border: 2px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: 8px;
+  padding: 20px;
+  height: 52px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.amountLabel {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+}
+
+.amountValue {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text-primary-secondary, #ffdde6);
+}
+
+/* 환불 정책 안내 */
+.refundNotice {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+  text-align: center;
+  margin: 0;
+}
+
+/* 하단 버튼 영역 */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(46, 20, 49, 0) 0%,
+    rgba(46, 20, 49, 1) 30%
+  );
+  box-sizing: border-box;
+}
+
+.backBtn {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primitive-white, #ffffff);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.backBtn:hover {
+  background: #f0f0f0;
+}
+
+.paymentButton {
+  flex: 1;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-button-primary-surface, #ffccd9);
+  border: none;
+  border-radius: 8px;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.paymentButton:hover:not(:disabled) {
+  background: var(--primitive-primary-3, #ffdde6);
+}
+
+.paymentButton:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+  cursor: not-allowed;
+}
+
+/* 에러 상태 */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 300px;
+  text-align: center;
+}
+
+.error p {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 16px;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.backButton {
+  padding: 12px 24px;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-default, #ffffff);
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}

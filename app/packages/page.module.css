@@ -1,0 +1,154 @@
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 18, 32, 1) 0%,
+    rgba(46, 20, 49, 1) 100%
+  );
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.titleSection {
+  padding: 24px 0 12px;
+  border-bottom: 1px solid
+    var(--color-border-default, rgba(255, 255, 255, 0.16));
+  margin: 0 16px;
+}
+
+.title {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.2;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+}
+
+.packageList {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.packageCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: var(--color-surface-default, #18181b);
+  border: 2px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.packageCard:hover {
+  border-color: rgba(255, 204, 217, 0.5);
+}
+
+.packageCardSelected {
+  border-color: var(--primitive-primary, #ffccd9);
+}
+
+.packageInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.packageName {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+}
+
+.packageDescription {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.packageBonus {
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.packagePrice {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+  white-space: nowrap;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  padding: 12px;
+  background: var(--color-text-default, #ffffff);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.backButton:hover {
+  opacity: 0.9;
+}
+
+.submitButton {
+  flex: 1;
+  height: 52px;
+  padding: 16px 20px;
+  background: var(--primitive-primary, #ffccd9);
+  border: none;
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #2d1b4e;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.submitButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
