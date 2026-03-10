@@ -8,8 +8,8 @@ import { useState, useCallback } from "react";
 import { useUser } from "@/libs/stores/user";
 
 import styles from "./Header.module.css";
-import { LanguageSelector } from "./LanguageSelector";
 import { Menu } from "./Menu";
+import { StarBalance } from "./StarBalance";
 
 export const HeaderClient = () => {
   const t = useTranslations("landing.header");
@@ -48,7 +48,7 @@ export const HeaderClient = () => {
           className={styles.logo}
         />
         <div className={styles.headerRight}>
-          <LanguageSelector />
+          <StarBalance />
           <button
             type="button"
             className={styles.menuButton}
