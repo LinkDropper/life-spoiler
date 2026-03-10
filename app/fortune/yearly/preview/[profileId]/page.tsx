@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
@@ -10,6 +11,7 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   YearlyInsightsCard,
+  StarChargeModal,
 } from "@/components/fortune";
 import { useYearlyPreview } from "@/libs/hooks/fortune";
 import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
@@ -18,6 +20,8 @@ import type { Locale } from "@/i18n/config";
 import styles from "./page.module.css";
 
 export default function YearlyFortunePreviewPage() {
+  const params = useParams();
+  const profileId = params.profileId as string;
   const locale = useLocale() as Locale;
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -30,7 +34,6 @@ export default function YearlyFortunePreviewPage() {
     profile,
     currentYear,
     isAIGenerated,
-    handlePayment,
     handleBack,
   } = useYearlyPreview({
     onProfileNotFound: () => tCommon("profileNotFound"),
@@ -42,6 +45,7 @@ export default function YearlyFortunePreviewPage() {
   const [chartExpanded, setChartExpanded] = useState(true);
   const [insightsExpanded, setInsightsExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [showChargeModal, setShowChargeModal] = useState(false);
 
   if (isLoading) {
     return <Loading />;
@@ -58,13 +62,9 @@ export default function YearlyFortunePreviewPage() {
         <main className={styles.main}>
           <div className={styles.error}>
             <div className={styles.errorIcon}>⏳</div>
-            <h2 className={styles.errorTitle}>
-              일시적으로 접속이 원활하지 않아요
-            </h2>
+            <h2 className={styles.errorTitle}>{tPreview("errorTitle")}</h2>
             <p className={styles.errorDescription}>
-              현재 이용자가 많아 운세 생성에 실패했어요.
-              <br />
-              잠시 후 다시 시도해 주세요.
+              {tPreview("errorDescription")}
             </p>
             <div className={styles.errorButtons}>
               <button
@@ -72,7 +72,7 @@ export default function YearlyFortunePreviewPage() {
                 className={styles.refreshButton}
                 onClick={handleRefresh}
               >
-                새로고침
+                {tPreview("errorRefresh")}
               </button>
               <button
                 type="button"
@@ -192,12 +192,26 @@ export default function YearlyFortunePreviewPage() {
         <button
           type="button"
           className={styles.paymentButton}
-          onClick={handlePayment}
+          onClick={() => setShowChargeModal(true)}
           disabled={!!error || !isAIGenerated}
         >
           {tPreview("ctaButton")}
         </button>
       </footer>
+
+      {showChargeModal && (
+        <StarChargeModal
+          fortuneLabel={tYearly("title", {
+            name: profile.name,
+            year: currentYear,
+          })}
+          fortuneType="yearly"
+          profileId={profileId}
+          resultPath={`/fortune/yearly/${profileId}`}
+          year={currentYear}
+          onClose={() => setShowChargeModal(false)}
+        />
+      )}
     </div>
   );
 }

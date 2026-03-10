@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
@@ -10,6 +11,7 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   FormattedText,
+  StarChargeModal,
 } from "@/components/fortune";
 import { CompatibilityCard } from "@/components/compatibility";
 import { useCompatibilityFortune } from "@/libs/hooks/compatibility";
@@ -50,6 +52,8 @@ const KEYWORD_INSIGHT_KEYS: ReadonlySet<string> = new Set([
 // ============================================================
 
 export default function CompatibilityFortunePage() {
+  const params = useParams();
+  const pairId = params.id as string;
   const tFortune = useTranslations("compatibility.fortune");
 
   const {
@@ -58,7 +62,6 @@ export default function CompatibilityFortunePage() {
     result,
     isAIGenerated,
     relationshipType,
-    handlePayment,
     handleBack,
   } = useCompatibilityFortune();
 
@@ -66,6 +69,7 @@ export default function CompatibilityFortunePage() {
   const [chartBExpanded, setChartBExpanded] = useState(true);
   const [insightsExpanded, setInsightsExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [showChargeModal, setShowChargeModal] = useState(false);
 
   if (isLoading) {
     return <Loading />;
@@ -247,12 +251,22 @@ export default function CompatibilityFortunePage() {
         <button
           type="button"
           className={styles.ctaButton}
-          onClick={handlePayment}
+          onClick={() => setShowChargeModal(true)}
           disabled={!!error || !isAIGenerated}
         >
           {tFortune("ctaButton")}
         </button>
       </footer>
+
+      {showChargeModal && (
+        <StarChargeModal
+          fortuneLabel={`${nameA} × ${nameB}`}
+          fortuneType="compatibility"
+          profileId={pairId}
+          resultPath={`/compatibility/${pairId}`}
+          onClose={() => setShowChargeModal(false)}
+        />
+      )}
     </div>
   );
 }
