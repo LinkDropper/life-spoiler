@@ -258,12 +258,17 @@ export async function POST(
       calendarType: profileA.calendar_type,
     });
 
+    const isPetRelationship =
+      pair.relationship_type === "cat_owner" ||
+      pair.relationship_type === "dog_owner";
+
     const chartB = generateZiweiChart({
       name: profileB.name,
       birthDate: profileB.birth_date,
-      birthTime: profileB.birth_time_unknown
-        ? "unknown"
-        : profileB.birth_time?.slice(0, 5) || "unknown",
+      birthTime:
+        isPetRelationship || profileB.birth_time_unknown
+          ? "unknown"
+          : profileB.birth_time?.slice(0, 5) || "unknown",
       gender: profileB.gender,
       calendarType: profileB.calendar_type,
     });
