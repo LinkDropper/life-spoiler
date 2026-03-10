@@ -6,7 +6,9 @@ export type AIErrorCode =
   | "TIMEOUT"
   | "RATE_LIMITED"
   | "INVALID_RESPONSE"
-  | "UNKNOWN_ERROR";
+  | "UNKNOWN_ERROR"
+  | "STORAGE_UPLOAD_FAILED"
+  | "IMAGE_GENERATION_FAILED";
 
 export interface AIErrorContext {
   code: AIErrorCode;

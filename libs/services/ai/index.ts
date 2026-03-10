@@ -75,3 +75,24 @@ export type {
   PreAnalyzedCompatibility,
   PreAnalyzedCategory,
 } from "./types";
+
+// 전생 운세 해석 서비스
+export {
+  generatePastLifeInterpretation,
+  createPastLifeFallbackInterpretation,
+} from "./past-life-interpreter";
+export type {
+  PastLifeBirthResponse,
+  PastLifeConnectionsResponse,
+  PastLifeContrastResponse,
+  PastLifeEndResponse,
+  PastLifeFortuneInterpretation,
+  PastLifeInterpretationType,
+  PastLifeJourneyResponse,
+  PastLifeLessonsResponse,
+  PastLifeProfileCardResponse,
+  PastLifeSpoilerResponse,
+  PastLifeStatsResponse,
+  PastLifeTracesResponse,
+  PastLifeWorldResponse,
+} from "./types";

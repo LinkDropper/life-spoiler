@@ -1,5 +1,8 @@
-import type { FortuneInterpretation } from "@/libs/services/ai";
-import type { YearlyFortuneInterpretation } from "@/libs/services/ai";
+import type {
+  FortuneInterpretation,
+  PastLifeFortuneInterpretation,
+  YearlyFortuneInterpretation,
+} from "@/libs/services/ai";
 import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
 import type {
@@ -103,3 +106,21 @@ export interface YearlyPreviewResult {
     };
   };
 }
+
+export interface PastLifeFortuneResult {
+  chart: {
+    wuxingJu: string;
+    mingGong: string;
+    shenGong: string;
+    sihua: {
+      hualu: string;
+      huaquan: string;
+      huake: string;
+      huaji: string;
+    };
+  };
+  rawChart: ZiweiChart;
+  interpretation: PastLifeFortuneInterpretation;
+}
+
+export type PastLifePreviewResult = PastLifeFortuneResult;

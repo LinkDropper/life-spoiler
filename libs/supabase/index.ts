@@ -29,6 +29,7 @@ export {
   type FortuneResultType,
   type FortuneType,
   type LifetimeFortuneData,
+  type PastLifeFortuneData,
   type SaveFortuneParams,
   type YearlyFortuneData,
 } from "./fortune";

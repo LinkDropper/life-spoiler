@@ -42,7 +42,7 @@ export type CompatibilityRelationshipType =
 export type OAuthProvider = "kakao" | "google" | "email";
 export type CalendarType = "solar" | "lunar";
 export type Gender = "male" | "female";
-export type FortuneType = "lifetime" | "yearly" | "compatibility";
+export type FortuneType = "lifetime" | "yearly" | "compatibility" | "past_life";
 export type RelationshipStatus =
   | "solo"
   | "dating"
@@ -167,7 +167,7 @@ export interface ProfileFreeAccessInsert {
 // Promo Code Types
 export type PromoCodeType = "common" | "single_use";
 export type PromoBenefitType = "free_fortune" | "discount";
-export type PromoFortuneType = "lifetime" | "yearly" | "all";
+export type PromoFortuneType = "lifetime" | "yearly" | "past_life" | "all";
 
 export interface PromoCodeRow {
   id: string;

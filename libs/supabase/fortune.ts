@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Locale } from "@/i18n/config";
 import type {
   FortuneInterpretation,
+  PastLifeFortuneInterpretation,
   YearlyFortuneInterpretation,
 } from "@/libs/services/ai";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
@@ -22,7 +23,7 @@ import type { Database, FortuneInsert, FortuneRow } from "./types";
 
 type SupabaseDB = SupabaseClient<Database>;
 
-export type FortuneType = "lifetime" | "yearly" | "compatibility";
+export type FortuneType = "lifetime" | "yearly" | "compatibility" | "past_life";
 
 /**
  * 인생 운세 전체 데이터 (저장용)
@@ -64,8 +65,27 @@ export interface YearlyFortuneData {
   interpretation: YearlyFortuneInterpretation;
 }
 
+/**
+ * 전생 운세 전체 데이터 (저장용)
+ */
+export interface PastLifeFortuneData {
+  /** 저장된 데이터의 언어 */
+  language?: Locale;
+  chart: {
+    wuxingJu: string;
+    mingGong: string;
+    shenGong: string;
+    sihua: ZiweiChart["sihua"];
+  };
+  rawChart: ZiweiChart;
+  interpretation: PastLifeFortuneInterpretation;
+}
+
 /** 운세 결과 타입 (전체 데이터) */
-export type FortuneResultType = LifetimeFortuneData | YearlyFortuneData;
+export type FortuneResultType =
+  | LifetimeFortuneData
+  | YearlyFortuneData
+  | PastLifeFortuneData;
 
 export interface SaveFortuneParams {
   profileId: string;
