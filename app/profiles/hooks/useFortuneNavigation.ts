@@ -7,7 +7,9 @@ import type { ProfileWithFortunes } from "@/libs/stores/profile";
 
 type FortuneType = "lifetime" | "yearly" | "past-life";
 
-const toDbFortuneType = (type: FortuneType): "lifetime" | "yearly" | "past_life" =>
+const toDbFortuneType = (
+  type: FortuneType
+): "lifetime" | "yearly" | "past_life" =>
   type === "past-life" ? "past_life" : type;
 
 interface UseFortuneNavigationProps {
