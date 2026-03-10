@@ -1,0 +1,167 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--color-overlay-dimmed, rgba(17, 17, 28, 0.6));
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.drawer {
+  width: 100%;
+  max-width: 480px;
+  padding: 8px;
+  background: var(--color-surface-default, #18181b);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px 4px 20px var(--color-modal-shadow, rgba(0, 0, 0, 0.12));
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  height: 44px;
+  gap: 8px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 9px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+}
+
+.separator {
+  padding: 4px 0;
+}
+
+.separatorLine {
+  height: 0;
+  border: none;
+  border-top: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  margin: 0;
+}
+
+.content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputRow {
+  display: flex;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--color-surface-default, #18181b);
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+}
+
+.input:focus {
+  border-color: var(--primitive-primary, #ffccd9);
+}
+
+.input:disabled {
+  opacity: 0.5;
+}
+
+.submitButton {
+  height: 44px;
+  padding: 12px 16px;
+  background: var(--primitive-primary, #ffccd9);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.submitButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitButton:active:not(:disabled) {
+  opacity: 0.8;
+}
+
+.submitButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.errorText {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-button-error-surface, #fa5252);
+  margin: 0;
+}
+
+.successText {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #51cf66;
+  margin: 0;
+}
