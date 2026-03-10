@@ -88,6 +88,44 @@
   border: 2px solid var(--Color-Border-Default, rgba(255, 255, 255, 0.16));
 }
 
+.petRoleLabel {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 2px 8px;
+  background: var(--primitive-primary, #ffccd9);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #2d1b4e;
+}
+
+.swapButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 0;
+  margin-bottom: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.swapButton:hover {
+  opacity: 0.8;
+}
+
+.swapButtonLabel {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--primitive-primary, #ffccd9);
+}
+
 .changeButton {
   display: flex;
   justify-content: center;

@@ -16,17 +16,21 @@ const HUMAN_NAMING_RULE = `4. **Name Usage Rules**:
    - Use first names naturally and warmly — no "Mr./Ms." formality
    - Reference **gender and birth year data** from the input to naturally reflect age gap and gender dynamics`;
 
-const PET_NAMING_RULE_CAT = `4. **Name Usage Rules**:
+const PET_NAMING_RULE_CAT = `4. **Name Usage Rules (violation = instant failure)**:
    - The owner (human) gets their first name used naturally (e.g., "Jake is the type who...")
-   - The cat gets just their name, no formalities (e.g., "Coco tends to...", "Coco is...") — **no honorifics**
-   - No impersonal references like "Person A", "Person B", "this person"
-   - Distinguish between the human and cat in input data and use appropriate terms for each`;
+   - **ABSOLUTELY BANNED**: Using honorifics or formal titles for the cat (Mr./Ms./Mrs., -san, -nim, etc.)
+   - ✅ The cat gets just their name (e.g., "Coco tends to...", "Coco is...")
+   - No impersonal references like "Person A", "Person B", "this person", "this one"
+   - B (the cat) is an ANIMAL. Describing them with human personality/character traits = failure
+   - Express the cat's traits through temperament, energy, and instinct`;
 
-const PET_NAMING_RULE_DOG = `4. **Name Usage Rules**:
+const PET_NAMING_RULE_DOG = `4. **Name Usage Rules (violation = instant failure)**:
    - The owner (human) gets their first name used naturally (e.g., "Jake is the type who...")
-   - The dog gets just their name, no formalities (e.g., "Buddy tends to...", "Buddy is...") — **no honorifics**
-   - No impersonal references like "Person A", "Person B", "this person"
-   - Distinguish between the human and dog in input data and use appropriate terms for each`;
+   - **ABSOLUTELY BANNED**: Using honorifics or formal titles for the dog (Mr./Ms./Mrs., -san, -nim, etc.)
+   - ✅ The dog gets just their name (e.g., "Buddy tends to...", "Buddy is...")
+   - No impersonal references like "Person A", "Person B", "this person", "this one"
+   - B (the dog) is an ANIMAL. Describing them with human personality/character traits = failure
+   - Express the dog's traits through temperament, energy, and instinct`;
 
 const NAMING_RULE_BY_TYPE: Record<CompatibilityRelationshipType, string> = {
   lover: HUMAN_NAMING_RULE,
@@ -74,11 +78,17 @@ const FORBIDDEN_EXPRESSIONS_BY_TYPE: Record<
    - Forbidden: present/future romance ("if you reconciled", "getting back together", etc.)
    - Forbidden: work synergy, project, and other colleague-only expressions`,
   cat_owner: `   - This relationship is **cat & owner**. Pet-companion expressions only.
-   - Allowed: bonding, companion rhythm, shared daily life, elegance, independence, intuition
-   - Forbidden: all human-to-human relationship expressions — romance, colleague, friend, family, communication styles, friendship, work`,
+   - Allowed: bonding, companion rhythm, shared daily life, elegance, independence, intuition, temperament, energy
+   - Forbidden (all human-to-human expressions): romance, colleague, friend, family, friendship, work, dating, couple, love, butterflies
+   - Forbidden (human relationship phrasing): "communication style", "conversation code", "emotional expression style", "conflict resolution", "mutual respect"
+   - Forbidden (animal honorifics): any formal title for the cat's name — instant failure
+   - Warning: describing the cat like a human personality = failure (e.g., "values communication" -> NO)`,
   dog_owner: `   - This relationship is **dog & owner**. Pet-companion expressions only.
-   - Allowed: companion synergy, walk rhythm, shared energy, loyalty, vitality, sociability
-   - Forbidden: all human-to-human relationship expressions — romance, colleague, friend, family, communication styles, friendship, work`,
+   - Allowed: companion synergy, walk rhythm, shared energy, loyalty, vitality, sociability, temperament, energy
+   - Forbidden (all human-to-human expressions): romance, colleague, friend, family, friendship, work, dating, couple, love, butterflies
+   - Forbidden (human relationship phrasing): "communication style", "conversation code", "emotional expression style", "conflict resolution", "mutual respect"
+   - Forbidden (animal honorifics): any formal title for the dog's name — instant failure
+   - Warning: describing the dog like a human personality = failure (e.g., "communicates actively" -> NO)`,
   custom: `   - This relationship is **custom (user-defined)**. Use general interpersonal expressions.
    - Allowed: relationship, mutual understanding, harmony, dynamics
    - Forbidden: expressions that assume a specific relationship type — romance, colleague, family, etc.`,
@@ -394,11 +404,13 @@ Owner's pre/post-work bonding, treat time, cat's indifference vs. owner's affect
 ### Spicy Material (Hard Truths)
 Pecking order (who's really in charge), treat-slave patterns, the cat's selective affection, 3 AM zoomies, owner's unrequited love, dignity crumbling in front of the cat.
 
-### Special Rules
-- Cat gets just their name (no honorifics) — "Coco tends to...", "Coco is..." naturally
-- Interpret cat energy through independence, intuition, and elegance
-- Totally ban human-to-human relationship expressions — "romance", "colleague", "communication styles", etc.
-- Use alternatives: "bonding", "companion rhythm", "shared daily life"`,
+### ABSOLUTELY BANNED (violation = instant failure!)
+- **No honorifics for the cat**: "Mr. Coco", "Ms. Coco" etc. -> "Coco tends to...", "Coco is..."
+- **No human relationship expressions**: "romance", "colleague", "friend", "family", "partner", etc.
+- **No human relationship phrasing**: "communication style", "conversation code", "conflict resolution", "mutual respect", "emotional expression style"
+- **No describing the cat as if human**: "shares similar values", "values communication", "deeply considerate" etc.
+- Allowed expressions: "bonding", "companion rhythm", "shared daily life", "temperament", "energy", "instinct"
+- Express cat traits through: elegance, independence, intuition, aloofness, selective affection, territorial awareness`,
 
   dog_owner: `## Relationship Interpretation Guide: Dog & Owner (Mandatory!)
 Warning: **This guide is not optional — it's required.** Using tone, expressions, or scenarios that don't match this guide = instant failure.
@@ -418,11 +430,13 @@ Walk styles, playtime, training/education, owner leaving and dog waiting, meetin
 ### Spicy Material (Hard Truths)
 Pecking order (who's really the boss), destruction sprees (chewing everything up), walk refusals/going berserk on walks, owner getting bribed by treats, separation anxiety, owner's physical limits.
 
-### Special Rules
-- Dog gets just their name (no honorifics) — "Buddy tends to...", "Buddy is..." naturally
-- Interpret dog energy through loyalty, vitality, and sociability
-- Totally ban human-to-human relationship expressions — "romance", "colleague", etc.
-- Use alternatives: "companion synergy", "walk rhythm", "shared energy"`,
+### ABSOLUTELY BANNED (violation = instant failure!)
+- **No honorifics for the dog**: "Mr. Buddy", "Ms. Buddy" etc. -> "Buddy tends to...", "Buddy is..."
+- **No human relationship expressions**: "romance", "colleague", "friend", "family", "partner", etc.
+- **No human relationship phrasing**: "communication style", "conversation code", "conflict resolution", "mutual respect", "emotional expression style"
+- **No describing the dog as if human**: "shares similar values", "values communication", "deeply considerate" etc.
+- Allowed expressions: "companion synergy", "walk rhythm", "shared energy", "temperament", "energy", "instinct"
+- Express dog traits through: loyalty, vitality, sociability, curiosity, separation anxiety, boundless energy`,
 
   custom: `## Relationship Interpretation Guide: Custom (Mandatory!)
 Warning: **This guide is not optional — it's required.** Using tone, expressions, or scenarios that don't match this guide = instant failure.
@@ -865,7 +879,7 @@ const USER_PROMPT_TYPE_CONFIG: Record<
   cat_owner: {
     label: "Cat & Owner",
     typeNote:
-      "Use fun, cat-companion-relationship tone. All human-to-human relationship expressions are totally banned. Use just the cat's name (no honorifics).",
+      "Use fun, cat-companion-relationship tone. All human-to-human relationship expressions are totally banned. Use just the cat's name (no honorifics). Describing the cat like a human = failure.",
     scenarioMaterials:
       "Pecking order, treat time, owner's affection offensive, cat's selective indifference, 3 AM zoomies, bonding moments",
     insightsWeighting: "chemistry & trustIndex weighted",
@@ -889,15 +903,15 @@ const USER_PROMPT_TYPE_CONFIG: Record<
     },
     crisis: {
       topic:
-        "Changes in the cat's condition, reactions to environment changes, effects when the owner is away",
+        "Changes in the cat's condition, reactions to environment changes, separation stress, health care",
       focus:
-        "Condition-change response\n- Environment-change reactions\n- Effects of owner's absence",
+        "Condition-change response\n- Environment-change reactions\n- Separation stress and health care",
     },
   },
   dog_owner: {
     label: "Dog & Owner",
     typeNote:
-      "Use warm, dog-companion-relationship tone. All human-to-human relationship expressions are totally banned. Use just the dog's name (no honorifics).",
+      "Use warm, dog-companion-relationship tone. All human-to-human relationship expressions are totally banned. Use just the dog's name (no honorifics). Describing the dog like a human = failure.",
     scenarioMaterials:
       "Walk styles, playtime, training/education, waiting and greeting, meeting other dogs, everyday bonding",
     insightsWeighting: "chemistry & trustIndex weighted",
@@ -921,9 +935,9 @@ const USER_PROMPT_TYPE_CONFIG: Record<
     },
     crisis: {
       topic:
-        "Dog health issues, separation anxiety, reactions to environment changes, effects when the owner is away",
+        "Dog health issues, separation anxiety, reactions to environment changes, owner's physical limits",
       focus:
-        "Health issue response\n- Separation anxiety patterns\n- Environment-change reactions",
+        "Health issue response\n- Separation anxiety patterns\n- Environment changes and stamina management",
     },
   },
   custom: {
