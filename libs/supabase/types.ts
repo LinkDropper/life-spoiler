@@ -243,6 +243,16 @@ export interface CompatibilityPairRow {
   updated_at: string;
 }
 
+// Wallet Types
+export interface WalletRow {
+  id: string;
+  user_id: string;
+  paid_balance: number;
+  bonus_balance: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CompatibilityPairInsert {
   id?: string;
   user_id: string;
@@ -370,6 +380,21 @@ export type Database = {
             foreignKeyName: "compatibility_pairs_profile_b_id_fkey";
             columns: ["profile_b_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      wallets: {
+        Row: WalletRow;
+        Insert: Omit<WalletRow, "id" | "created_at" | "updated_at">;
+        Update: Partial<
+          Omit<WalletRow, "id" | "created_at" | "updated_at">
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "wallets_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
             referencedColumns: ["id"];
           },
         ];
