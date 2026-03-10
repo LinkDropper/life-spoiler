@@ -1,0 +1,463 @@
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 16px;
+  padding-bottom: 100px;
+  width: 100%;
+}
+
+/* ============================================================
+   섹션 공통
+   ============================================================ */
+
+.section {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.sectionContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionHeadline {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+.sectionText {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0;
+  white-space: pre-wrap;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   자미두수 명반
+   ============================================================ */
+
+.chartSection {
+  width: 100%;
+  background: transparent;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+/* ============================================================
+   능력치 그래프 (인생운세 FortuneProgressBar와 동일)
+   ============================================================ */
+
+.statsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.statLabel {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.statPercent {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+}
+
+.statBarOuter {
+  width: 100%;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.statBarFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 24px;
+  background: var(--color-button-primary-surface, #ffccd9);
+  border-radius: 18px;
+}
+
+.statBarDivider {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 24px;
+  border-left: 1px dashed #18181b;
+}
+
+/* ============================================================
+   스포일러 섹션 (인생운세 overviewSection과 동일)
+   ============================================================ */
+
+.overviewSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.overviewHeadline {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+.overviewSummary {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0;
+  white-space: pre-wrap;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   전생의 세계 (메타 정보 + 본문)
+   ============================================================ */
+
+.worldMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.worldEra {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-button-primary-surface, #ffccd9);
+}
+
+.worldLocation {
+  font-size: 15px;
+  color: var(--color-text-default, #ffffff);
+}
+
+.worldRole {
+  display: inline-flex;
+  padding: 2px 6px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+/* ============================================================
+   삶의 여정 시나리오 (칼럼 형태 - 인생운세 ScenarioItem과 동일)
+   ============================================================ */
+
+.scenarioList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.scenarioItem {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scenarioHeader {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.scenarioPeriod {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.scenarioContent {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  white-space: pre-wrap;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* ============================================================
+   마지막 한마디 (lastWords)
+   ============================================================ */
+
+.lastWordsContainer {
+  margin-top: 16px;
+  padding: 20px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  text-align: center;
+}
+
+.lastWordsText {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   전생 vs 현생 대비
+   ============================================================ */
+
+.contrastList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contrastItem {
+  padding: 16px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+}
+
+.contrastAspect {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-button-primary-surface, #ffccd9);
+  margin-bottom: 10px;
+  padding: 2px 8px;
+  background: rgba(255, 204, 217, 0.12);
+  border-radius: 4px;
+}
+
+.contrastPair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contrastSide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contrastLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contrastValue {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+}
+
+.contrastArrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 16px;
+}
+
+/* ============================================================
+   전생의 흔적
+   ============================================================ */
+
+.tracesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.traceCard {
+  padding: 16px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.traceCategory {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 2px 8px;
+  background: rgba(255, 204, 217, 0.12);
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-button-primary-surface, #ffccd9);
+}
+
+.traceText {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+}
+
+.traceOrigin {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.12));
+  font-style: italic;
+}
+
+/* ============================================================
+   전생 교훈
+   ============================================================ */
+
+.lessonsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lessonCard {
+  padding: 16px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+}
+
+.lessonHeadline {
+  display: inline-flex;
+  padding: 2px 8px;
+  background: rgba(255, 204, 217, 0.12);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-button-primary-surface, #ffccd9);
+  margin: 0 0 10px;
+}
+
+.lessonContent {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0;
+}
+
+/* ============================================================
+   면책 문구
+   ============================================================ */
+
+.disclaimer {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+  margin: 24px 0 0;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+/* ============================================================
+   푸터 (공유하기 버튼)
+   ============================================================ */
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(180deg, transparent 0%, #2e1431 20%);
+  padding-top: 32px;
+  z-index: 100;
+}
+
+.shareButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #2d1b4e;
+  background: var(--color-button-primary-surface, #ffccd9);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 52px;
+  transition: opacity 0.2s;
+}
+
+.shareButton:hover {
+  opacity: 0.9;
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}

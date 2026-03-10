@@ -27,6 +27,7 @@ function PaymentSuccessContent() {
     | "yearly"
     | "lifetime"
     | "compatibility"
+    | "past_life"
     | null;
   const currency = (searchParams.get("currency") as "KRW" | "USD") || "KRW";
 
@@ -99,6 +100,8 @@ function PaymentSuccessContent() {
     if (profileId && fortuneType) {
       if (fortuneType === "compatibility") {
         router.push(`/compatibility/${profileId}`);
+      } else if (fortuneType === "past_life") {
+        router.push(`/fortune/past-life/${profileId}`);
       } else {
         router.push(`/fortune/${fortuneType}/${profileId}`);
       }

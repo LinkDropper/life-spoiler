@@ -40,8 +40,12 @@ export default function ProfilesPage() {
   const isRestrictedUser = user?.id === RESTRICTED_USER_ID;
 
   const typeParam = searchParams.get("type");
-  const fortuneType: "lifetime" | "yearly" | null =
-    typeParam === "lifetime" || typeParam === "yearly" ? typeParam : null;
+  const fortuneType: "lifetime" | "yearly" | "past-life" | null =
+    typeParam === "lifetime" ||
+    typeParam === "yearly" ||
+    typeParam === "past-life"
+      ? typeParam
+      : null;
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
@@ -104,6 +108,14 @@ export default function ProfilesPage() {
       return;
     }
     navigateToFortune("yearly");
+  }, [selectedProfileId, navigateToFortune, t]);
+
+  const handlePastLifeFortune = useCallback(() => {
+    if (!selectedProfileId) {
+      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      return;
+    }
+    navigateToFortune("past-life");
   }, [selectedProfileId, navigateToFortune, t]);
 
   const onDeleteConfirm = useCallback(async () => {
@@ -196,6 +208,16 @@ export default function ProfilesPage() {
             disabled={!selectedProfileId}
           >
             {t("yearlyFortune", { default: "올해 운세 보기" })}
+          </button>
+        )}
+        {(!fortuneType || fortuneType === "past-life") && (
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={handlePastLifeFortune}
+            disabled={!selectedProfileId}
+          >
+            {t("pastLifeFortune", { default: "전생 운세 보기" })}
           </button>
         )}
       </footer>

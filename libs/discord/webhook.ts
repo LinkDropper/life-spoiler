@@ -77,7 +77,7 @@ interface PaymentNotificationParams {
   amount: number;
   currency: "KRW" | "USD";
   method: string;
-  fortuneType: "yearly" | "lifetime" | "compatibility";
+  fortuneType: "yearly" | "lifetime" | "compatibility" | "past_life";
   profileId: string;
   profileName?: string;
   approvedAt: string;
@@ -110,7 +110,9 @@ export const sendPaymentNotification = async (
       ? "궁합"
       : fortuneType === "yearly"
         ? `${year ?? new Date().getFullYear()} 신년운세`
-        : "평생운세";
+        : fortuneType === "past_life"
+          ? "전생운세"
+          : "평생운세";
   const formattedAmount =
     currency === "USD"
       ? `$${amount.toFixed(2)}`
