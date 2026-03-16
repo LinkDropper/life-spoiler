@@ -6,7 +6,13 @@ import type { PastLifeInterpretationType } from "../types";
 
 /** Main star × brightness past life existence type guide */
 const EXISTENCE_TYPE_GUIDE = `## 🌀 Main Star × Brightness Past Life Existence Type Guide
-The table below is a **reference guide**. Make the final decision creatively by combining the main star + brightness + Five Element Bureau + Four Transformations.
+
+### ⚠️ Table Usage Rules (Critical!)
+- The table below is a **directional reference only** — using it as-is means **failure**.
+- **Do NOT pick specific beings listed in the table** (lotus, pine, bamboo, eagle, wolf, firefly, etc.).
+- Only reference the **type category** (human/animal/plant/etc.) from the table, and **always create an original being**.
+- Combine the main star's characteristics + brightness + Five Element Bureau + Four Transformations to derive a **unique being not found in this table**.
+- Example: Tian Tong Medium → Plant type reference → lotus/water lily (X, table copy) → marsh cattail, wetland sweet flag, pond water parsley, etc. (O, original creation)
 
 | Main Star | Bright (廟/旺) | Medium (得/利) | Dim (平/陷) |
 |-----------|---------------|---------------|------------|
@@ -27,11 +33,16 @@ The table below is a **reference guide**. Make the final decision creatively by 
 | (Empty) | — | — | Nature: wind, fog, stream (formless being) |
 
 ### Narrative Tone by Existence Type
-- **Human**: Historical period + social role + relationship-centered narrative. Specific era and region.
-- **Animal**: Habitat + instinct/behavior + survival in nature. Describe the world from the animal's perspective.
-- **Plant**: Growing place + seasonal cycles + quiet observer's viewpoint. Slow the passage of time.
+- **Human**: Historical period + social role + relationship-centered narrative. Specific era and region. Don't limit to East Asian courts — freely explore ALL eras, cultures, and occupations worldwide.
+- **Animal**: Habitat + instinct/behavior + survival in nature. Describe the world from the animal's perspective. Don't limit to common animals (eagle, wolf, cat) — explore diverse species.
+- **Plant**: Growing place + seasonal cycles + quiet observer's viewpoint. Slow the passage of time. Avoid cliché choices (lotus, pine, bamboo) — explore diverse plant species from around the world.
 - **Insect/Small creature**: Short but intense life + drama of the micro world. Greatness of the small world.
 - **Nature/Phenomenon**: Abstract, poetic narrative + cycles and flow. Senses of a formless being.
+
+### 🔑 Diversity Core Principle
+- **The entire Earth is your stage**: Don't limit to Korea/East Asia. Use all environments — Africa, South America, the Arctic, deep sea, deserts, etc.
+- **Time periods are free**: Not just ancient/medieval/modern — prehistoric, Ice Age, age of dinosaurs are all valid.
+- **Prefer rare and unexpected beings**: Choose beings that make people think "This can be a past life too?!" over obvious, predictable choices.
 
 ### ⚠️ Existence Type Restrictions (Critical!)
 - **Only things that exist in reality are allowed!**
@@ -225,6 +236,11 @@ Summarize the essence of the past life being in 2~3 paragraphs:
 ### imagePrompt (English, 100~200 words)
 Write an image generation prompt in **English**:
 - Style: "3D rendered, Pixar style, soft lighting, vibrant colors, dreamy atmosphere"
+- **⚠️ Image Diversity Required**: Every image must be unique and fresh. The following subjects are **BANNED** due to overuse:
+  - Lotus, pine tree, bamboo, cherry blossom
+  - Court lady / woman in hanbok
+  - Eagle, wolf, butterfly
+- Create a **specific, original visual scene** that matches the past life being
 - **Rules by existence type**:
   - **Human**: portrait of specific person description — period attire, face/upper body close-up, mood, color palette
   - **Animal**: "3D render of a [exact animal species], close-up. NEVER add human face or human features!" — describe the animal's pose, environment hints, lighting
