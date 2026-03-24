@@ -246,7 +246,7 @@ export async function POST(request: NextRequest) {
       amount: paymentData.totalAmount,
       currency,
       method: paymentData.method,
-      fortuneType: "lifetime", // 별조각 충전은 fortuneType 없으므로 placeholder
+      fortuneType: "star_charge",
       profileId: user.id,
       profileName: `별조각 충전 (${packageId})`,
       approvedAt: paymentData.approvedAt,

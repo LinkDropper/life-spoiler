@@ -118,16 +118,21 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. wallet_transactions 기록
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase.from("wallet_transactions") as any).insert({
-      wallet_id: wallet.id,
-      type: "spend",
-      paid_delta: paidDelta,
-      bonus_delta: bonusDelta,
-      paid_balance_after: newPaidBalance,
-      bonus_balance_after: newBonusBalance,
-      description: `운세 열람: ${fortuneType} (${profileId})`,
-    });
+    const { error: txError } =
+      await // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase.from("wallet_transactions") as any).insert({
+        wallet_id: wallet.id,
+        type: "spend",
+        paid_delta: paidDelta,
+        bonus_delta: bonusDelta,
+        paid_balance_after: newPaidBalance,
+        bonus_balance_after: newBonusBalance,
+        description: `운세 열람: ${fortuneType} (${profileId})`,
+      });
+
+    if (txError) {
+      console.error("거래 기록 실패:", txError);
+    }
 
     // 4. paid_at 업데이트
     let paidAtFailed = false;

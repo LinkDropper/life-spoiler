@@ -449,11 +449,12 @@ export const redeemStarCoupon = async (
   // 7. 지갑 upsert + 별조각 추가
   interface WalletData {
     id: string;
+    paid_balance: number;
     bonus_balance: number;
   }
   const { data: wallet } = await supabase
     .from("wallets")
-    .select("id, bonus_balance")
+    .select("id, paid_balance, bonus_balance")
     .eq("user_id", userId)
     .single<WalletData>();
 
@@ -481,7 +482,7 @@ export const redeemStarCoupon = async (
     type: "coupon_bonus",
     paid_delta: 0,
     bonus_delta: starAmount,
-    paid_balance_after: wallet ? 0 : 0,
+    paid_balance_after: wallet?.paid_balance ?? 0,
     bonus_balance_after: (wallet?.bonus_balance ?? 0) + starAmount,
     description: `쿠폰: ${promoCode.code}`,
   });
