@@ -177,7 +177,7 @@ function PaymentSuccessContent() {
         }
         router.push(returnPath);
       } else {
-        router.push("/packages");
+        router.push("/home");
       }
       return;
     }
@@ -196,13 +196,27 @@ function PaymentSuccessContent() {
 
   const handleGoHome = () => {
     if (isStarPurchase) {
-      router.push("/packages");
+      router.push("/home");
       return;
     }
     router.push("/profiles");
   };
 
   if (isConfirming) {
+    if (isStarPurchase) {
+      return (
+        <div className={styles.page}>
+          <HeaderClient />
+          <main className={styles.main}>
+            <div className={styles.resultCard}>
+              <p className={styles.description}>
+                {tPayment("confirmingPayment")}
+              </p>
+            </div>
+          </main>
+        </div>
+      );
+    }
     return <Loading />;
   }
 
@@ -317,7 +331,7 @@ function PaymentSuccessContent() {
               {isStarPurchase
                 ? returnPath
                   ? tPayment("goToFortune")
-                  : tPayment("goToPackages")
+                  : tPayment("goHome")
                 : tPayment("viewFortune")}
             </button>
             {!isStarPurchase && (
@@ -335,7 +349,7 @@ function PaymentSuccessContent() {
                 className={styles.secondaryButton}
                 onClick={handleGoHome}
               >
-                {tPayment("goToPackages")}
+                {tPayment("goHome")}
               </button>
             )}
           </div>

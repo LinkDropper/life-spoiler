@@ -712,6 +712,7 @@
       "goToProfiles": "프로필 목록으로",
       "confirmFailed": "결제 승인 실패",
       "confirmError": "결제 승인 중 오류가 발생했습니다.",
+      "confirmingPayment": "결제를 처리하고 있습니다...",
       "missingPaymentInfo": "결제 정보가 누락되었습니다.",
       "failTitle": "결제에 실패했습니다",
       "failDescription": "결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.",
@@ -726,7 +727,8 @@
       "starSuccessTitle": "충전이 완료되었습니다",
       "starSuccessDescription": "별조각 {count}개가 충전되었습니다!",
       "goToPackages": "상품으로 돌아가기",
-      "goToFortune": "운세 보러 가기"
+      "goToFortune": "운세 보러 가기",
+      "goHome": "홈으로 이동"
     },
     "policy": {
       "terms": {
@@ -1568,6 +1570,7 @@
       "goToProfiles": "Go to Profiles",
       "confirmFailed": "Payment Confirmation Failed",
       "confirmError": "An error occurred during payment confirmation.",
+      "confirmingPayment": "Processing your payment...",
       "missingPaymentInfo": "Payment information is missing.",
       "failTitle": "Payment Failed",
       "failDescription": "There was a problem processing your payment. Please try again.",
@@ -1582,7 +1585,8 @@
       "starSuccessTitle": "Recharge Complete",
       "starSuccessDescription": "{count} Star Fragments have been added!",
       "goToPackages": "Back to Packages",
-      "goToFortune": "View Fortune"
+      "goToFortune": "View Fortune",
+      "goHome": "Go to Home"
     },
     "policy": {
       "terms": {
@@ -2424,6 +2428,7 @@
       "goToProfiles": "プロフィール一覧へ",
       "confirmFailed": "決済承認失敗",
       "confirmError": "決済承認中にエラーが発生しました。",
+      "confirmingPayment": "決済を処理しています...",
       "missingPaymentInfo": "決済情報が不足しています。",
       "failTitle": "決済に失敗しました",
       "failDescription": "決済処理中に問題が発生しました。もう一度お試しください。",
@@ -2438,7 +2443,8 @@
       "starSuccessTitle": "チャージが完了しました",
       "starSuccessDescription": "星のかけら {count}個がチャージされました！",
       "goToPackages": "商品に戻る",
-      "goToFortune": "運勢を見に行く"
+      "goToFortune": "運勢を見に行く",
+      "goHome": "ホームへ移動"
     },
     "policy": {
       "terms": {

@@ -187,12 +187,13 @@ export async function POST(request: NextRequest) {
         const { error: txError } =
           await // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (supabase.from("wallet_transactions") as any).insert({
-            wallet_id: wallet.id,
+            user_id: user.id,
             type: "purchase",
+            amount: starPackage.totalFragments,
             paid_delta: starPackage.paidFragments,
             bonus_delta: starPackage.bonusFragments,
-            paid_balance_after: wallet.paid_balance + starPackage.paidFragments,
-            bonus_balance_after:
+            balance_after_paid: wallet.paid_balance + starPackage.paidFragments,
+            balance_after_bonus:
               wallet.bonus_balance + starPackage.bonusFragments,
             description: `별조각 충전: ${packageId} (${orderId})`,
           });
@@ -221,12 +222,13 @@ export async function POST(request: NextRequest) {
           const { error: txError } =
             await // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (supabase.from("wallet_transactions") as any).insert({
-              wallet_id: (newWallet as { id: string }).id,
+              user_id: user.id,
               type: "purchase",
+              amount: starPackage.totalFragments,
               paid_delta: starPackage.paidFragments,
               bonus_delta: starPackage.bonusFragments,
-              paid_balance_after: starPackage.paidFragments,
-              bonus_balance_after: starPackage.bonusFragments,
+              balance_after_paid: starPackage.paidFragments,
+              balance_after_bonus: starPackage.bonusFragments,
               description: `별조각 충전: ${packageId} (${orderId})`,
             });
 

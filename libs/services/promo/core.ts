@@ -478,12 +478,13 @@ export const redeemStarCoupon = async (
   // 8. wallet_transactions 기록
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (supabase.from("wallet_transactions") as any).insert({
-    wallet_id: wallet?.id,
+    user_id: userId,
     type: "coupon_bonus",
+    amount: starAmount,
     paid_delta: 0,
     bonus_delta: starAmount,
-    paid_balance_after: wallet?.paid_balance ?? 0,
-    bonus_balance_after: (wallet?.bonus_balance ?? 0) + starAmount,
+    balance_after_paid: wallet?.paid_balance ?? 0,
+    balance_after_bonus: (wallet?.bonus_balance ?? 0) + starAmount,
     description: `쿠폰: ${promoCode.code}`,
   });
 

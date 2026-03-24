@@ -121,12 +121,13 @@ export async function POST(request: NextRequest) {
     const { error: txError } =
       await // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (supabase.from("wallet_transactions") as any).insert({
-        wallet_id: wallet.id,
+        user_id: user.id,
         type: "spend",
+        amount: STAR_COST,
         paid_delta: paidDelta,
         bonus_delta: bonusDelta,
-        paid_balance_after: newPaidBalance,
-        bonus_balance_after: newBonusBalance,
+        balance_after_paid: newPaidBalance,
+        balance_after_bonus: newBonusBalance,
         description: `운세 열람: ${fortuneType} (${profileId})`,
       });
 
