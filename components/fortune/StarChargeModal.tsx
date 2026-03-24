@@ -8,7 +8,7 @@ import { useUser } from "@/libs/stores/user";
 
 import styles from "./StarChargeModal.module.css";
 
-type FortuneType = "lifetime" | "yearly" | "compatibility";
+type FortuneType = "lifetime" | "yearly" | "compatibility" | "past_life";
 
 interface StarChargeModalProps {
   fortuneLabel: string;

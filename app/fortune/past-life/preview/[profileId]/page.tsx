@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
@@ -10,33 +11,30 @@ import {
   ProfileInfo,
   ZiweiChartGrid,
   SectionHeader,
+  StarChargeModal,
 } from "@/components/fortune";
 import { usePastLifePreview } from "@/libs/hooks/fortune";
 
 import styles from "./page.module.css";
 
 export default function PastLifePreviewPage() {
+  const params = useParams();
+  const profileId = params.profileId as string;
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
   const tPastLife = useTranslations("fortune.pastLife");
 
-  const {
-    isLoading,
-    error,
-    result,
-    profile,
-    isAIGenerated,
-    handlePayment,
-    handleBack,
-  } = usePastLifePreview({
-    onProfileNotFound: () => tCommon("profileNotFound"),
-    onFetchError: () => tPastLife("interpretError"),
-    onUnknownError: () => tCommon("unknownError"),
-    onAIGenerationFailed: () => tPastLife("interpretError"),
-  });
+  const { isLoading, error, result, profile, isAIGenerated, handleBack } =
+    usePastLifePreview({
+      onProfileNotFound: () => tCommon("profileNotFound"),
+      onFetchError: () => tPastLife("interpretError"),
+      onUnknownError: () => tCommon("unknownError"),
+      onAIGenerationFailed: () => tPastLife("interpretError"),
+    });
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [showChargeModal, setShowChargeModal] = useState(false);
 
   if (isLoading) {
     return <Loading />;
@@ -266,12 +264,22 @@ export default function PastLifePreviewPage() {
         <button
           type="button"
           className={styles.paymentButton}
-          onClick={handlePayment}
+          onClick={() => setShowChargeModal(true)}
           disabled={!!error || !isAIGenerated}
         >
           {tPastLife("ctaButton")}
         </button>
       </footer>
+
+      {showChargeModal && (
+        <StarChargeModal
+          fortuneLabel={tPastLife("title", { name: profile.name })}
+          fortuneType="past_life"
+          profileId={profileId}
+          resultPath={`/fortune/past-life/${profileId}`}
+          onClose={() => setShowChargeModal(false)}
+        />
+      )}
     </div>
   );
 }
