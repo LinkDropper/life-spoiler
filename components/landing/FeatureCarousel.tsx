@@ -74,6 +74,7 @@ export const FeatureCarousel = ({ features }: FeatureCarouselProps) => {
             key={feature.key}
             className={`${styles.dot} ${index === selectedIndex ? styles.dotActive : ""}`}
             aria-label={`Slide ${index + 1}`}
+            aria-current={index === selectedIndex}
             onClick={() => emblaApi?.scrollTo(index)}
           />
         ))}

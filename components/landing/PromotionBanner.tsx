@@ -39,7 +39,11 @@ export const PromotionBanner = () => {
         })}
       </p>
       <button type="button" className={styles.ctaButton} onClick={handleClick}>
-        {t("ctaButton", { default: "지금 바로 확인하기" })}
+        {authStatus === "authenticated"
+          ? t("ctaButtonAuthenticated", {
+              default: "내 결과 확인하기",
+            })
+          : t("ctaButton", { default: "지금 바로 확인하기" })}
       </button>
     </div>
   );
