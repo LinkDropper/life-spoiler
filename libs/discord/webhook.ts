@@ -192,6 +192,59 @@ export const sendPaymentNotification = async (
   return sendWebhookMessage({ embeds: [embed] });
 };
 
+interface ReviewNotificationParams {
+  fortuneType: string;
+  rating: number;
+  content: string;
+}
+
+const FORTUNE_TYPE_LABELS: Record<string, string> = {
+  lifetime: "인생운세",
+  yearly: "올해운세",
+  past_life: "전생운세",
+  compatibility: "궁합",
+};
+
+const ratingToStars = (rating: number): string =>
+  "⭐".repeat(rating) + "☆".repeat(5 - rating);
+
+/**
+ * 후기 등록 알림 전송
+ */
+export const sendReviewNotification = async (
+  params: ReviewNotificationParams
+): Promise<boolean> => {
+  const { fortuneType, rating, content } = params;
+
+  const embed: DiscordEmbed = {
+    title: `📝 새 후기 (${ratingToStars(rating)})`,
+    description: content,
+    color:
+      rating >= 4
+        ? DISCORD_EMBED_COLORS.SUCCESS
+        : rating >= 3
+          ? DISCORD_EMBED_COLORS.INFO
+          : DISCORD_EMBED_COLORS.WARNING,
+    fields: [
+      {
+        name: "📦 운세 타입",
+        value: FORTUNE_TYPE_LABELS[fortuneType] ?? fortuneType,
+        inline: true,
+      },
+      {
+        name: "⭐ 별점",
+        value: `${rating}점`,
+        inline: true,
+      },
+    ],
+    footer: {
+      text: "Life Spoiler",
+    },
+  };
+
+  return sendWebhookMessage({ embeds: [embed] });
+};
+
 interface SignupNotificationParams {
   userId: string;
   email: string;
