@@ -51,6 +51,8 @@
   line-height: 1.5;
   color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   text-align: center;
+  white-space: pre-line;
+  word-break: keep-all;
   margin: 0;
 }
 

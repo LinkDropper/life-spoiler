@@ -41,8 +41,9 @@
         "badge": "이번 달만 90% 할인",
         "originalPrice": "9,900원",
         "price": "990원",
-        "text": "사주 카페 5만원 vs 인생스포 990원, 더 정밀한 분석을",
-        "ctaButton": "지금 바로 확인하기"
+        "text": "사주 카페 5만원 vs 인생스포 990원,\n더 정밀한 분석을",
+        "ctaButton": "지금 바로 확인하기",
+        "ctaButtonAuthenticated": "내 결과 확인하기"
       },
       "cta": {
         "button": "내 전성기 확인하기",
@@ -855,7 +856,8 @@
         "originalPrice": "$9.99",
         "price": "$0.99",
         "text": "Astrology cafe $50 vs Life Spoiler $0.99 — more precise",
-        "ctaButton": "Check Now"
+        "ctaButton": "Check Now",
+        "ctaButtonAuthenticated": "View My Results"
       },
       "cta": {
         "button": "Discover My Prime Years",
@@ -1668,7 +1670,8 @@
         "originalPrice": "$9.99",
         "price": "$0.99",
         "text": "占いカフェ5万円 vs ライフスポイラー990円、より精密に",
-        "ctaButton": "今すぐチェック"
+        "ctaButton": "今すぐチェック",
+        "ctaButtonAuthenticated": "結果を確認する"
       },
       "cta": {
         "button": "私の全盛期を確認する",
