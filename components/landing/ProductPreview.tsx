@@ -3,15 +3,9 @@
 import {
   LayoutGrid,
   Sparkles,
-  Coins,
-  Briefcase,
-  Heart,
-  Activity,
   CalendarRange,
   Calendar,
-  Star,
-  Search,
-  FileText,
+  Heart,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -22,40 +16,20 @@ import type { LucideIcon } from "lucide-react";
 const iconMap: Record<string, LucideIcon> = {
   chart: LayoutGrid,
   spoiler: Sparkles,
-  wealth: Coins,
-  career: Briefcase,
-  relationship: Heart,
-  health: Activity,
   ageScenario: CalendarRange,
   monthly: Calendar,
-  goodBadMonths: Star,
   score: Heart,
-  insights: Search,
-  scenarios: FileText,
-  categories: LayoutGrid,
 };
 
-const items: Array<{ key: string }> = [
+const mainItems: Array<{ key: string }> = [
   { key: "chart" },
   { key: "spoiler" },
-  { key: "wealth" },
-  { key: "career" },
-  { key: "relationship" },
-  { key: "health" },
   { key: "ageScenario" },
 ];
 
-const yearlyItems: Array<{ key: string }> = [
-  { key: "monthly" },
-  { key: "goodBadMonths" },
-];
+const mainYearlyItems: Array<{ key: string }> = [{ key: "monthly" }];
 
-const compatibilityItems: Array<{ key: string }> = [
-  { key: "score" },
-  { key: "insights" },
-  { key: "scenarios" },
-  { key: "categories" },
-];
+const mainCompatibilityItems: Array<{ key: string }> = [{ key: "score" }];
 
 interface FeatureListProps {
   items: Array<{ key: string }>;
@@ -86,9 +60,12 @@ export const ProductPreview = () => {
       </h2>
 
       <FeatureList
-        items={items}
+        items={mainItems}
         getTranslation={(key) => t(`items.${key}`, { default: key })}
       />
+      <p className={styles.moreText}>
+        {t("moreLifetime", { default: "+4가지 영역별 상세 분석" })}
+      </p>
 
       <div className={styles.divider} />
 
@@ -97,9 +74,14 @@ export const ProductPreview = () => {
       </h3>
 
       <FeatureList
-        items={yearlyItems}
+        items={mainYearlyItems}
         getTranslation={(key) => t(`yearlyItems.${key}`, { default: key })}
       />
+      <p className={styles.moreText}>
+        {t("moreYearly", {
+          default: "+좋은 달 / 조심할 달 분석",
+        })}
+      </p>
 
       <div className={styles.divider} />
 
@@ -108,11 +90,14 @@ export const ProductPreview = () => {
       </h3>
 
       <FeatureList
-        items={compatibilityItems}
+        items={mainCompatibilityItems}
         getTranslation={(key) =>
           t(`compatibilityItems.${key}`, { default: key })
         }
       />
+      <p className={styles.moreText}>
+        {t("moreCompatibility", { default: "+3가지 상세 분석" })}
+      </p>
     </section>
   );
 };
