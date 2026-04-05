@@ -1,31 +1,63 @@
 .container {
   display: flex;
   flex-direction: column;
-  padding: 80px 24px 80px;
-  gap: 140px;
+  padding: 60px 0;
 }
 
-.feature {
-  position: relative;
+.viewport {
+  overflow: hidden;
+}
+
+.list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slide {
+  flex: 0 0 300px;
+  min-width: 0;
+  padding-left: 12px;
+
+  @media (max-width: 375px) {
+    flex: 0 0 260px;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 204, 217, 0.15);
+  border-radius: 16px;
+  height: 100%;
+}
+
+.imageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  margin-bottom: 20px;
+}
+
+.featureImage {
+  max-height: 100%;
+  width: auto;
+  filter: drop-shadow(0px 0px 40px rgba(255, 204, 217, 0.4));
 }
 
 .title {
-  position: relative;
-  z-index: 1;
   font-size: 20px;
   font-weight: 700;
   line-height: 1.3;
-  color: var(--color-text-default, #ffffff);
+  color: #fff;
   margin: 0 0 8px;
 }
 
-.titleRight {
-  text-align: right;
-}
-
 .question {
-  position: relative;
-  z-index: 1;
   font-size: 16px;
   font-weight: 500;
   line-height: 1.5;
@@ -33,44 +65,33 @@
   margin: 0 0 12px;
 }
 
-.questionRight {
-  text-align: right;
-}
-
 .description {
-  position: relative;
-  z-index: 1;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 400;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
+  word-break: keep-all;
 }
 
-.descriptionRight {
-  text-align: right;
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
 }
 
-.imageLeft {
-  position: absolute;
-  left: -16px;
-  top: -100px;
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.2s ease;
 }
 
-.imageRight {
-  position: absolute;
-  right: -8px;
-  top: -70px;
-}
-
-.imageRightSmall {
-  position: absolute;
-  right: 16px;
-  top: -70px;
-  width: 78px;
-  height: 89px;
-}
-
-.featureImage {
-  filter: drop-shadow(0px 0px 40px rgba(255, 204, 217, 0.4));
+.dotActive {
+  background: #ffccd9;
 }

@@ -32,20 +32,23 @@
         "imageAlt": "운명의 별자리",
         "title": "내 전성기, 20대일까 30대일까?",
         "titleSub": "",
-        "subtitle": "114개 별로 읽는 당신의 타이밍",
-        "subtitleLine2": "12궁에 펼쳐진 별이 말하는 운의 타이밍",
+        "subtitle": "지금이 기회인지, 때를 기다릴 때인지",
+        "subtitleLine2": "돈이 들어오는 나이, 인연이 깊어지는 시기",
         "subtitleLine3": "나에게 맞는 돈·직업·인연 패턴",
         "subtitleHighlight": "1,000년 역사 동양 점성술의 정밀 분석"
       },
       "promotion": {
-        "badge": "오픈 기념 90% 할인",
+        "badge": "이번 달만 90% 할인",
         "originalPrice": "9,900원",
         "price": "990원",
-        "text": "커피 한 잔 값으로, 내 인생의 골든타임을 확인하세요"
+        "text": "사주 카페 5만원 vs 인생스포 990원, 더 정밀한 분석을",
+        "ctaButton": "지금 바로 확인하기"
       },
       "cta": {
-        "button": "내 골든타임 확인하기 (990원)",
-        "subtext": "3분이면 충분해요"
+        "button": "내 전성기 확인하기",
+        "buttonAuthenticated": "내 운세 결과 보기",
+        "priceBadge": "990원",
+        "subtext": "생년월일시만 입력하면 끝!"
       },
       "features": {
         "feature1": {
@@ -81,7 +84,7 @@
         "description": "+궁합 분석까지 무료로 확인할 수 있어요"
       },
       "productPreview": {
-        "title": "커피 한 잔 값에 이 모든 걸 받아보세요",
+        "title": "990원으로 받는 13가지 분석 리포트",
         "items": {
           "chart": "나의 자미두수 명반 (12궁 분석)",
           "spoiler": "인생 스포일러 (타고난 기질 총평)",
@@ -102,36 +105,40 @@
           "insights": "8가지 궁합 인사이트 분석",
           "scenarios": "핵심 시나리오 (실제 상황 예측)",
           "categories": "소통·성장·감정·위기 4대 카테고리"
-        }
+        },
+        "moreLifetime": "+4가지 영역별 상세 분석",
+        "moreYearly": "+좋은 달 / 조심할 달 분석",
+        "moreCompatibility": "+3가지 상세 분석"
       },
       "reviews": {
+        "headline": "<accent>{count}명</accent>이 인생을 스포당했어요",
         "items": {
           "r1": {
-            "name": "이**",
+            "name": "이** · 20대 여성",
             "content": "자미두수는 처음인데 사주보다 훨씬 디테일하고, 기존 사주에서 못 들었던 내용도 있어서 좋았어요!!! 이렇게 저렴하게 퀄리티 높은 결과를 볼 수 있어서 오히려 죄송할 따름입니다 😅"
           },
           "r2": {
-            "name": "최**",
+            "name": "최** · 30대 여성",
             "content": "인생 전반적인 스포일러에 디테일한 연령대별 재물운, 연애운까지 다 봐주네요. 저보고 '고독한 늑대놀이' 한대요 ㅋㅋㅋ 인복 터진 것도 맞아서 대박 신기함!!! 뼈 맞고 갑니다."
           },
           "r3": {
-            "name": "박**",
+            "name": "박** · 20대 여성",
             "content": "애인이랑 궁합 봤는데요. 제가 어디 가자고 지르면 애인은 현실적인 조언 해주는 편인데, 우리 관계를 완전히 꿰뚫어 봐서 개신기함;; 얼마 전에 수면 패턴이랑 밥 먹는 거 안 맞아서 싸운 것까지 어떻게 안 건지? 무섭슨 ㄷ.ㄷ"
           },
           "r4": {
-            "name": "정**",
+            "name": "정** · 20대 남성",
             "content": "여친이랑 궁합 봤는데 소름 끼치게 똑같음. 저는 성격 급한 직진 모드, 여친은 신중한 리스크 관리 타입으로 나오더라고요. 구라 안 치고 최근에 여친한테 '내 마음이 어떤지 좀 들어주면 안 될까?' 이 말 똑같이 들었어서 ㄹㅇ 신기했음요..."
           },
           "r5": {
-            "name": "강**",
+            "name": "강** · 30대 여성",
             "content": "기존 사주 앱이랑 다르게 <키워드 - 핵심 설명 - 구체적 풀이>로 스토리를 풀어주니 이해가 쏙쏙 돼요! 그리고 매번 정보 입력할 필요 없이 프로필 저장이 되는 게 최고 강점입니다. 상대방이랑 어떤 관계인지까지 디테일하게 설정할 수 있어서 너무 편해요."
           },
           "r6": {
-            "name": "조**",
+            "name": "조** · 20대 남성",
             "content": "제 인생 테마가 '멈추면 죽는 상어 같은 인생'이래요 ㅋㅋㅋㅋ 평소에 쉬는 걸 못 견디고 계속 일 벌이는 스타일인데 #휴식불능체질 해시태그 뜨는 거 보고 소름 돋았어요. 너무 재밌어서 내돈내산으로 올해 운세까지 바로 결제해 버림!"
           },
           "r7": {
-            "name": "윤**",
+            "name": "윤** · 30대 여성",
             "content": "새해마다 5만 원씩 주고 사주 보러 다니는 사람인데, 990원짜리 자미두수가 늘 듣던 사주 결과랑 똑같이 나와서 놀랐어요!! 특히 지금 30대 초반인데 진로 고민 심하게 하는 거랑, 스트레스받으면 몸으로 바로 나타나는 것까지 정확히 짚어내서 '어케 알았음?!' 상태 됨.. 가성비 진짜 미쳤습니다."
           }
         }
@@ -154,6 +161,10 @@
           "q4": {
             "question": "환불이 가능한가요?",
             "answer": "디지털 콘텐츠 특성상 결과 확인 후에는 환불이 어렵습니다. 단, 시스템 오류로 결과가 생성되지 않은 경우 전액 환불됩니다."
+          },
+          "q5": {
+            "question": "태어난 시간을 모르면 어떡하나요?",
+            "answer": "태어난 시간을 모르셔도 이용 가능합니다. 다만 시간 정보가 있으면 114개 별의 배치가 더 정확해져서 분석의 정밀도가 높아집니다. 출생 신고서, 부모님께 여쭤보시거나, 대략적인 시간대만 아셔도 충분합니다."
           }
         }
       },
@@ -834,20 +845,23 @@
         "imageAlt": "Destiny Constellation",
         "title": "My prime years: 20s or 30s?",
         "titleSub": "",
-        "subtitle": "Your timing, revealed by 114 stars",
-        "subtitleLine2": "Your timing revealed through 12 palaces",
+        "subtitle": "Is now the right time, or should you wait?",
+        "subtitleLine2": "The age money flows in, the season love deepens",
         "subtitleLine3": "Your money, career & love patterns",
         "subtitleHighlight": "1,000-year-old Eastern astrology, precision analysis"
       },
       "promotion": {
-        "badge": "Launch Special 90% OFF",
+        "badge": "This Month Only 90% OFF",
         "originalPrice": "$9.99",
         "price": "$0.99",
-        "text": "For the price of a coffee, discover your golden years"
+        "text": "Astrology cafe $50 vs Life Spoiler $0.99 — more precise",
+        "ctaButton": "Check Now"
       },
       "cta": {
-        "button": "Get My Life Scenario ($0.99)",
-        "subtext": "3 minutes is all you need"
+        "button": "Discover My Prime Years",
+        "buttonAuthenticated": "View My Fortune Results",
+        "priceBadge": "$0.99",
+        "subtext": "Just enter your birth date & time!"
       },
       "features": {
         "feature1": {
@@ -883,7 +897,7 @@
         "description": "+Free compatibility analysis included"
       },
       "productPreview": {
-        "title": "All this for the price of a coffee",
+        "title": "13 Analysis Reports for Just $0.99",
         "items": {
           "chart": "Your Zi Wei Dou Shu Chart (12 Palaces)",
           "spoiler": "Life Spoiler (Personality Summary)",
@@ -904,36 +918,40 @@
           "insights": "8 Compatibility Insights",
           "scenarios": "Key Scenarios (Real Situation Predictions)",
           "categories": "4 Categories: Communication, Growth, Emotion, Crisis"
-        }
+        },
+        "moreLifetime": "+4 detailed area analyses",
+        "moreYearly": "+Lucky / cautious months analysis",
+        "moreCompatibility": "+3 detailed analyses"
       },
       "reviews": {
+        "headline": "<accent>{count}</accent> people got their life spoiled",
         "items": {
           "r1": {
-            "name": "L**",
+            "name": "L** · F, 20s",
             "content": "This is my first time with Zi Wei Dou Shu, but it's way more detailed than regular astrology. I learned things I'd never heard before! I almost feel guilty getting such high-quality results for so cheap 😅"
           },
           "r2": {
-            "name": "C**",
+            "name": "C** · F, 30s",
             "content": "It covers everything from life spoilers to detailed wealth and love fortunes by age. It said I'm a 'lonely wolf' lol but the part about my social luck was spot-on! Nailed it."
           },
           "r3": {
-            "name": "P**",
+            "name": "P** · F, 20s",
             "content": "I got a compatibility reading with my partner. I'm the impulsive one who suggests trips, and they're the one who gives practical advice. It totally nailed our dynamic. How did it even know we fought about sleep schedules and eating habits?! Creepily accurate."
           },
           "r4": {
-            "name": "J**",
+            "name": "J** · M, 20s",
             "content": "Got a compatibility reading with my girlfriend and it was eerily accurate. I'm the impatient go-getter, she's the cautious risk-manager type. Not even kidding, I recently got the exact same \"Can you please listen to how I feel?\" from her. So weird how accurate it was..."
           },
           "r5": {
-            "name": "K**",
+            "name": "K** · F, 30s",
             "content": "Unlike other astrology apps, it structures everything as <keyword - key explanation - detailed interpretation>, so it's super easy to follow! And the best part? Profile saving – no re-entering info every time. You can even set your relationship type in detail. So convenient."
           },
           "r6": {
-            "name": "J**",
+            "name": "J** · M, 20s",
             "content": "My life theme is 'a shark that dies if it stops' lolol. I can't stand sitting still and am always starting new projects. When I saw the #cantrest hash tag I got chills. So fun that I immediately paid for my yearly fortune too!"
           },
           "r7": {
-            "name": "Y**",
+            "name": "Y** · F, 30s",
             "content": "I pay 50,000 won every New Year for astrology readings, and the 990 won Zi Wei Dou Shu gave me the exact same result. It nailed my career worries in my early 30s and how stress shows up in my body. 'How did it know?!' The value is insane."
           }
         }
@@ -956,6 +974,10 @@
           "q4": {
             "question": "Can I get a refund?",
             "answer": "Due to the nature of digital content, refunds are not available after viewing results. However, full refunds are provided if results fail to generate due to system errors."
+          },
+          "q5": {
+            "question": "What if I don't know my exact birth time?",
+            "answer": "You can still use the service without your exact birth time. However, having time info makes the 114-star placement more accurate, improving analysis precision. Check your birth certificate, ask your parents, or even a rough time range works."
           }
         }
       },
@@ -1636,20 +1658,23 @@
         "imageAlt": "運命の星座",
         "title": "私の全盛期、20代？30代？",
         "titleSub": "",
-        "subtitle": "114個の星で読むあなたのタイミング",
-        "subtitleLine2": "12宮に広がる星が語る運のタイミング",
+        "subtitle": "今がチャンスか、待つべき時か",
+        "subtitleLine2": "お金が入る年齢、縁が深まる時期",
         "subtitleLine3": "自分に合ったお金・仕事・縁のパターン",
         "subtitleHighlight": "1,000年の歴史を持つ東洋占星術の精密分析"
       },
       "promotion": {
-        "badge": "オープン記念 90% OFF",
+        "badge": "今月限定 90% OFF",
         "originalPrice": "$9.99",
         "price": "$0.99",
-        "text": "コーヒー1杯の値段で、人生のゴールデンタイムを確認"
+        "text": "占いカフェ5万円 vs ライフスポイラー990円、より精密に",
+        "ctaButton": "今すぐチェック"
       },
       "cta": {
-        "button": "私の運命シナリオを受け取る（$0.99）",
-        "subtext": "3分で十分です"
+        "button": "私の全盛期を確認する",
+        "buttonAuthenticated": "私の運勢結果を見る",
+        "priceBadge": "$0.99",
+        "subtext": "生年月日時を入力するだけ！"
       },
       "features": {
         "feature1": {
@@ -1685,7 +1710,7 @@
         "description": "+相性分析も無料で確認できます"
       },
       "productPreview": {
-        "title": "コーヒー1杯の値段でこれらすべてを",
+        "title": "990円で受け取る13項目の分析レポート",
         "items": {
           "chart": "紫微斗数命盤（12宮分析）",
           "spoiler": "人生ネタバレ（生まれ持った気質の総評）",
@@ -1706,36 +1731,40 @@
           "insights": "8つの相性インサイト分析",
           "scenarios": "核心シナリオ（実際の状況予測）",
           "categories": "疎通・成長・感情・危機 4大カテゴリー"
-        }
+        },
+        "moreLifetime": "+4つの領域別詳細分析",
+        "moreYearly": "+良い月 / 注意する月の分析",
+        "moreCompatibility": "+3つの詳細分析"
       },
       "reviews": {
+        "headline": "<accent>{count}人</accent>が人生をネタバレされました",
         "items": {
           "r1": {
-            "name": "イ**",
+            "name": "イ** · 20代女性",
             "content": "紫微斗数は初めてなんですけど、四柱推命よりずっと詳しくて、今まで聞いたことのない内容もあって良かったです！！！こんなに安くて高品質な結果が見られるなんて、むしろ申し訳ない気持ちです 😅"
           },
           "r2": {
-            "name": "チョ**",
+            "name": "チョ** · 30代女性",
             "content": "人生全般のネタバレに年代別の金運・恋愛運まで細かく見てくれて。『孤独な狼気質』って言われました笑笑 人運の部分もビシッと当たっててビックリ！！！当たってます。"
           },
           "r3": {
-            "name": "パ**",
+            "name": "パ** · 20代女性",
             "content": "彼氏と相性を見てもらったんです。私が「どこか行こう」って言うと彼氏は現実的なアドバイスしてくれるタイプなんですけど、私たちの関係を完全に把握しててマジでビックリ;; この前、睡眠パターンと食事のタイミングの違いで喧嘩したことまで、どうやって分かったの？怖いほどです…"
           },
           "r4": {
-            "name": "チョン**",
+            "name": "チョン** · 20代男性",
             "content": "彼女と相性見たら鳥肌立つほど同じだった。俺は性急な直進モード、彼女は慎重なリスク管理タイプで出てきた。嘘じゃなくて最近彼女に『俺の気持ち聞いてくれない？』って言われたばかりで、マジでビックリした…"
           },
           "r5": {
-            "name": "カン**",
+            "name": "カン** · 30代女性",
             "content": "既存の四柱推命アプリとは違って<キーワード - 核心説明 - 具体的な解説>でストーリーを展開してくれるからスッと理解できる！それに毎回情報入力しなくてプロフィール保存できるのが最高の強み。相手との関係性まで細かく設定できてすごく便利。"
           },
           "r6": {
-            "name": "チョ**",
+            "name": "チョ** · 20代男性",
             "content": "俺の人生テーマが『止まると死ぬサメみたいな人生』らしい笑笑 普段から休むのが我慢できなくてずっと仕事探してるタイプなんだけど、#休息不能体質のハッシュタグ見て鳥肌立った。面白すぎて自腹で今年の運勢まで即決済しちゃった！"
           },
           "r7": {
-            "name": "ユン**",
+            "name": "ユン** · 30代女性",
             "content": "毎年5万円払って四柱推命見に行く人なんですけど、990円の紫微斗数がいつも聞いてた四柱の結果と全く同じで驚きました！！特に今30代前半で進路に悩んでるのと、ストレスが体に出やすいところまで正確に当ててくれて『なんで分かったの？！』状態。コスパヤバいです。"
           }
         }
@@ -1758,6 +1787,10 @@
           "q4": {
             "question": "返金は可能ですか？",
             "answer": "デジタルコンテンツの特性上、結果確認後の返金は難しいです。ただし、システムエラーで結果が生成されなかった場合は全額返金いたします。"
+          },
+          "q5": {
+            "question": "生まれた時間がわからない場合は？",
+            "answer": "生まれた時間がわからなくてもご利用いただけます。ただし時間情報があると114個の星の配置がより正確になり、分析の精度が上がります。出生届、ご両親への確認、おおよその時間帯だけでも大丈夫です。"
           }
         }
       },

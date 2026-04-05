@@ -41,6 +41,17 @@
     color: #2d1b4e;
 }
 
+.priceBadge {
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #2d1b4e;
+}
+
 .tooltip {
   position: relative;
   padding: 6px 16px;
