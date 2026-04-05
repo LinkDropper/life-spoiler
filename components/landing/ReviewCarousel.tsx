@@ -17,7 +17,7 @@ interface ReviewCarouselProps {
 
 export const ReviewCarousel = ({ reviews }: ReviewCarouselProps) => {
   const [emblaRef] = useEmblaCarousel({ loop: true, align: "center" }, [
-    Autoplay({ delay: 2000, stopOnInteraction: true }),
+    Autoplay({ delay: 4000, stopOnInteraction: true }),
   ]);
 
   return (
