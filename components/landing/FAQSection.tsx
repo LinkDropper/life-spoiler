@@ -45,7 +45,13 @@ export const FAQSection = () => {
   const t = useTranslations("landing.faq");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const faqItems = [{ key: "q1" }, { key: "q2" }, { key: "q3" }, { key: "q4" }];
+  const faqItems = [
+    { key: "q1" },
+    { key: "q2" },
+    { key: "q3" },
+    { key: "q4" },
+    { key: "q5" },
+  ];
 
   const handleToggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);

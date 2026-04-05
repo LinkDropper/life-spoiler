@@ -13,7 +13,7 @@
 }
 
 .ctaSpacer {
-  height: 100px;
+  height: calc(120px + env(safe-area-inset-bottom));
 }
 
 @supports (min-height: 100svh) {

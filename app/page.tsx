@@ -1,7 +1,6 @@
 import {
   MainHero,
   FeatureSection,
-  // CompatibilitySection,
   ProductPreview,
   PromotionBanner,
   ReviewSection,
@@ -13,7 +12,6 @@ import {
 } from "@/components/landing";
 
 import styles from "./page.module.css";
-import EventSection from "@/components/landing/EventSection";
 
 export default function Home() {
   return (
@@ -22,11 +20,9 @@ export default function Home() {
       <main className={styles.main}>
         <MainHero />
         <FeatureSection />
-        {/* <CompatibilitySection /> */}
-        <PromotionBanner />
         <ReviewSection />
         <ProductPreview />
-        <EventSection />
+        <PromotionBanner />
         <FAQSection />
         <DisclaimerSection />
         <FooterInfo />
