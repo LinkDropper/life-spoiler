@@ -18,6 +18,7 @@ import {
   ChevronIcon,
 } from "@/components/fortune";
 import { CompatibilityProfileCard } from "@/components/fortune/CompatibilityProfileCard";
+import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { CompatibilityCard } from "@/components/compatibility";
 import { useCompatibilityResult } from "@/libs/hooks/compatibility";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
@@ -92,6 +93,8 @@ export default function CompatibilityResultPage() {
     handleCloseShareDrawer,
   } = useCompatibilityResult();
 
+  // 후기 드로어 상태
+  const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
   // 프로필 이미지 공유 드로어 상태
   const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
     useState(false);
@@ -419,8 +422,15 @@ export default function CompatibilityResultPage() {
         )}
       </main>
 
-      {/* 하단 공유하기 버튼 */}
+      {/* 하단 버튼 */}
       <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.reviewButton}
+          onClick={() => setIsReviewDrawerOpen(true)}
+        >
+          {tResult("reviewButton", { default: "후기 남기기" })}
+        </button>
         <button
           type="button"
           className={styles.shareButton}
@@ -429,6 +439,14 @@ export default function CompatibilityResultPage() {
           {tResult("shareButton")}
         </button>
       </footer>
+
+      {/* 후기 드로어 */}
+      <ReviewDrawer
+        isOpen={isReviewDrawerOpen}
+        onClose={() => setIsReviewDrawerOpen(false)}
+        profileId={charts.profileA.profileId}
+        fortuneType="compatibility"
+      />
 
       {/* 공유 드로어 */}
       <ShareDrawer
