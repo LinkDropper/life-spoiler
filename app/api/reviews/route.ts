@@ -88,13 +88,29 @@ export const GET = async (request: Request) => {
       );
     }
 
+    // 프로필이 현재 유저 소유인지 확인
+    const { data: profile, error: profileError } =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.from("profiles") as any)
+        .select("id")
+        .eq("id", profileId)
+        .eq("user_id", authUser.id)
+        .single();
+
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { error: "프로필을 찾을 수 없습니다." },
+        { status: 404 }
+      );
+    }
+
     const { data: review } =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await (supabase.from("reviews") as any)
         .select("id, rating, content")
         .eq("profile_id", profileId)
         .eq("fortune_type", fortuneType)
-        .single();
+        .maybeSingle();
 
     return NextResponse.json({ exists: !!review, review: review ?? null });
   } catch (error) {
