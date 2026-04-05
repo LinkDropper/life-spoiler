@@ -14,8 +14,10 @@ export const CTAButton = () => {
   const authStatus = useAuthStatus();
   const t = useTranslations("landing.cta");
 
+  const isAuthenticated = authStatus === "authenticated";
+
   const handleClick = () => {
-    if (authStatus !== "authenticated" || !user) {
+    if (!isAuthenticated || !user) {
       router.push("/login");
       return;
     }
@@ -26,19 +28,38 @@ export const CTAButton = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <p className={styles.tooltip}>
-          {t("subtext", { default: "3분이면 충분해요" })}
-        </p>
+        {!isAuthenticated && (
+          <p className={styles.tooltip}>
+            {t("subtext", { default: "3분이면 충분해요" })}
+          </p>
+        )}
         <button type="button" className={styles.button} onClick={handleClick}>
-          <span className={styles.text}>
-            {t("button", { default: "내 골든타임 확인하기 (990원)" })}
-          </span>
-          <Image
-            src="/images/landing/arrow-right.svg"
-            alt=""
-            width={24}
-            height={24}
-          />
+          {isAuthenticated ? (
+            <>
+              <span className={styles.text}>
+                {t("buttonAuthenticated", {
+                  default: "내 운세 결과 보기",
+                })}
+              </span>
+              <Image
+                src="/images/landing/arrow-right.svg"
+                alt=""
+                width={24}
+                height={24}
+              />
+            </>
+          ) : (
+            <>
+              <span className={styles.text}>
+                {t("button", {
+                  default: "내 전성기 확인하기",
+                })}
+              </span>
+              <span className={styles.priceBadge}>
+                {t("priceBadge", { default: "990원" })}
+              </span>
+            </>
+          )}
         </button>
       </div>
     </div>
