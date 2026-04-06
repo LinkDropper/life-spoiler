@@ -211,10 +211,6 @@
   padding: 32px 16px;
 }
 
-.completedEmoji {
-  font-size: 40px;
-}
-
 .completedMessage {
   font-size: 17px;
   font-weight: 600;

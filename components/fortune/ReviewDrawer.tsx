@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { CircleCheckBig } from "lucide-react";
 
 import type { ReviewFortuneType } from "@/libs/supabase/types";
 
@@ -161,7 +162,7 @@ export const ReviewDrawer = ({
             <hr className={styles.separatorLine} />
           </div>
           <div className={styles.completedBody}>
-            <span className={styles.completedEmoji}>{"🎉"}</span>
+            <CircleCheckBig size={40} color="#ffccd9" strokeWidth={1.5} />
             <p className={styles.completedMessage}>소중한 후기 감사합니다!</p>
             <p className={styles.completedSub}>더 좋은 서비스로 보답할게요</p>
           </div>
