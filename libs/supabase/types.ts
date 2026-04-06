@@ -258,6 +258,30 @@ export interface CompatibilityPairInsert {
   updated_at?: string;
 }
 
+export type ReviewFortuneType =
+  | "lifetime"
+  | "yearly"
+  | "past_life"
+  | "compatibility";
+
+export interface ReviewRow {
+  id: string;
+  profile_id: string;
+  fortune_type: ReviewFortuneType;
+  rating: number;
+  content: string;
+  created_at: string;
+}
+
+export interface ReviewInsert {
+  id?: string;
+  profile_id: string;
+  fortune_type: ReviewFortuneType;
+  rating: number;
+  content: string;
+  created_at?: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -345,6 +369,19 @@ export type Database = {
             foreignKeyName: "promo_code_usages_free_access_id_fkey";
             columns: ["free_access_id"];
             referencedRelation: "profile_free_access";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      reviews: {
+        Row: ReviewRow;
+        Insert: ReviewInsert;
+        Update: Partial<ReviewInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "reviews_profile_id_fkey";
+            columns: ["profile_id"];
+            referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
         ];

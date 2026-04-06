@@ -15,6 +15,7 @@ import {
   ShareDrawer,
 } from "@/components/fortune";
 import PastLifeProfileCard from "@/components/fortune/PastLifeProfileCard";
+import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { usePastLifeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
@@ -53,6 +54,7 @@ export default function PastLifeFortunePage() {
   const [lessonsExpanded, setLessonsExpanded] = useState(true);
 
   // 공유 드로어 상태
+  const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
     useState(false);
@@ -548,8 +550,15 @@ export default function PastLifeFortunePage() {
         <p className={styles.disclaimer}>{t("disclaimer")}</p>
       </main>
 
-      {/* 하단 공유하기 버튼 */}
+      {/* 하단 버튼 */}
       <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.reviewButton}
+          onClick={() => setIsReviewDrawerOpen(true)}
+        >
+          {t("reviewButton", { default: "후기 남기기" })}
+        </button>
         <button
           type="button"
           className={styles.shareButton}
@@ -558,6 +567,14 @@ export default function PastLifeFortunePage() {
           {t("shareButton")}
         </button>
       </footer>
+
+      {/* 후기 드로어 */}
+      <ReviewDrawer
+        isOpen={isReviewDrawerOpen}
+        onClose={() => setIsReviewDrawerOpen(false)}
+        profileId={profileId}
+        fortuneType="past_life"
+      />
 
       {/* 공유 드로어 */}
       <ShareDrawer

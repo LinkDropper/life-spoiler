@@ -21,6 +21,7 @@ import {
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
 import YealryProfileCard from "@/components/fortune/YealryProfileCard";
+import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import EventSection from "@/components/landing/EventSection";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
@@ -80,6 +81,7 @@ export default function YearlyFortunePage() {
   const [monthlyExpanded, setMonthlyExpanded] = useState(true);
 
   // 공유 드로어 상태
+  const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   // 프로필 이미지 공유 드로어 상태
   const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
@@ -396,8 +398,15 @@ export default function YearlyFortunePage() {
 
       <EventSection isResultPage />
 
-      {/* 하단 공유하기 버튼 */}
+      {/* 하단 버튼 */}
       <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.reviewButton}
+          onClick={() => setIsReviewDrawerOpen(true)}
+        >
+          {t("reviewButton", { default: "후기 남기기" })}
+        </button>
         <button
           type="button"
           className={styles.shareButton}
@@ -406,6 +415,14 @@ export default function YearlyFortunePage() {
           {t("shareButton", { default: "공유하기" })}
         </button>
       </footer>
+
+      {/* 후기 드로어 */}
+      <ReviewDrawer
+        isOpen={isReviewDrawerOpen}
+        onClose={() => setIsReviewDrawerOpen(false)}
+        profileId={profileId}
+        fortuneType="yearly"
+      />
 
       {/* 공유 드로어 */}
       <ShareDrawer

@@ -335,6 +335,7 @@
         },
         "result": {
           "shareButton": "공유하기",
+          "reviewButton": "후기 남기기",
           "profileShareTitle": "프로필 이미지 공유하기",
           "coreScenarioTitle": "핵심 시나리오",
           "detailScenarioTitle": "상세 시나리오",
@@ -444,6 +445,7 @@
         "title": "{name}님의 인생 운세",
         "interpretError": "운세 해석에 실패했습니다.",
         "shareButton": "공유하기",
+        "reviewButton": "후기 남기기",
         "profileShareTitle": "프로필 이미지 공유하기",
         "share": {
           "title": "{name}님의 인생 운세",
@@ -518,6 +520,7 @@
         "interpretError": "전생 운세 생성에 실패했어요.",
         "ctaButton": "전생 확인하기 (990원)",
         "shareButton": "공유하기",
+        "reviewButton": "후기 남기기",
         "profileShareTitle": "프로필 이미지 공유하기",
         "imageBlurText": "결제 후 이미지를 확인할 수 있어요",
         "imagePlaceholder": "전생 이미지 준비 중",
@@ -533,6 +536,7 @@
         "fetchError": "올해 운세 조회에 실패했습니다.",
         "yearInfo": "{stem}{branch}년",
         "shareButton": "공유하기",
+        "reviewButton": "후기 남기기",
         "profileShareTitle": "프로필 이미지 공유하기",
         "luckyKeywordsTitle": "행운 키워드",
         "share": {
@@ -1149,6 +1153,7 @@
         },
         "result": {
           "shareButton": "Share",
+          "reviewButton": "Write Review",
           "profileShareTitle": "Share Profile Image",
           "coreScenarioTitle": "Key Scenarios",
           "detailScenarioTitle": "Detailed Scenarios",
@@ -1258,6 +1263,7 @@
         "title": "{name}'s Lifetime Fortune",
         "interpretError": "Failed to interpret fortune.",
         "shareButton": "Share",
+        "reviewButton": "Write Review",
         "profileShareTitle": "Share Profile Image",
         "share": {
           "title": "{name}'s Lifetime Fortune",
@@ -1332,6 +1338,7 @@
         "interpretError": "Failed to generate past life fortune.",
         "ctaButton": "Discover Past Life ($0.99)",
         "shareButton": "Share",
+        "reviewButton": "Write Review",
         "profileShareTitle": "Share Profile Image",
         "imageBlurText": "Unlock image after payment",
         "imagePlaceholder": "Past life image in progress",
@@ -1347,6 +1354,7 @@
         "fetchError": "Failed to fetch this year's fortune.",
         "yearInfo": "Year of {stem}{branch}",
         "shareButton": "Share",
+        "reviewButton": "Write Review",
         "profileShareTitle": "Share Profile Image",
         "luckyKeywordsTitle": "Lucky Keywords",
         "share": {
@@ -1963,6 +1971,7 @@
         },
         "result": {
           "shareButton": "シェアする",
+          "reviewButton": "レビューを書く",
           "profileShareTitle": "プロフィール画像をシェアする",
           "coreScenarioTitle": "核心シナリオ",
           "detailScenarioTitle": "詳細シナリオ",
@@ -2072,6 +2081,7 @@
         "title": "{name}さんの人生運勢",
         "interpretError": "運勢解釈に失敗しました。",
         "shareButton": "シェアする",
+        "reviewButton": "レビューを書く",
         "profileShareTitle": "プロフィール画像をシェアする",
         "share": {
           "title": "{name}さんの人生運勢",
@@ -2146,6 +2156,7 @@
         "interpretError": "前世運勢の生成に失敗しました。",
         "ctaButton": "前世を確認する ($0.99)",
         "shareButton": "シェアする",
+        "reviewButton": "レビューを書く",
         "profileShareTitle": "プロフィール画像をシェアする",
         "imageBlurText": "決済後にイメージを確認できます",
         "imagePlaceholder": "前世イメージ準備中",
@@ -2161,6 +2172,7 @@
         "fetchError": "今年の運勢取得に失敗しました。",
         "yearInfo": "{stem}{branch}年",
         "shareButton": "シェアする",
+        "reviewButton": "レビューを書く",
         "profileShareTitle": "プロフィール画像をシェアする",
         "luckyKeywordsTitle": "幸運キーワード",
         "share": {

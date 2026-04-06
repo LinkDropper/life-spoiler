@@ -22,6 +22,7 @@ import {
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
 import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
 import NewProfileCard from "@/components/fortune/NewProfileCard";
+import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import EventSection from "@/components/landing/EventSection";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import type {
@@ -96,6 +97,8 @@ export default function LifetimeFortunePage() {
   const [detailExpanded, setDetailExpanded] = useState(true);
   const [ageExpanded, setAgeExpanded] = useState(true);
 
+  // 후기 드로어 상태
+  const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
   // 공유 드로어 상태
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   // 프로필 이미지 공유 드로어 상태
@@ -423,8 +426,15 @@ export default function LifetimeFortunePage() {
         <EventSection isResultPage />
       </main>
 
-      {/* 하단 공유하기 버튼 */}
+      {/* 하단 버튼 */}
       <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.reviewButton}
+          onClick={() => setIsReviewDrawerOpen(true)}
+        >
+          {t("reviewButton", { default: "후기 남기기" })}
+        </button>
         <button
           type="button"
           className={styles.shareButton}
@@ -433,6 +443,14 @@ export default function LifetimeFortunePage() {
           {t("shareButton", { default: "공유하기" })}
         </button>
       </footer>
+
+      {/* 후기 드로어 */}
+      <ReviewDrawer
+        isOpen={isReviewDrawerOpen}
+        onClose={() => setIsReviewDrawerOpen(false)}
+        profileId={profileId}
+        fortuneType="lifetime"
+      />
 
       {/* 공유 드로어 */}
       <ShareDrawer
