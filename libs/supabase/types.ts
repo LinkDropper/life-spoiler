@@ -142,6 +142,56 @@ export interface FortuneInsert {
   updated_at?: string;
 }
 
+export type FaceProfileGender = "male" | "female";
+
+export interface FaceProfileRow {
+  id: string;
+  user_id: string;
+  name: string;
+  gender: FaceProfileGender;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FaceProfileInsert {
+  id?: string;
+  user_id: string;
+  name: string;
+  gender: FaceProfileGender;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface FaceReportRow {
+  id: string;
+  share_id: string;
+  user_id: string;
+  face_profile_id: string;
+  image_hash: string;
+  result: Json;
+  paid_at: string | null;
+  original_image_path: string | null;
+  character_image_path: string | null;
+  character_image_generated_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FaceReportInsert {
+  id?: string;
+  share_id: string;
+  user_id: string;
+  face_profile_id: string;
+  image_hash: string;
+  result: Json;
+  paid_at?: string | null;
+  original_image_path?: string | null;
+  character_image_path?: string | null;
+  character_image_generated_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface ProfileFreeAccessRow {
   id: string;
   profile_id: string;
@@ -167,7 +217,12 @@ export interface ProfileFreeAccessInsert {
 // Promo Code Types
 export type PromoCodeType = "common" | "single_use";
 export type PromoBenefitType = "free_fortune" | "discount";
-export type PromoFortuneType = "lifetime" | "yearly" | "past_life" | "all";
+export type PromoFortuneType =
+  | "lifetime"
+  | "yearly"
+  | "past_life"
+  | "face_spoiler"
+  | "all";
 
 export interface PromoCodeRow {
   id: string;
@@ -207,12 +262,19 @@ export interface PromoCodeInsert {
   created_by?: string | null;
 }
 
+export type PromoUsageFortuneType =
+  | "lifetime"
+  | "yearly"
+  | "past_life"
+  | "face_spoiler";
+
 export interface PromoCodeUsageRow {
   id: string;
   promo_code_id: string;
   user_id: string;
-  profile_id: string;
-  fortune_type: FortuneType;
+  profile_id: string | null;
+  face_report_id: string | null;
+  fortune_type: PromoUsageFortuneType | null;
   free_access_id: string | null;
   used_at: string;
   created_at: string;
@@ -222,8 +284,9 @@ export interface PromoCodeUsageInsert {
   id?: string;
   promo_code_id: string;
   user_id: string;
-  profile_id: string;
-  fortune_type: FortuneType;
+  profile_id?: string | null;
+  face_report_id?: string | null;
+  fortune_type?: PromoUsageFortuneType | null;
   free_access_id?: string | null;
   used_at?: string;
 }
@@ -439,6 +502,38 @@ export type Database = {
             foreignKeyName: "follow_up_questions_pair_id_fkey";
             columns: ["pair_id"];
             referencedRelation: "compatibility_pairs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      face_reports: {
+        Row: FaceReportRow;
+        Insert: FaceReportInsert;
+        Update: Partial<FaceReportInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "face_reports_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "face_reports_face_profile_id_fkey";
+            columns: ["face_profile_id"];
+            referencedRelation: "face_profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      face_profiles: {
+        Row: FaceProfileRow;
+        Insert: FaceProfileInsert;
+        Update: Partial<FaceProfileInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "face_profiles_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
             referencedColumns: ["id"];
           },
         ];
