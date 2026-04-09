@@ -1,171 +1,178 @@
-"use client";
+import { getTranslations } from "next-intl/server";
 
-import { useTranslations } from "next-intl";
-import { useState } from "react";
+import type { FaceReportData } from "@/libs/face-spoiler/types";
 
-import type {
-  FaceReportData,
-  FaceReportSection,
-} from "@/libs/face-spoiler/types";
-
+import { FeatureBadges } from "./FeatureBadges";
+import { IntensityIndicator } from "./IntensityIndicator";
+import { ShareableQuoteCard } from "./ShareableQuoteCard";
 import styles from "./ReportView.module.css";
 
 interface ReportViewProps {
   report: FaceReportData;
 }
 
-interface AccordionCardProps {
-  title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}
-
-const AccordionCard = ({
-  title,
-  children,
-  defaultOpen = true,
-}: AccordionCardProps) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  return (
-    <div className={styles.card}>
-      <button
-        className={styles.cardHeader}
-        onClick={handleToggle}
-        aria-expanded={isOpen}
-        type="button"
-      >
-        <h2 className={styles.cardTitle}>
-          {title}
-          <svg
-            className={styles.arrowIcon}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            style={{ transform: isOpen ? "scaleY(1)" : "scaleY(-1)" }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M5 15l7-7 7 7"
-            />
-          </svg>
-        </h2>
-      </button>
-      {isOpen && <div className={styles.contentWrapper}>{children}</div>}
-    </div>
-  );
-};
-
-const renderParagraphs = (text: string) => {
+const splitParagraphs = (text: string): string[] => {
   return text
     .split(/\n\s*\n/)
     .map((paragraph) => paragraph.trim())
-    .filter((paragraph) => paragraph.length > 0)
-    .map((paragraph, index) => (
-      <p key={index} className={styles.paragraph}>
-        {paragraph}
-      </p>
-    ));
+    .filter((paragraph) => paragraph.length > 0);
 };
 
-interface SectionMetaProps {
-  tags: FaceReportSection["tags"];
-  score: FaceReportSection["score"];
+interface ParagraphStackProps {
+  text: string;
 }
 
-const SectionMeta = ({ tags, score }: SectionMetaProps) => {
+const ParagraphStack = ({ text }: ParagraphStackProps) => {
+  const paragraphs = splitParagraphs(text);
+  if (paragraphs.length === 0) {
+    return null;
+  }
   return (
-    <div className={styles.sectionMeta}>
-      <div className={styles.tagGroup}>
-        {tags.map((tag, index) => (
-          <span key={index} className={styles.tag}>
-            #{tag}
-          </span>
-        ))}
-      </div>
-      <div className={styles.score}>
-        <span className={styles.scoreValue}>{score}</span>
-        <span className={styles.scoreUnit}>/100</span>
-      </div>
+    <div className={styles.paragraphStack}>
+      {paragraphs.map((paragraph, index) => (
+        <p key={index} className={styles.paragraph}>
+          {paragraph}
+        </p>
+      ))}
     </div>
   );
 };
 
-export const ReportView = ({ report }: ReportViewProps) => {
-  const t = useTranslations("faceSpoiler.report.sections");
+interface TagListProps {
+  tags: string[];
+  variant?: "default" | "vibe";
+}
+
+const TagList = ({ tags, variant = "default" }: TagListProps) => {
+  if (tags.length === 0) {
+    return null;
+  }
+  return (
+    <div className={styles.tagGroup}>
+      {tags.map((tag, index) => (
+        <span
+          key={index}
+          className={`${styles.tag} ${variant === "vibe" ? styles.vibeTag : ""}`}
+        >
+          #{tag}
+        </span>
+      ))}
+    </div>
+  );
+};
+
+export const ReportView = async ({ report }: ReportViewProps) => {
+  const t = await getTranslations("faceSpoiler.report.sections");
+  const tTraits = await getTranslations("faceSpoiler.report.traitsLabels");
+  const tFortune = await getTranslations("faceSpoiler.report.fortuneLabels");
+  const tRelationship = await getTranslations(
+    "faceSpoiler.report.relationshipLabels"
+  );
+  const {
+    firstImpression,
+    traits,
+    relationship,
+    fortune,
+    observation,
+    actions,
+    shareLine,
+  } = report;
 
   return (
     <div className={styles.report}>
-      <AccordionCard title={t("profile", { default: "첫인상" })}>
-        <h3 className={styles.profileHeadline}>{report.profile.headline}</h3>
-        <p className={styles.profileDescription}>
-          {report.profile.description}
-        </p>
-        <div className={styles.profileSummary}>
-          {renderParagraphs(report.profile.summary)}
-        </div>
-      </AccordionCard>
+      {/* 1. 첫인상 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("firstImpression")}</h2>
+          <IntensityIndicator intensity={firstImpression.intensity} />
+        </header>
+        <h3 className={styles.headline}>{firstImpression.headline}</h3>
+        <p className={styles.description}>{firstImpression.description}</p>
+        <ParagraphStack text={firstImpression.summary} />
+        <TagList tags={firstImpression.vibeTags} variant="vibe" />
+      </section>
 
-      <AccordionCard title={t("observation", { default: "관상 관찰" })}>
-        <h3 className={styles.sectionHeadline}>
-          {report.observation.headline}
+      {/* 2. 성향과 매력 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("traits")}</h2>
+          <IntensityIndicator intensity={traits.intensity} />
+        </header>
+        <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
+          {traits.headline}
         </h3>
-        <div className={styles.observationContent}>
-          {renderParagraphs(report.observation.content)}
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{tTraits("strengths")}</span>
+          <ParagraphStack text={traits.strengths} />
         </div>
-      </AccordionCard>
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{tTraits("hiddenSide")}</span>
+          <ParagraphStack text={traits.hiddenSide} />
+        </div>
+        <TagList tags={traits.tags} />
+      </section>
 
-      <AccordionCard title={t("personality", { default: "성향" })}>
-        <h3 className={styles.sectionHeadline}>
-          {report.personality.headline}
+      {/* 3. 어울리는 사람 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("relationship")}</h2>
+          <IntensityIndicator intensity={relationship.intensity} />
+        </header>
+        <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
+          {relationship.headline}
         </h3>
-        <div className={styles.sectionContent}>
-          {renderParagraphs(report.personality.content)}
+        <ParagraphStack text={relationship.content} />
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>
+            {tRelationship("idealType")}
+          </span>
+          <p className={styles.paragraph}>{relationship.idealType}</p>
         </div>
-        <SectionMeta
-          tags={report.personality.tags}
-          score={report.personality.score}
-        />
-      </AccordionCard>
+        <ShareableQuoteCard quote={relationship.shareableQuote} />
+        <TagList tags={relationship.tags} />
+      </section>
 
-      <AccordionCard title={t("career", { default: "일·커리어" })}>
-        <h3 className={styles.sectionHeadline}>{report.career.headline}</h3>
-        <div className={styles.sectionContent}>
-          {renderParagraphs(report.career.content)}
-        </div>
-        <SectionMeta tags={report.career.tags} score={report.career.score} />
-      </AccordionCard>
-
-      <AccordionCard title={t("wealth", { default: "돈·재물" })}>
-        <h3 className={styles.sectionHeadline}>{report.wealth.headline}</h3>
-        <div className={styles.sectionContent}>
-          {renderParagraphs(report.wealth.content)}
-        </div>
-        <SectionMeta tags={report.wealth.tags} score={report.wealth.score} />
-      </AccordionCard>
-
-      <AccordionCard title={t("relationship", { default: "관계·연애" })}>
-        <h3 className={styles.sectionHeadline}>
-          {report.relationship.headline}
+      {/* 4. 일과 재물의 흐름 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("fortune")}</h2>
+          <IntensityIndicator intensity={fortune.intensity} />
+        </header>
+        <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
+          {fortune.headline}
         </h3>
-        <div className={styles.sectionContent}>
-          {renderParagraphs(report.relationship.content)}
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{tFortune("workFlow")}</span>
+          <ParagraphStack text={fortune.workFlow} />
         </div>
-        <SectionMeta
-          tags={report.relationship.tags}
-          score={report.relationship.score}
-        />
-      </AccordionCard>
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{tFortune("wealthFlow")}</span>
+          <ParagraphStack text={fortune.wealthFlow} />
+        </div>
+        <TagList tags={fortune.tags} />
+      </section>
 
-      <AccordionCard title={t("actions", { default: "실행 행동 5가지" })}>
+      {/* 5. 관상 관찰 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("observation")}</h2>
+        </header>
+        <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
+          {observation.headline}
+        </h3>
+        <ParagraphStack text={observation.content} />
+        <div className={styles.observationFeatures}>
+          <FeatureBadges features={observation.features} />
+        </div>
+      </section>
+
+      {/* 6. 이번 주 작은 행동 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("actions")}</h2>
+        </header>
         <ol className={styles.actionList}>
-          {report.actions.map((action, index) => (
+          {actions.map((action, index) => (
             <li key={index} className={styles.actionItem}>
               <span className={styles.actionNumber}>{index + 1}</span>
               <div className={styles.actionBody}>
@@ -175,11 +182,15 @@ export const ReportView = ({ report }: ReportViewProps) => {
             </li>
           ))}
         </ol>
-      </AccordionCard>
+      </section>
 
-      <AccordionCard title={t("shareLine", { default: "공유 문구" })}>
-        <p className={styles.shareLineContent}>{report.shareLine}</p>
-      </AccordionCard>
+      {/* 7. shareLine */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("shareLine")}</h2>
+        </header>
+        <p className={styles.shareLine}>{shareLine}</p>
+      </section>
     </div>
   );
 };

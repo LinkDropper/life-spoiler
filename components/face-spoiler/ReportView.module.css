@@ -1,96 +1,54 @@
 .report {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 56px;
   padding-top: 48px;
 }
 
-/* 아코디언 카드 */
-.card {
-  padding: 0;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.cardHeader {
-  width: 100%;
+.sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
-  background: transparent;
-  padding: 0;
-  border: none;
-  outline: none;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 }
 
-.cardTitle {
+.sectionTitle {
   font-family: "Pretendard Variable", Pretendard, sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
-  padding-bottom: 12px;
-  margin-bottom: 0;
   color: var(--text-primary);
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  margin: 0;
 }
 
-.arrowIcon {
-  width: 20px;
-  height: 20px;
-  color: rgba(255, 255, 255, 0.5);
-  transition: transform 0.2s ease;
-}
-
-.contentWrapper {
-  padding-top: 24px;
-}
-
-/* profile (첫인상) */
-.profileHeadline {
+.headline {
   font-family: "Pretendard Variable", Pretendard, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.45;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin: 0;
   padding-left: 12px;
   border-left: 3px solid #3fd9ad;
 }
 
-.profileDescription {
+.headlineCompact {
+  font-size: 1.125rem;
+  padding-left: 10px;
+}
+
+.description {
   font-size: 0.9375rem;
   line-height: 1.6;
   color: var(--text-secondary);
-  margin-bottom: 24px;
-}
-
-.profileSummary {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* 섹션 공통 */
-.sectionHeadline {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.5;
-  color: var(--text-primary);
-  margin-bottom: 20px;
-  padding-left: 12px;
-  border-left: 3px solid #3fd9ad;
-}
-
-.sectionContent,
-.observationContent {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
+  margin: 0;
 }
 
 .paragraph {
@@ -98,24 +56,35 @@
   line-height: 1.75;
   color: var(--text-secondary);
   white-space: pre-wrap;
+  margin: 0;
 }
 
-/* tags + score */
-.sectionMeta {
+.paragraphStack {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 20px;
-  margin-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  flex-direction: column;
   gap: 16px;
-  flex-wrap: wrap;
+}
+
+.labeledBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.blockLabel {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #3fd9ad;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .tagGroup {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: 8px;
 }
 
 .tag {
@@ -126,30 +95,17 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 0.8125rem;
   font-weight: 600;
-  border-radius: 0;
 }
 
-.score {
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
-  color: var(--text-primary);
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
+.vibeTag {
+  background: rgba(63, 217, 173, 0.08);
+  border-color: rgba(63, 217, 173, 0.35);
 }
 
-.scoreValue {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #3fd9ad;
+.observationFeatures {
+  margin-top: 12px;
 }
 
-.scoreUnit {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-/* actions */
 .actionList {
   display: flex;
   flex-direction: column;
@@ -199,10 +155,10 @@
   font-size: 0.9375rem;
   line-height: 1.65;
   color: var(--text-secondary);
+  margin: 0;
 }
 
-/* shareLine */
-.shareLineContent {
+.shareLine {
   font-size: 1.0625rem;
   line-height: 1.75;
   color: var(--text-primary);
@@ -211,22 +167,23 @@
   padding: 32px 24px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px dashed rgba(255, 255, 255, 0.2);
+  margin: 0;
 }
 
 @media (max-width: 640px) {
   .report {
-    gap: 40px;
+    gap: 48px;
   }
 
-  .cardTitle {
-    font-size: 1.5rem;
+  .sectionTitle {
+    font-size: 1.125rem;
   }
 
-  .profileHeadline {
+  .headline {
     font-size: 1.375rem;
   }
 
-  .sectionHeadline {
+  .headlineCompact {
     font-size: 1.0625rem;
   }
 

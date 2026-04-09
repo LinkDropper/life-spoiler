@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { env } from "@/env";
+import { AnimalHero } from "@/components/face-spoiler/AnimalHero";
 import { Header } from "@/components/face-spoiler/Header";
 import { ReportShareButtons } from "@/components/face-spoiler/ReportShareButtons";
 import { ReportView } from "@/components/face-spoiler/ReportView";
-import type { FaceReportData } from "@/libs/face-spoiler/types";
+import { isV2Report } from "@/libs/face-spoiler/types";
 import { createServerClient } from "@/libs/supabase";
 
 import styles from "./page.module.css";
@@ -20,7 +21,7 @@ interface ReportPageProps {
 
 interface FaceReportRecord {
   share_id: string;
-  result: FaceReportData;
+  result: unknown;
   paid_at: string | null;
   character_image_path: string | null;
 }
@@ -48,7 +49,7 @@ const fetchReport = async (
 
   return {
     share_id: row.share_id,
-    result: row.result as FaceReportData,
+    result: row.result,
     paid_at: row.paid_at,
     character_image_path: row.character_image_path,
   };
@@ -65,17 +66,25 @@ export const generateMetadata = async ({
   params,
 }: ReportPageProps): Promise<Metadata> => {
   const { shareId } = await params;
-  const report = await fetchReport(shareId);
+  const record = await fetchReport(shareId);
   const tMeta = await getTranslations("faceSpoiler.metadata");
 
+  const defaultHeadline = tMeta("defaultHeadline", {
+    default: "관상 분석 결과",
+  });
+  const defaultDescription = tMeta("defaultDescription", {
+    default: "사진 한 장으로 받아본 AI 관상 리포트. 지금 확인해보세요.",
+  });
+
   const headline =
-    report?.result.profile.headline ??
-    tMeta("defaultHeadline", { default: "관상 분석 결과" });
+    record && isV2Report(record.result)
+      ? record.result.firstImpression.headline
+      : defaultHeadline;
   const description =
-    report?.result.shareLine ??
-    tMeta("defaultDescription", {
-      default: "사진 한 장으로 받아본 AI 관상 리포트. 지금 확인해보세요.",
-    });
+    record && isV2Report(record.result)
+      ? record.result.shareLine
+      : defaultDescription;
+
   const fullTitle = tMeta("shareTitleSuffix", {
     headline,
     default: `관상스포 — ${headline}`,
@@ -96,36 +105,51 @@ export default async function FaceSpoilerReportPage({
   params,
 }: ReportPageProps) {
   const { shareId } = await params;
-  const report = await fetchReport(shareId);
+  const record = await fetchReport(shareId);
 
-  if (!report) {
+  if (!record) {
     notFound();
   }
 
-  const characterImageUrl = buildCharacterImageUrl(report.character_image_path);
+  const characterImageUrl = buildCharacterImageUrl(record.character_image_path);
+
+  // 하드 컷오버: v1 리포트는 fallback 안내 페이지 노출
+  if (!isV2Report(record.result)) {
+    const tLegacy = await getTranslations("faceSpoiler.report.legacy");
+    return (
+      <>
+        <Header />
+        <div className={styles.container}>
+          <div className={styles.content}>
+            <div className={styles.legacyNotice}>
+              <h1 className={styles.legacyTitle}>{tLegacy("title")}</h1>
+              <p className={styles.legacyDescription}>
+                {tLegacy("description")}
+              </p>
+              <Link href="/face-spoiler/upload" className={styles.legacyCta}>
+                {tLegacy("ctaButton")}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const report = record.result;
 
   return (
     <>
       <Header />
       <div className={styles.container}>
-        {characterImageUrl && (
-          <div className={styles.heroImage}>
-            <Image
-              src={characterImageUrl}
-              alt=""
-              className={styles.heroImageInner}
-              width={1024}
-              height={1024}
-              priority
-            />
-          </div>
-        )}
+        <AnimalHero
+          animalMatch={report.animalMatch}
+          characterImageUrl={characterImageUrl}
+          showFullContext
+        />
         <div className={styles.content}>
-          <ReportView report={report.result} />
-          <ReportShareButtons
-            shareId={shareId}
-            shareLine={report.result.shareLine}
-          />
+          <ReportView report={report} />
+          <ReportShareButtons shareId={shareId} shareLine={report.shareLine} />
         </div>
       </div>
     </>
