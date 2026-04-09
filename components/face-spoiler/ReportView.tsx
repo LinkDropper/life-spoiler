@@ -3,7 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import type { FaceReportData, FaceReportSection } from "@/libs/face-spoiler/types";
+import type {
+  FaceReportData,
+  FaceReportSection,
+} from "@/libs/face-spoiler/types";
 
 import styles from "./ReportView.module.css";
 
@@ -110,7 +113,9 @@ export const ReportView = ({ report }: ReportViewProps) => {
       </AccordionCard>
 
       <AccordionCard title={t("observation", { default: "관상 관찰" })}>
-        <h3 className={styles.sectionHeadline}>{report.observation.headline}</h3>
+        <h3 className={styles.sectionHeadline}>
+          {report.observation.headline}
+        </h3>
         <div className={styles.observationContent}>
           {renderParagraphs(report.observation.content)}
         </div>

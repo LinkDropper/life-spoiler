@@ -61,13 +61,16 @@ export const POST = async (request: Request) => {
     const adminClient = createServerClient();
 
     // 캐시 체크: 동일 프로필의 동일 이미지 리포트가 이미 있으면 재사용
-    const { data: cachedReport } = await adminClient
+    const { data: cachedReportRaw } = await adminClient
       .from("face_reports")
       .select("share_id")
       .eq("user_id", user.id)
       .eq("face_profile_id", profileId)
       .eq("image_hash", imageHash)
       .maybeSingle();
+    const cachedReport = cachedReportRaw as unknown as {
+      share_id: string;
+    } | null;
 
     if (cachedReport) {
       return NextResponse.json({

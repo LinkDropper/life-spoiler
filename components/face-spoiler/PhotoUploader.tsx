@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import { detectFaces, type DetectedFaceBox } from "@/libs/face-spoiler/face-detector";
+import {
+  detectFaces,
+  type DetectedFaceBox,
+} from "@/libs/face-spoiler/face-detector";
 
 import { AnalysisLoading } from "./AnalysisLoading";
 import styles from "./PhotoUploader.module.css";
@@ -183,8 +186,7 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
         default: "이미지를 불러올 수 없어요.",
       }),
       lowResolution: t("errorLowResolution", {
-        default:
-          "사진 해상도가 너무 낮아요. 더 선명한 사진을 업로드해주세요.",
+        default: "사진 해상도가 너무 낮아요. 더 선명한 사진을 업로드해주세요.",
       }),
       noFace: t("errorNoFace", {
         default:
@@ -297,7 +299,7 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const files = e.dataTransfer.files;
+    const { files } = e.dataTransfer;
     if (files.length > 0) handleFileSelection(files[0]);
   };
 

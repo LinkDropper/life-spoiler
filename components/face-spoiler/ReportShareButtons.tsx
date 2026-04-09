@@ -10,7 +10,9 @@ interface ReportShareButtonsProps {
   shareLine: string;
 }
 
-interface KakaoShareAPI {
+// Kakao SDK의 sendDefault 호출 시그니처 (libs/kakao 글로벌 타입에는
+// sendCustom만 정의되어 있어 type assertion으로 접근)
+interface KakaoShareSendDefault {
   sendDefault: (options: {
     objectType: string;
     content: {
@@ -27,15 +29,6 @@ interface KakaoShareAPI {
       link: { mobileWebUrl: string; webUrl: string };
     }>;
   }) => void;
-}
-
-declare global {
-  interface Window {
-    Kakao?: {
-      Share?: KakaoShareAPI;
-      isInitialized?: () => boolean;
-    };
-  }
 }
 
 export const ReportShareButtons = ({
@@ -66,11 +59,13 @@ export const ReportShareButtons = ({
     const shareUrl = getShareUrl();
     if (
       typeof window !== "undefined" &&
-      window.Kakao?.Share &&
+      window.Kakao &&
       window.Kakao.isInitialized?.()
     ) {
       try {
-        window.Kakao.Share.sendDefault({
+        const kakaoShare = window.Kakao
+          .Share as unknown as KakaoShareSendDefault;
+        kakaoShare.sendDefault({
           objectType: "feed",
           content: {
             title: t("kakaoCardTitle", { default: "관상스포" }),

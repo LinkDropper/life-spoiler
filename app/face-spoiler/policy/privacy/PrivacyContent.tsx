@@ -10,10 +10,7 @@ export const PrivacyContent = () => {
   const t = useTranslations("faceSpoiler.policy.privacy");
 
   return (
-    <FacePolicyLayout
-      title={t("title")}
-      closeButtonText={t("closeButton")}
-    >
+    <FacePolicyLayout title={t("title")} closeButtonText={t("closeButton")}>
       <p>{t("intro")}</p>
 
       <p>

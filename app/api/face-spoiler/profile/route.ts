@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     const parseResult = CreateProfileSchema.safeParse(body);
 
     if (!parseResult.success) {
-      const firstIssue = parseResult.error.issues[0];
+      const [firstIssue] = parseResult.error.issues;
       return NextResponse.json(
         {
           success: false,
@@ -97,15 +97,16 @@ export async function POST(request: NextRequest) {
 
     const { name, gender } = parseResult.data;
 
-    const { data, error } = await supabase
-      .from("face_profiles")
-      .insert({
-        user_id: user.id,
-        name,
-        gender,
-      })
-      .select("*")
-      .single();
+    const { data, error } =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.from("face_profiles") as any)
+        .insert({
+          user_id: user.id,
+          name,
+          gender,
+        })
+        .select("*")
+        .single();
 
     if (error || !data) {
       console.error("Error inserting face profile:", error);

@@ -55,7 +55,9 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    if (existing.user_id !== user.id) {
+    const existingProfile = existing as unknown as { user_id: string };
+
+    if (existingProfile.user_id !== user.id) {
       return NextResponse.json(
         { success: false, error: "권한이 없습니다." },
         { status: 403 }

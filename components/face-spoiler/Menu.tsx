@@ -67,19 +67,8 @@ const AlertCircleIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
   >
-    <circle
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="#fa5252"
-      strokeWidth="2"
-    />
-    <path
-      d="M12 7V13"
-      stroke="#fa5252"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
+    <circle cx="12" cy="12" r="10" stroke="#fa5252" strokeWidth="2" />
+    <path d="M12 7V13" stroke="#fa5252" strokeWidth="2" strokeLinecap="round" />
     <circle cx="12" cy="16.5" r="1.25" fill="#fa5252" />
   </svg>
 );
@@ -102,7 +91,10 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
       google: t("loginViaGoogle", { default: "Google로 로그인했어요" }),
       kakao: t("loginViaKakao", { default: "카카오로 로그인했어요" }),
     };
-    return providerMessages[user.provider] ?? t("loggedIn", { default: "로그인되어 있어요" });
+    return (
+      providerMessages[user.provider] ??
+      t("loggedIn", { default: "로그인되어 있어요" })
+    );
   };
 
   const handleLogout = useCallback(async () => {
@@ -129,7 +121,9 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
         router.push("/face-spoiler");
       } else {
         const data = await response.json().catch(() => ({}));
-        alert(data.error || t("withdrawError", { default: "회원탈퇴에 실패했어요" }));
+        alert(
+          data.error || t("withdrawError", { default: "회원탈퇴에 실패했어요" })
+        );
       }
     } catch (error) {
       console.error("회원탈퇴 실패:", error);

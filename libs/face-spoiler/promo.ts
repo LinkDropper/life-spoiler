@@ -98,11 +98,17 @@ const verifyFaceReportOwnership = async (
     return null;
   }
 
-  if ((data as { user_id: string }).user_id !== userId) {
+  const row = data as unknown as {
+    id: string;
+    user_id: string;
+    paid_at: string | null;
+  };
+
+  if (row.user_id !== userId) {
     return null;
   }
 
-  return { id: data.id, paid_at: data.paid_at };
+  return { id: row.id, paid_at: row.paid_at };
 };
 
 const isFortuneTypeCompatible = (codeFortuneType: string): boolean => {
@@ -117,15 +123,17 @@ export const hasPromoAppliedToFaceReport = async (
 ): Promise<boolean> => {
   const supabase = createServerClient() as SupabaseDB;
 
-  const { data: report, error: reportError } = await supabase
+  const { data: reportData, error: reportError } = await supabase
     .from("face_reports")
     .select("id")
     .eq("share_id", shareId)
     .maybeSingle();
 
-  if (reportError || !report) {
+  if (reportError || !reportData) {
     return false;
   }
+
+  const report = reportData as unknown as { id: string };
 
   const { count, error } = await supabase
     .from("promo_code_usages")

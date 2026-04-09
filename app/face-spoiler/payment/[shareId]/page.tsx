@@ -182,7 +182,7 @@ export default function FaceSpoilerPaymentPage() {
     };
 
     fetchInfo();
-  }, [authStatus, shareId, router]);
+  }, [authStatus, shareId, router, tFace]);
 
   // 프로모 적용 여부 확인
   useEffect(() => {
@@ -304,7 +304,9 @@ export default function FaceSpoilerPaymentPage() {
       const isCanceled =
         err instanceof Error && /취소|cancel/i.test(err.message);
       if (!isCanceled) {
-        setError(tPayment("paymentError", { default: "결제 중 오류가 발생했어요." }));
+        setError(
+          tPayment("paymentError", { default: "결제 중 오류가 발생했어요." })
+        );
       }
       setIsProcessing(false);
     }
@@ -347,7 +349,10 @@ export default function FaceSpoilerPaymentPage() {
       const result = await response.json();
 
       if (!result.success) {
-        showPromoError(result.error || tPayment("promoError", { default: "쿠폰 적용에 실패했어요." }));
+        showPromoError(
+          result.error ||
+            tPayment("promoError", { default: "쿠폰 적용에 실패했어요." })
+        );
         setIsPromoValidating(false);
         return;
       }
@@ -363,7 +368,9 @@ export default function FaceSpoilerPaymentPage() {
         setShowPromoToast(false);
       }, 3000);
     } catch {
-      showPromoError(tPayment("promoError", { default: "쿠폰 적용에 실패했어요." }));
+      showPromoError(
+        tPayment("promoError", { default: "쿠폰 적용에 실패했어요." })
+      );
       setIsPromoValidating(false);
     }
   };
@@ -407,7 +414,9 @@ export default function FaceSpoilerPaymentPage() {
 
       {showPromoToast && (
         <div className={styles.promoToast}>
-          <span>{tPayment("promoSuccess", { default: "쿠폰이 적용되었어요." })}</span>
+          <span>
+            {tPayment("promoSuccess", { default: "쿠폰이 적용되었어요." })}
+          </span>
         </div>
       )}
 
@@ -479,8 +488,12 @@ export default function FaceSpoilerPaymentPage() {
                 className={`${styles.promoInput} ${promoApplied ? styles.promoInputApplied : ""}`}
                 placeholder={
                   promoApplied
-                    ? tPayment("promoAppliedPlaceholder", { default: "쿠폰이 적용되었어요" })
-                    : tPayment("promoPlaceholder", { default: "쿠폰 코드를 입력하세요" })
+                    ? tPayment("promoAppliedPlaceholder", {
+                        default: "쿠폰이 적용되었어요",
+                      })
+                    : tPayment("promoPlaceholder", {
+                        default: "쿠폰 코드를 입력하세요",
+                      })
                 }
                 value={promoCode}
                 onChange={(e) => setPromoCode(e.target.value)}
@@ -518,7 +531,9 @@ export default function FaceSpoilerPaymentPage() {
                   : `${paymentAmount.toLocaleString()}${tPayment("currency", { default: "원" })}`}
               </span>
               <span className={styles.discountedAmount}>
-                {isForeignLocale ? "$0.00" : `0${tPayment("currency", { default: "원" })}`}
+                {isForeignLocale
+                  ? "$0.00"
+                  : `0${tPayment("currency", { default: "원" })}`}
               </span>
             </div>
           ) : (
@@ -532,7 +547,8 @@ export default function FaceSpoilerPaymentPage() {
 
         <p className={styles.refundNotice}>
           {tPayment("refundPolicy", {
-            default: "디지털 콘텐츠 특성상 결제 즉시 제공되어 환불이 불가합니다.",
+            default:
+              "디지털 콘텐츠 특성상 결제 즉시 제공되어 환불이 불가합니다.",
           })}
         </p>
       </main>

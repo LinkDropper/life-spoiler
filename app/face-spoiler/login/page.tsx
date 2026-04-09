@@ -34,7 +34,9 @@ export default function FaceSpoilerLoginPage() {
       <div className={styles.logoWrapper}>
         <span className={styles.logo}>관상스포</span>
         <p className={styles.tagline}>
-          {tFace("tagline", { default: "사진 한 장으로 보는 나의 관상 리포트" })}
+          {tFace("tagline", {
+            default: "사진 한 장으로 보는 나의 관상 리포트",
+          })}
         </p>
       </div>
 
@@ -56,12 +58,7 @@ export default function FaceSpoilerLoginPage() {
             className={styles.googleButton}
             onClick={() => handleOAuthLogin("google")}
           >
-            <Image
-              src="/icons/google-icon.svg"
-              alt=""
-              width={18}
-              height={18}
-            />
+            <Image src="/icons/google-icon.svg" alt="" width={18} height={18} />
             <span className={styles.buttonText}>
               {t("googleButton", { default: "Google로 계속하기" })}
             </span>
@@ -70,9 +67,7 @@ export default function FaceSpoilerLoginPage() {
           <p className={styles.agreement}>
             {t.rich("agreement", {
               terms: (chunks) => <Link href="/policy/terms">{chunks}</Link>,
-              privacy: (chunks) => (
-                <Link href="/policy/privacy">{chunks}</Link>
-              ),
+              privacy: (chunks) => <Link href="/policy/privacy">{chunks}</Link>,
             })}
           </p>
         </div>

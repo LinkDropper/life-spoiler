@@ -10,10 +10,7 @@ export const TermsContent = () => {
   const t = useTranslations("faceSpoiler.policy.terms");
 
   return (
-    <FacePolicyLayout
-      title={t("title")}
-      closeButtonText={t("closeButton")}
-    >
+    <FacePolicyLayout title={t("title")} closeButtonText={t("closeButton")}>
       <p>
         <strong className={styles.articleTitle}>{t("article1.title")}</strong>
         <br />

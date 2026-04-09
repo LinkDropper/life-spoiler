@@ -34,10 +34,16 @@ const fetchReport = async (
     return null;
   }
 
+  const row = data as unknown as {
+    share_id: string;
+    result: unknown;
+    paid_at: string | null;
+  };
+
   return {
-    share_id: data.share_id,
-    result: data.result as unknown as FaceReportData,
-    paid_at: data.paid_at,
+    share_id: row.share_id,
+    result: row.result as FaceReportData,
+    paid_at: row.paid_at,
   };
 };
 
