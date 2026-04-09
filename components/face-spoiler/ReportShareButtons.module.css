@@ -1,0 +1,60 @@
+.shareContainer {
+  margin-top: 64px;
+  padding: 48px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+.shareTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.shareButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+}
+
+.shareButton {
+  width: 330px;
+  height: 52px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.shareButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.shareButton:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 640px) {
+  .shareContainer {
+    margin-top: 48px;
+    padding: 32px 0;
+  }
+
+  .shareButton {
+    width: 100%;
+    max-width: 330px;
+  }
+}
