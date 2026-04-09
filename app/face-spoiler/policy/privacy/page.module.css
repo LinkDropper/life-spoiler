@@ -1,0 +1,10 @@
+.articleTitle {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.highlightArticle {
+  padding: 20px;
+  background: rgba(63, 217, 173, 0.06);
+  border-left: 3px solid #3fd9ad;
+}

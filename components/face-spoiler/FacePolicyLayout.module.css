@@ -1,0 +1,87 @@
+.container {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  padding-top: 60px;
+}
+
+.content {
+  flex: 1;
+  padding: 24px 16px 100px;
+}
+
+.sectionTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-primary);
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  margin-bottom: 24px;
+}
+
+.body {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--text-primary);
+  word-break: keep-all;
+}
+
+.body p {
+  margin-bottom: 24px;
+}
+
+.body p:last-child {
+  margin-bottom: 0;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 500px;
+  padding: 16px;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-primary) 30%);
+  z-index: 50;
+}
+
+.closeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 0;
+  background: #3fd9ad;
+  color: #2d1b4e;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #4deac0;
+}
+
+.closeButton:active {
+  transform: translateY(1px);
+}
+
+@supports (min-height: 100svh) {
+  .container {
+    min-height: 100svh;
+  }
+}
