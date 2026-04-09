@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -38,11 +39,18 @@ const fetchReport = async (
     return null;
   }
 
+  const row = data as unknown as {
+    share_id: string;
+    result: unknown;
+    paid_at: string | null;
+    character_image_path: string | null;
+  };
+
   return {
-    share_id: data.share_id,
-    result: data.result as unknown as FaceReportData,
-    paid_at: data.paid_at,
-    character_image_path: data.character_image_path,
+    share_id: row.share_id,
+    result: row.result as FaceReportData,
+    paid_at: row.paid_at,
+    character_image_path: row.character_image_path,
   };
 };
 
@@ -102,11 +110,13 @@ export default async function FaceSpoilerReportPage({
       <div className={styles.container}>
         {characterImageUrl && (
           <div className={styles.heroImage}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={characterImageUrl}
               alt=""
               className={styles.heroImageInner}
+              width={1024}
+              height={1024}
+              priority
             />
           </div>
         )}

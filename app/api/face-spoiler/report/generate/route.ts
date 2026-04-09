@@ -65,13 +65,16 @@ export const POST = async (request: Request) => {
     const adminClient = createServerClient();
 
     // Tier 1: 프로필 단위 캐시 재확인 (race condition 대비)
-    const { data: profileCachedReport } = await adminClient
+    const { data: profileCachedReportRaw } = await adminClient
       .from("face_reports")
       .select("share_id")
       .eq("user_id", user.id)
       .eq("face_profile_id", profileId)
       .eq("image_hash", imageHash)
       .maybeSingle();
+    const profileCachedReport = profileCachedReportRaw as unknown as {
+      share_id: string;
+    } | null;
 
     if (profileCachedReport) {
       // 캐시 hit: 이번 업로드는 중복이므로 정리
@@ -83,7 +86,7 @@ export const POST = async (request: Request) => {
     }
 
     // Tier 2: 글로벌 image_hash 캐시 — 다른 유저/프로필이 이미 분석했다면 결과 재사용
-    const { data: globalCachedReport } = await adminClient
+    const { data: globalCachedReportRaw } = await adminClient
       .from("face_reports")
       .select("result")
       .eq("image_hash", imageHash)
@@ -91,6 +94,9 @@ export const POST = async (request: Request) => {
       .order("created_at", { ascending: true })
       .limit(1)
       .maybeSingle();
+    const globalCachedReport = globalCachedReportRaw as unknown as {
+      result: Json;
+    } | null;
 
     if (globalCachedReport && globalCachedReport.result) {
       const shareId = nanoid(10);
@@ -99,14 +105,14 @@ export const POST = async (request: Request) => {
         user_id: user.id,
         face_profile_id: profileId,
         image_hash: imageHash,
-        result: globalCachedReport.result as Json,
+        result: globalCachedReport.result,
         paid_at: null,
         original_image_path: imagePath,
       };
 
-      const { error: insertError } = await adminClient
-        .from("face_reports")
-        .insert(insertPayload);
+      const { error: insertError } =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (adminClient.from("face_reports") as any).insert(insertPayload);
 
       if (insertError) {
         console.error("face_reports insert error (global cache):", insertError);
@@ -155,9 +161,9 @@ export const POST = async (request: Request) => {
         original_image_path: imagePath,
       };
 
-      const { error: insertError } = await adminClient
-        .from("face_reports")
-        .insert(insertPayload);
+      const { error: insertError } =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (adminClient.from("face_reports") as any).insert(insertPayload);
 
       if (insertError) {
         console.error("face_reports insert error:", insertError);

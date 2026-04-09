@@ -10,6 +10,14 @@ interface CharacterRequestBody {
   shareId?: string;
 }
 
+interface FaceReportLookup {
+  id: string;
+  user_id: string;
+  paid_at: string | null;
+  original_image_path: string | null;
+  character_image_path: string | null;
+}
+
 export const POST = async (request: Request) => {
   try {
     // 인증 가드
@@ -38,20 +46,20 @@ export const POST = async (request: Request) => {
     const adminClient = createServerClient();
 
     // 리포트 조회
-    const { data: report, error: reportError } = await adminClient
+    const { data: rawReport, error: reportError } = await adminClient
       .from("face_reports")
-      .select(
-        "id, user_id, paid_at, original_image_path, character_image_path"
-      )
+      .select("id, user_id, paid_at, original_image_path, character_image_path")
       .eq("share_id", shareId)
       .maybeSingle();
 
-    if (reportError || !report) {
+    if (reportError || !rawReport) {
       return NextResponse.json(
         { error: "리포트를 찾을 수 없습니다." },
         { status: 404 }
       );
     }
+
+    const report = rawReport as unknown as FaceReportLookup;
 
     // 소유권 검증
     if (report.user_id !== user.id) {
@@ -136,15 +144,16 @@ export const POST = async (request: Request) => {
     }
 
     // DB 업데이트 + 원본 정리
-    const { error: updateError } = await adminClient
-      .from("face_reports")
-      .update({
-        character_image_path: characterPath,
-        character_image_generated_at: new Date().toISOString(),
-        original_image_path: null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", report.id);
+    const { error: updateError } =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (adminClient.from("face_reports") as any)
+        .update({
+          character_image_path: characterPath,
+          character_image_generated_at: new Date().toISOString(),
+          original_image_path: null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", report.id);
 
     if (updateError) {
       console.error("face_reports update error:", updateError);
@@ -155,9 +164,18 @@ export const POST = async (request: Request) => {
     }
 
     // 원본 삭제 (캐릭터 생성 완료 → 더 이상 필요 없음)
-    await adminClient.storage
+    // 삭제 실패해도 캐릭터 생성은 이미 완료되었으므로 사용자에게는 성공 응답.
+    // 잔존 객체는 3일 TTL pg_cron이 결국 정리하지만, 즉시 가시화 위해 로깅.
+    const { error: removeError } = await adminClient.storage
       .from(ORIGINAL_BUCKET)
       .remove([report.original_image_path]);
+
+    if (removeError) {
+      console.error("Original image cleanup failed:", {
+        path: report.original_image_path,
+        error: removeError,
+      });
+    }
 
     return NextResponse.json({
       cached: false,

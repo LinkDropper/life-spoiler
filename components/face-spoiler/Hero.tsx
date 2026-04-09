@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -43,11 +44,13 @@ export const Hero = () => {
   return (
     <section className={styles.hero}>
       <div className={styles.imageArea}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={currentImage}
           alt={t("imageAlt", { default: "관상 이미지" })}
           className={styles.heroImage}
+          width={500}
+          height={500}
+          priority
         />
       </div>
       <div className={styles.glowBackground}></div>
