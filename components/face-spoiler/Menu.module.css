@@ -1,0 +1,242 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Header */
+.header {
+  height: 60px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo {
+  font-family: "LotteriaDdag", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.closeButton {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  margin-right: -8px;
+  border-radius: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 16px;
+}
+
+.profileCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.loginInfo {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #3fd9ad;
+  margin: 0;
+}
+
+.email {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  word-break: break-all;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.menuItemText {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Footer */
+.footer {
+  flex-shrink: 0;
+  padding: 24px 16px calc(env(safe-area-inset-bottom, 0px) + 24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footerLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.footerLink {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footerLink:hover {
+  color: var(--text-primary);
+}
+
+.footerDivider {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Withdraw modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1200;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal {
+  width: 100%;
+  max-width: 320px;
+  background: var(--bg-primary);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  padding: 24px 24px 16px;
+}
+
+.modalTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.modalTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modalDescription {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  word-break: keep-all;
+}
+
+.modalButtons {
+  display: flex;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modalCancelButton,
+.modalConfirmButton {
+  flex: 1;
+  height: 52px;
+  background: transparent;
+  border: none;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.modalCancelButton {
+  color: var(--text-secondary);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modalCancelButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.modalConfirmButton {
+  color: #fa5252;
+}
+
+.modalConfirmButton:hover:not(:disabled) {
+  background: rgba(250, 82, 82, 0.08);
+}
+
+.modalCancelButton:disabled,
+.modalConfirmButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
