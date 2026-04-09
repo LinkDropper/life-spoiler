@@ -282,6 +282,38 @@ export interface ReviewInsert {
   created_at?: string;
 }
 
+export type FollowUpFortuneType =
+  | "lifetime"
+  | "yearly"
+  | "past_life"
+  | "compatibility";
+
+export interface FollowUpQuestionRow {
+  id: string;
+  profile_id: string;
+  fortune_type: FollowUpFortuneType;
+  fortune_id: string | null;
+  pair_id: string | null;
+  question: string;
+  answer: string;
+  is_relevant: boolean;
+  is_paid: boolean;
+  created_at: string;
+}
+
+export interface FollowUpQuestionInsert {
+  id?: string;
+  profile_id: string;
+  fortune_type: FollowUpFortuneType;
+  fortune_id?: string | null;
+  pair_id?: string | null;
+  question: string;
+  answer: string;
+  is_relevant: boolean;
+  is_paid?: boolean;
+  created_at?: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -382,6 +414,31 @@ export type Database = {
             foreignKeyName: "reviews_profile_id_fkey";
             columns: ["profile_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      follow_up_questions: {
+        Row: FollowUpQuestionRow;
+        Insert: FollowUpQuestionInsert;
+        Update: Partial<FollowUpQuestionInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "follow_up_questions_profile_id_fkey";
+            columns: ["profile_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "follow_up_questions_fortune_id_fkey";
+            columns: ["fortune_id"];
+            referencedRelation: "fortunes";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "follow_up_questions_pair_id_fkey";
+            columns: ["pair_id"];
+            referencedRelation: "compatibility_pairs";
             referencedColumns: ["id"];
           },
         ];

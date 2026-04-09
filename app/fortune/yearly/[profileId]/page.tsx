@@ -22,6 +22,7 @@ import {
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
 import YealryProfileCard from "@/components/fortune/YealryProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
+import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import EventSection from "@/components/landing/EventSection";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
@@ -415,6 +416,18 @@ export default function YearlyFortunePage() {
           {t("shareButton", { default: "공유하기" })}
         </button>
       </footer>
+
+      {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
+      <FollowUpEntry
+        profileId={profileId}
+        fortuneType="yearly"
+        fortuneName="올해운세"
+        examplePrompts={[
+          "이직 타이밍 언제가 좋을까?",
+          "올해 조심해야 할 건 뭐야?",
+          "연애운은 어떨까?",
+        ]}
+      />
 
       {/* 후기 드로어 */}
       <ReviewDrawer

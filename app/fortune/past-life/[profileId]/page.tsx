@@ -16,6 +16,7 @@ import {
 } from "@/components/fortune";
 import PastLifeProfileCard from "@/components/fortune/PastLifeProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
+import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { usePastLifeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
@@ -567,6 +568,18 @@ export default function PastLifeFortunePage() {
           {t("shareButton")}
         </button>
       </footer>
+
+      {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
+      <FollowUpEntry
+        profileId={profileId}
+        fortuneType="past_life"
+        fortuneName="전생"
+        examplePrompts={[
+          "왜 이런 성향을 갖게 됐어?",
+          "전생과 지금의 연결은?",
+          "전생의 교훈이 뭐야?",
+        ]}
+      />
 
       {/* 후기 드로어 */}
       <ReviewDrawer
