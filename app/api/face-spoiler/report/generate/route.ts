@@ -1,9 +1,11 @@
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 
+import { classifyAnimalType } from "@/libs/face-spoiler/animal-classifier";
 import { generateFaceReport } from "@/libs/face-spoiler/gemini";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
+import type { FaceReportData } from "@/libs/face-spoiler/types";
 import type { FaceReportInsert, Json } from "@/libs/supabase";
 
 const STORAGE_BUCKET = "face-images";
@@ -146,8 +148,18 @@ export const POST = async (request: Request) => {
     const mimeType = imageBlob.type || "image/jpeg";
 
     try {
-      // Gemini 분석 (텍스트 리포트)
-      const reportData = await generateFaceReport(base64, mimeType);
+      // 1단계: 동물상 전용 분류 (low temperature, 결정성 우선)
+      const animalMatch = await classifyAnimalType(base64, mimeType);
+
+      // 2단계: 텍스트 리포트 (동물상을 고정 입력으로, 창의성 유지)
+      const textReport = await generateFaceReport(base64, mimeType, animalMatch);
+
+      // route 레벨에서 v2 리포트 합성
+      const reportData: FaceReportData = {
+        version: 2,
+        animalMatch,
+        ...textReport,
+      };
 
       // DB insert (미결제 상태 + 원본 경로 보관 → 결제 후 캐릭터 이미지 생성용)
       const shareId = nanoid(10);

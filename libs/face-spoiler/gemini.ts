@@ -5,7 +5,7 @@ import {
   FACE_REPORT_RESPONSE_SCHEMA,
   FACE_REPORT_USER_PROMPT,
 } from "./prompts";
-import type { FaceReportData } from "./types";
+import type { AnimalMatch, FaceTextReport } from "./types";
 
 const FACE_GEMINI_MODEL = "gemini-2.5-flash-lite";
 const GEMINI_API_BASE =
@@ -70,14 +70,15 @@ const sleep = (ms: number) =>
 
 export const generateFaceReport = async (
   imageBase64: string,
-  mimeType: string
-): Promise<FaceReportData> => {
+  mimeType: string,
+  animal: AnimalMatch
+): Promise<FaceTextReport> => {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("Gemini API 키가 설정되지 않았습니다.");
   }
 
-  const systemPrompt = buildFaceReportSystemPrompt();
+  const systemPrompt = buildFaceReportSystemPrompt(animal);
 
   const request: GeminiRequest = {
     contents: [
@@ -147,7 +148,7 @@ export const generateFaceReport = async (
         throw new Error("Gemini 응답이 비어있습니다.");
       }
 
-      return JSON.parse(text) as FaceReportData;
+      return JSON.parse(text) as FaceTextReport;
     } catch (error) {
       lastError = error as Error;
       if (attempt < MAX_RETRIES) {
