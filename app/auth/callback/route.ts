@@ -5,9 +5,35 @@ import { createAuthClient } from "@/libs/supabase";
 
 import type { OAuthProvider, UserInsert } from "@/libs/supabase/types";
 
+const DEFAULT_REDIRECT_PATH = "/home";
+const ALLOWED_REDIRECT_PATHS = ["/home", "/face-spoiler"];
+
+const PATH_BOUNDARY_CHARS = ["/", "?", "#"];
+
+const resolveNextPath = (value: string | null) => {
+  if (!value) {
+    return DEFAULT_REDIRECT_PATH;
+  }
+  if (!value.startsWith("/")) {
+    return DEFAULT_REDIRECT_PATH;
+  }
+  const isAllowed = ALLOWED_REDIRECT_PATHS.some((allowed) => {
+    if (value === allowed) {
+      return true;
+    }
+    if (!value.startsWith(allowed)) {
+      return false;
+    }
+    const nextChar = value[allowed.length];
+    return PATH_BOUNDARY_CHARS.includes(nextChar);
+  });
+  return isAllowed ? value : DEFAULT_REDIRECT_PATH;
+};
+
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const nextPath = resolveNextPath(searchParams.get("next"));
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=no_code`);
@@ -78,7 +104,7 @@ export const GET = async (request: Request) => {
       }
     }
 
-    return NextResponse.redirect(`${origin}/home`);
+    return NextResponse.redirect(`${origin}${nextPath}`);
   } catch (error) {
     console.error("OAuth callback error:", error);
     return NextResponse.redirect(`${origin}/login?error=auth_failed`);

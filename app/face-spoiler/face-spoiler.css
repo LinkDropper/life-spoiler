@@ -1,0 +1,49 @@
+@font-face {
+  font-family: "LotteriaDdag";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIADDAG.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.faceSpoilerRoot {
+  --bg-primary: #1a1918;
+  --bg-card: #16213e;
+  --bg-card-hover: #1e2a4a;
+  --accent-purple: #7c3aed;
+  --accent-purple-light: #a855f7;
+  --accent-gold: #f59e0b;
+  --accent-gold-light: #fbbf24;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border-color: rgba(124, 58, 237, 0.2);
+  --gradient-cta: linear-gradient(
+    135deg,
+    var(--accent-purple),
+    var(--accent-gold)
+  );
+
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.faceSpoilerRoot .container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media (min-width: 640px) {
+  .faceSpoilerRoot .container {
+    max-width: 640px;
+  }
+}

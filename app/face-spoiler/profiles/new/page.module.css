@@ -1,0 +1,25 @@
+.page {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  background: var(--bg-primary);
+  padding-top: 60px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-family:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 24px 16px 8px;
+  line-height: 1.3;
+}

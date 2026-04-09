@@ -5,6 +5,11 @@ export type {
   AnalysisResultInsert,
   AnalysisResultRow,
   Database,
+  FaceProfileGender,
+  FaceProfileInsert,
+  FaceProfileRow,
+  FaceReportInsert,
+  FaceReportRow,
   FortuneInsert,
   FortuneRow,
   InterpretationCacheInsert,
@@ -20,6 +25,10 @@ export {
   getOrCreateCachedResult,
   setCachedResult,
 } from "./analysis-cache";
+export {
+  getFaceReportByShareId,
+  updateFaceReportPaidAt,
+} from "./face-report";
 export {
   getFortune,
   getFortunesByProfile,

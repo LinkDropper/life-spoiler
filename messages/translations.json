@@ -815,6 +815,272 @@
           "warning": "쿠키 저장을 거부할 경우 맞춤형 서비스 이용에 어려움이 발생할 수 있습니다."
         }
       }
+    },
+    "faceSpoiler": {
+      "metadata": {
+        "title": "관상스포 — 사진 한 장으로 보는 나의 관상 리포트",
+        "description": "사진 한 장으로 1분 만에 받아보는 AI 관상 리포트. 990원으로 5,000자 이상의 디테일 리포트를 확인해보세요.",
+        "ogTitle": "관상스포",
+        "ogDescription": "사진 한 장으로 1분 만에 받아보는 관상 리포트. 지금 바로 확인해보세요.",
+        "shareTitleSuffix": "관상스포 — {headline}",
+        "defaultHeadline": "관상 분석 결과",
+        "defaultDescription": "사진 한 장으로 받아본 AI 관상 리포트. 지금 확인해보세요."
+      },
+      "hero": {
+        "imageAlt": "관상 이미지",
+        "subtitle": "사진 한 장으로 보는 나의 관상 리포트",
+        "cta": "지금 시작하기"
+      },
+      "login": {
+        "tagline": "사진 한 장으로 보는 나의 관상 리포트"
+      },
+      "upload": {
+        "title": "사진 업로드",
+        "description": "얼굴이 선명하게 나온 정면 사진을 업로드해주세요",
+        "uploadText": "클릭하거나 이미지를 드래그하세요",
+        "uploadHint": "최대 10MB",
+        "previewAlt": "업로드 미리보기",
+        "detectingFace": "얼굴 감지 중...",
+        "consent1": "본인의 사진임을 확인합니다",
+        "consent2": "이 리포트는 엔터테인먼트 목적의 참고 자료입니다",
+        "submitButton": "분석 시작하기",
+        "validating": "사진 확인 중...",
+        "errorImageLoadFailed": "이미지를 불러올 수 없어요.",
+        "errorLowResolution": "사진 해상도가 너무 낮아요. 더 선명한 사진을 업로드해주세요.",
+        "errorNoFace": "얼굴을 찾을 수 없어요. 얼굴이 잘 보이는 정면 사진을 업로드해주세요.",
+        "errorMultipleFaces": "여러 명의 얼굴이 감지됐어요. 한 명만 나오는 사진을 업로드해주세요.",
+        "errorCanvasUnavailable": "Canvas를 사용할 수 없어요.",
+        "errorProcessingFailed": "이미지 처리에 실패했어요.",
+        "errorOnlyImage": "이미지 파일만 업로드 가능합니다.",
+        "errorSizeLimit": "파일 크기는 10MB 이하여야 합니다.",
+        "errorConsentRequired": "모든 동의 항목에 체크해주세요.",
+        "errorUploadFailed": "업로드에 실패했습니다.",
+        "errorGenerateFailed": "리포트 생성에 실패했습니다.",
+        "errorUnknown": "알 수 없는 오류가 발생했습니다."
+      },
+      "loading": {
+        "analyzing": "얼굴을 분석하고 있어요...",
+        "readingFeatures": "인상 특징을 읽고 있어요...",
+        "interpreting": "성향을 해석하고 있어요...",
+        "writing": "리포트를 작성하고 있어요..."
+      },
+      "profiles": {
+        "pageTitle": "프로필 선택",
+        "newPageTitle": "새 프로필 만들기",
+        "ctaNoReport": "관상 보러 가기",
+        "ctaPaid": "관상 결과 보기",
+        "ctaUnpaid": "결제하고 결과 보기",
+        "card": {
+          "genderMale": "남성",
+          "genderFemale": "여성",
+          "hasReportAriaLabel": "관상을 본 프로필",
+          "hasReportTooltip": "관상을 본 적이 있어요",
+          "deleteAriaLabel": "프로필 삭제"
+        },
+        "newCardLabel": "새 프로필 추가",
+        "form": {
+          "nameLabel": "이름",
+          "namePlaceholder": "이름을 입력해주세요",
+          "genderLabel": "성별",
+          "male": "남성",
+          "female": "여성",
+          "backAriaLabel": "뒤로가기",
+          "submit": "등록하기",
+          "submitting": "등록 중...",
+          "errorCreate": "프로필을 생성하지 못했습니다. 다시 시도해주세요.",
+          "errorNetwork": "네트워크 오류가 발생했습니다. 다시 시도해주세요."
+        },
+        "deleteModal": {
+          "title": "프로필을 삭제하시겠습니까?",
+          "description": "'{name}'을(를) 삭제하면 관련된 모든 리포트도 함께 삭제됩니다. 되돌릴 수 없습니다.",
+          "cancel": "취소",
+          "confirm": "삭제",
+          "deleting": "삭제 중..."
+        }
+      },
+      "report": {
+        "sections": {
+          "profile": "첫인상",
+          "observation": "관상 관찰",
+          "personality": "성향",
+          "career": "일·커리어",
+          "wealth": "돈·재물",
+          "relationship": "관계·연애",
+          "actions": "실행 행동 5가지",
+          "shareLine": "공유 문구"
+        },
+        "share": {
+          "title": "결과 공유하기",
+          "copy": "링크 복사",
+          "copied": "복사 완료!",
+          "kakao": "카카오톡",
+          "x": "X 공유",
+          "copyFailed": "링크 복사에 실패했습니다.",
+          "kakaoCardTitle": "관상스포",
+          "kakaoButtonTitle": "결과 보기"
+        }
+      },
+      "footer": {
+        "businessName": "상호: 웬 컴퍼니 (When Company)"
+      },
+      "preview": {
+        "teaser": "지금 보신 건 '예고편'에 불과해요. 얼굴에 숨겨진 진짜 커리어·재물·인연의 흐름과 나만의 관상 캐릭터는 본편에서만 몰래 스포해 드릴게요. 🤫",
+        "ctaButton": "전체 스포 확인하기 (990원)",
+        "characterPlaceholder": "결제하면 나만의 관상 캐릭터가 그려져요",
+        "paymentPreparingAlert": "결제 기능은 준비 중입니다.",
+        "backAriaLabel": "업로드 페이지로 돌아가기",
+        "profileSectionTag": "첫인상"
+      },
+      "payment": {
+        "productName": "관상 운세 스포일러",
+        "orderName": "관상 운세 스포일러",
+        "successTitle": "결제가 완료되었습니다",
+        "successDescription": "관상 캐릭터를 생성하고 있어요",
+        "characterGenerating": "캐릭터 그리는 중...",
+        "characterGenerateFailed": "캐릭터 이미지 생성에 실패했어요",
+        "characterRetry": "다시 시도",
+        "viewResult": "결과 보기",
+        "goToUpload": "업로드로 돌아가기",
+        "failTitle": "결제에 실패했습니다",
+        "retryPayment": "다시 시도하기",
+        "loadingReport": "불러오는 중...",
+        "errorCantLoadReport": "리포트를 불러올 수 없습니다.",
+        "errorCharacterFailed": "캐릭터 이미지 생성에 실패했습니다.",
+        "errorCharacterError": "캐릭터 이미지 생성 중 오류가 발생했습니다.",
+        "errorInvalidAccess": "잘못된 접근입니다.",
+        "errorMissingPayment": "결제 정보가 누락되었습니다.",
+        "errorConfirmFailed": "결제 승인에 실패했습니다.",
+        "errorServerError": "서버 오류가 발생했습니다.",
+        "failErrorCodeLabel": "에러 코드"
+      },
+      "menu": {
+        "openAriaLabel": "메뉴 열기",
+        "loginViaGoogle": "Google로 로그인했어요",
+        "loginViaKakao": "카카오로 로그인했어요",
+        "loggedIn": "로그인되어 있어요",
+        "languageChange": "언어 변경",
+        "logout": "로그아웃",
+        "withdraw": "회원탈퇴",
+        "login": "로그인",
+        "withdrawError": "회원탈퇴에 실패했어요",
+        "languageDrawerTitle": "언어 설정",
+        "terms": "이용약관",
+        "privacy": "개인정보 처리방침",
+        "withdrawModal": {
+          "title": "정말 탈퇴하시겠어요?",
+          "description": "탈퇴 시 모든 프로필과 관상 리포트가 삭제되며 복구할 수 없습니다.",
+          "confirm": "탈퇴하기",
+          "withdrawing": "탈퇴 중..."
+        }
+      },
+      "policy": {
+        "terms": {
+          "title": "서비스 이용약관",
+          "metaTitle": "서비스 이용약관 - 관상스포",
+          "metaDescription": "관상스포 서비스 이용약관",
+          "closeButton": "닫기",
+          "article1": {
+            "title": "제1조 (목적)",
+            "content": "이 약관은 웬 컴퍼니 (이하 \"회사\")이 제공하는 AI 관상 분석 서비스 '관상스포' (이하 \"서비스\")의 이용과 관련하여 회사와 회원 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다."
+          },
+          "article2": {
+            "title": "제2조 (용어의 정의)",
+            "item1": "\"이용자\"란 서비스에 접속하여 이 약관에 따라 회사가 제공하는 서비스를 받는 회원 및 비회원을 말합니다.",
+            "item2": "\"유료 서비스\"란 회사가 유료로 제공하는 상세 관상 리포트, 캐릭터 이미지 생성 및 관련 제반 서비스를 의미합니다.",
+            "item3": "\"콘텐츠\"란 서비스에서 제공하는 관상 분석 텍스트, 캐릭터 이미지 등 모든 형태의 정보를 의미합니다."
+          },
+          "article3": {
+            "title": "제3조 (서비스의 제공 및 변경)",
+            "item1": "회사는 이용자가 업로드한 얼굴 사진을 기반으로 AI 관상 분석 리포트와 캐릭터 이미지 생성 서비스를 제공합니다.",
+            "item2": "[면책] 본 서비스가 제공하는 관상 분석 정보는 전통 관상학과 AI 모델의 해석에 기반한 엔터테인먼트 참고용 콘텐츠이며, 그 정확성을 보증하지 않습니다. 본 서비스는 의료적·법적·재무적 판단의 근거가 될 수 없으며, 서비스 이용의 결과에 대한 최종 판단과 책임은 이용자 본인에게 있습니다."
+          },
+          "article4": {
+            "title": "제4조 (이용계약의 체결 및 정보 입력)",
+            "item1": "이용자는 서비스가 정한 절차에 따라 이름, 성별 등의 프로필 정보를 입력하고 분석할 얼굴 사진을 업로드함으로써 이용계약이 체결됩니다.",
+            "item2": "이용자가 업로드한 사진의 화질이 낮거나 얼굴이 명확하지 않을 경우 분석 결과의 정확도가 떨어질 수 있으며 이에 대해 회사는 책임지지 않습니다."
+          },
+          "article5": {
+            "title": "제5조 (이용요금 및 결제)",
+            "item1": "상세 관상 리포트 및 캐릭터 이미지의 이용 비용은 건당 990원(VAT 포함)입니다.",
+            "item2": "결제는 신용카드, 간편결제(카카오페이/애플페이/토스페이) 등 회사가 제공하는 결제 수단을 통해 이루어집니다."
+          },
+          "article6": {
+            "title": "제6조 (청약철회 및 환불)",
+            "item1": "회사가 제공하는 유료 서비스는 「전자상거래 등에서의 소비자보호에 관한 법률」 및 「콘텐츠산업 진흥법」에 따른 청약철회 제한 사유에 해당하는 '디지털 콘텐츠'입니다.",
+            "item2": "이용자가 결제를 완료하고 상세 리포트 또는 캐릭터 이미지가 생성되어 열람한 경우, 서비스 제공이 완료된 것으로 간주하여 환불이 불가능합니다.",
+            "item3": "단, 회사의 시스템 오류로 인해 리포트나 캐릭터 이미지가 생성되지 않았거나, 콘텐츠가 전혀 보이지 않는 등 명백한 하자가 있는 경우에는 전액 환불 조치합니다."
+          },
+          "article7": {
+            "title": "제7조 (데이터의 보관 및 열람)",
+            "item1": "회원은 결제한 리포트와 캐릭터 이미지를 회원 탈퇴 전까지 횟수 제한 없이 재열람할 수 있습니다. 단, 업로드된 원본 사진은 분석 직후 삭제되며 보관되지 않습니다.",
+            "item2": "회원이 자의로 회원 탈퇴를 하거나 프로필을 삭제한 경우 관련 리포트와 캐릭터 이미지는 함께 삭제되며 복구가 불가능합니다."
+          },
+          "article8": {
+            "title": "제8조 (저작권의 귀속 및 이용제한)",
+            "item1": "회사가 작성한 저작물(분석 텍스트, 생성된 캐릭터 이미지 포함)에 대한 저작권 및 기타 지적재산권은 회사에 귀속합니다.",
+            "item2": "이용자는 서비스를 통해 얻은 정보를 개인적인 용도(SNS 공유 등)로만 사용할 수 있으며, 이를 영리 목적으로 복제, 송신, 출판, 배포, 방송 기타 방법에 의하여 이용하거나 제3자에게 이용하게 하여서는 안 됩니다."
+          },
+          "effectiveDate": "본 약관은 2026년 4월 9일부터 적용됩니다."
+        },
+        "privacy": {
+          "title": "개인정보 처리방침",
+          "metaTitle": "개인정보 처리방침 - 관상스포",
+          "metaDescription": "관상스포 개인정보 처리방침",
+          "closeButton": "닫기",
+          "intro": "웬 컴퍼니('https://life-spoiler.com/face-spoiler' 이하 '관상스포')은(는) 「개인정보 보호법」 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과 같이 개인정보 처리방침을 수립·공개합니다.",
+          "article1": {
+            "title": "제1조 (개인정보의 처리목적)",
+            "content": "회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며 이용 목적이 변경되는 경우에는 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.",
+            "item1": "서비스 제공: AI 관상 분석 리포트 생성, 캐릭터 이미지 생성, 콘텐츠 제공",
+            "item2": "재화 또는 서비스 제공: 유료 결제 관리, 구매 내역 제공",
+            "item3": "회원 관리: 서비스 이용에 따른 본인 식별, 불량 회원의 부정 이용 방지"
+          },
+          "article2": {
+            "title": "제2조 (처리하는 개인정보의 항목)",
+            "content": "회사는 관상 분석 서비스 제공을 위해 다음과 같은 정보를 수집합니다.",
+            "item1": "필수항목 (계정): 이메일, 소셜 로그인 식별자(Google/Kakao), 프로필 이미지 URL",
+            "item2": "필수항목 (관상 프로필): 이름, 성별",
+            "item3": "결제 관련(PG사 위탁): 결제 승인 내역, 구매 토큰 (카드 번호 등 민감 정보는 회사가 직접 저장하지 않습니다.)"
+          },
+          "article3": {
+            "title": "제3조 (얼굴 사진의 처리 및 즉시 삭제 정책) 🔒",
+            "content": "회사는 이용자의 프라이버시 보호를 최우선으로 하며, 업로드한 얼굴 사진을 영구 저장하지 않습니다. 사진 처리 정책은 다음과 같습니다.",
+            "item1": "업로드된 얼굴 사진은 AI 분석을 진행하기 위해 임시 저장소에 한시적으로 보관됩니다.",
+            "item2": "유료 결제가 완료되어 캐릭터 이미지가 생성되는 즉시, 원본 사진은 자동으로 영구 삭제됩니다.",
+            "item3": "결제가 이루어지지 않은 경우, 업로드된 원본 사진은 최대 3일 후 자동 정리(cron) 작업을 통해 영구 삭제됩니다.",
+            "item4": "원본 사진은 회원 본인 외 어느 누구에게도 노출되지 않으며, 외부에 공유되지 않습니다. 분석을 위해 Google Gemini API에 일시적으로 전송되며, 전송된 데이터는 Google의 정책에 따라 처리됩니다."
+          },
+          "article4": {
+            "title": "제4조 (개인정보의 보유 및 이용기간)",
+            "content": "회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.",
+            "item1": "회원 정보 및 관상 프로필: 회원 탈퇴 시까지",
+            "item2": "분석 리포트 및 생성된 캐릭터 이미지: 회원 탈퇴 또는 프로필 삭제 시까지 (단, 업로드된 원본 사진은 제3조에 따라 즉시 삭제됨)"
+          },
+          "article5": {
+            "title": "제5조 (개인정보의 제3자 제공)",
+            "content": "회사는 정보주체의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서만 처리하며, 다음과 같은 위탁 처리 외에는 제3자에게 제공하지 않습니다.",
+            "item1": "AI 분석: Google Gemini API에 사진과 프로필 정보를 전송하여 관상 해석 텍스트와 캐릭터 이미지를 생성합니다. 전송된 데이터는 분석 직후 회사 시스템에서 삭제됩니다.",
+            "item2": "결제 처리: 토스페이먼츠를 통해 결제 정보를 처리하며, 카드 번호 등 민감한 결제 정보는 회사가 직접 저장하지 않습니다."
+          },
+          "article6": {
+            "title": "제6조 (개인정보의 파기)",
+            "content": "회사는 개인정보 보유기간의 경과, 처리목적 달성 등 개인정보가 불필요하게 되었을 때에는 지체 없이 해당 개인정보를 파기합니다. 전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법을 사용합니다."
+          },
+          "article7": {
+            "title": "제7조 (개인정보 보호책임자)",
+            "content": "회사는 개인정보 처리에 관한 업무를 총괄하고, 개인정보와 관련한 불만처리 및 피해구제 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.",
+            "name": "성명: 윤재혁",
+            "email": "이메일: ttja.when@gmail.com"
+          },
+          "article8": {
+            "title": "제8조 (개인정보 자동 수집 장치의 설치·운영 및 거부에 관한 사항)",
+            "content": "회사는 이용자에게 개별적인 맞춤서비스를 제공하기 위해 이용정보를 저장하고 수시로 불러오는 '쿠키(cookie)'를 사용합니다.",
+            "purpose": "쿠키의 사용 목적: 이용자의 로그인 세션 유지, 언어 설정 저장, 서비스 이용 통계 분석",
+            "settings": "쿠키의 설치·운영 및 거부: 웹브라우저 옵션 설정을 통해 쿠키 저장을 거부할 수 있습니다. 단, 쿠키 저장을 거부할 경우 로그인 등 일부 서비스 이용에 어려움이 발생할 수 있습니다."
+          },
+          "effectiveDate": "본 방침은 2026년 4월 9일부터 적용됩니다."
+        }
+      }
     }
   },
   "en": {
@@ -1633,6 +1899,272 @@
           "warning": "If you refuse to store cookies, you may have difficulty using personalized services."
         }
       }
+    },
+    "faceSpoiler": {
+      "metadata": {
+        "title": "Face Spoiler — Your face reading from a single photo",
+        "description": "Receive a detailed AI face reading report in 1 minute from a single photo. Get a 5,000+ character report for $0.99.",
+        "ogTitle": "Face Spoiler",
+        "ogDescription": "A face reading report in 1 minute from a single photo. Try it now.",
+        "shareTitleSuffix": "Face Spoiler — {headline}",
+        "defaultHeadline": "Face Reading Result",
+        "defaultDescription": "Your AI face reading report from a single photo. Take a look."
+      },
+      "hero": {
+        "imageAlt": "Face reading image",
+        "subtitle": "Your face reading from a single photo",
+        "cta": "Get Started"
+      },
+      "login": {
+        "tagline": "Your face reading from a single photo"
+      },
+      "upload": {
+        "title": "Upload Photo",
+        "description": "Please upload a clear front-facing photo",
+        "uploadText": "Click or drag an image here",
+        "uploadHint": "Up to 10MB",
+        "previewAlt": "Upload preview",
+        "detectingFace": "Detecting face...",
+        "consent1": "I confirm this is a photo of myself",
+        "consent2": "I understand this report is for entertainment reference only",
+        "submitButton": "Start Analysis",
+        "validating": "Verifying photo...",
+        "errorImageLoadFailed": "Could not load image.",
+        "errorLowResolution": "Photo resolution is too low. Please upload a clearer photo.",
+        "errorNoFace": "No face detected. Please upload a clear front-facing photo.",
+        "errorMultipleFaces": "Multiple faces detected. Please upload a photo with only one person.",
+        "errorCanvasUnavailable": "Canvas is not available.",
+        "errorProcessingFailed": "Image processing failed.",
+        "errorOnlyImage": "Only image files can be uploaded.",
+        "errorSizeLimit": "File size must be 10MB or less.",
+        "errorConsentRequired": "Please check all consent items.",
+        "errorUploadFailed": "Upload failed.",
+        "errorGenerateFailed": "Report generation failed.",
+        "errorUnknown": "An unknown error occurred."
+      },
+      "loading": {
+        "analyzing": "Analyzing your face...",
+        "readingFeatures": "Reading facial features...",
+        "interpreting": "Interpreting your traits...",
+        "writing": "Writing the report..."
+      },
+      "profiles": {
+        "pageTitle": "Select Profile",
+        "newPageTitle": "Create New Profile",
+        "ctaNoReport": "Read Face",
+        "ctaPaid": "View Result",
+        "ctaUnpaid": "Pay & View Result",
+        "card": {
+          "genderMale": "Male",
+          "genderFemale": "Female",
+          "hasReportAriaLabel": "Profile with reading",
+          "hasReportTooltip": "Has been read",
+          "deleteAriaLabel": "Delete profile"
+        },
+        "newCardLabel": "Add New Profile",
+        "form": {
+          "nameLabel": "Name",
+          "namePlaceholder": "Enter a name",
+          "genderLabel": "Gender",
+          "male": "Male",
+          "female": "Female",
+          "backAriaLabel": "Back",
+          "submit": "Create",
+          "submitting": "Creating...",
+          "errorCreate": "Failed to create profile. Please try again.",
+          "errorNetwork": "A network error occurred. Please try again."
+        },
+        "deleteModal": {
+          "title": "Delete this profile?",
+          "description": "Deleting '{name}' will also delete all related reports. This cannot be undone.",
+          "cancel": "Cancel",
+          "confirm": "Delete",
+          "deleting": "Deleting..."
+        }
+      },
+      "report": {
+        "sections": {
+          "profile": "First Impression",
+          "observation": "Face Observation",
+          "personality": "Personality",
+          "career": "Career",
+          "wealth": "Wealth",
+          "relationship": "Relationships",
+          "actions": "5 Actions",
+          "shareLine": "Share Line"
+        },
+        "share": {
+          "title": "Share Result",
+          "copy": "Copy Link",
+          "copied": "Copied!",
+          "kakao": "KakaoTalk",
+          "x": "Share on X",
+          "copyFailed": "Failed to copy link.",
+          "kakaoCardTitle": "Face Spoiler",
+          "kakaoButtonTitle": "View Result"
+        }
+      },
+      "footer": {
+        "businessName": "Business: When Company"
+      },
+      "preview": {
+        "teaser": "What you've seen is just the 'trailer'. The real flow of career, wealth, and relationships hidden in your face, along with your own physiognomy character, is only revealed in the full report. 🤫",
+        "ctaButton": "View Full Spoiler ($0.99)",
+        "characterPlaceholder": "Your physiognomy character will be drawn after payment",
+        "paymentPreparingAlert": "Payment feature is being prepared.",
+        "backAriaLabel": "Back to upload page",
+        "profileSectionTag": "First Impression"
+      },
+      "payment": {
+        "productName": "Face Reading Spoiler",
+        "orderName": "Face Reading Spoiler",
+        "successTitle": "Payment Successful",
+        "successDescription": "Generating your physiognomy character...",
+        "characterGenerating": "Drawing character...",
+        "characterGenerateFailed": "Failed to generate character image",
+        "characterRetry": "Try again",
+        "viewResult": "View Result",
+        "goToUpload": "Back to Upload",
+        "failTitle": "Payment Failed",
+        "retryPayment": "Retry Payment",
+        "loadingReport": "Loading...",
+        "errorCantLoadReport": "Could not load report.",
+        "errorCharacterFailed": "Failed to generate character image.",
+        "errorCharacterError": "An error occurred while generating the character image.",
+        "errorInvalidAccess": "Invalid access.",
+        "errorMissingPayment": "Payment information is missing.",
+        "errorConfirmFailed": "Payment confirmation failed.",
+        "errorServerError": "A server error occurred.",
+        "failErrorCodeLabel": "Error code"
+      },
+      "menu": {
+        "openAriaLabel": "Open menu",
+        "loginViaGoogle": "Logged in with Google",
+        "loginViaKakao": "Logged in with Kakao",
+        "loggedIn": "Logged in",
+        "languageChange": "Language",
+        "logout": "Log out",
+        "withdraw": "Delete account",
+        "login": "Log in",
+        "withdrawError": "Failed to delete account",
+        "languageDrawerTitle": "Language",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy",
+        "withdrawModal": {
+          "title": "Delete your account?",
+          "description": "All profiles and face reports will be permanently deleted and cannot be recovered.",
+          "confirm": "Delete account",
+          "withdrawing": "Deleting..."
+        }
+      },
+      "policy": {
+        "terms": {
+          "title": "Terms of Service",
+          "metaTitle": "Terms of Service - Face Spoiler",
+          "metaDescription": "Face Spoiler Terms of Service",
+          "closeButton": "Close",
+          "article1": {
+            "title": "Article 1 (Purpose)",
+            "content": "These terms aim to define the rights, obligations, and responsibilities between Wen Company (\"Company\") and members regarding the use of the AI face reading service 'Face Spoiler' (\"Service\")."
+          },
+          "article2": {
+            "title": "Article 2 (Definitions)",
+            "item1": "\"User\" refers to members and non-members who access the Service.",
+            "item2": "\"Paid Service\" refers to the detailed face reading reports, character image generation, and related services provided for a fee.",
+            "item3": "\"Content\" refers to all information including face analysis text and character images provided by the Service."
+          },
+          "article3": {
+            "title": "Article 3 (Service Provision)",
+            "item1": "The Company provides AI face reading reports and character image generation based on facial photos uploaded by users.",
+            "item2": "[Disclaimer] The face reading information is interpretation based on traditional physiognomy and AI models, intended as entertainment reference. Accuracy is not guaranteed. The Service cannot serve as a basis for medical, legal, or financial decisions, and the user bears final responsibility for results."
+          },
+          "article4": {
+            "title": "Article 4 (Service Agreement and Information Input)",
+            "item1": "Users enter into the service agreement by providing profile information (name, gender) and uploading a facial photo for analysis.",
+            "item2": "If uploaded photos have low quality or unclear facial features, analysis accuracy may decrease, for which the Company is not responsible."
+          },
+          "article5": {
+            "title": "Article 5 (Fees and Payment)",
+            "item1": "The fee for detailed face reading reports and character images is KRW 990 (VAT included) per item.",
+            "item2": "Payment is made through credit cards or simple payment methods (KakaoPay, ApplePay, TossPay) provided by the Company."
+          },
+          "article6": {
+            "title": "Article 6 (Withdrawal and Refunds)",
+            "item1": "The paid services are 'digital content' subject to withdrawal restrictions under the Act on the Consumer Protection in Electronic Commerce and the Content Industry Promotion Act.",
+            "item2": "Once payment is completed and the detailed report or character image is generated and viewed, the service is considered delivered and refunds are not available.",
+            "item3": "However, full refunds will be issued if the report or character image cannot be generated or viewed due to system errors or other obvious defects."
+          },
+          "article7": {
+            "title": "Article 7 (Data Storage and Access)",
+            "item1": "Members can re-access purchased reports and character images without limit until account deletion. However, uploaded original photos are deleted immediately after analysis and not stored.",
+            "item2": "If a member voluntarily deletes their account or profile, related reports and character images will also be deleted and cannot be recovered."
+          },
+          "article8": {
+            "title": "Article 8 (Copyright and Usage Restrictions)",
+            "item1": "Copyright and other intellectual property rights for works created by the Company (analysis text, generated character images) belong to the Company.",
+            "item2": "Users may use information obtained through the Service only for personal purposes (SNS sharing, etc.) and may not reproduce, transmit, publish, distribute, broadcast, or otherwise use it for commercial purposes."
+          },
+          "effectiveDate": "These terms are effective from April 9, 2026."
+        },
+        "privacy": {
+          "title": "Privacy Policy",
+          "metaTitle": "Privacy Policy - Face Spoiler",
+          "metaDescription": "Face Spoiler Privacy Policy",
+          "closeButton": "Close",
+          "intro": "Wen Company ('Face Spoiler', https://life-spoiler.com/face-spoiler) establishes and discloses the following privacy policy in accordance with Article 30 of the Personal Information Protection Act to protect personal information of data subjects.",
+          "article1": {
+            "title": "Article 1 (Purpose of Processing Personal Information)",
+            "content": "The Company processes personal information for the following purposes:",
+            "item1": "Service provision: AI face reading report generation, character image generation, content delivery",
+            "item2": "Goods/services provision: Paid payment management, purchase records",
+            "item3": "Member management: Identity verification, prevention of fraudulent use"
+          },
+          "article2": {
+            "title": "Article 2 (Items of Personal Information Processed)",
+            "content": "The Company collects the following information for face reading services:",
+            "item1": "Required (account): Email, social login identifier (Google/Kakao), profile image URL",
+            "item2": "Required (face profile): Name, gender",
+            "item3": "Payment-related (entrusted to PG): Payment approval records, purchase tokens (sensitive data such as card numbers is not stored directly by the Company)"
+          },
+          "article3": {
+            "title": "Article 3 (Facial Photo Processing and Immediate Deletion Policy) 🔒",
+            "content": "The Company prioritizes user privacy and does NOT permanently store uploaded facial photos. The photo handling policy is as follows:",
+            "item1": "Uploaded facial photos are temporarily stored only to perform AI analysis.",
+            "item2": "Once payment is completed and a character image is generated, the original photo is automatically and permanently deleted.",
+            "item3": "If payment is not made, uploaded original photos are automatically and permanently deleted within a maximum of 3 days via an automated cleanup (cron) job.",
+            "item4": "Original photos are never exposed to anyone other than the member themselves and are not shared externally. They are temporarily transmitted to the Google Gemini API for analysis, where the data is processed according to Google's policies."
+          },
+          "article4": {
+            "title": "Article 4 (Retention Period of Personal Information)",
+            "content": "The Company processes and retains personal information within the period agreed upon at the time of collection or as required by law.",
+            "item1": "Member information and face profiles: Until account deletion",
+            "item2": "Analysis reports and generated character images: Until account or profile deletion (uploaded original photos are deleted immediately as per Article 3)"
+          },
+          "article5": {
+            "title": "Article 5 (Provision to Third Parties)",
+            "content": "The Company does not provide personal information to third parties beyond the following entrusted processing:",
+            "item1": "AI analysis: Photos and profile information are sent to the Google Gemini API to generate face reading text and character images. Transmitted data is deleted from the Company's systems immediately after analysis.",
+            "item2": "Payment processing: Payment information is processed via TossPayments. Sensitive payment data (card numbers, etc.) is not directly stored by the Company."
+          },
+          "article6": {
+            "title": "Article 6 (Destruction of Personal Information)",
+            "content": "The Company promptly destroys personal information when it becomes unnecessary due to expiration of retention period or completion of processing purpose. Electronic files are destroyed using technical methods that prevent recovery."
+          },
+          "article7": {
+            "title": "Article 7 (Privacy Officer)",
+            "content": "The Company designates the following privacy officer to oversee personal information processing matters and handle related complaints:",
+            "name": "Name: Yoon Jae-hyuk",
+            "email": "Email: ttja.when@gmail.com"
+          },
+          "article8": {
+            "title": "Article 8 (Cookies)",
+            "content": "The Company uses 'cookies' to provide personalized services by storing and retrieving usage information.",
+            "purpose": "Cookie usage purpose: Maintaining login sessions, storing language preferences, analyzing service usage statistics",
+            "settings": "Cookie installation, operation, and rejection: You can refuse cookie storage through your web browser settings. However, refusing cookies may make it difficult to use some services such as login."
+          },
+          "effectiveDate": "This policy is effective from April 9, 2026."
+        }
+      }
     }
   },
   "ja": {
@@ -2449,6 +2981,272 @@
           "purpose": "クッキーの使用目的：利用者の接続頻度や訪問時間等を分析、サービス改編等に活用",
           "settings": "クッキーの設置・運営及び拒否：ウェブブラウザ上部のツール > インターネットオプション > プライバシーメニューのオプション設定を通じてクッキー保存を拒否できます。",
           "warning": "クッキー保存を拒否する場合、カスタマイズサービスの利用に困難が生じる可能性があります。"
+        }
+      }
+    },
+    "faceSpoiler": {
+      "metadata": {
+        "title": "観相スポ — 写真1枚で見るあなたの観相レポート",
+        "description": "写真1枚で1分以内に受け取れるAI観相レポート。$0.99で5,000文字以上の詳細レポートをご覧ください。",
+        "ogTitle": "観相スポ",
+        "ogDescription": "写真1枚で1分以内の観相レポート。今すぐ確認しよう。",
+        "shareTitleSuffix": "観相スポ — {headline}",
+        "defaultHeadline": "観相分析結果",
+        "defaultDescription": "写真1枚で受け取ったAI観相レポート。今すぐ確認してみましょう。"
+      },
+      "hero": {
+        "imageAlt": "観相画像",
+        "subtitle": "写真1枚で見るあなたの観相レポート",
+        "cta": "今すぐ始める"
+      },
+      "login": {
+        "tagline": "写真1枚で見るあなたの観相レポート"
+      },
+      "upload": {
+        "title": "写真アップロード",
+        "description": "顔がはっきり見える正面写真をアップロードしてください",
+        "uploadText": "クリックまたは画像をドラッグしてください",
+        "uploadHint": "最大10MB",
+        "previewAlt": "アップロードプレビュー",
+        "detectingFace": "顔を検出中...",
+        "consent1": "本人の写真であることを確認します",
+        "consent2": "本レポートはエンターテインメント目的の参考資料です",
+        "submitButton": "分析を開始",
+        "validating": "写真を確認中...",
+        "errorImageLoadFailed": "画像を読み込めませんでした。",
+        "errorLowResolution": "写真の解像度が低すぎます。より鮮明な写真をアップロードしてください。",
+        "errorNoFace": "顔が検出できませんでした。顔がはっきり見える正面写真をアップロードしてください。",
+        "errorMultipleFaces": "複数の顔が検出されました。1人だけの写真をアップロードしてください。",
+        "errorCanvasUnavailable": "Canvasを使用できません。",
+        "errorProcessingFailed": "画像の処理に失敗しました。",
+        "errorOnlyImage": "画像ファイルのみアップロード可能です。",
+        "errorSizeLimit": "ファイルサイズは10MB以下にしてください。",
+        "errorConsentRequired": "すべての同意項目にチェックしてください。",
+        "errorUploadFailed": "アップロードに失敗しました。",
+        "errorGenerateFailed": "レポートの生成に失敗しました。",
+        "errorUnknown": "不明なエラーが発生しました。"
+      },
+      "loading": {
+        "analyzing": "顔を分析しています...",
+        "readingFeatures": "印象的な特徴を読み取っています...",
+        "interpreting": "性格を解釈しています...",
+        "writing": "レポートを作成しています..."
+      },
+      "profiles": {
+        "pageTitle": "プロフィール選択",
+        "newPageTitle": "新しいプロフィール",
+        "ctaNoReport": "観相を見る",
+        "ctaPaid": "結果を見る",
+        "ctaUnpaid": "決済して結果を見る",
+        "card": {
+          "genderMale": "男性",
+          "genderFemale": "女性",
+          "hasReportAriaLabel": "観相済みプロフィール",
+          "hasReportTooltip": "観相を見たことがあります",
+          "deleteAriaLabel": "プロフィール削除"
+        },
+        "newCardLabel": "新しいプロフィールを追加",
+        "form": {
+          "nameLabel": "名前",
+          "namePlaceholder": "名前を入力してください",
+          "genderLabel": "性別",
+          "male": "男性",
+          "female": "女性",
+          "backAriaLabel": "戻る",
+          "submit": "登録",
+          "submitting": "登録中...",
+          "errorCreate": "プロフィールの作成に失敗しました。もう一度お試しください。",
+          "errorNetwork": "ネットワークエラーが発生しました。もう一度お試しください。"
+        },
+        "deleteModal": {
+          "title": "プロフィールを削除しますか?",
+          "description": "「{name}」を削除すると関連するすべてのレポートも削除されます。元に戻せません。",
+          "cancel": "キャンセル",
+          "confirm": "削除",
+          "deleting": "削除中..."
+        }
+      },
+      "report": {
+        "sections": {
+          "profile": "第一印象",
+          "observation": "観相観察",
+          "personality": "性格",
+          "career": "仕事・キャリア",
+          "wealth": "お金・財運",
+          "relationship": "人間関係・恋愛",
+          "actions": "実行アクション5つ",
+          "shareLine": "シェア用ひとこと"
+        },
+        "share": {
+          "title": "結果をシェア",
+          "copy": "リンクをコピー",
+          "copied": "コピー完了!",
+          "kakao": "KakaoTalk",
+          "x": "Xでシェア",
+          "copyFailed": "リンクのコピーに失敗しました。",
+          "kakaoCardTitle": "観相スポ",
+          "kakaoButtonTitle": "結果を見る"
+        }
+      },
+      "footer": {
+        "businessName": "商号:When Company"
+      },
+      "preview": {
+        "teaser": "今ご覧になったのは「予告編」に過ぎません。顔に隠された本当のキャリア・財運・縁の流れと、あなただけの観相キャラクターは本編でのみこっそりネタバレします。🤫",
+        "ctaButton": "全ネタバレを確認 ($0.99)",
+        "characterPlaceholder": "決済後、あなただけの観相キャラクターが描かれます",
+        "paymentPreparingAlert": "決済機能は準備中です。",
+        "backAriaLabel": "アップロードページに戻る",
+        "profileSectionTag": "第一印象"
+      },
+      "payment": {
+        "productName": "観相運勢ネタバレ",
+        "orderName": "観相運勢ネタバレ",
+        "successTitle": "決済が完了しました",
+        "successDescription": "観相キャラクターを生成しています",
+        "characterGenerating": "キャラクター作成中...",
+        "characterGenerateFailed": "キャラクター画像の生成に失敗しました",
+        "characterRetry": "再試行",
+        "viewResult": "結果を見る",
+        "goToUpload": "アップロードに戻る",
+        "failTitle": "決済に失敗しました",
+        "retryPayment": "もう一度試す",
+        "loadingReport": "読み込み中...",
+        "errorCantLoadReport": "レポートを読み込めませんでした。",
+        "errorCharacterFailed": "キャラクター画像の生成に失敗しました。",
+        "errorCharacterError": "キャラクター画像の生成中にエラーが発生しました。",
+        "errorInvalidAccess": "不正なアクセスです。",
+        "errorMissingPayment": "決済情報が不足しています。",
+        "errorConfirmFailed": "決済の承認に失敗しました。",
+        "errorServerError": "サーバーエラーが発生しました。",
+        "failErrorCodeLabel": "エラーコード"
+      },
+      "menu": {
+        "openAriaLabel": "メニューを開く",
+        "loginViaGoogle": "Googleでログインしています",
+        "loginViaKakao": "Kakaoでログインしています",
+        "loggedIn": "ログイン中",
+        "languageChange": "言語変更",
+        "logout": "ログアウト",
+        "withdraw": "退会",
+        "login": "ログイン",
+        "withdrawError": "退会に失敗しました",
+        "languageDrawerTitle": "言語設定",
+        "terms": "利用規約",
+        "privacy": "プライバシーポリシー",
+        "withdrawModal": {
+          "title": "本当に退会しますか?",
+          "description": "退会するとすべてのプロフィールと観相レポートが削除され、復元できません。",
+          "confirm": "退会する",
+          "withdrawing": "退会中..."
+        }
+      },
+      "policy": {
+        "terms": {
+          "title": "サービス利用規約",
+          "metaTitle": "サービス利用規約 - 観相スポ",
+          "metaDescription": "観相スポ サービス利用規約",
+          "closeButton": "閉じる",
+          "article1": {
+            "title": "第1条(目的)",
+            "content": "本規約は、ウェンカンパニー(以下「会社」)が提供するAI観相分析サービス「観相スポ」(以下「サービス」)の利用に関し、会社と会員間の権利、義務及び責任事項を定めることを目的とします。"
+          },
+          "article2": {
+            "title": "第2条(用語の定義)",
+            "item1": "「利用者」とは、サービスにアクセスし、本規約に従って会社が提供するサービスを受ける会員及び非会員をいいます。",
+            "item2": "「有料サービス」とは、会社が有料で提供する詳細観相レポート、キャラクター画像生成及び関連するサービスを意味します。",
+            "item3": "「コンテンツ」とは、観相分析テキスト、キャラクター画像など、サービスで提供されるすべての形式の情報を意味します。"
+          },
+          "article3": {
+            "title": "第3条(サービスの提供および変更)",
+            "item1": "会社は利用者がアップロードした顔写真に基づき、AI観相分析レポートとキャラクター画像生成サービスを提供します。",
+            "item2": "[免責] 本サービスが提供する観相分析情報は、伝統的な観相学とAIモデルの解釈に基づくエンターテインメント参考用コンテンツであり、その正確性を保証しません。本サービスは医療的・法的・財務的判断の根拠とすることはできず、サービス利用の結果に対する最終判断と責任は利用者本人にあります。"
+          },
+          "article4": {
+            "title": "第4条(利用契約の締結および情報入力)",
+            "item1": "利用者は、サービスが定めた手順に従って氏名、性別などのプロフィール情報を入力し、分析する顔写真をアップロードすることで利用契約が成立します。",
+            "item2": "アップロードされた写真の画質が低い、または顔が明確でない場合、分析結果の精度が低下する可能性があり、これについて会社は責任を負いません。"
+          },
+          "article5": {
+            "title": "第5条(利用料金および決済)",
+            "item1": "詳細観相レポートおよびキャラクター画像の利用料金は1件あたり990ウォン(VAT込)です。",
+            "item2": "決済はクレジットカード、簡単決済(KakaoPay/ApplePay/TossPay)など会社が提供する決済手段を通じて行われます。"
+          },
+          "article6": {
+            "title": "第6条(申込撤回および返金)",
+            "item1": "会社が提供する有料サービスは、「電子商取引等における消費者保護に関する法律」及び「コンテンツ産業振興法」に基づく申込撤回制限事由に該当する「デジタルコンテンツ」です。",
+            "item2": "利用者が決済を完了し、詳細レポートまたはキャラクター画像が生成され閲覧した場合、サービス提供が完了したものとみなし返金は不可能です。",
+            "item3": "ただし、会社のシステムエラーによりレポートやキャラクター画像が生成されなかった場合や、コンテンツが全く表示されない明らかな瑕疵がある場合は全額返金いたします。"
+          },
+          "article7": {
+            "title": "第7条(データの保管および閲覧)",
+            "item1": "会員は決済したレポートとキャラクター画像を会員退会前まで回数制限なく再閲覧できます。ただし、アップロードされた元の写真は分析直後に削除され、保管されません。",
+            "item2": "会員が自ら退会またはプロフィールを削除した場合、関連レポートとキャラクター画像は共に削除され、復旧できません。"
+          },
+          "article8": {
+            "title": "第8条(著作権の帰属および利用制限)",
+            "item1": "会社が作成した著作物(分析テキスト、生成されたキャラクター画像を含む)に対する著作権及びその他の知的財産権は会社に帰属します。",
+            "item2": "利用者はサービスを通じて得た情報を個人的な用途(SNS共有等)にのみ使用でき、これを営利目的で複製、送信、出版、配布、放送その他の方法により利用したり第三者に利用させてはなりません。"
+          },
+          "effectiveDate": "本規約は2026年4月9日から適用されます。"
+        },
+        "privacy": {
+          "title": "プライバシーポリシー",
+          "metaTitle": "プライバシーポリシー - 観相スポ",
+          "metaDescription": "観相スポ プライバシーポリシー",
+          "closeButton": "閉じる",
+          "intro": "ウェンカンパニー(以下「観相スポ」、https://life-spoiler.com/face-spoiler)は、「個人情報保護法」第30条に基づき、情報主体の個人情報を保護し関連する苦情を迅速かつ円滑に処理するため、次のとおりプライバシーポリシーを策定・公開します。",
+          "article1": {
+            "title": "第1条(個人情報の処理目的)",
+            "content": "会社は次の目的のために個人情報を処理します。",
+            "item1": "サービス提供:AI観相分析レポートの生成、キャラクター画像生成、コンテンツ提供",
+            "item2": "財貨またはサービス提供:有料決済管理、購入履歴提供",
+            "item3": "会員管理:サービス利用に伴う本人識別、不正利用防止"
+          },
+          "article2": {
+            "title": "第2条(処理する個人情報の項目)",
+            "content": "会社は観相分析サービス提供のため、次の情報を収集します。",
+            "item1": "必須項目(アカウント):メール、ソーシャルログイン識別子(Google/Kakao)、プロフィール画像URL",
+            "item2": "必須項目(観相プロフィール):氏名、性別",
+            "item3": "決済関連(PG社委託):決済承認内容、購入トークン(カード番号などの機密情報は会社が直接保存しません)"
+          },
+          "article3": {
+            "title": "第3条(顔写真の処理および即時削除ポリシー) 🔒",
+            "content": "会社は利用者のプライバシー保護を最優先とし、アップロードされた顔写真を永久保存しません。写真処理ポリシーは次のとおりです。",
+            "item1": "アップロードされた顔写真は、AI分析を行うために一時保存所に限定的に保管されます。",
+            "item2": "有料決済が完了しキャラクター画像が生成されると同時に、元の写真は自動的に永久削除されます。",
+            "item3": "決済が行われない場合、アップロードされた元の写真は最大3日後に自動整理(cron)作業により永久削除されます。",
+            "item4": "元の写真は会員本人以外の誰にも公開されず、外部に共有されません。分析のためにGoogle Gemini APIに一時的に送信され、送信されたデータはGoogleのポリシーに従って処理されます。"
+          },
+          "article4": {
+            "title": "第4条(個人情報の保有および利用期間)",
+            "content": "会社は法令に従った個人情報保有・利用期間または情報主体から個人情報を収集する際に同意を得た個人情報保有・利用期間内で個人情報を処理・保有します。",
+            "item1": "会員情報および観相プロフィール:会員退会時まで",
+            "item2": "分析レポートおよび生成されたキャラクター画像:会員退会またはプロフィール削除時まで(ただし、アップロードされた元の写真は第3条に基づき即時削除されます)"
+          },
+          "article5": {
+            "title": "第5条(個人情報の第三者提供)",
+            "content": "会社は次のような委託処理以外には第三者に提供しません。",
+            "item1": "AI分析:Google Gemini APIに写真とプロフィール情報を送信し、観相解釈テキストとキャラクター画像を生成します。送信されたデータは分析直後に会社システムから削除されます。",
+            "item2": "決済処理:TossPaymentsを通じて決済情報を処理し、カード番号などの機密決済情報は会社が直接保存しません。"
+          },
+          "article6": {
+            "title": "第6条(個人情報の破棄)",
+            "content": "会社は個人情報保有期間の経過、処理目的達成等により個人情報が不要になった場合は遅滞なく該当個人情報を破棄します。電子的ファイル形態の情報は記録を再生できない技術的方法を使用します。"
+          },
+          "article7": {
+            "title": "第7条(個人情報保護責任者)",
+            "content": "会社は個人情報処理に関する業務を総括し、個人情報に関する苦情処理および被害救済等のため、以下のとおり個人情報保護責任者を指定しています。",
+            "name": "氏名:ユン・ジェヒョク",
+            "email": "メール:ttja.when@gmail.com"
+          },
+          "article8": {
+            "title": "第8条(クッキー)",
+            "content": "会社は利用者にカスタマイズされたサービスを提供するため、利用情報を保存し随時呼び出す「クッキー(cookie)」を使用します。",
+            "purpose": "クッキーの使用目的:ログインセッション維持、言語設定保存、サービス利用統計分析",
+            "settings": "クッキーの設置・運営および拒否:ウェブブラウザのオプション設定からクッキー保存を拒否できます。ただし、クッキー保存を拒否するとログインなど一部のサービス利用に支障が生じる可能性があります。"
+          },
+          "effectiveDate": "本方針は2026年4月9日から適用されます。"
         }
       }
     }

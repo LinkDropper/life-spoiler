@@ -192,6 +192,116 @@ export const sendPaymentNotification = async (
   return sendWebhookMessage({ embeds: [embed] });
 };
 
+interface FaceReportPaymentNotificationParams {
+  orderId: string;
+  amount: number;
+  currency: "KRW" | "USD";
+  method: string;
+  shareId: string;
+  userId: string;
+  userEmail?: string;
+  approvedAt: string;
+  updateFailed?: boolean;
+}
+
+/**
+ * 관상스포 결제 완료 알림
+ */
+export const sendFaceReportPaymentNotification = async (
+  params: FaceReportPaymentNotificationParams
+): Promise<boolean> => {
+  const {
+    orderId,
+    amount,
+    currency,
+    method,
+    shareId,
+    userId,
+    userEmail,
+    approvedAt,
+    updateFailed,
+  } = params;
+
+  const formattedAmount =
+    currency === "USD"
+      ? `$${amount.toFixed(2)}`
+      : `₩${amount.toLocaleString()}`;
+
+  const approvedDate = new Date(approvedAt);
+  const formattedDate = approvedDate.toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  const fields: DiscordEmbedField[] = [
+    {
+      name: "📦 상품",
+      value: "관상 운세 스포일러",
+      inline: true,
+    },
+    {
+      name: "💵 결제 금액",
+      value: formattedAmount,
+      inline: true,
+    },
+    {
+      name: "💳 결제 수단",
+      value: method,
+      inline: true,
+    },
+    {
+      name: "🧾 주문번호",
+      value: `\`${orderId}\``,
+      inline: false,
+    },
+    {
+      name: "🪪 관상 리포트",
+      value: `\`${shareId}\``,
+      inline: true,
+    },
+    {
+      name: "👤 사용자",
+      value: userEmail ? `${userEmail} (\`${userId}\`)` : `\`${userId}\``,
+      inline: true,
+    },
+    {
+      name: "🕐 결제 시각",
+      value: formattedDate,
+      inline: true,
+    },
+  ];
+
+  if (updateFailed) {
+    fields.push({
+      name: "⚠️ 동기화 실패",
+      value: "face_reports 테이블에 paid_at 업데이트 실패!",
+      inline: false,
+    });
+  }
+
+  const embed: DiscordEmbed = {
+    title: updateFailed ? "⚠️ 관상스포 결제 완료 (동기화 실패)" : "🎭 관상스포 결제 완료",
+    description: updateFailed
+      ? "결제는 완료되었으나 DB 동기화에 실패했습니다!"
+      : "새로운 관상 리포트 결제가 완료되었습니다!",
+    color: updateFailed
+      ? DISCORD_EMBED_COLORS.WARNING
+      : DISCORD_EMBED_COLORS.SUCCESS,
+    fields,
+    footer: {
+      text: "Face Spoiler",
+    },
+    timestamp: approvedAt,
+  };
+
+  return sendWebhookMessage({ embeds: [embed] });
+};
+
 interface ReviewNotificationParams {
   fortuneType: string;
   rating: number;

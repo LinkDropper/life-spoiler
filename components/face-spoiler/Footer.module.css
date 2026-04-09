@@ -1,0 +1,72 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 24px 80px;
+  background: transparent;
+  border-top: 1px solid var(--border-color);
+  margin-top: 40px;
+}
+
+.logo {
+  font-family: "LotteriaDdag", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.businessInfo {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.625;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.businessInfo a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.businessInfo a:hover {
+  text-decoration: underline;
+}
+
+.links {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.625;
+  color: var(--text-secondary);
+}
+
+.links a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  margin: 0 8px;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.socialLink:hover {
+  color: var(--text-primary);
+}

@@ -13,6 +13,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.34",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.90.1",
     "@tosspayments/tosspayments-sdk": "^2.5.0",
@@ -22,6 +23,7 @@
     "korean-lunar-calendar": "^0.3.6",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.563.0",
+    "nanoid": "^5.1.7",
     "next": "15.5.9",
     "next-intl": "^4.7.0",
     "react": "19.1.0",
