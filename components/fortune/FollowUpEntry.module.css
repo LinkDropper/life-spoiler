@@ -1,0 +1,38 @@
+.button {
+  position: fixed;
+  /* 480px 중앙 정렬 컨테이너의 우측 16px 기준. 좁은 화면에서는 viewport 우측 16px */
+  right: max(16px, calc((100vw - 480px) / 2 + 16px));
+  bottom: 88px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-button-primary-surface, #ffccd9);
+  border: none;
+  cursor: pointer;
+  z-index: 101;
+  transition:
+    transform 0.15s ease,
+    opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.icon {
+  color: #2d1b4e;
+}
