@@ -25,6 +25,8 @@ export const TermsContent = () => {
         2. {t("article2.item2")}
         <br />
         3. {t("article2.item3")}
+        <br />
+        4. {t("article2.item4")}
       </p>
 
       <p>
@@ -49,6 +51,10 @@ export const TermsContent = () => {
         1. {t("article5.item1")}
         <br />
         2. {t("article5.item2")}
+        <br />
+        3. {t("article5.item3")}
+        <br />
+        4. {t("article5.item4")}
       </p>
 
       <p>
@@ -59,6 +65,10 @@ export const TermsContent = () => {
         2. {t("article6.item2")}
         <br />
         3. {t("article6.item3")}
+        <br />
+        4. {t("article6.item4")}
+        <br />
+        5. {t("article6.item5")}
       </p>
 
       <p>

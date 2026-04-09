@@ -1,0 +1,214 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--color-overlay-dimmed, rgba(17, 17, 28, 0.6));
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.drawer {
+  width: 100%;
+  max-width: 480px;
+  padding: 8px;
+  background: var(--color-surface-default, #18181b);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px 4px 20px var(--color-modal-shadow, rgba(0, 0, 0, 0.12));
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 20px 0 16px;
+  height: 44px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+}
+
+.separator {
+  padding: 4px 0;
+}
+
+.separatorLine {
+  height: 0;
+  border: none;
+  border-top: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  margin: 0;
+}
+
+.menuItems {
+  display: flex;
+  flex-direction: column;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuItem:hover:not(:disabled) {
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+}
+
+.menuItem:active:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.menuItem:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.menuItemRegular {
+  font-weight: 400;
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay-dimmed, rgba(17, 17, 28, 0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11000;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--color-surface-default, #18181b);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 327px;
+  width: 100%;
+  box-shadow: 0px 4px 20px 0px var(--color-modal-shadow, rgba(0, 0, 0, 0.12));
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modalHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modalTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modalTitle {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+}
+
+.modalDescription {
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.modalCancelButton {
+  flex: 1;
+  height: 52px;
+  padding: 16px 20px;
+  background: transparent;
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modalCancelButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modalConfirmButton {
+  flex: 1;
+  height: 52px;
+  padding: 16px 20px;
+  background: var(--color-button-error-surface, #fa5252);
+  border: none;
+  border-radius: 8px;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modalConfirmButton:hover {
+  background: #e03e3e;
+}
+
+.modalConfirmButton:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}

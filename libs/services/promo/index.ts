@@ -1,6 +1,7 @@
 export {
   validatePromoCode,
   applyPromoCode,
+  redeemStarCoupon,
   getPromoCodeInfo,
   getUserPromoUsages,
   hasPromoAppliedToProfile,

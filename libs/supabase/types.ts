@@ -176,6 +176,7 @@ export interface PromoCodeRow {
   benefit_type: PromoBenefitType;
   fortune_type: PromoFortuneType;
   discount_percent: number | null;
+  star_bonus_amount: number | null;
   max_uses: number | null;
   current_uses: number;
   max_uses_per_user: number;
@@ -196,6 +197,7 @@ export interface PromoCodeInsert {
   benefit_type?: PromoBenefitType;
   fortune_type?: PromoFortuneType;
   discount_percent?: number | null;
+  star_bonus_amount?: number | null;
   max_uses?: number | null;
   current_uses?: number;
   max_uses_per_user?: number;
@@ -205,6 +207,7 @@ export interface PromoCodeInsert {
   campaign_name?: string | null;
   memo?: string | null;
   created_by?: string | null;
+  updated_at?: string;
 }
 
 export interface PromoCodeUsageRow {
@@ -222,8 +225,8 @@ export interface PromoCodeUsageInsert {
   id?: string;
   promo_code_id: string;
   user_id: string;
-  profile_id: string;
-  fortune_type: FortuneType;
+  profile_id?: string | null;
+  fortune_type?: FortuneType | null;
   free_access_id?: string | null;
   used_at?: string;
 }
@@ -241,6 +244,55 @@ export interface CompatibilityPairRow {
   is_free_promotion: boolean;
   created_at: string;
   updated_at: string;
+}
+
+// Wallet Types
+export interface WalletRow {
+  id: string;
+  user_id: string;
+  paid_balance: number;
+  bonus_balance: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WalletInsert {
+  user_id: string;
+  paid_balance: number;
+  bonus_balance: number;
+}
+
+export interface WalletUpdate {
+  paid_balance?: number;
+  bonus_balance?: number;
+  updated_at?: string;
+}
+
+// Wallet Transaction Types
+export type WalletTransactionType = "purchase" | "spend" | "coupon_bonus";
+
+export interface WalletTransactionRow {
+  id: string;
+  user_id: string;
+  type: WalletTransactionType;
+  amount: number;
+  paid_delta: number;
+  bonus_delta: number;
+  balance_after_paid: number;
+  balance_after_bonus: number;
+  description: string;
+  created_at: string;
+}
+
+export interface WalletTransactionInsert {
+  user_id: string;
+  type: WalletTransactionType;
+  amount: number;
+  paid_delta: number;
+  bonus_delta: number;
+  balance_after_paid: number;
+  balance_after_bonus: number;
+  description: string;
 }
 
 export interface CompatibilityPairInsert {
@@ -407,6 +459,32 @@ export type Database = {
             foreignKeyName: "compatibility_pairs_profile_b_id_fkey";
             columns: ["profile_b_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      wallets: {
+        Row: WalletRow;
+        Insert: WalletInsert;
+        Update: WalletUpdate;
+        Relationships: [
+          {
+            foreignKeyName: "wallets_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      wallet_transactions: {
+        Row: WalletTransactionRow;
+        Insert: WalletTransactionInsert;
+        Update: Partial<WalletTransactionInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
             referencedColumns: ["id"];
           },
         ];

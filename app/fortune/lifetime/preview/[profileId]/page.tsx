@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
@@ -10,6 +11,7 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   KeywordGrid,
+  StarChargeModal,
 } from "@/components/fortune";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
 import {
@@ -21,28 +23,24 @@ import type { Locale } from "@/i18n/config";
 import styles from "./page.module.css";
 
 export default function LifetimeFortunePreviewPage() {
+  const params = useParams();
+  const profileId = params.profileId as string;
   const locale = useLocale() as Locale;
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
   const tLifetime = useTranslations("fortune.lifetime");
 
-  const {
-    isLoading,
-    error,
-    result,
-    profile,
-    isAIGenerated,
-    handlePayment,
-    handleBack,
-  } = useLifetimePreview({
-    onProfileNotFound: () => tCommon("profileNotFound"),
-    onFetchError: () => tLifetime("interpretError"),
-    onUnknownError: () => tCommon("unknownError"),
-    onAIGenerationFailed: () => tLifetime("interpretError"),
-  });
+  const { isLoading, error, result, profile, isAIGenerated, handleBack } =
+    useLifetimePreview({
+      onProfileNotFound: () => tCommon("profileNotFound"),
+      onFetchError: () => tLifetime("interpretError"),
+      onUnknownError: () => tCommon("unknownError"),
+      onAIGenerationFailed: () => tLifetime("interpretError"),
+    });
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [showChargeModal, setShowChargeModal] = useState(false);
 
   // 키워드 추출 (12궁 주성 + 밝기 기반, 영향력 점수순)
   const keywords = useMemo(() => {
@@ -71,13 +69,9 @@ export default function LifetimeFortunePreviewPage() {
         <main className={styles.main}>
           <div className={styles.error}>
             <div className={styles.errorIcon}>⏳</div>
-            <h2 className={styles.errorTitle}>
-              일시적으로 접속이 원활하지 않아요
-            </h2>
+            <h2 className={styles.errorTitle}>{tPreview("errorTitle")}</h2>
             <p className={styles.errorDescription}>
-              현재 이용자가 많아 운세 생성에 실패했어요.
-              <br />
-              잠시 후 다시 시도해 주세요.
+              {tPreview("errorDescription")}
             </p>
             <div className={styles.errorButtons}>
               <button
@@ -85,7 +79,7 @@ export default function LifetimeFortunePreviewPage() {
                 className={styles.refreshButton}
                 onClick={handleRefresh}
               >
-                새로고침
+                {tPreview("errorRefresh")}
               </button>
               <button
                 type="button"
@@ -200,12 +194,22 @@ export default function LifetimeFortunePreviewPage() {
         <button
           type="button"
           className={styles.paymentButton}
-          onClick={handlePayment}
+          onClick={() => setShowChargeModal(true)}
           disabled={!!error || !isAIGenerated}
         >
           {tPreview("ctaButton")}
         </button>
       </footer>
+
+      {showChargeModal && (
+        <StarChargeModal
+          fortuneLabel={tLifetime("title", { name: profile.name })}
+          fortuneType="lifetime"
+          profileId={profileId}
+          resultPath={`/fortune/lifetime/${profileId}`}
+          onClose={() => setShowChargeModal(false)}
+        />
+      )}
     </div>
   );
 }

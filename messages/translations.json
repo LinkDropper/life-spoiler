@@ -17,6 +17,7 @@
         "loggedIn": "로그인 했습니다.",
         "lifetimeFortune": "인생 운세 보기",
         "yearlyFortune": "올해 운세 보기",
+        "compatibilityFortune": "궁합 운세 보기",
         "login": "로그인",
         "logout": "로그아웃",
         "withdraw": "회원탈퇴",
@@ -27,6 +28,18 @@
           "confirm": "탈퇴하기",
           "withdrawing": "탈퇴 중..."
         }
+      },
+      "settings": {
+        "title": "설정",
+        "couponInput": "쿠폰 입력",
+        "language": "언어: {locale}"
+      },
+      "coupon": {
+        "title": "쿠폰 입력",
+        "placeholder": "쿠폰 번호를 입력해주세요",
+        "submit": "확인",
+        "success": "별조각 {amount}개가 지급되었습니다!",
+        "serverError": "서버 오류가 발생했습니다. 다시 시도해주세요."
       },
       "hero": {
         "imageAlt": "운명의 별자리",
@@ -314,7 +327,7 @@
         "error": "궁합 분석에 실패했습니다.",
         "refresh": "새로고침",
         "back": "뒤로가기",
-        "ctaButton": "전체 스포 확인하기 (990원)",
+        "ctaButton": "별조각 3개로 전체 스포 확인하기",
         "score": "궁합 점수",
         "insightsTitle": "궁합 인사이트",
         "spoilerTitle": "궁합 스포일러",
@@ -437,9 +450,16 @@
         "chartTitle": "자미두수 명반",
         "spoilerTitle": "인생 스포일러",
         "yearlySpoilerTitle": "올해 스포일러",
-        "ctaButton": "전체 스포 확인하기 (990원)",
+        "ctaButton": "별조각 3개로 전체 스포 확인하기",
         "teaser": "지금 보신 건 '예고편'에 불과해요. 평생 재물운이 폭발하는 나이와 미래 배우자의 소름 돋는 특징은 본편 시나리오에서만 몰래 스포해 드릴게요. 🤫",
-        "yearlyTeaser": "지금 보신 건 '예고편'에 불과해요. 올해 재물운이 폭발하는 월과 절대 몸을 사려야 하는 시기는 본편 시나리오에서만 몰래 스포해 드릴게요. 🤫"
+        "yearlyTeaser": "지금 보신 건 '예고편'에 불과해요. 올해 재물운이 폭발하는 월과 절대 몸을 사려야 하는 시기는 본편 시나리오에서만 몰래 스포해 드릴게요. 🤫",
+        "errorTitle": "일시적으로 접속이 원활하지 않아요",
+        "errorDescription": "현재 이용자가 많아 운세 생성에 실패했어요.\n잠시 후 다시 시도해 주세요.",
+        "errorRefresh": "새로고침"
+      },
+      "starChargeModal": {
+        "balanceLabel": "보유 별조각",
+        "chargeButton": "별조각 충전하기"
       },
       "lifetime": {
         "title": "{name}님의 인생 운세",
@@ -518,7 +538,7 @@
         "tracesTitle": "전생의 흔적",
         "disclaimer": "전생 해석은 자미두수 명반의 창의적 재해석이며, 학술적 정설이 아닌 엔터테인먼트 콘텐츠입니다.",
         "interpretError": "전생 운세 생성에 실패했어요.",
-        "ctaButton": "전생 확인하기 (990원)",
+        "ctaButton": "별조각 3개로 전생 확인하기",
         "shareButton": "공유하기",
         "reviewButton": "후기 남기기",
         "profileShareTitle": "프로필 이미지 공유하기",
@@ -708,13 +728,23 @@
       "goToProfiles": "프로필 목록으로",
       "confirmFailed": "결제 승인 실패",
       "confirmError": "결제 승인 중 오류가 발생했습니다.",
+      "confirmingPayment": "결제를 처리하고 있습니다...",
       "missingPaymentInfo": "결제 정보가 누락되었습니다.",
       "failTitle": "결제에 실패했습니다",
       "failDescription": "결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.",
       "errorCode": "에러 코드",
       "retry": "다시 결제하기",
       "goBack": "이전으로 돌아가기",
-      "paymentError": "결제 처리 중 오류가 발생했습니다."
+      "paymentError": "결제 처리 중 오류가 발생했습니다.",
+      "invalidPackage": "유효하지 않은 상품입니다.",
+      "starPackageOrderName": "별조각 충전",
+      "payButtonLabel": "결제하기",
+      "starRefundPolicy": "별조각은 결제일로부터 7일 이내, 미사용 시 환불 가능합니다.",
+      "starSuccessTitle": "충전이 완료되었습니다",
+      "starSuccessDescription": "별조각 {count}개가 충전되었습니다!",
+      "goToPackages": "상품으로 돌아가기",
+      "goToFortune": "운세 보러 가기",
+      "goHome": "홈으로 이동"
     },
     "policy": {
       "terms": {
@@ -730,7 +760,8 @@
           "title": "제2조 (용어의 정의)",
           "item1": "\"이용자\"란 서비스에 접속하여 이 약관에 따라 회사가 제공하는 서비스를 받는 회원 및 비회원을 말합니다.",
           "item2": "\"유료 서비스\"란 회사가 유료로 제공하는 상세 운세 분석 리포트 및 관련 제반 서비스를 의미합니다.",
-          "item3": "\"콘텐츠\"란 서비스에서 제공하는 텍스트, 이미지, 그래프 등 모든 형태의 정보를 의미합니다."
+          "item3": "\"콘텐츠\"란 서비스에서 제공하는 텍스트, 이미지, 그래프 등 모든 형태의 정보를 의미합니다.",
+          "item4": "\"별조각\"이란 회사가 제공하는 유료 운세 콘텐츠를 이용하기 위해 구매하는 선불전자지급수단을 의미합니다."
         },
         "article3": {
           "title": "제3조 (서비스의 제공 및 변경)",
@@ -743,15 +774,19 @@
           "item2": "이용자가 입력한 생년월일 및 태어난 시간 정보가 부정확할 경우, 분석 결과의 정확도가 떨어질 수 있으며 이에 대해 회사는 책임지지 않습니다."
         },
         "article5": {
-          "title": "제5조 (이용요금 및 결제)",
-          "item1": "상세 운세 리포트의 열람 비용은 건당 990원(VAT 포함)입니다.",
-          "item2": "결제는 신용카드, 간편결제 등 회사가 제공하는 결제 수단을 통해 이루어집니다."
+          "title": "제5조 (별조각 충전 및 이용)",
+          "item1": "서비스의 유료 콘텐츠 이용을 위한 기본 단위는 '별조각'이며, 1 별조각은 330원의 가치를 가집니다.",
+          "item2": "메인 운세(인생스포, 올해운세, 궁합) 열람 시 3 별조각이 차감됩니다.",
+          "item3": "별조각 충전 상품은 다음과 같습니다. ① 스타터팩(990원): 별조각 3개. ② 베스트팩(2,970원): 별조각 9개 + 보너스 1개 = 총 10개. ③ 매니아팩(9,900원): 별조각 30개 + 보너스 3개 = 총 33개.",
+          "item4": "결제는 신용카드, 간편결제 등 회사가 제공하는 결제 수단을 통해 이루어집니다."
         },
         "article6": {
           "title": "제6조 (청약철회 및 환불)",
-          "item1": "회사가 제공하는 유료 서비스는 「전자상거래 등에서의 소비자보호에 관한 법률」 및 「콘텐츠산업 진흥법」에 따른 청약철회 제한 사유에 해당하는 '디지털 콘텐츠'입니다.",
-          "item2": "이용자가 결제를 완료하고 상세 리포트 화면을 열람(또는 리포트 생성 완료)한 경우, 서비스 제공이 완료된 것으로 간주하여 환불이 불가능합니다.",
-          "item3": "단, 회사의 시스템 오류로 인해 리포트가 생성되지 않았거나, 리포트 내용이 전혀 보이지 않는 등 명백한 하자가 있는 경우에는 전액 환불 조치합니다."
+          "item1": "패키지 상품을 구매하여 지급된 별조각 중 단 1개라도 사용(콘텐츠 열람)한 경우, 해당 결제건 전체에 대한 청약철회 및 환불은 불가합니다. (부분 환불 불가)",
+          "item2": "이벤트, 쿠폰, 프로모션 등을 통해 무상으로 지급된 보너스 별조각은 현금으로 환불되지 않습니다.",
+          "item3": "구매 후 열람한 운세 콘텐츠는 디지털 콘텐츠의 특성상 열람 즉시 가치가 훼손되므로 환불이 불가능합니다.",
+          "item4": "결제일로부터 7일 이내에 충전한 별조각을 전혀 사용하지 않은 상태에서만 결제 취소 및 전액 환불이 가능합니다.",
+          "item5": "유료 결제한 별조각과 무상 보너스 별조각이 함께 있는 경우, 유료 별조각이 먼저 차감됩니다. 유료 별조각의 유효기간은 마지막 이용일로부터 5년이며, 보너스 별조각의 유효기간은 지급일로부터 1년입니다."
         },
         "article7": {
           "title": "제7조 (데이터의 보관 및 열람)",
@@ -763,7 +798,7 @@
           "item1": "회사가 작성한 저작물에 대한 저작권 및 기타 지적재산권은 회사에 귀속합니다.",
           "item2": "이용자는 서비스를 통해 얻은 정보를 개인적인 용도(SNS 공유 등)로만 사용할 수 있으며, 이를 영리 목적으로 복제, 송신, 출판, 배포, 방송 기타 방법에 의하여 이용하거나 제3자에게 이용하게 하여서는 안 됩니다."
         },
-        "effectiveDate": "본 약관은 2026년 1월 18일부터 적용됩니다."
+        "effectiveDate": "본 약관은 2026년 3월 4일부터 적용됩니다."
       },
       "privacy": {
         "title": "개인정보 처리방침",
@@ -815,6 +850,27 @@
           "warning": "쿠키 저장을 거부할 경우 맞춤형 서비스 이용에 어려움이 발생할 수 있습니다."
         }
       }
+    },
+    "packages": {
+      "title": "상품 리스트",
+      "starter": {
+        "name": "스타터 팩",
+        "description": "3별조각",
+        "price": "990원"
+      },
+      "best": {
+        "name": "베스트 팩",
+        "description": "9별조각",
+        "bonus": "+ 1별조각",
+        "price": "2,970원"
+      },
+      "mania": {
+        "name": "매니아 팩",
+        "description": "30별조각",
+        "bonus": "+ 3별조각",
+        "price": "9,900원"
+      },
+      "selectButton": "상품 선택"
     }
   },
   "en": {
@@ -835,6 +891,7 @@
         "loggedIn": "Logged in.",
         "lifetimeFortune": "View Lifetime Fortune",
         "yearlyFortune": "View This Year's Fortune",
+        "compatibilityFortune": "View Compatibility Fortune",
         "login": "Login",
         "logout": "Logout",
         "withdraw": "Delete Account",
@@ -845,6 +902,18 @@
           "confirm": "Delete Account",
           "withdrawing": "Deleting..."
         }
+      },
+      "settings": {
+        "title": "Settings",
+        "couponInput": "Enter Coupon",
+        "language": "Language: {locale}"
+      },
+      "coupon": {
+        "title": "Enter Coupon",
+        "placeholder": "Enter your coupon code",
+        "submit": "Apply",
+        "success": "You received {amount} Star Fragments!",
+        "serverError": "A server error occurred. Please try again."
       },
       "hero": {
         "imageAlt": "Destiny Constellation",
@@ -1132,7 +1201,7 @@
         "error": "Compatibility analysis failed.",
         "refresh": "Refresh",
         "back": "Back",
-        "ctaButton": "View Full Spoiler ($0.99)",
+        "ctaButton": "Unlock Full Spoiler (3 Star Fragments)",
         "score": "Compatibility Score",
         "insightsTitle": "Compatibility Insights",
         "spoilerTitle": "Compatibility Spoiler",
@@ -1255,9 +1324,16 @@
         "chartTitle": "Zi Wei Dou Shu Chart",
         "spoilerTitle": "Life Spoiler",
         "yearlySpoilerTitle": "This Year's Spoiler",
-        "ctaButton": "See Full Spoiler ($0.99)",
+        "ctaButton": "Unlock Full Spoiler (3 Star Fragments)",
         "teaser": "What you've seen is just the 'trailer'. The age when your wealth peaks and the striking traits of your future partner are revealed only in the full scenario. 🤫",
-        "yearlyTeaser": "What you've seen is just the 'trailer'. The months when your wealth explodes and the times when you must be extra careful are revealed only in the full scenario. 🤫"
+        "yearlyTeaser": "What you've seen is just the 'trailer'. The months when your wealth explodes and the times when you must be extra careful are revealed only in the full scenario. 🤫",
+        "errorTitle": "Temporarily unavailable",
+        "errorDescription": "Too many users are currently accessing the service.\nPlease try again shortly.",
+        "errorRefresh": "Refresh"
+      },
+      "starChargeModal": {
+        "balanceLabel": "Star Fragments",
+        "chargeButton": "Recharge Star Fragments"
       },
       "lifetime": {
         "title": "{name}'s Lifetime Fortune",
@@ -1336,7 +1412,7 @@
         "tracesTitle": "Traces of Past Life",
         "disclaimer": "Past life interpretation is a creative reimagining of the Zi Wei Dou Shu chart, not an academic theory. This is entertainment content.",
         "interpretError": "Failed to generate past life fortune.",
-        "ctaButton": "Discover Past Life ($0.99)",
+        "ctaButton": "Discover Past Life (3 Star Fragments)",
         "shareButton": "Share",
         "reviewButton": "Write Review",
         "profileShareTitle": "Share Profile Image",
@@ -1526,13 +1602,23 @@
       "goToProfiles": "Go to Profiles",
       "confirmFailed": "Payment Confirmation Failed",
       "confirmError": "An error occurred during payment confirmation.",
+      "confirmingPayment": "Processing your payment...",
       "missingPaymentInfo": "Payment information is missing.",
       "failTitle": "Payment Failed",
       "failDescription": "There was a problem processing your payment. Please try again.",
       "errorCode": "Error Code",
       "retry": "Try Again",
       "goBack": "Go Back",
-      "paymentError": "An error occurred during payment processing."
+      "paymentError": "An error occurred during payment processing.",
+      "invalidPackage": "Invalid package.",
+      "starPackageOrderName": "Star Fragment Recharge",
+      "payButtonLabel": "Pay",
+      "starRefundPolicy": "Star Fragments can be refunded within 7 days of purchase if unused.",
+      "starSuccessTitle": "Recharge Complete",
+      "starSuccessDescription": "{count} Star Fragments have been added!",
+      "goToPackages": "Back to Packages",
+      "goToFortune": "View Fortune",
+      "goHome": "Go to Home"
     },
     "policy": {
       "terms": {
@@ -1548,7 +1634,8 @@
           "title": "Article 2 (Definition of Terms)",
           "item1": "\"User\" refers to members and non-members who access the Service and receive services provided by the Company in accordance with these terms.",
           "item2": "\"Paid Service\" refers to the detailed fortune analysis reports and related services provided by the Company for a fee.",
-          "item3": "\"Content\" refers to all forms of information provided by the Service, including text, images, and graphs."
+          "item3": "\"Content\" refers to all forms of information provided by the Service, including text, images, and graphs.",
+          "item4": "\"Star Fragment\" refers to a prepaid electronic payment method purchased to use the Company's paid fortune content."
         },
         "article3": {
           "title": "Article 3 (Provision and Modification of Service)",
@@ -1561,15 +1648,19 @@
           "item2": "If the date of birth and time of birth entered by the user are inaccurate, the accuracy of the analysis results may be reduced, and the Company is not responsible for this."
         },
         "article5": {
-          "title": "Article 5 (Usage Fees and Payment)",
-          "item1": "The cost of viewing a detailed fortune report is $0.99 per report (including tax).",
-          "item2": "Payment is made through payment methods provided by the Company, such as credit cards and simple payment."
+          "title": "Article 5 (Star Fragment Purchase and Usage)",
+          "item1": "The basic unit for using paid content is 'Star Fragment'. 1 Star Fragment has a value of approximately $0.33.",
+          "item2": "Viewing main fortunes (Life Fortune, Yearly Fortune, Compatibility) requires 3 Star Fragments.",
+          "item3": "Star Fragment packages are as follows: ① Starter Pack ($0.99): 3 Star Fragments. ② Best Pack ($2.99): 9 Star Fragments + 1 bonus = 10 total. ③ Mania Pack ($9.99): 30 Star Fragments + 3 bonus = 33 total.",
+          "item4": "Payment is made through payment methods provided by the Company, such as credit cards and simple payment."
         },
         "article6": {
           "title": "Article 6 (Withdrawal and Refund)",
-          "item1": "The paid service provided by the Company is 'digital content' that falls under the reasons for restriction of withdrawal under the Electronic Commerce Act and the Content Industry Promotion Act.",
-          "item2": "If the user completes payment and views the detailed report screen (or report generation is completed), the service is considered complete and refunds are not possible.",
-          "item3": "However, if the report is not generated due to a system error by the Company, or if there is a clear defect such as the report content not being visible at all, a full refund will be provided."
+          "item1": "If even a single Star Fragment from a purchased package has been used (content viewed), withdrawal and refund for the entire purchase is not possible. (No partial refunds)",
+          "item2": "Bonus Star Fragments provided free of charge through events, coupons, or promotions cannot be refunded for cash.",
+          "item3": "Fortune content viewed after purchase cannot be refunded as the value is considered consumed immediately upon viewing, due to the nature of digital content.",
+          "item4": "Full refund and payment cancellation is only possible within 7 days of purchase, provided that none of the purchased Star Fragments have been used.",
+          "item5": "When both paid and bonus Star Fragments are available, paid Star Fragments are consumed first. Paid Star Fragments expire 5 years from the last use date, and bonus Star Fragments expire 1 year from the date of issuance."
         },
         "article7": {
           "title": "Article 7 (Data Storage and Viewing)",
@@ -1581,7 +1672,7 @@
           "item1": "Copyright and other intellectual property rights for works created by the Company belong to the Company.",
           "item2": "Users may only use information obtained through the Service for personal purposes (such as SNS sharing) and may not reproduce, transmit, publish, distribute, broadcast, or otherwise use it for commercial purposes or allow third parties to use it."
         },
-        "effectiveDate": "These terms are effective from January 18, 2026."
+        "effectiveDate": "These terms are effective from March 4, 2026."
       },
       "privacy": {
         "title": "Privacy Policy",
@@ -1633,6 +1724,27 @@
           "warning": "If you refuse to store cookies, you may have difficulty using personalized services."
         }
       }
+    },
+    "packages": {
+      "title": "Package List",
+      "starter": {
+        "name": "Starter Pack",
+        "description": "3 Star Fragments",
+        "price": "$0.99"
+      },
+      "best": {
+        "name": "Best Pack",
+        "description": "9 Star Fragments",
+        "bonus": "+ 1 Star Fragment",
+        "price": "$2.99"
+      },
+      "mania": {
+        "name": "Mania Pack",
+        "description": "30 Star Fragments",
+        "bonus": "+ 3 Star Fragments",
+        "price": "$9.99"
+      },
+      "selectButton": "Select Package"
     }
   },
   "ja": {
@@ -1653,6 +1765,7 @@
         "loggedIn": "ログインしました。",
         "lifetimeFortune": "人生運勢を見る",
         "yearlyFortune": "今年の運勢を見る",
+        "compatibilityFortune": "相性運勢を見る",
         "login": "ログイン",
         "logout": "ログアウト",
         "withdraw": "退会",
@@ -1663,6 +1776,18 @@
           "confirm": "退会する",
           "withdrawing": "退会中..."
         }
+      },
+      "settings": {
+        "title": "設定",
+        "couponInput": "クーポン入力",
+        "language": "言語: {locale}"
+      },
+      "coupon": {
+        "title": "クーポン入力",
+        "placeholder": "クーポンコードを入力してください",
+        "submit": "確認",
+        "success": "星のかけら{amount}個が付与されました！",
+        "serverError": "サーバーエラーが発生しました。もう一度お試しください。"
       },
       "hero": {
         "imageAlt": "運命の星座",
@@ -1950,7 +2075,7 @@
         "error": "相性分析に失敗しました。",
         "refresh": "更新",
         "back": "戻る",
-        "ctaButton": "全ネタバレを確認（$0.99）",
+        "ctaButton": "星のかけら3個で全ネタバレを確認",
         "score": "相性スコア",
         "insightsTitle": "相性インサイト",
         "spoilerTitle": "相性スポイラー",
@@ -2073,9 +2198,16 @@
         "chartTitle": "紫微斗数命盤",
         "spoilerTitle": "人生ネタバレ",
         "yearlySpoilerTitle": "今年のネタバレ",
-        "ctaButton": "全ネタバレを確認 ($0.99)",
+        "ctaButton": "星のかけら3個で全ネタバレを確認",
         "teaser": "今ご覧になったのは「予告編」に過ぎません。生涯の財運が爆発する年齢と未来の配偶者の驚くべき特徴は、本編シナリオでのみこっそりネタバレします。🤫",
-        "yearlyTeaser": "今ご覧になったのは「予告編」に過ぎません。今年の財運が爆発する月と絶対に体を大事にすべき時期は、本編シナリオでのみこっそりネタバレします。🤫"
+        "yearlyTeaser": "今ご覧になったのは「予告編」に過ぎません。今年の財運が爆発する月と絶対に体を大事にすべき時期は、本編シナリオでのみこっそりネタバレします。🤫",
+        "errorTitle": "一時的にアクセスが困難です",
+        "errorDescription": "現在利用者が多く、運勢の生成に失敗しました。\nしばらくしてからもう一度お試しください。",
+        "errorRefresh": "更新"
+      },
+      "starChargeModal": {
+        "balanceLabel": "保有星のかけら",
+        "chargeButton": "星のかけらをチャージ"
       },
       "lifetime": {
         "title": "{name}さんの人生運勢",
@@ -2154,7 +2286,7 @@
         "tracesTitle": "前世の痕跡",
         "disclaimer": "前世解釈は紫微斗数命盤の創造的な再解釈であり、学術的な定説ではなくエンターテインメントコンテンツです。",
         "interpretError": "前世運勢の生成に失敗しました。",
-        "ctaButton": "前世を確認する ($0.99)",
+        "ctaButton": "星のかけら3個で前世を確認",
         "shareButton": "シェアする",
         "reviewButton": "レビューを書く",
         "profileShareTitle": "プロフィール画像をシェアする",
@@ -2344,13 +2476,23 @@
       "goToProfiles": "プロフィール一覧へ",
       "confirmFailed": "決済承認失敗",
       "confirmError": "決済承認中にエラーが発生しました。",
+      "confirmingPayment": "決済を処理しています...",
       "missingPaymentInfo": "決済情報が不足しています。",
       "failTitle": "決済に失敗しました",
       "failDescription": "決済処理中に問題が発生しました。もう一度お試しください。",
       "errorCode": "エラーコード",
       "retry": "もう一度決済する",
       "goBack": "戻る",
-      "paymentError": "決済処理中にエラーが発生しました。"
+      "paymentError": "決済処理中にエラーが発生しました。",
+      "invalidPackage": "無効な商品です。",
+      "starPackageOrderName": "星のかけら チャージ",
+      "payButtonLabel": "決済する",
+      "starRefundPolicy": "星のかけらは決済日から7日以内、未使用の場合に返金可能です。",
+      "starSuccessTitle": "チャージが完了しました",
+      "starSuccessDescription": "星のかけら {count}個がチャージされました！",
+      "goToPackages": "商品に戻る",
+      "goToFortune": "運勢を見に行く",
+      "goHome": "ホームへ移動"
     },
     "policy": {
       "terms": {
@@ -2366,7 +2508,8 @@
           "title": "第2条（用語の定義）",
           "item1": "「利用者」とは、サービスにアクセスし、この規約に基づいて会社が提供するサービスを受ける会員及び非会員を指します。",
           "item2": "「有料サービス」とは、会社が有料で提供する詳細運勢分析レポート及び関連サービスを意味します。",
-          "item3": "「コンテンツ」とは、サービスで提供されるテキスト、画像、グラフなど、すべての形態の情報を意味します。"
+          "item3": "「コンテンツ」とは、サービスで提供されるテキスト、画像、グラフなど、すべての形態の情報を意味します。",
+          "item4": "「星のかけら」とは、会社が提供する有料運勢コンテンツを利用するために購入するプリペイド式電子支払手段を意味します。"
         },
         "article3": {
           "title": "第3条（サービスの提供及び変更）",
@@ -2379,15 +2522,19 @@
           "item2": "利用者が入力した生年月日及び生まれた時間の情報が不正確な場合、分析結果の精度が低下する可能性があり、これについて会社は責任を負いません。"
         },
         "article5": {
-          "title": "第5条（利用料金及び決済）",
-          "item1": "詳細運勢レポートの閲覧費用は1件あたり$0.99（税込）です。",
-          "item2": "決済はクレジットカード、簡単決済など、会社が提供する決済手段を通じて行われます。"
+          "title": "第5条（星のかけらの購入及び利用）",
+          "item1": "有料コンテンツ利用の基本単位は「星のかけら」であり、1星のかけらは約$0.33の価値を持ちます。",
+          "item2": "メイン運勢（人生運勢、今年の運勢、相性）の閲覧には3星のかけらが差し引かれます。",
+          "item3": "星のかけらの充電パッケージは以下の通りです。①スターターパック（$0.99）：星のかけら3個。②ベストパック（$2.99）：星のかけら9個＋ボーナス1個＝計10個。③マニアパック（$9.99）：星のかけら30個＋ボーナス3個＝計33個。",
+          "item4": "決済はクレジットカード、簡単決済など、会社が提供する決済手段を通じて行われます。"
         },
         "article6": {
           "title": "第6条（申込撤回及び返金）",
-          "item1": "会社が提供する有料サービスは、電子商取引法及びコンテンツ産業振興法に基づく申込撤回制限事由に該当する「デジタルコンテンツ」です。",
-          "item2": "利用者が決済を完了し、詳細レポート画面を閲覧（またはレポート生成完了）した場合、サービス提供が完了したものとみなし、返金はできません。",
-          "item3": "ただし、会社のシステムエラーによりレポートが生成されなかった場合、またはレポート内容が全く表示されないなど明らかな欠陥がある場合は、全額返金いたします。"
+          "item1": "パッケージ商品を購入して付与された星のかけらのうち、1個でも使用（コンテンツ閲覧）した場合、当該決済に対する申込撤回及び返金はできません。（部分返金不可）",
+          "item2": "イベント、クーポン、プロモーション等を通じて無償で付与されたボーナス星のかけらは、現金での返金はできません。",
+          "item3": "購入後に閲覧した運勢コンテンツは、デジタルコンテンツの性質上、閲覧即座に価値が毀損されるため、返金はできません。",
+          "item4": "決済日から7日以内に、充電した星のかけらを全く使用していない状態でのみ、決済キャンセル及び全額返金が可能です。",
+          "item5": "有料決済した星のかけらと無償ボーナス星のかけらが共にある場合、有料星のかけらが先に差し引かれます。有料星のかけらの有効期間は最終利用日から5年、ボーナス星のかけらの有効期間は付与日から1年です。"
         },
         "article7": {
           "title": "第7条（データの保管及び閲覧）",
@@ -2399,7 +2546,7 @@
           "item1": "会社が作成した著作物に対する著作権及びその他の知的財産権は会社に帰属します。",
           "item2": "利用者はサービスを通じて得た情報を個人的な用途（SNS共有など）でのみ使用でき、これを営利目的で複製、送信、出版、配布、放送その他の方法で利用したり、第三者に利用させてはなりません。"
         },
-        "effectiveDate": "本規約は2026年1月18日より適用されます。"
+        "effectiveDate": "本規約は2026年3月4日より適用されます。"
       },
       "privacy": {
         "title": "個人情報処理方針",
@@ -2451,6 +2598,27 @@
           "warning": "クッキー保存を拒否する場合、カスタマイズサービスの利用に困難が生じる可能性があります。"
         }
       }
+    },
+    "packages": {
+      "title": "商品リスト",
+      "starter": {
+        "name": "スターターパック",
+        "description": "3星のかけら",
+        "price": "$0.99"
+      },
+      "best": {
+        "name": "ベストパック",
+        "description": "9星のかけら",
+        "bonus": "+ 1星のかけら",
+        "price": "$2.99"
+      },
+      "mania": {
+        "name": "マニアパック",
+        "description": "30星のかけら",
+        "bonus": "+ 3星のかけら",
+        "price": "$9.99"
+      },
+      "selectButton": "商品を選択"
     }
   }
 }
