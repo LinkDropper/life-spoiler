@@ -23,6 +23,7 @@ import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramSto
 import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
 import NewProfileCard from "@/components/fortune/NewProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
+import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import EventSection from "@/components/landing/EventSection";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import type {
@@ -443,6 +444,18 @@ export default function LifetimeFortunePage() {
           {t("shareButton", { default: "공유하기" })}
         </button>
       </footer>
+
+      {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
+      <FollowUpEntry
+        profileId={profileId}
+        fortuneType="lifetime"
+        fortuneName="평생운세"
+        examplePrompts={[
+          "내 직업운은 어때?",
+          "결혼 적령기는 언제야?",
+          "재물운이 궁금해",
+        ]}
+      />
 
       {/* 후기 드로어 */}
       <ReviewDrawer

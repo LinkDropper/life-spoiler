@@ -19,6 +19,7 @@ import {
 } from "@/components/fortune";
 import { CompatibilityProfileCard } from "@/components/fortune/CompatibilityProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
+import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { CompatibilityCard } from "@/components/compatibility";
 import { useCompatibilityResult } from "@/libs/hooks/compatibility";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
@@ -439,6 +440,19 @@ export default function CompatibilityResultPage() {
           {tResult("shareButton")}
         </button>
       </footer>
+
+      {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
+      <FollowUpEntry
+        profileId={charts.profileA.profileId}
+        pairId={pairId}
+        fortuneType="compatibility"
+        fortuneName="궁합"
+        examplePrompts={[
+          "어떻게 갈등을 풀어야 할까?",
+          "장기적으로 잘 맞을까?",
+          "서로 조심할 점은?",
+        ]}
+      />
 
       {/* 후기 드로어 */}
       <ReviewDrawer
