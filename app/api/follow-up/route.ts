@@ -40,14 +40,27 @@ interface ResolvedTarget {
 }
 
 /**
- * 만 나이 계산 (오늘 날짜 기준)
+ * 한국 시간(KST) 기준 오늘 날짜를 "YYYY-MM-DD" 형식으로 반환.
+ * 서버가 UTC로 동작해도 KST 기준으로 정확히 계산한다.
+ */
+const getTodayKst = (): string =>
+  new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" });
+
+/**
+ * 만 나이 계산 (KST 기준)
+ * birth_date("YYYY-MM-DD")와 오늘 KST 날짜를 문자열로 직접 비교해
+ * 타임존 오프셋으로 인한 오차를 제거한다.
  */
 const calculateAge = (birthDate: string): number => {
-  const birth = new Date(birthDate);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+  const [by, bm, bd] = birthDate.split("-").map(Number);
+  const [ty, tm, td] = getTodayKst().split("-").map(Number);
+
+  if (!by || !bm || !bd || !ty || !tm || !td) {
+    return 0;
+  }
+
+  let age = ty - by;
+  if (tm < bm || (tm === bm && td < bd)) {
     age -= 1;
   }
   return Math.max(0, age);
@@ -475,7 +488,7 @@ export const POST = async (request: Request) => {
     });
 
     // Gemini 호출
-    const todayDate = new Date().toISOString().slice(0, 10);
+    const todayDate = getTodayKst();
 
     let answer: string;
     let isRelevant: boolean;

@@ -159,6 +159,14 @@ export const ChatDrawer = ({
     }
   }, [rateLimitUntil, rateLimitTick]);
 
+  // 입력 내용에 따라 textarea 높이 자동 조절 (max 120px)
+  useEffect(() => {
+    const textarea = inputRef.current;
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
+  }, [input]);
+
   // Esc 키로 닫기
   useEffect(() => {
     if (!isOpen) return;
@@ -445,7 +453,7 @@ export const ChatDrawer = ({
                 onKeyDown={handleKeyDown}
                 disabled={isSending || rateLimitRemainingSec > 0}
                 maxLength={MAX_QUESTION_LENGTH}
-                rows={1}
+                rows={2}
                 aria-label="질문 입력"
               />
               <button
