@@ -54,15 +54,20 @@ const fetchWithTimeout = async (
 
 export const generateCharacterImage = async (
   sourceImageBase64: string,
-  sourceMimeType: string
+  sourceMimeType: string,
+  faceDescription?: string
 ): Promise<GeneratedCharacterImage> => {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error("Gemini API 키가 설정되지 않았습니다.");
   }
 
+  const promptText = faceDescription
+    ? `${CHARACTER_IMAGE_PROMPT}\n\n# SUBJECT FEATURE DATA (from analysis — use to preserve proportions)\n${faceDescription}`
+    : CHARACTER_IMAGE_PROMPT;
+
   const parts: GeminiPart[] = [
-    { text: CHARACTER_IMAGE_PROMPT },
+    { text: promptText },
     {
       inlineData: {
         mimeType: sourceMimeType,

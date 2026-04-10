@@ -10,12 +10,25 @@ interface CharacterRequestBody {
   shareId?: string;
 }
 
+interface ObservationFeature {
+  region: string;
+  axis: string;
+  value: string;
+}
+
+interface FaceReportResult {
+  observation?: {
+    features?: ObservationFeature[];
+  };
+}
+
 interface FaceReportLookup {
   id: string;
   user_id: string;
   paid_at: string | null;
   original_image_path: string | null;
   character_image_path: string | null;
+  result: FaceReportResult | null;
 }
 
 export const POST = async (request: Request) => {
@@ -48,7 +61,9 @@ export const POST = async (request: Request) => {
     // 리포트 조회
     const { data: rawReport, error: reportError } = await adminClient
       .from("face_reports")
-      .select("id, user_id, paid_at, original_image_path, character_image_path")
+      .select(
+        "id, user_id, paid_at, original_image_path, character_image_path, result"
+      )
       .eq("share_id", shareId)
       .maybeSingle();
 
@@ -113,10 +128,17 @@ export const POST = async (request: Request) => {
     const sourceBase64 = Buffer.from(sourceArrayBuffer).toString("base64");
     const sourceMimeType = sourceBlob.type || "image/jpeg";
 
+    // 리포트에서 observation features 추출 → 이미지 생성 시 비율 보존 힌트로 활용
+    const features = report.result?.observation?.features;
+    const faceDescription = features
+      ? features.map((f) => `- ${f.region}: ${f.value}`).join("\n")
+      : undefined;
+
     // Gemini로 캐릭터 이미지 생성
     const generated = await generateCharacterImage(
       sourceBase64,
-      sourceMimeType
+      sourceMimeType,
+      faceDescription
     );
 
     // 영구 저장 (face-characters 버킷, public)
