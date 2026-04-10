@@ -903,10 +903,15 @@
           "firstImpression": "첫인상",
           "traits": "성향과 매력",
           "relationship": "어울리는 사람",
+          "compatibility": "궁합 동물상",
           "fortune": "일과 재물의 흐름",
           "observation": "관상 관찰",
           "actions": "이번 주 작은 행동",
           "shareLine": "공유 문구"
+        },
+        "compatibilityLabels": {
+          "bestMatch": "찰떡궁합",
+          "worstMatch": "조심해야 할 상대"
         },
         "animalHero": {
           "primarySuffix": "상",
@@ -2035,10 +2040,15 @@
           "firstImpression": "First Impression",
           "traits": "Traits & Charm",
           "relationship": "Matching People",
+          "compatibility": "Animal Compatibility",
           "fortune": "Work & Wealth Flow",
           "observation": "Face Observation",
           "actions": "This Week's Actions",
           "shareLine": "Share Line"
+        },
+        "compatibilityLabels": {
+          "bestMatch": "Best Match",
+          "worstMatch": "Watch Out For"
         },
         "animalHero": {
           "primarySuffix": "",
@@ -3167,10 +3177,15 @@
           "firstImpression": "第一印象",
           "traits": "魅力と性格",
           "relationship": "相性のいい人",
+          "compatibility": "相性動物",
           "fortune": "仕事と財運の流れ",
           "observation": "観相観察",
           "actions": "今週の小さな行動",
           "shareLine": "シェア用ひとこと"
+        },
+        "compatibilityLabels": {
+          "bestMatch": "ベストマッチ",
+          "worstMatch": "要注意"
         },
         "animalHero": {
           "primarySuffix": "",

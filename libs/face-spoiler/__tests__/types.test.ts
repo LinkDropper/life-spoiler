@@ -83,6 +83,14 @@ const buildValidReport = (): FaceReportData => ({
     tags: ["은근", "다정"],
     intensity: "strong",
   },
+  compatibility: {
+    bestMatch: "bear",
+    bestMatchReason:
+      "포근하고 듬직한 곰상의 기운이 편안한 안식처가 되어줘요.",
+    worstMatch: "tiger",
+    worstMatchReason:
+      "강렬한 호랑이상과 만나면 서로 페이스가 달라 부딪힐 수 있어요.",
+  },
   actions: [
     {
       title: "첫 5분 페이스",

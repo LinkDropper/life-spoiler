@@ -68,10 +68,15 @@ export const ReportView = async ({ report }: ReportViewProps) => {
   const tRelationship = await getTranslations(
     "faceSpoiler.report.relationshipLabels"
   );
+  const tCompat = await getTranslations(
+    "faceSpoiler.report.compatibilityLabels"
+  );
+  const tAnimals = await getTranslations("faceSpoiler.animals");
   const {
     firstImpression,
     traits,
     relationship,
+    compatibility,
     fortune,
     observation,
     actions,
@@ -132,7 +137,40 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         <TagList tags={relationship.tags} />
       </section>
 
-      {/* 4. 일과 재물의 흐름 */}
+      {/* 4. 궁합 동물상 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("compatibility")}</h2>
+        </header>
+        <div className={styles.compatPair}>
+          <div className={styles.compatCard}>
+            <span className={styles.compatEmoji}>💕</span>
+            <span className={styles.compatLabel}>
+              {tCompat("bestMatch")}
+            </span>
+            <strong className={styles.compatAnimal}>
+              {tAnimals(compatibility.bestMatch)}
+            </strong>
+            <p className={styles.compatReason}>
+              {compatibility.bestMatchReason}
+            </p>
+          </div>
+          <div className={styles.compatCard}>
+            <span className={styles.compatEmoji}>⚡</span>
+            <span className={styles.compatLabel}>
+              {tCompat("worstMatch")}
+            </span>
+            <strong className={styles.compatAnimal}>
+              {tAnimals(compatibility.worstMatch)}
+            </strong>
+            <p className={styles.compatReason}>
+              {compatibility.worstMatchReason}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. 일과 재물의 흐름 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("fortune")}</h2>

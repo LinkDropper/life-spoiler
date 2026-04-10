@@ -104,6 +104,17 @@ export interface RelationshipSection {
   intensity: Intensity;
 }
 
+export interface CompatibilitySection {
+  /** 가장 잘 맞는 동물상 */
+  bestMatch: AnimalType;
+  /** 80~120자. 왜 잘 맞는지 기질·분위기 근거 */
+  bestMatchReason: string;
+  /** 조심해야 할 동물상 */
+  worstMatch: AnimalType;
+  /** 80~120자. 왜 부딪힐 수 있는지 기질·분위기 근거 */
+  worstMatchReason: string;
+}
+
 export interface FaceReportAction {
   title: string;
   detail: string;
@@ -119,6 +130,8 @@ export interface FaceReportData {
   traits: TraitsSection;
   fortune: FortuneSection;
   relationship: RelationshipSection;
+  /** 궁합 동물상 — 찰떡 + 상극 */
+  compatibility: CompatibilitySection;
   /** 이번 주 작은 행동 — 정확히 3개 */
   actions: FaceReportAction[];
   /** SNS 공유용 한 줄. primary 동물상 이름 자연스럽게 포함 */
@@ -150,6 +163,7 @@ export const isV2Report = (value: unknown): value is FaceReportData => {
     "traits",
     "fortune",
     "relationship",
+    "compatibility",
     "actions",
     "shareLine",
   ];

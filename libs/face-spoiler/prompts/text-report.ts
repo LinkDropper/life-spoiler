@@ -1,4 +1,5 @@
-import { ANIMAL_CATALOG } from "../constants/animals";
+import { ANIMAL_CATALOG, ANIMAL_TYPE_LIST } from "../constants/animals";
+import type { AnimalType } from "../constants/animals";
 import type { AnimalMatch } from "../types";
 
 // ============================================================
@@ -386,8 +387,8 @@ export const FACE_REPORT_USER_PROMPT = `얼굴 사진을 관찰하고, 아래 �
 
 ## 📋 전체 구조 — FaceTextReport (animalMatch 제외)
 
-루트 필드 **7개**:
-\`firstImpression\`, \`observation\`, \`traits\`, \`fortune\`, \`relationship\`, \`actions\`, \`shareLine\`
+루트 필드 **8개**:
+\`firstImpression\`, \`observation\`, \`traits\`, \`fortune\`, \`relationship\`, \`compatibility\`, \`actions\`, \`shareLine\`
 
 ---
 
@@ -456,7 +457,24 @@ features 항목 규칙:
 
 ---
 
-### 6. actions — 이번 주 작은 행동 (정확히 3개)
+### 6. compatibility — 궁합 동물상 (찰떡 + 상극)
+
+| 필드 | 내용 |
+|---|---|
+| \`bestMatch\` | 12종 enum 중 1개. primary와 다른 동물. 가장 잘 맞는 동물상 |
+| \`bestMatchReason\` | 80~120자. 왜 잘 맞는지 — 이 사람의 기질과 상대 동물상의 기질이 어떻게 시너지를 내는지 구체 장면·상황으로 묘사 |
+| \`worstMatch\` | 12종 enum 중 1개. primary, bestMatch와 다른 동물. 조심해야 할 동물상 |
+| \`worstMatchReason\` | 80~120자. 왜 부딪힐 수 있는지 — 어떤 상황에서 충돌이 생기는지 구체 장면·상황으로 묘사. **부정적 단정 금지**, "~할 수 있어요" 톤 유지 |
+
+규칙:
+- bestMatch, worstMatch 모두 12종 enum 중 하나 (primary와 겹치지 않을 것)
+- bestMatch ≠ worstMatch
+- 이유는 **이 사람의 관찰된 부위 조합 기질**에서 출발해야 함 (범용 궁합 말고 개인화)
+- 성별·외모·인종 언급 금지. 기질·분위기·태도로만 설명
+
+---
+
+### 7. actions — 이번 주 작은 행동 (정확히 3개)
 
 배열 길이 **정확히 3**. 각 항목:
 - \`title\`: 10~15자, 명사형 또는 명령형
@@ -466,7 +484,7 @@ features 항목 규칙:
 
 ---
 
-### 7. shareLine — SNS 공유용 한 줄
+### 8. shareLine — SNS 공유용 한 줄
 
 \`shareLine\`: 40~70자, 이모지 0~1개. **시스템 프롬프트에서 결정된 동물상 이름(예: "강아지상")을 자연스럽게 포함**. 읽는 사람이 공유하고 싶을 만큼 임팩트 있게.
 
@@ -514,6 +532,7 @@ const PHYSIOGNOMY_REGION_ENUM = [
   "ear",
 ] as const;
 
+const ANIMAL_ENUM: readonly AnimalType[] = ANIMAL_TYPE_LIST;
 const INTENSITY_ENUM = ["strong", "balanced", "subtle"] as const;
 
 export const FACE_REPORT_RESPONSE_SCHEMA = {
@@ -614,6 +633,21 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
         "intensity",
       ],
     },
+    compatibility: {
+      type: "object",
+      properties: {
+        bestMatch: { type: "string", enum: ANIMAL_ENUM },
+        bestMatchReason: { type: "string" },
+        worstMatch: { type: "string", enum: ANIMAL_ENUM },
+        worstMatchReason: { type: "string" },
+      },
+      required: [
+        "bestMatch",
+        "bestMatchReason",
+        "worstMatch",
+        "worstMatchReason",
+      ],
+    },
     actions: {
       type: "array",
       minItems: 3,
@@ -635,6 +669,7 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
     "traits",
     "fortune",
     "relationship",
+    "compatibility",
     "actions",
     "shareLine",
   ],
