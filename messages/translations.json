@@ -960,10 +960,10 @@
         "bear": "곰상",
         "tiger": "호랑이상",
         "wolf": "늑대상",
-        "horse": "말상",
-        "hamster": "햄스터상",
-        "owl": "부엉이상",
-        "monkey": "원숭이상"
+        "lion": "사자상",
+        "panda": "판다상",
+        "eagle": "독수리상",
+        "raccoon": "너구리상"
       },
       "footer": {
         "businessName": "상호: 웬 컴퍼니 (When Company)"
@@ -2092,10 +2092,10 @@
         "bear": "Bear",
         "tiger": "Tiger",
         "wolf": "Wolf",
-        "horse": "Horse",
-        "hamster": "Hamster",
-        "owl": "Owl",
-        "monkey": "Monkey"
+        "lion": "Lion",
+        "panda": "Panda",
+        "eagle": "Eagle",
+        "raccoon": "Raccoon"
       },
       "footer": {
         "businessName": "Business: When Company"
@@ -3224,10 +3224,10 @@
         "bear": "クマ顔",
         "tiger": "トラ顔",
         "wolf": "オオカミ顔",
-        "horse": "ウマ顔",
-        "hamster": "ハムスター顔",
-        "owl": "フクロウ顔",
-        "monkey": "サル顔"
+        "lion": "ライオン顔",
+        "panda": "パンダ顔",
+        "eagle": "ワシ顔",
+        "raccoon": "タヌキ顔"
       },
       "footer": {
         "businessName": "商号:When Company"
