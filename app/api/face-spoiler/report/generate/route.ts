@@ -14,6 +14,7 @@ interface GenerateRequestBody {
   imagePath?: string;
   imageHash?: string;
   profileId?: string;
+  faceShapeHint?: string;
 }
 
 export const POST = async (request: Request) => {
@@ -32,7 +33,7 @@ export const POST = async (request: Request) => {
     }
 
     const body = (await request.json()) as GenerateRequestBody;
-    const { imagePath, imageHash, profileId } = body;
+    const { imagePath, imageHash, profileId, faceShapeHint } = body;
 
     if (!imagePath || !imageHash || !profileId) {
       return NextResponse.json(
@@ -149,13 +150,18 @@ export const POST = async (request: Request) => {
 
     try {
       // 1단계: 동물상 전용 분류 (low temperature, 결정성 우선)
-      const animalMatch = await classifyAnimalType(base64, mimeType);
+      const animalMatch = await classifyAnimalType(
+        base64,
+        mimeType,
+        faceShapeHint
+      );
 
       // 2단계: 텍스트 리포트 (동물상을 고정 입력으로, 창의성 유지)
       const textReport = await generateFaceReport(
         base64,
         mimeType,
-        animalMatch
+        animalMatch,
+        faceShapeHint
       );
 
       // route 레벨에서 v2 리포트 합성

@@ -36,24 +36,53 @@ Use only the following harmonized palette. The palette must feel tonally unified
 
 Avoid saturated primary colors (pure red/blue/green). Everything should read as warm earthy autumnal tones.
 
-# SUBJECT FIDELITY vs STYLIZATION BALANCE
-Preserve the subject's recognizable features — gender presentation, hair shape and length, skin tone range, clothing silhouette, general face proportions. Translate these faithfully.
+# ⚠️ SUBJECT FIDELITY — THE MOST IMPORTANT RULE
+The person looking at the result must instantly recognize themselves. "That's me!" is the target reaction. To achieve this, **preserve the following with high fidelity** before any stylization:
 
-However, **do not attempt photographic likeness**. The goal is that a friend would say "that looks like them, stylized." Aggressively simplify individual features into geometric forms:
+## Hair (CRITICAL — must match the photo exactly)
+- **Exact hairstyle**: length, parting side (left/center/right/none), bangs (full/side/curtain/none), layering
+- **Hair volume and silhouette shape**: if the hair is voluminous and wavy, keep it voluminous and wavy. If it's flat and straight, keep it flat and straight.
+- **Hair color tone**: match the perceived darkness/lightness within the allowed palette range
+- **Hair coverage**: if bangs cover the forehead, keep them covering the forehead. If the forehead is exposed, keep it exposed.
+- Do NOT invent a different hairstyle, change the parting, add or remove bangs, or alter the hair length.
 
-- Eyes: two simple curved shapes or arcs in the hair tone
-- Nose: a single soft gradient edge suggesting the bridge — no nostrils, no tip detail
-- Mouth: a simple closed arc or flat shape in a muted tone
-- Eyebrows: thin simplified arcs matching hair tone
-- Hair: a single flat silhouette mass — no individual strands, no highlights, no gradient
-- Skin: smooth color field with at most one soft gradient zone for cheek/jaw shadow
+## Face proportions (CRITICAL — must match the photo)
+- **Face shape**: round/angular/oval/long — preserve the actual shape
+- **Eye spacing and size ratio**: wide-set vs close-set, large vs small relative to face
+- **Nose length and bridge height**: long vs short, high vs low bridge
+- **Mouth width and lip thickness**: wide vs narrow, full vs thin
+- **Jaw and chin shape**: angular/round/pointed, wide vs narrow
+- **Forehead height**: tall vs short
+- Simplify these features geometrically, but the **proportions and relative positions** must match.
 
-Omit moles, freckles, blemishes, scars, and individual wrinkles entirely. Smooth and idealize the surface.
+## Eyes (CRITICAL — must look natural and friendly)
+- Eyes must have visible **round iris shapes** with a warm dark tone — never render eyes as hollow white slits or sharp angular shapes
+- The iris must be clearly visible as a circle or oval inside the eye opening
+- Eye shape must follow the subject's actual eye shape — round, almond, etc.
+- If the subject is smiling or has soft eyes, render the eyes with a gentle, slightly curved lower lid
+- **NEVER render scary, hollow, or dead-looking eyes** — the portrait must feel warm and approachable
+- Eyelids should follow the natural curve of the subject's eyes
+
+## What to simplify (OK to stylize)
+- Individual skin texture, pores, fine wrinkles → smooth color fields
+- Eyelashes → omit, but keep iris and eye shape accurate
+- Nostril detail → soft gradient edge
+- Individual hair strands → flat mass, but the overall shape must match
+
+## What NOT to change
+- Do NOT make the face more symmetrical than it actually is
+- Do NOT change the face shape (e.g., don't make a round face oval)
+- Do NOT change the eye size or spacing
+- Do NOT alter the nose length or bridge height
+- Do NOT change the jawline shape
+- Do NOT change or invent a new hairstyle
+- Do NOT render eyes as empty white slits, triangles, or angular shapes — always include round irises
+- Do NOT make the subject look scary, angry, or emotionless — the portrait must feel warm
 
 # COMPOSITION
 - Frame: head top of frame to mid-chest bottom of frame
 - Pose: perfectly front-facing, symmetrical, shoulders squared
-- Expression: neutral, serene, closed mouth, eyes calm — regardless of original photo's expression
+- Expression: gentle and calm — soft natural resting expression with a hint of warmth. Closed mouth with very slight natural lip curve. Eyes should look alive and warm, not blank or staring.
 - Head position: centered horizontally, slightly above vertical center
 - Background: solid #ECBA5E filling every pixel outside the subject
 
@@ -75,6 +104,7 @@ If the source photo has any of the following, handle as described:
 - Every visible element must belong to the subject's head, hair, or upper-body clothing
 - All forms must be defined only by color edges, not by drawn lines
 - The overall image should read as a poised, minimalist poster
+- A friend of the subject should be able to recognize them from the portrait
 
 # NEGATIVE CONSTRAINTS (to avoid)
 - No text, typography, letters, numbers, watermarks, or signatures anywhere in the image
@@ -82,8 +112,9 @@ If the source photo has any of the following, handle as described:
 - No texture, grain, noise, halftone, or paper fiber effects
 - No photo-realistic skin or 3D rendering
 - No background objects, scenery, gradients, or patterns — the background is one flat color
-- No exaggerated or dramatic expression — always serene neutral
+- No exaggerated or dramatic expression — keep it gentle and calm, but never blank or scary
 - No full-body, no hands, no lower body
+- No invented hairstyle or changed hair features — match the source photo exactly
 
 # OUTPUT
 Generate only the final image. No text, no explanation, no caption.`;
