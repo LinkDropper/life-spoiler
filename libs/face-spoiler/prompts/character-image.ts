@@ -55,9 +55,17 @@ The person looking at the result must instantly recognize themselves. "That's me
 - **Forehead height**: tall vs short
 - Simplify these features geometrically, but the **proportions and relative positions** must match.
 
+## Eyes (CRITICAL — must look natural and friendly)
+- Eyes must have visible **round iris shapes** with a warm dark tone — never render eyes as hollow white slits or sharp angular shapes
+- The iris must be clearly visible as a circle or oval inside the eye opening
+- Eye shape must follow the subject's actual eye shape — round, almond, etc.
+- If the subject is smiling or has soft eyes, render the eyes with a gentle, slightly curved lower lid
+- **NEVER render scary, hollow, or dead-looking eyes** — the portrait must feel warm and approachable
+- Eyelids should follow the natural curve of the subject's eyes
+
 ## What to simplify (OK to stylize)
 - Individual skin texture, pores, fine wrinkles → smooth color fields
-- Eye details (iris pattern, eyelashes) → simplified arcs
+- Eyelashes → omit, but keep iris and eye shape accurate
 - Nostril detail → soft gradient edge
 - Individual hair strands → flat mass, but the overall shape must match
 
@@ -68,11 +76,13 @@ The person looking at the result must instantly recognize themselves. "That's me
 - Do NOT alter the nose length or bridge height
 - Do NOT change the jawline shape
 - Do NOT change or invent a new hairstyle
+- Do NOT render eyes as empty white slits, triangles, or angular shapes — always include round irises
+- Do NOT make the subject look scary, angry, or emotionless — the portrait must feel warm
 
 # COMPOSITION
 - Frame: head top of frame to mid-chest bottom of frame
 - Pose: perfectly front-facing, symmetrical, shoulders squared
-- Expression: neutral, serene, closed mouth, eyes calm — regardless of original photo's expression
+- Expression: gentle and calm — soft natural resting expression with a hint of warmth. Closed mouth with very slight natural lip curve. Eyes should look alive and warm, not blank or staring.
 - Head position: centered horizontally, slightly above vertical center
 - Background: solid #ECBA5E filling every pixel outside the subject
 
@@ -102,7 +112,7 @@ If the source photo has any of the following, handle as described:
 - No texture, grain, noise, halftone, or paper fiber effects
 - No photo-realistic skin or 3D rendering
 - No background objects, scenery, gradients, or patterns — the background is one flat color
-- No exaggerated or dramatic expression — always serene neutral
+- No exaggerated or dramatic expression — keep it gentle and calm, but never blank or scary
 - No full-body, no hands, no lower body
 - No invented hairstyle or changed hair features — match the source photo exactly
 
