@@ -5,27 +5,56 @@
   padding-top: 60px;
 }
 
-.heroImage {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  aspect-ratio: 1 / 1;
-  background: rgba(255, 255, 255, 0.03);
-  overflow: hidden;
-}
-
-.heroImageInner {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
 .content {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
   padding: 0 16px 80px;
+}
+
+.legacyNotice {
+  margin-top: 64px;
+  padding: 40px 24px;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.legacyTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.legacyDescription {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  word-break: keep-all;
+}
+
+.legacyCta {
+  display: inline-block;
+  padding: 14px 28px;
+  background: #3fd9ad;
+  color: #2d1b4e;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.legacyCta:hover {
+  background: #5ee5c0;
 }
 
 @media (min-width: 640px) {

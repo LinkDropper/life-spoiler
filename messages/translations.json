@@ -900,14 +900,45 @@
       },
       "report": {
         "sections": {
-          "profile": "첫인상",
+          "firstImpression": "첫인상",
+          "traits": "성향과 매력",
+          "relationship": "어울리는 사람",
+          "fortune": "일과 재물의 흐름",
           "observation": "관상 관찰",
-          "personality": "성향",
-          "career": "일·커리어",
-          "wealth": "돈·재물",
-          "relationship": "관계·연애",
-          "actions": "실행 행동 5가지",
+          "actions": "이번 주 작은 행동",
           "shareLine": "공유 문구"
+        },
+        "animalHero": {
+          "primarySuffix": "상",
+          "matchedRegionsLabel": "매칭 근거",
+          "rationaleLabel": "왜 이 동물상일까",
+          "confidenceLabel": {
+            "high": "강한 매칭",
+            "medium": "균형 매칭",
+            "low": "경계선 매칭"
+          }
+        },
+        "intensity": {
+          "strong": "뚜렷함",
+          "balanced": "균형",
+          "subtle": "은은함"
+        },
+        "traitsLabels": {
+          "strengths": "강점과 매력",
+          "hiddenSide": "숨겨진 면"
+        },
+        "fortuneLabels": {
+          "workFlow": "일의 흐름",
+          "wealthFlow": "재물의 흐름"
+        },
+        "relationshipLabels": {
+          "idealType": "어울리는 사람 유형",
+          "shareableQuote": "공유하고 싶은 한 줄"
+        },
+        "legacy": {
+          "title": "이 리포트는 이전 버전이에요",
+          "description": "관상스포가 새 버전으로 업데이트되었어요. 새로운 관상 리포트를 받아보려면 업로드 페이지에서 다시 분석해 주세요.",
+          "ctaButton": "새 분석 받기"
         },
         "share": {
           "title": "결과 공유하기",
@@ -920,16 +951,33 @@
           "kakaoButtonTitle": "결과 보기"
         }
       },
+      "animals": {
+        "dog": "강아지상",
+        "cat": "고양이상",
+        "fox": "여우상",
+        "deer": "사슴상",
+        "rabbit": "토끼상",
+        "bear": "곰상",
+        "tiger": "호랑이상",
+        "wolf": "늑대상",
+        "lion": "사자상",
+        "panda": "판다상",
+        "eagle": "독수리상",
+        "raccoon": "너구리상"
+      },
       "footer": {
         "businessName": "상호: 웬 컴퍼니 (When Company)"
       },
       "preview": {
-        "teaser": "지금 보신 건 '예고편'에 불과해요. 얼굴에 숨겨진 진짜 커리어·재물·인연의 흐름과 나만의 관상 캐릭터는 본편에서만 몰래 스포해 드릴게요. 🤫",
+        "teaser": "지금 보신 건 '예고편'이에요. 동물상의 세부 매칭 근거, 숨겨진 매력, 일과 재물의 흐름, 어울리는 사람의 기운까지 본편에서 몰래 스포해 드릴게요. 🤫",
         "ctaButton": "전체 스포 확인하기 (990원)",
         "characterPlaceholder": "결제하면 나만의 관상 캐릭터가 그려져요",
         "paymentPreparingAlert": "결제 기능은 준비 중입니다.",
         "backAriaLabel": "업로드 페이지로 돌아가기",
-        "profileSectionTag": "첫인상"
+        "firstImpressionSectionTag": "첫인상",
+        "vibeTagsTitle": "지금의 분위기",
+        "traitsTeaserTitle": "이런 매력이 숨어 있어요",
+        "traitsTeaserLockHint": "더 많은 매력과 숨겨진 면은 본편에서 확인하세요"
       },
       "payment": {
         "productName": "관상 운세 스포일러",
@@ -1984,14 +2032,45 @@
       },
       "report": {
         "sections": {
-          "profile": "First Impression",
+          "firstImpression": "First Impression",
+          "traits": "Traits & Charm",
+          "relationship": "Matching People",
+          "fortune": "Work & Wealth Flow",
           "observation": "Face Observation",
-          "personality": "Personality",
-          "career": "Career",
-          "wealth": "Wealth",
-          "relationship": "Relationships",
-          "actions": "5 Actions",
+          "actions": "This Week's Actions",
           "shareLine": "Share Line"
+        },
+        "animalHero": {
+          "primarySuffix": "",
+          "matchedRegionsLabel": "Matched cues",
+          "rationaleLabel": "Why this animal",
+          "confidenceLabel": {
+            "high": "Strong match",
+            "medium": "Balanced match",
+            "low": "Edge match"
+          }
+        },
+        "intensity": {
+          "strong": "Distinct",
+          "balanced": "Balanced",
+          "subtle": "Subtle"
+        },
+        "traitsLabels": {
+          "strengths": "Strengths & Charm",
+          "hiddenSide": "Hidden Side"
+        },
+        "fortuneLabels": {
+          "workFlow": "Work Flow",
+          "wealthFlow": "Wealth Flow"
+        },
+        "relationshipLabels": {
+          "idealType": "Who you click with",
+          "shareableQuote": "One line to share"
+        },
+        "legacy": {
+          "title": "This report is from an older version",
+          "description": "Face Spoiler has been updated. To get the new physiognomy report, please run a new analysis from the upload page.",
+          "ctaButton": "Get a new analysis"
         },
         "share": {
           "title": "Share Result",
@@ -2004,16 +2083,33 @@
           "kakaoButtonTitle": "View Result"
         }
       },
+      "animals": {
+        "dog": "Dog",
+        "cat": "Cat",
+        "fox": "Fox",
+        "deer": "Deer",
+        "rabbit": "Rabbit",
+        "bear": "Bear",
+        "tiger": "Tiger",
+        "wolf": "Wolf",
+        "lion": "Lion",
+        "panda": "Panda",
+        "eagle": "Eagle",
+        "raccoon": "Raccoon"
+      },
       "footer": {
         "businessName": "Business: When Company"
       },
       "preview": {
-        "teaser": "What you've seen is just the 'trailer'. The real flow of career, wealth, and relationships hidden in your face, along with your own physiognomy character, is only revealed in the full report. 🤫",
+        "teaser": "What you've seen is just the 'trailer'. The matching cues behind your animal type, the hidden charm, the flow of work and wealth, and who you click with — all revealed in the full report. 🤫",
         "ctaButton": "View Full Spoiler ($0.99)",
         "characterPlaceholder": "Your physiognomy character will be drawn after payment",
         "paymentPreparingAlert": "Payment feature is being prepared.",
         "backAriaLabel": "Back to upload page",
-        "profileSectionTag": "First Impression"
+        "firstImpressionSectionTag": "First Impression",
+        "vibeTagsTitle": "Current Vibe",
+        "traitsTeaserTitle": "A charm hidden underneath",
+        "traitsTeaserLockHint": "See more charm and the hidden side in the full report"
       },
       "payment": {
         "productName": "Face Reading Spoiler",
@@ -3068,14 +3164,45 @@
       },
       "report": {
         "sections": {
-          "profile": "第一印象",
+          "firstImpression": "第一印象",
+          "traits": "魅力と性格",
+          "relationship": "相性のいい人",
+          "fortune": "仕事と財運の流れ",
           "observation": "観相観察",
-          "personality": "性格",
-          "career": "仕事・キャリア",
-          "wealth": "お金・財運",
-          "relationship": "人間関係・恋愛",
-          "actions": "実行アクション5つ",
+          "actions": "今週の小さな行動",
           "shareLine": "シェア用ひとこと"
+        },
+        "animalHero": {
+          "primarySuffix": "",
+          "matchedRegionsLabel": "マッチ根拠",
+          "rationaleLabel": "なぜこの動物顔?",
+          "confidenceLabel": {
+            "high": "強いマッチ",
+            "medium": "バランスマッチ",
+            "low": "境界線マッチ"
+          }
+        },
+        "intensity": {
+          "strong": "はっきり",
+          "balanced": "バランス",
+          "subtle": "ほんのり"
+        },
+        "traitsLabels": {
+          "strengths": "強みと魅力",
+          "hiddenSide": "隠れた一面"
+        },
+        "fortuneLabels": {
+          "workFlow": "仕事の流れ",
+          "wealthFlow": "財運の流れ"
+        },
+        "relationshipLabels": {
+          "idealType": "相性の良い人のタイプ",
+          "shareableQuote": "シェアしたいひとこと"
+        },
+        "legacy": {
+          "title": "このレポートは以前のバージョンです",
+          "description": "観相スポが新しいバージョンに更新されました。新しい観相レポートを受け取るには、アップロードページから再度分析してください。",
+          "ctaButton": "新しい分析を受ける"
         },
         "share": {
           "title": "結果をシェア",
@@ -3088,16 +3215,33 @@
           "kakaoButtonTitle": "結果を見る"
         }
       },
+      "animals": {
+        "dog": "イヌ顔",
+        "cat": "ネコ顔",
+        "fox": "キツネ顔",
+        "deer": "シカ顔",
+        "rabbit": "ウサギ顔",
+        "bear": "クマ顔",
+        "tiger": "トラ顔",
+        "wolf": "オオカミ顔",
+        "lion": "ライオン顔",
+        "panda": "パンダ顔",
+        "eagle": "ワシ顔",
+        "raccoon": "タヌキ顔"
+      },
       "footer": {
         "businessName": "商号:When Company"
       },
       "preview": {
-        "teaser": "今ご覧になったのは「予告編」に過ぎません。顔に隠された本当のキャリア・財運・縁の流れと、あなただけの観相キャラクターは本編でのみこっそりネタバレします。🤫",
+        "teaser": "今ご覧になったのは「予告編」です。動物顔のマッチ根拠、隠れた魅力、仕事と財運の流れ、相性のいい人の雰囲気まで、本編でこっそりネタバレします。🤫",
         "ctaButton": "全ネタバレを確認 ($0.99)",
         "characterPlaceholder": "決済後、あなただけの観相キャラクターが描かれます",
         "paymentPreparingAlert": "決済機能は準備中です。",
         "backAriaLabel": "アップロードページに戻る",
-        "profileSectionTag": "第一印象"
+        "firstImpressionSectionTag": "第一印象",
+        "vibeTagsTitle": "今の雰囲気",
+        "traitsTeaserTitle": "こんな魅力が隠れています",
+        "traitsTeaserLockHint": "さらなる魅力と隠れた一面は本編で確認してください"
       },
       "payment": {
         "productName": "観相運勢ネタバレ",

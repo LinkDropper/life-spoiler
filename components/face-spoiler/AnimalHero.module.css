@@ -1,0 +1,96 @@
+.hero {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 24px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imagePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  padding: 16px;
+  text-align: center;
+}
+
+.primaryLabel {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  font-family: "LotteriaDdag", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text-primary);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+.regionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.regionsLabel {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.regionChip {
+  display: inline-block;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rationale {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid rgba(63, 217, 173, 0.6);
+}
+
+@media (max-width: 420px) {
+  .primaryLabel {
+    font-size: 1.5rem;
+    top: 18px;
+    left: 18px;
+  }
+}
