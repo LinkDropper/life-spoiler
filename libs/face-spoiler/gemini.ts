@@ -71,7 +71,8 @@ const sleep = (ms: number) =>
 export const generateFaceReport = async (
   imageBase64: string,
   mimeType: string,
-  animal: AnimalMatch
+  animal: AnimalMatch,
+  faceShapeHint?: string
 ): Promise<FaceTextReport> => {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -79,13 +80,16 @@ export const generateFaceReport = async (
   }
 
   const systemPrompt = buildFaceReportSystemPrompt(animal);
+  const userPromptText = faceShapeHint
+    ? `${FACE_REPORT_USER_PROMPT}\n\n${faceShapeHint}`
+    : FACE_REPORT_USER_PROMPT;
 
   const request: GeminiRequest = {
     contents: [
       {
         role: "user",
         parts: [
-          { text: FACE_REPORT_USER_PROMPT },
+          { text: userPromptText },
           {
             inlineData: {
               mimeType,

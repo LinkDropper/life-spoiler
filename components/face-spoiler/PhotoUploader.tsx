@@ -6,8 +6,13 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import {
   detectFaces,
+  detectFaceLandmarks,
   type DetectedFaceBox,
 } from "@/libs/face-spoiler/face-detector";
+import {
+  analyzeFaceMetrics,
+  buildFaceMetricsHint,
+} from "@/libs/face-spoiler/face-shape-analyzer";
 
 import { AnalysisLoading } from "./AnalysisLoading";
 import styles from "./PhotoUploader.module.css";
@@ -214,6 +219,7 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
   const [isDetecting, setIsDetecting] = useState(false);
   const [detectionResult, setDetectionResult] =
     useState<ValidationResult | null>(null);
+  const [faceShapeHint, setFaceShapeHint] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -240,6 +246,21 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
           faceCanvasRef.current,
           !!result.error
         );
+      }
+
+      // 얼굴이 1개 감지되었으면 랜드마크 기반 얼굴형 분석
+      if (!result.error && result.detections.length === 1) {
+        try {
+          const landmarks = await detectFaceLandmarks(img);
+          if (landmarks) {
+            const faceMetrics = analyzeFaceMetrics(landmarks);
+            if (faceMetrics) {
+              setFaceShapeHint(buildFaceMetricsHint(faceMetrics));
+            }
+          }
+        } catch {
+          // 랜드마크 분석 실패는 무시 — 힌트 없이도 기존 파이프라인 동작
+        }
       }
 
       // 감지 즉시 에러 표시
@@ -269,6 +290,7 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
     setSelectedFile(file);
     setError(null);
     setDetectionResult(null);
+    setFaceShapeHint(null);
 
     // 캔버스 초기화
     if (faceCanvasRef.current) {
@@ -383,6 +405,7 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
             imagePath: uploadData.imagePath,
             imageHash: uploadData.imageHash,
             profileId,
+            faceShapeHint: faceShapeHint ?? undefined,
           }),
         }
       );
