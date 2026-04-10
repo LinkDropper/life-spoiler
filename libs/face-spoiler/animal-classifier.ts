@@ -30,15 +30,22 @@ const CONFIDENCE_ENUM: readonly MatchConfidence[] = [
 const buildAnimalClassifierSystemPrompt = (): string => {
   const animalLines = ANIMAL_TYPE_LIST.map((id) => {
     const def = ANIMAL_CATALOG[id];
-    const cues = def.regionCues.join(" / ");
+    const must = def.mustCues.map((c, i) => `  [필수${i + 1}] ${c}`).join("\n");
+    const supporting = def.supportingCues
+      .map((c) => `  [보조] ${c}`)
+      .join("\n");
+    const never = def.neverCues.map((c) => `  [배타] ${c}`).join("\n");
     const keywords = def.impressionKeywords.join("·");
-    return `- **${id}** (${def.label.ko}): 인상=${keywords}\n  부위 단서=${cues}`;
-  }).join("\n");
+    return `### ${id} (${def.label.ko}) — 인상: ${keywords}
+${must}
+${supporting}
+${never}`;
+  }).join("\n\n");
 
   const tieBreakerLines = ANIMAL_TYPE_LIST.flatMap((id) => {
     const def = ANIMAL_CATALOG[id];
     return def.tieBreakers.map((tb) => {
-      return `- ${id} vs ${tb.vs}: ${tb.decisiveCue}`;
+      return `- **${id} vs ${tb.vs}**: ${tb.decisiveCue}`;
     });
   }).join("\n");
 
@@ -52,28 +59,56 @@ const buildAnimalClassifierSystemPrompt = (): string => {
 5. 동물 자체의 **습성·이미지·분위기**로만 사고.
 6. 사진에서 보이지 않는 부위로 추론 금지. 보이는 것만 사용.
 
-## 12종 후보
+## 🚫 기본값 편향 금지 (매우 중요)
+- **강아지상을 기본값으로 사용하지 마세요.** 애매하다고 강아지상을 선택하면 안 됩니다.
+- 모든 동물상은 동등한 확률로 시작합니다. 어떤 동물상이 더 "안전한 선택"이라는 생각을 버리세요.
+- 반드시 [필수] 단서가 2개 이상 충족되는 동물상만 후보로 올리세요.
+- [배타] 단서에 해당하면 그 동물상은 즉시 탈락시키세요.
+
+## 12종 후보 (필수/보조/배타 단서 포함)
+
 ${animalLines}
 
+## 📊 측정 데이터 활용 원칙 (매우 중요)
+유저 메시지에 [얼굴 측정 데이터]가 포함되어 있으면, 해당 수치를 **1순위 근거**로 사용하세요.
+- 수치가 명시된 기준(예: eyeCornerAngle > 8°)이 있으면 그대로 대조
+- 수치와 시각 관찰이 충돌하면 **수치를 우선** (측정이 감보다 정확)
+- 수치가 없는 항목만 시각 관찰로 보완
+
 ## 분류 절차 (반드시 이 순서로 사고)
-1. **관찰**: 사진에서 다음 8개 부위를 객관적으로 관찰한다.
-   - 얼굴형(둥근/각진/긴/하관 좁은/계란형)
-   - 눈(크기/모양/눈꼬리 방향/눈빛)
-   - 눈썹(진하기/모양/길이)
-   - 코(길이/콧대/코끝/콧방울)
-   - 입·입꼬리(크기/두께/방향)
-   - 턱(각진/둥근/뾰족/길이)
-   - 광대(또렷/평평)
-   - 인상의 전체 톤(부드러움/날카로움/단단함/우아함)
-2. **점수 매김**: 12종 각각에 대해, 위 관찰 결과가 그 동물의 "부위 단서"와 몇 개나 일치하는지 머릿속으로 센다. 0~8점 척도.
-3. **최고점 선택**: 가장 높은 점수의 1종을 primary로 확정. 2위와 점수가 비슷하면 아래 tie-breaker를 적용한다.
-4. **confidence 산정**:
-   - **high**: 1위가 5점 이상이고 2위와 2점 이상 차이
-   - **medium**: 1위가 3~4점이거나, 1위와 2위 차이가 1점 이하
-   - **low**: 1위가 2점 이하 (그래도 1종을 강제 선택)
+
+### 1단계: 관찰 (사실만 기록)
+사진에서 다음 8개 부위를 **객관적으로** 관찰한다. 아직 동물상을 떠올리지 마세요.
+측정 데이터가 제공되었으면 해당 수치를 함께 참조한다.
+- 얼굴형 (둥근/각진/세로로 긴/가로로 넓은/갸름한) ← faceRatio, jawWidthRatio
+- 눈 (크기·모양·눈꼬리 방향) ← eyeAspectRatio, eyeCornerAngle, eyeSizeRatio
+- 눈썹 (진하기·모양·길이)
+- 코 (길이·콧대 높이·코끝·콧방울) ← noseLengthRatio
+- 입·입꼬리 (크기·두께·방향)
+- 턱 (각진/둥근/뾰족/길이)
+- 광대 (또렷/평평, 옆돌출 정도)
+- 인상의 전체 톤 (부드러움/날카로움/단단함/우아함/차가움/따뜻함)
+
+### 2단계: 배타 단서로 탈락시키기
+12종 각각의 [배타] 단서를 확인한다. 해당되는 동물상은 후보에서 제외한다.
+
+### 3단계: 필수 단서로 후보 좁히기
+남은 후보 중에서 [필수] 단서가 **2개 모두 충족**되는 동물상만 최종 후보로 남긴다.
+필수 단서가 1개 이하만 충족되면 그 동물상은 후보에서 제외한다.
+
+### 4단계: 보조 단서로 점수 매기기
+최종 후보들에 대해 [보조] 단서 매칭 개수를 센다. 가장 많이 매칭된 1종을 primary로 확정.
+
+### 5단계: tie-breaker 적용
+4단계에서 2종이 동점이면 아래 tie-breaker를 적용하여 1종을 확정한다.
 
 ## 혼동 쌍 tie-breaker (정확 판별 기준)
 ${tieBreakerLines}
+
+### 6단계: confidence 산정
+- **high**: 필수 단서 2개 + 보조 단서 2개 이상 매칭, 2위와 보조 점수 2점 이상 차이
+- **medium**: 필수 단서 2개 + 보조 단서 1개 매칭, 또는 1위와 2위 차이가 1점 이하
+- **low**: 필수 단서 2개만 겨우 충족, 보조 단서 매칭 0개 (그래도 1종을 강제 선택)
 
 ## 출력
 JSON으로만 응답. 추가 텍스트·마크다운·코드블록 금지.
@@ -90,7 +125,9 @@ JSON으로만 응답. 추가 텍스트·마크다운·코드블록 금지.
 matchedRegions는 2~4개. primary 매칭의 결정적 근거가 된 부위를 일상 표현으로(예: ["둥근 얼굴", "올라간 입꼬리", "둥근 코끝"]).`;
 };
 
-const ANIMAL_CLASSIFIER_USER_PROMPT = `사진을 보고 위 절차를 따라 단 1종의 동물상을 분류하세요. JSON만 출력하세요.`;
+const ANIMAL_CLASSIFIER_USER_PROMPT = `사진을 보고 위 절차를 따라 단 1종의 동물상을 분류하세요. JSON만 출력하세요.
+
+⚠️ 다시 한 번 강조: 강아지상을 기본값으로 사용하지 마세요. 반드시 [필수] 단서 2개가 모두 충족되는 동물상만 선택하세요. [배타] 단서에 해당하면 즉시 탈락시키세요.`;
 
 const ANIMAL_CLASSIFIER_RESPONSE_SCHEMA = {
   type: "object",
@@ -147,7 +184,8 @@ const sleep = (ms: number) =>
 
 export const classifyAnimalType = async (
   imageBase64: string,
-  mimeType: string
+  mimeType: string,
+  faceShapeHint?: string
 ): Promise<AnimalMatch> => {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -155,8 +193,11 @@ export const classifyAnimalType = async (
   }
 
   const systemPrompt = buildAnimalClassifierSystemPrompt();
+  const userPromptText = faceShapeHint
+    ? `${ANIMAL_CLASSIFIER_USER_PROMPT}\n\n${faceShapeHint}`
+    : ANIMAL_CLASSIFIER_USER_PROMPT;
   const parts: GeminiPart[] = [
-    { text: ANIMAL_CLASSIFIER_USER_PROMPT },
+    { text: userPromptText },
     { inlineData: { mimeType, data: imageBase64 } },
   ];
 
@@ -226,7 +267,5 @@ export const classifyAnimalType = async (
     }
   }
 
-  throw (
-    lastError ?? new Error("동물상 분류에 알 수 없는 오류가 발생했습니다.")
-  );
+  throw lastError ?? new Error("동물상 분류에 알 수 없는 오류가 발생했습니다.");
 };
