@@ -199,7 +199,7 @@ export const analyzeFaceMetrics = (
 
   // ── 인중 측정 ──
   const philtrumLength = dist(lm(LM.noseBottom), lm(LM.upperLipTop));
-  const philtrumRatio = philtrumLength / noseLength;
+  const philtrumRatio = noseLength > 0 ? philtrumLength / noseLength : 0;
 
   // ── 삼정(三停) 측정 ──
   const browCenter = {
