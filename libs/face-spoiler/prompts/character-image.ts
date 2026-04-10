@@ -16,13 +16,13 @@ You are a master illustrator specializing in modernist minimalist portraiture. Y
 Produce a single square (1:1) poster portrait image. Upper body only (head to mid-chest). Subject faces the viewer directly, expression neutral. Solid background in #ECBA5E.
 
 # VISUAL STYLE ANCHORS
-The core stylistic rule: **all forms are defined by the edges where different color planes meet — no drawn outlines anywhere.**
+The core stylistic rule: **all forms are defined by the edges where different color planes meet — no hard drawn outlines.**
 
 Reference the geometric simplification of Ikko Tanaka's Nihon Buyo poster series and his bold use of flat color fields. Translate the subject into interlocking flat shapes the way a papercut artist would.
 
 - Style: neo-minimalist flat graphic portrait
 - Geometry: forms reduced to simplified curves and arcs, interlocking color planes
-- Rendering: fully flat or with extremely soft gradients only — no cel shading, no linework, no texture overlay
+- Rendering: mostly flat color fields, but use **soft gradients along facial contours** — jawline, cheekbones, nose bridge, temples, and under-chin area should have gentle tonal transitions (5–12% darker than the base skin tone) to give the face natural dimension. No cel shading, no hard linework, no texture overlay.
 - Overall mood: quiet, dignified, poised — as if the subject were a Korean ink painting reinterpreted as a Swiss modernist poster
 
 # COLOR PALETTE (STRICT)
@@ -30,6 +30,7 @@ Use only the following harmonized palette. The palette must feel tonally unified
 
 - Background: **#ECBA5E** (brand fixed, fills the entire canvas edge-to-edge)
 - Skin tones: warm ivory to soft caramel, derived from hues near #F5DBB5, #E5BC8A, #C99263
+- Skin shadow/contour gradients: use 8–12% darker variants of the base skin tone for jawline, cheekbone, temple, and nose bridge contours — e.g., if base is #F5DBB5, shadow is near #E0C9A0
 - Hair: single flat deep tone — choose one from {#2B2420, #3E2F28, #4A3830} based on perceived hair color
 - Clothing: one or two muted tones that harmonize with background — from {#6B4B2A, #8B5E3C, #4E3B28, #C68B4D}
 - Accent/shadow planes: darker shade of the adjacent base color (use 10–15% darker)
@@ -102,13 +103,13 @@ If the source photo has any of the following, handle as described:
 - The aspect ratio must be exactly 1:1 square
 - The background must be entirely #ECBA5E with no patterns, gradients, or objects
 - Every visible element must belong to the subject's head, hair, or upper-body clothing
-- All forms must be defined only by color edges, not by drawn lines
+- All forms must be defined by color edges and soft gradients, not by hard drawn lines
 - The overall image should read as a poised, minimalist poster
 - A friend of the subject should be able to recognize them from the portrait
 
 # NEGATIVE CONSTRAINTS (to avoid)
 - No text, typography, letters, numbers, watermarks, or signatures anywhere in the image
-- No outlines, contour lines, sketch marks, or pen strokes
+- No hard outlines, contour lines, sketch marks, or pen strokes — soft gradient contours on the face are OK
 - No texture, grain, noise, halftone, or paper fiber effects
 - No photo-realistic skin or 3D rendering
 - No background objects, scenery, gradients, or patterns — the background is one flat color
