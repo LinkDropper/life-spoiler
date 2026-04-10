@@ -152,7 +152,11 @@ export const POST = async (request: Request) => {
       const animalMatch = await classifyAnimalType(base64, mimeType);
 
       // 2단계: 텍스트 리포트 (동물상을 고정 입력으로, 창의성 유지)
-      const textReport = await generateFaceReport(base64, mimeType, animalMatch);
+      const textReport = await generateFaceReport(
+        base64,
+        mimeType,
+        animalMatch
+      );
 
       // route 레벨에서 v2 리포트 합성
       const reportData: FaceReportData = {

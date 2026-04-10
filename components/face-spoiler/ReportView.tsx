@@ -145,9 +145,7 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         <div className={styles.compatPair}>
           <div className={styles.compatCard}>
             <span className={styles.compatEmoji}>💕</span>
-            <span className={styles.compatLabel}>
-              {tCompat("bestMatch")}
-            </span>
+            <span className={styles.compatLabel}>{tCompat("bestMatch")}</span>
             <strong className={styles.compatAnimal}>
               {tAnimals(compatibility.bestMatch)}
             </strong>
@@ -157,9 +155,7 @@ export const ReportView = async ({ report }: ReportViewProps) => {
           </div>
           <div className={styles.compatCard}>
             <span className={styles.compatEmoji}>⚡</span>
-            <span className={styles.compatLabel}>
-              {tCompat("worstMatch")}
-            </span>
+            <span className={styles.compatLabel}>{tCompat("worstMatch")}</span>
             <strong className={styles.compatAnimal}>
               {tAnimals(compatibility.worstMatch)}
             </strong>
