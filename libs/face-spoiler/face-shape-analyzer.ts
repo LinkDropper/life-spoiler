@@ -37,7 +37,7 @@ export interface FaceMetrics {
   jawAngularity: number;
   /** 이마 너비/광대 너비 비율 */
   foreheadWidthRatio: number;
-  /** 눈 가로/세로 비율 — 평균. >2.5=세장안(좁고 긴), <2.0=원안(둥근 큰 눈) */
+  /** 눈 가로/세로 비율 — 평균. >3.0=세장안(좁고 긴), <2.0=원안(둥근 큰 눈), 2.0~3.0=보통 */
   eyeAspectRatio: number;
   /** 눈꼬리 각도 (degree). 양수=올라감, 0=수평, 음수=처짐 */
   eyeCornerAngle: number;
@@ -319,7 +319,7 @@ export const buildFaceMetricsHint = (m: FaceMetrics): string => {
   const eyeCornerDesc =
     m.eyeCornerAngle > 3 ? "올라감" : m.eyeCornerAngle < -3 ? "처짐" : "수평";
   const eyeShapeDesc =
-    m.eyeAspectRatio > 2.5
+    m.eyeAspectRatio > 3.0
       ? "좁고 긴 눈(세장안)"
       : m.eyeAspectRatio < 2.0
         ? "크고 둥근 눈(원안)"

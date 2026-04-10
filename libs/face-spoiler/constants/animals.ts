@@ -54,8 +54,8 @@ export const ANIMAL_CATALOG: Record<AnimalType, AnimalDefinition> = {
     label: { ko: "강아지상", en: "Dog", ja: "イヌ顔" },
     impressionKeywords: ["친근함", "따뜻함", "신뢰", "사랑스러움"],
     mustCues: [
-      "눈꼬리가 수평 이하로 내려감 (측정값 eyeCornerAngle < -2°)",
-      "이목구비 전체가 둥근 곡선 — 턱선 jawAngularity < 0.4, 코끝 둥근 편, 입꼬리 수평 이상",
+      "눈꼬리가 수평 이하로 내려감 (eyeCornerAngle < -2°) + 눈이 보통~둥근 형태 (eyeAspectRatio < 3.0)",
+      "이목구비 전체가 둥근 곡선 — 턱선 jawAngularity < 0.4, 얼굴형 faceRatio 1.15~1.4 (너무 넓지도 길지도 않음)",
     ],
     supportingCues: [
       "입술이 도톰한 편 (윗입술·아랫입술 모두 두께가 있음)",
@@ -91,29 +91,30 @@ export const ANIMAL_CATALOG: Record<AnimalType, AnimalDefinition> = {
     label: { ko: "고양이상", en: "Cat", ja: "ネコ顔" },
     impressionKeywords: ["신비로움", "쿨함", "독립적", "날카로움"],
     mustCues: [
-      "눈이 가로로 길고 좁음 (eyeAspectRatio > 2.5 = 세장안)",
-      "눈꼬리가 살짝 올라감 (eyeCornerAngle 2°~8°, 여우상보다 완만)",
+      "눈이 가로로 길고 좁음 (eyeAspectRatio > 3.0 = 세장안, 보통 눈은 2.0~3.0)",
+      "눈꼬리가 살짝 올라감 (eyeCornerAngle 3°~8°) + 얼굴형이 갸름함 (faceRatio > 1.3)",
     ],
     supportingCues: [
-      "얼굴형이 갸름함 (faceRatio > 1.3, jawWidthRatio < 0.8)",
+      "턱 너비가 좁은 편 (jawWidthRatio < 0.78)",
       "코와 입술 선이 또렷하게 정의됨 — 코끝이 날렵하고 입술 경계가 선명",
       "광대가 옆으로 크게 돌출하지 않음 (cheekbone 평평한 편)",
     ],
     neverCues: [
-      "눈이 크고 둥근 형태 (eyeAspectRatio < 2.0) → 사슴상/토끼상 확인",
+      "눈이 보통~둥근 형태 (eyeAspectRatio < 3.0) → 다른 동물상 확인 (세장안이 아니면 고양이상 아님)",
       "광대가 옆으로 도드라지게 돌출 → 여우상 확인",
       "인중이 긴 편 (philtrumRatio > 0.4) + 얼굴이 세로로 긴 편 → 사슴상 확인",
+      "얼굴이 둥글거나 넓은 편 (faceRatio < 1.25) → 고양이상 아님",
     ],
     tieBreakers: [
       {
         vs: "fox",
         decisiveCue:
-          "눈꼬리 각도 + 광대 돌출 — 고양이상은 눈꼬리 2°~8° 완만 상승 + 광대 평평. 여우상은 눈꼬리 > 8° 급격 상승 + 광대가 옆으로 돌출. 두 지표 모두 비교",
+          "눈꼬리 각도 + 광대 돌출 — 고양이상은 눈꼬리 3°~8° 완만 상승 + 광대 평평. 여우상은 눈꼬리 > 8° 급격 상승 + 광대가 옆으로 돌출. 두 지표 모두 비교",
       },
       {
         vs: "deer",
         decisiveCue:
-          "눈의 가로세로 비율 — 고양이상은 세장안(eyeAspectRatio > 2.5, 좁고 긴 눈). 사슴상은 원안(eyeAspectRatio < 2.0, 크고 둥근 눈). 이것이 가장 결정적",
+          "눈의 가로세로 비율 — 고양이상은 세장안(eyeAspectRatio > 3.0, 좁고 긴 눈). 사슴상은 원안(eyeAspectRatio < 2.0, 크고 둥근 눈). 이것이 가장 결정적",
       },
       {
         vs: "wolf",
@@ -235,7 +236,7 @@ export const ANIMAL_CATALOG: Record<AnimalType, AnimalDefinition> = {
       "코가 얇고 또렷한 편",
     ],
     neverCues: [
-      "눈이 좁고 긴 형태 (eyeAspectRatio > 2.5) → 고양이상 확인",
+      "눈이 좁고 긴 형태 (eyeAspectRatio > 3.0) → 고양이상 확인",
       "얼굴이 둥글고 아담 (faceRatio < 1.25) → 토끼상 확인",
       "눈꼬리가 급격히 올라감 (eyeCornerAngle > 8°) → 여우상 확인",
     ],
@@ -248,7 +249,7 @@ export const ANIMAL_CATALOG: Record<AnimalType, AnimalDefinition> = {
       {
         vs: "cat",
         decisiveCue:
-          "눈 가로세로 비율 — 사슴상은 원안(eyeAspectRatio < 2.0). 고양이상은 세장안(eyeAspectRatio > 2.5). 이 수치 하나로 구분 가능",
+          "눈 가로세로 비율 — 사슴상은 원안(eyeAspectRatio < 2.0). 고양이상은 세장안(eyeAspectRatio > 3.0). 이 수치 하나로 구분 가능",
       },
     ],
   },
@@ -257,13 +258,13 @@ export const ANIMAL_CATALOG: Record<AnimalType, AnimalDefinition> = {
     label: { ko: "호랑이상", en: "Tiger", ja: "トラ顔" },
     impressionKeywords: ["강렬함", "카리스마", "리더십", "날카로움"],
     mustCues: [
-      "얼굴이 넓고 광대가 높고 옆으로 돌출 (faceRatio < 1.3, 광대 도드라짐)",
-      "눈꼬리가 올라가며 눈빛이 강렬 (eyeCornerAngle > 3°) + 눈썹이 짙음",
+      "얼굴이 넓고 광대가 높고 옆으로 돌출 (faceRatio < 1.3) + 턱이 각짐 (jawAngularity > 0.55)",
+      "눈꼬리가 올라감 (eyeCornerAngle > 3°) + 눈이 날카로운 형태 (eyeAspectRatio > 2.5)",
     ],
     supportingCues: [
-      "턱 라인이 각짐 (jawAngularity > 0.6)",
+      "눈썹이 짙고 진한 편",
       "쌍꺼풀이 뚜렷한 편",
-      "이목구비가 전체적으로 크고 또렷",
+      "이목구비 선이 날렵하고 각진 느낌 (둥근 곡선 아님)",
     ],
     neverCues: [
       "턱선이 둥글고 인상이 부드러움 (jawAngularity < 0.4) → 호랑이상 아님",
@@ -293,13 +294,13 @@ export const ANIMAL_CATALOG: Record<AnimalType, AnimalDefinition> = {
     label: { ko: "사자상", en: "Lion", ja: "ライオン顔" },
     impressionKeywords: ["위풍당당함", "풍채", "존재감", "웅장함"],
     mustCues: [
-      "이목구비가 크고 또렷 (eyeSizeRatio > 0.07, mouthWidthRatio > 0.42) + 얼굴이 넓음 (faceRatio < 1.25)",
-      "턱·광대가 도드라지며 각진 편 (jawAngularity > 0.5, 광대 돌출)",
+      "이목구비가 크고 굵음 (eyeSizeRatio > 0.07, mouthWidthRatio > 0.42, 코·입 모두 큰 편) + 얼굴이 넓음 (faceRatio < 1.25)",
+      "턱·광대가 도드라지며 이목구비 선이 굵고 둥근 곡선이 섞임 (호랑이상의 날카로운 선과 구분)",
     ],
     supportingCues: [
       "눈썹이 두껍고 진한 편",
       "코가 크고 콧방울이 넓은 편",
-      "얼굴 전체에서 중정(눈~코)이 발달",
+      "전체적으로 이목구비의 볼륨·굵기가 압도적",
     ],
     neverCues: [
       "턱이 둥글고 부드러움 (jawAngularity < 0.4) → 곰상 확인",

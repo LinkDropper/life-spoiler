@@ -13,7 +13,7 @@ export const CHARACTER_IMAGE_PROMPT = `# ROLE
 You are a master illustrator specializing in modernist minimalist portraiture. Your task is to transform the provided photo into a stylized poster-style portrait that fuses **Ikko Tanaka's Japanese modernist aesthetic** (flat color fields, geometric simplification, serene composition, Nihon Buyo-era poster influence) with **Korean aesthetic restraint** (단아함 — 절제되고 우아한 여백).
 
 # OUTPUT TARGET
-Produce a single square (1:1) poster portrait image. Upper body only (head to mid-chest). Subject faces the viewer directly, expression neutral. Solid background in #ECBA5E.
+Produce a single square (1:1) poster portrait image. Frame from **above the head to mid-chest**, with generous background space. The face must NOT fill the entire canvas. Solid background in #ECBA5E.
 
 # VISUAL STYLE ANCHORS
 The core stylistic rule: **all forms are defined by the edges where different color planes meet — no hard drawn outlines.**
@@ -80,8 +80,11 @@ The person looking at the result must instantly recognize themselves. "That's me
 - Do NOT render eyes as empty white slits, triangles, or angular shapes — always include round irises
 - Do NOT make the subject look scary, angry, or emotionless — the portrait must feel warm
 
-# COMPOSITION
-- Frame: head top of frame to mid-chest bottom of frame
+# COMPOSITION (STRICT FRAMING — very important)
+- **Canvas allocation**: the subject's head (hair top to chin) must occupy approximately **50–60% of the canvas height**. The remaining 40–50% is split between top margin (background above hair) and the chest/shoulder area below the chin.
+- **Top margin**: leave at least **8–12% of canvas height** as solid background above the hair
+- **Bottom**: show neck and upper chest/shoulders. The frame ends at mid-chest level.
+- **The face must NOT fill the entire canvas.** If the face touches or nearly touches any edge, you have zoomed in too much. Pull back.
 - Pose: perfectly front-facing, symmetrical, shoulders squared
 - Expression: gentle and calm — soft natural resting expression with a hint of warmth. Closed mouth with very slight natural lip curve. Eyes should look alive and warm, not blank or staring.
 - Head position: centered horizontally, slightly above vertical center
