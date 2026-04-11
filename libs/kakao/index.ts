@@ -57,6 +57,9 @@ const TEMPLATE_ID = 128486;
 // 카카오톡 이미지 공유 템플릿 ID (프로필 이미지 공유용)
 const IMAGE_TEMPLATE_ID = 128846;
 
+// 관상스포 전용 카카오톡 이미지 공유 템플릿 ID
+export const FACE_SPOILER_IMAGE_TEMPLATE_ID = 131969;
+
 /**
  * Kakao SDK 초기화
  */
@@ -137,8 +140,9 @@ const blobToFile = (blob: Blob, filename: string): File => {
  *
  * 이미지를 카카오 서버에 업로드한 후 템플릿으로 공유합니다.
  */
-export const shareToKakaoWithImage = async (
-  params: KakaoImageShareParams
+const shareImageWithTemplate = async (
+  params: KakaoImageShareParams,
+  templateId: number
 ): Promise<boolean> => {
   if (!isKakaoInitialized()) {
     if (!initKakao()) {
@@ -148,19 +152,16 @@ export const shareToKakaoWithImage = async (
   }
 
   try {
-    // Blob을 File로 변환
     const file = blobToFile(params.imageBlob, "share-image.png");
 
-    // 카카오 서버에 이미지 업로드
     const uploadResult = await window.Kakao.Share.uploadImage({
       file: [file],
     });
 
     const imageUrl = uploadResult.infos.original.url;
 
-    // 업로드된 이미지 URL로 템플릿 공유
     window.Kakao.Share.sendCustom({
-      templateId: IMAGE_TEMPLATE_ID,
+      templateId,
       templateArgs: {
         image_url: imageUrl,
         name: params.name,
@@ -173,3 +174,18 @@ export const shareToKakaoWithImage = async (
     return false;
   }
 };
+
+/**
+ * 카카오톡 이미지 템플릿으로 공유하기 (인생스포 프로필 카드용)
+ */
+export const shareToKakaoWithImage = (
+  params: KakaoImageShareParams
+): Promise<boolean> => shareImageWithTemplate(params, IMAGE_TEMPLATE_ID);
+
+/**
+ * 카카오톡 이미지 템플릿으로 공유하기 (관상스포 결과 카드용)
+ */
+export const shareFaceSpoilerImage = (
+  params: KakaoImageShareParams
+): Promise<boolean> =>
+  shareImageWithTemplate(params, FACE_SPOILER_IMAGE_TEMPLATE_ID);

@@ -11,6 +11,12 @@ export interface UseImageDownloadOptions {
   pixelRatio?: number;
   /** 이미지 로드 대기 여부 (기본값: true) */
   waitForImages?: boolean;
+  /** 캡처 대상 노드에서 특정 노드를 제외하는 필터 (html-to-image filter) */
+  filter?: (node: HTMLElement) => boolean;
+  /** html-to-image cacheBust 옵션 (기본값: true) */
+  cacheBust?: boolean;
+  /** 캡처 결과 배경색 (기본값: undefined = 투명) */
+  backgroundColor?: string;
 }
 
 export interface UseImageDownloadReturn {
@@ -87,6 +93,9 @@ export const useImageDownload = (
     filename = "fortune",
     pixelRatio = 2,
     waitForImages = true,
+    filter,
+    cacheBust = true,
+    backgroundColor,
   } = options;
 
   const ref = useRef<HTMLDivElement | null>(null);
@@ -113,9 +122,10 @@ export const useImageDownload = (
 
       const blob = await htmlToBlob(ref.current, {
         pixelRatio,
-        cacheBust: true,
-        backgroundColor: undefined,
+        cacheBust,
+        backgroundColor,
         skipAutoScale: false,
+        filter,
       });
 
       if (!blob) {
@@ -152,7 +162,7 @@ export const useImageDownload = (
     } finally {
       setIsDownloading(false);
     }
-  }, [filename, pixelRatio, waitForImages]);
+  }, [filename, pixelRatio, waitForImages, filter, cacheBust, backgroundColor]);
 
   const toBlob = useCallback(async (): Promise<Blob | null> => {
     if (!ref.current) {
@@ -174,9 +184,10 @@ export const useImageDownload = (
 
       const blob = await htmlToBlob(ref.current, {
         pixelRatio,
-        cacheBust: true,
-        backgroundColor: undefined,
+        cacheBust,
+        backgroundColor,
         skipAutoScale: false,
+        filter,
       });
 
       return blob;
@@ -187,7 +198,7 @@ export const useImageDownload = (
     } finally {
       setIsDownloading(false);
     }
-  }, [pixelRatio, waitForImages]);
+  }, [pixelRatio, waitForImages, filter, cacheBust, backgroundColor]);
 
   return {
     ref,
