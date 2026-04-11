@@ -42,7 +42,8 @@ export const FaceReviewDrawer = ({
             setIsCompleted(true);
           }
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Failed to check for existing review:", error);
           // 체크 실패해도 폼은 표시
         })
         .finally(() => setIsLoading(false));

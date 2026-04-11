@@ -67,8 +67,8 @@ const fetchFaceProfileName = async (
   faceProfileId: string
 ): Promise<string | null> => {
   const adminClient = createServerClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await (adminClient.from("face_profiles") as any)
+  const { data, error } = await adminClient
+    .from("face_profiles")
     .select("name")
     .eq("id", faceProfileId)
     .maybeSingle();
@@ -77,7 +77,7 @@ const fetchFaceProfileName = async (
     return null;
   }
 
-  return (data as { name: string }).name;
+  return (data as unknown as { name: string }).name;
 };
 
 const buildCharacterImageUrl = (path: string | null): string | null => {

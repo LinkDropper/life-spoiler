@@ -1,5 +1,18 @@
 # 관상스포 공유 Drawer + 후기 + 이미지 다운로드 이식 스펙
 
+> **구현 결과 보강 (2026-04-11)**
+>
+> 본 스펙은 작성 시점의 설계안이며, 실제 구현에서는 두 가지 결정이 변경되었다.
+> 향후 본 문서를 참고할 때는 아래 갱신 사항을 함께 확인할 것.
+>
+> 1. **후기 저장소**: 기존 `reviews` 테이블 재사용 대신 **신규 `face_reviews` 테이블 + `app/api/face-reviews/route.ts`** 신설.
+>    - 사유: `reviews_profile_id_fkey`가 `public.profiles.id`만 허용 (Supabase 마이그레이션으로 확인). `face_profiles.id`를 insert하면 FK 위반.
+>    - 옵션 비교(컬럼 추가 / FK 제거 / 별도 테이블) 후 **별도 테이블**을 채택. RLS, 결제 검증, 1인 1후기 unique 제약은 신규 테이블에 그대로 부여.
+> 2. **공유 캡처 대상**: `HiddenShareCard` 신설 대신 **`AnimalHero` 내부 `.imageWrapper`를 직접 캡처**.
+>    - 사유: 사용자가 실제 화면에 보이는 `AnimalHero` 이미지 + 좌측 세로 동물상 텍스트를 그대로 다운로드/공유하길 원함.
+>    - 캡처 시 우상단 다운로드 아이콘 버튼은 `data-capture-exclude="true"` 속성 + html-to-image `filter` 옵션으로 제외.
+>    - `HiddenShareCard` 컴포넌트는 생성되었다가 본 결정으로 제거됨. 다운로드와 카카오 공유 모두 동일한 `.imageWrapper` 노드 1개를 캡처 대상으로 사용.
+
 ## 1. 배경 / 목표
 
 인생스포(Life Spoiler)의 compatibility 결과 페이지에는 이미 다음의 통합 패턴이 존재한다.
