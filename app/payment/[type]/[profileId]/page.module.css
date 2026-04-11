@@ -22,7 +22,8 @@
 /* 섹션 타이틀 */
 .section {
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-bottom: 1px solid
+    var(--color-border-default, rgba(255, 255, 255, 0.16));
   margin-bottom: 24px;
 }
 
@@ -139,10 +140,13 @@
 .promoInputContainer {
   display: flex;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
 .promoInput {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   height: 44px;
   padding: 0 16px;
   background: var(--color-surface-default, #18181b);
