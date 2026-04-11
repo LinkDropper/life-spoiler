@@ -313,6 +313,7 @@ const FORTUNE_TYPE_LABELS: Record<string, string> = {
   yearly: "올해운세",
   past_life: "전생운세",
   compatibility: "궁합",
+  face_spoiler: "관상스포",
 };
 
 const ratingToStars = (rating: number): string =>

@@ -5,11 +5,11 @@ import { getTranslations } from "next-intl/server";
 
 import { env } from "@/env";
 import { AnimalHero } from "@/components/face-spoiler/AnimalHero";
+import { FaceReportActions } from "@/components/face-spoiler/FaceReportActions";
 import { Header } from "@/components/face-spoiler/Header";
-import { ReportShareButtons } from "@/components/face-spoiler/ReportShareButtons";
 import { ReportView } from "@/components/face-spoiler/ReportView";
 import { isV2Report } from "@/libs/face-spoiler/types";
-import { createServerClient } from "@/libs/supabase";
+import { createAuthClient, createServerClient } from "@/libs/supabase";
 
 import styles from "./page.module.css";
 
@@ -24,6 +24,8 @@ interface FaceReportRecord {
   result: unknown;
   paid_at: string | null;
   character_image_path: string | null;
+  user_id: string;
+  face_profile_id: string;
 }
 
 const fetchReport = async (
@@ -32,7 +34,9 @@ const fetchReport = async (
   const adminClient = createServerClient();
   const { data, error } = await adminClient
     .from("face_reports")
-    .select("share_id, result, paid_at, character_image_path")
+    .select(
+      "share_id, result, paid_at, character_image_path, user_id, face_profile_id"
+    )
     .eq("share_id", shareId)
     .maybeSingle();
 
@@ -45,6 +49,8 @@ const fetchReport = async (
     result: unknown;
     paid_at: string | null;
     character_image_path: string | null;
+    user_id: string;
+    face_profile_id: string;
   };
 
   return {
@@ -52,7 +58,26 @@ const fetchReport = async (
     result: row.result,
     paid_at: row.paid_at,
     character_image_path: row.character_image_path,
+    user_id: row.user_id,
+    face_profile_id: row.face_profile_id,
   };
+};
+
+const fetchFaceProfileName = async (
+  faceProfileId: string
+): Promise<string | null> => {
+  const adminClient = createServerClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (adminClient.from("face_profiles") as any)
+    .select("name")
+    .eq("id", faceProfileId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return (data as { name: string }).name;
 };
 
 const buildCharacterImageUrl = (path: string | null): string | null => {
@@ -138,6 +163,16 @@ export default async function FaceSpoilerReportPage({
 
   const report = record.result;
 
+  const authClient = await createAuthClient();
+  const {
+    data: { user: authUser },
+  } = await authClient.auth.getUser();
+  const isOwner = Boolean(authUser && authUser.id === record.user_id);
+
+  const profileName = isOwner
+    ? await fetchFaceProfileName(record.face_profile_id)
+    : null;
+
   return (
     <>
       <Header />
@@ -146,12 +181,21 @@ export default async function FaceSpoilerReportPage({
           animalMatch={report.animalMatch}
           characterImageUrl={characterImageUrl}
           showFullContext
+          showDownloadSlot={isOwner}
         />
         <div className={styles.content}>
           <ReportView report={report} />
-          <ReportShareButtons shareId={shareId} shareLine={report.shareLine} />
         </div>
       </div>
+      {isOwner && profileName && (
+        <FaceReportActions
+          isOwner={isOwner}
+          shareId={shareId}
+          profileId={record.face_profile_id}
+          profileName={profileName}
+          animalKey={report.animalMatch.primary}
+        />
+      )}
     </>
   );
 }

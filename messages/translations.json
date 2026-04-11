@@ -956,6 +956,37 @@
           "kakaoButtonTitle": "결과 보기"
         }
       },
+      "share": {
+        "footerReviewButton": "후기 남기기",
+        "footerShareButton": "공유하기",
+        "drawerTitle": "결과 공유하기",
+        "drawerSubtitle": "친구에게 내 관상 리포트를 스포해보세요",
+        "copyLink": "링크 복사하기",
+        "shareKakao": "카카오톡으로 보내기",
+        "downloadImage": "이미지로 저장하기",
+        "downloading": "다운로드 중...",
+        "downloadButtonAria": "이미지 다운로드",
+        "kakaoCardTitle": "관상스포 — 사진 한 장으로 보는 내 관상 리포트",
+        "kakaoButtonLabel": "내 관상 결과 보기",
+        "kakaoShareMessage": "{name}님의 관상, AI가 스포했어요. 지금 확인해보세요.",
+        "kakaoShareFailed": "공유에 실패했어요. 다시 시도해주세요.",
+        "captureFailed": "이미지 생성에 실패했어요. 다시 시도해주세요.",
+        "copied": "링크가 복사되었어요",
+        "copyFailed": "링크 복사에 실패했어요",
+        "review": {
+          "title": "후기 남기기",
+          "subtitle": "관상 리포트 어땠나요?",
+          "placeholder": "어떤 점이 가장 인상 깊었나요?",
+          "submit": "등록하기",
+          "submitting": "등록 중...",
+          "loading": "불러오는 중...",
+          "completedMessage": "소중한 후기 감사합니다!",
+          "completedSub": "더 좋은 서비스로 보답할게요",
+          "errorSave": "후기 저장에 실패했습니다.",
+          "errorNetwork": "네트워크 오류가 발생했습니다. 다시 시도해주세요.",
+          "contentHint": "{min}글자 이상 입력해주세요."
+        }
+      },
       "animals": {
         "dog": "강아지상",
         "cat": "고양이상",
@@ -2093,6 +2124,37 @@
           "kakaoButtonTitle": "View Result"
         }
       },
+      "share": {
+        "footerReviewButton": "Leave a review",
+        "footerShareButton": "Share",
+        "drawerTitle": "Share Result",
+        "drawerSubtitle": "Spoil your face reading to a friend",
+        "copyLink": "Copy link",
+        "shareKakao": "Send via KakaoTalk",
+        "downloadImage": "Save as image",
+        "downloading": "Downloading...",
+        "downloadButtonAria": "Download image",
+        "kakaoCardTitle": "Face Spoiler — Your face reading from a single photo",
+        "kakaoButtonLabel": "View my face reading",
+        "kakaoShareMessage": "{name}'s face reading by AI. Take a look now.",
+        "kakaoShareFailed": "Failed to share. Please try again.",
+        "captureFailed": "Failed to generate image. Please try again.",
+        "copied": "Link copied",
+        "copyFailed": "Failed to copy link",
+        "review": {
+          "title": "Leave a review",
+          "subtitle": "How was the face reading?",
+          "placeholder": "What stood out the most?",
+          "submit": "Submit",
+          "submitting": "Submitting...",
+          "loading": "Loading...",
+          "completedMessage": "Thanks for your review!",
+          "completedSub": "We'll keep improving for you.",
+          "errorSave": "Failed to save your review.",
+          "errorNetwork": "Network error. Please try again.",
+          "contentHint": "Please enter at least {min} characters."
+        }
+      },
       "animals": {
         "dog": "Dog",
         "cat": "Cat",
@@ -3228,6 +3290,37 @@
           "copyFailed": "リンクのコピーに失敗しました。",
           "kakaoCardTitle": "観相スポ",
           "kakaoButtonTitle": "結果を見る"
+        }
+      },
+      "share": {
+        "footerReviewButton": "レビューを書く",
+        "footerShareButton": "シェアする",
+        "drawerTitle": "結果をシェア",
+        "drawerSubtitle": "友達に自分の観相レポートをネタバレしてみよう",
+        "copyLink": "リンクをコピー",
+        "shareKakao": "KakaoTalkで送る",
+        "downloadImage": "画像として保存",
+        "downloading": "ダウンロード中...",
+        "downloadButtonAria": "画像をダウンロード",
+        "kakaoCardTitle": "観相スポ — 写真一枚で見る観相レポート",
+        "kakaoButtonLabel": "観相結果を見る",
+        "kakaoShareMessage": "{name}さんの観相、AIがネタバレしました。今すぐチェック。",
+        "kakaoShareFailed": "シェアに失敗しました。もう一度お試しください。",
+        "captureFailed": "画像の生成に失敗しました。もう一度お試しください。",
+        "copied": "リンクをコピーしました",
+        "copyFailed": "リンクのコピーに失敗しました",
+        "review": {
+          "title": "レビューを書く",
+          "subtitle": "観相レポートはいかがでしたか?",
+          "placeholder": "一番印象に残った点は?",
+          "submit": "登録する",
+          "submitting": "登録中...",
+          "loading": "読み込み中...",
+          "completedMessage": "レビューありがとうございます!",
+          "completedSub": "もっと良いサービスでお応えします",
+          "errorSave": "レビューの保存に失敗しました。",
+          "errorNetwork": "ネットワークエラーが発生しました。もう一度お試しください。",
+          "contentHint": "{min}文字以上入力してください。"
         }
       },
       "animals": {

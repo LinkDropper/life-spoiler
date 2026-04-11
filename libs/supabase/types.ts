@@ -345,6 +345,24 @@ export interface ReviewInsert {
   created_at?: string;
 }
 
+export interface FaceReviewRow {
+  id: string;
+  face_profile_id: string;
+  rating: number;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FaceReviewInsert {
+  id?: string;
+  face_profile_id: string;
+  rating: number;
+  content: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export type FollowUpFortuneType =
   | "lifetime"
   | "yearly"
@@ -534,6 +552,19 @@ export type Database = {
             foreignKeyName: "face_profiles_user_id_fkey";
             columns: ["user_id"];
             referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      face_reviews: {
+        Row: FaceReviewRow;
+        Insert: FaceReviewInsert;
+        Update: Partial<FaceReviewInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "face_reviews_face_profile_id_fkey";
+            columns: ["face_profile_id"];
+            referencedRelation: "face_profiles";
             referencedColumns: ["id"];
           },
         ];
