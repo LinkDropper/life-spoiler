@@ -142,7 +142,7 @@ export const FaceReportActions = ({
       const success = await shareFaceSpoilerImage({
         imageBlob: blob,
         name: profileName,
-        webDomain: shareUrl,
+        webDomain: `face-spoiler/r/${shareId}`,
       });
 
       if (!success) {
