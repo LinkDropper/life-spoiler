@@ -18,19 +18,19 @@ Produce a single square (1:1) poster portrait image. Frame from **above the head
 # VISUAL STYLE ANCHORS
 The core stylistic rule: **all forms are defined by the edges where different color planes meet — no hard drawn outlines.**
 
-Reference the geometric simplification of Ikko Tanaka's Nihon Buyo poster series and his bold use of flat color fields. Translate the subject into interlocking flat shapes the way a papercut artist would.
+Reference the geometric simplification of Ikko Tanaka's Nihon Buyo poster series and his bold use of flat color fields. Translate the subject into interlocking flat shapes the way a papercut artist would — think vector illustration, NOT a stylized photograph.
 
-- Style: neo-minimalist flat graphic portrait
-- Geometry: forms reduced to simplified curves and arcs, interlocking color planes
-- Rendering: mostly flat color fields, but use **soft gradients along facial contours** — jawline, cheekbones, nose bridge, temples, and under-chin area should have gentle tonal transitions (5–12% darker than the base skin tone) to give the face natural dimension. No cel shading, no hard linework, no texture overlay.
+- Style: flat vector graphic portrait — the result should look like an SVG illustration or a screen-printed poster, NOT a digitally painted portrait
+- Geometry: forms reduced to bold simplified curves and arcs, interlocking **hard-edged color planes** with clear boundaries between shapes
+- Rendering: **strictly flat color fills only**. Each area (forehead, cheek, nose, jaw shadow) is a single solid color with no internal gradation. Use at most **2–3 flat skin tones** to define the face: one base tone and one or two darker flat shapes for shadow areas (jaw, nose side, neck). Transitions between tones must be **sharp clean edges**, not blended or feathered. No smooth gradients, no airbrushing, no soft blending, no cel shading, no texture overlay.
 - Overall mood: quiet, dignified, poised — as if the subject were a Korean ink painting reinterpreted as a Swiss modernist poster
+- **Abstraction level**: aim for the same level of simplification as a travel poster illustration or a Monocle magazine cover portrait — recognizable but clearly NOT photographic
 
 # COLOR PALETTE (STRICT)
 Use only the following harmonized palette. The palette must feel tonally unified with the background.
 
 - Background: **#ECBA5E** (brand fixed, fills the entire canvas edge-to-edge)
-- Skin tones: warm ivory to soft caramel, derived from hues near #F5DBB5, #E5BC8A, #C99263
-- Skin shadow/contour gradients: use 8–12% darker variants of the base skin tone for jawline, cheekbone, temple, and nose bridge contours — e.g., if base is #F5DBB5, shadow is near #E0C9A0
+- Skin tones: use only **2–3 flat tones** — one base tone (e.g., #F5DBB5 or #E5BC8A) and one or two shadow tones (e.g., #D4AC82, #C99263) applied as distinct flat shapes with hard edges, NOT as gradients
 - Hair: single flat deep tone — choose one from {#2B2420, #3E2F28, #4A3830} based on perceived hair color
 - Clothing: one or two muted tones that harmonize with background — from {#6B4B2A, #8B5E3C, #4E3B28, #C68B4D}
 - Accent/shadow planes: darker shade of the adjacent base color (use 10–15% darker)
@@ -65,10 +65,11 @@ The person looking at the result must instantly recognize themselves. "That's me
 - Eyelids should follow the natural curve of the subject's eyes
 
 ## What to simplify (OK to stylize)
-- Individual skin texture, pores, fine wrinkles → smooth color fields
+- Individual skin texture, pores, fine wrinkles → single flat color per area
 - Eyelashes → omit, but keep iris and eye shape accurate
-- Nostril detail → soft gradient edge
-- Individual hair strands → flat mass, but the overall shape must match
+- Nostril detail → simple flat darker shape or omit entirely
+- Individual hair strands → single flat color mass, but the overall silhouette shape must match
+- Lip detail → one or two flat color shapes, no glossy or blended rendering
 
 ## What NOT to change
 - Do NOT make the face more symmetrical than it actually is
@@ -80,15 +81,19 @@ The person looking at the result must instantly recognize themselves. "That's me
 - Do NOT render eyes as empty white slits, triangles, or angular shapes — always include round irises
 - Do NOT make the subject look scary, angry, or emotionless — the portrait must feel warm
 
-# COMPOSITION (STRICT FRAMING — very important)
-- **Canvas allocation**: the subject's head (hair top to chin) must occupy approximately **50–60% of the canvas height**. The remaining 40–50% is split between top margin (background above hair) and the chest/shoulder area below the chin.
-- **Top margin**: leave at least **8–12% of canvas height** as solid background above the hair
-- **Bottom**: show neck and upper chest/shoulders. The frame ends at mid-chest level.
-- **The face must NOT fill the entire canvas.** If the face touches or nearly touches any edge, you have zoomed in too much. Pull back.
+# COMPOSITION (STRICT FRAMING — CRITICALLY IMPORTANT, DO NOT IGNORE)
+⚠️ **THE MOST COMMON FAILURE IS ZOOMING IN TOO CLOSE.** You MUST zoom out significantly. The face must feel like it is floating inside a poster with generous breathing room on all sides.
+
+- **Canvas allocation**: the subject's head (hair top to chin) must occupy **no more than 45–50% of the canvas height**. If the head exceeds 50% of the canvas, you are TOO CLOSE — zoom out.
+- **Top margin**: leave at least **15–20% of canvas height** as solid #ECBA5E background above the top of the hair. There must be a clearly visible gap of background color above the hair.
+- **Side margins**: leave at least **15% of canvas width** as solid background on each side of the shoulders. The subject must not touch or approach the left or right edges.
+- **Bottom**: show neck, shoulders, and upper chest. The frame ends at mid-chest level, with the bottom of the clothing visible.
+- **The face must NOT fill the canvas.** Imagine the subject is a small figure placed in the center of a large poster. If any part of the head, hair, or shoulders touches or nearly touches any edge of the canvas, you have zoomed in FAR too much. Pull back until there is abundant background visible on all four sides.
+- **Think of it as a passport-style ID photo composition** — head centered with ample background space around it, NOT a close-up selfie crop.
 - Pose: perfectly front-facing, symmetrical, shoulders squared
 - Expression: gentle and calm — soft natural resting expression with a hint of warmth. Closed mouth with very slight natural lip curve. Eyes should look alive and warm, not blank or staring.
-- Head position: centered horizontally, slightly above vertical center
-- Background: solid #ECBA5E filling every pixel outside the subject
+- Head position: centered horizontally and vertically within the canvas
+- Background: solid #ECBA5E filling every pixel outside the subject — this background must be clearly visible on ALL FOUR sides of the subject
 
 # EDGE-CASE HANDLING
 If the source photo has any of the following, handle as described:
@@ -106,15 +111,17 @@ If the source photo has any of the following, handle as described:
 - The aspect ratio must be exactly 1:1 square
 - The background must be entirely #ECBA5E with no patterns, gradients, or objects
 - Every visible element must belong to the subject's head, hair, or upper-body clothing
-- All forms must be defined by color edges and soft gradients, not by hard drawn lines
-- The overall image should read as a poised, minimalist poster
+- All forms must be defined by hard-edged flat color planes meeting each other — no drawn lines, no gradients
+- The overall image should read as a flat vector illustration poster — it must be immediately obvious this is NOT a photo or a digitally painted portrait
 - A friend of the subject should be able to recognize them from the portrait
 
 # NEGATIVE CONSTRAINTS (to avoid)
 - No text, typography, letters, numbers, watermarks, or signatures anywhere in the image
-- No hard outlines, contour lines, sketch marks, or pen strokes — soft gradient contours on the face are OK
+- No hard outlines, contour lines, sketch marks, or pen strokes
 - No texture, grain, noise, halftone, or paper fiber effects
-- No photo-realistic skin or 3D rendering
+- No photo-realistic skin, 3D rendering, or digitally painted look
+- **No smooth gradients, airbrush effects, or blended tonal transitions anywhere** — all color areas must be flat fills with sharp edges
+- No subtle skin texture variation — each skin area is one solid flat color
 - No background objects, scenery, gradients, or patterns — the background is one flat color
 - No exaggerated or dramatic expression — keep it gentle and calm, but never blank or scary
 - No full-body, no hands, no lower body
