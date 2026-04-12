@@ -89,6 +89,9 @@ export const generateMetadata = async ({
     default: `관상스포 — ${headline}`,
   });
 
+  const previewUrl = `https://life-spoiler.com/face-spoiler/preview/${shareId}`;
+  const ogImage = "/images/face-spoiler-open-graph.png";
+
   return {
     title: fullTitle,
     description,
@@ -96,6 +99,23 @@ export const generateMetadata = async ({
       title: fullTitle,
       description,
       type: "article",
+      url: previewUrl,
+      siteName: "관상스포",
+      images: [
+        {
+          url: ogImage,
+          alt: fullTitle,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description,
+      images: [ogImage],
+    },
+    alternates: {
+      canonical: previewUrl,
     },
   };
 };
