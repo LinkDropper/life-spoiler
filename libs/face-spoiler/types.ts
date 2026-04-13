@@ -82,16 +82,6 @@ export interface TraitsSection {
   intensity: Intensity;
 }
 
-export interface FortuneSection {
-  headline: string;
-  workFlow: string;
-  /** 수치·금액 금지. 흐름·리듬·경향만 */
-  wealthFlow: string;
-  /** 2~4개 */
-  tags: string[];
-  intensity: Intensity;
-}
-
 export interface RelationshipSection {
   headline: string;
   content: string;
@@ -101,6 +91,43 @@ export interface RelationshipSection {
   shareableQuote: string;
   /** 2~4개 */
   tags: string[];
+  intensity: Intensity;
+}
+
+export interface VillainAppearanceFeature {
+  region: PhysiognomyRegion;
+  /** 해당 부위의 구체적 특징 (한국어 일상 표현, 20~40자) */
+  description: string;
+}
+
+export interface VillainSection {
+  /** 20~30자. 빌런 관상 소개 카피 */
+  headline: string;
+  /** 정확히 3개. 빌런의 관상 외형 특징 */
+  appearance: VillainAppearanceFeature[];
+  /** 180~260자. 왜 이 관상이 사용자와 상극인지 관상학적 근거 */
+  clashReason: string;
+  /** 120~180자. 이 빌런과 같은 공간에 있을 때 벌어질 장면 묘사 */
+  clashScene: string;
+  /** 80~120자. 빌런을 만났을 때 대처법 */
+  survivalTip: string;
+}
+
+export interface GapAnalysisSection {
+  /** 20~30자. 섹션 카피 */
+  headline: string;
+  /** 0~100 정수. 타인이 보는 이미지 vs 실제 자아의 괴리 */
+  gapPercent: number;
+  /** 40~70자. 괴리율 수치를 한 줄로 해석한 요약 */
+  gapSummary: string;
+  /** 120~180자. 가장 많이 받는 오해와 관상학적 근거 */
+  commonMisread: string;
+  /** 120~180자. 반전 매력 활용 조언 */
+  reversalTip: string;
+  /** 2~3개. 외면 인상 키워드 */
+  outerTags: string[];
+  /** 2~3개. 내면 기질 키워드 */
+  innerTags: string[];
   intensity: Intensity;
 }
 
@@ -128,8 +155,11 @@ export interface FaceReportData {
   firstImpression: FirstImpressionSection;
   observation: ObservationSection;
   traits: TraitsSection;
-  fortune: FortuneSection;
   relationship: RelationshipSection;
+  /** 빌런 관상 — 나와 상극인 관상 */
+  villain: VillainSection;
+  /** 겉과 속의 괴리율 */
+  gapAnalysis: GapAnalysisSection;
   /** 궁합 동물상 — 찰떡 + 상극 */
   compatibility: CompatibilitySection;
   /** 이번 주 작은 행동 — 정확히 3개 */
@@ -161,8 +191,9 @@ export const isV2Report = (value: unknown): value is FaceReportData => {
     "firstImpression",
     "observation",
     "traits",
-    "fortune",
     "relationship",
+    "villain",
+    "gapAnalysis",
     "compatibility",
     "actions",
     "shareLine",

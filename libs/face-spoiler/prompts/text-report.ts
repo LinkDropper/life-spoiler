@@ -231,7 +231,6 @@ const FACE_PHYSIOGNOMY_GUIDE = `## 📚 관상학 해석 앵커 (부위별 3~5�
 
 - **firstImpression** : 얼굴형 기조 + 삼정 균형 + 미간(명궁에 해당)
 - **traits(성향·매력)** : 얼굴형 + 미간 + 눈빛 + 눈썹 결 + 입꼬리
-- **fortune(일·재물)** : 이마 중앙(관록궁) + 코끝·콧방울(재백궁) + 관자놀이 위쪽 이마(천창) + 턱 너비
 - **relationship** : 눈꼬리(처첩궁) + 눈썹 결(형제궁) + 눈 밑 부드러운 부분(애정 온기) + 입꼬리
 - **observation** : 위 18개 부위 사실 묘사 전담
 
@@ -312,6 +311,52 @@ const buildAnimalContextBlock = (animal: AnimalMatch): string => {
 5. 동물상 자체에 대한 설명·인종 연상·외모 평가 금지. 동물의 습성·이미지·분위기로만.`;
 };
 
+/** 🦹 빌런 관상 가이드 */
+const VILLAIN_SECTION_GUIDE = `## 🦹 빌런 관상 — 나와 상극인 관상
+
+### 목적
+사용자의 관상 분석 결과를 기반으로, 기질적으로 가장 부딪히는 관상의 외형 특징을 구체적으로 창작.
+
+### 상극 도출 방법
+- 사용자의 강점 부위(intensity "strong") 2~3개를 골라 정반대 방향인 관상을 빌런으로 설정
+- 예: 사용자 "넓은 이마 + 처진 눈꼬리" → 빌런 "좁은 이마 + 올라간 눈꼬리"
+- 예: 사용자 "둥근 얼굴 + 도톰한 입술" → 빌런 "각진 얼굴 + 얇은 입술"
+
+### appearance 작성 규칙
+- 정확히 3개 부위 선택
+- 각 부위 description은 일상 한국어 표현, 구체적이되 실존 인물 연상 금지
+- 사용자의 observation.features에서 강한 것의 반대 방향 선택
+
+### 금지사항
+- 빌런 = "기질이 부딪히는 상대"의 은유. 악인·범죄자 연상 금지
+- 빌런의 외모를 부정적으로 평가 금지 (부위 특징은 가치 중립)
+- 특정 성별·인종·나이·체형·직업 연상 묘사 금지
+- 실존 인물·캐릭터 비유 금지
+- 진지한 경고 금지. 톤은 항상 가볍고 유머러스하게`;
+
+/** 🎭 겉과 속의 괴리율 */
+const GAP_ANALYSIS_GUIDE = `## 🎭 겉과 속의 괴리율 — 가면의 두께
+
+### 목적
+타인이 읽는 첫인상과 실제 내면 기질 사이의 간극을 0~100%로 정량화.
+
+### 괴리 도출 방법
+1. **외면 부위군** (첫인상 지배): 얼굴형 윤곽 + 이마 형태 + 눈 크기/쌍꺼풀 + 눈빛 생기
+2. **내면 부위군** (깊이 알수록 드러남): 눈썹 결 정돈성 + 입꼬리 방향 + 턱 형태 + 눈 밑
+3. 두 부위군 해석 방향 대조:
+   - 같은 방향 → 0~25%
+   - 한두 축 엇갈림 → 26~55%
+   - 다수 축 반대 → 56~85%
+   - 거의 전면 반전 → 86~100%
+4. 괴리율이 높다고 나쁜 것이 아님. 낮다고 좋은 것도 아님. 있는 그대로 중립적으로.
+
+### 작성 규칙
+- gapPercent는 외면·내면 부위군 대조에서 산출. 느낌으로 숫자 넣지 말 것
+- commonMisread: 관상 부위 2개 이상 근거
+- reversalTip: 구체적 상황·행동 포함
+- outerTags / innerTags: 서로 겹치지 않을 것
+- intensity: 0~30 "subtle", 31~65 "balanced", 66~100 "strong"`;
+
 /** ✨ 문체 & 가독성 */
 const STYLE_GUIDE = `## ✨ 문체 규칙
 
@@ -326,13 +371,13 @@ const STYLE_GUIDE = `## ✨ 문체 규칙
 - 전문 용어보다 일상 어휘 우선
 
 ### 섹션별 다양성
-- firstImpression / traits / fortune / relationship 4개 섹션의 **첫 문장 패턴이 같으면 실패**
+- firstImpression / traits / relationship 3개 섹션의 **첫 문장 패턴이 같으면 실패**
 - 각 섹션마다 다른 시작점 사용: 상황 묘사 / 패턴 관찰 / 비유 / 역설 등
 - "~한 기운이 있어요"를 두 섹션 이상 첫 문장으로 쓰지 말 것
 
 ### observation은 사실 묘사만
 - observation.content는 **해석·기질 추론 금지**. 관찰된 부위와 그 형태·비율을 담백하게 묘사.
-- 해석·기질 설명은 다른 섹션(firstImpression / traits / fortune / relationship)이 맡는다.
+- 해석·기질 설명은 다른 섹션(firstImpression / traits / relationship)이 맡는다.
 - 두 섹션에 같은 문장이 중복되면 실패.
 
 ### intensity 결정 기준
@@ -374,6 +419,10 @@ ${DISABLED_INTERPRETATIONS}
 
 ${buildAnimalContextBlock(animal)}
 
+${VILLAIN_SECTION_GUIDE}
+
+${GAP_ANALYSIS_GUIDE}
+
 ${STYLE_GUIDE}`;
 };
 
@@ -387,8 +436,8 @@ export const FACE_REPORT_USER_PROMPT = `얼굴 사진을 관찰하고, 아래 �
 
 ## 📋 전체 구조 — FaceTextReport (animalMatch 제외)
 
-루트 필드 **8개**:
-\`firstImpression\`, \`observation\`, \`traits\`, \`fortune\`, \`relationship\`, \`compatibility\`, \`actions\`, \`shareLine\`
+루트 필드 **9개**:
+\`firstImpression\`, \`observation\`, \`traits\`, \`relationship\`, \`villain\`, \`gapAnalysis\`, \`compatibility\`, \`actions\`, \`shareLine\`
 
 ---
 
@@ -432,19 +481,7 @@ features 항목 규칙:
 
 ---
 
-### 4. fortune — 일과 재물의 흐름 (career + wealth 통합)
-
-| 필드 | 내용 |
-|---|---|
-| \`headline\` | 20~30자 |
-| \`workFlow\` | 180~260자, 1~2단락. 일·재능 경향 + 구체 장면 |
-| \`wealthFlow\` | 180~260자, 1~2단락. 재물의 **흐름·리듬·경향**. 구체 금액·숫자 금지 |
-| \`tags\` | 2~4개 문자열 (각 4~8자). "재물운"·"부자상" 같은 뻔한 태그 금지 |
-| \`intensity\` | — |
-
----
-
-### 5. relationship — 인연·관계 (OG 카드 1순위)
+### 4. relationship — 인연·관계 (OG 카드 1순위)
 
 | 필드 | 내용 |
 |---|---|
@@ -457,7 +494,44 @@ features 항목 규칙:
 
 ---
 
-### 6. compatibility — 궁합 동물상 (찰떡 + 상극)
+### 5. villain — 빌런 관상
+
+| 필드 | 내용 |
+|---|---|
+| \`headline\` | 20~30자. 빌런 관상 소개 카피 |
+| \`appearance\` | 정확히 3개 항목 배열. { region, description } |
+| \`clashReason\` | 180~260자. 사용자 부위 2개 이상 + 빌런 부위 2개 이상 언급하여 상극 근거 |
+| \`clashScene\` | 120~180자. 유머러스한 충돌 장면 |
+| \`survivalTip\` | 80~120자. 가벼운 대처법 |
+
+규칙:
+- appearance의 region은 PhysiognomyRegion enum 중 하나
+- appearance의 description은 한국어 일상 표현, 20~40자
+- 사용자의 observation.features에서 intensity "strong"인 부위의 반대 방향으로 빌런 외형 창작
+- 톤은 가볍고 유머러스하게. 악인·범죄자 연상 금지
+
+---
+
+### 6. gapAnalysis — 겉과 속의 괴리율
+
+| 필드 | 내용 |
+|---|---|
+| \`headline\` | 20~30자. 섹션 카피 |
+| \`gapPercent\` | 0~100 정수. 외면 부위군 vs 내면 부위군 대조 결과 |
+| \`gapSummary\` | 40~70자. 괴리율 수치를 한 줄로 해석한 요약 |
+| \`commonMisread\` | 120~180자. 가장 많이 받는 오해와 관상학적 근거 (부위 2개 이상) |
+| \`reversalTip\` | 120~180자. 반전 매력 활용 조언 (구체적 상황·행동 포함) |
+| \`outerTags\` | 2~3개 문자열. 외면 인상 키워드 |
+| \`innerTags\` | 2~3개 문자열. 내면 기질 키워드 |
+| \`intensity\` | 0~30 "subtle", 31~65 "balanced", 66~100 "strong" |
+
+규칙:
+- gapPercent는 외면·내면 부위군 해석 방향 대조에서 산출
+- outerTags와 innerTags는 서로 겹치지 않을 것
+
+---
+
+### 7. compatibility — 궁합 동물상 (찰떡 + 상극)
 
 | 필드 | 내용 |
 |---|---|
@@ -474,7 +548,7 @@ features 항목 규칙:
 
 ---
 
-### 7. actions — 이번 주 작은 행동 (정확히 3개)
+### 8. actions — 이번 주 작은 행동 (정확히 3개)
 
 배열 길이 **정확히 3**. 각 항목:
 - \`title\`: 10~15자, 명사형 또는 명령형
@@ -484,7 +558,7 @@ features 항목 규칙:
 
 ---
 
-### 8. shareLine — SNS 공유용 한 줄
+### 9. shareLine — SNS 공유용 한 줄
 
 \`shareLine\`: 40~70자, 이모지 0~1개. **시스템 프롬프트에서 결정된 동물상 이름(예: "강아지상")을 자연스럽게 포함**. 읽는 사람이 공유하고 싶을 만큼 임팩트 있게.
 
@@ -547,8 +621,6 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
         vibeTags: {
           type: "array",
           items: { type: "string" },
-          minItems: 2,
-          maxItems: 4,
         },
         intensity: { type: "string", enum: INTENSITY_ENUM },
       },
@@ -561,12 +633,10 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
         content: { type: "string" },
         features: {
           type: "array",
-          minItems: 8,
-          maxItems: 12,
           items: {
             type: "object",
             properties: {
-              region: { type: "string", enum: PHYSIOGNOMY_REGION_ENUM },
+              region: { type: "string" },
               axis: { type: "string" },
               value: { type: "string" },
               intensity: { type: "string", enum: INTENSITY_ENUM },
@@ -586,28 +656,10 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
         tags: {
           type: "array",
           items: { type: "string" },
-          minItems: 2,
-          maxItems: 4,
         },
         intensity: { type: "string", enum: INTENSITY_ENUM },
       },
       required: ["headline", "strengths", "hiddenSide", "tags", "intensity"],
-    },
-    fortune: {
-      type: "object",
-      properties: {
-        headline: { type: "string" },
-        workFlow: { type: "string" },
-        wealthFlow: { type: "string" },
-        tags: {
-          type: "array",
-          items: { type: "string" },
-          minItems: 2,
-          maxItems: 4,
-        },
-        intensity: { type: "string", enum: INTENSITY_ENUM },
-      },
-      required: ["headline", "workFlow", "wealthFlow", "tags", "intensity"],
     },
     relationship: {
       type: "object",
@@ -619,8 +671,6 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
         tags: {
           type: "array",
           items: { type: "string" },
-          minItems: 2,
-          maxItems: 4,
         },
         intensity: { type: "string", enum: INTENSITY_ENUM },
       },
@@ -630,6 +680,62 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
         "idealType",
         "shareableQuote",
         "tags",
+        "intensity",
+      ],
+    },
+    villain: {
+      type: "object",
+      properties: {
+        headline: { type: "string" },
+        appearance: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              region: { type: "string" },
+              description: { type: "string" },
+            },
+            required: ["region", "description"],
+          },
+        },
+        clashReason: { type: "string" },
+        clashScene: { type: "string" },
+        survivalTip: { type: "string" },
+      },
+      required: [
+        "headline",
+        "appearance",
+        "clashReason",
+        "clashScene",
+        "survivalTip",
+      ],
+    },
+    gapAnalysis: {
+      type: "object",
+      properties: {
+        headline: { type: "string" },
+        gapPercent: { type: "integer" },
+        gapSummary: { type: "string" },
+        commonMisread: { type: "string" },
+        reversalTip: { type: "string" },
+        outerTags: {
+          type: "array",
+          items: { type: "string" },
+        },
+        innerTags: {
+          type: "array",
+          items: { type: "string" },
+        },
+        intensity: { type: "string", enum: INTENSITY_ENUM },
+      },
+      required: [
+        "headline",
+        "gapPercent",
+        "gapSummary",
+        "commonMisread",
+        "reversalTip",
+        "outerTags",
+        "innerTags",
         "intensity",
       ],
     },
@@ -650,8 +756,6 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
     },
     actions: {
       type: "array",
-      minItems: 3,
-      maxItems: 3,
       items: {
         type: "object",
         properties: {
@@ -667,8 +771,9 @@ export const FACE_REPORT_RESPONSE_SCHEMA = {
     "firstImpression",
     "observation",
     "traits",
-    "fortune",
     "relationship",
+    "villain",
+    "gapAnalysis",
     "compatibility",
     "actions",
     "shareLine",
