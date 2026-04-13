@@ -39,6 +39,9 @@ const envSchema = z
 
     // Discord Webhook
     DISCORD_WEBHOOK_URL: z.url().optional(),
+
+    // Resend (Email)
+    RESEND_API_KEY: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (!!data.OAUTH_GOOGLE_CLIENT_ID !== !!data.OAUTH_GOOGLE_CLIENT_SECRET) {
