@@ -6,8 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import styles from "./AnalysisLoading.module.css";
 
-const LOTTIE_SRC =
-  "https://lottie.host/e6d0f5bb-6f63-4582-aeb9-146b6725f9f8/5JrUVFmwXW.lottie";
+const LOTTIE_SRC = "/lottie/face-loading.lottie";
 
 const MESSAGE_CHANGE_INTERVAL_MS = 2500;
 
