@@ -356,12 +356,15 @@ export const sendReviewNotification = async (
   return sendWebhookMessage({ embeds: [embed] });
 };
 
+type SignupService = "life-spoiler" | "face-spoiler";
+
 interface SignupNotificationParams {
   userId: string;
   email: string;
   name: string | null;
   provider: string;
   signedUpAt: string;
+  service: SignupService;
 }
 
 const PROVIDER_LABELS: Record<string, string> = {
@@ -373,10 +376,20 @@ const PROVIDER_LABELS: Record<string, string> = {
 /**
  * 회원가입 알림 전송
  */
+const SERVICE_LABELS: Record<SignupService, string> = {
+  "life-spoiler": "인생스포",
+  "face-spoiler": "관상스포",
+};
+
+const SERVICE_FOOTER: Record<SignupService, string> = {
+  "life-spoiler": "Life Spoiler",
+  "face-spoiler": "Face Spoiler",
+};
+
 export const sendSignupNotification = async (
   params: SignupNotificationParams
 ): Promise<boolean> => {
-  const { userId, email, name, provider, signedUpAt } = params;
+  const { userId, email, name, provider, signedUpAt, service } = params;
 
   const signedUpDate = new Date(signedUpAt);
   const formattedDate = signedUpDate.toLocaleString("ko-KR", {
@@ -391,9 +404,14 @@ export const sendSignupNotification = async (
 
   const embed: DiscordEmbed = {
     title: "👋 신규 회원가입",
-    description: "새로운 회원이 가입했습니다!",
+    description: `${SERVICE_LABELS[service]}에 새로운 회원이 가입했습니다!`,
     color: DISCORD_EMBED_COLORS.INFO,
     fields: [
+      {
+        name: "📦 서비스",
+        value: SERVICE_LABELS[service],
+        inline: true,
+      },
       {
         name: "👤 이름",
         value: name ?? "미설정",
@@ -421,7 +439,7 @@ export const sendSignupNotification = async (
       },
     ],
     footer: {
-      text: "Life Spoiler",
+      text: SERVICE_FOOTER[service],
     },
     timestamp: signedUpAt,
   };

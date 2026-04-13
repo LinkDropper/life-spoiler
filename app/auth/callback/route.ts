@@ -92,12 +92,17 @@ export const GET = async (request: Request) => {
         Math.abs(createdAt.getTime() - lastLoginAt.getTime()) < 5000;
 
       if (isNewUser) {
+        const service = nextPath.startsWith("/face-spoiler")
+          ? "face-spoiler"
+          : "life-spoiler";
+
         sendSignupNotification({
           userId: user.id,
           email,
           name,
           provider,
           signedUpAt: loginTime,
+          service,
         }).catch((error) => {
           console.error("Discord 회원가입 알림 전송 실패:", error);
         });
