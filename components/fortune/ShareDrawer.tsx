@@ -24,6 +24,10 @@ interface ShareDrawerProps {
   showLine?: boolean;
   /** 이미지 다운로드 메뉴 표시 여부 (기본값: true) */
   showDownloadImage?: boolean;
+  /** 이벤트 배너 표시 여부 (기본값: false) */
+  showEventBanner?: boolean;
+  /** 이벤트 배너 메시지 */
+  eventBannerMessage?: string;
 }
 
 /**
@@ -43,6 +47,8 @@ export const ShareDrawer = ({
   showCopyLink = true,
   showLine = true,
   showDownloadImage = true,
+  showEventBanner = false,
+  eventBannerMessage,
 }: ShareDrawerProps) => {
   const t = useTranslations("fortune.shareDrawer");
   const displayTitle = title ?? t("title", { default: "공유하기" });
@@ -96,6 +102,18 @@ export const ShareDrawer = ({
         <div className={styles.header}>
           <span className={styles.title}>{displayTitle}</span>
         </div>
+
+        {showEventBanner && (
+          <div className={styles.eventBanner}>
+            <span className={styles.eventBannerIcon} aria-hidden="true">
+              🎁
+            </span>
+            <span className={styles.eventBannerText}>
+              {eventBannerMessage ??
+                "공유한 링크로 친구가 가입하면 무료 운세 쿠폰을 메일로 보내드려요!"}
+            </span>
+          </div>
+        )}
 
         <div className={styles.separator}>
           <hr className={styles.separatorLine} />

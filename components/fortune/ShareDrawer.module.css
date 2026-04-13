@@ -54,6 +54,30 @@
   color: var(--color-text-default, #ffffff);
 }
 
+.eventBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 8px;
+  padding: 10px 14px;
+  background: var(--primitive-primary-opacity-2, rgba(255, 204, 217, 0.16));
+  border-radius: var(--radius-8, 8px);
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.eventBannerIcon {
+  flex-shrink: 0;
+  font-size: var(--font-size-16, 16px);
+  line-height: 1;
+}
+
+.eventBannerText {
+  font-size: var(--font-size-14, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height, 1.4);
+  word-break: keep-all;
+}
+
 .separator {
   padding: 4px 0;
 }
