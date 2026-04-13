@@ -163,15 +163,17 @@ export const rewardReferral = async (
     });
   }
 
-  // 6. 알림 발송 (비동기, fire-and-forget)
-  sendReferralNotification(
-    referrerUserId,
-    promoCodeValue,
-    referral.id,
-    validUntil
-  ).catch((error) => {
+  // 6. 알림 발송 (Vercel 서버리스 환경에서 응답 후 종료 방지를 위해 await)
+  try {
+    await sendReferralNotification(
+      referrerUserId,
+      promoCodeValue,
+      referral.id,
+      validUntil
+    );
+  } catch (error) {
     console.error("레퍼럴 알림 발송 실패:", error);
-  });
+  }
 
   return {
     success: true,
