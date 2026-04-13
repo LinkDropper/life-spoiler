@@ -904,8 +904,15 @@
           "traits": "성향과 매력",
           "relationship": "어울리는 사람",
           "compatibility": "궁합 동물상",
-          "fortune": "일과 재물의 흐름",
           "observation": "관상 관찰",
+          "villain": "조심해야 할 관상",
+          "villainClashScene": "이런 장면이 벌어질 수 있어요",
+          "villainSurvivalTip": "이렇게 대처하세요",
+          "gapAnalysis": "겉과 속의 괴리율",
+          "gapOuter": "겉",
+          "gapInner": "속",
+          "gapMisread": "이런 오해를 받기 쉬워요",
+          "gapReversal": "반전 매력 활용법",
           "actions": "이번 주 작은 행동",
           "shareLine": "공유 문구"
         },
@@ -931,10 +938,6 @@
         "traitsLabels": {
           "strengths": "강점과 매력",
           "hiddenSide": "숨겨진 면"
-        },
-        "fortuneLabels": {
-          "workFlow": "일의 흐름",
-          "wealthFlow": "재물의 흐름"
         },
         "relationshipLabels": {
           "idealType": "어울리는 사람 유형",
@@ -2072,8 +2075,15 @@
           "traits": "Traits & Charm",
           "relationship": "Matching People",
           "compatibility": "Animal Compatibility",
-          "fortune": "Work & Wealth Flow",
           "observation": "Face Observation",
+          "villain": "Watch Out For This Face",
+          "villainClashScene": "This might happen",
+          "villainSurvivalTip": "How to handle it",
+          "gapAnalysis": "Inner vs Outer Gap",
+          "gapOuter": "Outer",
+          "gapInner": "Inner",
+          "gapMisread": "Common misunderstandings",
+          "gapReversal": "How to use your hidden charm",
           "actions": "This Week's Actions",
           "shareLine": "Share Line"
         },
@@ -2099,10 +2109,6 @@
         "traitsLabels": {
           "strengths": "Strengths & Charm",
           "hiddenSide": "Hidden Side"
-        },
-        "fortuneLabels": {
-          "workFlow": "Work Flow",
-          "wealthFlow": "Wealth Flow"
         },
         "relationshipLabels": {
           "idealType": "Who you click with",
@@ -3240,8 +3246,15 @@
           "traits": "魅力と性格",
           "relationship": "相性のいい人",
           "compatibility": "相性動物",
-          "fortune": "仕事と財運の流れ",
           "observation": "観相観察",
+          "villain": "気をつけたい顔",
+          "villainClashScene": "こんな場面が起きるかも",
+          "villainSurvivalTip": "こう対処しよう",
+          "gapAnalysis": "表と裏のギャップ率",
+          "gapOuter": "表",
+          "gapInner": "裏",
+          "gapMisread": "よくある誤解",
+          "gapReversal": "ギャップの活かし方",
           "actions": "今週の小さな行動",
           "shareLine": "シェア用ひとこと"
         },
@@ -3267,10 +3280,6 @@
         "traitsLabels": {
           "strengths": "強みと魅力",
           "hiddenSide": "隠れた一面"
-        },
-        "fortuneLabels": {
-          "workFlow": "仕事の流れ",
-          "wealthFlow": "財運の流れ"
         },
         "relationshipLabels": {
           "idealType": "相性の良い人のタイプ",

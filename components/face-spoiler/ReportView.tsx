@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 
+import { REGION_LABEL } from "@/libs/face-spoiler/constants/regions";
 import type { FaceReportData } from "@/libs/face-spoiler/types";
 
 import { FeatureBadges } from "./FeatureBadges";
@@ -64,7 +65,6 @@ const TagList = ({ tags, variant = "default" }: TagListProps) => {
 export const ReportView = async ({ report }: ReportViewProps) => {
   const t = await getTranslations("faceSpoiler.report.sections");
   const tTraits = await getTranslations("faceSpoiler.report.traitsLabels");
-  const tFortune = await getTranslations("faceSpoiler.report.fortuneLabels");
   const tRelationship = await getTranslations(
     "faceSpoiler.report.relationshipLabels"
   );
@@ -75,9 +75,10 @@ export const ReportView = async ({ report }: ReportViewProps) => {
   const {
     firstImpression,
     traits,
+    gapAnalysis,
     relationship,
+    villain,
     compatibility,
-    fortune,
     observation,
     actions,
     shareLine,
@@ -117,7 +118,43 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         <TagList tags={traits.tags} />
       </section>
 
-      {/* 3. 어울리는 사람 */}
+      {/* 3. 겉과 속의 괴리율 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("gapAnalysis")}</h2>
+          <IntensityIndicator intensity={gapAnalysis.intensity} />
+        </header>
+        <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
+          {gapAnalysis.headline}
+        </h3>
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{t("gapAnalysis")}</span>
+          <p className={styles.paragraph}>
+            {gapAnalysis.gapPercent}% — {gapAnalysis.gapSummary}
+          </p>
+        </div>
+        <div className={styles.gapTagComparison}>
+          <div className={styles.gapTagColumn}>
+            <span className={styles.blockLabel}>{t("gapOuter")}</span>
+            <TagList tags={gapAnalysis.outerTags} />
+          </div>
+          <span className={styles.gapVs}>vs</span>
+          <div className={styles.gapTagColumn}>
+            <span className={styles.blockLabel}>{t("gapInner")}</span>
+            <TagList tags={gapAnalysis.innerTags} />
+          </div>
+        </div>
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{t("gapMisread")}</span>
+          <ParagraphStack text={gapAnalysis.commonMisread} />
+        </div>
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{t("gapReversal")}</span>
+          <ParagraphStack text={gapAnalysis.reversalTip} />
+        </div>
+      </section>
+
+      {/* 4. 어울리는 사람 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("relationship")}</h2>
@@ -137,53 +174,70 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         <TagList tags={relationship.tags} />
       </section>
 
-      {/* 4. 궁합 동물상 */}
+      {/* 5. 조심해야 할 관상 */}
+      <section className={styles.section}>
+        <header className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("villain")}</h2>
+        </header>
+        <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
+          {villain.headline}
+        </h3>
+        <ParagraphStack text={villain.clashReason} />
+        {villain.appearance.map((feature, index) => (
+          <div key={index} className={styles.labeledBlock}>
+            <span className={styles.blockLabel}>
+              {REGION_LABEL[feature.region]}
+            </span>
+            <p className={styles.paragraph}>{feature.description}</p>
+          </div>
+        ))}
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{t("villainClashScene")}</span>
+          <ParagraphStack text={villain.clashScene} />
+        </div>
+        <div className={styles.labeledBlock}>
+          <span className={styles.blockLabel}>{t("villainSurvivalTip")}</span>
+          <p className={styles.paragraph}>{villain.survivalTip}</p>
+        </div>
+      </section>
+
+      {/* 5. 궁합 동물상 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("compatibility")}</h2>
         </header>
         <div className={styles.compatPair}>
           <div className={styles.compatCard}>
-            <span className={styles.compatEmoji}>💕</span>
-            <span className={styles.compatLabel}>{tCompat("bestMatch")}</span>
-            <strong className={styles.compatAnimal}>
-              {tAnimals(compatibility.bestMatch)}
-            </strong>
-            <p className={styles.compatReason}>
-              {compatibility.bestMatchReason}
-            </p>
+            <div className={`${styles.compatIcon} ${styles.compatIconBest}`}>
+              ♥
+            </div>
+            <div className={styles.compatBody}>
+              <span className={styles.compatLabel}>{tCompat("bestMatch")}</span>
+              <strong className={styles.compatAnimal}>
+                {tAnimals(compatibility.bestMatch)}
+              </strong>
+              <p className={styles.compatReason}>
+                {compatibility.bestMatchReason}
+              </p>
+            </div>
           </div>
           <div className={styles.compatCard}>
-            <span className={styles.compatEmoji}>⚡</span>
-            <span className={styles.compatLabel}>{tCompat("worstMatch")}</span>
-            <strong className={styles.compatAnimal}>
-              {tAnimals(compatibility.worstMatch)}
-            </strong>
-            <p className={styles.compatReason}>
-              {compatibility.worstMatchReason}
-            </p>
+            <div className={`${styles.compatIcon} ${styles.compatIconWorst}`}>
+              ✦
+            </div>
+            <div className={styles.compatBody}>
+              <span className={styles.compatLabel}>
+                {tCompat("worstMatch")}
+              </span>
+              <strong className={styles.compatAnimal}>
+                {tAnimals(compatibility.worstMatch)}
+              </strong>
+              <p className={styles.compatReason}>
+                {compatibility.worstMatchReason}
+              </p>
+            </div>
           </div>
         </div>
-      </section>
-
-      {/* 5. 일과 재물의 흐름 */}
-      <section className={styles.section}>
-        <header className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>{t("fortune")}</h2>
-          <IntensityIndicator intensity={fortune.intensity} />
-        </header>
-        <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
-          {fortune.headline}
-        </h3>
-        <div className={styles.labeledBlock}>
-          <span className={styles.blockLabel}>{tFortune("workFlow")}</span>
-          <ParagraphStack text={fortune.workFlow} />
-        </div>
-        <div className={styles.labeledBlock}>
-          <span className={styles.blockLabel}>{tFortune("wealthFlow")}</span>
-          <ParagraphStack text={fortune.wealthFlow} />
-        </div>
-        <TagList tags={fortune.tags} />
       </section>
 
       {/* 5. 관상 관찰 */}
@@ -200,7 +254,7 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         </div>
       </section>
 
-      {/* 6. 이번 주 작은 행동 */}
+      {/* 이번 주 작은 행동 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("actions")}</h2>
