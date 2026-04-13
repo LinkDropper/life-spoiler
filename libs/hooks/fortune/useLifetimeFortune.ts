@@ -9,7 +9,7 @@ import {
   useIsProfilesLoaded,
   useProfileActions,
 } from "@/libs/stores/profile";
-import { useAuthStatus } from "@/libs/stores/user";
+import { useAuthStatus, useUser } from "@/libs/stores/user";
 
 import type { ProfileData, LifetimeFortuneResult } from "./types";
 
@@ -35,6 +35,7 @@ export const useLifetimeFortune = (
   const params = useParams();
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const user = useUser();
   const locale = useLocale();
   const profileId = params.profileId as string;
 
@@ -187,7 +188,7 @@ export const useLifetimeFortune = (
   }, [authStatus, profileId, router, isProfilesLoaded]);
 
   const handleShare = useCallback(async () => {
-    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
+    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}?ref=${user?.id ?? ""}`;
 
     // Clear previous timer if exists
     if (toastTimerRef.current) {
@@ -214,7 +215,7 @@ export const useLifetimeFortune = (
         );
       }
     }
-  }, [profileId]);
+  }, [profileId, user]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;

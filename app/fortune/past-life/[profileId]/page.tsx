@@ -13,18 +13,21 @@ import {
   CopyToast,
   ErrorState,
   ShareDrawer,
+  EventBadge,
 } from "@/components/fortune";
 import PastLifeProfileCard from "@/components/fortune/PastLifeProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { usePastLifeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
-import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
+import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
+import { useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
 
 export default function PastLifeFortunePage() {
   const router = useRouter();
+  const user = useUser();
   const t = useTranslations("fortune.pastLife");
   const tCommon = useTranslations("fortune.common");
 
@@ -100,7 +103,7 @@ export default function PastLifeFortunePage() {
   const handleShareKakao = useCallback(() => {
     if (!result || !profile) return;
 
-    const shareUrl = `${window.location.origin}/fortune/past-life/share/${profileId}`;
+    const shareUrl = `${window.location.origin}/fortune/past-life/share/${profileId}?ref=${user?.id ?? ""}`;
     const { interpretation } = result;
 
     shareToKakao({
@@ -111,19 +114,7 @@ export default function PastLifeFortunePage() {
     });
 
     setIsShareDrawerOpen(false);
-  }, [result, profile, profileId]);
-
-  // LINE 공유 핸들러
-  const handleShareLine = useCallback(() => {
-    if (!result || !profile) return;
-
-    const shareUrl = `${window.location.origin}/fortune/past-life/share/${profileId}`;
-    const { interpretation } = result;
-    const text = `${interpretation.spoiler.headline} - ${profile.name}`;
-
-    shareToLine(shareUrl, text);
-    setIsShareDrawerOpen(false);
-  }, [result, profile, profileId]);
+  }, [result, profile, profileId, user]);
 
   // 프로필 이미지 공유 - 카카오톡 핸들러
   const handleProfileShareKakao = useCallback(async () => {
@@ -139,7 +130,7 @@ export default function PastLifeFortunePage() {
         return;
       }
 
-      const shareUrl = `${window.location.origin}/fortune/past-life/share/${profileId}`;
+      const shareUrl = `${window.location.origin}/fortune/past-life/share/${profileId}?ref=${user?.id ?? ""}`;
 
       await shareToKakaoWithImage({
         imageBlob: blob,
@@ -155,7 +146,7 @@ export default function PastLifeFortunePage() {
         setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [result, profile, profileId, profileCardToBlob]);
+  }, [result, profile, profileId, profileCardToBlob, user]);
 
   if (isLoading) {
     return <Loading />;
@@ -560,13 +551,16 @@ export default function PastLifeFortunePage() {
         >
           {t("reviewButton", { default: "후기 남기기" })}
         </button>
-        <button
-          type="button"
-          className={styles.shareButton}
-          onClick={() => setIsShareDrawerOpen(true)}
-        >
-          {t("shareButton")}
-        </button>
+        <div className={styles.shareButtonWrapper}>
+          <EventBadge />
+          <button
+            type="button"
+            className={styles.shareButton}
+            onClick={() => setIsShareDrawerOpen(true)}
+          >
+            {t("shareButton")}
+          </button>
+        </div>
       </footer>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
@@ -595,8 +589,9 @@ export default function PastLifeFortunePage() {
         onClose={() => setIsShareDrawerOpen(false)}
         onCopyLink={handleShare}
         onShareKakao={handleShareKakao}
-        onShareLine={handleShareLine}
+        showLine={false}
         showDownloadImage={false}
+        showEventBanner={true}
         isDownloading={isDownloading}
       />
 

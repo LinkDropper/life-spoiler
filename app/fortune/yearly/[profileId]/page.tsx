@@ -17,6 +17,7 @@ import {
   ErrorState,
   ShareDrawer,
   YearlyInsightsCard,
+  EventBadge,
   type CategoryKey,
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
@@ -26,7 +27,8 @@ import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import EventSection from "@/components/landing/EventSection";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
-import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
+import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
+import { useUser } from "@/libs/stores/user";
 import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
 
@@ -49,6 +51,7 @@ const DEFAULT_LABELS: Record<CategoryKey, string> = {
 export default function YearlyFortunePage() {
   const router = useRouter();
   const locale = useLocale() as Locale;
+  const user = useUser();
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -131,7 +134,7 @@ export default function YearlyFortunePage() {
   const handleShareKakao = useCallback(() => {
     if (!result || !profile) return;
 
-    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
+    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}?ref=${user?.id ?? ""}`;
     const { interpretation } = result;
 
     shareToKakao({
@@ -142,19 +145,7 @@ export default function YearlyFortunePage() {
     });
 
     setIsShareDrawerOpen(false);
-  }, [result, profile, profileId]);
-
-  // LINE 공유 핸들러
-  const handleShareLine = useCallback(() => {
-    if (!result || !profile) return;
-
-    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
-    const { interpretation } = result;
-    const text = `${interpretation.overview.headline} - ${profile.name}`;
-
-    shareToLine(shareUrl, text);
-    setIsShareDrawerOpen(false);
-  }, [result, profile, profileId]);
+  }, [result, profile, profileId, user]);
 
   // 프로필 이미지 공유 - 카카오톡 핸들러
   const handleProfileShareKakao = useCallback(async () => {
@@ -173,7 +164,7 @@ export default function YearlyFortunePage() {
         return;
       }
 
-      const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
+      const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}?ref=${user?.id ?? ""}`;
 
       // 카카오톡 이미지 템플릿으로 공유 (카카오 서버에 이미지 업로드 후 공유)
       await shareToKakaoWithImage({
@@ -191,7 +182,7 @@ export default function YearlyFortunePage() {
         setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [result, profile, profileId, profileCardToBlob]);
+  }, [result, profile, profileId, profileCardToBlob, user]);
 
   if (isLoading) {
     return <Loading />;
@@ -408,13 +399,16 @@ export default function YearlyFortunePage() {
         >
           {t("reviewButton", { default: "후기 남기기" })}
         </button>
-        <button
-          type="button"
-          className={styles.shareButton}
-          onClick={() => setIsShareDrawerOpen(true)}
-        >
-          {t("shareButton", { default: "공유하기" })}
-        </button>
+        <div className={styles.shareButtonWrapper}>
+          <EventBadge />
+          <button
+            type="button"
+            className={styles.shareButton}
+            onClick={() => setIsShareDrawerOpen(true)}
+          >
+            {t("shareButton", { default: "공유하기" })}
+          </button>
+        </div>
       </footer>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
@@ -443,8 +437,9 @@ export default function YearlyFortunePage() {
         onClose={() => setIsShareDrawerOpen(false)}
         onCopyLink={handleShare}
         onShareKakao={handleShareKakao}
-        onShareLine={handleShareLine}
+        showLine={false}
         showDownloadImage={false}
+        showEventBanner={true}
         isDownloading={isDownloading}
       />
 

@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+
+import { useReferral } from "@/libs/hooks/useReferral";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -52,10 +55,20 @@ const DEFAULT_LABELS: Record<CategoryKey, string> = {
 };
 
 export default function LifetimeFortuneSharePage() {
+  const searchParams = useSearchParams();
+  const { saveReferrer } = useReferral();
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
   const tStory = useTranslations("fortune.instagramStory");
+
+  // ref 파라미터 캡처
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      saveReferrer(ref);
+    }
+  }, [searchParams, saveReferrer]);
 
   const { isLoading, error, result, profile, handleCheckMyFortune } =
     useLifetimeShare({

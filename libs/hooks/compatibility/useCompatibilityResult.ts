@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-import { useAuthStatus } from "@/libs/stores/user";
+import { useAuthStatus, useUser } from "@/libs/stores/user";
 import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
 
 import type { CompatibilityResult } from "./types";
@@ -25,6 +25,7 @@ export const useCompatibilityResult = (): UseCompatibilityResultReturn => {
   const params = useParams();
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const user = useUser();
   const pairId = params.id as string;
 
   const [isLoading, setIsLoading] = useState(true);
@@ -86,13 +87,13 @@ export const useCompatibilityResult = (): UseCompatibilityResultReturn => {
   }, [authStatus, pairId, router]);
 
   const handleShare = useCallback(() => {
-    const url = `${window.location.origin}/compatibility/${pairId}/fortune/share`;
+    const url = `${window.location.origin}/compatibility/${pairId}/fortune/share?ref=${user?.id ?? ""}`;
     navigator.clipboard.writeText(url).then(() => {
       setShowCopyToast(true);
       setTimeout(() => setShowCopyToast(false), 2000);
     });
     setIsShareDrawerOpen(false);
-  }, [pairId]);
+  }, [pairId, user]);
 
   const handleOpenShareDrawer = useCallback(() => {
     setIsShareDrawerOpen(true);
