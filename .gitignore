@@ -46,3 +46,11 @@ next-env.d.ts
 !.vscode/extensions.json
 
 .mcp.json
+
+# marketing - drafts (temporary)
+docs/posts/drafts/
+
+# GCP service account keys
+*-service-account*.json
+life-spoiler-*.json
+!life-spoiler.com
