@@ -1,9 +1,14 @@
 "use client";
 
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
 import styles from "./AnalysisLoading.module.css";
+
+const LOTTIE_SRC = "/lottie/face-loading.lottie";
+
+const MESSAGE_CHANGE_INTERVAL_MS = 2500;
 
 export const AnalysisLoading = () => {
   const t = useTranslations("faceSpoiler.loading");
@@ -23,7 +28,7 @@ export const AnalysisLoading = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % messages.length);
-    }, 2500);
+    }, MESSAGE_CHANGE_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, [messages.length]);
@@ -31,7 +36,14 @@ export const AnalysisLoading = () => {
   return (
     <div className={styles.overlay}>
       <div className={styles.content}>
-        <div className={styles.pulse}></div>
+        <div className={styles.lottieWrapper}>
+          <DotLottieReact
+            src={LOTTIE_SRC}
+            loop
+            autoplay
+            className={styles.lottie}
+          />
+        </div>
         <p className={styles.message}>{messages[messageIndex]}</p>
       </div>
     </div>
