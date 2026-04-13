@@ -136,6 +136,56 @@
   flex-shrink: 0;
 }
 
+/* 보유 쿠폰 섹션 */
+.ownedCouponsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ownedCouponsTitle {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0;
+}
+
+.ownedCouponChip {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+}
+
+.ownedCouponChip:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.ownedCouponChipText {
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--primitive-primary, #ffccd9);
+}
+
 /* 쿠폰 입력 영역 */
 .promoInputContainer {
   display: flex;

@@ -200,6 +200,21 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
                   <button
                     type="button"
                     className={styles.menuItem}
+                    onClick={() => handleNavigate("/coupon")}
+                  >
+                    <span className={styles.menuItemText}>쿠폰함</span>
+                    <Image
+                      src="/images/landing/chevron-right.svg"
+                      alt=""
+                      width={20}
+                      height={20}
+                    />
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className={styles.menuItem}
                     onClick={handleLogout}
                   >
                     <span className={styles.menuItemText}>{t("logout")}</span>

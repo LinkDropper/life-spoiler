@@ -1,0 +1,258 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px 76px;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  color: var(--color-text-default, #ffffff);
+  margin: 0 0 4px 0;
+}
+
+/* 쿠폰 카드 */
+.couponCard {
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: var(--radius-8);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: opacity 0.2s ease;
+}
+
+.couponCardInactive {
+  opacity: 0.5;
+}
+
+/* 상단: 혜택 + 뱃지 */
+.couponHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.couponBenefit {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  color: var(--color-text-default, #ffffff);
+  margin: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-max);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badgeActive {
+  background: var(--primitive-primary-opacity-2, rgba(255, 204, 217, 0.16));
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.badgeInactive {
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+}
+
+/* 중단: 쿠폰 코드 + 복사 */
+.couponCodeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.couponCode {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  color: var(--primitive-primary, #ffccd9);
+  letter-spacing: 0.5px;
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-radius: var(--radius-8);
+  cursor: pointer;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.copyButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* 하단: 유효기간 + 운세 타입 */
+.couponMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.couponMetaText {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height);
+  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+}
+
+.metaDivider {
+  width: 1px;
+  height: 10px;
+  background: var(--color-border-default, rgba(255, 255, 255, 0.16));
+}
+
+/* 빈 상태 */
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.emptyMessage {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.6;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0;
+  white-space: pre-line;
+}
+
+.emptyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 24px;
+  background: var(--color-button-primary-surface, #ffccd9);
+  border: none;
+  border-radius: var(--radius-10);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height);
+  color: var(--color-text-invert, #18181b);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.emptyButton:hover {
+  background: var(--primitive-primary-3, #ffdde6);
+}
+
+/* 로딩 */
+.loadingContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-top-color: var(--primitive-primary, #ffccd9);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 토스트 */
+.toast {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--color-surface-default, #18181b);
+  border-radius: var(--radius-8);
+  box-shadow: 0px 4px 24px -5px var(--color-dropdown-shadow, rgba(0, 0, 0, 0.7));
+  z-index: 100;
+  animation: fadeInOut 2s ease-in-out;
+  white-space: nowrap;
+}
+
+.toastText {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height);
+  color: var(--color-text-default, #ffffff);
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  85% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}
