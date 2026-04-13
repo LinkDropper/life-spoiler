@@ -183,14 +183,16 @@ export const ReportView = async ({ report }: ReportViewProps) => {
           {villain.headline}
         </h3>
         <ParagraphStack text={villain.clashReason} />
-        {villain.appearance.map((feature, index) => (
-          <div key={index} className={styles.labeledBlock}>
-            <span className={styles.blockLabel}>
-              {REGION_LABEL[feature.region]}
-            </span>
-            <p className={styles.paragraph}>{feature.description}</p>
-          </div>
-        ))}
+        {villain.appearance.map((feature, index) => {
+          type K = keyof typeof REGION_LABEL;
+          const l = REGION_LABEL[feature.region as K] ?? feature.region;
+          return (
+            <div key={index} className={styles.labeledBlock}>
+              <span className={styles.blockLabel}>{l}</span>
+              <p className={styles.paragraph}>{feature.description}</p>
+            </div>
+          );
+        })}
         <div className={styles.labeledBlock}>
           <span className={styles.blockLabel}>{t("villainClashScene")}</span>
           <ParagraphStack text={villain.clashScene} />

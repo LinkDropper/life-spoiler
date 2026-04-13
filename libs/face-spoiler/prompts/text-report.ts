@@ -94,7 +94,7 @@ const INTERPRETATION_PRINCIPLES = `## 🎯 핵심 미션: 개인화된 관상 �
 - 자기검증: "이 문장에서 유형 이름만 바꾸면 다른 사람에게도 쓸 수 있는가?" → 그렇다면 삭제하고 다시 쓸 것
 
 ### headline 문법 다양성 (완화된 규칙)
-- 5개 섹션(+animalMatch rationale) headline은 **최소 3종 이상의 서로 다른 문법 구조** 사용
+- 7개 섹션(+animalMatch rationale) headline은 **최소 3종 이상의 서로 다른 문법 구조** 사용
 - 6종을 억지로 맞추지 말 것. 어색해지면 실패.
 - "~의 ~" 같은 명사구 패턴이 3개 이상 연속되면 실패`;
 

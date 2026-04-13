@@ -58,10 +58,14 @@ const formatValue = (value: string, axis: string): string => {
     return value;
   }
 
+  if (num <= 0) {
+    return value;
+  }
+
   // 근사 정수비를 찾기 위해 분모 1~12 범위에서 가장 가까운 조합 탐색
-  let bestN = 1;
+  let bestN = Math.max(1, Math.round(num));
   let bestD = 1;
-  let bestError = Infinity;
+  let bestError = Math.abs(num - bestN);
 
   for (let d = 1; d <= 12; d++) {
     const n = Math.round(num * d);
@@ -90,7 +94,9 @@ export const FeatureBadges = ({ features }: FeatureBadgesProps) => {
           className={`${styles.badge} ${INTENSITY_CLASS_NAME[feature.intensity]}`}
         >
           <span className={styles.badgeAxis}>
-            {REGION_LABEL[feature.region]} · {getAxisLabel(feature.axis)}
+            {REGION_LABEL[feature.region as keyof typeof REGION_LABEL] ??
+              feature.region}{" "}
+            · {getAxisLabel(feature.axis)}
           </span>
           <span className={styles.badgeValue}>
             {formatValue(feature.value, feature.axis)}
