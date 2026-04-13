@@ -9,7 +9,7 @@ import {
   useIsProfilesLoaded,
   useProfileActions,
 } from "@/libs/stores/profile";
-import { useAuthStatus } from "@/libs/stores/user";
+import { useAuthStatus, useUser } from "@/libs/stores/user";
 
 import type { ProfileData, YearlyFortuneResult } from "./types";
 
@@ -36,6 +36,7 @@ export const useYearlyFortune = (
   const params = useParams();
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const user = useUser();
   const locale = useLocale();
   const profileId = params.profileId as string;
 
@@ -192,7 +193,7 @@ export const useYearlyFortune = (
   }, [authStatus, profileId, router, isProfilesLoaded, currentYear]);
 
   const handleShare = useCallback(async () => {
-    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}`;
+    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}?ref=${user?.id ?? ""}`;
 
     // Clear previous timer if exists
     if (toastTimerRef.current) {
@@ -219,7 +220,7 @@ export const useYearlyFortune = (
         );
       }
     }
-  }, [profileId]);
+  }, [profileId, user]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;

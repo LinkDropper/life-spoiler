@@ -16,6 +16,7 @@ import {
   ScenarioList,
   FormattedText,
   ChevronIcon,
+  EventBadge,
 } from "@/components/fortune";
 import { CompatibilityProfileCard } from "@/components/fortune/CompatibilityProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
@@ -23,7 +24,8 @@ import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { CompatibilityCard } from "@/components/compatibility";
 import { useCompatibilityResult } from "@/libs/hooks/compatibility";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
-import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
+import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
+import { useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
 
@@ -76,6 +78,7 @@ const CATEGORY_KEYS: CompatibilityCategoryKey[] = [
 
 export default function CompatibilityResultPage() {
   const router = useRouter();
+  const user = useUser();
   const tCard = useTranslations("compatibility.card");
   const tFortune = useTranslations("compatibility.fortune");
   const tResult = useTranslations("compatibility.fortune.result");
@@ -191,7 +194,7 @@ export default function CompatibilityResultPage() {
     crisisResilience: tFortune("insights.crisisResilience"),
   };
 
-  const shareUrl = `${window.location.origin}/compatibility/${pairId}/fortune/share`;
+  const shareUrl = `${window.location.origin}/compatibility/${pairId}/fortune/share?ref=${user?.id ?? ""}`;
 
   // 카카오톡 공유 핸들러
   const handleShareKakao = () => {
@@ -201,13 +204,6 @@ export default function CompatibilityResultPage() {
       name: `${nameA} × ${nameB}`,
       webDomain: shareUrl,
     });
-    handleCloseShareDrawer();
-  };
-
-  // LINE 공유 핸들러
-  const handleShareLine = () => {
-    const text = `${interpretation.headline} - ${nameA} × ${nameB}`;
-    shareToLine(shareUrl, text);
     handleCloseShareDrawer();
   };
 
@@ -432,13 +428,16 @@ export default function CompatibilityResultPage() {
         >
           {tResult("reviewButton", { default: "후기 남기기" })}
         </button>
-        <button
-          type="button"
-          className={styles.shareButton}
-          onClick={handleOpenShareDrawer}
-        >
-          {tResult("shareButton")}
-        </button>
+        <div className={styles.shareButtonWrapper}>
+          <EventBadge />
+          <button
+            type="button"
+            className={styles.shareButton}
+            onClick={handleOpenShareDrawer}
+          >
+            {tResult("shareButton")}
+          </button>
+        </div>
       </footer>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
@@ -468,8 +467,9 @@ export default function CompatibilityResultPage() {
         onClose={handleCloseShareDrawer}
         onCopyLink={handleShare}
         onShareKakao={handleShareKakao}
-        onShareLine={handleShareLine}
+        showLine={false}
         showDownloadImage={false}
+        showEventBanner={true}
         isDownloading={isDownloading}
       />
 

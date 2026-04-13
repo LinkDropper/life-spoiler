@@ -143,6 +143,17 @@ function PaymentPageContent() {
     null
   );
 
+  interface OwnedCoupon {
+    id: string;
+    code: string;
+    benefitType: "free_fortune" | "discount";
+    fortuneType: string;
+    discountPercent: number | null;
+    status: "active" | "used" | "expired";
+  }
+
+  const [ownedCoupons, setOwnedCoupons] = useState<OwnedCoupon[]>([]);
+
   const promoToastTimerRef = useRef<NodeJS.Timeout | null>(null);
   const promoErrorTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -232,6 +243,45 @@ function PaymentPageContent() {
 
     checkPromoApplied();
   }, [authStatus, profileId, fortuneType, isCompatibility]);
+
+  // 보유 쿠폰 목록 조회
+  useEffect(() => {
+    const fetchOwnedCoupons = async () => {
+      if (authStatus !== "authenticated") return;
+
+      try {
+        const response = await fetch("/api/coupon/list");
+        const result = await response.json();
+
+        if (result.success && Array.isArray(result.data)) {
+          const filtered = result.data.filter(
+            (c: OwnedCoupon) =>
+              c.status === "active" &&
+              (c.fortuneType === "all" || c.fortuneType === fortuneType)
+          );
+          setOwnedCoupons(filtered);
+        }
+      } catch {
+        // 쿠폰 목록 로딩 실패 시 무시
+      }
+    };
+
+    fetchOwnedCoupons();
+  }, [authStatus, fortuneType]);
+
+  const handleSelectOwnedCoupon = (code: string) => {
+    setPromoCode(code);
+  };
+
+  const formatCouponLabel = (coupon: OwnedCoupon): string => {
+    const benefit =
+      coupon.benefitType === "free_fortune"
+        ? "무료 운세"
+        : coupon.discountPercent
+          ? `${coupon.discountPercent}% 할인`
+          : "할인";
+    return `${coupon.code} · ${benefit}`;
+  };
 
   const handlePayment = async () => {
     if (isProcessing) return;
@@ -554,6 +604,26 @@ function PaymentPageContent() {
               </div>
             </button>
           ))}
+
+          {selectedMethod === "PROMO" &&
+            !promoApplied &&
+            ownedCoupons.length > 0 && (
+              <div className={styles.ownedCouponsSection}>
+                <p className={styles.ownedCouponsTitle}>보유 쿠폰</p>
+                {ownedCoupons.map((coupon) => (
+                  <button
+                    key={coupon.id}
+                    type="button"
+                    className={styles.ownedCouponChip}
+                    onClick={() => handleSelectOwnedCoupon(coupon.code)}
+                  >
+                    <span className={styles.ownedCouponChipText}>
+                      {formatCouponLabel(coupon)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
 
           {selectedMethod === "PROMO" && (
             <div className={styles.promoInputContainer}>

@@ -17,6 +17,7 @@ import {
   ErrorState,
   ShareDrawer,
   KeywordGrid,
+  EventBadge,
   type CategoryKey,
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
@@ -31,7 +32,8 @@ import type {
   ProfileTraitsResponse,
 } from "@/libs/services/ai/types";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
-import { shareToKakao, shareToKakaoWithImage, shareToLine } from "@/libs/kakao";
+import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
+import { useUser } from "@/libs/stores/user";
 import {
   extractKeywordsFromChart,
   extractOneLinerFromChart,
@@ -68,6 +70,7 @@ const hasProfileTraits = (
 export default function LifetimeFortunePage() {
   const router = useRouter();
   const locale = useLocale() as Locale;
+  const user = useUser();
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tPreview = useTranslations("fortune.preview");
@@ -160,7 +163,7 @@ export default function LifetimeFortunePage() {
   const handleShareKakao = useCallback(() => {
     if (!result || !profile) return;
 
-    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
+    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}?ref=${user?.id ?? ""}`;
     const { interpretation } = result;
 
     shareToKakao({
@@ -171,19 +174,7 @@ export default function LifetimeFortunePage() {
     });
 
     setIsShareDrawerOpen(false);
-  }, [result, profile, profileId]);
-
-  // LINE 공유 핸들러
-  const handleShareLine = useCallback(() => {
-    if (!result || !profile) return;
-
-    const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
-    const { interpretation } = result;
-    const text = `${interpretation.lifeSpoiler.headline} - ${profile.name}`;
-
-    shareToLine(shareUrl, text);
-    setIsShareDrawerOpen(false);
-  }, [result, profile, profileId]);
+  }, [result, profile, profileId, user]);
 
   // 프로필 이미지 공유 - 카카오톡 핸들러
   const handleProfileShareKakao = useCallback(async () => {
@@ -202,7 +193,7 @@ export default function LifetimeFortunePage() {
         return;
       }
 
-      const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}`;
+      const shareUrl = `${window.location.origin}/fortune/lifetime/share/${profileId}?ref=${user?.id ?? ""}`;
 
       // 카카오톡 이미지 템플릿으로 공유
       await shareToKakaoWithImage({
@@ -219,7 +210,7 @@ export default function LifetimeFortunePage() {
         setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [result, profile, profileId, profileCardToBlob]);
+  }, [result, profile, profileId, profileCardToBlob, user]);
 
   if (isLoading) {
     return <Loading />;
@@ -436,13 +427,16 @@ export default function LifetimeFortunePage() {
         >
           {t("reviewButton", { default: "후기 남기기" })}
         </button>
-        <button
-          type="button"
-          className={styles.shareButton}
-          onClick={() => setIsShareDrawerOpen(true)}
-        >
-          {t("shareButton", { default: "공유하기" })}
-        </button>
+        <div className={styles.shareButtonWrapper}>
+          <EventBadge />
+          <button
+            type="button"
+            className={styles.shareButton}
+            onClick={() => setIsShareDrawerOpen(true)}
+          >
+            {t("shareButton", { default: "공유하기" })}
+          </button>
+        </div>
       </footer>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
@@ -471,8 +465,9 @@ export default function LifetimeFortunePage() {
         onClose={() => setIsShareDrawerOpen(false)}
         onCopyLink={handleShare}
         onShareKakao={handleShareKakao}
-        onShareLine={handleShareLine}
+        showLine={false}
         showDownloadImage={false}
+        showEventBanner={true}
         isDownloading={isDownloading}
       />
 

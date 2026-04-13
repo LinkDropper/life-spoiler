@@ -101,6 +101,10 @@ export const GET = async (request: Request) => {
         }).catch((error) => {
           console.error("Discord 회원가입 알림 전송 실패:", error);
         });
+
+        const redirectUrl = new URL(`${origin}${nextPath}`);
+        redirectUrl.searchParams.set("new", "1");
+        return NextResponse.redirect(redirectUrl.toString());
       }
     }
 

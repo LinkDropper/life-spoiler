@@ -239,6 +239,7 @@ export interface PromoCodeRow {
   is_active: boolean;
   campaign_name: string | null;
   memo: string | null;
+  owner_id: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
@@ -259,6 +260,7 @@ export interface PromoCodeInsert {
   is_active?: boolean;
   campaign_name?: string | null;
   memo?: string | null;
+  owner_id?: string | null;
   created_by?: string | null;
 }
 
@@ -395,6 +397,32 @@ export interface FollowUpQuestionInsert {
   created_at?: string;
 }
 
+// Referral Types
+export type ReferralNotificationChannel = "email";
+export type ReferralNotificationStatus = "pending" | "sent" | "failed";
+
+export interface ReferralRow {
+  id: string;
+  referrer_user_id: string;
+  referred_user_id: string;
+  promo_code_id: string;
+  notification_channel: ReferralNotificationChannel | null;
+  notification_sent_at: string | null;
+  notification_status: ReferralNotificationStatus;
+  created_at: string;
+}
+
+export interface ReferralInsert {
+  id?: string;
+  referrer_user_id: string;
+  referred_user_id: string;
+  promo_code_id: string;
+  notification_channel?: ReferralNotificationChannel | null;
+  notification_sent_at?: string | null;
+  notification_status?: ReferralNotificationStatus;
+  created_at?: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -520,6 +548,31 @@ export type Database = {
             foreignKeyName: "follow_up_questions_pair_id_fkey";
             columns: ["pair_id"];
             referencedRelation: "compatibility_pairs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      referrals: {
+        Row: ReferralRow;
+        Insert: ReferralInsert;
+        Update: Partial<ReferralInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referrer_user_id_fkey";
+            columns: ["referrer_user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "referrals_referred_user_id_fkey";
+            columns: ["referred_user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "referrals_promo_code_id_fkey";
+            columns: ["promo_code_id"];
+            referencedRelation: "promo_codes";
             referencedColumns: ["id"];
           },
         ];

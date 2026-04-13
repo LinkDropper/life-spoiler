@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { HeaderClient } from "@/components/landing";
 import {
@@ -10,19 +10,38 @@ import {
   PastLifeCard,
   YearlyFortuneCard,
 } from "@/components/home";
+import { useReferral } from "@/libs/hooks/useReferral";
 import { useAuthStatus } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
 
 export default function HomePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
+  const { claimReferralReward } = useReferral();
 
   useEffect(() => {
     if (authStatus === "unauthenticated") {
       router.replace("/login");
     }
   }, [authStatus, router]);
+
+  // 레퍼럴 보상 트리거
+  useEffect(() => {
+    if (authStatus !== "authenticated") return;
+
+    const isNewUser = searchParams.get("new") === "1";
+    if (!isNewUser) return;
+
+    // ?new=1 파라미터 제거 (히스토리 정리)
+    const url = new URL(window.location.href);
+    url.searchParams.delete("new");
+    window.history.replaceState({}, "", url.toString());
+
+    // 레퍼럴 보상 처리 (비동기, fire-and-forget)
+    claimReferralReward();
+  }, [authStatus, searchParams, claimReferralReward]);
 
   const handleLifetimeFortune = useCallback(() => {
     router.push("/profiles?type=lifetime");

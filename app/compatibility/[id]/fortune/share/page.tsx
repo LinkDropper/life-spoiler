@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+
+import { useReferral } from "@/libs/hooks/useReferral";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
@@ -69,10 +72,20 @@ const CATEGORY_KEYS: CompatibilityCategoryKey[] = [
 // ============================================================
 
 export default function CompatibilitySharePage() {
+  const searchParams = useSearchParams();
+  const { saveReferrer } = useReferral();
   const tCard = useTranslations("compatibility.card");
   const tFortune = useTranslations("compatibility.fortune");
   const tResult = useTranslations("compatibility.fortune.result");
   const tCommon = useTranslations("fortune.common");
+
+  // ref 파라미터 캡처
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      saveReferrer(ref);
+    }
+  }, [searchParams, saveReferrer]);
 
   const { isLoading, error, result, relationshipType, handleCheckMyFortune } =
     useCompatibilityShare();

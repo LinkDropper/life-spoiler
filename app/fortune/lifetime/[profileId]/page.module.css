@@ -362,7 +362,7 @@
   transform: translateX(-50%);
   display: flex;
   justify-content: stretch;
-  align-items: stretch;
+  align-items: flex-end;
   gap: 8px;
   padding: 16px;
   width: 100%;
@@ -393,8 +393,16 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
-.shareButton {
+.shareButtonWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   flex: 1;
+}
+
+.shareButton {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

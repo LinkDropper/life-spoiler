@@ -9,7 +9,7 @@ import {
   useIsProfilesLoaded,
   useProfileActions,
 } from "@/libs/stores/profile";
-import { useAuthStatus } from "@/libs/stores/user";
+import { useAuthStatus, useUser } from "@/libs/stores/user";
 
 import type { ProfileData, PastLifeFortuneResult } from "./types";
 
@@ -35,6 +35,7 @@ export const usePastLifeFortune = (
   const params = useParams();
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const user = useUser();
   const locale = useLocale();
   const profileId = params.profileId as string;
 
@@ -185,7 +186,7 @@ export const usePastLifeFortune = (
   }, [authStatus, profileId, router, isProfilesLoaded]);
 
   const handleShare = useCallback(async () => {
-    const shareUrl = `${window.location.origin}/fortune/past-life/share/${profileId}`;
+    const shareUrl = `${window.location.origin}/fortune/past-life/share/${profileId}?ref=${user?.id ?? ""}`;
 
     if (toastTimerRef.current) {
       clearTimeout(toastTimerRef.current);
@@ -211,7 +212,7 @@ export const usePastLifeFortune = (
         );
       }
     }
-  }, [profileId]);
+  }, [profileId, user]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;
