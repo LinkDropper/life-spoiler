@@ -78,9 +78,7 @@ export const FeatureBadges = ({
     return null;
   }
 
-  const visible = showAll
-    ? displayable
-    : displayable.slice(0, INITIAL_VISIBLE);
+  const visible = showAll ? displayable : displayable.slice(0, INITIAL_VISIBLE);
   const hiddenCount = displayable.length - INITIAL_VISIBLE;
   const hasMore = hiddenCount > 0;
 
