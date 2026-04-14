@@ -1,0 +1,118 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding: 24px 16px
+    calc(16px + env(safe-area-inset-bottom, 0px));
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--bg-primary, #2e1431) 35%
+  );
+  z-index: 100;
+}
+
+.shareButton {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 20px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-primary, #ffffff);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.shareButton:hover {
+  background: rgba(63, 217, 173, 0.08);
+  border-color: rgba(63, 217, 173, 0.45);
+}
+
+.shareButton:active {
+  transform: translateY(1px);
+}
+
+.ctaButton {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 20px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #2d1b4e;
+  background: #3fd9ad;
+  text-decoration: none;
+  border-radius: 0;
+  box-shadow: 0 10px 24px -12px rgba(63, 217, 173, 0.65);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.25s ease,
+    transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ctaButton:hover {
+  background: #4deac0;
+  box-shadow: 0 14px 28px -12px rgba(77, 234, 192, 0.75);
+  transform: translateY(-1px);
+}
+
+.ctaButton:active {
+  transform: translateY(1px);
+  box-shadow: 0 6px 14px -10px rgba(63, 217, 173, 0.6);
+}
+
+@media (max-width: 375px) {
+  .footer {
+    gap: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .shareButton {
+    font-size: 14px;
+    padding: 0 14px;
+  }
+
+  .ctaButton {
+    font-size: 15px;
+    padding: 0 16px;
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 200;
+  pointer-events: none;
+}

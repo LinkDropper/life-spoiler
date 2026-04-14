@@ -962,6 +962,7 @@
       "share": {
         "footerReviewButton": "후기 남기기",
         "footerShareButton": "공유하기",
+        "guestFooterCtaButton": "내 관상도 보러가기",
         "drawerTitle": "결과 공유하기",
         "drawerSubtitle": "친구에게 내 관상 리포트를 스포해보세요",
         "copyLink": "링크 복사하기",
@@ -2133,6 +2134,7 @@
       "share": {
         "footerReviewButton": "Leave a review",
         "footerShareButton": "Share",
+        "guestFooterCtaButton": "Check my face reading",
         "drawerTitle": "Share Result",
         "drawerSubtitle": "Spoil your face reading to a friend",
         "copyLink": "Copy link",
@@ -3304,6 +3306,7 @@
       "share": {
         "footerReviewButton": "レビューを書く",
         "footerShareButton": "シェアする",
+        "guestFooterCtaButton": "自分の観相を見る",
         "drawerTitle": "結果をシェア",
         "drawerSubtitle": "友達に自分の観相レポートをネタバレしてみよう",
         "copyLink": "リンクをコピー",

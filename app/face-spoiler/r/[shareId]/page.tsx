@@ -6,6 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { env } from "@/env";
 import { AnimalHero } from "@/components/face-spoiler/AnimalHero";
 import { FaceReportActions } from "@/components/face-spoiler/FaceReportActions";
+import { GuestFaceActions } from "@/components/face-spoiler/GuestFaceActions";
 import { Header } from "@/components/face-spoiler/Header";
 import { ReportView } from "@/components/face-spoiler/ReportView";
 import { isV2Report } from "@/libs/face-spoiler/types";
@@ -189,9 +190,7 @@ export default async function FaceSpoilerReportPage({
   } = await authClient.auth.getUser();
   const isOwner = Boolean(authUser && authUser.id === record.user_id);
 
-  const profileName = isOwner
-    ? await fetchFaceProfileName(record.face_profile_id)
-    : null;
+  const profileName = await fetchFaceProfileName(record.face_profile_id);
 
   return (
     <>
@@ -207,11 +206,17 @@ export default async function FaceSpoilerReportPage({
           <ReportView report={report} />
         </div>
       </div>
-      {isOwner && profileName && (
+      {isOwner && profileName ? (
         <FaceReportActions
           isOwner={isOwner}
           shareId={shareId}
           profileId={record.face_profile_id}
+          profileName={profileName}
+          animalKey={report.animalMatch.primary}
+        />
+      ) : (
+        <GuestFaceActions
+          shareId={shareId}
           profileName={profileName}
           animalKey={report.animalMatch.primary}
         />
