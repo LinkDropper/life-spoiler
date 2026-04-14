@@ -42,7 +42,7 @@ memory: project
 5. 반대가 있으면 수정 → 재리뷰
 6. 승인 후 자동 발행:
    - X 포스트: `node scripts/marketing/post-to-x.js --text "내용"`
-   - Discord 알림: `node scripts/marketing/discord-notify.js --text "발행 완료" --via-github`
+   - Discord 알림은 **별도 호출 불필요** — `marketing-proxy.yml`의 `post-to-x` 작업이 트윗 발행 성공 시 자동으로 Discord에 URL과 본문을 알림.
 7. social-tracker.csv status를 posted로 업데이트
 
 ## 에이전트 호출 방법
