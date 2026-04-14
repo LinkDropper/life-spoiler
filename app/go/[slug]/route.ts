@@ -33,6 +33,12 @@ const REDIRECTS: Record<string, RedirectConfig> = {
     utm_medium: "social",
     utm_campaign: "2026-04-mbti-compare",
   },
+  daeun: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-daeun-timing",
+  },
   // 채널별 프로필 링크
   x: {
     destination: "/",
