@@ -5,15 +5,16 @@
  *
  * 사용법:
  *   node scripts/marketing/post-to-x.js --text "포스트 내용"
- *   node scripts/marketing/post-to-x.js --text "포스트 내용" --via-github
  *
- * 옵션:
- *   --via-github : GitHub Actions 릴레이를 통해 발행 (api.twitter.com 차단 환경)
+ * 실행 환경에 따라 자동으로 경로를 선택합니다:
+ *   - 로컬(CMO 에이전트): GitHub Actions를 트리거하여 발행
+ *   - GitHub Actions 런너: X API에 직접 발행
  *
  * 환경변수:
- *   X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET
+ *   PROXY_TOKEN  : GitHub API 인증 토큰 (로컬 실행 시 필요)
  *   TWEET_TEXT   : --text 대신 환경변수로 본문 전달 (GitHub Actions 전용)
- *   GITHUB_PAT   : --via-github 사용 시 필요
+ *   X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET
+ *                : GitHub Secrets에서 자동 주입 (GitHub Actions 전용)
  */
 
 const crypto = require("crypto");
@@ -29,41 +30,39 @@ const getArg = (name) => {
 };
 
 const text = getArg("text") || process.env.TWEET_TEXT;
-const viaGithub = args.includes("--via-github");
 
 if (!text) {
   console.error("Error: --text 또는 TWEET_TEXT 환경변수가 필요합니다.");
   process.exit(1);
 }
 
-// --via-github: GitHub Actions 릴레이를 통해 트윗 발행
-// Claude Code 웹 세션에서 api.twitter.com이 차단된 경우 사용
-const runViaGithub = async () => {
-  const { dispatch } = require("./lib/github-dispatch");
-  await dispatch("post-to-x", { text });
-  console.log(
-    "GitHub Actions 릴레이로 트윗 발행 요청 완료.\n" +
-      "→ https://github.com/linkdropper/life-spoiler/actions 에서 진행 확인"
-  );
-};
-
-const config = {
-  apiKey: process.env.X_API_KEY,
-  apiSecret: process.env.X_API_SECRET,
-  accessToken: process.env.X_ACCESS_TOKEN,
-  accessSecret: process.env.X_ACCESS_SECRET,
-};
-
+// GitHub Actions 런너에서 X API 직접 호출
 const percentEncode = (str) =>
   encodeURIComponent(str).replace(
     /[!'()*]/g,
     (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
   );
 
-const generateOAuthSignature = (method, url, params) => {
-  const sortedParams = Object.keys(params)
+const generateOAuthHeader = (method, url) => {
+  const config = {
+    apiKey: process.env.X_API_KEY,
+    apiSecret: process.env.X_API_SECRET,
+    accessToken: process.env.X_ACCESS_TOKEN,
+    accessSecret: process.env.X_ACCESS_SECRET,
+  };
+
+  const oauthParams = {
+    oauth_consumer_key: config.apiKey,
+    oauth_nonce: crypto.randomBytes(16).toString("hex"),
+    oauth_signature_method: "HMAC-SHA1",
+    oauth_timestamp: Math.floor(Date.now() / 1000).toString(),
+    oauth_token: config.accessToken,
+    oauth_version: "1.0",
+  };
+
+  const sortedParams = Object.keys(oauthParams)
     .sort()
-    .map((k) => `${percentEncode(k)}=${percentEncode(params[k])}`)
+    .map((k) => `${percentEncode(k)}=${percentEncode(oauthParams[k])}`)
     .join("&");
 
   const baseString = [
@@ -74,27 +73,10 @@ const generateOAuthSignature = (method, url, params) => {
 
   const signingKey = `${percentEncode(config.apiSecret)}&${percentEncode(config.accessSecret)}`;
 
-  return crypto
+  oauthParams.oauth_signature = crypto
     .createHmac("sha1", signingKey)
     .update(baseString)
     .digest("base64");
-};
-
-const generateOAuthHeader = (method, url) => {
-  const oauthParams = {
-    oauth_consumer_key: config.apiKey,
-    oauth_nonce: crypto.randomBytes(16).toString("hex"),
-    oauth_signature_method: "HMAC-SHA1",
-    oauth_timestamp: Math.floor(Date.now() / 1000).toString(),
-    oauth_token: config.accessToken,
-    oauth_version: "1.0",
-  };
-
-  oauthParams.oauth_signature = generateOAuthSignature(
-    method,
-    url,
-    oauthParams
-  );
 
   const header = Object.keys(oauthParams)
     .sort()
@@ -129,24 +111,24 @@ const postTweet = async (tweetText) => {
   throw new Error(`HTTP ${statusCode}`);
 };
 
+// 로컬에서 GitHub Actions 트리거
+const dispatchViaGithub = async () => {
+  const { dispatch } = require("./lib/github-dispatch");
+  await dispatch("post-to-x", { text });
+  console.log(
+    "GitHub Actions 릴레이로 트윗 발행 요청 완료.\n" +
+      "→ https://github.com/linkdropper/life-spoiler/actions 에서 진행 확인"
+  );
+};
+
 const main = async () => {
-  if (viaGithub) {
-    await runViaGithub();
-    return;
+  if (process.env.GITHUB_ACTIONS === "true") {
+    // GitHub Actions 런너: X API 직접 호출
+    await postTweet(text);
+  } else {
+    // 로컬(CMO 에이전트): GitHub Actions 릴레이
+    await dispatchViaGithub();
   }
-
-  const missingKeys = Object.entries(config)
-    .filter(([, v]) => !v)
-    .map(([k]) => k);
-
-  if (missingKeys.length > 0) {
-    console.error(
-      `Error: 환경변수가 설정되지 않았습니다: ${missingKeys.join(", ")}`
-    );
-    process.exit(1);
-  }
-
-  await postTweet(text);
 };
 
 main().catch((err) => {

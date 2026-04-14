@@ -41,7 +41,7 @@ memory: project
 4. **전원 approved일 때만** 발행 진행
 5. 반대가 있으면 수정 → 재리뷰
 6. 승인 후 자동 발행:
-   - X 포스트: `node scripts/marketing/post-to-x.js --text "내용" --via-github`
+   - X 포스트: `node scripts/marketing/post-to-x.js --text "내용"`
    - Discord 알림: `node scripts/marketing/discord-notify.js --text "발행 완료" --via-github`
 7. social-tracker.csv status를 posted로 업데이트
 

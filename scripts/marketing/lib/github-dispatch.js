@@ -8,11 +8,7 @@
  * 트리거하고, 제한 없는 Actions 런너가 실제 외부 API를 호출하도록 합니다.
  *
  * 필요한 환경변수:
- *   GITHUB_PAT: GitHub Personal Access Token (repo 스코프 필요)
- *
- * 필요한 GitHub Secrets (저장소 설정에서 추가):
- *   X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET
- *   DISCORD_MARKETING_WEBHOOK
+ *   PROXY_TOKEN: GitHub API 인증 토큰 (repo 스코프 필요)
  */
 
 const { proxyRequest } = require("./proxy-fetch");
@@ -20,12 +16,10 @@ const { proxyRequest } = require("./proxy-fetch");
 const REPO = "linkdropper/life-spoiler";
 
 const dispatch = async (eventType, payload) => {
-  const pat = process.env.GITHUB_PAT;
+  const pat = process.env.PROXY_TOKEN;
   if (!pat) {
     throw new Error(
-      "GITHUB_PAT 환경변수가 설정되지 않았습니다.\n" +
-        "→ GitHub > Settings > Developer settings > Personal access tokens (classic)\n" +
-        "  에서 'repo' 스코프로 토큰을 생성하고 GITHUB_PAT 환경변수에 설정하세요."
+      "PROXY_TOKEN 환경변수가 설정되지 않았습니다."
     );
   }
 
