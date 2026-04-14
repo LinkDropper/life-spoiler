@@ -169,10 +169,10 @@ const ANIMAL_CLASSIFIER_USER_PROMPT = `사진을 보고 위 절차를 따라 단
 
 /** rationale/matchedRegions에 섞이면 안 되는 패턴. 위반 시 재시도 트리거. */
 const BANNED_OUTPUT_PATTERNS: readonly RegExp[] = [
-  /세장안|원안|단봉안|와잠|산근|준두|법령|관골|천창|지각/,
+  /세장안|원안|단봉안|와잠|산근|준두|법령|관골|천창|지각|인중/,
   /eyeAspectRatio|eyeCornerAngle|faceRatio|jawWidthRatio|eyeSizeRatio|noseLengthRatio/i,
   /필수\s*조건|보조\s*단서|배타\s*단서|tie[\s-]?breaker/,
-  /\d+\.\d+\s*°?/,
+  /\d+\.\d+|\d+\s*[°%]|[<>]\s*\d/,
 ];
 
 const violatesBannedPatterns = (match: AnimalMatch): boolean => {
@@ -314,12 +314,19 @@ export const classifyAnimalType = async (
 
       // 금지 패턴(수치·내부 변수명·한자 관상용어) 위반 시 재시도.
       // 프롬프트만으로는 저온도 모델도 드물게 새어나올 수 있어 방어층으로 추가.
-      if (violatesBannedPatterns(parsed) && attempt < MAX_RETRIES) {
-        lastError = new Error(
-          "rationale·matchedRegions에 금지 패턴이 포함되어 재시도합니다."
+      if (violatesBannedPatterns(parsed)) {
+        if (attempt < MAX_RETRIES) {
+          lastError = new Error(
+            "rationale·matchedRegions에 금지 패턴이 포함되어 재시도합니다."
+          );
+          await sleep(400 * (attempt + 1));
+          continue;
+        }
+        // 재시도 한계 소진. 내부 용어 노출 방지가 본 PR의 핵심 목표이므로
+        // fallback 대신 에러를 던져 상위 레이어에서 실패 처리하도록 한다.
+        throw new Error(
+          "동물상 분류 결과에 금지 패턴이 반복적으로 포함되어 분류에 실패했습니다."
         );
-        await sleep(400 * (attempt + 1));
-        continue;
       }
 
       return parsed;

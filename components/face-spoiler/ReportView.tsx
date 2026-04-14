@@ -63,10 +63,10 @@ const TagList = ({ tags, variant = "default" }: TagListProps) => {
 };
 
 const getGapLevel = (percent: number): "small" | "medium" | "large" => {
-  if (percent < 35) {
+  if (percent <= 30) {
     return "small";
   }
-  if (percent < 66) {
+  if (percent <= 65) {
     return "medium";
   }
   return "large";
