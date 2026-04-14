@@ -10,9 +10,15 @@ import {
   type DetectedFaceBox,
 } from "@/libs/face-spoiler/face-detector";
 import {
+  checkFrontalPose,
+  estimateFacePose,
+} from "@/libs/face-spoiler/face-pose-estimator";
+import {
   analyzeFaceMetrics,
   buildFaceMetricsHint,
 } from "@/libs/face-spoiler/face-shape-analyzer";
+
+import type { FaceMetrics } from "@/libs/face-spoiler/face-shape-analyzer";
 
 import { AnalysisLoading } from "./AnalysisLoading";
 import styles from "./PhotoUploader.module.css";
@@ -34,6 +40,7 @@ interface UploadMessages {
   multipleFaces: string;
   canvasUnavailable: string;
   processingFailed: string;
+  notFrontal: (params: { yaw: number; pitch: number; roll: number }) => string;
 }
 
 const loadImage = (
@@ -207,6 +214,14 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
       processingFailed: t("errorProcessingFailed", {
         default: "이미지 처리에 실패했어요.",
       }),
+      notFrontal: ({ yaw, pitch, roll }) =>
+        t("errorNotFrontal", {
+          yaw: Math.round(Math.abs(yaw)),
+          pitch: Math.round(Math.abs(pitch)),
+          roll: Math.round(Math.abs(roll)),
+          default:
+            "정면을 바라보는 사진을 올려주세요. (얼굴이 좌우 {yaw}°, 상하 {pitch}°, 기울기 {roll}° 만큼 벗어나 있어요)",
+        }),
     }),
     [t]
   );
@@ -220,6 +235,8 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
   const [detectionResult, setDetectionResult] =
     useState<ValidationResult | null>(null);
   const [faceShapeHint, setFaceShapeHint] = useState<string | null>(null);
+  // 코드 결정적 분류기에 그대로 전달할 측정값 객체. 서버 route가 동물상 분류에 사용.
+  const [faceMetrics, setFaceMetrics] = useState<FaceMetrics | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -248,14 +265,29 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
         );
       }
 
-      // 얼굴이 1개 감지되었으면 랜드마크 기반 얼굴형 분석
+      // 얼굴이 1개 감지되었으면 랜드마크 기반 포즈 게이트 + 얼굴형 분석
       if (!result.error && result.detections.length === 1) {
         try {
           const landmarks = await detectFaceLandmarks(img);
           if (landmarks) {
-            const faceMetrics = analyzeFaceMetrics(landmarks);
-            if (faceMetrics) {
-              setFaceShapeHint(buildFaceMetricsHint(faceMetrics));
+            const pose = estimateFacePose(landmarks);
+            if (pose) {
+              const gate = checkFrontalPose(pose);
+              if (!gate.ok) {
+                const notFrontalMsg = uploadMessages.notFrontal(gate.pose);
+                setDetectionResult({
+                  error: notFrontalMsg,
+                  detections: result.detections,
+                });
+                setError(notFrontalMsg);
+                return;
+              }
+            }
+            const measured = analyzeFaceMetrics(landmarks);
+            if (measured) {
+              const metricsWithPose = pose ? { ...measured, pose } : measured;
+              setFaceShapeHint(buildFaceMetricsHint(metricsWithPose));
+              setFaceMetrics(metricsWithPose);
             }
           }
         } catch {
@@ -291,6 +323,7 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
     setError(null);
     setDetectionResult(null);
     setFaceShapeHint(null);
+    setFaceMetrics(null);
 
     // 캔버스 초기화
     if (faceCanvasRef.current) {
@@ -406,6 +439,7 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
             imageHash: uploadData.imageHash,
             profileId,
             faceShapeHint: faceShapeHint ?? undefined,
+            faceMetrics: faceMetrics ?? undefined,
           }),
         }
       );
