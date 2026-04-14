@@ -62,6 +62,16 @@ const TagList = ({ tags, variant = "default" }: TagListProps) => {
   );
 };
 
+const getGapLevel = (percent: number): "small" | "medium" | "large" => {
+  if (percent < 35) {
+    return "small";
+  }
+  if (percent < 66) {
+    return "medium";
+  }
+  return "large";
+};
+
 export const ReportView = async ({ report }: ReportViewProps) => {
   const t = await getTranslations("faceSpoiler.report.sections");
   const tTraits = await getTranslations("faceSpoiler.report.traitsLabels");
@@ -72,6 +82,10 @@ export const ReportView = async ({ report }: ReportViewProps) => {
     "faceSpoiler.report.compatibilityLabels"
   );
   const tAnimals = await getTranslations("faceSpoiler.animals");
+  const tGapLevels = await getTranslations("faceSpoiler.report.gapLevels");
+  const tObservation = await getTranslations(
+    "faceSpoiler.report.observationLabels"
+  );
   const {
     firstImpression,
     traits,
@@ -118,7 +132,7 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         <TagList tags={traits.tags} />
       </section>
 
-      {/* 3. 겉과 속의 괴리율 */}
+      {/* 3. 겉과 속의 차이 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("gapAnalysis")}</h2>
@@ -127,11 +141,21 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         <h3 className={`${styles.headline} ${styles.headlineCompact}`}>
           {gapAnalysis.headline}
         </h3>
-        <div className={styles.labeledBlock}>
-          <span className={styles.blockLabel}>{t("gapAnalysis")}</span>
-          <p className={styles.paragraph}>
-            {gapAnalysis.gapPercent}% — {gapAnalysis.gapSummary}
+        <div className={styles.gapHero}>
+          <div
+            className={styles.gapGauge}
+            role="img"
+            aria-label={tGapLevels(getGapLevel(gapAnalysis.gapPercent))}
+          >
+            <div
+              className={styles.gapGaugeFill}
+              style={{ width: `${gapAnalysis.gapPercent}%` }}
+            />
+          </div>
+          <p className={styles.gapLevelLabel}>
+            {tGapLevels(getGapLevel(gapAnalysis.gapPercent))}
           </p>
+          <p className={styles.paragraph}>{gapAnalysis.gapSummary}</p>
         </div>
         <div className={styles.gapTagComparison}>
           <div className={styles.gapTagColumn}>
@@ -203,7 +227,7 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         </div>
       </section>
 
-      {/* 5. 궁합 동물상 */}
+      {/* 6. 궁합 동물상 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("compatibility")}</h2>
@@ -242,7 +266,7 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         </div>
       </section>
 
-      {/* 5. 관상 관찰 */}
+      {/* 7. 관상 관찰 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("observation")}</h2>
@@ -252,11 +276,15 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         </h3>
         <ParagraphStack text={observation.content} />
         <div className={styles.observationFeatures}>
-          <FeatureBadges features={observation.features} />
+          <FeatureBadges
+            features={observation.features}
+            showMoreLabel={tObservation("showMore")}
+            showLessLabel={tObservation("showLess")}
+          />
         </div>
       </section>
 
-      {/* 이번 주 작은 행동 */}
+      {/* 8. 이번 주 작은 행동 */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("actions")}</h2>
@@ -274,7 +302,7 @@ export const ReportView = async ({ report }: ReportViewProps) => {
         </ol>
       </section>
 
-      {/* 7. shareLine */}
+      {/* 9. shareLine */}
       <section className={styles.section}>
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>{t("shareLine")}</h2>

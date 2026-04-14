@@ -1,8 +1,31 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
 .root {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
+}
+
+.toggleButton {
+  align-self: flex-start;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid rgba(63, 217, 173, 0.35);
+  color: #3fd9ad;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.toggleButton:hover {
+  background: rgba(63, 217, 173, 0.08);
 }
 
 .badge {
