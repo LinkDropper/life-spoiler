@@ -908,13 +908,22 @@
           "villain": "조심해야 할 관상",
           "villainClashScene": "이런 장면이 벌어질 수 있어요",
           "villainSurvivalTip": "이렇게 대처하세요",
-          "gapAnalysis": "겉과 속의 괴리율",
+          "gapAnalysis": "겉과 속의 차이",
           "gapOuter": "겉",
           "gapInner": "속",
           "gapMisread": "이런 오해를 받기 쉬워요",
           "gapReversal": "반전 매력 활용법",
           "actions": "이번 주 작은 행동",
           "shareLine": "공유 문구"
+        },
+        "gapLevels": {
+          "small": "거의 비슷해요",
+          "medium": "꽤 다른 편이에요",
+          "large": "많이 다른 편이에요"
+        },
+        "observationLabels": {
+          "showMore": "더 보기",
+          "showLess": "접기"
         },
         "compatibilityLabels": {
           "bestMatch": "찰떡궁합",
@@ -2080,13 +2089,22 @@
           "villain": "Watch Out For This Face",
           "villainClashScene": "This might happen",
           "villainSurvivalTip": "How to handle it",
-          "gapAnalysis": "Inner vs Outer Gap",
+          "gapAnalysis": "Inner vs Outer",
           "gapOuter": "Outer",
           "gapInner": "Inner",
           "gapMisread": "Common misunderstandings",
           "gapReversal": "How to use your hidden charm",
           "actions": "This Week's Actions",
           "shareLine": "Share Line"
+        },
+        "gapLevels": {
+          "small": "Pretty similar",
+          "medium": "Noticeably different",
+          "large": "Very different"
+        },
+        "observationLabels": {
+          "showMore": "Show more",
+          "showLess": "Show less"
         },
         "compatibilityLabels": {
           "bestMatch": "Best Match",
@@ -3252,13 +3270,22 @@
           "villain": "気をつけたい顔",
           "villainClashScene": "こんな場面が起きるかも",
           "villainSurvivalTip": "こう対処しよう",
-          "gapAnalysis": "表と裏のギャップ率",
+          "gapAnalysis": "表と裏の違い",
           "gapOuter": "表",
           "gapInner": "裏",
           "gapMisread": "よくある誤解",
           "gapReversal": "ギャップの活かし方",
           "actions": "今週の小さな行動",
           "shareLine": "シェア用ひとこと"
+        },
+        "gapLevels": {
+          "small": "ほぼ同じ",
+          "medium": "やや違う",
+          "large": "かなり違う"
+        },
+        "observationLabels": {
+          "showMore": "もっと見る",
+          "showLess": "閉じる"
         },
         "compatibilityLabels": {
           "bestMatch": "ベストマッチ",
