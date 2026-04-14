@@ -6,7 +6,7 @@ name: Marketing Proxy
 
 on:
   repository_dispatch:
-    types: [post-to-x, discord-notify]
+    types: [post-to-x, discord-notify, weekly-metrics]
 
 jobs:
   post-to-x:
@@ -38,6 +38,78 @@ jobs:
             ${{ steps.post.outputs.tweet_url }}
 
             ${{ github.event.client_payload.text }}
+
+  weekly-metrics:
+    if: github.event.action == 'weekly-metrics'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.branch || 'develop' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: GA4 트래픽 메트릭 수집
+        run: node scripts/marketing/ga4-metrics.js --days 7 --type traffic > /tmp/ga4-traffic.csv
+        env:
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT_JSON: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+
+      - name: GA4 유입 소스 수집
+        run: node scripts/marketing/ga4-metrics.js --days 7 --type sources > /tmp/ga4-sources.csv
+        env:
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT_JSON: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+
+      - name: X 트윗 메트릭 수집
+        run: node scripts/marketing/x-metrics.js --user-id "${{ secrets.X_USER_ID }}" --count 30 > /tmp/x-metrics.csv
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+
+      - name: 주간 메트릭 파일 생성 및 커밋
+        run: |
+          WEEK=$(date -u +%G-W%V)
+          mkdir -p docs/metrics
+          OUT="docs/metrics/weekly-${WEEK}.md"
+          {
+            echo "# 주간 메트릭 — ${WEEK}"
+            echo ""
+            echo "생성 시각: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo ""
+            echo "## GA4 트래픽 (최근 7일)"
+            echo ""
+            echo '```csv'
+            cat /tmp/ga4-traffic.csv
+            echo '```'
+            echo ""
+            echo "## GA4 유입 소스"
+            echo ""
+            echo '```csv'
+            cat /tmp/ga4-sources.csv
+            echo '```'
+            echo ""
+            echo "## X 트윗 메트릭"
+            echo ""
+            echo '```csv'
+            cat /tmp/x-metrics.csv
+            echo '```'
+          } > "$OUT"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$OUT"
+          if git diff --cached --quiet; then
+            echo "변경사항 없음"
+          else
+            git commit -m "[마케팅] 주간 메트릭 자동 수집 ${WEEK}"
+            git push
+          fi
 
   discord-notify:
     if: github.event.action == 'discord-notify'
