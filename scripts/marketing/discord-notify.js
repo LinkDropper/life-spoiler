@@ -11,11 +11,10 @@
  *
  * 환경변수:
  *   DISCORD_MARKETING_WEBHOOK - Discord 웹훅 URL
+ *   PROXY_TOKEN - life-spoiler.com 프록시 인증
  */
 
-const https = require("https");
-
-const { dohLookup } = require("./lib/doh-lookup");
+const { proxyRequest } = require("./lib/proxy-fetch");
 
 const args = process.argv.slice(2);
 
@@ -41,40 +40,25 @@ if (!text) {
   process.exit(1);
 }
 
-const payload = JSON.stringify({ username, content: text });
-const parsed = new URL(webhookUrl);
+const run = async () => {
+  const payload = JSON.stringify({ username, content: text });
 
-const req = https.request(
-  {
-    hostname: parsed.hostname,
-    path: parsed.pathname + parsed.search,
+  const { statusCode, body } = await proxyRequest({
     method: "POST",
-    lookup: dohLookup,
-    headers: {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(payload),
-    },
-  },
-  (res) => {
-    let data = "";
-    res.on("data", (chunk) => (data += chunk));
-    res.on("end", () => {
-      if (res.statusCode >= 200 && res.statusCode < 300) {
-        console.log(`Discord 알림 전송 완료 (${username})`);
-      } else {
-        console.error(
-          `Discord 알림 실패: HTTP ${res.statusCode} ${data}`
-        );
-        process.exit(1);
-      }
-    });
-  }
-);
+    url: webhookUrl,
+    headers: { "Content-Type": "application/json" },
+    body: payload,
+  });
 
-req.on("error", (err) => {
+  if (statusCode >= 200 && statusCode < 300) {
+    console.log(`Discord 알림 전송 완료 (${username})`);
+    return;
+  }
+
+  throw new Error(`HTTP ${statusCode}: ${body}`);
+};
+
+run().catch((err) => {
   console.error(`Discord 알림 실패: ${err.message}`);
   process.exit(1);
 });
-
-req.write(payload);
-req.end();

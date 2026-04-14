@@ -42,6 +42,9 @@ const envSchema = z
 
     // Resend (Email)
     RESEND_API_KEY: z.string().optional(),
+
+    // Internal proxy (마케팅 스케쥴러 샌드박스 egress 우회용)
+    INTERNAL_API_TOKEN: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (!!data.OAUTH_GOOGLE_CLIENT_ID !== !!data.OAUTH_GOOGLE_CLIENT_SECRET) {

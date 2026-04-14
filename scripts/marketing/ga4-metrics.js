@@ -19,9 +19,8 @@
  */
 
 const crypto = require("crypto");
-const https = require("https");
 
-const { dohLookup } = require("./lib/doh-lookup");
+const { proxyRequest } = require("./lib/proxy-fetch");
 
 const args = process.argv.slice(2);
 const getArg = (name) => {
@@ -76,73 +75,41 @@ const createJwt = () => {
 };
 
 // OAuth 토큰 획득
-const getAccessToken = () => {
+const getAccessToken = async () => {
   const jwt = createJwt();
   const body = `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`;
 
-  return new Promise((resolve, reject) => {
-    const req = https.request(
-      {
-        hostname: "oauth2.googleapis.com",
-        path: "/token",
-        method: "POST",
-        lookup: dohLookup,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Content-Length": Buffer.byteLength(body),
-        },
-      },
-      (res) => {
-        let data = "";
-        res.on("data", (chunk) => (data += chunk));
-        res.on("end", () => {
-          if (res.statusCode === 200) {
-            resolve(JSON.parse(data).access_token);
-          } else {
-            reject(new Error(`토큰 발급 실패 (${res.statusCode}): ${data}`));
-          }
-        });
-      }
-    );
-    req.on("error", reject);
-    req.write(body);
-    req.end();
+  const { statusCode, body: responseBody } = await proxyRequest({
+    method: "POST",
+    url: "https://oauth2.googleapis.com/token",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
   });
+
+  if (statusCode !== 200) {
+    throw new Error(`토큰 발급 실패 (${statusCode}): ${responseBody}`);
+  }
+  return JSON.parse(responseBody).access_token;
 };
 
 // GA4 API 호출
-const runReport = (accessToken, requestBody) => {
+const runReport = async (accessToken, requestBody) => {
   const body = JSON.stringify(requestBody);
 
-  return new Promise((resolve, reject) => {
-    const req = https.request(
-      {
-        hostname: "analyticsdata.googleapis.com",
-        path: `/v1beta/properties/${propertyId}:runReport`,
-        method: "POST",
-        lookup: dohLookup,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-          "Content-Length": Buffer.byteLength(body),
-        },
-      },
-      (res) => {
-        let data = "";
-        res.on("data", (chunk) => (data += chunk));
-        res.on("end", () => {
-          if (res.statusCode === 200) {
-            resolve(JSON.parse(data));
-          } else {
-            reject(new Error(`GA4 API 오류 (${res.statusCode}): ${data}`));
-          }
-        });
-      }
-    );
-    req.on("error", reject);
-    req.write(body);
-    req.end();
+  const { statusCode, body: responseBody } = await proxyRequest({
+    method: "POST",
+    url: `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body,
   });
+
+  if (statusCode !== 200) {
+    throw new Error(`GA4 API 오류 (${statusCode}): ${responseBody}`);
+  }
+  return JSON.parse(responseBody);
 };
 
 const formatDate = (daysAgo) => {

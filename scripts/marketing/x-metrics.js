@@ -14,12 +14,12 @@
  *
  * 환경변수:
  *   X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET
+ *   PROXY_TOKEN - life-spoiler.com 프록시 인증
  */
 
 const crypto = require("crypto");
-const https = require("https");
 
-const { dohLookup } = require("./lib/doh-lookup");
+const { proxyRequest } = require("./lib/proxy-fetch");
 
 const args = process.argv.slice(2);
 
@@ -96,38 +96,24 @@ const generateOAuthHeader = (method, url, queryParams = {}) => {
   return `OAuth ${header}`;
 };
 
-const apiGet = (path, queryParams = {}) => {
+const apiGet = async (path, queryParams = {}) => {
   const baseUrl = `https://api.twitter.com${path}`;
   const queryString = Object.entries(queryParams)
     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
     .join("&");
-  const fullPath = queryString ? `${path}?${queryString}` : path;
+  const fullUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
   const authHeader = generateOAuthHeader("GET", baseUrl, queryParams);
 
-  return new Promise((resolve, reject) => {
-    const req = https.request(
-      {
-        hostname: "api.twitter.com",
-        path: fullPath,
-        method: "GET",
-        lookup: dohLookup,
-        headers: { Authorization: authHeader },
-      },
-      (res) => {
-        let data = "";
-        res.on("data", (chunk) => (data += chunk));
-        res.on("end", () => {
-          if (res.statusCode === 200) {
-            resolve(JSON.parse(data));
-          } else {
-            reject(new Error(`HTTP ${res.statusCode}: ${data}`));
-          }
-        });
-      }
-    );
-    req.on("error", reject);
-    req.end();
+  const { statusCode, body } = await proxyRequest({
+    method: "GET",
+    url: fullUrl,
+    headers: { Authorization: authHeader },
   });
+
+  if (statusCode === 200) {
+    return JSON.parse(body);
+  }
+  throw new Error(`HTTP ${statusCode}: ${body}`);
 };
 
 const formatMetrics = (tweets) => {
@@ -184,7 +170,6 @@ const main = async () => {
       });
       formatMetrics(result.data || []);
     } else {
-      // user-id가 없으면 인증된 유저의 정보를 먼저 조회
       const me = await apiGet("/2/users/me");
       const myId = me.data.id;
       console.error(`유저: ${me.data.name} (@${me.data.username}), ID: ${myId}`);
