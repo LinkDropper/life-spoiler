@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { ShareDrawer } from "@/components/fortune/ShareDrawer";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareFaceSpoilerImage } from "@/libs/kakao";
+import { createBrowserClient } from "@/libs/supabase/browser";
 
 import { FACE_SPOILER_HERO_CAPTURE_ID } from "./face-report-actions-constants";
 
@@ -29,6 +30,7 @@ export const GuestFaceActions = ({
   animalKey,
 }: GuestFaceActionsProps) => {
   const t = useTranslations("faceSpoiler.share");
+  const router = useRouter();
 
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -94,6 +96,20 @@ export const GuestFaceActions = ({
     }
   };
 
+  const handleCtaClick = async () => {
+    const supabase = createBrowserClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      router.push("/face-spoiler/login");
+      return;
+    }
+
+    router.push("/face-spoiler/profiles");
+  };
+
   const handleShareKakao = async () => {
     try {
       const blob = await toBlob();
@@ -129,9 +145,13 @@ export const GuestFaceActions = ({
         >
           {t("footerShareButton")}
         </button>
-        <Link href="/face-spoiler" className={styles.ctaButton}>
+        <button
+          type="button"
+          className={styles.ctaButton}
+          onClick={handleCtaClick}
+        >
           {t("guestFooterCtaButton")}
-        </Link>
+        </button>
       </footer>
 
       <ShareDrawer
