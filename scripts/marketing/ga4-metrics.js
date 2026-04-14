@@ -21,6 +21,8 @@
 const crypto = require("crypto");
 const https = require("https");
 
+const { dohLookup } = require("./lib/doh-lookup");
+
 const args = process.argv.slice(2);
 const getArg = (name) => {
   const idx = args.indexOf(`--${name}`);
@@ -84,6 +86,7 @@ const getAccessToken = () => {
         hostname: "oauth2.googleapis.com",
         path: "/token",
         method: "POST",
+        lookup: dohLookup,
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           "Content-Length": Buffer.byteLength(body),
@@ -117,6 +120,7 @@ const runReport = (accessToken, requestBody) => {
         hostname: "analyticsdata.googleapis.com",
         path: `/v1beta/properties/${propertyId}:runReport`,
         method: "POST",
+        lookup: dohLookup,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",

@@ -13,6 +13,10 @@
  *   DISCORD_MARKETING_WEBHOOK - Discord 웹훅 URL
  */
 
+const https = require("https");
+
+const { dohLookup } = require("./lib/doh-lookup");
+
 const args = process.argv.slice(2);
 
 const getArg = (name) => {
@@ -21,8 +25,7 @@ const getArg = (name) => {
   return args[idx + 1];
 };
 
-const webhookUrl =
-  getArg("webhook") || process.env.DISCORD_MARKETING_WEBHOOK;
+const webhookUrl = getArg("webhook") || process.env.DISCORD_MARKETING_WEBHOOK;
 const username = getArg("username") || "Marketing Bot";
 const text = getArg("text");
 
@@ -38,23 +41,40 @@ if (!text) {
   process.exit(1);
 }
 
-const payload = {
-  username,
-  content: text,
-};
+const payload = JSON.stringify({ username, content: text });
+const parsed = new URL(webhookUrl);
 
-fetch(webhookUrl, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload),
-})
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error(`Discord API error: ${res.status} ${res.statusText}`);
-    }
-    console.log(`Discord 알림 전송 완료 (${username})`);
-  })
-  .catch((err) => {
-    console.error(`Discord 알림 실패: ${err.message}`);
-    process.exit(1);
-  });
+const req = https.request(
+  {
+    hostname: parsed.hostname,
+    path: parsed.pathname + parsed.search,
+    method: "POST",
+    lookup: dohLookup,
+    headers: {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(payload),
+    },
+  },
+  (res) => {
+    let data = "";
+    res.on("data", (chunk) => (data += chunk));
+    res.on("end", () => {
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        console.log(`Discord 알림 전송 완료 (${username})`);
+      } else {
+        console.error(
+          `Discord 알림 실패: HTTP ${res.statusCode} ${data}`
+        );
+        process.exit(1);
+      }
+    });
+  }
+);
+
+req.on("error", (err) => {
+  console.error(`Discord 알림 실패: ${err.message}`);
+  process.exit(1);
+});
+
+req.write(payload);
+req.end();

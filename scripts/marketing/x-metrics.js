@@ -19,6 +19,8 @@
 const crypto = require("crypto");
 const https = require("https");
 
+const { dohLookup } = require("./lib/doh-lookup");
+
 const args = process.argv.slice(2);
 
 const getArg = (name) => {
@@ -108,6 +110,7 @@ const apiGet = (path, queryParams = {}) => {
         hostname: "api.twitter.com",
         path: fullPath,
         method: "GET",
+        lookup: dohLookup,
         headers: { Authorization: authHeader },
       },
       (res) => {
