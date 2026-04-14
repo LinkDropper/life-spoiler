@@ -124,16 +124,63 @@ JSON으로만 응답. 추가 텍스트·마크다운·코드블록 금지.
   "primary": "<12종 enum 중 1개>",
   "confidence": "<high|medium|low>",
   "matchedRegions": ["<일상 표현 부위 1>", "<부위 2>", ...],
-  "rationale": "<120~180자 단일 문단. 왜 이 동물상인지 관찰된 2~3개 부위 조합을 명시적으로 언급. 한자 금지, 인종 연상 어휘 금지, 미추 평가 금지.>"
+  "rationale": "<120~180자 단일 문단. 왜 이 동물상인지 관찰된 2~3개 부위 조합을 일상 언어로 설명.>"
 }
 \`\`\`
+
+## 🚨 rationale·matchedRegions 작성 규칙 (매우 중요)
+
+**이 필드는 일반 사용자에게 그대로 노출됩니다.** 내부 분석 용어가 새어나가면 실패입니다.
+
+### 금지 사항
+1. **숫자·측정 수치 절대 금지**: "4.27", "6.38°", "> 3.0", "%" 같은 수치 일체. 각도(°)도 금지.
+2. **내부 변수명 금지**: \`eyeAspectRatio\`, \`eyeCornerAngle\`, \`faceRatio\`, \`jawWidthRatio\`, \`eyeSizeRatio\`, \`noseLengthRatio\` 등 코드 식별자 일체 금지.
+3. **분류 체계 용어 금지**: "필수 조건", "필수 단서", "보조 단서", "배타 단서", "tie-breaker", "후보 1", "2개 충족", "enum" 등 프롬프트 내부 용어 금지.
+4. **관상학 전문/해부 용어 금지**: "세장안", "원안", "단봉안", "와잠", "산근", "준두", "법령", "인중" 같은 전문어 및 한자어 금지.
+5. **도형·수학 표현 금지**: "비율 X:Y", "각도 N도", "좌표", "랜드마크" 등 금지.
+
+### 대체 일상 표현 (이것만 사용)
+- "세장안" → "좁고 길게 찢어진 눈" 또는 "가로로 긴 눈"
+- "원안" → "크고 둥근 눈"
+- "눈꼬리 각도가 8° 이상 올라감" → "눈꼬리가 또렷하게 올라간 편"
+- "faceRatio 0.89" → "세로로 살짝 긴 얼굴형" 같은 일상 묘사
+- "필수 조건 2개 충족" → 표현 자체를 쓰지 말고, 관찰된 부위 조합을 직접 서술
+
+### 좋은 예 vs 나쁜 예
+❌ 나쁨: "눈 가로세로 비율 4.27로 세장안이며 눈꼬리 각도 6.38°로 올라가 고양이상의 필수 조건 1, 2를 충족하고, 얼굴형이 갸름하여 고양이상으로 분류된다."
+✅ 좋음: "좁고 길게 찢어진 눈매에 눈꼬리가 살짝 올라가 있고, 갸름한 얼굴선이 더해지며 고양이 특유의 시크하고 도도한 분위기가 자연스럽게 드러나요."
+
+❌ 나쁨: matchedRegions = ["eyeAspectRatio 4.27", "jawWidthRatio 0.65"]
+✅ 좋음: matchedRegions = ["가로로 긴 눈매", "살짝 올라간 눈꼬리", "갸름한 턱선"]
+
+### 문체 규칙
+- 존댓말 ("~요", "~이에요", "~습니다")
+- 관찰된 2~3개 부위를 일상 표현으로 묶어 한 문단으로 서술
+- **"~해서 ~상으로 분류된다" 같은 판정문 대신 "~분위기가 드러나요" 같은 묘사형** 사용
 
 matchedRegions는 2~4개. primary 매칭의 결정적 근거가 된 부위를 일상 표현으로(예: ["둥근 얼굴", "올라간 입꼬리", "둥근 코끝"]).`;
 };
 
 const ANIMAL_CLASSIFIER_USER_PROMPT = `사진을 보고 위 절차를 따라 단 1종의 동물상을 분류하세요. JSON만 출력하세요.
 
-⚠️ 다시 한 번 강조: 강아지상을 기본값으로 사용하지 마세요. 반드시 [필수] 단서 2개가 모두 충족되는 동물상만 선택하세요. [배타] 단서에 해당하면 즉시 탈락시키세요.`;
+⚠️ 다시 한 번 강조: 강아지상을 기본값으로 사용하지 마세요. 반드시 [필수] 단서 2개가 모두 충족되는 동물상만 선택하세요. [배타] 단서에 해당하면 즉시 탈락시키세요.
+
+⚠️ rationale·matchedRegions에 **숫자 수치**("4.27", "6.38°"), **코드 변수명**(eyeAspectRatio 등), **분류 체계 용어**("필수 조건", "보조 단서" 등), **한자어 관상 용어**("세장안", "원안" 등)를 절대 쓰지 마세요. 일반 사용자에게 그대로 노출되는 필드입니다.`;
+
+/** rationale/matchedRegions에 섞이면 안 되는 패턴. 위반 시 재시도 트리거. */
+const BANNED_OUTPUT_PATTERNS: readonly RegExp[] = [
+  /세장안|원안|단봉안|와잠|산근|준두|법령|관골|천창|지각/,
+  /eyeAspectRatio|eyeCornerAngle|faceRatio|jawWidthRatio|eyeSizeRatio|noseLengthRatio/i,
+  /필수\s*조건|보조\s*단서|배타\s*단서|tie[\s-]?breaker/,
+  /\d+\.\d+\s*°?/,
+];
+
+const violatesBannedPatterns = (match: AnimalMatch): boolean => {
+  const haystacks = [match.rationale, ...match.matchedRegions];
+  return haystacks.some((text) =>
+    BANNED_OUTPUT_PATTERNS.some((pattern) => pattern.test(text))
+  );
+};
 
 const ANIMAL_CLASSIFIER_RESPONSE_SCHEMA = {
   type: "object",
@@ -263,7 +310,19 @@ export const classifyAnimalType = async (
         throw new Error("Gemini 동물상 분류 응답이 비어있습니다.");
       }
 
-      return JSON.parse(text) as AnimalMatch;
+      const parsed = JSON.parse(text) as AnimalMatch;
+
+      // 금지 패턴(수치·내부 변수명·한자 관상용어) 위반 시 재시도.
+      // 프롬프트만으로는 저온도 모델도 드물게 새어나올 수 있어 방어층으로 추가.
+      if (violatesBannedPatterns(parsed) && attempt < MAX_RETRIES) {
+        lastError = new Error(
+          "rationale·matchedRegions에 금지 패턴이 포함되어 재시도합니다."
+        );
+        await sleep(400 * (attempt + 1));
+        continue;
+      }
+
+      return parsed;
     } catch (error) {
       lastError = error as Error;
       if (attempt < MAX_RETRIES) {
