@@ -1,4 +1,5 @@
 import type { NormalizedLandmark } from "./face-detector";
+import type { FacePose } from "./face-pose-estimator";
 
 /**
  * MediaPipe Face Landmarker 468개 랜드마크에서 관상학 핵심 지표를 수치로 측정.
@@ -57,6 +58,8 @@ export interface FaceMetrics {
     middle: number;
     lower: number;
   };
+  /** 추정된 얼굴 포즈 (degree). 정면 게이트 통과 사진에만 의미 있음. */
+  pose?: FacePose;
 }
 
 const FACE_SHAPE_LABELS: Record<FaceShapeCategory, string> = {
@@ -317,13 +320,21 @@ const classifyShape = (
  */
 export const buildFaceMetricsHint = (m: FaceMetrics): string => {
   const eyeCornerDesc =
-    m.eyeCornerAngle > 3 ? "올라감" : m.eyeCornerAngle < -3 ? "처짐" : "수평";
+    m.eyeCornerAngle > 9
+      ? "급격하게 올라감"
+      : m.eyeCornerAngle > 5
+        ? "뚜렷하게 올라감"
+        : m.eyeCornerAngle > 0
+          ? "한국인 평균 상승 (뚜렷한 상승 아님)"
+          : m.eyeCornerAngle < -3
+            ? "처짐"
+            : "수평";
   const eyeShapeDesc =
-    m.eyeAspectRatio > 3.0
-      ? "좁고 긴 눈(세장안)"
-      : m.eyeAspectRatio < 2.0
-        ? "크고 둥근 눈(원안)"
-        : "보통 비율 눈";
+    m.eyeAspectRatio > 3.5
+      ? "좁고 긴 눈(진짜 세장안, 한국인 상위 15%)"
+      : m.eyeAspectRatio < 2.5
+        ? "크고 둥근 눈(원안 계열)"
+        : "한국인 보통 눈 (세장안 아님)";
   const philtrumDesc =
     m.philtrumRatio > 0.4
       ? "긴 편"
@@ -354,7 +365,11 @@ export const buildFaceMetricsHint = (m: FaceMetrics): string => {
 - 상정(이마): ${m.samjeong.upper}
 - 중정(눈~코): ${m.samjeong.middle}
 - 하정(코~턱): ${m.samjeong.lower}
-
+${
+  m.pose
+    ? `\n## 촬영 포즈 (정면 게이트 통과)\n- yaw ${m.pose.yaw}°, pitch ${m.pose.pitch}°, roll ${m.pose.roll}° 이내로 측정됨 (±허용 범위 내)\n`
+    : ""
+}
 ※ 이 수치는 랜드마크 좌표 기반 객관적 측정입니다. 사진 각도·조명에 의한 오차를 감안하되, 분류 시 이 수치를 우선 참고하세요.`;
 };
 

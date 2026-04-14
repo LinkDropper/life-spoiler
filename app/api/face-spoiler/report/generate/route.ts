@@ -5,6 +5,7 @@ import { classifyAnimalType } from "@/libs/face-spoiler/animal-classifier";
 import { generateFaceReport } from "@/libs/face-spoiler/gemini";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
+import type { FaceMetrics } from "@/libs/face-spoiler/face-shape-analyzer";
 import type { FaceReportData } from "@/libs/face-spoiler/types";
 import type { FaceReportInsert, Json } from "@/libs/supabase";
 
@@ -15,6 +16,11 @@ interface GenerateRequestBody {
   imageHash?: string;
   profileId?: string;
   faceShapeHint?: string;
+  /**
+   * 클라이언트(MediaPipe)에서 측정한 얼굴 수치 객체.
+   * 코드 결정적 동물상 분류기 입력. 없으면 분류 실패.
+   */
+  faceMetrics?: FaceMetrics;
 }
 
 export const POST = async (request: Request) => {
@@ -33,7 +39,8 @@ export const POST = async (request: Request) => {
     }
 
     const body = (await request.json()) as GenerateRequestBody;
-    const { imagePath, imageHash, profileId, faceShapeHint } = body;
+    const { imagePath, imageHash, profileId, faceShapeHint, faceMetrics } =
+      body;
 
     if (!imagePath || !imageHash || !profileId) {
       return NextResponse.json(
@@ -149,11 +156,12 @@ export const POST = async (request: Request) => {
     const mimeType = imageBlob.type || "image/jpeg";
 
     try {
-      // 1단계: 동물상 전용 분류 (low temperature, 결정성 우선)
+      // 1단계: 동물상 분류 (코드 결정적) + LLM rationale 합성
       const animalMatch = await classifyAnimalType(
         base64,
         mimeType,
-        faceShapeHint
+        faceShapeHint,
+        faceMetrics
       );
 
       // 2단계: 텍스트 리포트 (동물상을 고정 입력으로, 창의성 유지)
