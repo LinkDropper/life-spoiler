@@ -54,3 +54,7 @@ docs/posts/drafts/
 *-service-account*.json
 life-spoiler-*.json
 !life-spoiler.com
+
+.omc/
+study/
+planning/
