@@ -1,0 +1,125 @@
+# 성장형 실험 프레임워크
+
+CMO 에이전트가 매주 가설을 생성하고 실험을 통해 검증해 콘텐츠 전략을 점진적으로 개선하는 체계.
+
+## North Star
+
+**주간 사이트 활성 사용자 (GA4 `activeUsers`, 최근 7일)**
+
+모든 실험의 성패는 이 지표 기여도로 판단한다. 개별 포스트 engagement(좋아요·리트윗)는 선행 지표로만 사용.
+
+## 핵심 수치
+
+| 항목 | 값 | 비고 |
+|------|-----|-----|
+| 주간 실험 콘텐츠 비율 상한 | **50%** | 주 X 포스트 16건 기준 최대 8건 |
+| 연속 실패 시 escalation | **3주** | 3주 연속 실험 모두 기각되면 Discord 알림 + 자동 실험 일시 중단 |
+| 실험 variant 최소 포스트 수 | 2건 | 1건은 노이즈, 최소 2건 |
+| 통제군 | 최근 4주 검증된 플레이북 성과 평균 | |
+| 채택 기준 | variant가 통제군 대비 activeUsers/post 기여도 **+20%** 이상 | |
+| 기각 기준 | variant가 통제군 대비 **-20%** 이하 | |
+| 그 사이 | **추가 관찰** (다음 주로 연장, 최대 2주) | |
+
+## 파일 구조
+
+| 파일 | 역할 | 수정 주체 |
+|------|------|----------|
+| `docs/insights/hypothesis-backlog.md` | 가설 풀. 상태 관리 (pending/running/validated/rejected/observing) | CMO가 일요일 생성·갱신 |
+| `docs/insights/experiments.jsonl` | 실험 실행 로그. 실험별 메트릭과 결론 | CMO가 월·목·일 갱신 |
+| `docs/insights/learned-playbook.md` | 검증된 전술. 포스트 작성 시 반드시 참조 | CMO가 일요일 갱신 |
+| `docs/insights/marketing-insights.md` | 자유 서술 인사이트 (기존 유지) | CMO가 일요일 추가 |
+| `docs/social-tracker.csv` | 개별 포스트 실적 (engagement_notes에 메트릭 역기록) | CMO가 월·목·일 갱신 |
+
+## 실행 루프
+
+### 일요일 T6 (21:00 KST) — 주간 리뷰 + 다음 주 설계
+
+1. **지난주 실험 평가**
+   - `experiments.jsonl`에서 status=running 실험 로드
+   - 해당 실험의 variant 포스트별 메트릭 집계 (engagement + GA4 activeUsers per `utm_campaign=exp-*`)
+   - 채택/기각/추가 관찰 판정 → `experiments.jsonl` status 갱신
+   - 채택된 가설 → `learned-playbook.md`에 전술로 추가
+   - 기각된 가설 → `hypothesis-backlog.md`에 상태 rejected로 이동 + 사유 기록
+
+2. **연속 실패 체크**
+   - 최근 3주 실험이 모두 기각 → Discord escalation 알림 + `docs/strategy/auto-post-disabled` 파일 생성하여 실험 자동 중단 (일반 포스트는 계속)
+
+3. **트렌드 감지**
+   - `x-metrics.js` 또는 X API로 트렌딩 토픽 조회
+   - 운세/자미두수/MBTI/성격/연애 관련 키워드 발견 시 가설 후보로 등록
+
+4. **가설 생성 (AI 자동)**
+   - 최근 4주 데이터 분석 → 활성 사용자 기여도 패턴 파악
+   - 3~5개 새 가설을 `hypothesis-backlog.md`에 status=pending으로 추가
+   - 가설은 반드시 다음 형식:
+     - **가정**: "T5 시간대에 질문형 포스트가 CTA형보다 activeUsers 기여 높을 것"
+     - **근거**: "최근 4주 T5 질문형 평균 세션 기여 N, CTA형 M"
+     - **검증 방법**: "다음 주 T5에 질문형 3건, CTA형 3건 발행 후 utm_campaign으로 세션 분리 측정"
+     - **성공 기준**: "질문형이 CTA형 대비 activeUsers/post +20% 이상"
+
+5. **다음 주 실험 선정**
+   - backlog에서 우선순위 높은 2~3개 선택 → status=running으로 변경
+   - 실험 ID 부여 (`exp-{YYYYWW}-{seq}`, 예: `exp-202617-01`)
+   - `experiments.jsonl`에 실험 등록 (실험 ID, variant 명세, 시작일, 평가일)
+   - `weekly-plan.md`에 실험 슬롯 배정 (주 최대 8건)
+
+6. **주간 Discord 종합**
+   - 아래 "주간 종합 알림" 포맷으로 Discord 발송
+
+### 월·목 T6 — 중간 메트릭 수집
+
+1. `x-metrics.js`로 최근 7일 트윗 메트릭 조회
+2. `social-tracker.csv`의 `engagement_notes` 컬럼에 `impressions=N likes=N rt=N clicks=N` 형식으로 역기록
+3. 진행 중 실험의 중간 지표만 `experiments.jsonl`에 부분 업데이트 (최종 판정은 일요일)
+4. **Discord 알림 없음** (내부 로그만)
+
+### 매일 T1~T6 포스트 발행
+
+1. `weekly-plan.md` 확인 → 현재 슬롯이 실험 배정 슬롯인지, 일반 슬롯인지 판단
+2. 일반 슬롯: `learned-playbook.md` 최신 전술 적용해서 작성 → 기존 UTM 규칙
+3. 실험 슬롯: `experiments.jsonl`에서 해당 실험 명세 확인 → variant에 맞춰 작성 → `utm_campaign=exp-{실험ID}-{variant}` 형식 사용
+4. AI 자체 체크리스트 11개 검증 (post-approval.md) — 실험·일반 동일
+5. 발행 + `social-tracker.csv` 기록 (실험 포스트는 notes에 실험 ID + variant 명시)
+
+## UTM 규칙 확장
+
+- 일반 포스트: `utm_campaign=YYYY-MM-주제` (기존 유지)
+- 실험 포스트: `utm_campaign=exp-{실험ID}-{variant}`
+  - 예: `utm_campaign=exp-202617-01-question` / `utm_campaign=exp-202617-01-cta`
+  - variant 이름은 영문 소문자 하이픈만 사용
+
+GA4에서 `utm_campaign` dimension으로 쿼리하면 실험별 activeUsers 분리 집계 가능.
+
+## 주간 종합 알림 포맷 (일요일 T6 → Discord)
+
+```
+[주간 종합] YYYY-MM-DD ~ YYYY-MM-DD
+
+North Star
+- activeUsers: N명 (전주 대비 ±N%)
+- 세션: N / 신규 사용자: N
+
+지난주 실험 결과
+- [exp-202616-01] 가설 요약: 채택 (+34% activeUsers/post vs 통제군)
+- [exp-202616-02] 가설 요약: 기각 (-12%)
+- [exp-202616-03] 가설 요약: 관찰 연장 (+8%, 유의수준 부족)
+
+이번 주 실험
+- [exp-202617-01] 가설 요약 (variant: A vs B)
+- [exp-202617-02] 가설 요약
+
+검증된 플레이북 (총 N개)
+- 최근 추가: 전술 요약
+
+X 활동
+- 총 발행: N건 (실험 N / 일반 N)
+- 총 impressions / likes / clicks
+
+다음 주 제안
+- 주요 방향
+```
+
+## 기각된 가설 재시도 규칙
+
+- 기각 후 4주 내 동일·유사 가설 재시도 금지 (블랙리스트)
+- 4주 경과 후엔 조건 바꿔서 재시도 가능 (예: 시간대만 변경)

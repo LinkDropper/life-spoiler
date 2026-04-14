@@ -34,6 +34,10 @@ globs:
 10. `docs/social-tracker.csv` 최근 7일 기록 확인, 유사 주제/동일 문구 없음
 11. `docs/strategy/weekly-plan.md`의 해당 시간대 업무와 일치
 
+**학습 반영 (일반 포스트만 해당 — 실험 포스트는 면제)**
+12. `docs/insights/learned-playbook.md`의 검증된 전술을 최대한 반영
+13. 기각된 가설(`hypothesis-backlog.md` rejected 섹션)에 해당하는 패턴 사용 금지
+
 ## 발행 절차
 
 1. 초안 작성 후 11개 체크리스트 자체 검증
