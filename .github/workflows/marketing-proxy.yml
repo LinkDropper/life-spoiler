@@ -1,0 +1,42 @@
+name: Marketing Proxy
+
+# Claude Code 웹 세션은 api.twitter.com / discord.com에 직접 접근할 수 없습니다.
+# api.github.com은 허용되므로, repository_dispatch로 이 워크플로우를 트리거하면
+# GitHub Actions 런너가 외부 API를 대신 호출합니다.
+
+on:
+  repository_dispatch:
+    types: [post-to-x, discord-notify]
+
+jobs:
+  post-to-x:
+    if: github.event.action == 'post-to-x'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: 트윗 발행
+        run: node scripts/marketing/post-to-x.js
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          TWEET_TEXT: ${{ github.event.client_payload.text }}
+
+  discord-notify:
+    if: github.event.action == 'discord-notify'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Discord 알림
+        run: node scripts/marketing/discord-notify.js
+        env:
+          DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
+          DISCORD_TEXT: ${{ github.event.client_payload.text }}
+          DISCORD_USERNAME: ${{ github.event.client_payload.username }}
