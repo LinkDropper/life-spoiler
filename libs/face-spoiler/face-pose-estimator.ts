@@ -95,7 +95,7 @@ export const estimateFacePose = (
 
 /**
  * 추정된 포즈가 정면 허용 범위 안에 있는지 판정.
- * @returns 정면이면 null, 아니면 초과된 축 정보
+ * @returns 정면이면 { ok: true }, 아니면 { ok: false }와 초과된 포즈 정보
  */
 export const checkFrontalPose = (
   pose: FacePose
