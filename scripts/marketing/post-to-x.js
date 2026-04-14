@@ -103,7 +103,14 @@ const postTweet = async (tweetText) => {
 
   if (statusCode === 201) {
     const result = JSON.parse(responseBody);
-    console.log(`트윗 발행 완료: https://x.com/i/status/${result.data.id}`);
+    const tweetUrl = `https://x.com/i/status/${result.data.id}`;
+    console.log(`트윗 발행 완료: ${tweetUrl}`);
+
+    if (process.env.GITHUB_OUTPUT) {
+      const fs = require("fs");
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, `tweet_url=${tweetUrl}\n`);
+    }
+
     return result;
   }
 
