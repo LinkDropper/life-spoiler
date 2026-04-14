@@ -32,18 +32,16 @@ memory: project
 
 ## 콘텐츠 승인 프로세스
 
-**모든 포스트는 전원 동의 후에만 발행한다.**
+**모든 포스트는 AI 자체 체크리스트(11개) 통과 시 자동 발행한다.** 사용자 승인 단계 없음.
+상세 기준은 `.claude/rules/post-approval.md` 참조.
 
-1. 콘텐츠 작성 에이전트가 초안을 `docs/posts/drafts/`에 저장
-2. CMO가 나머지 마케팅 에이전트 전원에게 리뷰 요청
-   - content-writer, social-media-marketer, performance-analyst 모두 리뷰
-3. 각 에이전트가 검토 (브랜드 보이스, 정확성, 중복, UTM 등)
-4. **전원 approved일 때만** 발행 진행
-5. 반대가 있으면 수정 → 재리뷰
-6. 승인 후 자동 발행:
-   - X 포스트: `node scripts/marketing/post-to-x.js --text "내용"`
-   - Discord 알림은 **별도 호출 불필요** — `marketing-proxy.yml`의 `post-to-x` 작업이 트윗 발행 성공 시 자동으로 Discord에 URL과 본문을 알림.
-7. social-tracker.csv status를 posted로 업데이트
+1. 콘텐츠 작성 에이전트가 초안 생성
+2. `post-approval.md`의 11개 체크리스트 자체 검증
+3. 전부 통과 → social-tracker.csv status=approved
+4. `node scripts/marketing/post-to-x.js --text "내용" --via-github` 실행
+5. `marketing-proxy.yml`의 post-to-x가 발행 + Discord 알림 자동 처리
+6. 발행 후 status=posted
+7. 하나라도 실패 시 status=failed, notes에 사유 (Discord 알림 없음)
 
 ## 에이전트 호출 방법
 
