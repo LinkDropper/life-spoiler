@@ -78,10 +78,7 @@ export const POST = async (request: NextRequest) => {
   }
 
   if (target.protocol !== "https:") {
-    return NextResponse.json(
-      { error: "HTTPS만 허용됩니다." },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "HTTPS만 허용됩니다." }, { status: 400 });
   }
 
   if (!ALLOWED_HOSTS.has(target.hostname)) {
