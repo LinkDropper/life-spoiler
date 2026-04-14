@@ -14,7 +14,6 @@
  *
  * 환경변수:
  *   X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET
- *   PROXY_TOKEN - life-spoiler.com 프록시 인증
  */
 
 const crypto = require("crypto");

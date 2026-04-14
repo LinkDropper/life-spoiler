@@ -11,7 +11,6 @@
  *
  * 환경변수:
  *   DISCORD_MARKETING_WEBHOOK - Discord 웹훅 URL
- *   PROXY_TOKEN - life-spoiler.com 프록시 인증
  */
 
 const { proxyRequest } = require("./lib/proxy-fetch");
