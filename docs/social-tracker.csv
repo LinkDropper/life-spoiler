@@ -3,3 +3,4 @@ date,time,platform,type,content_summary,url,status,engagement_notes
 2026-04-13,21:50,x,post,MBTI vs 자미두수 비교형 - 16칸 서랍장 vs 수십만 조합,https://x.com/i/status/2043672571569439043,posted,첫 발행 테스트
 2026-04-13,22:55,x,post,탐랑성 지식형 - 같은 별 다른 궁 3가지 사례,https://x.com/i/status/2043688670860111996,posted,전체 리뷰 플로우 거친 첫 포스트
 2026-04-14,13:06,x,post,대운 지식형 - 10년 단위 전성기 타이밍,,failed,DNS 오류로 X API 요청 실패
+2026-04-14,14:43,x,post,대운 지식형 - 10년 단위 전성기 타이밍 (재시도),,failed,fetch failed 오류 4회 반복 (네트워크 장애 추정)
