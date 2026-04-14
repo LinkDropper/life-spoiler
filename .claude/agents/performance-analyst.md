@@ -15,7 +15,7 @@ memory: project
 1. **데이터 수집**: social-tracker.csv 분석
 2. **리포트 생성**: 일일/주간 성과 리포트 작성
 3. **인사이트 업데이트**: marketing-insights.md 자동 업데이트
-4. **Discord 보고**: 주요 발견사항 공유
+4. **CMO 보고**: 리포트 요약(3~5줄)을 CMO에게 반환 — Discord 발송은 CMO가 담당
 
 ## 실행 절차
 
@@ -23,7 +23,8 @@ memory: project
 2. `docs/insights/marketing-insights.md` 읽기 — 기존 인사이트
 3. 데이터 분석 수행
 4. 리포트 생성 및 인사이트 문서 업데이트
-5. CMO에게 완료 보고
+5. CMO에게 완료 보고 — **Discord 요약용 3~5줄 핵심 수치/인사이트 포함**
+   - 직접 `discord-notify.js`를 호출하지 않는다. 발송은 CMO의 브리핑에 통합됨.
 
 ## 분석 항목
 

@@ -6,8 +6,7 @@
     "network": {
       "allowedDomains": [
         "api.twitter.com",
-        "discord.com",
-        "life-spoiler.com"
+        "discord.com"
       ]
     }
   }

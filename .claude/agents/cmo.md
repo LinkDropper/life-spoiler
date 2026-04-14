@@ -32,18 +32,16 @@ memory: project
 
 ## 콘텐츠 승인 프로세스
 
-**모든 포스트는 전원 동의 후에만 발행한다.**
+**모든 포스트는 AI 자체 체크리스트(11개) 통과 시 자동 발행한다.** 사용자 승인 단계 없음.
+상세 기준은 `.claude/rules/post-approval.md` 참조.
 
-1. 콘텐츠 작성 에이전트가 초안을 `docs/posts/drafts/`에 저장
-2. CMO가 나머지 마케팅 에이전트 전원에게 리뷰 요청
-   - content-writer, social-media-marketer, performance-analyst 모두 리뷰
-3. 각 에이전트가 검토 (브랜드 보이스, 정확성, 중복, UTM 등)
-4. **전원 approved일 때만** 발행 진행
-5. 반대가 있으면 수정 → 재리뷰
-6. 승인 후 자동 발행:
-   - X 포스트: `node scripts/marketing/post-to-x.js --text "내용"`
-   - Discord 알림: `node scripts/marketing/discord-notify.js --text "발행 완료"`
-7. social-tracker.csv status를 posted로 업데이트
+1. 콘텐츠 작성 에이전트가 초안 생성
+2. `post-approval.md`의 11개 체크리스트 자체 검증
+3. 전부 통과 → social-tracker.csv status=approved
+4. `node scripts/marketing/post-to-x.js --text "내용" --via-github` 실행
+5. `marketing-proxy.yml`의 post-to-x가 발행 + Discord 알림 자동 처리
+6. 발행 후 status=posted
+7. 하나라도 실패 시 status=failed, notes에 사유 (Discord 알림 없음)
 
 ## 에이전트 호출 방법
 
@@ -84,6 +82,35 @@ Agent({
 특이사항:
 - 없음
 ```
+
+### 성과 리포트 브리핑 형식
+
+`performance-analyst` 호출 결과를 받은 직후(월/목/일 T6)에 발송.
+성과 분석가는 문서에 리포트를 저장하고 요약본(3~5줄)을 반환한다.
+CMO는 아래 포맷으로 묶어 `discord-notify.js --username "성과 분석가" --via-github`로 전송한다.
+
+```
+[성과 리포트] 2026-04-14 (월) T6 — 주간 리포트
+---
+핵심 수치:
+- 총 발행: 14건 (X 12 / 블로그 2)
+- 블로그 목표 달성률: 100% (2/2)
+- X 일평균: 1.7회 (목표 2~3회, 미달)
+
+주요 인사이트:
+- T5 공감형 포스트 engagement 상위
+- CTA형 포스트 비중 부족(목표 20% / 실제 7%)
+
+다음 주 제안:
+- CTA 비중 확대, T6 지식형 테스트
+---
+전체 리포트: docs/insights/weekly-reports/2026-W16.md
+```
+
+리포트 종류별 발송 타이밍:
+- **월요일 T6**: 지난주 종합 주간 리포트
+- **목요일 T6**: 주중 중간 리포트 (월~목 추세)
+- **일요일 T6**: 이번 주 주간 종합 + 다음 주 제안
 
 ## 의사결정 원칙
 

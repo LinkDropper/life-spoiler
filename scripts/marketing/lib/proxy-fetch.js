@@ -1,48 +1,73 @@
 /**
- * 마케팅 스크립트용 프록시 HTTP 클라이언트.
+ * 마케팅 스크립트용 HTTP 클라이언트.
  *
- * 스케쥴러 샌드박스는 외부 도메인(api.twitter.com, discord.com, googleapis.com)에
- * 직접 egress가 차단되어 있어, life-spoiler.com의 /api/internal/proxy를
- * 경유하여 요청을 전달한다.
+ * Node.js의 네이티브 fetch/https 모듈은 https_proxy 환경변수를 무시하므로,
+ * 시스템 curl을 사용하여 OS 레벨 프록시(Anthropic 샌드박스 egress)를 통해
+ * 외부 API에 접근합니다.
  *
- * 환경변수:
- *   PROXY_URL       기본값: https://life-spoiler.com/api/internal/proxy
- *   PROXY_TOKEN     Bearer 토큰 (Vercel의 INTERNAL_API_TOKEN과 동일)
+ * 네트워크 허용 도메인 설정 방법:
+ *   [Web 세션] claude.ai/code > 환경 설정 > 네트워크 > 허용 도메인에 추가 후 세션 재시작
+ *   [CLI 세션] .claude/settings.json > sandbox.network.allowedDomains 에 추가
  *
  * 반환값:
  *   { statusCode, headers, body }
  */
 
-const DEFAULT_PROXY_URL = "https://life-spoiler.com/api/internal/proxy";
+const { execFile } = require("child_process");
 
-const proxyRequest = async ({ method, url, headers = {}, body }) => {
-  const proxyUrl = process.env.PROXY_URL || DEFAULT_PROXY_URL;
-  const token = process.env.PROXY_TOKEN;
+const proxyRequest = ({ method, url, headers = {}, body }) => {
+  return new Promise((resolve, reject) => {
+    const args = [
+      "-s",
+      "-w",
+      "\n__CURL_STATUS__%{http_code}",
+      "-X",
+      method.toUpperCase(),
+    ];
 
-  if (!token) {
-    throw new Error("PROXY_TOKEN 환경변수가 설정되지 않았습니다.");
-  }
+    for (const [k, v] of Object.entries(headers)) {
+      args.push("-H", `${k}: ${v}`);
+    }
 
-  const res = await fetch(proxyUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ method, url, headers, body }),
+    if (body !== undefined && body !== null) {
+      args.push("--data-binary", body);
+    }
+
+    args.push(url);
+
+    execFile(
+      "curl",
+      args,
+      { encoding: "utf8", timeout: 30000, maxBuffer: 10 * 1024 * 1024 },
+      (err, stdout) => {
+        if (err) {
+          const host = (() => {
+            try {
+              return new URL(url).hostname;
+            } catch {
+              return url;
+            }
+          })();
+          return reject(
+            new Error(
+              `${host} 연결 실패: ${err.message}\n` +
+                `→ Web 세션이라면 claude.ai/code 환경 설정 > 네트워크 > 허용 도메인에 '${host}'를 추가하고 세션을 재시작하세요.`
+            )
+          );
+        }
+
+        const lastNewline = stdout.lastIndexOf("\n");
+        const statusLine = stdout.substring(lastNewline + 1);
+        const statusCode = parseInt(
+          statusLine.replace("__CURL_STATUS__", ""),
+          10
+        );
+        const responseBody = stdout.substring(0, lastNewline);
+
+        resolve({ statusCode, headers: {}, body: responseBody });
+      }
+    );
   });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`프록시 요청 실패 (${res.status}): ${errText}`);
-  }
-
-  const data = await res.json();
-  return {
-    statusCode: data.status,
-    headers: data.headers || {},
-    body: data.body || "",
-  };
 };
 
 module.exports = { proxyRequest };
