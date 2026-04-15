@@ -38,8 +38,18 @@ CMO 에이전트가 매주 가설을 생성하고 실험을 통해 검증해 콘
    - `experiments.jsonl`에서 status=running 실험 로드
    - 해당 실험의 variant 포스트별 메트릭 집계 (engagement + GA4 activeUsers per `utm_campaign=exp-*`)
    - 채택/기각/추가 관찰 판정 → `experiments.jsonl` status 갱신
-   - 채택된 가설 → `learned-playbook.md`에 전술로 추가
+   - 채택된 가설 → `learned-playbook.md`에 전술로 추가 (출처: `exp-YYYYWW-NN`)
    - 기각된 가설 → `hypothesis-backlog.md`에 상태 rejected로 이동 + 사유 기록
+
+1.5. **상위 포스트 패턴 추출 (피드백 루프)**
+   - 실험 외 일반 포스트의 GA4 `sessionCampaignName` 집계로 activeUsers/post 랭킹 도출
+   - `ga4-metrics.js --type campaigns --days 28` 실행 → 최근 4주 누적 집계
+   - **주간 관찰**: 최근 1주 상위 3건은 `marketing-insights.md`에 관찰 메모로만 기록 (전술 확정 안 함)
+   - **누적 확정**: 최근 4주 누적 상위 10% 포스트 추출 → `social-tracker.csv`에서 본문·시간대·훅·이모지·CTA 유무 조회
+   - 공통 패턴이 N≥3건에서 반복되면 `learned-playbook.md`에 전술로 추가 (출처: `상위 포스트 패턴 (YYYY-WNN~WMM 누적)`)
+   - 기존 전술과 중복되는 패턴은 신규 등록 대신 효과 크기·검증일 갱신
+   - 누적 포스트 20건 미만이면 "데이터 부족"으로 본 단계 skip
+   - 실험 포스트(`utm_campaign=exp-*`)는 분석 대상에서 제외 (실험 경로에서 이미 +20%/-20% 기준 평가됨)
 
 2. **연속 실패 체크**
    - 최근 3주 실험이 모두 기각 → Discord escalation 알림 + `docs/strategy/auto-post-disabled` 파일 생성하여 실험 자동 중단 (일반 포스트는 계속)
