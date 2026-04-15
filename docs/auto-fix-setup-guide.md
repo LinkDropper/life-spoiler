@@ -86,6 +86,59 @@ Repo → Settings → Secrets and variables → Actions → **New repository sec
 ### 5.3 Guarded path 필터 확인
 - `app/api/pay/*` 경로에서 에러 발생 시 🛡️ Guarded 태그로 와야 함 (🚨 아님)
 
+## 5.5 Phase 2 전환 (Draft PR 자동화)
+
+Phase 1로 1주 관측 후 fingerprint 품질과 노이즈가 허용 범위라고 판단되면 Phase 2로 전환합니다.
+
+### 5.5.1 Claude OAuth 토큰 발급
+
+로컬에서:
+```bash
+claude setup-token
+```
+출력된 토큰 복사.
+
+### 5.5.2 GitHub Secrets 추가 등록
+
+Repo → Settings → Secrets and variables → Actions:
+
+| 이름 | 값 |
+|------|-----|
+| `CLAUDE_CODE_OAUTH_TOKEN` | 5.5.1에서 복사한 토큰 |
+
+### 5.5.3 Supabase Secrets 추가/변경
+
+```bash
+# Phase 2 전환 (MCP 또는 Supabase Studio에서 등록)
+PHASE=dispatch
+GITHUB_DISPATCH_TOKEN=<GitHub fine-grained PAT (repo contents/actions write 권한)>
+GITHUB_REPO=LinkDropper/life-spoiler
+```
+
+GitHub PAT 발급:
+- GitHub Settings → Developer settings → Personal access tokens → **Fine-grained tokens**
+- Repository access: `LinkDropper/life-spoiler` 선택
+- Permissions: **Actions: Read and write**, **Contents: Read** (dispatch는 Actions write 권한)
+- 만료일 설정 (권장 6개월)
+
+### 5.5.4 동작 확인
+
+1. **수동 트리거**: Actions → Auto Fix from Logs → Run workflow
+   - `fingerprint`: 임의값 `test-manual-01`
+   - `error_type`: `ManualTrigger`
+   - `message`: `수동 테스트`
+2. 기대 결과: Claude가 실행되어 SKIP_REASON 출력 (실제 에러 아니므로) → Discord에 `🤔 Auto-Fix 커밋 없음` 알림
+
+3. **실제 에러 재현**: 개발 환경에서 의도적 TypeError 발생 → 수 초 내 Discord에 `✅ Auto-Fix PR 생성됨` 알림 + PR URL
+
+### 5.5.5 Phase 2 안전 장치 재확인
+
+- AUTO_FIX_DISABLED 파일로 즉시 비활성화 가능
+- Guarded path는 Edge Function + 워크플로 + Claude 프롬프트 3중 필터
+- 같은 fingerprint PR 3회 제한 + 24시간 쿨다운
+- 모든 PR은 **Draft**로 생성, 리뷰어 `AGLOP-1354` 자동 지정
+- Auto-merge 금지 (정책)
+
 ## 6. Phase 1 운영 기간 (권장 1주)
 
 - Discord 알림 빈도/품질 관찰
