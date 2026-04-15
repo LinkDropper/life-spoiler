@@ -163,13 +163,13 @@ const sendDiscord = async (content) => {
   }
 };
 
+const MAX_ALERTS = 10;
+
 const run = async () => {
   // Supabase Logflare 실제 테이블명:
   //   postgres_logs, edge_logs (API gateway), function_logs (Edge Functions)
   const sources = ["postgres", "edge", "function"];
-  const seen = new Set();
-  let detected = 0;
-  let guarded = 0;
+  const unique = new Map(); // fingerprint -> { normalized, guarded }
 
   for (const source of sources) {
     let rows;
@@ -183,18 +183,30 @@ const run = async () => {
     for (const row of rows) {
       const normalized = normalize(row, source);
       if (!normalized) continue;
-      if (seen.has(normalized.fingerprint)) continue;
-      seen.add(normalized.fingerprint);
-
-      if (isGuarded(normalized.stack)) {
-        guarded += 1;
-        await sendDiscord(formatAlert(normalized, "GUARDED"));
-        continue;
-      }
-
-      detected += 1;
-      await sendDiscord(formatAlert(normalized, "DETECTED"));
+      if (unique.has(normalized.fingerprint)) continue;
+      unique.set(normalized.fingerprint, {
+        normalized,
+        guarded: isGuarded(normalized.stack),
+      });
     }
+  }
+
+  const list = Array.from(unique.values());
+  const toAlert = list.slice(0, MAX_ALERTS);
+  const overflow = list.length - toAlert.length;
+  let detected = 0;
+  let guarded = 0;
+
+  for (const { normalized, guarded: isGuard } of toAlert) {
+    await sendDiscord(formatAlert(normalized, isGuard ? "GUARDED" : "DETECTED"));
+    if (isGuard) guarded += 1;
+    else detected += 1;
+  }
+
+  if (overflow > 0) {
+    await sendDiscord(
+      `⚠️ 폴링 윈도우 내 고유 에러 ${list.length}건 감지, 상위 ${MAX_ALERTS}건만 알림 (${overflow}건 생략)`
+    );
   }
 
   console.log(

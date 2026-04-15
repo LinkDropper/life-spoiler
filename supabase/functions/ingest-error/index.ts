@@ -16,8 +16,6 @@
 //   GITHUB_DISPATCH_TOKEN   : (PHASE=dispatch일 때) repo dispatch PAT
 //   GITHUB_REPO             : (PHASE=dispatch일 때) "owner/repo"
 
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-
 const GUARDED_PATH_PATTERNS: RegExp[] = [
   /^\/api\/pay(\/|$)/,
   /^\/api\/auth(\/|$)/,
@@ -85,12 +83,14 @@ const verifySignature = async (
 };
 
 const timingSafeEqual = (a: string, b: string): boolean => {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  // 길이가 다른 경우에도 fixed-time으로 비교해 길이 정보를 노출하지 않는다.
+  const len = Math.max(a.length, b.length);
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < len; i += 1) {
+    diff |= a.charCodeAt(i % Math.max(a.length, 1)) ^
+      b.charCodeAt(i % Math.max(b.length, 1));
   }
-  return diff === 0;
+  return diff === 0 && a.length === b.length;
 };
 
 const parsePayload = (body: string): VercelLogEntry[] => {
@@ -99,10 +99,16 @@ const parsePayload = (body: string): VercelLogEntry[] => {
   if (trimmed.startsWith("[")) {
     return JSON.parse(trimmed) as VercelLogEntry[];
   }
-  return trimmed
-    .split("\n")
-    .filter((line) => line.trim().length > 0)
-    .map((line) => JSON.parse(line) as VercelLogEntry);
+  const entries: VercelLogEntry[] = [];
+  for (const line of trimmed.split("\n")) {
+    if (line.trim().length === 0) continue;
+    try {
+      entries.push(JSON.parse(line) as VercelLogEntry);
+    } catch (e) {
+      console.warn("NDJSON 라인 파싱 실패, 건너뜀", e);
+    }
+  }
+  return entries;
 };
 
 const isErrorEntry = (entry: VercelLogEntry): boolean => {
@@ -237,7 +243,7 @@ const formatAlert = (
   return lines.join("\n");
 };
 
-serve(async (req: Request) => {
+Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
     return new Response("method not allowed", { status: 405 });
   }
