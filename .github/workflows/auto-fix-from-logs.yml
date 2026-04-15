@@ -119,6 +119,8 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+        with:
+          version: 10
 
       - uses: actions/setup-node@v4
         if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
