@@ -8,10 +8,12 @@
  *   node scripts/marketing/ga4-metrics.js --days 30 --type traffic
  *   node scripts/marketing/ga4-metrics.js --days 7 --type sources
  *   node scripts/marketing/ga4-metrics.js --days 7 --type pages
+ *   node scripts/marketing/ga4-metrics.js --days 28 --type campaigns
  *
  * 옵션:
  *   --days    : 조회 기간 (기본 7일)
- *   --type    : traffic (트래픽 요약), sources (유입 소스별), pages (페이지별)
+ *   --type    : traffic (트래픽 요약), sources (유입 소스별), pages (페이지별),
+ *               campaigns (utm_campaign별 집계 — 상위 포스트 선정용)
  *
  * 환경변수:
  *   GA4_PROPERTY_ID - GA4 속성 ID
@@ -165,6 +167,28 @@ const reports = {
       }
     },
   },
+  campaigns: {
+    dimensions: [{ name: "sessionCampaignName" }],
+    metrics: [
+      { name: "sessions" },
+      { name: "activeUsers" },
+      { name: "screenPageViews" },
+      { name: "averageSessionDuration" },
+    ],
+    orderBys: [{ metric: { metricName: "activeUsers" }, desc: true }],
+    limit: "100",
+    format: (rows) => {
+      console.log("campaign,sessions,users,pageviews,avg_duration_sec");
+      for (const row of rows) {
+        const campaign = row.dimensionValues[0].value || "(not set)";
+        const metrics = row.metricValues.map((m) => m.value);
+        const duration = parseFloat(metrics[3]).toFixed(1);
+        console.log(
+          `${campaign},${metrics[0]},${metrics[1]},${metrics[2]},${duration}`
+        );
+      }
+    },
+  },
   pages: {
     dimensions: [{ name: "pagePath" }],
     metrics: [
@@ -193,7 +217,7 @@ const main = async () => {
 
     if (!report) {
       console.error(`Error: 알 수 없는 리포트 유형: ${reportType}`);
-      console.error("사용 가능: traffic, sources, pages");
+      console.error("사용 가능: traffic, sources, pages, campaigns");
       process.exit(1);
     }
 
