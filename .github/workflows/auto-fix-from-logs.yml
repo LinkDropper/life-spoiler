@@ -1,0 +1,281 @@
+name: Auto Fix from Logs
+
+on:
+  repository_dispatch:
+    types: [error-detected]
+  workflow_dispatch:
+    inputs:
+      fingerprint:
+        description: "에러 fingerprint (12자 hex)"
+        required: true
+      error_type:
+        description: "에러 타입 (예: TypeError)"
+        required: false
+        default: "ManualTrigger"
+      message:
+        description: "에러 메시지 (한 줄)"
+        required: false
+        default: "수동 트리거"
+      path:
+        description: "요청 경로 (있다면)"
+        required: false
+        default: ""
+      stack:
+        description: "스택트레이스"
+        required: false
+        default: ""
+
+concurrency:
+  group: auto-fix-${{ github.event.client_payload.fingerprint || inputs.fingerprint }}
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    env:
+      FP: ${{ github.event.client_payload.fingerprint || inputs.fingerprint }}
+      ERROR_TYPE: ${{ github.event.client_payload.errorType || inputs.error_type }}
+      ERROR_MESSAGE: ${{ github.event.client_payload.message || inputs.message }}
+      ERROR_PATH: ${{ github.event.client_payload.path || inputs.path }}
+      ERROR_STACK: ${{ github.event.client_payload.stack || inputs.stack }}
+      ERROR_STATUS: ${{ github.event.client_payload.statusCode || '' }}
+      ERROR_ENV: ${{ github.event.client_payload.environment || '' }}
+      ERROR_SOURCE: ${{ github.event.client_payload.source || 'manual' }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: develop
+
+      - name: Compute branch name
+        run: echo "BRANCH=fix/auto-${FP}" >> "$GITHUB_ENV"
+
+      - name: Kill switch check
+        id: killswitch
+        run: |
+          if [ -f AUTO_FIX_DISABLED ]; then
+            echo "Auto-fix disabled via AUTO_FIX_DISABLED file"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=killswitch" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Guarded path check
+        id: guarded
+        if: steps.killswitch.outputs.skip != 'true'
+        run: |
+          STACK="$ERROR_STACK"
+          PATH_V="$ERROR_PATH"
+          GUARDED_REGEX='(app/api/pay/|app/api/auth/|libs/services/oauth/|supabase/migrations/|/env\.ts|/oauth/|/callback)'
+          if echo "$PATH_V" | grep -Eq "$GUARDED_REGEX" || echo "$STACK" | grep -Eq "$GUARDED_REGEX"; then
+            echo "Guarded path detected — skip auto fix"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=guarded-path" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Dedup via GitHub state
+        id: dedup
+        if: steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+        run: |
+          LABEL="fp:${FP}"
+
+          if git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null 2>&1; then
+            echo "Branch $BRANCH already exists — skip"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=branch-exists" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          COUNT=$(gh pr list --state all --label "$LABEL" --json number --jq 'length' 2>/dev/null || echo "0")
+          if [ "$COUNT" -ge 3 ]; then
+            echo "Exceeded 3 attempts for $FP — skip"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=attempts-exceeded" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          RECENT=$(gh pr list --state closed --label "$LABEL" --json closedAt --jq '.[0].closedAt // empty' 2>/dev/null || echo "")
+          if [ -n "$RECENT" ]; then
+            RECENT_EPOCH=$(date -d "$RECENT" +%s 2>/dev/null || echo 0)
+            NOW=$(date +%s)
+            if [ "$RECENT_EPOCH" -gt 0 ] && [ $((NOW - RECENT_EPOCH)) -lt 86400 ]; then
+              echo "In cooldown window for $FP — skip"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "skip_reason=cooldown" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - uses: pnpm/action-setup@v4
+        if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install deps
+        if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Ensure labels exist
+        if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+        run: |
+          gh label create "auto-fix" --color "D73A4A" --description "Claude가 자동 생성한 수정 PR" --force || true
+          gh label create "needs-review" --color "FBCA04" --description "사람 리뷰 필요" --force || true
+          gh label create "fp:${FP}" --color "C5DEF5" --description "Error fingerprint" --force || true
+
+      - name: Create fix branch
+        if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+        run: |
+          git config user.name "claude-auto-fix[bot]"
+          git config user.email "claude-auto-fix@life-spoiler.local"
+          git checkout -b "$BRANCH"
+
+      - name: Run Claude Code
+        if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            # 자동 오류 수정 작업
+
+            ## 감지된 에러
+            - fingerprint: `${{ env.FP }}`
+            - type: `${{ env.ERROR_TYPE }}`
+            - source: `${{ env.ERROR_SOURCE }}`
+            - path: `${{ env.ERROR_PATH }}`
+            - status: `${{ env.ERROR_STATUS }}`
+            - environment: `${{ env.ERROR_ENV }}`
+
+            ### 메시지
+            ```
+            ${{ env.ERROR_MESSAGE }}
+            ```
+
+            ### 스택트레이스
+            ```
+            ${{ env.ERROR_STACK }}
+            ```
+
+            ## 작업 순서 (반드시 순서 준수)
+
+            1. **판단 게이트**: 아래 중 하나라도 해당하면 수정하지 말고
+               `SKIP_REASON=<사유>`를 출력하고 즉시 종료. 커밋 금지.
+               - 외부 API/업스트림 장애 (Gemini, Supabase 네트워크 등)
+               - 400대 사용자 입력 오류
+               - 환경변수/인프라 설정 누락
+               - 스택트레이스가 앱 코드를 가리키지 않음 (node_modules, node:internal만)
+               - 스택트레이스/변경 필요 파일이 guarded path 포함:
+                 `app/api/pay/**`, `app/api/auth/**`, `/oauth/*`, `/callback`,
+                 `libs/services/oauth/**`, `supabase/migrations/**`,
+                 `env.ts`, `.env*`
+               - 동일 에러가 여러 파일에 걸쳐 대규모 리팩토링 필요
+
+            2. **원인 분석**: 스택트레이스의 앱 코드 위치를 Grep으로 찾아
+               근본 원인을 1문단으로 정리. 증상이 아닌 원인 파악.
+
+            3. **최소 수정**: 증상이 아닌 원인을 고치는 최소 변경.
+               리팩토링/주변 정리 금지 (CLAUDE.md 규칙 준수).
+               에러 핸들링/fallback을 방어적으로 추가하지 말 것 — 근본 원인을 고칠 것.
+
+            4. **재현 테스트 추가**: Jest로 수정 전에는 실패, 후에는 통과하는
+               테스트를 `__tests__/` 아래 추가.
+
+            5. **검증**: `pnpm lint && pnpm test` 통과 확인.
+               실패 시 최대 3회 수정 반복. 3회 실패 시 `SKIP_REASON=verify-failed` 출력 후 종료.
+
+            6. **커밋**: 현재 체크아웃된 브랜치(`${{ env.BRANCH }}`)에 커밋.
+               메시지 형식:
+               ```
+               [auto-fix] <한 줄 요약>
+
+               fingerprint: ${{ env.FP }}
+               source: ${{ env.ERROR_SOURCE }}
+               ```
+
+          allowed_tools: "Bash(pnpm *),Bash(git *),Edit,Read,Grep,Glob,Write"
+
+      - name: Push & open PR
+        if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true' && success()
+        id: pr
+        run: |
+          if ! git log --oneline origin/develop..HEAD | grep -q .; then
+            echo "No commits from Claude — skipping PR (likely SKIP_REASON)"
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git push -u origin "$BRANCH"
+
+          # PR 본문 생성
+          cat > /tmp/pr-body.md <<EOF
+          $(sed \
+            -e "s|{{FINGERPRINT}}|${FP}|g" \
+            -e "s|{{ERROR_TYPE}}|${ERROR_TYPE}|g" \
+            -e "s|{{ERROR_PATH}}|${ERROR_PATH:-?}|g" \
+            -e "s|{{ERROR_STATUS}}|${ERROR_STATUS:-?}|g" \
+            -e "s|{{ERROR_ENV}}|${ERROR_ENV:-?}|g" \
+            -e "s|{{ERROR_SOURCE}}|${ERROR_SOURCE}|g" \
+            .github/auto-fix-pr-template.md)
+          EOF
+
+          PR_URL=$(gh pr create \
+            --base develop \
+            --title "[auto-fix] ${ERROR_TYPE}: ${ERROR_MESSAGE:0:60}" \
+            --body-file /tmp/pr-body.md \
+            --label "auto-fix,needs-review,fp:${FP}" \
+            --reviewer AGLOP-1354 \
+            --draft)
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+      - name: Determine final status
+        if: always()
+        id: final
+        run: |
+          if [ "${{ steps.killswitch.outputs.skip }}" = "true" ]; then
+            echo "status=skipped" >> "$GITHUB_OUTPUT"
+            echo "reason=${{ steps.killswitch.outputs.skip_reason }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ steps.guarded.outputs.skip }}" = "true" ]; then
+            echo "status=skipped" >> "$GITHUB_OUTPUT"
+            echo "reason=${{ steps.guarded.outputs.skip_reason }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ steps.dedup.outputs.skip }}" = "true" ]; then
+            echo "status=skipped" >> "$GITHUB_OUTPUT"
+            echo "reason=${{ steps.dedup.outputs.skip_reason }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ steps.pr.outputs.created }}" = "true" ]; then
+            echo "status=pr-opened" >> "$GITHUB_OUTPUT"
+            echo "reason=" >> "$GITHUB_OUTPUT"
+          elif [ "${{ job.status }}" = "success" ]; then
+            echo "status=no-commit" >> "$GITHUB_OUTPUT"
+            echo "reason=claude-skipped" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "reason=workflow-error" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Notify Discord
+        if: always()
+        env:
+          DISCORD_OPS_WEBHOOK: ${{ secrets.DISCORD_OPS_WEBHOOK }}
+        run: |
+          node scripts/ops/notify-auto-fix.js \
+            --status "${{ steps.final.outputs.status }}" \
+            --reason "${{ steps.final.outputs.reason }}" \
+            --fingerprint "${FP}" \
+            --error-type "${ERROR_TYPE}" \
+            --path "${ERROR_PATH}" \
+            --pr-url "${{ steps.pr.outputs.pr_url }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
