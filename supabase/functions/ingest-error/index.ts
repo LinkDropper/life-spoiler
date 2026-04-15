@@ -190,16 +190,21 @@ const normalize = async (
 
 const notifyDiscord = async (
   webhookUrl: string,
-  content: string
+  body: Record<string, unknown>
 ): Promise<void> => {
   const res = await fetch(webhookUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: "Error Watch", content }),
+    body: JSON.stringify({ username: "Error Watch", ...body }),
   });
   if (!res.ok) {
     console.error(`Discord 알림 실패: ${res.status} ${await res.text()}`);
   }
+};
+
+const truncate = (text: string, max: number): string => {
+  if (!text) return "";
+  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
 };
 
 const dispatchGithub = async (
@@ -227,21 +232,75 @@ const dispatchGithub = async (
   }
 };
 
-const formatAlert = (
+const COLOR_DETECTED = 0xe74c3c; // 빨강
+const COLOR_GUARDED = 0x9b59b6; // 보라
+const COLOR_OVERFLOW = 0xf1c40f; // 노랑
+
+const formatAlertEmbed = (
   err: NormalizedError,
   tag: "DETECTED" | "GUARDED"
-): string => {
-  const prefix = tag === "GUARDED" ? "🛡️ Guarded" : "🚨 Detected";
-  const lines = [
-    `${prefix} \`${err.fingerprint}\` ${err.errorType}`,
-    `path: \`${err.path ?? "?"}\` status: ${err.statusCode ?? "?"}`,
-    `env: ${err.environment ?? "?"}`,
-    "```",
-    err.message,
-    "```",
-  ];
-  return lines.join("\n");
+): Record<string, unknown> => {
+  const isGuarded = tag === "GUARDED";
+  return {
+    title: isGuarded
+      ? "🛡️ Guarded path 에러 감지 (자동 수정 대상 아님)"
+      : "🚨 런타임 에러 감지",
+    description: isGuarded
+      ? "민감 경로에서 발생한 에러입니다. 사람이 직접 확인해야 합니다."
+      : "자동 수정 파이프라인이 이어서 동작합니다.",
+    color: isGuarded ? COLOR_GUARDED : COLOR_DETECTED,
+    fields: [
+      {
+        name: "🔥 에러",
+        value:
+          `**${err.errorType}**\n` +
+          `\`\`\`\n${truncate(err.message, 800)}\n\`\`\``,
+        inline: false,
+      },
+      {
+        name: "📍 Path",
+        value: `\`${err.path ?? "?"}\``,
+        inline: true,
+      },
+      {
+        name: "🔢 Status",
+        value: `\`${err.statusCode ?? "?"}\``,
+        inline: true,
+      },
+      {
+        name: "🌐 Env",
+        value: `\`${err.environment ?? "?"}\``,
+        inline: true,
+      },
+      {
+        name: "📡 Source",
+        value: `\`${err.source}\``,
+        inline: true,
+      },
+      {
+        name: "🔖 Fingerprint",
+        value: `\`${err.fingerprint}\``,
+        inline: true,
+      },
+    ],
+    footer: { text: "Life Spoiler · Error Watch" },
+    timestamp: new Date().toISOString(),
+  };
 };
+
+const formatOverflowEmbed = (
+  total: number,
+  shown: number,
+  dropped: number
+): Record<string, unknown> => ({
+  title: "⚠️ 다수 에러 감지 — 상위만 알림",
+  description:
+    `payload에서 고유 에러 **${total}건** 감지. 알림 폭주 방지를 위해 ` +
+    `상위 **${shown}건**만 표시합니다. 생략: **${dropped}건**`,
+  color: COLOR_OVERFLOW,
+  footer: { text: "Life Spoiler · Error Watch" },
+  timestamp: new Date().toISOString(),
+});
 
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
@@ -295,10 +354,11 @@ Deno.serve(async (req: Request) => {
 
   for (const { normalized, guarded: isGuard } of toAlert) {
     try {
-      await notifyDiscord(
-        webhookUrl,
-        formatAlert(normalized, isGuard ? "GUARDED" : "DETECTED")
-      );
+      await notifyDiscord(webhookUrl, {
+        embeds: [
+          formatAlertEmbed(normalized, isGuard ? "GUARDED" : "DETECTED"),
+        ],
+      });
     } catch (e) {
       console.error("Discord 알림 예외", e);
     }
@@ -325,10 +385,11 @@ Deno.serve(async (req: Request) => {
 
   if (overflow > 0) {
     try {
-      await notifyDiscord(
-        webhookUrl,
-        `⚠️ payload에 고유 에러 ${uniqueList.length}건 감지, 상위 ${MAX_ALERTS}건만 알림 (${overflow}건 생략)`
-      );
+      await notifyDiscord(webhookUrl, {
+        embeds: [
+          formatOverflowEmbed(uniqueList.length, MAX_ALERTS, overflow),
+        ],
+      });
     } catch (_e) {
       // swallow
     }

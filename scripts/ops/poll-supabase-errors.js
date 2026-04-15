@@ -142,21 +142,64 @@ const normalize = (row, source) => {
   };
 };
 
-const formatAlert = (err, tag) => {
-  const prefix = tag === "GUARDED" ? "🛡️ Guarded" : "🚨 Detected";
-  return [
-    `${prefix} \`${err.fingerprint}\` [${err.source}] ${err.errorType}`,
-    "```",
-    err.message,
-    "```",
-  ].join("\n");
+const truncate = (text, max) => {
+  if (!text) return "";
+  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
 };
 
-const sendDiscord = async (content) => {
+const COLOR_DETECTED = 0xe74c3c;
+const COLOR_GUARDED = 0x9b59b6;
+const COLOR_OVERFLOW = 0xf1c40f;
+
+const formatAlertEmbed = (err, tag) => {
+  const isGuarded = tag === "GUARDED";
+  return {
+    title: isGuarded
+      ? "🛡️ Supabase Guarded 에러 감지 (자동 수정 제외)"
+      : "🚨 Supabase 에러 감지",
+    description: isGuarded
+      ? "민감 경로 관련 에러 — 사람 확인 필요"
+      : "폴링으로 감지된 Supabase 내부 에러입니다.",
+    color: isGuarded ? COLOR_GUARDED : COLOR_DETECTED,
+    fields: [
+      {
+        name: "🔥 에러",
+        value:
+          `**${err.errorType}**\n` +
+          `\`\`\`\n${truncate(err.message, 800)}\n\`\`\``,
+        inline: false,
+      },
+      {
+        name: "📡 Source",
+        value: `\`${err.source}\``,
+        inline: true,
+      },
+      {
+        name: "🔖 Fingerprint",
+        value: `\`${err.fingerprint}\``,
+        inline: true,
+      },
+    ],
+    footer: { text: "Life Spoiler · Error Watch (poll)" },
+    timestamp: new Date().toISOString(),
+  };
+};
+
+const formatOverflowEmbed = (total, shown, dropped) => ({
+  title: "⚠️ 다수 에러 감지 — 상위만 알림",
+  description:
+    `폴링 윈도우에서 고유 에러 **${total}건** 감지. 상위 **${shown}건**만 ` +
+    `표시합니다. 생략: **${dropped}건**`,
+  color: COLOR_OVERFLOW,
+  footer: { text: "Life Spoiler · Error Watch (poll)" },
+  timestamp: new Date().toISOString(),
+});
+
+const sendDiscordEmbed = async (embed) => {
   const res = await fetch(DISCORD_WEBHOOK, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: "Error Watch", content }),
+    body: JSON.stringify({ username: "Error Watch", embeds: [embed] }),
   });
   if (!res.ok) {
     console.error(`Discord 알림 실패: ${res.status} ${await res.text()}`);
@@ -198,14 +241,16 @@ const run = async () => {
   let guarded = 0;
 
   for (const { normalized, guarded: isGuard } of toAlert) {
-    await sendDiscord(formatAlert(normalized, isGuard ? "GUARDED" : "DETECTED"));
+    await sendDiscordEmbed(
+      formatAlertEmbed(normalized, isGuard ? "GUARDED" : "DETECTED")
+    );
     if (isGuard) guarded += 1;
     else detected += 1;
   }
 
   if (overflow > 0) {
-    await sendDiscord(
-      `⚠️ 폴링 윈도우 내 고유 에러 ${list.length}건 감지, 상위 ${MAX_ALERTS}건만 알림 (${overflow}건 생략)`
+    await sendDiscordEmbed(
+      formatOverflowEmbed(list.length, MAX_ALERTS, overflow)
     );
   }
 
