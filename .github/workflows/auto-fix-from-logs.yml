@@ -47,7 +47,9 @@ jobs:
       ERROR_STATUS: ${{ github.event.client_payload.statusCode || '' }}
       ERROR_ENV: ${{ github.event.client_payload.environment || '' }}
       ERROR_SOURCE: ${{ github.event.client_payload.source || 'manual' }}
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 조직 설정이 기본 GITHUB_TOKEN의 PR 생성을 차단할 수 있어 PAT 사용.
+      # AUTO_FIX_PAT: fine-grained PAT (Contents: write + Pull requests: write).
+      GH_TOKEN: ${{ secrets.AUTO_FIX_PAT || secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
