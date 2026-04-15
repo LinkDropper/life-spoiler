@@ -118,7 +118,7 @@ GITHUB_REPO=LinkDropper/life-spoiler
 GitHub PAT 발급:
 - GitHub Settings → Developer settings → Personal access tokens → **Fine-grained tokens**
 - Repository access: `LinkDropper/life-spoiler` 선택
-- Permissions: **Actions: Read and write**, **Contents: Read** (dispatch는 Actions write 권한)
+- Permissions: **Contents: Read and write** (repository_dispatch 호출에 필요), **Actions: Read** (선택, 모니터링 용)
 - 만료일 설정 (권장 6개월)
 
 ### 5.5.4 동작 확인

@@ -21,7 +21,9 @@ const args = process.argv.slice(2);
 const getArg = (name, fallback = "") => {
   const idx = args.indexOf(`--${name}`);
   if (idx === -1 || idx + 1 >= args.length) return fallback;
-  return args[idx + 1];
+  const value = args[idx + 1];
+  // 값이 누락되고 다음 플래그가 바로 따라오는 경우 fallback 반환
+  return value.startsWith("--") ? fallback : value;
 };
 
 const status = getArg("status");
