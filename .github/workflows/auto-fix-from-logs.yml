@@ -221,6 +221,9 @@ jobs:
             exit 0
           fi
 
+          # Claude Code Action이 git config를 수정해 credential이 사라질 수 있어
+          # push 직전에 토큰을 박은 URL로 재설정한다.
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push -u origin "$BRANCH"
 
           # PR 본문 생성
