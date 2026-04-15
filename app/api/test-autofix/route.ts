@@ -8,7 +8,7 @@ interface QueryResult {
 }
 
 const fetchResult = (): QueryResult => {
-  return { rows: [] };
+  return { rows: [{ id: "1", name: "tester" }] };
 };
 
 export async function GET() {
