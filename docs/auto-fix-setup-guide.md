@@ -105,6 +105,7 @@ Repo → Settings → Secrets and variables → Actions:
 | 이름 | 값 |
 |------|-----|
 | `CLAUDE_CODE_OAUTH_TOKEN` | 5.5.1에서 복사한 토큰 |
+| `AUTO_FIX_PAT` | Fine-grained PAT (Contents: Read/write + Pull requests: Read/write) — 조직이 기본 `GITHUB_TOKEN`의 PR 생성을 막는 경우 필요 |
 
 ### 5.5.3 Supabase Secrets 추가/변경
 
