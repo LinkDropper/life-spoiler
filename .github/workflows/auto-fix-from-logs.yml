@@ -37,6 +37,7 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      id-token: write
     env:
       FP: ${{ github.event.client_payload.fingerprint || inputs.fingerprint }}
       ERROR_TYPE: ${{ github.event.client_payload.errorType || inputs.error_type }}
@@ -208,7 +209,7 @@ jobs:
                source: ${{ env.ERROR_SOURCE }}
                ```
 
-          allowed_tools: "Bash(pnpm *),Bash(git *),Edit,Read,Grep,Glob,Write"
+          claude_args: '--allowed-tools "Bash(pnpm *),Bash(git *),Edit,Read,Grep,Glob,Write"'
 
       - name: Push & open PR
         if: steps.dedup.outputs.skip != 'true' && steps.killswitch.outputs.skip != 'true' && steps.guarded.outputs.skip != 'true' && success()
