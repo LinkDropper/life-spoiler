@@ -106,7 +106,7 @@ Agent({
 
 `performance-analyst` 호출 결과를 받은 직후(월/목/일 T6)에 발송.
 성과 분석가는 문서에 리포트를 저장하고 요약본(3~5줄)을 반환한다.
-CMO는 아래 포맷으로 묶어 `discord-notify.js --username "성과 분석가" --via-github`로 전송한다.
+CMO는 아래 포맷으로 묶어 `discord-notify.js --username "성과 분석가" --text "내용"`로 전송한다 (스크립트가 GitHub Actions 릴레이로 자동 라우팅).
 
 ```
 [성과 리포트] 2026-04-14 (월) T6 — 주간 리포트
