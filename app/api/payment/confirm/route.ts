@@ -119,19 +119,50 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    const data = await response.json();
+    let data = await response.json();
 
     if (!response.ok) {
       const errorData = data as TossPaymentError;
-      console.error("TossPayments API error:", errorData);
-      return NextResponse.json(
-        {
-          success: false,
-          code: errorData.code || "PAYMENT_CONFIRM_FAILED",
-          message: errorData.message || "결제 승인에 실패했습니다.",
-        },
-        { status: response.status }
-      );
+
+      // 이미 승인된 결제: 중복 요청이므로 결제 정보를 조회하여 성공 처리
+      if (errorData.code === "ALREADY_PROCESSED_PAYMENT") {
+        const lookupResponse = await fetch(
+          `https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Basic ${encodedSecretKey}`,
+            },
+          }
+        );
+
+        if (lookupResponse.ok) {
+          data = await lookupResponse.json();
+        } else {
+          console.error(
+            "TossPayments 결제 조회 실패:",
+            await lookupResponse.json()
+          );
+          return NextResponse.json(
+            {
+              success: false,
+              code: "PAYMENT_LOOKUP_FAILED",
+              message: "결제 정보 조회에 실패했습니다.",
+            },
+            { status: 502 }
+          );
+        }
+      } else {
+        console.error("TossPayments API error:", errorData);
+        return NextResponse.json(
+          {
+            success: false,
+            code: errorData.code || "PAYMENT_CONFIRM_FAILED",
+            message: errorData.message || "결제 승인에 실패했습니다.",
+          },
+          { status: response.status }
+        );
+      }
     }
 
     const paymentData = data as TossPaymentResponse;
