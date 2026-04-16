@@ -99,7 +99,7 @@ function PaymentSuccessContent() {
     };
 
     confirmPayment();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleViewFortune = () => {
