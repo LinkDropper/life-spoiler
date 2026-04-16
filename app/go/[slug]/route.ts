@@ -63,6 +63,12 @@ const REDIRECTS: Record<string, RedirectConfig> = {
     utm_medium: "social",
     utm_campaign: "2026-04-ziwei-fate",
   },
+  spring: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-spring-energy",
+  },
   // 채널별 프로필 링크
   x: {
     destination: "/",

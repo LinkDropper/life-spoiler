@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -31,7 +31,12 @@ function PaymentSuccessContent() {
     | null;
   const currency = (searchParams.get("currency") as "KRW" | "USD") || "KRW";
 
+  const hasConfirmedRef = useRef(false);
+
   useEffect(() => {
+    if (hasConfirmedRef.current) return;
+    hasConfirmedRef.current = true;
+
     const confirmPayment = async () => {
       if (!paymentKey || !orderId || !amount) {
         setError(tPayment("missingPaymentInfo"));
@@ -94,7 +99,8 @@ function PaymentSuccessContent() {
     };
 
     confirmPayment();
-  }, [paymentKey, orderId, amount, profileId, fortuneType, currency, tPayment]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleViewFortune = () => {
     if (profileId && fortuneType) {

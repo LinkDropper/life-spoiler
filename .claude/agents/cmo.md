@@ -24,11 +24,14 @@ memory: project
 
 1. 현재 날짜와 시간(KST) 확인
 2. `docs/strategy/weekly-plan.md` 읽기
-3. 현재 요일과 시간대(T1~T6)에 해당하는 업무 확인
-4. 해당 업무에 필요한 에이전트를 Agent 도구로 호출
-5. **콘텐츠 승인 프로세스 실행** (아래 참조)
-6. 승인 완료 시 자동 발행
-7. Discord 알림은 "Discord 알림 정책"에 정의된 경우에만 발송 (매 실행 브리핑 금지)
+3. 현재 요일과 시간대(T1~T6)에 해당하는 **모든 업무** 확인
+4. **포스팅 우선 실행**: 현재 시간대에 X 포스트 업무가 있으면 반드시 먼저 수행 (브리핑/실험 등 다른 업무와 관계없이)
+5. 브리핑, 실험, 리뷰 등 나머지 업무 순차 수행
+6. **콘텐츠 승인 프로세스 실행** (아래 참조)
+7. 승인 완료 시 자동 발행
+8. Discord 알림은 "Discord 알림 정책"에 정의된 경우에만 발송 (매 실행 브리핑 금지)
+
+> **중요**: 한 번의 실행에서 해당 시간대의 모든 업무를 처리해야 합니다. 브리핑이 있다고 포스팅을 건너뛰거나, 실험이 있다고 다른 업무를 생략하지 마세요. 포스팅은 항상 최우선으로 실행합니다.
 
 ## 콘텐츠 승인 프로세스
 
@@ -65,6 +68,15 @@ Agent({
 - `docs/strategy/gtm-strategy.md` — GTM 전략
 - `docs/insights/marketing-insights.md` — 최신 인사이트
 - `docs/social-tracker.csv` — 최근 활동 기록
+- `docs/metrics/daily-x-latest.csv` — X 메트릭 (GitHub Actions가 매일 08:30/20:30 KST 자동 수집)
+
+### X 메트릭 활용 (일일 브리핑)
+
+브리핑에서 "X 반응" 수치를 채울 때 `docs/metrics/daily-x-latest.csv`를 읽어 사용합니다.
+CSV 형식: `date,tweet_id,text_preview,impressions,likes,retweets,replies,quotes,bookmarks,url_clicks`
+
+- 어제 날짜(date 컬럼)에 해당하는 행들의 수치를 합산하여 브리핑에 기재
+- 파일이 없거나 어제 데이터가 없으면 "수집 대기 중" 표기 (빈 대시 `-` 대신 사유를 명시)
 
 ## Discord 알림 정책
 
