@@ -4,10 +4,7 @@
   },
   "sandbox": {
     "network": {
-      "allowedDomains": [
-        "api.twitter.com",
-        "discord.com"
-      ]
+      "allowedDomains": ["api.twitter.com", "discord.com"]
     }
   }
 }
