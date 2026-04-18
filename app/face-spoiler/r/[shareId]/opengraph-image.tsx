@@ -1,6 +1,4 @@
-import { readFile } from "fs/promises";
 import { ImageResponse } from "next/og";
-import path from "path";
 
 import { env } from "@/env";
 import { ANIMAL_CATALOG } from "@/libs/face-spoiler/constants/animals";
@@ -12,6 +10,14 @@ export const contentType = "image/png";
 export const size = { width: 1200, height: 630 };
 
 const CHARACTER_BUCKET = "face-characters";
+
+const fontLotteriaData = fetch(
+  new URL("../../../../public/fonts/LotteriaDdag.ttf", import.meta.url)
+).then((res) => res.arrayBuffer());
+
+const fontSBMediumData = fetch(
+  new URL("../../../../public/fonts/SB-M.otf", import.meta.url)
+).then((res) => res.arrayBuffer());
 
 const BG_COLOR = "#e4b570";
 const TEXT_DARK = "#1A1A1A";
@@ -25,8 +31,8 @@ export default async function OpengraphImage({ params }: Props) {
   const { shareId } = await params;
 
   const [fontLotteria, fontSBMedium] = await Promise.all([
-    readFile(path.join(process.cwd(), "public/fonts/LotteriaDdag.ttf")),
-    readFile(path.join(process.cwd(), "public/fonts/SB-M.otf")),
+    fontLotteriaData,
+    fontSBMediumData,
   ]);
 
   const adminClient = createServerClient();
