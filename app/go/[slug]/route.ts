@@ -87,6 +87,12 @@ const REDIRECTS: Record<string, RedirectConfig> = {
     utm_medium: "social",
     utm_campaign: "2026-04-romance-compatibility",
   },
+  horoscope: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-daily-horoscope",
+  },
   // 채널별 프로필 링크
   x: {
     destination: "/",
