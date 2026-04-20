@@ -64,6 +64,11 @@ const generateOAuthSignature = (method, url, params) => {
 
   const signingKey = `${percentEncode(config.apiSecret)}&${percentEncode(config.accessSecret)}`;
 
+  if (process.env.X_METRICS_DEBUG === "1") {
+    console.error("[DEBUG] base string:", baseString);
+    console.error("[DEBUG] sorted params:", sortedParams);
+  }
+
   return crypto
     .createHmac("sha1", signingKey)
     .update(baseString)
@@ -115,12 +120,23 @@ const apiGet = async (path, queryParams = {}) => {
 
   const headers = { Authorization: authHeader, ...X_API_HEADERS };
 
+  if (process.env.X_METRICS_DEBUG === "1") {
+    console.error("[DEBUG] full URL:", fullUrl);
+    console.error("[DEBUG] auth header:", authHeader);
+  }
+
   for (let attempt = 1; attempt <= 3; attempt += 1) {
-    const { statusCode, body } = await proxyRequest({
+    const { statusCode, headers: respHeaders, body } = await proxyRequest({
       method: "GET",
       url: fullUrl,
       headers,
     });
+
+    if (process.env.X_METRICS_DEBUG === "1") {
+      console.error(`[DEBUG] response status: ${statusCode}`);
+      console.error("[DEBUG] response headers:", JSON.stringify(respHeaders, null, 2));
+      console.error("[DEBUG] response body:", body);
+    }
 
     if (statusCode === 200) {
       return JSON.parse(body);
@@ -139,7 +155,7 @@ const apiGet = async (path, queryParams = {}) => {
     }
 
     throw new Error(
-      `HTTP ${statusCode}: ${body.substring(0, 200)}${body.length > 200 ? "..." : ""}`
+      `HTTP ${statusCode}: ${body.substring(0, 500)}${body.length > 500 ? "..." : ""}`
     );
   }
 };

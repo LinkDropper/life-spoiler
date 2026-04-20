@@ -19,6 +19,7 @@ const proxyRequest = ({ method, url, headers = {}, body }) => {
   return new Promise((resolve, reject) => {
     const args = [
       "-s",
+      "-i", // include response headers in output
       "-w",
       "\n__CURL_STATUS__%{http_code}",
       "-X",
@@ -62,12 +63,38 @@ const proxyRequest = ({ method, url, headers = {}, body }) => {
           statusLine.replace("__CURL_STATUS__", ""),
           10
         );
-        const responseBody = stdout.substring(0, lastNewline);
+        const fullResponse = stdout.substring(0, lastNewline);
 
-        resolve({ statusCode, headers: {}, body: responseBody });
+        // -i 옵션으로 헤더와 본문이 함께 옴. 빈 줄로 분리.
+        // HTTP/1.1 + redirect/continue 케이스 고려해 마지막 헤더 블록만 사용.
+        const headerBodySplit = fullResponse.lastIndexOf("\r\n\r\n");
+        const splitIdx = headerBodySplit !== -1 ? headerBodySplit : fullResponse.indexOf("\n\n");
+        let responseHeaders = {};
+        let responseBody = fullResponse;
+        if (splitIdx !== -1) {
+          const headerBlock = fullResponse.substring(0, splitIdx);
+          responseBody = fullResponse.substring(splitIdx + (headerBodySplit !== -1 ? 4 : 2));
+          responseHeaders = parseHeaders(headerBlock);
+        }
+
+        resolve({ statusCode, headers: responseHeaders, body: responseBody });
       }
     );
   });
+};
+
+const parseHeaders = (headerBlock) => {
+  const result = {};
+  const lines = headerBlock.split(/\r?\n/);
+  for (const line of lines) {
+    if (!line || line.startsWith("HTTP/")) continue;
+    const colonIdx = line.indexOf(":");
+    if (colonIdx === -1) continue;
+    const k = line.substring(0, colonIdx).trim().toLowerCase();
+    const v = line.substring(colonIdx + 1).trim();
+    result[k] = v;
+  }
+  return result;
 };
 
 module.exports = { proxyRequest };
