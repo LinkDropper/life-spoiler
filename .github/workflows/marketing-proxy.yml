@@ -11,6 +11,15 @@ on:
     - cron: "30 11 * * *"
   repository_dispatch:
     types: [post-to-x, discord-notify, weekly-metrics]
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "실행할 잡 (daily-x-metrics 만 지원)"
+        required: false
+        default: "daily-x-metrics"
+        type: choice
+        options:
+          - daily-x-metrics
 
 jobs:
   post-to-x:
@@ -116,7 +125,7 @@ jobs:
           fi
 
   daily-x-metrics:
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'daily-x-metrics')
     runs-on: ubuntu-latest
     permissions:
       contents: write

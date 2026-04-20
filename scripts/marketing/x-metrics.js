@@ -95,6 +95,16 @@ const generateOAuthHeader = (method, url, queryParams = {}) => {
   return `OAuth ${header}`;
 };
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// curl 기본 User-Agent(`curl/8.x`)는 GitHub Actions 러너 IP에서 Cloudflare가
+// 봇으로 분류해 GET /2/users/{id}/tweets에 403 challenge 페이지를 돌려준다.
+// 식별 가능한 자체 UA + Accept 헤더로 challenge를 회피한다.
+const X_API_HEADERS = {
+  "User-Agent": "LifeSpoilerMetrics/1.0 (+https://life-spoiler.com)",
+  Accept: "application/json",
+};
+
 const apiGet = async (path, queryParams = {}) => {
   const baseUrl = `https://api.twitter.com${path}`;
   const queryString = Object.entries(queryParams)
@@ -103,16 +113,35 @@ const apiGet = async (path, queryParams = {}) => {
   const fullUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
   const authHeader = generateOAuthHeader("GET", baseUrl, queryParams);
 
-  const { statusCode, body } = await proxyRequest({
-    method: "GET",
-    url: fullUrl,
-    headers: { Authorization: authHeader },
-  });
+  const headers = { Authorization: authHeader, ...X_API_HEADERS };
 
-  if (statusCode === 200) {
-    return JSON.parse(body);
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const { statusCode, body } = await proxyRequest({
+      method: "GET",
+      url: fullUrl,
+      headers,
+    });
+
+    if (statusCode === 200) {
+      return JSON.parse(body);
+    }
+
+    const isChallenge = statusCode === 403 && body.includes("Just a moment");
+    const isTransient = statusCode === 429 || statusCode >= 500;
+
+    if ((isChallenge || isTransient) && attempt < 3) {
+      const waitMs = 2000 * attempt;
+      console.error(
+        `재시도 ${attempt}/3 — HTTP ${statusCode} (${isChallenge ? "Cloudflare challenge" : "transient"}), ${waitMs}ms 대기 후 재시도`
+      );
+      await sleep(waitMs);
+      continue;
+    }
+
+    throw new Error(
+      `HTTP ${statusCode}: ${body.substring(0, 200)}${body.length > 200 ? "..." : ""}`
+    );
   }
-  throw new Error(`HTTP ${statusCode}: ${body}`);
 };
 
 const formatMetrics = (tweets) => {
