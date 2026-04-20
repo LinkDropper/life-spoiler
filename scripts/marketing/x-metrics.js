@@ -188,13 +188,13 @@ const main = async () => {
   try {
     if (tweetId) {
       const result = await apiGet(`/2/tweets/${tweetId}`, {
-        "tweet.fields": "public_metrics,non_public_metrics,created_at",
+        "tweet.fields": "public_metrics,created_at",
       });
       formatMetrics(result.data ? [result.data] : []);
     } else if (userId) {
       const result = await apiGet(`/2/users/${userId}/tweets`, {
         max_results: count,
-        "tweet.fields": "public_metrics,non_public_metrics,created_at",
+        "tweet.fields": "public_metrics,created_at",
       });
       formatMetrics(result.data || []);
     } else {
@@ -204,7 +204,7 @@ const main = async () => {
 
       const result = await apiGet(`/2/users/${myId}/tweets`, {
         max_results: count,
-        "tweet.fields": "public_metrics,non_public_metrics,created_at",
+        "tweet.fields": "public_metrics,created_at",
       });
       formatMetrics(result.data || []);
     }
