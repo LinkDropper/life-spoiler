@@ -44,6 +44,13 @@ _최종 업데이트: 2026-04-20 14:25 KST (주간 리뷰 A단계 — 일요일 
 - UTM 추적: `2026-04-star-tamlang` 캠페인만 1 user로 집계됨. 나머지 15건 포스트 모두 (referral)/(direct) bucket에 떨어져 캠페인 단위 분석 불가. 기술 수정 시급.
 - GA4 자동 수집: 4/16 이후 데이터 부재 → `weekly-metrics` repository_dispatch 트리거 또는 cron 추가 필요.
 - 일요일 T6 자동 실행 안정성: 단일 세션 idle timeout 위험 → A·B·C 분리 적용 (이번 주부터).
+- **X 메트릭 자동 수집 중단 (4/18 이후)**: 2026-04-20 진단 결과 X API의 모든 GET 엔드포인트(`/2/users/me`, `/2/users/{id}/tweets`)가 401 Unauthorized 반환. POST `/2/tweets`는 정상 → free tier 마이그레이션으로 인한 read 차단 추정. 코드 문제 아님.
+  - **영향**: `daily-x-latest.csv` 갱신 중단 → 일일 브리핑 "X 반응" 수치 수집 불가, 실험 포스트 impressions/engagement 측정 불가 (exp-202617-01 평가에 치명적).
+  - **해결 옵션**:
+    (a) X Developer Portal에서 Basic tier 이상 업그레이드 ($100/월, 10K reads/월) — 실험 검증 신뢰도 확보에 필요
+    (b) X Analytics 웹 대시보드 수동 캡처 후 CSV 수동 입력 (주 1회)
+    (c) X impressions/likes 포기, GA4 activeUsers만 신뢰 지표로 사용
+  - 코드 개선 유지: User-Agent/Accept 헤더(Cloudflare challenge 우회) + 403/429/5xx 재시도. free tier 제한은 코드로 우회 불가.
 
 ### 2026-04-13~17 주간 리뷰 요약 (참고: 이전 기록)
 
