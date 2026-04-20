@@ -140,7 +140,8 @@ jobs:
       - name: X 트윗 메트릭 수집
         run: |
           mkdir -p docs/metrics
-          node scripts/marketing/x-metrics.js --user-id "${{ secrets.X_USER_ID }}" --count 20 > docs/metrics/daily-x-latest.csv
+          # 진단: --user-id 없이 호출하여 /2/users/me 경로로 토큰 유효성 먼저 확인
+          node scripts/marketing/x-metrics.js --count 20 > docs/metrics/daily-x-latest.csv
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
