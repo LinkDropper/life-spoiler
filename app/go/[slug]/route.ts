@@ -105,6 +105,12 @@ const REDIRECTS: Record<string, RedirectConfig> = {
     utm_medium: "social",
     utm_campaign: "2026-04-spring-start",
   },
+  jeonttaek: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-space-energy",
+  },
   // 실험 포스트 단축 링크
   "exp-comp": {
     destination: "/",
