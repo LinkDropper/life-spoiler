@@ -8,13 +8,20 @@ import { AnimalHero } from "@/components/face-spoiler/AnimalHero";
 import { FaceReportActions } from "@/components/face-spoiler/FaceReportActions";
 import { GuestFaceActions } from "@/components/face-spoiler/GuestFaceActions";
 import { Header } from "@/components/face-spoiler/Header";
-import { ReportView } from "@/components/face-spoiler/ReportView";
-import { isV2Report } from "@/libs/face-spoiler/types";
+import { ReportViewV3 } from "@/components/face-spoiler/ReportViewV3";
+import { isV3Report } from "@/libs/face-spoiler/types.v3";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
 import styles from "./page.module.css";
 
 const CHARACTER_BUCKET = "face-characters";
+
+const buildCharacterImageUrl = (path: string | null): string | null => {
+  if (!path) return null;
+  const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!supabaseUrl) return null;
+  return `${supabaseUrl}/storage/v1/object/public/${CHARACTER_BUCKET}/${path}`;
+};
 
 interface ReportPageProps {
   params: Promise<{ shareId: string }>;
@@ -81,13 +88,6 @@ const fetchFaceProfileName = async (
   return (data as unknown as { name: string }).name;
 };
 
-const buildCharacterImageUrl = (path: string | null): string | null => {
-  if (!path) return null;
-  const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
-  if (!supabaseUrl) return null;
-  return `${supabaseUrl}/storage/v1/object/public/${CHARACTER_BUCKET}/${path}`;
-};
-
 export const generateMetadata = async ({
   params,
 }: ReportPageProps): Promise<Metadata> => {
@@ -103,12 +103,12 @@ export const generateMetadata = async ({
   });
 
   const headline =
-    record && isV2Report(record.result)
-      ? record.result.firstImpression.headline
+    record && isV3Report(record.result)
+      ? record.result.signature.oneLineDefinition
       : defaultHeadline;
   const description =
-    record && isV2Report(record.result)
-      ? record.result.shareLine
+    record && isV3Report(record.result)
+      ? record.result.closing.shareLine
       : defaultDescription;
 
   const fullTitle = tMeta("shareTitleSuffix", {
@@ -149,10 +149,8 @@ export default async function FaceSpoilerReportPage({
     notFound();
   }
 
-  const characterImageUrl = buildCharacterImageUrl(record.character_image_path);
-
-  // 하드 컷오버: v1 리포트는 fallback 안내 페이지 노출
-  if (!isV2Report(record.result)) {
+  // 하드 컷오버: v3가 아닌 리포트는 fallback 안내 페이지
+  if (!isV3Report(record.result)) {
     const tLegacy = await getTranslations("faceSpoiler.report.legacy");
     return (
       <>
@@ -183,19 +181,30 @@ export default async function FaceSpoilerReportPage({
   const isOwner = Boolean(authUser && authUser.id === record.user_id);
 
   const profileName = await fetchFaceProfileName(record.face_profile_id);
+  const characterImageUrl = buildCharacterImageUrl(record.character_image_path);
+
+  // v3 리포트에서 AnimalHero 입력값 조립.
+  // v2 AnimalMatch 구조에 맞춰 보조 필드를 채워준다 (matchedRegions·rationale은
+  // v3 스키마에 없으므로 coreKeywords·subDefinition에서 유도).
+  const heroAnimalMatch = {
+    primary: report.signature.animalChip.type,
+    confidence: "high" as const,
+    matchedRegions: report.signature.coreKeywords.slice(0, 4),
+    rationale: report.signature.subDefinition,
+  };
 
   return (
     <>
       <Header />
       <div className={styles.container}>
         <AnimalHero
-          animalMatch={report.animalMatch}
+          animalMatch={heroAnimalMatch}
           characterImageUrl={characterImageUrl}
           showFullContext
           showDownloadSlot={isOwner}
         />
         <div className={styles.content}>
-          <ReportView report={report} />
+          <ReportViewV3 report={report} />
         </div>
       </div>
       {isOwner && profileName ? (
@@ -204,13 +213,13 @@ export default async function FaceSpoilerReportPage({
           shareId={shareId}
           profileId={record.face_profile_id}
           profileName={profileName}
-          animalKey={report.animalMatch.primary}
+          animalKey={report.signature.animalChip.type}
         />
       ) : (
         <GuestFaceActions
           shareId={shareId}
           profileName={profileName}
-          animalKey={report.animalMatch.primary}
+          animalKey={report.signature.animalChip.type}
         />
       )}
     </>

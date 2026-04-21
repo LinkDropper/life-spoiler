@@ -141,6 +141,129 @@
   overflow-wrap: break-word;
 }
 
+.teaserSection {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.teaserTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.teaserParagraph {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.highlightList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #3fd9ad;
+}
+
+.highlightTitle {
+  flex-shrink: 0;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #3fd9ad;
+  min-width: 64px;
+}
+
+.highlightBody {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.lockHint {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  font-style: italic;
+  word-break: keep-all;
+}
+
+.regionLabelGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.regionLabel {
+  display: inline-block;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.lockedGauge {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid #3fd9ad;
+  opacity: 0.65;
+}
+
+.interestTeaserList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.interestTeaserItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.interestTeaserLabel {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.interestTeaserLocked {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
 .legacyNotice {
   margin-top: 64px;
   padding: 40px 24px;
