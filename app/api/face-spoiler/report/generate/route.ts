@@ -2,14 +2,32 @@ import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 
 import { classifyAnimalType } from "@/libs/face-spoiler/animal-classifier";
-import { generateFaceReport } from "@/libs/face-spoiler/gemini";
+import { ANIMAL_CATALOG } from "@/libs/face-spoiler/constants/animals";
+import { generateFaceReportV3 } from "@/libs/face-spoiler/gemini.v3";
+import {
+  deriveTotalScore,
+  scoreRegions,
+} from "@/libs/face-spoiler/region-scorer";
+import { isV3Report } from "@/libs/face-spoiler/types.v3";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
 import type { FaceMetrics } from "@/libs/face-spoiler/face-shape-analyzer";
-import type { FaceReportData } from "@/libs/face-spoiler/types";
+import type { FaceReportDataV3 } from "@/libs/face-spoiler/types.v3";
 import type { FaceReportInsert, Json } from "@/libs/supabase";
 
 const STORAGE_BUCKET = "face-images";
+
+/**
+ * 리포트 캐시 사용 여부.
+ * - 프로덕션: 항상 캐시 사용 (Gemini 호출 절약)
+ * - 개발(NODE_ENV=development): 캐시 스킵 기본 — 프롬프트/로직 변경 시 같은 사진으로
+ *   즉시 재생성 검증 가능. `FACE_SPOILER_FORCE_CACHE=true` 로 강제 활성화 가능.
+ *
+ * 주의: 캐시 스킵이어도 `existingRow` 조회는 수행한다. (UPDATE로 유니크 제약 충돌 회피)
+ */
+const shouldUseCache =
+  process.env.NODE_ENV === "production" ||
+  process.env.FACE_SPOILER_FORCE_CACHE === "true";
 
 interface GenerateRequestBody {
   imagePath?: string;
@@ -18,9 +36,21 @@ interface GenerateRequestBody {
   faceShapeHint?: string;
   /**
    * 클라이언트(MediaPipe)에서 측정한 얼굴 수치 객체.
-   * 코드 결정적 동물상 분류기 입력. 없으면 분류 실패.
+   * 코드 결정적 동물상 분류기 + 부위 점수 산출기 입력.
+   * v3 파이프라인은 이 수치가 반드시 필요하다.
    */
   faceMetrics?: FaceMetrics;
+}
+
+/**
+ * 기존 `face_reports` 행 탐색 결과.
+ * DB 유니크 제약이 `(user_id, image_hash)` 라서 face_profile_id와 무관하게 1건만 존재.
+ */
+interface ExistingReportRow {
+  share_id: string;
+  result: unknown;
+  face_profile_id: string;
+  paid_at: string | null;
 }
 
 export const POST = async (request: Request) => {
@@ -45,6 +75,16 @@ export const POST = async (request: Request) => {
     if (!imagePath || !imageHash || !profileId) {
       return NextResponse.json(
         { error: "imagePath, imageHash, profileId가 필요합니다." },
+        { status: 400 }
+      );
+    }
+
+    if (!faceMetrics) {
+      return NextResponse.json(
+        {
+          error:
+            "얼굴 측정값이 필요합니다. 업로드 페이지를 새로고침하고 다시 시도해주세요.",
+        },
         { status: 400 }
       );
     }
@@ -74,69 +114,92 @@ export const POST = async (request: Request) => {
 
     const adminClient = createServerClient();
 
-    // Tier 1: 프로필 단위 캐시 재확인 (race condition 대비)
-    const { data: profileCachedReportRaw } = await adminClient
+    // ────────────────────────────────────────────────────────
+    // 단계 1. 기존 행 탐색 — DB 유니크 제약이 `(user_id, image_hash)` 이므로
+    //         face_profile_id와 무관하게 1건만 존재할 수 있다.
+    //         legacy(v1/v2) 행이 있으면 DELETE/INSERT 대신 UPDATE로 업그레이드 →
+    //         유니크 제약 충돌 방지 + paid_at 보존.
+    // ────────────────────────────────────────────────────────
+    const { data: existingRowRaw } = await adminClient
       .from("face_reports")
-      .select("share_id")
+      .select("share_id, result, face_profile_id, paid_at")
       .eq("user_id", user.id)
-      .eq("face_profile_id", profileId)
       .eq("image_hash", imageHash)
       .maybeSingle();
-    const profileCachedReport = profileCachedReportRaw as unknown as {
-      share_id: string;
-    } | null;
+    const existingRow = existingRowRaw as unknown as ExistingReportRow | null;
 
-    if (profileCachedReport) {
-      // 캐시 hit: 이번 업로드는 중복이므로 정리
+    // 이미 v3 리포트가 있으면 즉시 재사용 (prod 기본 / dev에서는 캐시 스킵 가능)
+    if (shouldUseCache && existingRow && isV3Report(existingRow.result)) {
+      // 프로필이 다르면 현재 프로필로 귀속 이동
+      if (existingRow.face_profile_id !== profileId) {
+        const reportsTable = adminClient.from(
+          "face_reports"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ) as any;
+        await reportsTable
+          .update({ face_profile_id: profileId })
+          .eq("share_id", existingRow.share_id);
+      }
+      // 이번 업로드 본은 중복이므로 정리
       await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
       return NextResponse.json({
         cached: true,
-        shareId: profileCachedReport.share_id,
+        shareId: existingRow.share_id,
       });
     }
 
-    // Tier 2: 글로벌 image_hash 캐시 — 다른 유저/프로필이 이미 분석했다면 결과 재사용
-    const { data: globalCachedReportRaw } = await adminClient
-      .from("face_reports")
-      .select("result")
-      .eq("image_hash", imageHash)
-      .not("result", "is", null)
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    const globalCachedReport = globalCachedReportRaw as unknown as {
-      result: Json;
-    } | null;
-
-    if (globalCachedReport && globalCachedReport.result) {
-      const shareId = nanoid(10);
-      const insertPayload: FaceReportInsert = {
-        share_id: shareId,
-        user_id: user.id,
-        face_profile_id: profileId,
-        image_hash: imageHash,
-        result: globalCachedReport.result,
-        paid_at: null,
-        original_image_path: imagePath,
-      };
-
-      const { error: insertError } =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (adminClient.from("face_reports") as any).insert(insertPayload);
-
-      if (insertError) {
-        console.error("face_reports insert error (global cache):", insertError);
-        await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
-        return NextResponse.json(
-          { error: "리포트 저장에 실패했습니다." },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({ cached: false, shareId });
+    if (!shouldUseCache) {
+      console.log(
+        "[face-spoiler] NODE_ENV=development — 리포트 캐시 스킵, v3 파이프라인 재실행"
+      );
     }
 
-    // Tier 3: 캐시 없음 — Storage에서 이미지 다운로드 후 Gemini 분석
+    // ────────────────────────────────────────────────────────
+    // 단계 2. 글로벌 v3 캐시 — 다른 유저의 v3 결과가 있으면 재사용
+    //         existingRow(legacy)가 있으면 UPDATE, 없으면 INSERT
+    //         dev 환경에서는 이 단계도 스킵해 항상 새 Gemini 응답을 받는다.
+    // ────────────────────────────────────────────────────────
+    if (shouldUseCache) {
+      const { data: globalCachedReportRaw } = await adminClient
+        .from("face_reports")
+        .select("result")
+        .eq("image_hash", imageHash)
+        .not("result", "is", null)
+        .order("created_at", { ascending: true })
+        .limit(10);
+      const globalCachedReports = (globalCachedReportRaw ??
+        []) as unknown as Array<{ result: Json }>;
+      const globalV3Hit = globalCachedReports.find((row) =>
+        isV3Report(row.result)
+      );
+
+      if (globalV3Hit && globalV3Hit.result) {
+        const saveResult = await upsertReport({
+          adminClient,
+          existingRow,
+          userId: user.id,
+          profileId,
+          imageHash,
+          imagePath,
+          reportResult: globalV3Hit.result,
+        });
+        if (!saveResult.ok) {
+          await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
+          return NextResponse.json(
+            { error: "리포트 저장에 실패했습니다." },
+            { status: 500 }
+          );
+        }
+        return NextResponse.json({
+          cached: false,
+          shareId: saveResult.shareId,
+        });
+      }
+    }
+
+    // ────────────────────────────────────────────────────────
+    // 단계 3. 캐시 없음 → Storage에서 다운로드 후 v3 파이프라인 실행
+    // ────────────────────────────────────────────────────────
     const { data: imageBlob, error: downloadError } = await adminClient.storage
       .from(STORAGE_BUCKET)
       .download(imagePath);
@@ -156,7 +219,7 @@ export const POST = async (request: Request) => {
     const mimeType = imageBlob.type || "image/jpeg";
 
     try {
-      // 1단계: 동물상 분류 (코드 결정적) + LLM rationale 합성
+      // 1) 동물상 분류 (코드 결정적 + LLM rationale)
       const animalMatch = await classifyAnimalType(
         base64,
         mimeType,
@@ -164,40 +227,57 @@ export const POST = async (request: Request) => {
         faceMetrics
       );
 
-      // 2단계: 텍스트 리포트 (동물상을 고정 입력으로, 창의성 유지)
-      const textReport = await generateFaceReport(
-        base64,
+      // 2) 부위별 점수 산출 (코드 결정적)
+      const regionRawScores = scoreRegions(faceMetrics);
+
+      // 3) v3 텍스트 리포트 (3 Stage 병렬 호출)
+      const textReport = await generateFaceReportV3({
+        imageBase64: base64,
         mimeType,
-        animalMatch,
-        faceShapeHint
-      );
+        animal: animalMatch,
+        regionScores: regionRawScores,
+      });
 
-      // route 레벨에서 v2 리포트 합성
-      const reportData: FaceReportData = {
-        version: 2,
-        animalMatch,
-        ...textReport,
+      // 4) 코드 결정 필드 + LLM 응답 합성
+      const totalScore = deriveTotalScore(regionRawScores);
+      const animalDef = ANIMAL_CATALOG[animalMatch.primary];
+
+      const reportData: FaceReportDataV3 = {
+        version: 3,
+        signature: {
+          ...textReport.signature,
+          animalChip: {
+            type: animalMatch.primary,
+            label: animalDef.label.ko,
+          },
+        },
+        overallScore: {
+          ...textReport.overallScore,
+          totalScore,
+        },
+        regionScores: {
+          regions: regionRawScores.map((raw, i) => ({
+            region: raw.region,
+            label: raw.label,
+            score: raw.score,
+            ...textReport.regionScores.regions[i],
+          })),
+        },
+        interestAreas: textReport.interestAreas,
+        closing: textReport.closing,
       };
 
-      // DB insert (미결제 상태 + 원본 경로 보관 → 결제 후 캐릭터 이미지 생성용)
-      const shareId = nanoid(10);
-      const insertPayload: FaceReportInsert = {
-        share_id: shareId,
-        user_id: user.id,
-        face_profile_id: profileId,
-        image_hash: imageHash,
-        result: reportData as unknown as Json,
-        paid_at: null,
-        original_image_path: imagePath,
-      };
+      const saveResult = await upsertReport({
+        adminClient,
+        existingRow,
+        userId: user.id,
+        profileId,
+        imageHash,
+        imagePath,
+        reportResult: reportData as unknown as Json,
+      });
 
-      const { error: insertError } =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (adminClient.from("face_reports") as any).insert(insertPayload);
-
-      if (insertError) {
-        console.error("face_reports insert error:", insertError);
-        // insert 실패 시 원본 정리 (보관 사유 소멸)
+      if (!saveResult.ok) {
         await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
         return NextResponse.json(
           { error: "리포트 저장에 실패했습니다." },
@@ -205,14 +285,14 @@ export const POST = async (request: Request) => {
         );
       }
 
-      return NextResponse.json({ cached: false, shareId });
+      return NextResponse.json({ cached: false, shareId: saveResult.shareId });
     } catch (analysisError) {
       // 분석 실패 시 원본 이미지 정리
       await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
       throw analysisError;
     }
   } catch (error) {
-    console.error("Face report generate error:", error);
+    console.error("Face report generate v3 error:", error);
     return NextResponse.json(
       {
         error:
@@ -221,4 +301,74 @@ export const POST = async (request: Request) => {
       { status: 500 }
     );
   }
+};
+
+// ════════════════════════════════════════════════════════════
+// 보조: 기존 행이 있으면 UPDATE, 없으면 INSERT.
+// 유니크 제약 `(user_id, image_hash)` 충돌 방지의 단일 진입점.
+// ════════════════════════════════════════════════════════════
+
+interface UpsertArgs {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  adminClient: any;
+  existingRow: ExistingReportRow | null;
+  userId: string;
+  profileId: string;
+  imageHash: string;
+  imagePath: string;
+  reportResult: Json;
+}
+
+type UpsertResult =
+  | { ok: true; shareId: string }
+  | { ok: false; error: unknown };
+
+const upsertReport = async ({
+  adminClient,
+  existingRow,
+  userId,
+  profileId,
+  imageHash,
+  imagePath,
+  reportResult,
+}: UpsertArgs): Promise<UpsertResult> => {
+  if (existingRow) {
+    // legacy → v3 업그레이드. share_id / paid_at 보존.
+    const { error: updateError } = await adminClient
+      .from("face_reports")
+      .update({
+        result: reportResult,
+        face_profile_id: profileId,
+        original_image_path: imagePath,
+      })
+      .eq("share_id", existingRow.share_id);
+
+    if (updateError) {
+      console.error("face_reports update error:", updateError);
+      return { ok: false, error: updateError };
+    }
+    return { ok: true, shareId: existingRow.share_id };
+  }
+
+  // 신규 행 insert
+  const shareId = nanoid(10);
+  const insertPayload: FaceReportInsert = {
+    share_id: shareId,
+    user_id: userId,
+    face_profile_id: profileId,
+    image_hash: imageHash,
+    result: reportResult,
+    paid_at: null,
+    original_image_path: imagePath,
+  };
+
+  const { error: insertError } = await adminClient
+    .from("face_reports")
+    .insert(insertPayload);
+
+  if (insertError) {
+    console.error("face_reports insert error:", insertError);
+    return { ok: false, error: insertError };
+  }
+  return { ok: true, shareId };
 };
