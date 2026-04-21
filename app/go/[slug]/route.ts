@@ -105,6 +105,19 @@ const REDIRECTS: Record<string, RedirectConfig> = {
     utm_medium: "social",
     utm_campaign: "2026-04-spring-start",
   },
+  // 실험 포스트 단축 링크
+  "exp-comp": {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "exp-202617-01-comparison",
+  },
+  "exp-know": {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "exp-202617-01-knowledge",
+  },
   // 채널별 프로필 링크
   x: {
     destination: "/",
