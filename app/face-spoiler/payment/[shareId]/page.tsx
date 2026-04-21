@@ -164,8 +164,10 @@ export default function FaceSpoilerPaymentPage() {
           return;
         }
 
-        // 이미 결제된 리포트는 바로 결과 페이지로
-        if (result.data.paidAt) {
+        // 이미 결제된 리포트는 바로 결과 페이지로 이동 (프로덕션 한정).
+        // 개발 환경에서는 결제 플로우를 반복 테스트할 수 있도록 리다이렉트를
+        // 생략하고 결제 페이지 UI를 그대로 노출한다.
+        if (result.data.paidAt && process.env.NODE_ENV === "production") {
           router.replace(`/face-spoiler/r/${shareId}`);
           return;
         }
@@ -184,8 +186,12 @@ export default function FaceSpoilerPaymentPage() {
     fetchInfo();
   }, [authStatus, shareId, router, tFace]);
 
-  // 프로모 적용 여부 확인
+  // 프로모 적용 여부 확인 — 프로덕션 한정.
+  // 개발 환경에서는 프로모 검증 플로우를 반복 테스트할 수 있도록
+  // 이전 적용 상태를 자동으로 불러오지 않는다 (항상 빈 상태에서 시작).
   useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+
     const checkPromoApplied = async () => {
       if (authStatus !== "authenticated" || !shareId) return;
 
