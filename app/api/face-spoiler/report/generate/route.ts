@@ -74,24 +74,22 @@ export const POST = async (request: Request) => {
 
     const adminClient = createServerClient();
 
-    // Tier 1: 프로필 단위 캐시 재확인 (race condition 대비)
-    const { data: profileCachedReportRaw } = await adminClient
+    // Tier 1: 유저+이미지 단위 캐시 재확인 (unique constraint 범위와 일치)
+    const { data: userCachedReportRaw } = await adminClient
       .from("face_reports")
       .select("share_id")
       .eq("user_id", user.id)
-      .eq("face_profile_id", profileId)
       .eq("image_hash", imageHash)
       .maybeSingle();
-    const profileCachedReport = profileCachedReportRaw as unknown as {
+    const userCachedReport = userCachedReportRaw as unknown as {
       share_id: string;
     } | null;
 
-    if (profileCachedReport) {
-      // 캐시 hit: 이번 업로드는 중복이므로 정리
+    if (userCachedReport) {
       await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
       return NextResponse.json({
         cached: true,
-        shareId: profileCachedReport.share_id,
+        shareId: userCachedReport.share_id,
       });
     }
 
