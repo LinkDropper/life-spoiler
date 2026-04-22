@@ -15,6 +15,7 @@ import {
   generateFullInterpretation,
 } from "@/libs/services/ai";
 import {
+  createServerClient,
   generateChartHash,
   getCachedResult,
   getFortune,
@@ -231,8 +232,20 @@ export async function POST(request: NextRequest) {
 
     const input: ZiweiInput = parseResult.data;
     const includeDetails = body.includeDetails ?? false;
-    const profileId =
+    let profileId =
       typeof body.profileId === "string" ? body.profileId : undefined;
+
+    if (profileId) {
+      const supabase = createServerClient();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data } = await (supabase.from("profiles") as any)
+        .select("id")
+        .eq("id", profileId)
+        .maybeSingle();
+      if (!data) {
+        profileId = undefined;
+      }
+    }
 
     // 언어 파라미터 검증
     const requestedLanguage = body.language;
