@@ -1,9 +1,11 @@
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 
+import { env } from "@/env";
 import { classifyAnimalType } from "@/libs/face-spoiler/animal-classifier";
 import { ANIMAL_CATALOG } from "@/libs/face-spoiler/constants/animals";
 import { generateFaceReportV3 } from "@/libs/face-spoiler/gemini.v3";
+import { generateFaceReportV3OpenAI } from "@/libs/face-spoiler/openai.v3";
 import {
   deriveTotalScore,
   scoreRegions,
@@ -231,7 +233,18 @@ export const POST = async (request: Request) => {
       const regionRawScores = scoreRegions(faceMetrics);
 
       // 3) v3 텍스트 리포트 (3 Stage 병렬 호출)
-      const textReport = await generateFaceReportV3({
+      //    Phase 20: provider 스위칭. 기본 Gemini, env로 OpenAI(GPT-5.4 mini) 전환.
+      const provider = env.FACE_SPOILER_LLM_PROVIDER;
+      const generate =
+        provider === "openai"
+          ? generateFaceReportV3OpenAI
+          : generateFaceReportV3;
+      if (provider === "openai") {
+        console.info(
+          `[face-spoiler] LLM provider=openai (model=${env.OPENAI_FACE_MODEL})`
+        );
+      }
+      const textReport = await generate({
         imageBase64: base64,
         mimeType,
         animal: animalMatch,

@@ -18,6 +18,25 @@ const envSchema = z
     // AI - Gemini
     GEMINI_API_KEY: z.string().optional(),
 
+    // AI - OpenAI (face-spoiler GPT-5.4 mini 실험용 — Phase 20)
+    OPENAI_API_KEY: z.string().optional(),
+
+    // Face-spoiler 텍스트 리포트 LLM 제공자 스위칭.
+    // "gemini" (default) 또는 "openai". 실험 중에만 "openai"로 지정.
+    FACE_SPOILER_LLM_PROVIDER: z.enum(["gemini", "openai"]).default("gemini"),
+
+    // OpenAI 모델 ID. 공식 release 시 snapshot ID 주입. Default는 2026-03-17 snapshot.
+    OPENAI_FACE_MODEL: z.string().default("gpt-5.4-mini-2026-03-17"),
+
+    // Phase 20.6 (2026-04-23) — FaceMetrics 파생 정보 노출 레벨 실험.
+    // 한국인 측정값 분포가 좁아 LLM에 같은 힌트가 가면 해석이 수렴한다는 가설을 A/B 검증.
+    //  - "metrics" (default): 현재 동작. Stage A 수치 hint, Stage B/C 문장 hint, 부위 조합 블록 주입.
+    //  - "minimal": 동물상 이름 숨김, 점수 상위 1개 부위만 노출, 조합 블록 제거.
+    //  - "none": 측정값·분류 정보 없이 사진+톤 규칙만. shareLine 전용 동물상 이름만 유지.
+    FACE_SPOILER_HINT_MODE: z
+      .enum(["metrics", "minimal", "none"])
+      .default("metrics"),
+
     // Supabase
     NEXT_PUBLIC_SUPABASE_URL: z.url().optional(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().optional(),
