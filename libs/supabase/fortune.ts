@@ -125,7 +125,24 @@ export const saveFortune = async (
     );
 
     if (error) {
-      console.error("Fortune 저장 실패:", error);
+      const errorInfo = {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        profileId,
+        fortuneType,
+        year,
+      };
+
+      // 존재하지 않는 profile_id에 대한 FK 위반: 정상 흐름으로 처리
+      // (프로필이 이미 삭제되었거나 클라이언트에서 stale ID 전송된 경우)
+      if (error.code === "23503") {
+        console.warn("Fortune 저장 건너뜀: 프로필 없음", errorInfo);
+        return false;
+      }
+
+      console.error("Fortune 저장 실패", errorInfo);
       return false;
     }
 
