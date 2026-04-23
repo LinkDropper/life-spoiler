@@ -37,13 +37,33 @@ function PaymentSuccessContent() {
     if (hasConfirmedRef.current) return;
     hasConfirmedRef.current = true;
 
-    const confirmPayment = async () => {
-      if (!paymentKey || !orderId || !amount) {
-        setError(tPayment("missingPaymentInfo"));
-        setIsConfirming(false);
-        return;
-      }
+    if (!paymentKey || !orderId || !amount) {
+      setError(tPayment("missingPaymentInfo"));
+      setIsConfirming(false);
+      return;
+    }
 
+    // 세션 레벨 멱등성: 같은 paymentKey를 이 세션에서 이미 확인했다면 API 호출 생략.
+    // 새로고침/뒤로가기 등으로 success 페이지가 remount되어도 토스가
+    // ALREADY_PROCESSED_PAYMENT를 돌려주지 않도록 사전에 차단.
+    const sessionKey = `toss_confirmed:${paymentKey}`;
+    const alreadyConfirmedInSession =
+      typeof window !== "undefined" &&
+      (() => {
+        try {
+          return sessionStorage.getItem(sessionKey) === "1";
+        } catch {
+          return false;
+        }
+      })();
+
+    if (alreadyConfirmedInSession) {
+      setIsConfirmed(true);
+      setIsConfirming(false);
+      return;
+    }
+
+    const confirmPayment = async () => {
       try {
         const response = await fetch("/api/payment/confirm", {
           method: "POST",
@@ -62,16 +82,26 @@ function PaymentSuccessContent() {
           }),
         });
 
-        await response.json();
+        const result: { alreadyProcessed?: boolean } | null = await response
+          .json()
+          .catch(() => null);
 
         if (!response.ok) {
           throw new Error(tPayment("confirmError"));
         }
 
+        if (typeof window !== "undefined") {
+          try {
+            sessionStorage.setItem(sessionKey, "1");
+          } catch {
+            // 프라이빗 모드/용량 초과 등으로 실패해도 UX에는 영향 없음
+          }
+        }
+
         setIsConfirmed(true);
 
-        // GA 결제 이벤트 전송
-        if (orderId && amount && fortuneType) {
+        // GA 결제 이벤트는 실제 첫 confirm 일 때만 전송 (중복 집계 방지)
+        if (!result?.alreadyProcessed && orderId && amount && fortuneType) {
           trackPurchase({
             transaction_id: orderId,
             value: Number(amount),
