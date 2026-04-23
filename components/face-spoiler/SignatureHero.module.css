@@ -5,6 +5,56 @@
   padding: 48px 0 8px;
 }
 
+.faceAgeCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  padding: 14px 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(63, 217, 173, 0.1),
+    rgba(63, 217, 173, 0.02)
+  );
+  border: 1px solid rgba(63, 217, 173, 0.35);
+  border-radius: 12px;
+}
+
+.faceAgeLabel {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #3fd9ad;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.faceAgeValue {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.faceAgeRange {
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+
+.faceAgeNote {
+  flex-basis: 100%;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
 .titleBlock {
   display: flex;
   flex-direction: column;

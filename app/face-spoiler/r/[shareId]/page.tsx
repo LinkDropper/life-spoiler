@@ -184,13 +184,18 @@ export default async function FaceSpoilerReportPage({
   const characterImageUrl = buildCharacterImageUrl(record.character_image_path);
 
   // v3 리포트에서 AnimalHero 입력값 조립.
-  // v2 AnimalMatch 구조에 맞춰 보조 필드를 채워준다 (matchedRegions·rationale은
-  // v3 스키마에 없으므로 coreKeywords·subDefinition에서 유도).
+  // v2 AnimalMatch 구조에 맞춰 보조 필드를 채워준다 (matchedRegions는
+  // v3 스키마에 없으므로 coreKeywords에서 유도).
+  //
+  // Phase 20.1 (2026-04-23): `rationale`을 `subDefinition`으로 채우던 로직 제거.
+  // 같은 subDefinition이 SignatureHero의 subDef로도, AnimalHero의 rationale로도
+  // 출력되어 히어로 영역에 동일 문단이 두 번 노출되는 버그 발생.
+  // rationale은 AnimalHero에서 falsy일 때 렌더 skip하도록 처리됨.
   const heroAnimalMatch = {
     primary: report.signature.animalChip.type,
     confidence: "high" as const,
     matchedRegions: report.signature.coreKeywords.slice(0, 4),
-    rationale: report.signature.subDefinition,
+    rationale: "",
   };
 
   return (

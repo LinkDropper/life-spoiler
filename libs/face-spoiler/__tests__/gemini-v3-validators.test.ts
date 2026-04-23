@@ -17,6 +17,11 @@ const buildValidSignatureOverall = (): SignatureOverallResponse => ({
     coreKeywords: ["묵직함", "추진력", "눈치", "표현력", "신중함"],
     commonlyHeardPhrase: "'조용한데 은근 강하다'는 말, 한 번쯤 들어보셨죠?",
     commonMisread: "'차가워 보인다'는 오해, 실제와 가장 거리가 먼 부분이에요.",
+    faceAge: {
+      range: "25-29",
+      label: "20대 후반",
+      note: "첫인상 기준의 대략적인 추정이에요.",
+    },
   },
   overallScore: {
     scoreOneLiner: "강렬한 한 방보다, 전체 밸런스로 이기는 상.",
@@ -36,7 +41,7 @@ const buildValidSignatureOverall = (): SignatureOverallResponse => ({
 const buildValidRegionScores = (): RegionScoresResponse => ({
   regions: Array.from({ length: 8 }, () => ({
     interpretation:
-      "관상에서는 이 부위를 안정과 신뢰의 축으로 보기도 해요. 전체 인상에서 균형감이 또렷하게 잡혀 있어 무난함을 넘은 안정감이 느껴지는 쪽이에요.",
+      "이 부위의 결이 단단히 자리한 느낌이에요. 전체 인상에서 무리 없는 리듬이 살아 있어 주변에 편안함을 주는 쪽이에요.",
     bullets: [
       "한 번 보고 판단하는 편이에요",
       "감정에 휩쓸리지 않는 쪽이에요",
@@ -96,8 +101,8 @@ const buildValidInterestAreas = (): InterestAreasResponse => {
         body: fx.body,
         strengths: [
           "흔들림이 적은 편이에요",
-          "신뢰 쌓는 속도가 또렷한 쪽이에요",
-          "꾸준한 페이스가 강점이에요",
+          "신뢰 쌓는 속도에 자기 리듬이 있는 쪽이에요",
+          "지속되는 페이스가 강점이에요",
         ],
         cautions: [
           "표현이 늦어 오해받을 수 있어요",
@@ -251,8 +256,7 @@ describe("validateInterestAreas", () => {
       "차곡차곡 쌓아가는 자산이 든든해요.";
     bad.interestAreas.areas[2].nicknameSubtext =
       "오래 볼수록 진가가 드러나는 타입이에요.";
-    bad.interestAreas.areas[0].oneLineVerdict =
-      "가까워질수록 깊어지는 연애운.";
+    bad.interestAreas.areas[0].oneLineVerdict = "가까워질수록 깊어지는 연애운.";
     bad.interestAreas.areas[1].oneLineVerdict =
       "쌓아 올리는 흐름이 든든한 재물운.";
     bad.closing.finalNote = "관계가 깊어질수록 믿음이 쌓여가는 인상이에요.";
@@ -278,8 +282,7 @@ describe("validateInterestAreas", () => {
     bad.interestAreas.areas[0].nicknameSubtext = "시간이 갈수록 편안해요.";
     bad.interestAreas.areas[1].nicknameSubtext =
       "차곡차곡 안정적으로 관리해요.";
-    bad.interestAreas.areas[0].oneLineVerdict =
-      "가까워질수록 깊어지는 연애운.";
+    bad.interestAreas.areas[0].oneLineVerdict = "가까워질수록 깊어지는 연애운.";
     bad.interestAreas.areas[1].oneLineVerdict =
       "쌓아 올리는 재물이 꾸준한 재물운.";
     bad.interestAreas.areas[0].body = "함께하는 시간 속에서 진가가 드러나요.";

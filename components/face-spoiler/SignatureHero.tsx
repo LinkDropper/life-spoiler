@@ -26,6 +26,17 @@ export const SignatureHero = ({
   labels,
 }: SignatureHeroProps) => (
   <section className={styles.hero}>
+    {signature.faceAge && (
+      <div className={styles.faceAgeCard}>
+        <span className={styles.faceAgeLabel}>첫인상 나이</span>
+        <strong className={styles.faceAgeValue}>
+          {signature.faceAge.label}
+        </strong>
+        <span className={styles.faceAgeRange}>{signature.faceAge.range}</span>
+        <p className={styles.faceAgeNote}>{signature.faceAge.note}</p>
+      </div>
+    )}
+
     <div className={styles.titleBlock}>
       <h1 className={styles.oneLine}>{signature.oneLineDefinition}</h1>
       <p className={styles.subDef}>{signature.subDefinition}</p>

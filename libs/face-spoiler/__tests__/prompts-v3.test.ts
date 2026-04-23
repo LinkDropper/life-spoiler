@@ -23,36 +23,43 @@ const regionScores: RegionRawScore[] = [
     label: "이마",
     score: 8.2,
     rationaleHint: "이마 비율이 안정적으로 잡혀 있어 생각의 정리력이 또렷한 쪽",
+    numericHint: "상부 폭 비율 0.90 · 상삼정 0.33",
   },
   {
     region: "eye",
     label: "눈",
     score: 8.7,
     rationaleHint: "눈매가 안정적으로 정돈되어 상대를 보고 판단하는 쪽",
+    numericHint: "눈 가로세로비 3.80 · 눈꼬리 각도 4.0° · 눈 크기 비율 0.06",
   },
   {
     region: "brow",
     label: "눈썹",
     score: 8.1,
     rationaleHint: "눈썹 결이 정돈된 편이라 자기 기준과 매너가 읽히는 쪽",
+    numericHint: "상삼정 0.33 · 눈 가로세로비 3.80",
   },
   {
     region: "nose",
     label: "코",
     score: 8.8,
-    rationaleHint: "코가 얼굴 중심에 안정적으로 자리 잡아 현실 감각이 또렷한 쪽",
+    rationaleHint:
+      "코가 얼굴 중심에 안정적으로 자리 잡아 현실 감각이 또렷한 쪽",
+    numericHint: "코 길이 비율 0.28 · 인중 비율 0.35",
   },
   {
     region: "mouth",
     label: "입",
     score: 8.4,
     rationaleHint: "입매가 차분하고 정돈된 편이라 말의 무게감이 있는 쪽",
+    numericHint: "입 폭 비율 0.40 · 인중 비율 0.35",
   },
   {
     region: "chin",
     label: "턱 / 하관",
     score: 8.6,
     rationaleHint: "턱선이 안정적으로 잡혀 있어 버티는 힘이 읽히는 쪽",
+    numericHint: "턱 폭 비율 0.90 · 턱 각 비율 0.45",
   },
   {
     region: "cheekbone",
@@ -60,6 +67,7 @@ const regionScores: RegionRawScore[] = [
     score: 8.3,
     rationaleHint:
       "광대가 과하지 않게 자리 잡혀 있어 사회적 존재감이 무리 없이 드러나는 쪽",
+    numericHint: "중삼정 0.34 · 턱 폭 비율 0.90",
   },
   {
     region: "balance",
@@ -67,6 +75,7 @@ const regionScores: RegionRawScore[] = [
     score: 9.0,
     rationaleHint:
       "한 군데가 튀기보다 전체가 조화롭게 잡혀 있어 안정감이 묵직한 쪽",
+    numericHint: "삼정 상 0.33 / 중 0.34 / 하 0.33 · 얼굴 비율 1.05",
   },
 ];
 
@@ -147,6 +156,7 @@ describe("v3 responseSchema", () => {
       "coreKeywords",
       "commonlyHeardPhrase",
       "commonMisread",
+      "faceAge",
     ]);
   });
 

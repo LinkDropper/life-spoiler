@@ -60,6 +60,19 @@ export interface AnimalChip {
   label: string;
 }
 
+/**
+ * Phase 21 (2026-04-23) — 첫인상 나이 추정.
+ * 실제 나이 단정·노안/동안 평가 금지. 5년 대역으로만 표현.
+ */
+export interface FaceAge {
+  /** "25-29" 같이 5년 대역. 하이픈 구분. */
+  range: string;
+  /** "20대 후반" 같은 사용자 친화 라벨. */
+  label: string;
+  /** "첫인상 기준이에요" 같은 부연 한 줄. 중립적 톤. */
+  note: string;
+}
+
 /** 1. signature — 시그니처 히어로 영역 */
 export interface SignatureSection {
   /** 25~40자. 한 줄 인상 정의. 마침표 없음.
@@ -84,6 +97,13 @@ export interface SignatureSection {
 
   /** 동물상 칩 — 보조 라벨. */
   animalChip: AnimalChip;
+
+  /**
+   * Phase 21 — 첫인상 나이 (5년 대역).
+   * 기존 리포트(Phase 21 이전 생성)에는 없을 수 있어 optional.
+   * UI는 undefined 시 렌더 skip.
+   */
+  faceAge?: FaceAge;
 }
 
 /** 2. overallScore — 종합 점수 + 종합 인상 */

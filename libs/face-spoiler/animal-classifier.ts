@@ -22,7 +22,13 @@ const FACE_GEMINI_MODEL = "gemini-2.5-flash-lite";
 const GEMINI_API_BASE =
   "https://generativelanguage.googleapis.com/v1beta/models";
 const REQUEST_TIMEOUT_MS = 45_000;
-const MAX_RETRIES = 2;
+/**
+ * Phase 17.2 (2026-04-22) — 재시도 상한 2 → 5로 확대.
+ * Gemini가 한자 관상용어("와잠"·"산근" 등)나 수치를 반복 삽입하는
+ * 특정 얼굴에서 3회 이내 교정 실패로 전체 리포트 생성이 막히던 문제 해소.
+ * 재시도마다 위반 패턴을 feedback으로 주입해 교정률을 높임.
+ */
+const MAX_RETRIES = 5;
 
 interface RationaleResult {
   rationale: string;
@@ -56,6 +62,79 @@ const violatesBannedPatterns = (result: RationaleResult): boolean => {
   return haystacks.some((text) =>
     BANNED_OUTPUT_PATTERNS.some((pattern) => pattern.test(text))
   );
+};
+
+/**
+ * Phase 17.2 — 위반 상세 목록 추출.
+ * 재시도 시 LLM에게 "어느 필드에 어떤 단어가 위반됐는지"를 구체적으로 feedback
+ * 하기 위해, 위반된 텍스트를 모아 반환한다.
+ */
+const findViolationDetails = (result: RationaleResult): string[] => {
+  const violations: string[] = [];
+  const haystacks: Array<{ label: string; text: string }> = [
+    { label: "rationale", text: result.rationale },
+    ...result.matchedRegions.map((r, i) => ({
+      label: `matchedRegions[${i}]`,
+      text: r,
+    })),
+  ];
+  for (const { label, text } of haystacks) {
+    for (const pattern of BANNED_OUTPUT_PATTERNS) {
+      const match = text.match(pattern);
+      if (match) {
+        violations.push(`${label}: "${match[0]}" 포함`);
+      }
+    }
+  }
+  return violations;
+};
+
+/**
+ * Phase 17.2 — 재시도 시 system prompt 하단에 주입할 피드백 블록.
+ * gemini.v3.ts의 `buildRetryFeedback` 패턴을 차용. 직전 위반 정보를
+ * LLM에게 구체적으로 전달해 같은 실수를 반복하지 않도록 유도한다.
+ */
+const buildRationaleRetryFeedback = (
+  violations: string[],
+  attempt: number
+): string => `
+
+---
+
+## ⚠️ 이전 응답 검증 실패 (재시도 ${attempt}회차)
+
+직전 응답에 **금지 패턴**이 포함되어 실패했습니다:
+
+${violations.map((v) => `- ${v}`).join("\n")}
+
+이번 재시도에서는 **반드시** 아래 교정을 적용하세요:
+1. **숫자·단위 완전 제거**: 수치(0.87, 3.8 등) 또는 각도(°)·퍼센트(%)가 나올 것 같으면 "조금", "살짝", "많이", "넓은 편" 같은 **형용 표현으로 대체**.
+2. **한자 관상용어 금지**: "세장안, 원안, 단봉안, 와잠, 산근, 준두, 법령, 관골, 인중, 천창, 지각" 등. 대신:
+   - 와잠 → "눈 밑 부드러운 부분"
+   - 산근 → "미간", "콧대가 시작되는 부분"
+   - 준두 → "코끝"
+   - 법령 → "입 양옆 세로선"
+   - 인중 → "코와 입 사이"
+3. **내부 변수명 금지**: eyeAspectRatio, jawWidthRatio 같은 식별자.
+4. **분류 체계 용어 금지**: "필수 조건", "보조 단서", "배타 단서" 등.
+
+위 교정을 반영한 JSON만 출력하세요.`;
+
+/**
+ * Phase 17.2 — Fallback rationale.
+ * 재시도 전부 실패해도 리포트 생성이 차단되지 않도록, catalog에 정의된
+ * 기본 정보로 자연스러운 설명문을 합성한다. Gemini 호출 불가 상황에서도 대응.
+ */
+const buildFallbackRationale = (primary: AnimalType): RationaleResult => {
+  const def = ANIMAL_CATALOG[primary];
+  const keywordsText = def.impressionKeywords.slice(0, 2).join("과 ");
+  const rationale =
+    `${def.label.ko}은 ${keywordsText}이 느껴지는 얼굴이에요. ` +
+    `전반적인 인상의 결이 ${def.label.ko}의 전형에 가깝게 드러나는 쪽으로 보여요.`;
+  const matchedRegions = def.impressionKeywords
+    .slice(0, 3)
+    .map((k) => `${k} 인상`);
+  return { rationale, matchedRegions };
 };
 
 interface GeminiPart {
@@ -178,25 +257,34 @@ const generateRationale = async (
     { inlineData: { mimeType, data: imageBase64 } },
   ];
 
-  const request = {
-    contents: [{ role: "user" as const, parts }],
-    systemInstruction: {
-      parts: [{ text: systemPrompt }],
-    },
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema: RATIONALE_RESPONSE_SCHEMA,
-      // 설명은 자연스러움이 필요하지만 분류는 끝났으므로 너무 풀지 않음
-      temperature: 0.5,
-      maxOutputTokens: 768,
-    },
-  };
-
   const url = `${GEMINI_API_BASE}/${FACE_GEMINI_MODEL}:generateContent`;
 
   let lastError: Error | null = null;
+  /** Phase 17.2 — 직전 시도의 위반 상세. 재시도 프롬프트에 주입. */
+  let previousViolations: string[] | null = null;
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    // 재시도일 경우 system prompt에 feedback 추가
+    const systemPromptForAttempt =
+      attempt > 0 && previousViolations
+        ? systemPrompt +
+          buildRationaleRetryFeedback(previousViolations, attempt)
+        : systemPrompt;
+
+    const request = {
+      contents: [{ role: "user" as const, parts }],
+      systemInstruction: {
+        parts: [{ text: systemPromptForAttempt }],
+      },
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: RATIONALE_RESPONSE_SCHEMA,
+        // 설명은 자연스러움이 필요하지만 분류는 끝났으므로 너무 풀지 않음
+        temperature: 0.5,
+        maxOutputTokens: 768,
+      },
+    };
+
     try {
       const response = await fetchWithTimeout(
         url,
@@ -237,16 +325,20 @@ const generateRationale = async (
       const parsed = JSON.parse(text) as RationaleResult;
 
       if (violatesBannedPatterns(parsed)) {
+        // Phase 17.2: 위반 상세를 추출해 다음 재시도 프롬프트에 feedback으로 주입.
+        previousViolations = findViolationDetails(parsed);
+        lastError = new Error(
+          `rationale·matchedRegions에 금지 패턴이 포함되어 재시도합니다 (위반: ${previousViolations.join(", ")}).`
+        );
         if (attempt < MAX_RETRIES) {
-          lastError = new Error(
-            "rationale·matchedRegions에 금지 패턴이 포함되어 재시도합니다."
+          console.warn(
+            `[face-spoiler] animal rationale attempt ${attempt + 1}/${MAX_RETRIES + 1} 금지 패턴 위반: ${previousViolations.join(", ")}`
           );
           await sleep(400 * (attempt + 1));
           continue;
         }
-        throw new Error(
-          "동물상 설명 결과에 금지 패턴이 반복적으로 포함되어 생성에 실패했습니다."
-        );
+        // 재시도 상한 소진 — Fallback (아래 루프 탈출 후 처리)
+        break;
       }
 
       return parsed;
@@ -259,9 +351,14 @@ const generateRationale = async (
     }
   }
 
-  throw (
-    lastError ?? new Error("동물상 설명 생성에 알 수 없는 오류가 발생했습니다.")
+  // Phase 17.2 — Fallback.
+  // 재시도 전부 실패해도 리포트 생성 흐름을 차단하지 않는다. Gemini 설명 대신
+  // catalog 기반 기본 rationale을 반환하고 경고만 남긴다.
+  const reason = lastError?.message ?? "알 수 없는 이유";
+  console.warn(
+    `[face-spoiler] ${primary} 동물상 설명 생성 ${MAX_RETRIES + 1}회 모두 실패 → Fallback rationale 사용. 원인: ${reason}`
   );
+  return buildFallbackRationale(primary);
 };
 
 /**

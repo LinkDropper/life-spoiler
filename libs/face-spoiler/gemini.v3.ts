@@ -514,6 +514,232 @@ const findSharedPhrase = (texts: string[]): string | null => {
 };
 
 // ============================================================
+// Phase 16 (2026-04-22) — 수렴 어휘 블랙리스트 (Option II)
+// 5명 결과가 "묵직/안정적/조화롭게/꾸준/포용"으로 계속 수렴하는 문제.
+// 섹션별 전체 텍스트에서 각 어휘가 3회를 넘으면 Soft 재시도 유도.
+// ============================================================
+
+// Phase 17 (2026-04-22): 블랙리스트 대폭 확장.
+// result-report4.md 분석 결과 "안정/조화/부드럽/통찰/차분/또렷/꾸준/신중/관찰력/판단력"
+// 계열 어휘가 3명 총 40회 이상 등장. Gemini의 관상학 학습 편향이 원인.
+//
+// Phase 17.5 (2026-04-22): 2차 확장.
+// result-report5.md에서 Gemini가 블랙리스트를 회피하되 같은 의미 축의 유의어로
+// 도피("판단력/분석/명석/사려 깊은/현실적/포용력/실행력") 발견. 해당 어휘도 차단.
+const VOCAB_BLACKLIST: readonly { word: string; max: number }[] = [
+  // 기존 (유지)
+  { word: "묵직", max: 3 },
+  { word: "안정적", max: 3 },
+  { word: "조화롭", max: 3 },
+  { word: "포용", max: 3 },
+  { word: "넉넉", max: 3 },
+  // Phase 17 (관상학 편향 어휘 1차)
+  { word: "안정", max: 3 }, // "안정감" 포함
+  { word: "조화", max: 2 },
+  { word: "꾸준", max: 2 },
+  { word: "부드럽", max: 3 }, // Phase 20.2: 4→3 강화 (GPT에서 9회 수렴 발견)
+  { word: "통찰", max: 2 },
+  { word: "차분", max: 3 },
+  { word: "또렷", max: 3 },
+  { word: "신중", max: 3 },
+  { word: "관찰력", max: 2 },
+  { word: "판단력", max: 1 }, // Phase 17.5: 2 → 1로 강화
+  // Phase 20.2 추가 (GPT-5.4 mini 수렴 어휘)
+  { word: "단정", max: 3 },
+  { word: "은근", max: 3 },
+  // Phase 17.5 추가 (축 도피 어휘)
+  { word: "분석", max: 2 }, // "분석", "분석력", "분석적" 포함
+  { word: "명석", max: 1 },
+  { word: "사려 깊", max: 1 }, // "사려 깊은/깊다"
+  { word: "현실적", max: 2 },
+  { word: "포용력", max: 2 },
+  { word: "실행력", max: 2 },
+  { word: "돋보", max: 4 }, // "돋보이는" 연속
+] as const;
+
+// ============================================================
+// Phase 17.5 (2026-04-22) — 의미 축 통합 견제
+// 블랙리스트는 개별 어휘 단위라 Gemini가 유의어로 도피하는 루프가 있음.
+// "관찰·판단·분석·명석·사려 깊음" 축은 서로 교환 가능한 유의어군이라
+// 합계 상한으로 묶어야 축 자체의 수렴이 차단됨.
+// ============================================================
+
+const INTELLECT_AXIS_WORDS: readonly string[] = [
+  "관찰력",
+  "판단력",
+  "분석",
+  "분석력",
+  "명석",
+  "사려 깊",
+  "통찰",
+  "통찰력",
+  "현명",
+  "지혜",
+  "지적",
+] as const;
+
+const INTELLECT_AXIS_LIMIT = 3;
+
+const countIntellectAxis = (texts: string[]): number =>
+  texts.reduce((acc, text) => {
+    if (!text) return acc;
+    return (
+      acc +
+      INTELLECT_AXIS_WORDS.reduce((innerAcc, word) => {
+        const matches = text.match(new RegExp(word, "g"));
+        return innerAcc + (matches ? matches.length : 0);
+      }, 0)
+    );
+  }, 0);
+
+const assertIntellectAxisLimit = (
+  texts: string[],
+  sectionLabel: string
+): void => {
+  const count = countIntellectAxis(texts);
+  if (count > INTELLECT_AXIS_LIMIT) {
+    throw new Error(
+      `[v3 검증 실패] Soft: ${sectionLabel}: 지성·판단 축 어휘 합계 ${count}회 ` +
+        `(허용 ${INTELLECT_AXIS_LIMIT}회 이하). ` +
+        `"${INTELLECT_AXIS_WORDS.join("·")}" 이 너무 자주 등장합니다. ` +
+        `다른 축으로 분산하세요: ` +
+        `유머(위트·여유·가벼움), 감수성(섬세·공감·감성), 활동성(추진·실행·속도), ` +
+        `순발력(눈치·재치·기지), 호기심(탐구·학습욕), 표현력(언변·전달력), 직관(감각·본능).`
+    );
+  }
+};
+
+const countWordInTexts = (texts: string[], word: string): number =>
+  texts.reduce((acc, text) => {
+    if (!text) return acc;
+    const matches = text.match(new RegExp(word, "g"));
+    return acc + (matches ? matches.length : 0);
+  }, 0);
+
+/** Soft: 공통 어휘가 각 섹션 텍스트에서 상한(3회)을 넘으면 재시도. */
+const assertVocabBlacklist = (texts: string[], sectionLabel: string): void => {
+  const violations: string[] = [];
+  for (const { word, max } of VOCAB_BLACKLIST) {
+    const count = countWordInTexts(texts, word);
+    if (count > max) {
+      violations.push(`"${word}" ${count}회(허용 ${max})`);
+    }
+  }
+  if (violations.length > 0) {
+    throw new Error(
+      `[v3 검증 실패] Soft: ${sectionLabel}: 반복 어휘 과다 — ${violations.join(", ")}. ` +
+        `대체 어휘로 교체하세요: ` +
+        `묵직→단단한 밀도·무게감, 안정적→흔들림 없는·차분한, 조화롭→맞물린·어우러진, ` +
+        `꾸준→지속되는·일관된·한결같은, 포용→받아주는·넉넉한 결, 넉넉→여유로운·풍요로운·여백이 있는.`
+    );
+  }
+};
+
+// ============================================================
+// Phase 17 (2026-04-22) — 상담가 화법 상한
+// "관상에서는 ~", "관상학에서는 ~", "관상적으로는 ~" 등 상담가 인용 화법은
+// 각 섹션에 1회 권장이었으나 result-report4.md에서 [종합인상]+[종합균형감]
+// +body 3개에 걸쳐 평균 7회 이상 등장 → 단조로움.
+// 섹션별 텍스트 기준 3회 상한으로 강화.
+// ============================================================
+
+const CONSULTANT_PHRASE_PATTERNS: readonly RegExp[] = [
+  /관상에서는/g,
+  /관상학에서는/g,
+  /관상적으로(는|\s)/g,
+  /관상학에서\s*이런/g,
+  /관상학적으로/g,
+] as const;
+
+const CONSULTANT_PHRASE_LIMIT_STAGE_A = 2;
+const CONSULTANT_PHRASE_LIMIT_STAGE_B = 4;
+const CONSULTANT_PHRASE_LIMIT_STAGE_C = 3;
+
+const countConsultantPhrase = (texts: string[]): number =>
+  texts.reduce((acc, text) => {
+    if (!text) return acc;
+    return (
+      acc +
+      CONSULTANT_PHRASE_PATTERNS.reduce((innerAcc, pattern) => {
+        const matches = text.match(pattern);
+        return innerAcc + (matches ? matches.length : 0);
+      }, 0)
+    );
+  }, 0);
+
+const assertConsultantPhraseLimit = (
+  texts: string[],
+  limit: number,
+  sectionLabel: string
+): void => {
+  const count = countConsultantPhrase(texts);
+  if (count > limit) {
+    throw new Error(
+      `[v3 검증 실패] Soft: ${sectionLabel}: 상담가 화법 ${count}회 ` +
+        `(허용 ${limit}회 이하). "관상에서는 ~", "관상학에서는 ~", ` +
+        `"관상적으로는 ~" 등 인용 화법이 과다합니다. ` +
+        `일부를 단정 관찰문으로 교체하세요 ` +
+        `(예: "~인 인상이 드러나요", "~한 결이 엿보여요", "~쪽의 얼굴이에요").`
+    );
+  }
+};
+
+// ============================================================
+// Phase 16 — 클리셰 종결 패턴 상한 (Option III)
+// "~로 보기도 해요" / "~로 풀이하기도 해요" 등 상담가 인용형 종결 과다.
+// result-report2.md에서 5명 모두 [전체 균형감] 섹션 말미가 동일 형태로 마감.
+// 한 섹션 텍스트에서 1회 초과하면 재시도 유도.
+// ============================================================
+
+const CLICHE_CLOSING_PATTERNS: readonly RegExp[] = [
+  /로\s*보기도\s*해(요|죠|습니다)/g,
+  /로\s*풀이하기도\s*해(요|죠|습니다)/g,
+  /길하게\s*보(기|는|기도)\s*해(요|죠|습니다)/g,
+  /길하게\s*풀이(하|해)/g,
+] as const;
+
+const CLICHE_CLOSING_LIMIT = 1;
+
+const countClicheClosings = (text: string): number => {
+  if (!text) return 0;
+  return CLICHE_CLOSING_PATTERNS.reduce((acc, pattern) => {
+    const matches = text.match(pattern);
+    return acc + (matches ? matches.length : 0);
+  }, 0);
+};
+
+// ============================================================
+// Phase 16 — bullets 클리셰 다양성 (Option IV)
+// Stage B의 24개 bullets(8부위 × 3개)에서 수렴 어휘가 총 8개를 넘으면 재시도.
+// ============================================================
+
+const BULLETS_CLICHE_WORDS: readonly string[] = [
+  "묵직",
+  "안정",
+  "조화",
+  "꾸준",
+  "포용",
+  "균형",
+  "행동력",
+  "실행력",
+  "넉넉",
+] as const;
+
+const BULLETS_CLICHE_LIMIT = 8;
+
+const countBulletsCliche = (regions: Array<{ bullets: string[] }>): number => {
+  let count = 0;
+  regions.forEach((r) => {
+    r.bullets.forEach((b) => {
+      if (BULLETS_CLICHE_WORDS.some((w) => b.includes(w))) {
+        count += 1;
+      }
+    });
+  });
+  return count;
+};
+
+// ============================================================
 // validateSignatureOverall (Phase 11 확장)
 // ============================================================
 
@@ -523,6 +749,37 @@ export const validateSignatureOverall = (
   const { signature, overallScore } = resp;
   ensureArrayLength(signature.coreKeywords, 4, 6, "signature.coreKeywords");
   ensureArrayLength(overallScore.highlights, 5, 12, "overallScore.highlights");
+
+  // [Hard] Phase 21: faceAge 형식 검증
+  const { faceAge } = signature;
+  if (!faceAge || !faceAge.range || !faceAge.label || !faceAge.note) {
+    throw new Error(
+      `[v3 검증 실패] signature.faceAge: 필수 필드 누락 (range/label/note).`
+    );
+  }
+  if (!/^\d{2}-\d{2}$/.test(faceAge.range)) {
+    throw new Error(
+      `[v3 검증 실패] signature.faceAge.range: "${faceAge.range}" 형식 오류. "NN-NN" (5년 대역) 형태여야 합니다.`
+    );
+  }
+  // [Soft] faceAge 금지 어휘 (동안/노안 평가 차단)
+  const ageBannedWords = [
+    "동안",
+    "노안",
+    "실제보다",
+    "어려 보",
+    "어려보",
+    "나이 들",
+    "성숙해 보",
+    "앳되",
+  ];
+  const faceAgeText = `${faceAge.label} ${faceAge.note}`;
+  const ageViolations = ageBannedWords.filter((w) => faceAgeText.includes(w));
+  if (ageViolations.length > 0) {
+    throw new Error(
+      `[v3 검증 실패] Soft: signature.faceAge: 동안/노안 평가 어휘 포함 (${ageViolations.join(", ")}). 중립적 표현으로 재작성 필요.`
+    );
+  }
 
   // [Soft] coreKeywords 과거 수렴 어휘 최대 1개
   const legacyCount = countLegacyKeywords(signature.coreKeywords);
@@ -549,6 +806,39 @@ export const validateSignatureOverall = (
         `최소 ${REVERSE_AXIS_MIN}개 포함하세요.`
     );
   }
+
+  // [Soft] Phase 16 Option III: summary 내 클리셰 종결 과다 ("~로 보기도 해요" 등)
+  const summaryClicheHits = countClicheClosings(overallScore.summary);
+  if (summaryClicheHits > CLICHE_CLOSING_LIMIT) {
+    throw new Error(
+      `[v3 검증 실패] Soft: overallScore.summary: 클리셰 종결 패턴 ${summaryClicheHits}회 ` +
+        `(허용 ${CLICHE_CLOSING_LIMIT}회 이하). ` +
+        `"~로 보기도 해요", "~로 풀이하기도 해요", "길하게 보기도 해요" 등 상담가 인용형 종결이 ` +
+        `한 문단에 반복되면 단조롭습니다. 1회만 남기고 나머지는 단정문·관찰문으로 교체하세요 ` +
+        `(예: "이런 결이 엿보여요", "~한 인상이 드러나요", "~편이에요").`
+    );
+  }
+
+  // [Soft] Phase 16 Option II: 공통 어휘 블랙리스트 (Stage A 범위)
+  const stageATexts = [
+    signature.subDefinition,
+    signature.commonlyHeardPhrase,
+    signature.commonMisread,
+    overallScore.scoreOneLiner,
+    overallScore.summary,
+    ...overallScore.highlights.map((h) => `${h.title} ${h.body}`),
+  ];
+  assertVocabBlacklist(stageATexts, "signature+overallScore");
+
+  // [Soft] Phase 17: 상담가 화법 상한 (Stage A)
+  assertConsultantPhraseLimit(
+    stageATexts,
+    CONSULTANT_PHRASE_LIMIT_STAGE_A,
+    "signature+overallScore"
+  );
+
+  // [Soft] Phase 17.5: 지성·판단 축 통합 상한 (Stage A)
+  assertIntellectAxisLimit(stageATexts, "signature+overallScore");
 };
 
 // ============================================================
@@ -578,6 +868,38 @@ export const validateRegionScores = (
         `이마·턱=A보다 B, 눈·광대=명사구, 눈썹·균형감=역설, 코=관점·시간, 입=일상 어미.`
     );
   }
+
+  // [Soft] Phase 16 Option IV: bullets 클리셰 다양성 (24개 중 8개 초과 시 재시도)
+  const bulletsClicheCount = countBulletsCliche(resp.regions);
+  if (bulletsClicheCount > BULLETS_CLICHE_LIMIT) {
+    throw new Error(
+      `[v3 검증 실패] Soft: regionScores.regions.bullets: 수렴 어휘 포함 bullets ` +
+        `${bulletsClicheCount}개 (허용 ${BULLETS_CLICHE_LIMIT}개 이하). ` +
+        `8개 부위 × 3개 bullets 중 "${BULLETS_CLICHE_WORDS.join("·")}" 류 어휘가 과반을 ` +
+        `차지하고 있어 부위별 차별화가 사라집니다. ` +
+        `각 bullets는 부위 고유 특성을 구체적 상황으로 묘사하세요 ` +
+        `(예: "첫 미팅에서 상대 말을 끝까지 듣는 편이에요", "결정은 한 박자 늦게 ` +
+        `내리는 쪽이에요").`
+    );
+  }
+
+  // [Soft] Phase 16 Option II: 공통 어휘 블랙리스트 (Stage B 범위)
+  const allBulletsAndLines = resp.regions.flatMap((r) => [
+    r.interpretation,
+    ...r.bullets,
+    r.oneLiner,
+  ]);
+  assertVocabBlacklist(allBulletsAndLines, "regionScores");
+
+  // [Soft] Phase 17: 상담가 화법 상한 (Stage B — interpretation에서 가장 많이 나옴)
+  assertConsultantPhraseLimit(
+    allBulletsAndLines,
+    CONSULTANT_PHRASE_LIMIT_STAGE_B,
+    "regionScores"
+  );
+
+  // [Soft] Phase 17.5: 지성·판단 축 통합 상한 (Stage B)
+  assertIntellectAxisLimit(allBulletsAndLines, "regionScores");
 };
 
 // ============================================================
@@ -632,6 +954,33 @@ export const validateInterestAreas = (resp: InterestAreasResponse): void => {
         `각 문장은 서로 다른 은유·어휘로 작성해야 합니다.`
     );
   }
+
+  // [Soft] Phase 16 Option II: 공통 어휘 블랙리스트 (Stage C 범위)
+  const stageCTexts = [
+    ...resp.interestAreas.areas.flatMap((a) => [
+      a.oneLineDefinition,
+      a.body,
+      ...a.strengths,
+      ...a.cautions,
+      a.oneLineVerdict,
+      a.characterNickname,
+      a.nicknameSubtext,
+    ]),
+    resp.closing.finalNickname,
+    resp.closing.finalNote,
+    resp.closing.shareLine,
+  ];
+  assertVocabBlacklist(stageCTexts, "interestAreas+closing");
+
+  // [Soft] Phase 17: 상담가 화법 상한 (Stage C — body에서 재발)
+  assertConsultantPhraseLimit(
+    stageCTexts,
+    CONSULTANT_PHRASE_LIMIT_STAGE_C,
+    "interestAreas+closing"
+  );
+
+  // [Soft] Phase 17.5: 지성·판단 축 통합 상한 (Stage C)
+  assertIntellectAxisLimit(stageCTexts, "interestAreas+closing");
 };
 
 // ============================================================
@@ -659,12 +1008,18 @@ export const generateFaceReportV3 = async ({
 }: GenerateFaceReportV3Input): Promise<FaceTextReportV3> => {
   // Phase 12: 각 호출에 validator를 주입하여 실패 시 feedback과 함께 재시도.
   // 3개 호출을 병렬로 실행해 전체 지연을 줄인다. 단계 간 의존성 없음.
+  // Phase 20.6: env.FACE_SPOILER_HINT_MODE에 따라 프롬프트에 주입할 파생 정보 레벨 결정.
+  const hintMode = env.FACE_SPOILER_HINT_MODE;
   const expectedRegionCount = regionScores.length;
   const [stageA, stageB, stageC] = await Promise.all([
     callStage<SignatureOverallResponse>({
       imageBase64,
       mimeType,
-      systemPrompt: buildSignatureOverallSystemPrompt(animal, regionScores),
+      systemPrompt: buildSignatureOverallSystemPrompt(
+        animal,
+        regionScores,
+        hintMode
+      ),
       userPrompt: SIGNATURE_OVERALL_USER_PROMPT,
       responseSchema: SIGNATURE_OVERALL_SCHEMA,
       stageName: "signature+overall",
@@ -674,7 +1029,11 @@ export const generateFaceReportV3 = async ({
     callStage<RegionScoresResponse>({
       imageBase64,
       mimeType,
-      systemPrompt: buildRegionScoresSystemPrompt(animal, regionScores),
+      systemPrompt: buildRegionScoresSystemPrompt(
+        animal,
+        regionScores,
+        hintMode
+      ),
       userPrompt: REGION_SCORES_USER_PROMPT,
       responseSchema: REGION_SCORES_SCHEMA,
       stageName: "regionScores",
@@ -684,7 +1043,11 @@ export const generateFaceReportV3 = async ({
     callStage<InterestAreasResponse>({
       imageBase64,
       mimeType,
-      systemPrompt: buildInterestAreasSystemPrompt(animal, regionScores),
+      systemPrompt: buildInterestAreasSystemPrompt(
+        animal,
+        regionScores,
+        hintMode
+      ),
       userPrompt: INTEREST_AREAS_USER_PROMPT,
       responseSchema: INTEREST_AREAS_SCHEMA,
       stageName: "interestAreas+closing",
