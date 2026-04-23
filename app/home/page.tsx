@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { HeaderClient } from "@/components/landing";
 import {
   CompatibilityFortuneCard,
+  FaceReadingCard,
   LifetimeFortuneCard,
   PastLifeCard,
   YearlyFortuneCard,
@@ -59,6 +60,10 @@ export default function HomePage() {
     router.push("/profiles?type=past-life");
   }, [router]);
 
+  const handleFaceReading = useCallback(() => {
+    router.push("/face-spoiler/profiles");
+  }, [router]);
+
   if (authStatus === "loading" || authStatus === "unauthenticated") {
     return null;
   }
@@ -71,6 +76,7 @@ export default function HomePage() {
         <YearlyFortuneCard onClick={handleYearlyFortune} />
         <CompatibilityFortuneCard onClick={handleCompatibilityFortune} />
         <PastLifeCard onClick={handlePastLifeFortune} />
+        <FaceReadingCard onClick={handleFaceReading} />
       </main>
     </div>
   );

@@ -1,0 +1,71 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:hover {
+  opacity: 0.95;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 164px;
+  padding: 24px;
+  background: #ecba5e;
+  border-bottom: 1px solid #3a2600;
+  overflow: hidden;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  color: #3a2600;
+  font-family: "SB AggroOTF";
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: 0;
+}
+
+.subtitle {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #3a2600;
+}
+
+.illustration {
+  position: absolute;
+  bottom: 0;
+  right: 24px;
+  width: 153px;
+  height: 153px;
+  pointer-events: none;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  background: var(--primitive-white, #ffffff);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #3a2600;
+}
