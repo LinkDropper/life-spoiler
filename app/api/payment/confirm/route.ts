@@ -48,6 +48,31 @@ interface TossPaymentError {
   message: string;
 }
 
+/**
+ * 이미 승인된 paymentKey로 확인된 기존 결제 정보를 토스에서 조회한다.
+ * 실패 시 null을 반환한다 (호출부에서 폴백 처리).
+ */
+const fetchExistingPayment = async (
+  paymentKey: string,
+  encodedSecretKey: string
+): Promise<TossPaymentResponse | null> => {
+  try {
+    const res = await fetch(
+      `https://api.tosspayments.com/v1/payments/${encodeURIComponent(paymentKey)}`,
+      {
+        method: "GET",
+        headers: { Authorization: `Basic ${encodedSecretKey}` },
+      }
+    );
+    if (!res.ok) {
+      return null;
+    }
+    return (await res.json()) as TossPaymentResponse;
+  } catch {
+    return null;
+  }
+};
+
 export async function POST(request: NextRequest) {
   try {
     const body: TossPaymentConfirmRequest = await request.json();
@@ -123,7 +148,42 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorData = data as TossPaymentError;
-      console.error("TossPayments API error:", errorData);
+      const logContext = {
+        code: errorData.code,
+        message: errorData.message,
+        orderId,
+        currency,
+      };
+
+      // 이미 승인된 결제키로 재호출된 경우: 유저 관점에선 성공(이미 결제됨)이므로
+      // 토스에서 기존 결제 정보를 조회해 동일한 성공 응답을 돌려준다.
+      // 원인은 success 페이지 재진입(새로고침/뒤로가기/북마크 등).
+      if (errorData.code === "ALREADY_PROCESSED_PAYMENT") {
+        console.warn(
+          "TossPayments 중복 confirm (이미 처리된 결제)",
+          logContext
+        );
+
+        const existingPayment = await fetchExistingPayment(
+          paymentKey,
+          encodedSecretKey
+        );
+
+        return NextResponse.json({
+          success: true,
+          alreadyProcessed: true,
+          data: existingPayment ?? {
+            paymentKey,
+            orderId,
+            status: "DONE",
+            totalAmount: amount,
+            method: "",
+            approvedAt: "",
+          },
+        });
+      }
+
+      console.error("TossPayments API error", logContext);
       return NextResponse.json(
         {
           success: false,
