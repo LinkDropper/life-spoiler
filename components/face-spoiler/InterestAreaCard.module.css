@@ -1,0 +1,197 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.label {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.definition {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #3fd9ad;
+  font-weight: 600;
+  margin: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.paragraph {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.scalePair {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scaleColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.strengths {
+  border-left: 3px solid #3fd9ad;
+}
+
+.cautions {
+  border-left: 3px solid #ffb870;
+}
+
+.scaleLabel {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.strengths .scaleLabel {
+  color: #3fd9ad;
+}
+
+.cautions .scaleLabel {
+  color: #ffb870;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.strengths .listItem::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 2px;
+  background: #3fd9ad;
+}
+
+.cautions .listItem::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 2px;
+  background: #ffb870;
+}
+
+.verdict {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 16px 20px;
+  background: rgba(63, 217, 173, 0.07);
+  border: 1px solid rgba(63, 217, 173, 0.25);
+  text-align: center;
+  font-style: italic;
+}
+
+.verdict::before {
+  content: "\201C";
+  margin-right: 2px;
+}
+
+.verdict::after {
+  content: "\201D";
+  margin-left: 2px;
+}
+
+.nickname {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.nicknameTag {
+  display: inline-block;
+  padding: 8px 18px;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d1b4e;
+  background: #3fd9ad;
+  letter-spacing: -0.01em;
+}
+
+.nicknameSubtext {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 20px 18px;
+    gap: 18px;
+  }
+
+  .label {
+    font-size: 1.125rem;
+  }
+
+  .definition {
+    font-size: 0.9375rem;
+  }
+
+  .paragraph {
+    font-size: 0.9375rem;
+  }
+
+  .verdict {
+    font-size: 1rem;
+    padding: 14px 16px;
+  }
+}

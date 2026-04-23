@@ -16,9 +16,21 @@ interface ObservationFeature {
   value: string;
 }
 
+interface V3RegionScore {
+  region: string;
+  label: string;
+  interpretation?: string;
+}
+
 interface FaceReportResult {
+  // v2 스키마
   observation?: {
     features?: ObservationFeature[];
+  };
+  // v3 스키마
+  version?: number;
+  regionScores?: {
+    regions?: V3RegionScore[];
   };
 }
 
@@ -128,11 +140,23 @@ export const POST = async (request: Request) => {
     const sourceBase64 = Buffer.from(sourceArrayBuffer).toString("base64");
     const sourceMimeType = sourceBlob.type || "image/jpeg";
 
-    // 리포트에서 observation features 추출 → 이미지 생성 시 비율 보존 힌트로 활용
-    const features = report.result?.observation?.features;
-    const faceDescription = features
-      ? features.map((f) => `- ${f.region}: ${f.value}`).join("\n")
-      : undefined;
+    // 리포트에서 부위별 힌트 추출 → 이미지 생성 시 비율 보존 힌트로 활용.
+    // v2: observation.features / v3: regionScores.regions (label + interpretation 요약)
+    let faceDescription: string | undefined;
+    const v2Features = report.result?.observation?.features;
+    const v3Regions = report.result?.regionScores?.regions;
+    if (v2Features && v2Features.length > 0) {
+      faceDescription = v2Features
+        .map((f) => `- ${f.region}: ${f.value}`)
+        .join("\n");
+    } else if (v3Regions && v3Regions.length > 0) {
+      faceDescription = v3Regions
+        .map((r) => {
+          const summary = (r.interpretation ?? "").split(".")[0].trim();
+          return summary ? `- ${r.label}: ${summary}` : `- ${r.label}`;
+        })
+        .join("\n");
+    }
 
     // Gemini로 캐릭터 이미지 생성
     const generated = await generateCharacterImage(
