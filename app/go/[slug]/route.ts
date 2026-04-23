@@ -69,6 +69,61 @@ const REDIRECTS: Record<string, RedirectConfig> = {
     utm_medium: "social",
     utm_campaign: "2026-04-spring-energy",
   },
+  jaemul: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-wealth-pattern",
+  },
+  bucheo: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-relationship-style",
+  },
+  romance: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-romance-compatibility",
+  },
+  horoscope: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-daily-horoscope",
+  },
+  create: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-spring-creativity",
+  },
+  start: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-spring-start",
+  },
+  jeonttaek: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-04-space-energy",
+  },
+  // 실험 포스트 단축 링크
+  "exp-comp": {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "exp-202617-01-comparison",
+  },
+  "exp-know": {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "exp-202617-01-knowledge",
+  },
   // 채널별 프로필 링크
   x: {
     destination: "/",

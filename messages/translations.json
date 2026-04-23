@@ -227,6 +227,11 @@
         "title": "전생 운세",
         "subtitle": "전생의 나를 만나보기",
         "button": "전생 운세 확인하기"
+      },
+      "faceReading": {
+        "title": "관상 운세",
+        "subtitle": "얼굴에 담긴 내 성향 보기",
+        "button": "관상 운세 확인하기"
       }
     },
     "profiles": {
@@ -1409,6 +1414,11 @@
         "title": "Past Life Fortune",
         "subtitle": "Meet Who You Once Were",
         "button": "Check Past Life Fortune"
+      },
+      "faceReading": {
+        "title": "Face Reading",
+        "subtitle": "See what your face reveals about you",
+        "button": "View Face Reading"
       }
     },
     "profiles": {
@@ -2591,6 +2601,11 @@
         "title": "前世占い",
         "subtitle": "前世の自分に会いに行く",
         "button": "前世占いを確認する"
+      },
+      "faceReading": {
+        "title": "顔相占い",
+        "subtitle": "顔に表れる自分の性向を見る",
+        "button": "顔相占いを確認する"
       }
     },
     "profiles": {
