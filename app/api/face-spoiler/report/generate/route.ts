@@ -138,9 +138,13 @@ export const POST = async (request: Request) => {
           "face_reports"
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ) as any;
-        await reportsTable
+        const { error: updateError } = await reportsTable
           .update({ face_profile_id: profileId })
           .eq("share_id", existingRow.share_id);
+
+        if (updateError) {
+          console.error("face_reports profile_id update error:", updateError);
+        }
       }
       // 이번 업로드 본은 중복이므로 정리
       await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);

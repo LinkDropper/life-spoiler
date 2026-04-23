@@ -340,7 +340,6 @@ export const generateFaceReportV3OpenAI = async ({
   // Phase 20.6: env.FACE_SPOILER_HINT_MODE에 따라 프롬프트 파생 정보 레벨 결정.
   const hintMode = env.FACE_SPOILER_HINT_MODE;
 
-  console.log("@@@@@@@@@@@@@@@@@@ ", hintMode);
   const expectedRegionCount = regionScores.length;
   const [stageA, stageB, stageC] = await Promise.all([
     callStage<SignatureOverallResponse>({
