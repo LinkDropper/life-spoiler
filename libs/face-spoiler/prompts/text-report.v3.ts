@@ -1079,7 +1079,7 @@ ${envHintMode === "metrics" ? buildInterestAreaCombinationBlock(regionScores) : 
 - \`domain\`: "love" / "money" / "career" (enum, 그대로)
 - \`label\`: "💕 연애운" / "💰 재물운" / "💼 직장운" (그대로)
 - \`oneLineDefinition\` (25~40자, 마침표 없음): 분야 인상의 한 줄 정의.
-- \`body\` (3~4단락, 길이는 분야별 가이드 참조 — love: 300~400자, money·career: 280~360자): 분야 안에서 기질 시뮬레이션.
+- \`body\` (3~4단락, 길이는 분야별 가이드 참조 — love: 320~420자, money·career: 280~360자): 분야 안에서 기질 시뮬레이션.
 - \`strengths\` / \`cautions\` (정확히 3개씩, 각 12~25자)
 - \`oneLineVerdict\` (25~40자, 마침표로 끝): 해당 분야 특화 한 줄 총평.
 - \`characterNickname\` (10~20자) + \`nicknameSubtext\` (30~50자)
