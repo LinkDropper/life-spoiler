@@ -121,7 +121,11 @@ export const INTEREST_AREAS_SCHEMA_STRICT = {
               },
               label: { type: "string" },
               oneLineDefinition: { type: "string" },
-              body: { type: "string" },
+              // Phase 21: body 길이 가드. 실제 범위는 분야별로 다름
+              // (love: 320~420, money·career: 280~360). 스키마는 3개 도메인 공통
+              // loose bound(280~420)만 강제하고, love의 tight range는 프롬프트와
+              // 런타임 validator에서 추가로 검증한다.
+              body: { type: "string", minLength: 280, maxLength: 420 },
               strengths: {
                 type: "array",
                 items: { type: "string" },

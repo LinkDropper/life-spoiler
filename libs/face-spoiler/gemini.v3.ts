@@ -906,6 +906,11 @@ export const validateRegionScores = (
 // validateInterestAreas (Phase 11 확장)
 // ============================================================
 
+// Phase 21 (2026-04-26): MZ 톤·단락 분리 강화로 상한 살짝 상향(400→420),
+// 정통 미세 영역 + 양극 축 + 상대 시점 추가로 하한도 320으로 상향.
+const LOVE_BODY_MIN_LENGTH = 320;
+const LOVE_BODY_MAX_LENGTH = 420;
+
 export const validateInterestAreas = (resp: InterestAreasResponse): void => {
   ensureArrayLength(resp.interestAreas.areas, 3, 3, "interestAreas.areas");
   const expectedOrder = ["love", "money", "career"] as const;
@@ -981,6 +986,22 @@ export const validateInterestAreas = (resp: InterestAreasResponse): void => {
 
   // [Soft] Phase 17.5: 지성·판단 축 통합 상한 (Stage C)
   assertIntellectAxisLimit(stageCTexts, "interestAreas+closing");
+
+  // [Soft] Phase 20.7 — 연애(love) body 길이 300~400자 범위 검증.
+  // 프롬프트·OpenAI schema로 1차 가드했으나 Gemini는 schema minLength를 미지원하므로
+  // 런타임에서 재확인한다. 벗어나면 soft 실패로 재시도 트리거.
+  // 기존 content-quality 체크(시간 은유·어휘 blacklist) 이후에 배치해, 더 의미 있는
+  // 품질 에러가 먼저 드러나도록 한다.
+  const [loveArea] = resp.interestAreas.areas;
+  if (loveArea?.domain === "love") {
+    const len = loveArea.body.length;
+    if (len < LOVE_BODY_MIN_LENGTH || len > LOVE_BODY_MAX_LENGTH) {
+      throw new Error(
+        `[v3 검증 실패] Soft: love body 길이 ${len}자가 허용 범위(${LOVE_BODY_MIN_LENGTH}~${LOVE_BODY_MAX_LENGTH})를 벗어났습니다. ` +
+          `단락 추가·압축으로 재작성해주세요.`
+      );
+    }
+  }
 };
 
 // ============================================================
