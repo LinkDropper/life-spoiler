@@ -1,0 +1,174 @@
+.report {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.sectionTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.paragraph {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.highlightList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #3fd9ad;
+}
+
+.highlightTitle {
+  flex-shrink: 0;
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #3fd9ad;
+  min-width: 72px;
+}
+
+.highlightBody {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.regionGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.interestStack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 8px;
+}
+
+.closingInner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+  padding: 36px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.closingTag {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #3fd9ad;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.closingNickname {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.closingNote {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  word-break: keep-all;
+}
+
+.shareLine {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: center;
+  padding: 22px 20px;
+  background: rgba(63, 217, 173, 0.07);
+  border: 1px dashed rgba(63, 217, 173, 0.35);
+  margin: 0;
+  word-break: keep-all;
+}
+
+@media (max-width: 640px) {
+  .report {
+    gap: 48px;
+  }
+
+  .sectionTitle {
+    font-size: 1.125rem;
+  }
+
+  .paragraph {
+    font-size: 1rem;
+  }
+
+  .highlightItem {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .highlightTitle {
+    min-width: 56px;
+    font-size: 0.875rem;
+  }
+
+  .highlightBody {
+    font-size: 0.875rem;
+  }
+
+  .closingNickname {
+    font-size: 1.5rem;
+  }
+}

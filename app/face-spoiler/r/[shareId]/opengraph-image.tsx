@@ -5,6 +5,7 @@ import path from "path";
 import { env } from "@/env";
 import { ANIMAL_CATALOG } from "@/libs/face-spoiler/constants/animals";
 import { isV2Report } from "@/libs/face-spoiler/types";
+import { isV3Report } from "@/libs/face-spoiler/types.v3";
 import { createServerClient } from "@/libs/supabase";
 
 export const runtime = "nodejs";
@@ -45,7 +46,10 @@ export default async function OpengraphImage({ params }: Props) {
       character_image_path: string | null;
     };
 
-    if (isV2Report(record.result)) {
+    if (isV3Report(record.result)) {
+      const animalKey = record.result.signature.animalChip.type;
+      animalLabel = ANIMAL_CATALOG[animalKey]?.label.ko ?? "";
+    } else if (isV2Report(record.result)) {
       const animalKey = record.result.animalMatch.primary;
       animalLabel = ANIMAL_CATALOG[animalKey]?.label.ko ?? "";
     }

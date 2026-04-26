@@ -76,7 +76,7 @@ export const AnimalHero = async ({
         </div>
       )}
 
-      {showFullContext && (
+      {showFullContext && animalMatch.rationale && (
         <p className={styles.rationale}>{animalMatch.rationale}</p>
       )}
     </section>

@@ -3,11 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
-import { AnimalHero } from "@/components/face-spoiler/AnimalHero";
 import { Header } from "@/components/face-spoiler/Header";
 import { PreviewFooter } from "@/components/face-spoiler/PreviewFooter";
-import { isV2Report } from "@/libs/face-spoiler/types";
-import type { TraitsSection } from "@/libs/face-spoiler/types";
+import { ScoreGauge } from "@/components/face-spoiler/ScoreGauge";
+import { SignatureHero } from "@/components/face-spoiler/SignatureHero";
+import { isV3Report } from "@/libs/face-spoiler/types.v3";
 import { createServerClient } from "@/libs/supabase";
 
 import styles from "./page.module.css";
@@ -49,18 +49,6 @@ const fetchReport = async (
   };
 };
 
-const extractFirstSentence = (traits: TraitsSection): string => {
-  const firstParagraph = traits.strengths
-    .split(/\n\s*\n/)
-    .map((paragraph) => paragraph.trim())
-    .find((paragraph) => paragraph.length > 0);
-  if (!firstParagraph) {
-    return "";
-  }
-  const match = firstParagraph.match(/^[^.!?。！？]+[.!?。！？]?/);
-  return match ? match[0].trim() : firstParagraph;
-};
-
 export const generateMetadata = async ({
   params,
 }: PreviewPageProps): Promise<Metadata> => {
@@ -76,12 +64,12 @@ export const generateMetadata = async ({
   });
 
   const headline =
-    record && isV2Report(record.result)
-      ? record.result.firstImpression.headline
+    record && isV3Report(record.result)
+      ? record.result.signature.oneLineDefinition
       : defaultHeadline;
   const description =
-    record && isV2Report(record.result)
-      ? record.result.shareLine
+    record && isV3Report(record.result)
+      ? record.result.closing.shareLine
       : defaultDescription;
 
   const fullTitle = tMeta("shareTitleSuffix", {
@@ -132,8 +120,8 @@ export default async function FaceSpoilerPreviewPage({
 
   const t = await getTranslations("faceSpoiler.preview");
 
-  // 하드 컷오버: v1 리포트는 레거시 안내
-  if (!isV2Report(record.result)) {
+  // 하드 컷오버: v3가 아닌 리포트는 레거시 안내
+  if (!isV3Report(record.result)) {
     const tLegacy = await getTranslations("faceSpoiler.report.legacy");
     return (
       <>
@@ -156,71 +144,105 @@ export default async function FaceSpoilerPreviewPage({
   }
 
   const report = record.result;
-  const { firstImpression, traits } = report;
-  const traitsTeaser = extractFirstSentence(traits);
+  const { signature, overallScore, regionScores, interestAreas } = report;
+
+  // 프리뷰 노출: hero 전체(점수 포함) + summary 첫 단락 + highlights 2개 + 부위 라벨만 + 분야 라벨만
+  const firstSummaryParagraph = overallScore.summary
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .find((p) => p.length > 0);
+
+  const highlightsPreview = overallScore.highlights.slice(0, 2);
+  const remainingHighlights = Math.max(
+    0,
+    overallScore.highlights.length - highlightsPreview.length
+  );
+
+  // v3 라벨 — 현재는 한국어 하드코딩. 추후 messages/translations.json 확장 시 교체.
+  const heroLabels = {
+    keywordsTitle: "핵심 키워드",
+    phraseLabel: "자주 듣는 말",
+    misreadLabel: "자주 받는 오해",
+    scoreLabel: "종합 점수",
+  };
 
   return (
     <>
       <Header />
       <div className={styles.container}>
-        {/* 동물상 히어로 (primary만, 본편 컨텍스트 제외) */}
-        <AnimalHero
-          animalMatch={report.animalMatch}
-          characterImageUrl={null}
-          characterImagePlaceholder={t("characterPlaceholder")}
-          showFullContext={false}
-        />
-
         <div className={styles.content}>
-          {/* 첫인상 섹션 */}
-          <section className={styles.profileSection}>
-            <h2 className={styles.sectionTag}>
-              {t("firstImpressionSectionTag")}
-            </h2>
-            <h1 className={styles.headline}>{firstImpression.headline}</h1>
-            <p className={styles.description}>{firstImpression.description}</p>
-            <div className={styles.summary}>
-              {firstImpression.summary
-                .split(/\n\s*\n/)
-                .map((paragraph) => paragraph.trim())
-                .filter((paragraph) => paragraph.length > 0)
-                .map((paragraph, index) => (
-                  <p key={index} className={styles.paragraph}>
-                    {paragraph}
-                  </p>
-                ))}
+          <SignatureHero
+            signature={signature}
+            totalScore={overallScore.totalScore}
+            scoreOneLiner={overallScore.scoreOneLiner}
+            labels={heroLabels}
+          />
+
+          {/* 종합 인상 티저 — 첫 단락 + highlights 2개 + 잠금 라벨 */}
+          <section className={styles.teaserSection}>
+            <h2 className={styles.teaserTitle}>종합 인상</h2>
+            {firstSummaryParagraph && (
+              <p className={styles.teaserParagraph}>{firstSummaryParagraph}</p>
+            )}
+            <ul className={styles.highlightList}>
+              {highlightsPreview.map((h, i) => (
+                <li key={i} className={styles.highlightItem}>
+                  <strong className={styles.highlightTitle}>{h.title}</strong>
+                  <span className={styles.highlightBody}>{h.body}</span>
+                </li>
+              ))}
+            </ul>
+            {remainingHighlights > 0 && (
+              <p className={styles.lockHint}>
+                🔒 + {remainingHighlights}개의 인상 특성이 본편에 있어요
+              </p>
+            )}
+          </section>
+
+          {/* 부위별 점수 잠금 라벨 */}
+          <section className={styles.teaserSection}>
+            <h2 className={styles.teaserTitle}>부위별 점수</h2>
+            <div className={styles.regionLabelGrid}>
+              {regionScores.regions.map((region) => (
+                <span key={region.region} className={styles.regionLabel}>
+                  {region.label}
+                </span>
+              ))}
+            </div>
+            <div className={styles.lockedGauge}>
+              <ScoreGauge
+                score={overallScore.totalScore}
+                label="본편에서 공개되는 점수"
+                variant="region"
+              />
+              <p className={styles.lockHint}>
+                🔒 {regionScores.regions.length}개 부위의 점수와 한 줄 평이
+                본편에서 공개돼요
+              </p>
             </div>
           </section>
 
-          {/* vibeTags */}
-          {firstImpression.vibeTags.length > 0 && (
-            <section className={styles.vibeSection}>
-              <h3 className={styles.vibeTitle}>{t("vibeTagsTitle")}</h3>
-              <div className={styles.vibeTagGroup}>
-                {firstImpression.vibeTags.map((tag, index) => (
-                  <span key={index} className={styles.vibeTag}>
-                    #{tag}
+          {/* 분야 라벨 미리보기 */}
+          <section className={styles.teaserSection}>
+            <h2 className={styles.teaserTitle}>본편에서 만날 디테일</h2>
+            <div className={styles.interestTeaserList}>
+              {interestAreas.areas.map((area) => (
+                <div key={area.domain} className={styles.interestTeaserItem}>
+                  <span className={styles.interestTeaserLabel}>
+                    {area.label}
                   </span>
-                ))}
-              </div>
-            </section>
-          )}
+                  <span className={styles.interestTeaserLocked}>🔒</span>
+                </div>
+              ))}
+            </div>
+          </section>
 
-          {/* traits 티저 */}
-          {traitsTeaser && (
-            <section className={styles.traitsTeaserSection}>
-              <h3 className={styles.traitsTeaserTitle}>
-                {t("traitsTeaserTitle")}
-              </h3>
-              <p className={styles.traitsTeaserBody}>{traitsTeaser}</p>
-              <p className={styles.traitsTeaserHint}>
-                {t("traitsTeaserLockHint")}
-              </p>
-            </section>
-          )}
-
-          {/* 티저 문구 */}
-          <p className={styles.teaser}>{t("teaser")}</p>
+          <p className={styles.teaser}>
+            {t("teaser", {
+              default:
+                "여기까지는 예고편이에요. 본편에서는 부위별 점수와 연애·재물·직장 디테일이 모두 공개돼요.",
+            })}
+          </p>
         </div>
       </div>
 
