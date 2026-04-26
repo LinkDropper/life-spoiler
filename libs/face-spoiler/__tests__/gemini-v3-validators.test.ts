@@ -66,7 +66,8 @@ const AREA_FIXTURES: AreaFixture[] = [
     domain: "love",
     label: "💕 연애운",
     oneLineDefinition: "썸은 느려도 관계에선 무게 있는 애정형",
-    body: "관상에서는 이런 인상을 보통 진득한 신뢰형으로 풀이하는 편이에요.\n\n가볍게 마음을 열기보다는 상대를 천천히 관찰하는 쪽이라 썸 초반에는 템포가 느리고, 상대의 말과 행동을 충분히 살핀 뒤에야 자기 페이스를 꺼내는 모습이 자주 읽혀요.\n\n하지만 관계가 자리 잡으면 묵직하게 이어지는 특성이 있어서, 곁에 있으면 제일 안심된다는 평가를 받는 쪽이에요.",
+    // Phase 21: 연애 body 320~420자 검증. fixture는 348자로 범위 안.
+    body: "관상에서는 이런 인상을 보통 진득한 신뢰형으로 풀이하는 편이에요. 첫 만남의 공기가 조용해 보여도 속도감이 자기 안에서 움직이는 사람이에요.\n\n가볍게 마음을 열기보다는 상대를 천천히 관찰하는 쪽이라 썸 초반에는 템포가 느리고, 카톡 답장도 한 박자 늦게 오는 편이에요. 그래서 처음엔 답답해 보일 수 있지만 한 번 정리되면 방향이 또렷하게 나와요. 이모티콘 하나에 혼자 웃다가 답장을 늦게 보내는 쪽이라 오해받기도 하는 편이에요.\n\n관계가 자리 잡으면 묵직하게 이어지는 특성이 살아서, 공유 플레이리스트나 주말 약속을 잡는 리듬에서 편안함이 드러나는 쪽으로 읽혀요. 퇴근길 통화 한 통에도 하루 리듬을 조율하는 얼굴이에요.",
     oneLineVerdict: "불꽃형보다, 오래 가는 신뢰형 연애운.",
     characterNickname: "무심한 듯 다정한 타입",
     nicknameSubtext: "겉은 담백, 속은 은근 깊은 쪽이에요.",
@@ -216,11 +217,34 @@ describe("validateInterestAreas", () => {
     ).not.toThrow();
   });
 
-  it("극단적으로 긴 body도 통과 (길이 검증 제거됨)", () => {
+  it("money·career body는 길이 검증 없음 — 극단적으로 길어도 통과", () => {
     const bad = buildValidInterestAreas();
-    bad.interestAreas.areas[0].body = "길이 상관없음. ".repeat(100);
+    bad.interestAreas.areas[1].body = "돈 길이 상관없음. ".repeat(100);
+    bad.interestAreas.areas[2].body = "직장 길이 상관없음. ".repeat(100);
     bad.closing.shareLine = "짧";
     expect(() => validateInterestAreas(bad)).not.toThrow();
+  });
+
+  it("Phase 21 — love body가 320자 미만이면 soft 실패", () => {
+    const bad = buildValidInterestAreas();
+    bad.interestAreas.areas[0].body = "짧은 연애 body".repeat(5); // ~45자
+    expect(() => validateInterestAreas(bad)).toThrow(
+      /Soft: love body 길이 .* 허용 범위/
+    );
+  });
+
+  it("Phase 21 — love body가 420자 초과면 soft 실패", () => {
+    const bad = buildValidInterestAreas();
+    bad.interestAreas.areas[0].body = "긴 연애 body ".repeat(50); // ~500자 초과
+    expect(() => validateInterestAreas(bad)).toThrow(
+      /Soft: love body 길이 .* 허용 범위/
+    );
+  });
+
+  it("Phase 21 — love body가 320~420자 범위면 통과", () => {
+    // buildValidInterestAreas 기본 love body가 348자이므로 통과해야 함
+    const ok = buildValidInterestAreas();
+    expect(() => validateInterestAreas(ok)).not.toThrow();
   });
 
   it("도메인 순서가 love→money→career가 아니면 실패", () => {
