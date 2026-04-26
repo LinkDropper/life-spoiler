@@ -245,9 +245,11 @@ const scoreChin = (m: FaceMetrics): { score: number; hint: string } => {
   } else if (m.jawAngularity > 0.55) {
     hint = "턱선이 각진 편이라 의지와 지속력이 또렷한 결";
   } else if (m.jawAngularity > 0.35) {
-    hint = "턱선이 균형있게 자리 잡아 안정감 있는 추진력";
+    // Phase 21.1: "안정감" 어휘 제거 (검증기 blacklist 충돌). 흔들림 없는·고른 결로 대체.
+    hint = "턱선이 고르게 자리 잡아 흔들림 없는 추진력";
   } else if (m.jawWidthRatio > 0.88 && m.jawAngularity < 0.3) {
-    hint = "턱이 넓고 둥글어 넉넉한 포용과 안정의 기운";
+    // Phase 21.1: "포용·안정" 동시 등장 → 받아주는 결·여유로 대체.
+    hint = "턱이 넓고 둥글어 받아주는 결과 여유의 무게감";
   } else if (m.jawAngularity < 0.2) {
     hint = "턱이 아주 둥글어 온화와 친화력이 앞서는 쪽";
   } else {
@@ -270,9 +272,11 @@ const scoreCheekbone = (m: FaceMetrics): { score: number; hint: string } => {
   } else if (m.samjeong.middle > 0.34) {
     hint = "광대가 자연스럽게 자리 잡아 무리 없는 사회성이 느껴지는";
   } else if (m.samjeong.middle > 0.3) {
-    hint = "광대가 은근히 잡혀 있어 차분한 영향력이 배어나는";
+    // Phase 21.1: "차분" 제거 → 잔잔한·은은한 결로 대체.
+    hint = "광대가 은근히 잡혀 있어 잔잔한 영향력이 배어나는";
   } else if (m.jawWidthRatio > 0.9) {
-    hint = "광대와 턱이 어우러져 안정적인 너비의 인상";
+    // Phase 21.1: "안정적인" 제거 → 맞물린·고르게 어우러지는으로 대체.
+    hint = "광대와 턱이 맞물려 고르게 자리 잡은 너비의 인상";
   } else {
     hint = "광대가 튀지 않아 부드럽고 여유로운 인상을 주는 쪽";
   }
@@ -307,8 +311,7 @@ const scoreBalance = (m: FaceMetrics): { score: number; hint: string } => {
   const biasFit = clamp(Math.abs(upperLowerDiff) * 15, 0, 1);
 
   // 3개 요소 가중 평균 (기존 2요소 → 3요소)
-  const fit =
-    balanceFit * 0.45 + faceShapeFit * 0.35 + biasFit * 0.2;
+  const fit = balanceFit * 0.45 + faceShapeFit * 0.35 + biasFit * 0.2;
 
   // Phase 17.4 (2026-04-22) — 우선순위 재설계.
   //
