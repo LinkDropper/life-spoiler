@@ -46,6 +46,17 @@
   white-space: pre-wrap;
 }
 
+/*
+ * 연애운 본문 전용 — 단어(어절) 단위 줄내림.
+ * 기본 브라우저는 한국어를 임의 글자 위치에서 줄바꿈하는데, `keep-all`은
+ * CJK를 단어 단위로만 끊는다. `overflow-wrap: anywhere`는 한 어절이 컨테이너
+ * 폭을 넘는 극단 케이스에 한해 어절 내 줄바꿈을 허용하는 안전장치.
+ */
+.paragraphLove {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
 .scalePair {
   display: flex;
   flex-direction: column;
