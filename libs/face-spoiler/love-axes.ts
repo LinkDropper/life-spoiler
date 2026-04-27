@@ -162,7 +162,8 @@ export const deriveLoveAxes = (m: FaceMetrics): LoveAxes => {
     Math.max(0, m.samjeong.middle - 0.34) * 8;
   const balanceScore =
     1 -
-    Math.abs(m.samjeong.upper - 0.33) * 6 +
+    Math.abs(m.samjeong.upper - 0.33) * 6 -
+    Math.abs(m.samjeong.lower - 0.33) * 6 +
     (1 - m.jawAngularity) * 0.9 +
     (1 - Math.abs(m.faceRatio - 1.05) * 1.5);
   const rhythmDelta = impactScore - balanceScore * 0.55;
@@ -203,10 +204,3 @@ export const deriveLoveAxes = (m: FaceMetrics): LoveAxes => {
 
   return { approach, signal, rhythm };
 };
-
-/**
- * 3축 라벨 조합을 짧은 해시 문자열로 변환.
- * MZ 톤 레인 결정적 선택 등 부수 결정에 사용.
- */
-export const loveAxesFingerprint = (axes: LoveAxes): string =>
-  `${axes.approach.label}/${axes.signal.label}/${axes.rhythm.label}`;
