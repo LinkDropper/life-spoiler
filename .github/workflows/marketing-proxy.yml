@@ -9,17 +9,23 @@ on:
     # 매일 KST 08:30, 20:30에 X 메트릭 자동 수집 (UTC 23:30, 11:30)
     - cron: "30 23 * * *"
     - cron: "30 11 * * *"
+    # 매일 KST 08:25에 GA4 어제 트래픽/캠페인 수집 (UTC 23:25)
+    - cron: "25 23 * * *"
+    # 매주 일요일 KST 17:30에 네이버 트렌드 수집 (UTC 일요일 08:30)
+    - cron: "30 8 * * 0"
   repository_dispatch:
     types: [post-to-x, discord-notify, weekly-metrics]
   workflow_dispatch:
     inputs:
       job:
-        description: "실행할 잡 (daily-x-metrics 만 지원)"
+        description: "실행할 잡"
         required: false
         default: "daily-x-metrics"
         type: choice
         options:
           - daily-x-metrics
+          - daily-ga4-metrics
+          - weekly-naver-trends
 
 jobs:
   post-to-x:
@@ -27,11 +33,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: develop
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      - name: Preflight 안전 게이트 (G1~G6)
+        id: preflight
+        run: node scripts/marketing/preflight-check.js
+        env:
+          TWEET_TEXT: ${{ github.event.client_payload.text }}
+
+      - name: Jitter 대기 (인간적 발행 패턴)
+        if: steps.preflight.outputs.passed == 'true'
+        run: |
+          SECONDS=${{ steps.preflight.outputs.jitter_seconds }}
+          echo "jitter ${SECONDS}초 대기..."
+          sleep "$SECONDS"
+
       - name: 트윗 발행
         id: post
+        if: steps.preflight.outputs.passed == 'true'
         run: node scripts/marketing/post-to-x.js
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
@@ -47,10 +70,22 @@ jobs:
           DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
           DISCORD_USERNAME: "Social Media Marketer"
           DISCORD_TEXT: |
-            X 포스트 발행 완료
+            X 포스트 발행 완료 (${{ steps.preflight.outputs.phase }})
             ${{ steps.post.outputs.tweet_url }}
 
             ${{ github.event.client_payload.text }}
+
+      - name: Discord 알림 (Preflight 실패)
+        if: failure() && steps.preflight.outcome == 'failure'
+        run: node scripts/marketing/discord-notify.js
+        env:
+          DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
+          DISCORD_USERNAME: "Safety Gate"
+          DISCORD_TEXT: |
+            X 발행 차단 (Preflight 실패)
+            사유: ${{ steps.preflight.outputs.fail_reason }}
+
+            본문: ${{ github.event.client_payload.text }}
 
   weekly-metrics:
     if: github.event.action == 'weekly-metrics'
@@ -125,7 +160,9 @@ jobs:
           fi
 
   daily-x-metrics:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'daily-x-metrics')
+    if: |
+      (github.event_name == 'schedule' && (github.event.schedule == '30 23 * * *' || github.event.schedule == '30 11 * * *'))
+      || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'daily-x-metrics')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -148,11 +185,27 @@ jobs:
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
           X_METRICS_DEBUG: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
 
-      - name: 메트릭 파일 커밋
+      - name: Shadow ban 자동 감지 (G7)
+        id: shadow_check
+        run: node scripts/marketing/shadow-ban-check.js --csv docs/metrics/daily-x-latest.csv
+
+      - name: Discord 알림 (Shadow ban 감지)
+        if: steps.shadow_check.outputs.shadow_ban_detected == 'true'
+        run: node scripts/marketing/discord-notify.js
+        env:
+          DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
+          DISCORD_USERNAME: "Safety Gate"
+          DISCORD_TEXT: |
+            ⚠️ Shadow ban 의심 — 자동 발행 중단
+            직전 5건 평균 impressions: ${{ steps.shadow_check.outputs.avg_impressions }}
+            Kill switch (`docs/strategy/auto-post-disabled`) 자동 활성화됨.
+            X 노출 회복 확인 후 파일 수동 삭제 필요.
+
+      - name: 메트릭 파일 + kill switch 커밋
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/metrics/daily-x-latest.csv
+          git add docs/metrics/daily-x-latest.csv docs/strategy/auto-post-disabled 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "변경사항 없음"
           else
@@ -174,3 +227,75 @@ jobs:
           DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
           DISCORD_TEXT: ${{ github.event.client_payload.text }}
           DISCORD_USERNAME: ${{ github.event.client_payload.username }}
+
+  daily-ga4-metrics:
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '25 23 * * *')
+      || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'daily-ga4-metrics')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: GA4 어제 트래픽 수집
+        run: |
+          mkdir -p docs/metrics
+          node scripts/marketing/ga4-metrics.js --days 8 --type traffic > docs/metrics/daily-ga4-traffic.csv
+          node scripts/marketing/ga4-metrics.js --days 7 --type campaigns > docs/metrics/daily-ga4-campaigns.csv
+          node scripts/marketing/ga4-metrics.js --days 7 --type sources > docs/metrics/daily-ga4-sources.csv
+        env:
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
+          GA4_SERVICE_ACCOUNT_JSON: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
+
+      - name: 메트릭 파일 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/metrics/daily-ga4-*.csv
+          if git diff --cached --quiet; then
+            echo "변경사항 없음"
+          else
+            git commit -m "[마케팅] GA4 메트릭 자동 수집 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi
+
+  weekly-naver-trends:
+    if: |
+      (github.event_name == 'schedule' && github.event.schedule == '30 8 * * 0')
+      || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'weekly-naver-trends')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 네이버 트렌드 수집
+        run: |
+          mkdir -p docs/metrics
+          node scripts/marketing/naver-trends.js --days 30 > docs/metrics/weekly-naver-trends.csv
+        env:
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+
+      - name: 메트릭 파일 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/metrics/weekly-naver-trends.csv
+          if git diff --cached --quiet; then
+            echo "변경사항 없음"
+          else
+            git commit -m "[마케팅] 네이버 트렌드 자동 수집 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi
