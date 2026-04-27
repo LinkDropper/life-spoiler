@@ -23,6 +23,7 @@ import {
   REGION_SCORES_SCHEMA_STRICT,
   SIGNATURE_OVERALL_SCHEMA_STRICT,
 } from "./prompts/text-report.v3.openai-schemas";
+import type { LoveAxes } from "./love-axes";
 import type { RegionRawScore } from "./region-scorer";
 import type { AnimalMatch } from "./types";
 import type { FaceTextReportV3 } from "./types.v3";
@@ -325,6 +326,8 @@ interface GenerateFaceReportV3Input {
   mimeType: string;
   animal: AnimalMatch;
   regionScores: RegionRawScore[];
+  /** Phase 22 — 연애운 결정적 축 라벨. Stage C 프롬프트 anchor용. */
+  loveAxes?: LoveAxes;
 }
 
 /**
@@ -336,6 +339,7 @@ export const generateFaceReportV3OpenAI = async ({
   mimeType,
   animal,
   regionScores,
+  loveAxes,
 }: GenerateFaceReportV3Input): Promise<FaceTextReportV3> => {
   // Phase 20.6: env.FACE_SPOILER_HINT_MODE에 따라 프롬프트 파생 정보 레벨 결정.
   const hintMode = env.FACE_SPOILER_HINT_MODE;
@@ -378,7 +382,8 @@ export const generateFaceReportV3OpenAI = async ({
       systemPrompt: buildInterestAreasSystemPrompt(
         animal,
         regionScores,
-        hintMode
+        hintMode,
+        loveAxes
       ),
       userPrompt: INTEREST_AREAS_USER_PROMPT,
       schemaName: "face_interest_areas",

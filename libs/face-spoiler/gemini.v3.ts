@@ -16,6 +16,7 @@ import type {
   RegionScoresResponse,
   SignatureOverallResponse,
 } from "./prompts/text-report.v3";
+import type { LoveAxes } from "./love-axes";
 import type { RegionRawScore } from "./region-scorer";
 import type { AnimalMatch } from "./types";
 import type { FaceTextReportV3 } from "./types.v3";
@@ -1043,6 +1044,11 @@ interface GenerateFaceReportV3Input {
   mimeType: string;
   animal: AnimalMatch;
   regionScores: RegionRawScore[];
+  /**
+   * Phase 22 — 연애운 결정적 축 라벨. Stage C 프롬프트에 주입돼 인물별 본문 분화의 anchor가 됨.
+   * 미지정 시 Stage C는 축 블록 없이 동작 (legacy 호환).
+   */
+  loveAxes?: LoveAxes;
 }
 
 /**
@@ -1056,6 +1062,7 @@ export const generateFaceReportV3 = async ({
   mimeType,
   animal,
   regionScores,
+  loveAxes,
 }: GenerateFaceReportV3Input): Promise<FaceTextReportV3> => {
   // Phase 12: 각 호출에 validator를 주입하여 실패 시 feedback과 함께 재시도.
   // 3개 호출을 병렬로 실행해 전체 지연을 줄인다. 단계 간 의존성 없음.
@@ -1097,7 +1104,8 @@ export const generateFaceReportV3 = async ({
       systemPrompt: buildInterestAreasSystemPrompt(
         animal,
         regionScores,
-        hintMode
+        hintMode,
+        loveAxes
       ),
       userPrompt: INTEREST_AREAS_USER_PROMPT,
       responseSchema: INTEREST_AREAS_SCHEMA,
