@@ -117,6 +117,13 @@ export const chatCompletion = async (
       }
 
       const [candidate] = data.candidates;
+
+      if (candidate.finishReason === "MAX_TOKENS") {
+        throw new AIError("AI 응답이 토큰 한도로 잘렸습니다.", {
+          code: "RESPONSE_TRUNCATED",
+        });
+      }
+
       const content = candidate.content.parts.map((p) => p.text).join("");
 
       // AI 응답이 JSON 형식인지 기본 검증
