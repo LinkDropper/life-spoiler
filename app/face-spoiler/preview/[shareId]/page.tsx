@@ -11,7 +11,7 @@ import { createServerClient } from "@/libs/supabase";
 
 import styles from "./page.module.css";
 
-const TEASER_MAX_CHARS = 600;
+const TEASER_SECTION_COUNT = 2;
 
 interface PreviewPageProps {
   params: Promise<{ shareId: string }>;
@@ -48,30 +48,6 @@ const fetchReport = async (
     result: row.result,
     paid_at: row.paid_at,
   };
-};
-
-/**
- * rawText의 앞부분을 자연스러운 경계(빈 줄)에서 잘라 티저로 노출.
- * 길이가 TEASER_MAX_CHARS 이하라면 전체 반환(거의 발생하지 않음).
- */
-const buildTeaser = (rawText: string): string => {
-  if (rawText.length <= TEASER_MAX_CHARS) return rawText;
-  const window = rawText.slice(0, TEASER_MAX_CHARS);
-  // 가장 마지막 빈 줄(이중 개행)에서 자르기 → 섹션 중간 단절 방지
-  const lastBreak = window.lastIndexOf("\n\n");
-  if (lastBreak > TEASER_MAX_CHARS * 0.4) {
-    return window.slice(0, lastBreak).trimEnd();
-  }
-  // 못 찾으면 마지막 마침표나 줄바꿈에서 자르기
-  const lastPeriod = Math.max(
-    window.lastIndexOf("."),
-    window.lastIndexOf("\n"),
-    window.lastIndexOf("。")
-  );
-  if (lastPeriod > TEASER_MAX_CHARS * 0.5) {
-    return window.slice(0, lastPeriod + 1).trimEnd();
-  }
-  return `${window.trimEnd()}…`;
 };
 
 export const generateMetadata = async ({
@@ -128,7 +104,7 @@ export default async function FaceSpoilerPreviewPage({
 
   const t = await getTranslations("faceSpoiler.preview");
 
-  // 새 흐름(v4)이 아닌 리포트는 legacy 안내 페이지
+  // 새 흐름(v5)이 아닌 리포트는 legacy 안내 페이지
   if (!isFaceReport(record.result)) {
     const tLegacy = await getTranslations("faceSpoiler.report.legacy");
     return (
@@ -151,18 +127,25 @@ export default async function FaceSpoilerPreviewPage({
     );
   }
 
-  const teaser = buildTeaser(record.result.rawText);
+  const allSections = record.result.sections;
+  const teaserSections = allSections.slice(0, TEASER_SECTION_COUNT);
+  const lockedCount = Math.max(0, allSections.length - teaserSections.length);
 
   return (
     <>
       <Header />
       <div className={styles.container}>
         <div className={styles.content}>
-          <FaceReportMarkdown text={teaser} />
-          <p className={styles.lockHint}>
-            🔒{" "}
-            {t("teaserLock", { default: "이어지는 본편은 결제 후 공개돼요." })}
-          </p>
+          <FaceReportMarkdown sections={teaserSections} />
+          {lockedCount > 0 && (
+            <p className={styles.lockHint}>
+              🔒{" "}
+              {t("teaserLockCount", {
+                count: lockedCount,
+                default: `이어지는 ${lockedCount}개 섹션은 결제 후 공개돼요.`,
+              })}
+            </p>
+          )}
           <p className={styles.teaser}>
             {t("teaser", {
               default:

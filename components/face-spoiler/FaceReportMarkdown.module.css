@@ -1,4 +1,51 @@
-.body {
+/* ============================================================
+   섹션 카드 레이아웃
+   ============================================================ */
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid #3fd9ad;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sectionNumber {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #3fd9ad;
+  letter-spacing: 0.18em;
+}
+
+.sectionTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.sectionBody {
   font-family: "Pretendard Variable", Pretendard, sans-serif;
   font-size: 1rem;
   line-height: 1.75;
@@ -7,79 +54,70 @@
   overflow-wrap: anywhere;
 }
 
-.body :global(h1),
-.body :global(h2),
-.body :global(h3),
-.body :global(h4) {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-  line-height: 1.35;
-}
-
-.body :global(h1) {
-  font-size: 1.625rem;
-  margin: 36px 0 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.body :global(h2) {
-  font-size: 1.375rem;
-  margin: 32px 0 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.body :global(h3) {
-  font-size: 1.125rem;
-  margin: 24px 0 10px;
-  color: #3fd9ad;
-}
-
-.body :global(h4) {
-  font-size: 1rem;
-  margin: 18px 0 8px;
-  color: var(--text-primary);
-}
-
-.body :global(p) {
+.sectionBody :global(p) {
   font-size: 1rem;
   line-height: 1.75;
   color: var(--text-secondary);
-  margin: 0 0 14px;
+  margin: 0 0 12px;
   white-space: pre-wrap;
 }
 
-.body :global(strong) {
+.sectionBody :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.sectionBody :global(strong) {
   color: var(--text-primary);
   font-weight: 700;
 }
 
-.body :global(em) {
+.sectionBody :global(em) {
   color: var(--text-primary);
   font-style: italic;
 }
 
-.body :global(ul),
-.body :global(ol) {
-  margin: 0 0 16px;
+/* body 안의 소제목 — 카드 메인 타이틀과 시각적 충돌 방지를 위해 톤 다운 */
+.sectionBody :global(h1),
+.sectionBody :global(h2),
+.sectionBody :global(h3),
+.sectionBody :global(h4) {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  margin: 18px 0 8px;
+}
+
+.sectionBody :global(h1),
+.sectionBody :global(h2) {
+  font-size: 1.0625rem;
+  color: #3fd9ad;
+}
+
+.sectionBody :global(h3),
+.sectionBody :global(h4) {
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.sectionBody :global(ul),
+.sectionBody :global(ol) {
+  margin: 0 0 14px;
   padding-left: 1.4em;
   color: var(--text-secondary);
 }
 
-.body :global(li) {
-  margin: 6px 0;
+.sectionBody :global(li) {
+  margin: 4px 0;
   line-height: 1.7;
 }
 
-.body :global(li::marker) {
+.sectionBody :global(li::marker) {
   color: #3fd9ad;
 }
 
-.body :global(blockquote) {
-  margin: 16px 0;
+.sectionBody :global(blockquote) {
+  margin: 14px 0;
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.03);
   border-left: 3px solid #3fd9ad;
@@ -87,13 +125,13 @@
   font-style: normal;
 }
 
-.body :global(hr) {
+.sectionBody :global(hr) {
   border: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  margin: 28px 0;
+  margin: 22px 0;
 }
 
-.body :global(code) {
+.sectionBody :global(code) {
   font-family:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   font-size: 0.9em;
@@ -103,39 +141,39 @@
   border-radius: 3px;
 }
 
-.body :global(pre) {
-  margin: 16px 0;
+.sectionBody :global(pre) {
+  margin: 14px 0;
   padding: 14px 16px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow-x: auto;
 }
 
-.body :global(pre code) {
+.sectionBody :global(pre code) {
   padding: 0;
   background: transparent;
 }
 
-.body :global(a) {
+.sectionBody :global(a) {
   color: #3fd9ad;
   text-decoration: underline;
 }
 
-.body :global(table) {
+.sectionBody :global(table) {
   display: block;
   width: 100%;
-  margin: 16px 0;
+  margin: 14px 0;
   border-collapse: collapse;
   overflow-x: auto;
   font-size: 0.9375rem;
 }
 
-.body :global(thead) {
+.sectionBody :global(thead) {
   background: rgba(63, 217, 173, 0.08);
 }
 
-.body :global(th),
-.body :global(td) {
+.sectionBody :global(th),
+.sectionBody :global(td) {
   padding: 10px 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   text-align: left;
@@ -143,43 +181,47 @@
   color: var(--text-secondary);
 }
 
-.body :global(th) {
+.sectionBody :global(th) {
   color: var(--text-primary);
   font-weight: 700;
 }
 
-.body :global(tbody tr:nth-child(even)) {
+.sectionBody :global(tbody tr:nth-child(even)) {
   background: rgba(255, 255, 255, 0.02);
 }
 
 @media (max-width: 640px) {
-  .body {
-    font-size: 0.9375rem;
+  .sections {
+    gap: 20px;
   }
 
-  .body :global(h1) {
-    font-size: 1.375rem;
+  .section {
+    padding: 24px 20px;
   }
 
-  .body :global(h2) {
+  .sectionTitle {
     font-size: 1.1875rem;
   }
 
-  .body :global(h3) {
-    font-size: 1.0625rem;
+  .sectionNumber {
+    font-size: 0.6875rem;
   }
 
-  .body :global(p),
-  .body :global(li) {
+  .sectionBody {
     font-size: 0.9375rem;
   }
 
-  .body :global(table) {
+  .sectionBody :global(p),
+  .sectionBody :global(li) {
+    font-size: 0.9375rem;
+  }
+
+  .sectionBody :global(table) {
     font-size: 0.875rem;
   }
 
-  .body :global(th),
-  .body :global(td) {
+  .sectionBody :global(th),
+  .sectionBody :global(td) {
     padding: 8px 10px;
   }
 }

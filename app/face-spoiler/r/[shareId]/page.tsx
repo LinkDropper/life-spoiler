@@ -180,7 +180,7 @@ export default async function FaceSpoilerReportPage({
               />
             </div>
           ) : null}
-          <FaceReportMarkdown text={report.rawText} />
+          <FaceReportMarkdown sections={report.sections} />
         </div>
       </div>
       {isOwner && profileName ? (
