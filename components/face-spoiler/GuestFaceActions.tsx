@@ -19,7 +19,7 @@ const captureFilter = (node: HTMLElement): boolean =>
 interface GuestFaceActionsProps {
   shareId: string;
   profileName: string | null;
-  animalKey: string;
+  slug: string;
 }
 
 const TOAST_DURATION_MS = 2500;
@@ -27,7 +27,7 @@ const TOAST_DURATION_MS = 2500;
 export const GuestFaceActions = ({
   shareId,
   profileName,
-  animalKey,
+  slug,
 }: GuestFaceActionsProps) => {
   const t = useTranslations("faceSpoiler.share");
   const router = useRouter();
@@ -41,7 +41,7 @@ export const GuestFaceActions = ({
     toBlob,
     isDownloading,
   } = useImageDownload({
-    filename: `face_spoiler_${animalKey}`,
+    filename: `face_spoiler_${slug}`,
     pixelRatio: 2,
     filter: captureFilter,
     cacheBust: false,

@@ -3,9 +3,6 @@ import { ImageResponse } from "next/og";
 import path from "path";
 
 import { env } from "@/env";
-import { ANIMAL_CATALOG } from "@/libs/face-spoiler/constants/animals";
-import { isV2Report } from "@/libs/face-spoiler/types";
-import { isV3Report } from "@/libs/face-spoiler/types.v3";
 import { createServerClient } from "@/libs/supabase";
 
 export const runtime = "nodejs";
@@ -33,27 +30,13 @@ export default async function OpengraphImage({ params }: Props) {
   const adminClient = createServerClient();
   const { data } = await adminClient
     .from("face_reports")
-    .select("result, character_image_path")
+    .select("character_image_path")
     .eq("share_id", shareId)
     .maybeSingle();
 
-  let animalLabel = "";
   let characterImageUrl: string | null = null;
-
   if (data) {
-    const record = data as {
-      result: unknown;
-      character_image_path: string | null;
-    };
-
-    if (isV3Report(record.result)) {
-      const animalKey = record.result.signature.animalChip.type;
-      animalLabel = ANIMAL_CATALOG[animalKey]?.label.ko ?? "";
-    } else if (isV2Report(record.result)) {
-      const animalKey = record.result.animalMatch.primary;
-      animalLabel = ANIMAL_CATALOG[animalKey]?.label.ko ?? "";
-    }
-
+    const record = data as { character_image_path: string | null };
     if (record.character_image_path && env.NEXT_PUBLIC_SUPABASE_URL) {
       characterImageUrl = `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${CHARACTER_BUCKET}/${record.character_image_path}`;
     }
@@ -80,28 +63,6 @@ export default async function OpengraphImage({ params }: Props) {
           flexShrink: 0,
         }}
       >
-        {animalLabel ? (
-          <div
-            style={{
-              position: "absolute",
-              top: 48,
-              left: 52,
-              display: "flex",
-              flexDirection: "column",
-              fontSize: 34,
-              fontWeight: 400,
-              color: TEXT_DARK,
-              letterSpacing: "0.04em",
-              lineHeight: 1.3,
-              gap: 2,
-            }}
-          >
-            {animalLabel.split("").map((char, i) => (
-              <span key={i}>{char}</span>
-            ))}
-          </div>
-        ) : null}
-
         {characterImageUrl ? (
           <img
             src={characterImageUrl}

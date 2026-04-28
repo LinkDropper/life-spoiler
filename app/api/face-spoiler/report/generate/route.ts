@@ -1,32 +1,22 @@
 import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 
-import { env } from "@/env";
-import { classifyAnimalType } from "@/libs/face-spoiler/animal-classifier";
-import { ANIMAL_CATALOG } from "@/libs/face-spoiler/constants/animals";
-import { generateFaceReportV3 } from "@/libs/face-spoiler/gemini.v3";
-import { deriveLoveAxes } from "@/libs/face-spoiler/love-axes";
-import { generateFaceReportV3OpenAI } from "@/libs/face-spoiler/openai.v3";
-import {
-  deriveTotalScore,
-  scoreRegions,
-} from "@/libs/face-spoiler/region-scorer";
-import { isV3Report } from "@/libs/face-spoiler/types.v3";
+import { generateFaceReport } from "@/libs/face-spoiler/face-report";
+import { isFaceReport } from "@/libs/face-spoiler/types";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
-import type { FaceMetrics } from "@/libs/face-spoiler/face-shape-analyzer";
-import type { FaceReportDataV3 } from "@/libs/face-spoiler/types.v3";
+import type { FaceReportData } from "@/libs/face-spoiler/types";
 import type { FaceReportInsert, Json } from "@/libs/supabase";
 
 const STORAGE_BUCKET = "face-images";
 
 /**
  * 리포트 캐시 사용 여부.
- * - 프로덕션: 항상 캐시 사용 (Gemini 호출 절약)
+ * - 프로덕션: 항상 캐시 사용 (LLM 호출 절약)
  * - 개발(NODE_ENV=development): 캐시 스킵 기본 — 프롬프트/로직 변경 시 같은 사진으로
  *   즉시 재생성 검증 가능. `FACE_SPOILER_FORCE_CACHE=true` 로 강제 활성화 가능.
  *
- * 주의: 캐시 스킵이어도 `existingRow` 조회는 수행한다. (UPDATE로 유니크 제약 충돌 회피)
+ * 주의: 캐시 스킵이어도 `existingRow` 조회는 수행한다 (UPDATE로 유니크 제약 충돌 회피).
  */
 const shouldUseCache =
   process.env.NODE_ENV === "production" ||
@@ -36,13 +26,6 @@ interface GenerateRequestBody {
   imagePath?: string;
   imageHash?: string;
   profileId?: string;
-  faceShapeHint?: string;
-  /**
-   * 클라이언트(MediaPipe)에서 측정한 얼굴 수치 객체.
-   * 코드 결정적 동물상 분류기 + 부위 점수 산출기 입력.
-   * v3 파이프라인은 이 수치가 반드시 필요하다.
-   */
-  faceMetrics?: FaceMetrics;
 }
 
 /**
@@ -72,22 +55,11 @@ export const POST = async (request: Request) => {
     }
 
     const body = (await request.json()) as GenerateRequestBody;
-    const { imagePath, imageHash, profileId, faceShapeHint, faceMetrics } =
-      body;
+    const { imagePath, imageHash, profileId } = body;
 
     if (!imagePath || !imageHash || !profileId) {
       return NextResponse.json(
         { error: "imagePath, imageHash, profileId가 필요합니다." },
-        { status: 400 }
-      );
-    }
-
-    if (!faceMetrics) {
-      return NextResponse.json(
-        {
-          error:
-            "얼굴 측정값이 필요합니다. 업로드 페이지를 새로고침하고 다시 시도해주세요.",
-        },
         { status: 400 }
       );
     }
@@ -120,7 +92,7 @@ export const POST = async (request: Request) => {
     // ────────────────────────────────────────────────────────
     // 단계 1. 기존 행 탐색 — DB 유니크 제약이 `(user_id, image_hash)` 이므로
     //         face_profile_id와 무관하게 1건만 존재할 수 있다.
-    //         legacy(v1/v2) 행이 있으면 DELETE/INSERT 대신 UPDATE로 업그레이드 →
+    //         legacy(v2/v3) 행이 있으면 DELETE/INSERT 대신 UPDATE로 업그레이드 →
     //         유니크 제약 충돌 방지 + paid_at 보존.
     // ────────────────────────────────────────────────────────
     const { data: existingRowRaw } = await adminClient
@@ -131,8 +103,8 @@ export const POST = async (request: Request) => {
       .maybeSingle();
     const existingRow = existingRowRaw as unknown as ExistingReportRow | null;
 
-    // 이미 v3 리포트가 있으면 즉시 재사용 (prod 기본 / dev에서는 캐시 스킵 가능)
-    if (shouldUseCache && existingRow && isV3Report(existingRow.result)) {
+    // 이미 v4(새 스키마) 리포트가 있으면 즉시 재사용 (prod 기본 / dev에서는 캐시 스킵 가능)
+    if (shouldUseCache && existingRow && isFaceReport(existingRow.result)) {
       // 프로필이 다르면 현재 프로필로 귀속 이동
       if (existingRow.face_profile_id !== profileId) {
         const reportsTable = adminClient.from(
@@ -157,14 +129,14 @@ export const POST = async (request: Request) => {
 
     if (!shouldUseCache) {
       console.log(
-        "[face-spoiler] NODE_ENV=development — 리포트 캐시 스킵, v3 파이프라인 재실행"
+        "[face-spoiler] NODE_ENV=development — 리포트 캐시 스킵, 새 OpenAI 호출 실행"
       );
     }
 
     // ────────────────────────────────────────────────────────
-    // 단계 2. 글로벌 v3 캐시 — 다른 유저의 v3 결과가 있으면 재사용
-    //         existingRow(legacy)가 있으면 UPDATE, 없으면 INSERT
-    //         dev 환경에서는 이 단계도 스킵해 항상 새 Gemini 응답을 받는다.
+    // 단계 2. 글로벌 v4 캐시 — 다른 유저의 v4 결과가 있으면 재사용
+    //         existingRow(legacy)가 있으면 UPDATE, 없으면 INSERT.
+    //         dev 환경에서는 이 단계도 스킵해 항상 새 응답을 받는다.
     // ────────────────────────────────────────────────────────
     if (shouldUseCache) {
       const { data: globalCachedReportRaw } = await adminClient
@@ -176,11 +148,11 @@ export const POST = async (request: Request) => {
         .limit(10);
       const globalCachedReports = (globalCachedReportRaw ??
         []) as unknown as Array<{ result: Json }>;
-      const globalV3Hit = globalCachedReports.find((row) =>
-        isV3Report(row.result)
+      const globalHit = globalCachedReports.find((row) =>
+        isFaceReport(row.result)
       );
 
-      if (globalV3Hit && globalV3Hit.result) {
+      if (globalHit && globalHit.result) {
         const saveResult = await upsertReport({
           adminClient,
           existingRow,
@@ -188,7 +160,7 @@ export const POST = async (request: Request) => {
           profileId,
           imageHash,
           imagePath,
-          reportResult: globalV3Hit.result,
+          reportResult: globalHit.result,
         });
         if (!saveResult.ok) {
           await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
@@ -205,7 +177,7 @@ export const POST = async (request: Request) => {
     }
 
     // ────────────────────────────────────────────────────────
-    // 단계 3. 캐시 없음 → Storage에서 다운로드 후 v3 파이프라인 실행
+    // 단계 3. 캐시 없음 → Storage에서 다운로드 후 단일 OpenAI 호출
     // ────────────────────────────────────────────────────────
     const { data: imageBlob, error: downloadError } = await adminClient.storage
       .from(STORAGE_BUCKET)
@@ -226,67 +198,16 @@ export const POST = async (request: Request) => {
     const mimeType = imageBlob.type || "image/jpeg";
 
     try {
-      // 1) 동물상 분류 (코드 결정적 + LLM rationale)
-      const animalMatch = await classifyAnimalType(
-        base64,
-        mimeType,
-        faceShapeHint,
-        faceMetrics
-      );
-
-      // 2) 부위별 점수 산출 (코드 결정적)
-      const regionRawScores = scoreRegions(faceMetrics);
-
-      // 2.5) Phase 22 — 연애운 결정적 축 라벨 산출 (코드 결정적)
-      const loveAxes = deriveLoveAxes(faceMetrics);
-
-      // 3) v3 텍스트 리포트 (3 Stage 병렬 호출)
-      //    Phase 20: provider 스위칭. 기본 Gemini, env로 OpenAI(GPT-5.4 mini) 전환.
-      const provider = env.FACE_SPOILER_LLM_PROVIDER;
-      const generate =
-        provider === "openai"
-          ? generateFaceReportV3OpenAI
-          : generateFaceReportV3;
-      if (provider === "openai") {
-        console.info(
-          `[face-spoiler] LLM provider=openai (model=${env.OPENAI_FACE_MODEL})`
-        );
-      }
-      const textReport = await generate({
+      // 단일 OpenAI 호출 — NEW_PROMPT + 사진만 전달.
+      const rawText = await generateFaceReport({
         imageBase64: base64,
         mimeType,
-        animal: animalMatch,
-        regionScores: regionRawScores,
-        loveAxes,
       });
 
-      // 4) 코드 결정 필드 + LLM 응답 합성
-      const totalScore = deriveTotalScore(regionRawScores);
-      const animalDef = ANIMAL_CATALOG[animalMatch.primary];
-
-      const reportData: FaceReportDataV3 = {
-        version: 3,
-        signature: {
-          ...textReport.signature,
-          animalChip: {
-            type: animalMatch.primary,
-            label: animalDef.label.ko,
-          },
-        },
-        overallScore: {
-          ...textReport.overallScore,
-          totalScore,
-        },
-        regionScores: {
-          regions: regionRawScores.map((raw, i) => ({
-            region: raw.region,
-            label: raw.label,
-            score: raw.score,
-            ...textReport.regionScores.regions[i],
-          })),
-        },
-        interestAreas: textReport.interestAreas,
-        closing: textReport.closing,
+      const reportData: FaceReportData = {
+        version: 4,
+        rawText,
+        generatedAt: new Date().toISOString(),
       };
 
       const saveResult = await upsertReport({
@@ -307,14 +228,17 @@ export const POST = async (request: Request) => {
         );
       }
 
-      return NextResponse.json({ cached: false, shareId: saveResult.shareId });
+      return NextResponse.json({
+        cached: false,
+        shareId: saveResult.shareId,
+      });
     } catch (analysisError) {
       // 분석 실패 시 원본 이미지 정리
       await adminClient.storage.from(STORAGE_BUCKET).remove([imagePath]);
       throw analysisError;
     }
   } catch (error) {
-    console.error("Face report generate v3 error:", error);
+    console.error("Face report generate error:", error);
     return NextResponse.json(
       {
         error:
@@ -355,7 +279,7 @@ const upsertReport = async ({
   reportResult,
 }: UpsertArgs): Promise<UpsertResult> => {
   if (existingRow) {
-    // legacy → v3 업그레이드. share_id / paid_at 보존.
+    // legacy → v4 업그레이드. share_id / paid_at 보존.
     const { error: updateError } = await adminClient
       .from("face_reports")
       .update({

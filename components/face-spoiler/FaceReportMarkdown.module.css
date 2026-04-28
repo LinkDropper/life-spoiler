@@ -1,0 +1,185 @@
+.body {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.body :global(h1),
+.body :global(h2),
+.body :global(h3),
+.body :global(h4) {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.body :global(h1) {
+  font-size: 1.625rem;
+  margin: 36px 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.body :global(h2) {
+  font-size: 1.375rem;
+  margin: 32px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.body :global(h3) {
+  font-size: 1.125rem;
+  margin: 24px 0 10px;
+  color: #3fd9ad;
+}
+
+.body :global(h4) {
+  font-size: 1rem;
+  margin: 18px 0 8px;
+  color: var(--text-primary);
+}
+
+.body :global(p) {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+}
+
+.body :global(strong) {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.body :global(em) {
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+.body :global(ul),
+.body :global(ol) {
+  margin: 0 0 16px;
+  padding-left: 1.4em;
+  color: var(--text-secondary);
+}
+
+.body :global(li) {
+  margin: 6px 0;
+  line-height: 1.7;
+}
+
+.body :global(li::marker) {
+  color: #3fd9ad;
+}
+
+.body :global(blockquote) {
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #3fd9ad;
+  color: var(--text-primary);
+  font-style: normal;
+}
+
+.body :global(hr) {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 28px 0;
+}
+
+.body :global(code) {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-radius: 3px;
+}
+
+.body :global(pre) {
+  margin: 16px 0;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
+}
+
+.body :global(pre code) {
+  padding: 0;
+  background: transparent;
+}
+
+.body :global(a) {
+  color: #3fd9ad;
+  text-decoration: underline;
+}
+
+.body :global(table) {
+  display: block;
+  width: 100%;
+  margin: 16px 0;
+  border-collapse: collapse;
+  overflow-x: auto;
+  font-size: 0.9375rem;
+}
+
+.body :global(thead) {
+  background: rgba(63, 217, 173, 0.08);
+}
+
+.body :global(th),
+.body :global(td) {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+  vertical-align: top;
+  color: var(--text-secondary);
+}
+
+.body :global(th) {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.body :global(tbody tr:nth-child(even)) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+@media (max-width: 640px) {
+  .body {
+    font-size: 0.9375rem;
+  }
+
+  .body :global(h1) {
+    font-size: 1.375rem;
+  }
+
+  .body :global(h2) {
+    font-size: 1.1875rem;
+  }
+
+  .body :global(h3) {
+    font-size: 1.0625rem;
+  }
+
+  .body :global(p),
+  .body :global(li) {
+    font-size: 0.9375rem;
+  }
+
+  .body :global(table) {
+    font-size: 0.875rem;
+  }
+
+  .body :global(th),
+  .body :global(td) {
+    padding: 8px 10px;
+  }
+}
