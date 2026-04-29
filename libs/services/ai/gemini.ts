@@ -18,7 +18,9 @@ const GEMINI_CONFIG = {
   baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
   model: GEMINI_MODEL_NAME,
   defaultTemperature: 0.8,
-  defaultMaxTokens: 6000,
+  // 마크다운 구조(소제목/리스트/표/단락 분리)로 동일 정보당 토큰이 늘어남.
+  // 6000으로는 700~800자 본문 + 마크다운 구조에서 잘림이 자주 발생.
+  defaultMaxTokens: 12000,
   timeout: 30000, // 30초
   maxRetries: 3, // 3회 재시도 (총 4회 시도)
   retryDelay: 1000, // 기본 1초 대기 (exponential backoff 적용)
@@ -117,6 +119,17 @@ export const chatCompletion = async (
       }
 
       const [candidate] = data.candidates;
+
+      // 토큰 상한에 걸려 응답이 잘린 경우 — 잘린 본문을 sanitize/recover로 메우면
+      // 결론 문단이 통째로 누락된 결과가 그대로 저장된다.
+      // 잘림이 감지되면 즉시 에러로 throw하여 재시도 루프(또는 호출자)가 처리하도록.
+      if (candidate.finishReason === "MAX_TOKENS") {
+        throw new AIError(
+          "AI 응답이 토큰 상한에 도달해 잘렸습니다 — maxOutputTokens 증설 필요.",
+          { code: "RESPONSE_TRUNCATED" }
+        );
+      }
+
       const content = candidate.content.parts.map((p) => p.text).join("");
 
       // AI 응답이 JSON 형식인지 기본 검증
