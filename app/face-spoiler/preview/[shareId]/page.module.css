@@ -11,258 +11,189 @@
   max-width: 500px;
   margin: 0 auto;
   padding: 32px 16px 0;
-}
-
-.profileSection {
   display: flex;
   flex-direction: column;
+  gap: 24px;
 }
 
-.sectionTag {
+/* ============================================================
+   캐릭터 이미지 placeholder (결제 전)
+   ============================================================ */
+
+.characterPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 56px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px dashed rgba(255, 255, 255, 0.14);
+  text-align: center;
+}
+
+.characterPlaceholderIcon {
+  font-size: 56px;
+  line-height: 1;
+  opacity: 0.55;
+  filter: grayscale(0.2);
+}
+
+.characterPlaceholderText {
   font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #3fd9ad;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+  word-break: keep-all;
 }
 
-.headline {
+/* ============================================================
+   최종 캐릭터 타이틀 + 종합 점수 hero
+   ============================================================ */
+
+.titleHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 22px;
+  background: linear-gradient(
+    160deg,
+    rgba(63, 217, 173, 0.1) 0%,
+    rgba(63, 217, 173, 0.03) 60%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border-left: 3px solid #3fd9ad;
+  text-align: center;
+}
+
+.heroTag {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #3fd9ad;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.heroTitle {
   font-family: "Pretendard Variable", Pretendard, sans-serif;
   font-size: 1.625rem;
-  font-weight: 700;
-  line-height: 1.4;
+  font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 14px;
-  padding-left: 12px;
-  border-left: 3px solid #3fd9ad;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  margin: 0;
+  word-break: keep-all;
 }
 
-.description {
-  font-size: 1rem;
-  line-height: 1.6;
+.scoreRow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 8px 18px;
+  background: rgba(63, 217, 173, 0.1);
+  border: 1px solid rgba(63, 217, 173, 0.32);
+}
+
+.scoreLabel {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #3fd9ad;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scoreValue {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.scoreUnit {
+  font-size: 0.875rem;
   color: var(--text-secondary);
-  margin-bottom: 28px;
+  font-weight: 600;
 }
 
-.summary {
+/* ============================================================
+   잠금 섹션 리스트
+   ============================================================ */
+
+.lockedList {
+  margin-top: 8px;
+  padding: 24px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.paragraph {
-  font-size: 1.0625rem;
-  line-height: 1.75;
-  color: var(--text-secondary);
-  white-space: pre-wrap;
-}
-
-.vibeSection {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.vibeTitle {
+.lockedListTitle {
   font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #3fd9ad;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin: 0;
-}
-
-.vibeTagGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.vibeTag {
-  display: inline-block;
-  padding: 6px 14px;
-  background: rgba(63, 217, 173, 0.08);
-  color: var(--text-primary);
-  border: 1px solid rgba(63, 217, 173, 0.35);
-  font-size: 0.8125rem;
-  font-weight: 600;
-}
-
-.traitsTeaserSection {
-  margin-top: 40px;
-  padding: 24px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid #3fd9ad;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.traitsTeaserTitle {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #3fd9ad;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin: 0;
-}
-
-.traitsTeaserBody {
-  font-size: 1rem;
-  line-height: 1.7;
-  color: var(--text-primary);
-  font-weight: 500;
-  margin: 0;
-}
-
-.traitsTeaserHint {
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
-  margin: 0;
-  font-style: italic;
-}
-
-.teaser {
-  margin-top: 48px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
   font-size: 0.9375rem;
-  line-height: 1.7;
-  color: var(--text-primary);
-  text-align: center;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-}
-
-.teaserSection {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.teaserTitle {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.teaserParagraph {
-  font-size: 1.0625rem;
-  line-height: 1.75;
-  color: var(--text-secondary);
-  margin: 0;
-  white-space: pre-wrap;
-}
-
-.highlightList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  list-style: none;
-  padding: 0;
-  margin: 8px 0 0;
-}
-
-.highlightItem {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid #3fd9ad;
-}
-
-.highlightTitle {
-  flex-shrink: 0;
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.875rem;
   font-weight: 800;
-  color: #3fd9ad;
-  min-width: 64px;
-}
-
-.highlightBody {
-  font-size: 0.875rem;
-  line-height: 1.55;
   color: var(--text-primary);
-}
-
-.lockHint {
-  font-size: 0.875rem;
-  line-height: 1.55;
-  color: var(--text-secondary);
-  margin: 4px 0 0;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px dashed rgba(255, 255, 255, 0.16);
-  font-style: italic;
-  word-break: keep-all;
-}
-
-.regionLabelGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.regionLabel {
-  display: inline-block;
-  padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.lockedGauge {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px 18px;
-  background: rgba(255, 255, 255, 0.02);
-  border-left: 3px solid #3fd9ad;
-  opacity: 0.65;
-}
-
-.interestTeaserList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.interestTeaserItem {
+  margin: 0;
+  letter-spacing: -0.01em;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
+  gap: 8px;
+}
+
+.lockedListIcon {
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.lockedItems {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lockedItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: 0.78;
 }
 
-.interestTeaserLabel {
+.lockedNumber {
   font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #3fd9ad;
+  letter-spacing: 0.14em;
+  flex-shrink: 0;
 }
 
-.interestTeaserLocked {
-  font-size: 1rem;
-  color: var(--text-secondary);
+.lockedItemTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.35;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
+
+/* ============================================================
+   Legacy fallback notice
+   ============================================================ */
 
 .legacyNotice {
   margin-top: 64px;
@@ -309,21 +240,36 @@
   background: #5ee5c0;
 }
 
-@media (max-width: 640px) {
-  .headline {
-    font-size: 1.5rem;
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .content {
+    gap: 20px;
   }
 
-  .description {
-    font-size: 0.9375rem;
+  .characterPlaceholder {
+    padding: 44px 20px;
   }
 
-  .paragraph {
-    font-size: 1rem;
+  .characterPlaceholderIcon {
+    font-size: 48px;
   }
 
-  .teaser {
-    font-size: 0.875rem;
-    padding: 20px;
+  .titleHero {
+    padding: 28px 18px;
+  }
+
+  .heroTitle {
+    font-size: 1.4375rem;
+  }
+
+  .scoreValue {
+    font-size: 1.625rem;
+  }
+
+  .lockedList {
+    padding: 20px 16px;
   }
 }

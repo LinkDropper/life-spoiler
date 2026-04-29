@@ -198,15 +198,19 @@ export const POST = async (request: Request) => {
     const mimeType = imageBlob.type || "image/jpeg";
 
     try {
-      // 단일 OpenAI 호출 — NEW_PROMPT + 사진 입력, json_schema strict로 sections 강제.
-      const sections = await generateFaceReport({
-        imageBase64: base64,
-        mimeType,
-      });
+      // 단일 OpenAI 호출 — NEW_PROMPT + 사진 입력, json_schema strict로
+      // sections / finalCharacterTitle / totalScore 강제.
+      const { sections, finalCharacterTitle, totalScore } =
+        await generateFaceReport({
+          imageBase64: base64,
+          mimeType,
+        });
 
       const reportData: FaceReportData = {
         version: 5,
         sections,
+        finalCharacterTitle,
+        totalScore,
         generatedAt: new Date().toISOString(),
       };
 

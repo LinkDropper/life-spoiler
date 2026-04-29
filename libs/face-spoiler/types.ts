@@ -18,6 +18,10 @@ export interface FaceReportData {
   /** 스키마 버전. v5부터 sections 구조. */
   version: 5;
   sections: FaceReportSection[];
+  /** 17번 섹션에서 결정된 "최종 캐릭터 타이틀". preview hero 등에서 단독 노출용. */
+  finalCharacterTitle: string;
+  /** 17번 섹션의 "종합 점수" (0~100 정수). preview hero 등에서 단독 노출용. */
+  totalScore: number;
   /** 생성 시각 (ISO 8601). */
   generatedAt: string;
 }
@@ -40,6 +44,8 @@ export const isFaceReport = (value: unknown): value is FaceReportData => {
     Array.isArray(v.sections) &&
     v.sections.length > 0 &&
     v.sections.every(isValidSection) &&
+    typeof v.finalCharacterTitle === "string" &&
+    typeof v.totalScore === "number" &&
     typeof v.generatedAt === "string"
   );
 };

@@ -18,13 +18,13 @@ import type { FaceReportSection } from "./types";
 
 const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 const REQUEST_TIMEOUT_MS = 90_000;
-const MAX_OUTPUT_TOKENS = 8192;
+const MAX_OUTPUT_TOKENS = 20000;
 const TEMPERATURE = 0.8;
 
 const FACE_REPORT_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["sections"],
+  required: ["sections", "finalCharacterTitle", "totalScore"],
   properties: {
     sections: {
       type: "array",
@@ -39,11 +39,15 @@ const FACE_REPORT_SCHEMA = {
         },
       },
     },
+    finalCharacterTitle: { type: "string" },
+    totalScore: { type: "integer" },
   },
 } as const;
 
 interface FaceReportPayload {
   sections: FaceReportSection[];
+  finalCharacterTitle: string;
+  totalScore: number;
 }
 
 interface OpenAIChatResponse {
@@ -63,6 +67,8 @@ const isValidPayload = (value: unknown): value is FaceReportPayload => {
   if (!value || typeof value !== "object") return false;
   const v = value as Partial<FaceReportPayload>;
   if (!Array.isArray(v.sections) || v.sections.length === 0) return false;
+  if (typeof v.finalCharacterTitle !== "string") return false;
+  if (typeof v.totalScore !== "number") return false;
   return v.sections.every(
     (s) =>
       s &&
@@ -76,7 +82,7 @@ const isValidPayload = (value: unknown): value is FaceReportPayload => {
 export const generateFaceReport = async ({
   imageBase64,
   mimeType,
-}: GenerateFaceReportInput): Promise<FaceReportSection[]> => {
+}: GenerateFaceReportInput): Promise<FaceReportPayload> => {
   const apiKey = env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new Error("OpenAI API 키가 설정되지 않았습니다.");
@@ -168,7 +174,7 @@ export const generateFaceReport = async ({
       );
     }
 
-    return parsed.sections;
+    return parsed;
   } finally {
     clearTimeout(timer);
   }
