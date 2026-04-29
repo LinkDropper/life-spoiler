@@ -15,6 +15,7 @@ import {
   CategoryItem,
   ScenarioItem,
   ScenarioList,
+  MarkdownContent,
   ErrorState,
   type CategoryKey,
 } from "@/components/fortune";
@@ -205,9 +206,9 @@ export default function LifetimeFortuneSharePage() {
             <h2 className={styles.overviewHeadline}>
               {interpretation.lifeSpoiler.headline}
             </h2>
-            <p className={styles.overviewSummary}>
+            <MarkdownContent className={styles.overviewSummary}>
               {interpretation.lifeSpoiler.summary}
-            </p>
+            </MarkdownContent>
           </section>
         )}
 
@@ -226,7 +227,9 @@ export default function LifetimeFortuneSharePage() {
                   {interpretation.coreScenario.headline}
                 </h3>
               )}
-              <p>{interpretation.coreScenario.content}</p>
+              <MarkdownContent>
+                {interpretation.coreScenario.content}
+              </MarkdownContent>
             </div>
           </section>
         )}

@@ -14,7 +14,7 @@ import {
   ShareDrawer,
   ScenarioItem,
   ScenarioList,
-  FormattedText,
+  MarkdownContent,
   ChevronIcon,
   EventBadge,
 } from "@/components/fortune";
@@ -352,9 +352,9 @@ export default function CompatibilityResultPage() {
             <h2 className={styles.spoilerHeadline}>
               {interpretation.headline}
             </h2>
-            <FormattedText className={styles.spoilerText}>
+            <MarkdownContent className={styles.spoilerText}>
               {interpretation.spoiler}
-            </FormattedText>
+            </MarkdownContent>
           </section>
         )}
 
@@ -412,9 +412,9 @@ export default function CompatibilityResultPage() {
         />
         {adviceExpanded && (
           <section className={styles.section}>
-            <FormattedText className={styles.adviceContent}>
+            <MarkdownContent className={styles.adviceContent}>
               {interpretation.advice}
-            </FormattedText>
+            </MarkdownContent>
           </section>
         )}
       </main>
@@ -579,7 +579,7 @@ const CompatibilityCategoryItem = ({
               {headline}
             </h4>
           )}
-          <FormattedText
+          <MarkdownContent
             style={{
               fontSize: 18,
               fontWeight: 400,
@@ -590,7 +590,7 @@ const CompatibilityCategoryItem = ({
             }}
           >
             {content}
-          </FormattedText>
+          </MarkdownContent>
           {tags.length > 0 && (
             <div
               style={{
