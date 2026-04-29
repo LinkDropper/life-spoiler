@@ -31,10 +31,11 @@ const FACE_REPORT_SCHEMA = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["number", "title", "body"],
+        required: ["number", "title", "oneLiner", "body"],
         properties: {
           number: { type: "integer" },
           title: { type: "string" },
+          oneLiner: { type: "string" },
           body: { type: "string" },
         },
       },
@@ -75,6 +76,7 @@ const isValidPayload = (value: unknown): value is FaceReportPayload => {
       typeof s === "object" &&
       typeof (s as FaceReportSection).number === "number" &&
       typeof (s as FaceReportSection).title === "string" &&
+      typeof (s as FaceReportSection).oneLiner === "string" &&
       typeof (s as FaceReportSection).body === "string"
   );
 };

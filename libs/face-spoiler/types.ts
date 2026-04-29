@@ -10,6 +10,8 @@ export interface FaceReportSection {
   number: number;
   /** 섹션 제목 (번호·기호 없이 이름만). */
   title: string;
+  /** 섹션 본문을 한 문장으로 압축한 임팩트 한 줄 (15~50자). 카드 상단 인용구로 노출. */
+  oneLiner: string;
   /** 섹션 본문 (마크다운 — 표·소제목·리스트 가능). */
   body: string;
 }
@@ -32,6 +34,7 @@ const isValidSection = (value: unknown): value is FaceReportSection => {
   return (
     typeof s.number === "number" &&
     typeof s.title === "string" &&
+    typeof s.oneLiner === "string" &&
     typeof s.body === "string"
   );
 };

@@ -24,6 +24,7 @@ export const FaceReportMarkdown = ({ sections }: FaceReportMarkdownProps) => {
       {sections.map((section, i) => {
         const title = cleanSectionTitle(section.title);
         const body = padCjkBoldEmphasis(section.body);
+        const oneLiner = section.oneLiner.trim();
         return (
           <section key={`${section.number}-${i}`} className={styles.section}>
             <header className={styles.sectionHeader}>
@@ -32,6 +33,9 @@ export const FaceReportMarkdown = ({ sections }: FaceReportMarkdownProps) => {
               </span>
               <h2 className={styles.sectionTitle}>{title}</h2>
             </header>
+            {oneLiner.length > 0 && (
+              <blockquote className={styles.oneLiner}>{oneLiner}</blockquote>
+            )}
             {body.length > 0 && (
               <div className={styles.sectionBody}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
