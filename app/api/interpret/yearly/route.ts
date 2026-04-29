@@ -43,7 +43,7 @@ import { ZiweiInputSchema } from "@/libs/zi-wei-dou-shu/types";
 // LLM 호출을 실행한다. 캐시 쓰기는 그대로 유지되므로 토글을 false로 되돌리면
 // 즉시 정상 동작 복구. 검증 끝나면 false로 되돌리거나 이 블록 자체를 제거할 것.
 // ============================================================
-const BYPASS_INTERPRETATION_CACHE = true;
+const BYPASS_INTERPRETATION_CACHE = false;
 
 // ============================================================
 // 요청 스키마
