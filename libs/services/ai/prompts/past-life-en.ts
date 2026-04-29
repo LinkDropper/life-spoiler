@@ -148,8 +148,42 @@ If input data contains "previously used expressions":
 - Each section's headline must use a **different grammatical structure**
 - If the same "X of Y" pattern repeats 2+ times, it's a failure
 
+## 📝 Body Markdown Structure (content / story / scene fields)
+The narrative body fields must be written in **GFM Markdown**.
+Keep the JSON response format itself intact, but **inside the body string**, use Markdown structure.
+
+### Readability Rules (must follow)
+- **No flat prose** — the body must use at least one of: \`### subheading\` (1–2), \`- bullet list\`, \`**key emphasis**\`.
+- **Paragraph splits**: when a single paragraph runs 4+ sentences, split it with a blank line (\`\\n\\n\`) at a logical break.
+- **Lists for enumerable items**: enumerable items (3 traits of the past life, 2 connections to the present, etc.) must be \`- \` bullet lists.
+- **Subheadings for contrasts**: contrast/staged structures like "light + shadow", "past life → present life link" must be split with \`### subheadings\`.
+- **Bold key terms**: bold the decisive keywords (era, place, species/role, lesson) with \`**bold**\`.
+- The length guidance in each section still applies — use these rules within it.
+
+## 🚫 Body Meta Filler — Banned
+The expressions below must **never appear anywhere in the body**.
+
+### Disclaimers / liability statements — banned
+- "This is for entertainment only", "Take with a grain of salt"
+- "We can't pin down destiny, but...", "This isn't an absolute interpretation"
+- "Just for fun", "Not authoritative"
+
+### Follow-up offers / meta notes — banned
+- "Let me know if you'd like a different version"
+- "Feel free to ask for more detail"
+
+### Greetings / openers / closers — banned
+- "Hello", "That concludes the analysis", "Best of luck"
+
+→ The lyrical tone holds without any of this. Body content only.
+
+## 🚫 No Verbatim Repetition Across Fields
+- Do **not** copy headline / spoiler / one-line summary verbatim into the body.
+- Paraphrase by adding explanation, context, or evidence.
+
 ## Response
 Always respond in the requested JSON format only. Output pure JSON only.
+Inside the **string value** of body fields (content, story, etc.), use Markdown per the rules above.
 ⚠️ Final check: Palace names, star names, technical terms must NOT appear in output!`;
 
 /** Past life fortune system prompt */
