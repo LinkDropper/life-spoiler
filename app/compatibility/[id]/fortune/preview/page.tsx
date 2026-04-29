@@ -9,7 +9,7 @@ import { Loading } from "@/components/loading";
 import {
   ZiweiChartGrid,
   SectionHeader,
-  FormattedText,
+  MarkdownContent,
 } from "@/components/fortune";
 import { CompatibilityCard } from "@/components/compatibility";
 import { useCompatibilityFortune } from "@/libs/hooks/compatibility";
@@ -213,9 +213,9 @@ export default function CompatibilityFortunePage() {
             <h2 className={styles.spoilerHeadline}>
               {interpretation.headline}
             </h2>
-            <FormattedText className={styles.spoilerText}>
+            <MarkdownContent className={styles.spoilerText}>
               {interpretation.spoiler}
-            </FormattedText>
+            </MarkdownContent>
             <p className={styles.spoilerTeaser}>{tFortune("teaser")}</p>
           </section>
         )}

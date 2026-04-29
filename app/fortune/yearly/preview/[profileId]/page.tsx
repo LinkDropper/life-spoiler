@@ -10,6 +10,7 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   YearlyInsightsCard,
+  MarkdownContent,
 } from "@/components/fortune";
 import { useYearlyPreview } from "@/libs/hooks/fortune";
 import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
@@ -158,9 +159,9 @@ export default function YearlyFortunePreviewPage() {
             <h2 className={styles.previewHeadline}>
               {interpretation.overview.headline}
             </h2>
-            <p className={styles.previewDescription}>
+            <MarkdownContent className={styles.previewDescription}>
               {interpretation.overview.summary}
-            </p>
+            </MarkdownContent>
             <p className={styles.previewTeaser}>{tPreview("yearlyTeaser")}</p>
           </section>
         )}

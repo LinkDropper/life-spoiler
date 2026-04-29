@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { ChevronIcon } from "./ChevronIcon";
+import { MarkdownContent } from "./MarkdownContent";
 
 import styles from "./CategoryItem.module.css";
 
@@ -41,7 +42,9 @@ export const CategoryItem = ({
       {expanded && (
         <>
           {headline && <h4 className={styles.categoryHeadline}>{headline}</h4>}
-          <p className={styles.categoryContent}>{content}</p>
+          <MarkdownContent className={styles.categoryContent}>
+            {content}
+          </MarkdownContent>
           {tags.length > 0 && (
             <div className={styles.categoryTags}>
               {tags.map((tag, idx) => (

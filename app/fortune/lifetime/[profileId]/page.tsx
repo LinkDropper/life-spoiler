@@ -13,6 +13,7 @@ import {
   CategoryItem,
   ScenarioItem,
   ScenarioList,
+  MarkdownContent,
   CopyToast,
   ErrorState,
   ShareDrawer,
@@ -340,9 +341,9 @@ export default function LifetimeFortunePage() {
             <h2 className={styles.overviewHeadline}>
               {interpretation.lifeSpoiler.headline}
             </h2>
-            <p className={styles.overviewSummary}>
+            <MarkdownContent className={styles.overviewSummary}>
               {interpretation.lifeSpoiler.summary}
-            </p>
+            </MarkdownContent>
           </section>
         )}
 
@@ -361,7 +362,9 @@ export default function LifetimeFortunePage() {
                   {interpretation.coreScenario.headline}
                 </h3>
               )}
-              <p>{interpretation.coreScenario.content}</p>
+              <MarkdownContent>
+                {interpretation.coreScenario.content}
+              </MarkdownContent>
             </div>
           </section>
         )}
