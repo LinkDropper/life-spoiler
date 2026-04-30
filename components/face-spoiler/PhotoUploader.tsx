@@ -461,6 +461,29 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
           })}
         </p>
 
+        <div className={styles.noStorageNotice} role="note">
+          <svg
+            className={styles.noStorageIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 11c.667 0 1.333.5 1.333 1.333V16M12 8.667h.007M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+          <span>
+            {t("noStorageNotice", {
+              default:
+                "업로드한 사진은 분석 직후 즉시 삭제되며, 서버에 저장되지 않습니다",
+            })}
+          </span>
+        </div>
+
         <div
           className={`${styles.dropzone} ${isDragging ? styles.dragging : ""} ${
             selectedFile ? styles.hasFile : ""

@@ -30,7 +30,29 @@
   font-size: 0.875rem;
   color: var(--text-secondary);
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.noStorageNotice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(236, 186, 94, 0.1);
+  border: 1px solid rgba(236, 186, 94, 0.35);
+  color: #ecba5e;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.noStorageIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .dropzone {
@@ -280,5 +302,15 @@
 
   .submitButton {
     font-size: 0.9375rem;
+  }
+
+  .noStorageNotice {
+    font-size: 0.75rem;
+    padding: 0.625rem 0.75rem;
+  }
+
+  .noStorageIcon {
+    width: 16px;
+    height: 16px;
   }
 }
