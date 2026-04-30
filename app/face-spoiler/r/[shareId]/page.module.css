@@ -12,6 +12,24 @@
   padding: 0 16px 120px;
 }
 
+.characterBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 24px 0 32px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.characterImage {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  object-fit: contain;
+}
+
 .legacyNotice {
   margin-top: 64px;
   padding: 40px 24px;

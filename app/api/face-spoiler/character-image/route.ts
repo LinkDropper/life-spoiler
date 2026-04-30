@@ -10,37 +10,12 @@ interface CharacterRequestBody {
   shareId?: string;
 }
 
-interface ObservationFeature {
-  region: string;
-  axis: string;
-  value: string;
-}
-
-interface V3RegionScore {
-  region: string;
-  label: string;
-  interpretation?: string;
-}
-
-interface FaceReportResult {
-  // v2 스키마
-  observation?: {
-    features?: ObservationFeature[];
-  };
-  // v3 스키마
-  version?: number;
-  regionScores?: {
-    regions?: V3RegionScore[];
-  };
-}
-
 interface FaceReportLookup {
   id: string;
   user_id: string;
   paid_at: string | null;
   original_image_path: string | null;
   character_image_path: string | null;
-  result: FaceReportResult | null;
 }
 
 export const POST = async (request: Request) => {
@@ -73,9 +48,7 @@ export const POST = async (request: Request) => {
     // 리포트 조회
     const { data: rawReport, error: reportError } = await adminClient
       .from("face_reports")
-      .select(
-        "id, user_id, paid_at, original_image_path, character_image_path, result"
-      )
+      .select("id, user_id, paid_at, original_image_path, character_image_path")
       .eq("share_id", shareId)
       .maybeSingle();
 
@@ -140,29 +113,12 @@ export const POST = async (request: Request) => {
     const sourceBase64 = Buffer.from(sourceArrayBuffer).toString("base64");
     const sourceMimeType = sourceBlob.type || "image/jpeg";
 
-    // 리포트에서 부위별 힌트 추출 → 이미지 생성 시 비율 보존 힌트로 활용.
-    // v2: observation.features / v3: regionScores.regions (label + interpretation 요약)
-    let faceDescription: string | undefined;
-    const v2Features = report.result?.observation?.features;
-    const v3Regions = report.result?.regionScores?.regions;
-    if (v2Features && v2Features.length > 0) {
-      faceDescription = v2Features
-        .map((f) => `- ${f.region}: ${f.value}`)
-        .join("\n");
-    } else if (v3Regions && v3Regions.length > 0) {
-      faceDescription = v3Regions
-        .map((r) => {
-          const summary = (r.interpretation ?? "").split(".")[0].trim();
-          return summary ? `- ${r.label}: ${summary}` : `- ${r.label}`;
-        })
-        .join("\n");
-    }
-
-    // Gemini로 캐릭터 이미지 생성
+    // Gemini로 캐릭터 이미지 생성 — 입력은 원본 사진만.
+    // (이전엔 v2/v3 리포트의 부위별 텍스트를 비율 보존 힌트로 함께 보냈으나,
+    //  새 단일 LLM 흐름에선 그 데이터가 없어 이미지만 전달.)
     const generated = await generateCharacterImage(
       sourceBase64,
-      sourceMimeType,
-      faceDescription
+      sourceMimeType
     );
 
     // 영구 저장 (face-characters 버킷, public)

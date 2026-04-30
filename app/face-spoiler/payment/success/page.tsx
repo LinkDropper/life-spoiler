@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
+import { AnalysisLoading } from "@/components/face-spoiler/AnalysisLoading";
 import { Header } from "@/components/face-spoiler/Header";
 import { trackPurchase } from "@/libs/analytics";
 
@@ -186,29 +187,17 @@ function PaymentSuccessContent() {
   };
 
   if (stage === "confirming" || stage === "generating") {
-    const message =
+    const messages =
       stage === "confirming"
-        ? tPayment("processing", { default: "결제 확인 중..." })
-        : tFace("characterGenerating", { default: "캐릭터 그리는 중..." });
+        ? [tPayment("processing", { default: "결제 확인 중..." })]
+        : [
+            tFace("characterGenerating", { default: "캐릭터 그리는 중..." }),
+            tFace("successDescription", {
+              default: "관상 캐릭터를 생성하고 있어요",
+            }),
+          ];
 
-    return (
-      <div className={styles.page}>
-        <Header />
-        <main className={styles.main}>
-          <div className={styles.loadingWrapper}>
-            <div className={styles.pulse} />
-            <p className={styles.loadingMessage}>{message}</p>
-            {stage === "generating" && (
-              <p className={styles.loadingSub}>
-                {tFace("successDescription", {
-                  default: "관상 캐릭터를 생성하고 있어요",
-                })}
-              </p>
-            )}
-          </div>
-        </main>
-      </div>
-    );
+    return <AnalysisLoading messages={messages} />;
   }
 
   if (stage === "error-confirm") {
@@ -280,34 +269,15 @@ function PaymentSuccessContent() {
 
   // done: should have been redirected, but fallback
   return (
-    <div className={styles.page}>
-      <Header />
-      <main className={styles.main}>
-        <div className={styles.loadingWrapper}>
-          <div className={styles.pulse} />
-          <p className={styles.loadingMessage}>
-            {tFace("viewResult", { default: "결과 보기" })}
-          </p>
-        </div>
-      </main>
-    </div>
+    <AnalysisLoading
+      messages={[tFace("viewResult", { default: "결과 보기" })]}
+    />
   );
 }
 
 export default function FaceSpoilerPaymentSuccessPage() {
   return (
-    <Suspense
-      fallback={
-        <div className={styles.page}>
-          <Header />
-          <main className={styles.main}>
-            <div className={styles.loadingWrapper}>
-              <div className={styles.pulse} />
-            </div>
-          </main>
-        </div>
-      }
-    >
+    <Suspense fallback={<AnalysisLoading />}>
       <PaymentSuccessContent />
     </Suspense>
   );

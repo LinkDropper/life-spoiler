@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { NextResponse } from "next/server";
 
 import { computeImageHash } from "@/libs/face-spoiler/image-hash";
-import { isV3Report } from "@/libs/face-spoiler/types.v3";
+import { isFaceReport } from "@/libs/face-spoiler/types";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
 const STORAGE_BUCKET = "face-images";
@@ -97,7 +97,7 @@ export const POST = async (request: Request) => {
         result: unknown;
       } | null;
 
-      if (cachedReport && isV3Report(cachedReport.result)) {
+      if (cachedReport && isFaceReport(cachedReport.result)) {
         return NextResponse.json({
           cached: true,
           shareId: cachedReport.share_id,

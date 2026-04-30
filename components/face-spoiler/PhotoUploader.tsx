@@ -13,12 +13,6 @@ import {
   checkFrontalPose,
   estimateFacePose,
 } from "@/libs/face-spoiler/face-pose-estimator";
-import {
-  analyzeFaceMetrics,
-  buildFaceMetricsHint,
-} from "@/libs/face-spoiler/face-shape-analyzer";
-
-import type { FaceMetrics } from "@/libs/face-spoiler/face-shape-analyzer";
 
 import { AnalysisLoading } from "./AnalysisLoading";
 import styles from "./PhotoUploader.module.css";
@@ -234,9 +228,6 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
   const [isDetecting, setIsDetecting] = useState(false);
   const [detectionResult, setDetectionResult] =
     useState<ValidationResult | null>(null);
-  const [faceShapeHint, setFaceShapeHint] = useState<string | null>(null);
-  // 코드 결정적 분류기에 그대로 전달할 측정값 객체. 서버 route가 동물상 분류에 사용.
-  const [faceMetrics, setFaceMetrics] = useState<FaceMetrics | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -265,7 +256,8 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
         );
       }
 
-      // 얼굴이 1개 감지되었으면 랜드마크 기반 포즈 게이트 + 얼굴형 분석
+      // 얼굴이 1개 감지되었으면 랜드마크 기반 정면 포즈 게이트 검증.
+      // (얼굴형 측정값은 새 단일 LLM 호출 흐름에선 더 이상 사용되지 않는다.)
       if (!result.error && result.detections.length === 1) {
         try {
           const landmarks = await detectFaceLandmarks(img);
@@ -283,15 +275,9 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
                 return;
               }
             }
-            const measured = analyzeFaceMetrics(landmarks);
-            if (measured) {
-              const metricsWithPose = pose ? { ...measured, pose } : measured;
-              setFaceShapeHint(buildFaceMetricsHint(metricsWithPose));
-              setFaceMetrics(metricsWithPose);
-            }
           }
         } catch {
-          // 랜드마크 분석 실패는 무시 — 힌트 없이도 기존 파이프라인 동작
+          // 랜드마크 분석 실패는 무시 — 정면 검증을 못 한 것 뿐, 업로드는 진행 가능
         }
       }
 
@@ -322,8 +308,6 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
     setSelectedFile(file);
     setError(null);
     setDetectionResult(null);
-    setFaceShapeHint(null);
-    setFaceMetrics(null);
 
     // 캔버스 초기화
     if (faceCanvasRef.current) {
@@ -438,8 +422,6 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
             imagePath: uploadData.imagePath,
             imageHash: uploadData.imageHash,
             profileId,
-            faceShapeHint: faceShapeHint ?? undefined,
-            faceMetrics: faceMetrics ?? undefined,
           }),
         }
       );
@@ -478,6 +460,29 @@ export const PhotoUploader = ({ profileId }: PhotoUploaderProps) => {
             default: "얼굴이 선명하게 나온 정면 사진을 업로드해주세요",
           })}
         </p>
+
+        <div className={styles.noStorageNotice} role="note">
+          <svg
+            className={styles.noStorageIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 11c.667 0 1.333.5 1.333 1.333V16M12 8.667h.007M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+          <span>
+            {t("noStorageNotice", {
+              default:
+                "업로드한 사진은 분석 직후 즉시 삭제되며, 서버에 저장되지 않습니다",
+            })}
+          </span>
+        </div>
 
         <div
           className={`${styles.dropzone} ${isDragging ? styles.dragging : ""} ${

@@ -3,14 +3,43 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { FaceReportMarkdown } from "@/components/face-spoiler/FaceReportMarkdown";
 import { Header } from "@/components/face-spoiler/Header";
 import { PreviewFooter } from "@/components/face-spoiler/PreviewFooter";
-import { ScoreGauge } from "@/components/face-spoiler/ScoreGauge";
-import { SignatureHero } from "@/components/face-spoiler/SignatureHero";
-import { isV3Report } from "@/libs/face-spoiler/types.v3";
+import { isFaceReport } from "@/libs/face-spoiler/types";
 import { createServerClient } from "@/libs/supabase";
 
 import styles from "./page.module.css";
+
+const TEASER_SECTION_COUNT = 2;
+
+/**
+ * 잠금된 섹션 목록 — UI 일관성을 위해 하드코딩.
+ *
+ * LLM이 실제로 반환하는 sections[2]..[16]의 title은 모델 응답에 따라 미세하게
+ * 달라질 수 있다(예: "동물상" vs "나의 동물상"). preview에서 결제 전 사용자에게
+ * 노출되는 "어떤 항목을 잠금해제 받게 되는지" 안내 텍스트는 변동성이 없어야
+ * 마케팅 카피로 신뢰감을 준다 — 따라서 여기서는 고정 라벨을 사용한다.
+ *
+ * 결제 후 결과 페이지(`/r/[shareId]`)는 LLM 원본 title을 그대로 사용한다.
+ */
+const LOCKED_SECTIONS: ReadonlyArray<{ number: number; title: string }> = [
+  { number: 3, title: "나의 동물상" },
+  { number: 4, title: "첫인상 오해 포인트" },
+  { number: 5, title: "숨겨진 반전 매력" },
+  { number: 6, title: "재물운" },
+  { number: 7, title: "돈 쓸 때 버릇 + 텅장 위험 구간" },
+  { number: 8, title: "연애운" },
+  { number: 9, title: "플러팅 스타일" },
+  { number: 10, title: "잘 어울리는 직업" },
+  { number: 11, title: "학교/직장 생존 방식" },
+  { number: 12, title: "인간관계/단톡방 포지션" },
+  { number: 13, title: "화났을 때 특징" },
+  { number: 14, title: "찐친만 아는 모습" },
+  { number: 15, title: "이 사람 사용 설명서" },
+  { number: 16, title: "부위별 점수표" },
+  { number: 17, title: "종합 평가" },
+];
 
 interface PreviewPageProps {
   params: Promise<{ shareId: string }>;
@@ -53,38 +82,21 @@ export const generateMetadata = async ({
   params,
 }: PreviewPageProps): Promise<Metadata> => {
   const { shareId } = await params;
-  const record = await fetchReport(shareId);
   const tMeta = await getTranslations("faceSpoiler.metadata");
 
-  const defaultHeadline = tMeta("defaultHeadline", {
-    default: "관상 분석 결과",
-  });
-  const defaultDescription = tMeta("defaultDescription", {
-    default: "사진 한 장으로 받아본 AI 관상 리포트. 지금 확인해보세요.",
-  });
-
-  const headline =
-    record && isV3Report(record.result)
-      ? record.result.signature.oneLineDefinition
-      : defaultHeadline;
-  const description =
-    record && isV3Report(record.result)
-      ? record.result.closing.shareLine
-      : defaultDescription;
-
-  const fullTitle = tMeta("shareTitleSuffix", {
-    headline,
-    default: `관상스포 — ${headline}`,
+  const title = tMeta("defaultHeadline", { default: "관상스포 — 관상 리포트" });
+  const description = tMeta("defaultDescription", {
+    default: "사진 한 장으로 받아본 관상 리포트.",
   });
 
   const previewUrl = `https://life-spoiler.com/face-spoiler/preview/${shareId}`;
   const ogImage = "/images/face-spoiler-open-graph.png";
 
   return {
-    title: fullTitle,
+    title,
     description,
     openGraph: {
-      title: fullTitle,
+      title,
       description,
       type: "article",
       url: previewUrl,
@@ -92,13 +104,13 @@ export const generateMetadata = async ({
       images: [
         {
           url: ogImage,
-          alt: fullTitle,
+          alt: title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: fullTitle,
+      title,
       description,
       images: [ogImage],
     },
@@ -118,10 +130,8 @@ export default async function FaceSpoilerPreviewPage({
     notFound();
   }
 
-  const t = await getTranslations("faceSpoiler.preview");
-
-  // 하드 컷오버: v3가 아닌 리포트는 레거시 안내
-  if (!isV3Report(record.result)) {
+  // 새 흐름(v5)이 아닌 리포트는 legacy 안내 페이지
+  if (!isFaceReport(record.result)) {
     const tLegacy = await getTranslations("faceSpoiler.report.legacy");
     return (
       <>
@@ -143,106 +153,66 @@ export default async function FaceSpoilerPreviewPage({
     );
   }
 
-  const report = record.result;
-  const { signature, overallScore, regionScores, interestAreas } = report;
-
-  // 프리뷰 노출: hero 전체(점수 포함) + summary 첫 단락 + highlights 2개 + 부위 라벨만 + 분야 라벨만
-  const firstSummaryParagraph = overallScore.summary
-    .split(/\n\s*\n/)
-    .map((p) => p.trim())
-    .find((p) => p.length > 0);
-
-  const highlightsPreview = overallScore.highlights.slice(0, 2);
-  const remainingHighlights = Math.max(
-    0,
-    overallScore.highlights.length - highlightsPreview.length
-  );
-
-  // v3 라벨 — 현재는 한국어 하드코딩. 추후 messages/translations.json 확장 시 교체.
-  const heroLabels = {
-    keywordsTitle: "핵심 키워드",
-    phraseLabel: "자주 듣는 말",
-    misreadLabel: "자주 받는 오해",
-    scoreLabel: "종합 점수",
-  };
+  const {
+    sections: allSections,
+    totalScore,
+    finalCharacterTitle: rawFinalTitle,
+  } = record.result;
+  const teaserSections = allSections.slice(0, TEASER_SECTION_COUNT);
+  const finalCharacterTitle = rawFinalTitle.trim();
 
   return (
     <>
       <Header />
       <div className={styles.container}>
         <div className={styles.content}>
-          <SignatureHero
-            signature={signature}
-            totalScore={overallScore.totalScore}
-            scoreOneLiner={overallScore.scoreOneLiner}
-            labels={heroLabels}
-          />
+          {/* 캐릭터 이미지 placeholder — 결제 후 생성 */}
+          <div
+            className={styles.characterPlaceholder}
+            role="img"
+            aria-label="캐릭터 이미지 잠금"
+          >
+            <div className={styles.characterPlaceholderIcon} aria-hidden>
+              🎭
+            </div>
+            <p className={styles.characterPlaceholderText}>
+              결제하면 나만의 관상 캐릭터가 생성돼요
+            </p>
+          </div>
 
-          {/* 종합 인상 티저 — 첫 단락 + highlights 2개 + 잠금 라벨 */}
-          <section className={styles.teaserSection}>
-            <h2 className={styles.teaserTitle}>종합 인상</h2>
-            {firstSummaryParagraph && (
-              <p className={styles.teaserParagraph}>{firstSummaryParagraph}</p>
-            )}
-            <ul className={styles.highlightList}>
-              {highlightsPreview.map((h, i) => (
-                <li key={i} className={styles.highlightItem}>
-                  <strong className={styles.highlightTitle}>{h.title}</strong>
-                  <span className={styles.highlightBody}>{h.body}</span>
+          {/* 최종 캐릭터 타이틀 + 종합 점수 hero */}
+          <div className={styles.titleHero}>
+            <span className={styles.heroTag}>최종 캐릭터</span>
+            <h1 className={styles.heroTitle}>{finalCharacterTitle}</h1>
+            <div className={styles.scoreRow}>
+              <span className={styles.scoreLabel}>종합 점수</span>
+              <span className={styles.scoreValue}>{totalScore}</span>
+              <span className={styles.scoreUnit}>/ 100</span>
+            </div>
+          </div>
+
+          {/* 노출 섹션: 종합 인상 + 부위별 특징 */}
+          <FaceReportMarkdown sections={teaserSections} />
+
+          {/* 잠금된 섹션 리스트 — 결제 후 해제. 라벨은 LOCKED_SECTIONS 고정. */}
+          <div className={styles.lockedList}>
+            <h2 className={styles.lockedListTitle}>
+              <span className={styles.lockedListIcon} aria-hidden>
+                🔒
+              </span>
+              결제 후 해제 ({LOCKED_SECTIONS.length}개 섹션)
+            </h2>
+            <ul className={styles.lockedItems}>
+              {LOCKED_SECTIONS.map((item) => (
+                <li key={item.number} className={styles.lockedItem}>
+                  <span className={styles.lockedNumber}>
+                    {String(item.number).padStart(2, "0")}
+                  </span>
+                  <span className={styles.lockedItemTitle}>{item.title}</span>
                 </li>
               ))}
             </ul>
-            {remainingHighlights > 0 && (
-              <p className={styles.lockHint}>
-                🔒 + {remainingHighlights}개의 인상 특성이 본편에 있어요
-              </p>
-            )}
-          </section>
-
-          {/* 부위별 점수 잠금 라벨 */}
-          <section className={styles.teaserSection}>
-            <h2 className={styles.teaserTitle}>부위별 점수</h2>
-            <div className={styles.regionLabelGrid}>
-              {regionScores.regions.map((region) => (
-                <span key={region.region} className={styles.regionLabel}>
-                  {region.label}
-                </span>
-              ))}
-            </div>
-            <div className={styles.lockedGauge}>
-              <ScoreGauge
-                score={overallScore.totalScore}
-                label="본편에서 공개되는 점수"
-                variant="region"
-              />
-              <p className={styles.lockHint}>
-                🔒 {regionScores.regions.length}개 부위의 점수와 한 줄 평이
-                본편에서 공개돼요
-              </p>
-            </div>
-          </section>
-
-          {/* 분야 라벨 미리보기 */}
-          <section className={styles.teaserSection}>
-            <h2 className={styles.teaserTitle}>본편에서 만날 디테일</h2>
-            <div className={styles.interestTeaserList}>
-              {interestAreas.areas.map((area) => (
-                <div key={area.domain} className={styles.interestTeaserItem}>
-                  <span className={styles.interestTeaserLabel}>
-                    {area.label}
-                  </span>
-                  <span className={styles.interestTeaserLocked}>🔒</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <p className={styles.teaser}>
-            {t("teaser", {
-              default:
-                "여기까지는 예고편이에요. 본편에서는 부위별 점수와 연애·재물·직장 디테일이 모두 공개돼요.",
-            })}
-          </p>
+          </div>
         </div>
       </div>
 

@@ -842,6 +842,7 @@
       "upload": {
         "title": "사진 업로드",
         "description": "얼굴이 선명하게 나온 정면 사진을 업로드해주세요",
+        "noStorageNotice": "업로드한 사진은 분석 직후 즉시 삭제되며, 서버에 저장되지 않습니다",
         "uploadText": "클릭하거나 이미지를 드래그하세요",
         "uploadHint": "최대 10MB",
         "previewAlt": "업로드 미리보기",
@@ -2029,6 +2030,7 @@
       "upload": {
         "title": "Upload Photo",
         "description": "Please upload a clear front-facing photo",
+        "noStorageNotice": "Your photo is deleted right after analysis and is never stored on our servers",
         "uploadText": "Click or drag an image here",
         "uploadHint": "Up to 10MB",
         "previewAlt": "Upload preview",
@@ -3216,6 +3218,7 @@
       "upload": {
         "title": "写真アップロード",
         "description": "顔がはっきり見える正面写真をアップロードしてください",
+        "noStorageNotice": "アップロードした写真は分析後すぐに削除され、サーバーには保存されません",
         "uploadText": "クリックまたは画像をドラッグしてください",
         "uploadHint": "最大10MB",
         "previewAlt": "アップロードプレビュー",

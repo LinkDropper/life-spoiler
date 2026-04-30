@@ -1,10 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { PromoError } from "@/libs/services/promo";
-import {
-  createServerClient,
-  updateFaceReportPaidAt,
-} from "@/libs/supabase";
+import { createServerClient, updateFaceReportPaidAt } from "@/libs/supabase";
 import type { Database, PromoCodeRow } from "@/libs/supabase/types";
 
 type SupabaseDB = SupabaseClient<Database>;
