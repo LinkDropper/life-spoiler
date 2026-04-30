@@ -16,6 +16,7 @@ import type {
   RegionScoresResponse,
   SignatureOverallResponse,
 } from "./prompts/text-report.v3";
+import type { LoveAxes } from "./love-axes";
 import type { RegionRawScore } from "./region-scorer";
 import type { AnimalMatch } from "./types";
 import type { FaceTextReportV3 } from "./types.v3";
@@ -45,12 +46,14 @@ const REQUEST_TIMEOUT_MS = 60_000;
 /**
  * Phase 13: Hard/Soft validator 재시도 횟수를 분리.
  * - HARD: 레이아웃 필수 제약 (배열 개수·도메인 순서 등) — 3회 재시도 유지
- * - SOFT: 품질 개선 목적 (시간 은유·A보다 B 패턴 등) — 1회만 재시도
- *   - 1회 교정 시도에도 실패하면 LLM이 구조적으로 해당 편향을 못 고치는 것으로 간주
- *   - 2회 이상 반복은 지연 비율 대비 품질 개선이 미미
+ * - SOFT: 품질 개선 목적 (시간 은유·A보다 B 패턴 등) — 재시도 없이 경고만 남기고 통과
+ *   - Phase 21.3 (2026-04-26): 1회 → 0회로 변경. 실측 결과 재시도가 한 어휘를
+ *     피하려다 다른 축 위반을 만드는 두더지잡기로 수렴 (a.md 사례: 꾸준 3→5,
+ *     차분 4→6 악화). 재시도 비용(~12~15s) 대비 품질 개선 0~음수.
+ *   - 위반 로그는 모니터링·향후 프롬프트 튜닝에 활용.
  */
 const MAX_HARD_RETRIES = 3;
-const MAX_SOFT_RETRIES = 1;
+const MAX_SOFT_RETRIES = 0;
 
 /** 루프 상한은 Hard 기준(더 큼). Soft는 내부 조건으로 제한. */
 const MAX_RETRIES = MAX_HARD_RETRIES;
@@ -90,6 +93,12 @@ interface GeminiResponse {
   }>;
   promptFeedback?: {
     blockReason?: string;
+  };
+  // Phase 21.3 — Gemini는 응답마다 토큰 사용량을 내려준다. 병목·비용 가시화용.
+  usageMetadata?: {
+    promptTokenCount?: number;
+    candidatesTokenCount?: number;
+    totalTokenCount?: number;
   };
 }
 
@@ -196,6 +205,10 @@ const callStage = async <T>({
       },
     };
 
+    // Phase 21.3 (2026-04-26): stage별 응답 시간 + 응답 크기 로깅.
+    // 병목 stage 식별과 maxOutputTokens 튜닝 근거 확보용.
+    const stageStartedAt = Date.now();
+
     try {
       const response = await fetchWithTimeout(
         url,
@@ -218,6 +231,7 @@ const callStage = async <T>({
       }
 
       const data: GeminiResponse = await response.json();
+      const elapsedMs = Date.now() - stageStartedAt;
 
       if (data.promptFeedback?.blockReason) {
         throw new Error(
@@ -231,6 +245,16 @@ const callStage = async <T>({
       if (!text) {
         throw new Error(`Gemini 응답이 비어있습니다 [${stageName}].`);
       }
+
+      // Phase 21.3 — stage별 응답 시간 + 토큰 사용량 로깅.
+      // 병목 식별과 maxOutputTokens 튜닝의 근거. 1회 호출당 1줄.
+      const usage = data.usageMetadata;
+      console.info(
+        `[face-spoiler v3] Stage ${stageName} 완료: ${elapsedMs}ms · ` +
+          `attempt=${attempt + 1} · ` +
+          `tokens=in:${usage?.promptTokenCount ?? "?"}/out:${usage?.candidatesTokenCount ?? "?"} · ` +
+          `text_len=${text.length}자`
+      );
 
       // Phase 13: finishReason=MAX_TOKENS 면 JSON이 중간에 잘린 상태.
       // flash 모델로 상향하면서 응답이 lite 대비 길어져 token 상한에 걸리는 경우가 잦음.
@@ -534,13 +558,16 @@ const VOCAB_BLACKLIST: readonly { word: string; max: number }[] = [
   { word: "포용", max: 3 },
   { word: "넉넉", max: 3 },
   // Phase 17 (관상학 편향 어휘 1차)
-  { word: "안정", max: 3 }, // "안정감" 포함
-  { word: "조화", max: 2 },
-  { word: "꾸준", max: 2 },
-  { word: "부드럽", max: 3 }, // Phase 20.2: 4→3 강화 (GPT에서 9회 수렴 발견)
+  // Phase 21.3 (2026-04-26): 만성 위반 한도 현실화. soft retries=0이라 초과해도
+  // 경고만 남기지만, 매 호출마다 의미 없는 로그가 쌓이지 않도록 LLM이 실제로
+  // 도달 가능한 수준으로 완화. 진짜 동질화(상한의 2배 이상)만 신호로 잡음.
+  { word: "안정", max: 4 }, // "안정감" 포함, 3 → 4
+  { word: "조화", max: 3 }, // 2 → 3
+  { word: "꾸준", max: 4 }, // 2 → 4 (a.md 실측 빈번 위반)
+  { word: "부드럽", max: 3 },
   { word: "통찰", max: 2 },
-  { word: "차분", max: 3 },
-  { word: "또렷", max: 3 },
+  { word: "차분", max: 5 }, // 3 → 5 (a.md 실측 빈번 위반)
+  { word: "또렷", max: 4 }, // 3 → 4
   { word: "신중", max: 3 },
   { word: "관찰력", max: 2 },
   { word: "판단력", max: 1 }, // Phase 17.5: 2 → 1로 강화
@@ -578,7 +605,9 @@ const INTELLECT_AXIS_WORDS: readonly string[] = [
   "지적",
 ] as const;
 
-const INTELLECT_AXIS_LIMIT = 3;
+// Phase 21.3 — a.md 실측 6회 위반. soft retries=0이라 한도 초과해도 통과되지만
+// 매번 경고 로그가 찍히는 노이즈를 줄이기 위해 5회로 완화. 진짜 동질화 신호만 캡처.
+const INTELLECT_AXIS_LIMIT = 5;
 
 const countIntellectAxis = (texts: string[]): number =>
   texts.reduce((acc, text) => {
@@ -651,7 +680,9 @@ const CONSULTANT_PHRASE_PATTERNS: readonly RegExp[] = [
   /관상학적으로/g,
 ] as const;
 
-const CONSULTANT_PHRASE_LIMIT_STAGE_A = 2;
+// Phase 21.3 — Stage A 한도 2 → 3 완화. a.md 실측 3회 위반인데 1번 차이 가지고
+// 매번 경고 로그를 찍는 건 비용 대비 가치 낮음. 4회 이상은 진짜 단조로움 신호.
+const CONSULTANT_PHRASE_LIMIT_STAGE_A = 3;
 const CONSULTANT_PHRASE_LIMIT_STAGE_B = 4;
 const CONSULTANT_PHRASE_LIMIT_STAGE_C = 3;
 
@@ -1013,6 +1044,11 @@ interface GenerateFaceReportV3Input {
   mimeType: string;
   animal: AnimalMatch;
   regionScores: RegionRawScore[];
+  /**
+   * Phase 22 — 연애운 결정적 축 라벨. Stage C 프롬프트에 주입돼 인물별 본문 분화의 anchor가 됨.
+   * 미지정 시 Stage C는 축 블록 없이 동작 (legacy 호환).
+   */
+  loveAxes?: LoveAxes;
 }
 
 /**
@@ -1026,6 +1062,7 @@ export const generateFaceReportV3 = async ({
   mimeType,
   animal,
   regionScores,
+  loveAxes,
 }: GenerateFaceReportV3Input): Promise<FaceTextReportV3> => {
   // Phase 12: 각 호출에 validator를 주입하여 실패 시 feedback과 함께 재시도.
   // 3개 호출을 병렬로 실행해 전체 지연을 줄인다. 단계 간 의존성 없음.
@@ -1067,7 +1104,8 @@ export const generateFaceReportV3 = async ({
       systemPrompt: buildInterestAreasSystemPrompt(
         animal,
         regionScores,
-        hintMode
+        hintMode,
+        loveAxes
       ),
       userPrompt: INTEREST_AREAS_USER_PROMPT,
       responseSchema: INTEREST_AREAS_SCHEMA,

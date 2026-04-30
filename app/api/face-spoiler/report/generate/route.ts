@@ -5,6 +5,7 @@ import { env } from "@/env";
 import { classifyAnimalType } from "@/libs/face-spoiler/animal-classifier";
 import { ANIMAL_CATALOG } from "@/libs/face-spoiler/constants/animals";
 import { generateFaceReportV3 } from "@/libs/face-spoiler/gemini.v3";
+import { deriveLoveAxes } from "@/libs/face-spoiler/love-axes";
 import { generateFaceReportV3OpenAI } from "@/libs/face-spoiler/openai.v3";
 import {
   deriveTotalScore,
@@ -236,6 +237,9 @@ export const POST = async (request: Request) => {
       // 2) 부위별 점수 산출 (코드 결정적)
       const regionRawScores = scoreRegions(faceMetrics);
 
+      // 2.5) Phase 22 — 연애운 결정적 축 라벨 산출 (코드 결정적)
+      const loveAxes = deriveLoveAxes(faceMetrics);
+
       // 3) v3 텍스트 리포트 (3 Stage 병렬 호출)
       //    Phase 20: provider 스위칭. 기본 Gemini, env로 OpenAI(GPT-5.4 mini) 전환.
       const provider = env.FACE_SPOILER_LLM_PROVIDER;
@@ -253,6 +257,7 @@ export const POST = async (request: Request) => {
         mimeType,
         animal: animalMatch,
         regionScores: regionRawScores,
+        loveAxes,
       });
 
       // 4) 코드 결정 필드 + LLM 응답 합성

@@ -30,7 +30,14 @@ export const InterestAreaCard = ({
 
       <div className={styles.body}>
         {paragraphs.map((paragraph, i) => (
-          <p key={i} className={styles.paragraph}>
+          <p
+            key={i}
+            className={
+              area.domain === "love"
+                ? `${styles.paragraph} ${styles.paragraphLove}`
+                : styles.paragraph
+            }
+          >
             {paragraph}
           </p>
         ))}

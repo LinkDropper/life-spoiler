@@ -10,6 +10,7 @@ import {
   ProfileInfo,
   ZiweiChartGrid,
   SectionHeader,
+  MarkdownContent,
 } from "@/components/fortune";
 import { usePastLifePreview } from "@/libs/hooks/fortune";
 
@@ -175,9 +176,9 @@ export default function PastLifePreviewPage() {
 
         {spoilerExpanded && (
           <section className={styles.spoilerSection}>
-            <p className={styles.spoilerSummary}>
+            <MarkdownContent className={styles.spoilerSummary}>
               {interpretation.spoiler.summary}
-            </p>
+            </MarkdownContent>
           </section>
         )}
 

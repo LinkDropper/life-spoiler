@@ -31,6 +31,15 @@ import type { CompatibilityPairRow, ProfileRow } from "@/libs/supabase/types";
 import type { CompatibilityResult } from "@/libs/hooks/compatibility/types";
 
 // ============================================================
+// ⚠️ 임시 캐시 우회 토글 — 프롬프트 변경(마크다운 + 잡소리 차단 룰) 검증 중.
+// 켜져 있으면 compatibility_pairs.result에 이미 저장된 결과를 무시하고 항상
+// 새로 LLM 호출을 실행한다. 결과 쓰기는 그대로 유지되므로 토글을 false로
+// 되돌리면 즉시 정상 동작 복구. 검증 끝나면 false로 되돌리거나 이 블록 자체를
+// 제거할 것.
+// ============================================================
+const BYPASS_INTERPRETATION_CACHE = false;
+
+// ============================================================
 // 차트 변환 유틸리티
 // ============================================================
 
@@ -217,8 +226,8 @@ export async function POST(
       );
     }
 
-    // 4. 이미 결과가 있으면 기존 결과 반환
-    if (pair.result !== null) {
+    // 4. 이미 결과가 있으면 기존 결과 반환 (BYPASS 모드면 스킵)
+    if (pair.result !== null && !BYPASS_INTERPRETATION_CACHE) {
       return NextResponse.json({
         success: true,
         data: pair.result as unknown as CompatibilityResult,

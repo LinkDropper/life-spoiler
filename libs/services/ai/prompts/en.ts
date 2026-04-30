@@ -188,8 +188,45 @@ Fortune tips must go beyond lucky colors and directions to provide **specific, i
 - **Create expressions that naturally emerge from this person's energy combination** — fresh every time
 - If the same "X of Y" pattern appears 2+ times, it's a failure
 
+## 📝 Body Markdown Structure (content / summary fields)
+The body of the content / summary fields must be written in **GFM Markdown**.
+Keep the JSON response format itself intact, but **inside the body string**, use Markdown structure.
+
+### Readability Rules (must follow)
+- **No flat prose** — the body must use at least one of: \`### subheading\` (1–2 of them), \`- bullet list\`, \`**key emphasis**\`.
+- **Paragraph splits**: when a single paragraph runs 4+ sentences, split it with a blank line (\`\\n\\n\`) at a logical break.
+- **Lists for enumerable items**: enumerable items (3 traits, 2 cautions, favorable timings, etc.) must be expressed as \`- \` bullet lists.
+- **Subheadings for contrasts**: contrast/staged structures like "strengths + weaknesses", "favorable timing + risk timing", "reason + result + advice" must be split with \`### subheadings\`.
+- **Bold key terms**: bold the decisive keywords (timing, area, condition, concrete actions) with \`**bold**\`.
+- The "paragraph 1 / paragraph 2 / paragraph 3" length guidance still applies — use the rules above inside each paragraph.
+
+## 🚫 Body Meta Filler — Banned
+The expressions below must **never appear anywhere in the body (content / summary)**. They are filler the model instinctively inserts and they damage credibility.
+
+### Disclaimers / liability statements — banned
+- "This is for entertainment only", "Take with a grain of salt"
+- "We can't pin down destiny, but...", "This isn't an absolute interpretation"
+- "Individual variation may apply"
+
+### Follow-up offers / meta notes — banned
+- "Let me know if you'd like a different version"
+- "Feel free to ask for a deeper analysis"
+- "If you have further questions, just ask"
+
+### Greetings / openers / closers — banned
+- "Hello", "Good luck", "Best of luck"
+- "That concludes the analysis", "Hope this was helpful"
+
+→ The tone can stay warm without any of this. Body content only.
+
+## 🚫 No Verbatim Repetition Across Fields
+- Do **not** copy headline / description / tags verbatim into content / summary.
+- In the body, paraphrase those phrases by adding explanation, context, or evidence.
+- If exactly the same sentence appears in two fields, it's a failure.
+
 ## Response
 Always respond in the requested JSON format only. Output pure JSON only.
+Inside the **string value** of content / summary fields, use Markdown per the rules above.
 ⚠️ Final check: No palace names, star names, or technical terms may appear in the output!`;
 
 /**

@@ -10,6 +10,7 @@ import {
   ProfileInfo,
   ZiweiChartGrid,
   SectionHeader,
+  MarkdownContent,
   CopyToast,
   ErrorState,
   ShareDrawer,
@@ -271,9 +272,9 @@ export default function PastLifeFortunePage() {
             <h2 className={styles.overviewHeadline}>
               {interpretation.spoiler.headline}
             </h2>
-            <p className={styles.overviewSummary}>
+            <MarkdownContent className={styles.overviewSummary}>
               {interpretation.spoiler.summary}
-            </p>
+            </MarkdownContent>
           </section>
         )}
 
@@ -300,13 +301,13 @@ export default function PastLifeFortunePage() {
                       {interpretation.world.socialRole}
                     </span>
                   </div>
-                  <p className={styles.sectionText}>
+                  <MarkdownContent className={styles.sectionText}>
                     {interpretation.world.atmosphere}
-                  </p>
+                  </MarkdownContent>
                   {interpretation.world.description && (
-                    <p className={styles.sectionText}>
+                    <MarkdownContent className={styles.sectionText}>
                       {interpretation.world.description}
-                    </p>
+                    </MarkdownContent>
                   )}
                 </div>
               </section>
@@ -329,9 +330,9 @@ export default function PastLifeFortunePage() {
                   {interpretation.birth.headline}
                 </h3>
               )}
-              <p className={styles.sectionText}>
+              <MarkdownContent className={styles.sectionText}>
                 {interpretation.birth.content}
-              </p>
+              </MarkdownContent>
             </div>
           </section>
         )}
@@ -367,9 +368,9 @@ export default function PastLifeFortunePage() {
                 </div>
               )}
 
-              <p className={styles.sectionText}>
+              <MarkdownContent className={styles.sectionText}>
                 {interpretation.journey.content}
-              </p>
+              </MarkdownContent>
             </div>
           </section>
         )}
@@ -389,7 +390,9 @@ export default function PastLifeFortunePage() {
                   {interpretation.end.headline}
                 </h3>
               )}
-              <p className={styles.sectionText}>{interpretation.end.content}</p>
+              <MarkdownContent className={styles.sectionText}>
+                {interpretation.end.content}
+              </MarkdownContent>
 
               {interpretation.end.lastWords && (
                 <div className={styles.lastWordsContainer}>
@@ -477,9 +480,9 @@ export default function PastLifeFortunePage() {
                   {interpretation.connections.headline}
                 </h3>
               )}
-              <p className={styles.sectionText}>
+              <MarkdownContent className={styles.sectionText}>
                 {interpretation.connections.content}
-              </p>
+              </MarkdownContent>
             </div>
           </section>
         )}
@@ -529,7 +532,9 @@ export default function PastLifeFortunePage() {
                         <h4 className={styles.lessonHeadline}>
                           {lesson.headline}
                         </h4>
-                        <p className={styles.lessonContent}>{lesson.content}</p>
+                        <MarkdownContent className={styles.lessonContent}>
+                          {lesson.content}
+                        </MarkdownContent>
                       </div>
                     ))}
                   </div>

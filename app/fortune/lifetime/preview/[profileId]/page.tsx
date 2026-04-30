@@ -10,6 +10,7 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   KeywordGrid,
+  MarkdownContent,
 } from "@/components/fortune";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
 import {
@@ -166,9 +167,9 @@ export default function LifetimeFortunePreviewPage() {
             <h2 className={styles.previewHeadline}>
               {interpretation.lifeSpoiler.headline}
             </h2>
-            <p className={styles.previewDescription}>
+            <MarkdownContent className={styles.previewDescription}>
               {interpretation.lifeSpoiler.summary}
-            </p>
+            </MarkdownContent>
             <p className={styles.previewTeaser}>{tPreview("teaser")}</p>
           </section>
         )}
