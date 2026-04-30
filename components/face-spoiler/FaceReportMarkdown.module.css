@@ -1,0 +1,286 @@
+/* ============================================================
+   섹션 카드 레이아웃
+   ============================================================ */
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid #3fd9ad;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   섹션 한 줄 평 (pull-quote)
+   각 카드의 시각적 anchor — 본문에 들어가기 전 핵심을 한 호흡에 전달.
+   ============================================================ */
+
+.oneLiner {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.55;
+  color: #3fd9ad;
+  font-style: normal;
+  margin: 0;
+  padding: 14px 16px 14px 18px;
+  background: rgba(63, 217, 173, 0.06);
+  border-left: 3px solid #3fd9ad;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.oneLiner::before {
+  content: "“";
+  margin-right: 4px;
+  opacity: 0.65;
+  font-size: 1.125em;
+  line-height: 0.8;
+}
+
+.oneLiner::after {
+  content: "”";
+  margin-left: 4px;
+  opacity: 0.65;
+  font-size: 1.125em;
+  line-height: 0.8;
+}
+
+.sectionNumber {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #3fd9ad;
+  letter-spacing: 0.18em;
+}
+
+.sectionTitle {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.sectionBody {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.sectionBody :global(p) {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin: 0 0 18px;
+  white-space: pre-wrap;
+}
+
+.sectionBody :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+/* Lead 단락 — 섹션 본문의 첫 문단을 한 단계 강조해 진입 anchor 제공 */
+.sectionBody > :global(p:first-child) {
+  font-size: 1.0625rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.sectionBody :global(strong) {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.sectionBody :global(em) {
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* body 안의 소제목 — 카드 메인 타이틀과 시각적 충돌 방지를 위해 톤 다운 */
+.sectionBody :global(h1),
+.sectionBody :global(h2),
+.sectionBody :global(h3),
+.sectionBody :global(h4) {
+  font-family: "Pretendard Variable", Pretendard, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  margin: 18px 0 8px;
+}
+
+.sectionBody :global(h1),
+.sectionBody :global(h2) {
+  font-size: 1.0625rem;
+  color: #3fd9ad;
+}
+
+.sectionBody :global(h3),
+.sectionBody :global(h4) {
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.sectionBody :global(ul),
+.sectionBody :global(ol) {
+  margin: 0 0 18px;
+  padding-left: 1.4em;
+  color: var(--text-secondary);
+}
+
+.sectionBody :global(li) {
+  margin: 8px 0;
+  line-height: 1.7;
+  padding-left: 4px;
+}
+
+.sectionBody :global(li::marker) {
+  color: #3fd9ad;
+  font-weight: 700;
+}
+
+.sectionBody :global(li > p) {
+  margin: 0 0 6px;
+}
+
+.sectionBody :global(blockquote) {
+  margin: 18px 0;
+  padding: 14px 18px;
+  background: rgba(63, 217, 173, 0.04);
+  border-left: 3px solid #3fd9ad;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-style: normal;
+}
+
+.sectionBody :global(hr) {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 22px 0;
+}
+
+.sectionBody :global(code) {
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-radius: 3px;
+}
+
+.sectionBody :global(pre) {
+  margin: 14px 0;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: auto;
+}
+
+.sectionBody :global(pre code) {
+  padding: 0;
+  background: transparent;
+}
+
+.sectionBody :global(a) {
+  color: #3fd9ad;
+  text-decoration: underline;
+}
+
+.sectionBody :global(table) {
+  display: block;
+  width: 100%;
+  margin: 14px 0;
+  border-collapse: collapse;
+  overflow-x: auto;
+  font-size: 0.9375rem;
+}
+
+.sectionBody :global(thead) {
+  background: rgba(63, 217, 173, 0.08);
+}
+
+.sectionBody :global(th),
+.sectionBody :global(td) {
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+  vertical-align: top;
+  color: var(--text-secondary);
+}
+
+.sectionBody :global(th) {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.sectionBody :global(tbody tr:nth-child(even)) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+@media (max-width: 640px) {
+  .sections {
+    gap: 20px;
+  }
+
+  .section {
+    padding: 24px 20px;
+  }
+
+  .sectionTitle {
+    font-size: 1.1875rem;
+  }
+
+  .sectionNumber {
+    font-size: 0.6875rem;
+  }
+
+  .oneLiner {
+    font-size: 1rem;
+    padding: 12px 14px 12px 16px;
+  }
+
+  .sectionBody {
+    font-size: 0.9375rem;
+  }
+
+  .sectionBody > :global(p:first-child) {
+    font-size: 1rem;
+  }
+
+  .sectionBody :global(p),
+  .sectionBody :global(li) {
+    font-size: 0.9375rem;
+  }
+
+  .sectionBody :global(table) {
+    font-size: 0.875rem;
+  }
+
+  .sectionBody :global(th),
+  .sectionBody :global(td) {
+    padding: 8px 10px;
+  }
+}

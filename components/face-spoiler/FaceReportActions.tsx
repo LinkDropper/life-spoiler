@@ -25,7 +25,7 @@ interface FaceReportActionsProps {
   shareId: string;
   profileId: string;
   profileName: string;
-  animalKey: string;
+  slug: string;
 }
 
 const TOAST_DURATION_MS = 2500;
@@ -35,7 +35,7 @@ export const FaceReportActions = ({
   shareId,
   profileId,
   profileName,
-  animalKey,
+  slug,
 }: FaceReportActionsProps) => {
   const t = useTranslations("faceSpoiler.share");
 
@@ -53,7 +53,7 @@ export const FaceReportActions = ({
     toBlob,
     isDownloading,
   } = useImageDownload({
-    filename: `face_spoiler_${animalKey}`,
+    filename: `face_spoiler_${slug}`,
     pixelRatio: 2,
     filter: captureFilter,
     cacheBust: false,
