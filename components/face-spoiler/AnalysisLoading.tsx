@@ -10,17 +10,26 @@ const LOTTIE_SRC = "/lottie/face-loading.lottie";
 
 const MESSAGE_CHANGE_INTERVAL_MS = 2500;
 
-export const AnalysisLoading = () => {
+interface AnalysisLoadingProps {
+  messages?: string[];
+}
+
+export const AnalysisLoading = ({
+  messages: customMessages,
+}: AnalysisLoadingProps = {}) => {
   const t = useTranslations("faceSpoiler.loading");
 
   const messages = useMemo(
-    () => [
-      t("analyzing", { default: "얼굴을 분석하고 있어요..." }),
-      t("readingFeatures", { default: "인상 특징을 읽고 있어요..." }),
-      t("interpreting", { default: "성향을 해석하고 있어요..." }),
-      t("writing", { default: "리포트를 작성하고 있어요..." }),
-    ],
-    [t]
+    () =>
+      customMessages && customMessages.length > 0
+        ? customMessages
+        : [
+            t("analyzing", { default: "얼굴을 분석하고 있어요..." }),
+            t("readingFeatures", { default: "인상 특징을 읽고 있어요..." }),
+            t("interpreting", { default: "성향을 해석하고 있어요..." }),
+            t("writing", { default: "리포트를 작성하고 있어요..." }),
+          ],
+    [t, customMessages]
   );
 
   const [messageIndex, setMessageIndex] = useState(0);
