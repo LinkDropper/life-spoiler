@@ -1,0 +1,54 @@
+.section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-16);
+  width: 100%;
+  margin-top: var(--gap-32);
+  /* fixed footer (높이 52 + padding 16*2 = 84) 위까지 그라데이션이 닿도록
+     충분한 padding-bottom 확보 — 마지막 칩이 footer 에 가려지지 않게 한다. */
+  padding: var(--gap-40) var(--gap-16) 100px;
+  background: linear-gradient(
+    180deg,
+    var(--bg-primary) 0%,
+    var(--face-cta-gradient-end) 100%
+  );
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.headline {
+  margin: 0;
+  font-family: var(--face-font-display);
+  font-size: var(--font-size-28);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height);
+  color: var(--face-gold);
+  word-break: keep-all;
+}
+
+.description {
+  margin: 0;
+  width: 100%;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  word-break: keep-all;
+}
+
+.chipsWrap {
+  width: 100%;
+  margin-top: var(--gap-24);
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: var(--gap-32) var(--gap-16) 100px;
+  }
+  .headline {
+    font-size: var(--font-size-24);
+  }
+}

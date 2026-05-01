@@ -1,0 +1,188 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-24);
+  width: 100%;
+  padding: var(--gap-24) var(--gap-20);
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   캐릭터 이미지 영역 — Figma 절대 좌표 기반 (303x303 기준 비율).
+   ============================================================ */
+
+.imageBlock {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.placeholderImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 결과 모드: 캐릭터 이미지가 1:1이 아닐 때 letter-box 영역을 브랜드 골드로 채움. */
+.imageBlockResult {
+  background: #ecba5e;
+}
+
+.resultImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.placeholderCaption {
+  position: absolute;
+  left: 14.85%; /* 45 / 303 */
+  top: 42.9%; /* 130 / 303 */
+  width: 70.6%; /* 214 / 303 */
+  margin: 0;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height);
+  color: var(--color-text-default);
+  text-align: left;
+  word-break: keep-all;
+}
+
+.animalVertical {
+  position: absolute;
+  left: 6.6%; /* 20 / 303 */
+  top: 5.94%; /* 18 / 303 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--face-font-display);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  color: var(--color-text-default);
+}
+
+/* 결과 모드: 골드 배경 위에 어두운 텍스트로 contrast 확보. */
+.animalVerticalResult {
+  color: #1a1918;
+}
+
+.animalChar {
+  display: block;
+}
+
+/* ============================================================
+   종합 점수 + progress bar (3 dashed dividers, 4 segments)
+   ============================================================ */
+
+.scoreBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-8);
+  width: 100%;
+}
+
+.scoreRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-16);
+  width: 100%;
+  min-height: 34px;
+}
+
+.scoreLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: var(--color-surface-primary-0);
+  border-radius: var(--radius-4);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height);
+  color: var(--face-mint);
+}
+
+.scoreValue {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-24);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  color: var(--color-text-default);
+  letter-spacing: -0.01em;
+}
+
+.scoreBar {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: var(--color-surface-primary-0);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.scoreFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--face-mint);
+  border-radius: 18px;
+  transition: width 240ms ease;
+}
+
+.scoreDivider {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 100%;
+  border-left: var(--stroke-1) dashed var(--primitive-black);
+  pointer-events: none;
+  transform: translateX(-0.5px);
+}
+
+/* ============================================================
+   타이틀 + lead paragraph
+   ============================================================ */
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-16);
+  width: 100%;
+}
+
+.title {
+  margin: 0;
+  width: 100%;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  color: var(--color-text-default);
+  word-break: keep-all;
+}
+
+.lead {
+  margin: 0;
+  width: 100%;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height);
+  color: var(--color-text-tertiary);
+  word-break: keep-all;
+  white-space: pre-wrap;
+}

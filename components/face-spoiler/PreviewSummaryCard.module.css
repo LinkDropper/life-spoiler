@@ -1,0 +1,29 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-8);
+  width: 100%;
+  padding: var(--gap-16);
+  background: var(--color-surface-primary-0);
+  border-radius: var(--radius-8);
+  box-sizing: border-box;
+}
+
+.label {
+  margin: 0;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  color: var(--face-mint);
+}
+
+.text {
+  margin: 0;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height);
+  color: var(--color-text-secondary);
+  word-break: keep-all;
+}
