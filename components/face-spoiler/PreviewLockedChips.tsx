@@ -2,7 +2,7 @@ import styles from "./PreviewLockedChips.module.css";
 
 interface PreviewLockedChipsProps {
   /** 잠금 섹션 라벨들. 디자인은 자유롭게 wrap 되는 그리드. */
-  labels: string[];
+  labels: readonly string[];
 }
 
 const LockIcon = () => (

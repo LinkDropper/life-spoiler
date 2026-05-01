@@ -7,7 +7,7 @@ interface PreviewTeaserCtaProps {
   /** 서브 설명 카피. */
   description: string;
   /** 결제 후 해제되는 섹션 라벨들. */
-  lockedLabels: string[];
+  lockedLabels: readonly string[];
 }
 
 export const PreviewTeaserCta = ({

@@ -123,13 +123,27 @@ describe("parseParts", () => {
     ]);
   });
 
-  it("'기억에 남는 한 줄' 헤딩은 '한 줄 정리' 라벨로 정규화한다", () => {
+  it("'기억에 남는 한 줄' / '한 줄 정리' 헤딩은 summary 로 분리된다", () => {
     const body = `### 눈
 설명.
 
 ### 기억에 남는 한 줄
 요약 본문.`;
     const parsed = parseParts(body);
-    expect(parsed.items.map((i) => i.name)).toEqual(["눈", "한 줄 정리"]);
+    // normalize 로 "한 줄 정리" 라벨이 되고, 그 라벨은 summary 패턴에 매치되어
+    // sub-card 가 아니라 summary 로 빠진다.
+    expect(parsed.items.map((i) => i.name)).toEqual(["눈"]);
+    expect(parsed.summary).toBe("요약 본문.");
+  });
+
+  it("줄바꿈이 포함된 summary 본문은 ReactMarkdown 렌더 위해 보존한다", () => {
+    const body = `### 눈
+설명.
+
+### 한 줄 정리
+- 첫째 포인트
+- 둘째 포인트`;
+    const parsed = parseParts(body);
+    expect(parsed.summary).toBe("- 첫째 포인트\n- 둘째 포인트");
   });
 });

@@ -214,7 +214,7 @@ export default async function FaceSpoilerPreviewPage({
             default:
               "동물상의 세부 매칭 근거, 숨겨진 매력, 일과 재물의 흐름까지 본편에서 몰래 스포해 드릴게요 🤫",
           })}
-          lockedLabels={[...LOCKED_SECTION_LABELS]}
+          lockedLabels={LOCKED_SECTION_LABELS}
         />
       </div>
 

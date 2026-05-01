@@ -106,12 +106,12 @@ const extractFirstBulletList = (body: string): string[] => {
 };
 
 const ONE_LINER_LABEL_REGEX =
-  /^(?:#{1,6}\s*)?\**\s*(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한마디로)\s*\**\s*[:：]?\s*/u;
+  /^(?:#{1,6}\s*)?\**\s*(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한\s*줄\s*정리|한마디로)\s*\**\s*[:：]?\s*/u;
 
 const extractOneLinerSummary = (body: string): string | null => {
   // case 1: "**한 줄 평:** ..." 인라인 패턴
   const inlineMatch = body.match(
-    /\*\*\s*(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한마디로)\s*\**\s*[:：]?\s*\**\s*([^\n]+)/u
+    /\*\*\s*(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한\s*줄\s*정리|한마디로)\s*\**\s*[:：]?\s*\**\s*([^\n]+)/u
   );
   if (inlineMatch) {
     return stripBold(inlineMatch[1])
@@ -143,7 +143,7 @@ const extractOneLinerSummary = (body: string): string | null => {
 const stripOneLinerBlock = (body: string): string => {
   // 인라인 "**한 줄 평:** ..." 한 줄 제거
   const out = body.replace(
-    /\n?\s*\*\*\s*(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한마디로)\s*\**\s*[:：]?\s*\**\s*[^\n]+/gu,
+    /\n?\s*\*\*\s*(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한\s*줄\s*정리|한마디로)\s*\**\s*[:：]?\s*\**\s*[^\n]+/gu,
     ""
   );
 
@@ -274,11 +274,14 @@ export const parseParts = (section2Body: string): PartsParsed => {
 
   // "한 줄 평" 류 sub-section 은 summary 로 분리
   const summaryIndex = items.findIndex((it) =>
-    /^(한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한마디로)$/u.test(it.name)
+    /^(한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한\s*줄\s*정리|한마디로)$/u.test(
+      it.name
+    )
   );
   let summary: string | null = null;
   if (summaryIndex !== -1) {
-    summary = items[summaryIndex].body.replace(/\n+/g, " ").trim();
+    // body 는 ReactMarkdown 이 그대로 받으므로 줄바꿈을 보존한다(불릿/단락 보존).
+    summary = items[summaryIndex].body.trim();
     items.splice(summaryIndex, 1);
   }
 
