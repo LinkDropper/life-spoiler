@@ -3,42 +3,36 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
-import { FaceReportMarkdown } from "@/components/face-spoiler/FaceReportMarkdown";
 import { Header } from "@/components/face-spoiler/Header";
+import { PreviewBulletPoints } from "@/components/face-spoiler/PreviewBulletPoints";
 import { PreviewFooter } from "@/components/face-spoiler/PreviewFooter";
+import { PreviewPartsSection } from "@/components/face-spoiler/PreviewPartsSection";
+import { PreviewProfileCard } from "@/components/face-spoiler/PreviewProfileCard";
+import { PreviewSummaryCard } from "@/components/face-spoiler/PreviewSummaryCard";
+import { PreviewTeaserCta } from "@/components/face-spoiler/PreviewTeaserCta";
+import {
+  extractAnimalShortName,
+  findSectionByNumber,
+  parseFirstImpression,
+  parseParts,
+} from "@/libs/face-spoiler/preview-parser";
 import { isFaceReport } from "@/libs/face-spoiler/types";
 import { createServerClient } from "@/libs/supabase";
 
 import styles from "./page.module.css";
 
-const TEASER_SECTION_COUNT = 2;
-
 /**
- * 잠금된 섹션 목록 — UI 일관성을 위해 하드코딩.
- *
- * LLM이 실제로 반환하는 sections[2]..[16]의 title은 모델 응답에 따라 미세하게
- * 달라질 수 있다(예: "동물상" vs "나의 동물상"). preview에서 결제 전 사용자에게
- * 노출되는 "어떤 항목을 잠금해제 받게 되는지" 안내 텍스트는 변동성이 없어야
- * 마케팅 카피로 신뢰감을 준다 — 따라서 여기서는 고정 라벨을 사용한다.
- *
- * 결제 후 결과 페이지(`/r/[shareId]`)는 LLM 원본 title을 그대로 사용한다.
+ * 잠금된 섹션 라벨 — 결제 후 해제됨을 안내하는 마케팅 카피.
+ * 새 프롬프트 9섹션 구성 기준 (sections 3~9). title 변동성 차단을 위해 고정.
  */
-const LOCKED_SECTIONS: ReadonlyArray<{ number: number; title: string }> = [
-  { number: 3, title: "나의 동물상" },
-  { number: 4, title: "첫인상 오해 포인트" },
-  { number: 5, title: "숨겨진 반전 매력" },
-  { number: 6, title: "재물운" },
-  { number: 7, title: "돈 쓸 때 버릇 + 텅장 위험 구간" },
-  { number: 8, title: "연애운" },
-  { number: 9, title: "플러팅 스타일" },
-  { number: 10, title: "잘 어울리는 직업" },
-  { number: 11, title: "학교/직장 생존 방식" },
-  { number: 12, title: "인간관계/단톡방 포지션" },
-  { number: 13, title: "화났을 때 특징" },
-  { number: 14, title: "찐친만 아는 모습" },
-  { number: 15, title: "이 사람 사용 설명서" },
-  { number: 16, title: "부위별 점수표" },
-  { number: 17, title: "종합 평가" },
+const LOCKED_SECTION_LABELS: ReadonlyArray<string> = [
+  "나의 동물상 특징",
+  "첫인상 오해 포인트",
+  "재물운",
+  "연애운",
+  "잘 어울리는 직업",
+  "화났을 때 특징",
+  "종합 평가",
 ];
 
 interface PreviewPageProps {
@@ -130,7 +124,6 @@ export default async function FaceSpoilerPreviewPage({
     notFound();
   }
 
-  // 새 흐름(v5)이 아닌 리포트는 legacy 안내 페이지
   if (!isFaceReport(record.result)) {
     const tLegacy = await getTranslations("faceSpoiler.report.legacy");
     return (
@@ -153,67 +146,76 @@ export default async function FaceSpoilerPreviewPage({
     );
   }
 
+  const tPreview = await getTranslations("faceSpoiler.preview");
+
   const {
-    sections: allSections,
+    sections,
     totalScore,
     finalCharacterTitle: rawFinalTitle,
   } = record.result;
-  const teaserSections = allSections.slice(0, TEASER_SECTION_COUNT);
   const finalCharacterTitle = rawFinalTitle.trim();
+
+  const section1 = findSectionByNumber(sections, 1);
+  const section2 = findSectionByNumber(sections, 2);
+  const section3 = findSectionByNumber(sections, 3);
+
+  const firstImpression = section1
+    ? parseFirstImpression(section1.body)
+    : { lead: "", points: [], summary: null };
+
+  const summaryFallback = section1?.oneLiner.trim() ?? "";
+  const summaryText = firstImpression.summary ?? summaryFallback;
+
+  const parts = section2
+    ? parseParts(section2.body)
+    : { items: [], summary: null };
+
+  const animalShortName = section3
+    ? extractAnimalShortName(section3.body)
+    : null;
 
   return (
     <>
       <Header />
       <div className={styles.container}>
         <div className={styles.content}>
-          {/* 캐릭터 이미지 placeholder — 결제 후 생성 */}
-          <div
-            className={styles.characterPlaceholder}
-            role="img"
-            aria-label="캐릭터 이미지 잠금"
-          >
-            <div className={styles.characterPlaceholderIcon} aria-hidden>
-              🎭
-            </div>
-            <p className={styles.characterPlaceholderText}>
-              결제하면 나만의 관상 캐릭터가 생성돼요
-            </p>
-          </div>
+          <PreviewProfileCard
+            characterTitle={finalCharacterTitle}
+            totalScore={totalScore}
+            animalShortName={animalShortName}
+            leadParagraph={firstImpression.lead}
+            placeholderCaption={tPreview("imagePlaceholderCaption", {
+              default: "전체 스포를 확인하면 일러스트를 확인할 수 있어요",
+            })}
+          />
 
-          {/* 최종 캐릭터 타이틀 + 종합 점수 hero */}
-          <div className={styles.titleHero}>
-            <span className={styles.heroTag}>최종 캐릭터</span>
-            <h1 className={styles.heroTitle}>{finalCharacterTitle}</h1>
-            <div className={styles.scoreRow}>
-              <span className={styles.scoreLabel}>종합 점수</span>
-              <span className={styles.scoreValue}>{totalScore}</span>
-              <span className={styles.scoreUnit}>/ 100</span>
-            </div>
-          </div>
+          <PreviewBulletPoints points={firstImpression.points} />
 
-          {/* 노출 섹션: 종합 인상 + 부위별 특징 */}
-          <FaceReportMarkdown sections={teaserSections} />
+          <PreviewSummaryCard
+            label={tPreview("summaryLabel", { default: "한마디로" })}
+            text={summaryText}
+          />
 
-          {/* 잠금된 섹션 리스트 — 결제 후 해제. 라벨은 LOCKED_SECTIONS 고정. */}
-          <div className={styles.lockedList}>
-            <h2 className={styles.lockedListTitle}>
-              <span className={styles.lockedListIcon} aria-hidden>
-                🔒
-              </span>
-              결제 후 해제 ({LOCKED_SECTIONS.length}개 섹션)
-            </h2>
-            <ul className={styles.lockedItems}>
-              {LOCKED_SECTIONS.map((item) => (
-                <li key={item.number} className={styles.lockedItem}>
-                  <span className={styles.lockedNumber}>
-                    {String(item.number).padStart(2, "0")}
-                  </span>
-                  <span className={styles.lockedItemTitle}>{item.title}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <PreviewPartsSection
+            title={tPreview("partsTitle", { default: "부위별 관상" })}
+            items={parts.items}
+            summary={parts.summary}
+            summaryLabel={tPreview("partsSummaryLabel", {
+              default: "한 줄 평",
+            })}
+          />
         </div>
+
+        <PreviewTeaserCta
+          headline={tPreview("teaserHeadline", {
+            default: "지금 보신 건 예고편이에요",
+          })}
+          description={tPreview("teaser", {
+            default:
+              "동물상의 세부 매칭 근거, 숨겨진 매력, 일과 재물의 흐름까지 본편에서 몰래 스포해 드릴게요 🤫",
+          })}
+          lockedLabels={[...LOCKED_SECTION_LABELS]}
+        />
       </div>
 
       <PreviewFooter shareId={shareId} />
