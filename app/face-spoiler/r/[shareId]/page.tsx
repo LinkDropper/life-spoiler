@@ -8,6 +8,16 @@ import { FaceReportActions } from "@/components/face-spoiler/FaceReportActions";
 import { FaceReportMarkdown } from "@/components/face-spoiler/FaceReportMarkdown";
 import { GuestFaceActions } from "@/components/face-spoiler/GuestFaceActions";
 import { Header } from "@/components/face-spoiler/Header";
+import { PreviewBulletPoints } from "@/components/face-spoiler/PreviewBulletPoints";
+import { PreviewPartsSection } from "@/components/face-spoiler/PreviewPartsSection";
+import { PreviewProfileCard } from "@/components/face-spoiler/PreviewProfileCard";
+import { PreviewSummaryCard } from "@/components/face-spoiler/PreviewSummaryCard";
+import {
+  extractAnimalShortName,
+  findSectionByNumber,
+  parseFirstImpression,
+  parseParts,
+} from "@/libs/face-spoiler/preview-parser";
 import { isFaceReport } from "@/libs/face-spoiler/types";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
 
@@ -165,22 +175,65 @@ export default async function FaceSpoilerReportPage({
   const profileName = await fetchFaceProfileName(record.face_profile_id);
   const characterImageUrl = buildCharacterImageUrl(record.character_image_path);
 
+  const tPreview = await getTranslations("faceSpoiler.preview");
+
+  const finalCharacterTitle = report.finalCharacterTitle.trim();
+  const section1 = findSectionByNumber(report.sections, 1);
+  const section2 = findSectionByNumber(report.sections, 2);
+  const section3 = findSectionByNumber(report.sections, 3);
+
+  const firstImpression = section1
+    ? parseFirstImpression(section1.body)
+    : { lead: "", points: [], summary: null };
+
+  const summaryFallback = section1?.oneLiner.trim() ?? "";
+  const summaryText = firstImpression.summary ?? summaryFallback;
+
+  const parts = section2
+    ? parseParts(section2.body)
+    : { items: [], summary: null };
+
+  const animalShortName = section3
+    ? extractAnimalShortName(section3.body)
+    : null;
+
+  // section 1, 2 는 preview 카드 컴포넌트로 렌더하므로 마크다운 영역에선 제외.
+  // section 3 이후 (동물상/오해 포인트/재물운/연애운/...) 는 기존 스타일 유지.
+  const remainingSections = report.sections.filter((s) => s.number >= 3);
+
   return (
     <>
       <Header />
       <div className={styles.container}>
         <div className={styles.content}>
-          {characterImageUrl ? (
-            <div className={styles.characterBlock}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={characterImageUrl}
-                alt={profileName ?? "캐릭터 이미지"}
-                className={styles.characterImage}
-              />
-            </div>
-          ) : null}
-          <FaceReportMarkdown sections={report.sections} />
+          <PreviewProfileCard
+            characterTitle={finalCharacterTitle}
+            totalScore={report.totalScore}
+            leadParagraph={firstImpression.lead}
+            characterImageUrl={characterImageUrl ?? undefined}
+            characterImageAlt={profileName ?? "캐릭터 이미지"}
+            animalShortName={animalShortName}
+          />
+
+          <PreviewBulletPoints points={firstImpression.points} />
+
+          <PreviewSummaryCard
+            label={tPreview("summaryLabel", { default: "한마디로" })}
+            text={summaryText}
+          />
+
+          <PreviewPartsSection
+            title={tPreview("partsTitle", { default: "부위별 관상" })}
+            items={parts.items}
+            summary={parts.summary}
+            summaryLabel={tPreview("partsSummaryLabel", {
+              default: "한 줄 정리",
+            })}
+          />
+
+          {remainingSections.length > 0 && (
+            <FaceReportMarkdown sections={remainingSections} />
+          )}
         </div>
       </div>
       {isOwner && profileName ? (

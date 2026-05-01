@@ -1025,7 +1025,7 @@
         "businessName": "상호: 웬 컴퍼니 (When Company)"
       },
       "preview": {
-        "teaser": "지금 보신 건 '예고편'이에요. 동물상의 세부 매칭 근거, 숨겨진 매력, 일과 재물의 흐름, 어울리는 사람의 기운까지 본편에서 몰래 스포해 드릴게요. 🤫",
+        "teaser": "동물상의 세부 매칭 근거, 숨겨진 매력, 일과 재물의 흐름까지 본편에서 몰래 스포해 드릴게요 🤫",
         "ctaButton": "전체 스포 확인하기 (990원)",
         "characterPlaceholder": "결제하면 나만의 관상 캐릭터가 그려져요",
         "paymentPreparingAlert": "결제 기능은 준비 중입니다.",
@@ -1033,7 +1033,12 @@
         "firstImpressionSectionTag": "첫인상",
         "vibeTagsTitle": "지금의 분위기",
         "traitsTeaserTitle": "이런 매력이 숨어 있어요",
-        "traitsTeaserLockHint": "더 많은 매력과 숨겨진 면은 본편에서 확인하세요"
+        "traitsTeaserLockHint": "더 많은 매력과 숨겨진 면은 본편에서 확인하세요",
+        "imagePlaceholderCaption": "전체 스포를 확인하면 일러스트를 확인할 수 있어요",
+        "summaryLabel": "한마디로",
+        "partsTitle": "부위별 관상",
+        "partsSummaryLabel": "한 줄 정리",
+        "teaserHeadline": "지금 보신 건 예고편이에요"
       },
       "payment": {
         "productName": "관상 운세 스포일러",
@@ -2213,7 +2218,7 @@
         "businessName": "Business: When Company"
       },
       "preview": {
-        "teaser": "What you've seen is just the 'trailer'. The matching cues behind your animal type, the hidden charm, the flow of work and wealth, and who you click with — all revealed in the full report. 🤫",
+        "teaser": "Detailed animal-type matching, hidden charm, and the flow of work & wealth — all revealed in the full report. 🤫",
         "ctaButton": "View Full Spoiler ($0.99)",
         "characterPlaceholder": "Your physiognomy character will be drawn after payment",
         "paymentPreparingAlert": "Payment feature is being prepared.",
@@ -2221,7 +2226,12 @@
         "firstImpressionSectionTag": "First Impression",
         "vibeTagsTitle": "Current Vibe",
         "traitsTeaserTitle": "A charm hidden underneath",
-        "traitsTeaserLockHint": "See more charm and the hidden side in the full report"
+        "traitsTeaserLockHint": "See more charm and the hidden side in the full report",
+        "imagePlaceholderCaption": "View the full spoiler to unlock the illustration",
+        "summaryLabel": "In a word",
+        "partsTitle": "Feature-by-feature reading",
+        "partsSummaryLabel": "One-line summary",
+        "teaserHeadline": "What you've seen is just the trailer"
       },
       "payment": {
         "productName": "Face Reading Spoiler",
@@ -3401,7 +3411,7 @@
         "businessName": "商号:When Company"
       },
       "preview": {
-        "teaser": "今ご覧になったのは「予告編」です。動物顔のマッチ根拠、隠れた魅力、仕事と財運の流れ、相性のいい人の雰囲気まで、本編でこっそりネタバレします。🤫",
+        "teaser": "動物顔のマッチ根拠、隠れた魅力、仕事と財運の流れまで、本編でこっそりネタバレします 🤫",
         "ctaButton": "全ネタバレを確認 ($0.99)",
         "characterPlaceholder": "決済後、あなただけの観相キャラクターが描かれます",
         "paymentPreparingAlert": "決済機能は準備中です。",
@@ -3409,7 +3419,12 @@
         "firstImpressionSectionTag": "第一印象",
         "vibeTagsTitle": "今の雰囲気",
         "traitsTeaserTitle": "こんな魅力が隠れています",
-        "traitsTeaserLockHint": "さらなる魅力と隠れた一面は本編で確認してください"
+        "traitsTeaserLockHint": "さらなる魅力と隠れた一面は本編で確認してください",
+        "imagePlaceholderCaption": "全ネタバレを確認するとイラストを見ることができます",
+        "summaryLabel": "ひとことで",
+        "partsTitle": "部位別観相",
+        "partsSummaryLabel": "ひとことまとめ",
+        "teaserHeadline": "ご覧いただいたのは予告編です"
       },
       "payment": {
         "productName": "観相運勢ネタバレ",

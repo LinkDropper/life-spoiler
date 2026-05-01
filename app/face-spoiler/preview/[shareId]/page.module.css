@@ -1,194 +1,20 @@
 .container {
   width: 100%;
+  max-width: 500px;
   min-height: 100vh;
   margin: 0 auto;
   padding-top: 60px;
-  padding-bottom: 100px;
+  padding-bottom: 0;
+  background: var(--bg-primary);
 }
 
 .content {
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 32px 16px 0;
+  padding: 16px 16px 0;
   display: flex;
   flex-direction: column;
   gap: 24px;
-}
-
-/* ============================================================
-   캐릭터 이미지 placeholder (결제 전)
-   ============================================================ */
-
-.characterPlaceholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 56px 24px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 2px dashed rgba(255, 255, 255, 0.14);
-  text-align: center;
-}
-
-.characterPlaceholderIcon {
-  font-size: 56px;
-  line-height: 1;
-  opacity: 0.55;
-  filter: grayscale(0.2);
-}
-
-.characterPlaceholderText {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
-  margin: 0;
-  word-break: keep-all;
-}
-
-/* ============================================================
-   최종 캐릭터 타이틀 + 종합 점수 hero
-   ============================================================ */
-
-.titleHero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 32px 22px;
-  background: linear-gradient(
-    160deg,
-    rgba(63, 217, 173, 0.1) 0%,
-    rgba(63, 217, 173, 0.03) 60%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  border-left: 3px solid #3fd9ad;
-  text-align: center;
-}
-
-.heroTag {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.6875rem;
-  font-weight: 800;
-  color: #3fd9ad;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.heroTitle {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1.625rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  line-height: 1.35;
-  margin: 0;
-  word-break: keep-all;
-}
-
-.scoreRow {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-top: 6px;
-  padding: 8px 18px;
-  background: rgba(63, 217, 173, 0.1);
-  border: 1px solid rgba(63, 217, 173, 0.32);
-}
-
-.scoreLabel {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.6875rem;
-  font-weight: 800;
-  color: #3fd9ad;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.scoreValue {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1.875rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.scoreUnit {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-
-/* ============================================================
-   잠금 섹션 리스트
-   ============================================================ */
-
-.lockedList {
-  margin-top: 8px;
-  padding: 24px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.lockedListTitle {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin: 0;
-  letter-spacing: -0.01em;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.lockedListIcon {
-  font-size: 0.875rem;
-  line-height: 1;
-}
-
-.lockedItems {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.lockedItem {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  opacity: 0.78;
-}
-
-.lockedNumber {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.6875rem;
-  font-weight: 800;
-  color: #3fd9ad;
-  letter-spacing: 0.14em;
-  flex-shrink: 0;
-}
-
-.lockedItemTitle {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.8125rem;
-  color: var(--text-primary);
-  font-weight: 600;
-  line-height: 1.35;
-  word-break: keep-all;
-  overflow-wrap: anywhere;
+  box-sizing: border-box;
 }
 
 /* ============================================================
@@ -227,8 +53,8 @@
 .legacyCta {
   display: inline-block;
   padding: 14px 28px;
-  background: #3fd9ad;
-  color: #2d1b4e;
+  background: var(--face-mint);
+  color: var(--face-mint-text-on);
   font-family: "Pretendard Variable", Pretendard, sans-serif;
   font-size: 0.9375rem;
   font-weight: 700;
@@ -238,38 +64,4 @@
 
 .legacyCta:hover {
   background: #5ee5c0;
-}
-
-/* ============================================================
-   Responsive
-   ============================================================ */
-
-@media (max-width: 480px) {
-  .content {
-    gap: 20px;
-  }
-
-  .characterPlaceholder {
-    padding: 44px 20px;
-  }
-
-  .characterPlaceholderIcon {
-    font-size: 48px;
-  }
-
-  .titleHero {
-    padding: 28px 18px;
-  }
-
-  .heroTitle {
-    font-size: 1.4375rem;
-  }
-
-  .scoreValue {
-    font-size: 1.625rem;
-  }
-
-  .lockedList {
-    padding: 20px 16px;
-  }
 }

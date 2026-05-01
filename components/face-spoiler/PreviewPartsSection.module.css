@@ -1,0 +1,129 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-16);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-10);
+  width: 100%;
+  padding: 0 0 var(--gap-12);
+  border: 0;
+  border-bottom: var(--stroke-1) solid var(--color-border-default);
+  background: transparent;
+  color: var(--color-text-default);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  border-radius: 0;
+}
+
+.header:focus-visible {
+  outline: 2px solid var(--face-mint);
+  outline-offset: 4px;
+}
+
+.title {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.193;
+  letter-spacing: 0.05em;
+  color: var(--color-text-default);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-text-default);
+  transition: transform 200ms ease;
+}
+
+.chevronUp {
+  transform: rotate(0deg);
+}
+
+.chevronDown {
+  transform: rotate(180deg);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-16);
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-8);
+  width: 100%;
+  padding: var(--gap-16);
+  background: var(--color-surface-primary-0);
+  border-radius: var(--radius-8);
+  box-sizing: border-box;
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height);
+  color: var(--face-mint);
+}
+
+.cardBody {
+  margin: 0;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height);
+  color: var(--color-text-secondary);
+  word-break: keep-all;
+}
+
+.cardBody :global(p) {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+}
+
+.cardBody :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.cardBody :global(ul),
+.cardBody :global(ol) {
+  margin: 8px 0;
+  padding-left: 1.4em;
+  list-style-position: outside;
+}
+
+.cardBody :global(ul) {
+  list-style-type: disc;
+}
+
+.cardBody :global(li) {
+  margin: 4px 0;
+  padding-left: 4px;
+}
+
+.cardBody :global(li::marker) {
+  color: var(--face-mint);
+  font-weight: var(--font-weight-bold);
+}
+
+.cardBody :global(strong) {
+  color: var(--color-text-default);
+  font-weight: var(--font-weight-bold);
+}
+
+.cardBody :global(em) {
+  font-style: italic;
+  color: var(--color-text-default);
+}
