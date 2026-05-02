@@ -57,10 +57,10 @@ jobs:
         if: steps.preflight.outputs.passed == 'true'
         run: node scripts/marketing/post-to-x.js
         env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          X_OAUTH2_CLIENT_ID: ${{ secrets.X_OAUTH2_CLIENT_ID }}
+          X_OAUTH2_CLIENT_SECRET: ${{ secrets.X_OAUTH2_CLIENT_SECRET }}
+          X_REFRESH_TOKEN: ${{ secrets.X_REFRESH_TOKEN }}
+          AUTO_FIX_PAT: ${{ secrets.AUTO_FIX_PAT }}
           TWEET_TEXT: ${{ github.event.client_payload.text }}
 
       - name: Discord 알림 (트윗 URL 포함)
@@ -84,6 +84,19 @@ jobs:
           DISCORD_TEXT: |
             X 발행 차단 (Preflight 실패)
             사유: ${{ steps.preflight.outputs.fail_reason }}
+
+            본문: ${{ github.event.client_payload.text }}
+
+      - name: Discord 알림 (발행/토큰 갱신 실패)
+        if: failure() && steps.preflight.outcome == 'success' && steps.post.outcome == 'failure'
+        run: node scripts/marketing/discord-notify.js
+        env:
+          DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
+          DISCORD_USERNAME: "Safety Gate"
+          DISCORD_TEXT: |
+            ⚠️ X 발행 실패 (refresh_token 또는 POST 단계)
+            run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            refresh_token이 무효화됐을 수 있음 — 로그 확인 후 필요시 OAuth setup 재실행.
 
             본문: ${{ github.event.client_payload.text }}
 
@@ -115,10 +128,7 @@ jobs:
       - name: X 트윗 메트릭 수집
         run: node scripts/marketing/x-metrics.js --user-id "${{ secrets.X_USER_ID }}" --count 30 > /tmp/x-metrics.csv
         env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
 
       - name: 주간 메트릭 파일 생성 및 커밋
         run: |
@@ -179,10 +189,7 @@ jobs:
           mkdir -p docs/metrics
           node scripts/marketing/x-metrics.js --user-id "${{ secrets.X_USER_ID }}" --count 20 > docs/metrics/daily-x-latest.csv
         env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           X_METRICS_DEBUG: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
 
       - name: Shadow ban 자동 감지 (G7)

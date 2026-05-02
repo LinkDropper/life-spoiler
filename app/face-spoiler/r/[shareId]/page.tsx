@@ -213,6 +213,7 @@ export default async function FaceSpoilerReportPage({
             characterImageUrl={characterImageUrl ?? undefined}
             characterImageAlt={profileName ?? "캐릭터 이미지"}
             animalShortName={animalShortName}
+            showShareSlot
           />
 
           <PreviewBulletPoints points={firstImpression.points} />

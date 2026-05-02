@@ -1,5 +1,10 @@
 import Image from "next/image";
 
+import {
+  FACE_SPOILER_DOWNLOAD_SLOT_ID,
+  FACE_SPOILER_HERO_CAPTURE_ID,
+} from "./face-report-actions-constants";
+
 import styles from "./PreviewProfileCard.module.css";
 
 interface PreviewProfileCardProps {
@@ -20,6 +25,11 @@ interface PreviewProfileCardProps {
   animalShortName?: string | null;
   /** preview 모드 — placeholder 위 안내 문구. characterImageUrl 가 있으면 무시. */
   placeholderCaption?: string;
+  /**
+   * 결과 페이지에서만 공유 아이콘 슬롯 노출.
+   * 미리보기(/face-spoiler/preview/[shareId]) 페이지는 결제 전이므로 공유 대상이 없어 노출하지 않는다.
+   */
+  showShareSlot?: boolean;
 }
 
 /**
@@ -44,6 +54,7 @@ export const PreviewProfileCard = ({
   characterImageAlt,
   animalShortName,
   placeholderCaption,
+  showShareSlot = false,
 }: PreviewProfileCardProps) => {
   const scoreText = getScoreOutOfTen(totalScore);
   const filledRatio = Math.max(0, Math.min(1, totalScore / 100));
@@ -51,60 +62,80 @@ export const PreviewProfileCard = ({
   const animalChars = animalShortName ? splitVertically(animalShortName) : [];
 
   return (
-    <article className={styles.card}>
-      <div
-        className={
-          isResultMode
-            ? `${styles.imageBlock} ${styles.imageBlockResult}`
-            : styles.imageBlock
-        }
-      >
-        {isResultMode ? (
-          /* 결과 모드 — 실제 생성된 캐릭터 이미지 (외부 URL, 동적). */
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className={styles.resultImage}
-            src={characterImageUrl}
-            alt={characterImageAlt ?? ""}
-          />
-        ) : (
-          <>
-            <Image
-              className={styles.placeholderImage}
-              src="/images/face-spoiler/preview/icon-character-placeholder.svg"
-              alt=""
-              width={303}
-              height={303}
-              aria-hidden
-              priority
+    <article id={FACE_SPOILER_HERO_CAPTURE_ID} className={styles.card}>
+      <div className={styles.imageGroup}>
+        {showShareSlot && (
+          /*
+           * 헤더는 figma Frame 2636 기준 이미지 위 별도 row 로 배치 (gap-16).
+           * 캡처 시엔 data-capture-exclude 로 헤더 노드 자체가 제거되어
+           * imageGroup 안에 imageBlock 단독으로 남아 16px gap 도 사라진다.
+           */
+          <div className={styles.header} data-capture-exclude="true">
+            <div
+              id={FACE_SPOILER_DOWNLOAD_SLOT_ID}
+              className={styles.shareSlot}
             />
-            {placeholderCaption && (
-              <p className={styles.placeholderCaption}>{placeholderCaption}</p>
-            )}
-          </>
+          </div>
         )}
-        {animalChars.length > 0 && (
-          <span
-            className={
-              isResultMode
-                ? `${styles.animalVertical} ${styles.animalVerticalResult}`
-                : styles.animalVertical
-            }
-            aria-label={animalShortName ?? undefined}
-          >
-            {animalChars.map((ch, idx) => (
-              <span key={idx} className={styles.animalChar}>
-                {ch}
-              </span>
-            ))}
-          </span>
-        )}
+        <div
+          className={
+            isResultMode
+              ? `${styles.imageBlock} ${styles.imageBlockResult}`
+              : styles.imageBlock
+          }
+        >
+          {isResultMode ? (
+            /* 결과 모드 — 실제 생성된 캐릭터 이미지 (외부 URL, 동적). */
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className={styles.resultImage}
+              src={characterImageUrl}
+              alt={characterImageAlt ?? ""}
+            />
+          ) : (
+            <>
+              <Image
+                className={styles.placeholderImage}
+                src="/images/face-spoiler/preview/icon-character-placeholder.svg"
+                alt=""
+                width={303}
+                height={303}
+                aria-hidden
+                priority
+              />
+              {placeholderCaption && (
+                <p className={styles.placeholderCaption}>
+                  {placeholderCaption}
+                </p>
+              )}
+            </>
+          )}
+          {animalChars.length > 0 && (
+            <span
+              className={
+                isResultMode
+                  ? `${styles.animalVertical} ${styles.animalVerticalResult}`
+                  : styles.animalVertical
+              }
+              aria-label={animalShortName ?? undefined}
+            >
+              {animalChars.map((ch, idx) => (
+                <span key={idx} className={styles.animalChar}>
+                  {ch}
+                </span>
+              ))}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className={styles.scoreBlock}>
         <div className={styles.scoreRow}>
           <span className={styles.scoreLabel}>종합 점수</span>
-          <span className={styles.scoreValue}>{scoreText} / 10</span>
+          <span className={styles.scoreValue}>
+            <span className={styles.scoreNumber}>{scoreText}</span>
+            <span className={styles.scoreOutOf}> / 10</span>
+          </span>
         </div>
         <div
           className={styles.scoreBar}

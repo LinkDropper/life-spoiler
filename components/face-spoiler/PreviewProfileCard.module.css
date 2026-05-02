@@ -3,10 +3,39 @@
   flex-direction: column;
   gap: var(--gap-24);
   width: 100%;
-  padding: var(--gap-24) var(--gap-20);
+  padding: var(--gap-20);
   background: transparent;
   border: 1px solid var(--color-border-default);
   box-sizing: border-box;
+}
+
+/* ============================================================
+   상단 헤더 + 이미지 그룹 — Figma Frame 2636 (gap 16).
+   header 에는 우측 정렬된 share-2 아이콘 슬롯만 노출.
+   첫인상 나이 pill 은 의도적으로 제외.
+   캡처 시 헤더는 data-capture-exclude 로 통째로 빠져,
+   imageGroup 에 imageBlock 단독으로 남으면 16px gap 도 함께 사라진다.
+   ============================================================ */
+
+.imageGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-16);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  min-height: 24px;
+}
+
+.shareSlot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ============================================================
@@ -66,7 +95,7 @@
   flex-direction: column;
   align-items: center;
   font-family: var(--face-font-display);
-  font-size: var(--font-size-16);
+  font-size: var(--font-size-24);
   font-weight: var(--font-weight-regular);
   line-height: 1.5;
   color: var(--color-text-default);
@@ -116,12 +145,24 @@
 }
 
 .scoreValue {
+  display: inline-flex;
+  align-items: baseline;
   font-family: var(--font-pretendard);
   font-size: var(--font-size-24);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height);
   color: var(--color-text-default);
   letter-spacing: -0.01em;
+}
+
+.scoreNumber {
+  color: var(--color-text-default);
+}
+
+/* "/ 10" 부분은 부속 표기로 처리 — 본 점수 대비 톤 다운. */
+.scoreOutOf {
+  color: var(--color-text-tertiary);
+  white-space: pre;
 }
 
 .scoreBar {
@@ -143,12 +184,25 @@
   transition: width 240ms ease;
 }
 
+/*
+ * Figma 기준 strokeDashes [2, 2] — 10px 높이에서 CSS `border: dashed`는
+ * 브라우저 구현 편차로 솔리드처럼 그려져 의도가 깨진다.
+ * linear-gradient + background-size 로 정확한 2px on / 2px off 패턴 강제.
+ */
 .scoreDivider {
   position: absolute;
   top: 0;
-  width: 0;
+  width: var(--stroke-1);
   height: 100%;
-  border-left: var(--stroke-1) dashed var(--primitive-black);
+  background-image: linear-gradient(
+    to bottom,
+    var(--primitive-black) 0,
+    var(--primitive-black) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  background-size: 100% 4px;
+  background-repeat: repeat-y;
   pointer-events: none;
   transform: translateX(-0.5px);
 }
