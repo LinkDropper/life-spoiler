@@ -115,10 +115,7 @@ jobs:
       - name: X 트윗 메트릭 수집
         run: node scripts/marketing/x-metrics.js --user-id "${{ secrets.X_USER_ID }}" --count 30 > /tmp/x-metrics.csv
         env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
 
       - name: 주간 메트릭 파일 생성 및 커밋
         run: |
@@ -179,10 +176,7 @@ jobs:
           mkdir -p docs/metrics
           node scripts/marketing/x-metrics.js --user-id "${{ secrets.X_USER_ID }}" --count 20 > docs/metrics/daily-x-latest.csv
         env:
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           X_METRICS_DEBUG: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
 
       - name: Shadow ban 자동 감지 (G7)
