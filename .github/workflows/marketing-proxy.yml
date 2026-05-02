@@ -46,7 +46,7 @@ jobs:
           TWEET_TEXT: ${{ github.event.client_payload.text }}
 
       - name: Jitter 대기 (인간적 발행 패턴)
-        if: steps.preflight.outputs.passed == 'true'
+        if: steps.preflight.outputs.passed == 'true' && github.event.client_payload.skip_jitter != true
         run: |
           SECONDS=${{ steps.preflight.outputs.jitter_seconds }}
           echo "jitter ${SECONDS}초 대기..."
