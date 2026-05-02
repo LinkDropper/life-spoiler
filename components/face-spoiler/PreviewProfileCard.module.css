@@ -1,5 +1,4 @@
 .card {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--gap-24);
@@ -11,20 +10,26 @@
 }
 
 /* ============================================================
-   share-2 아이콘 헤더 — 우상단 absolute 배치.
-   이유: flex 자식으로 두면 캡처(html-to-image) 시 capture-exclude 로 노드는
-   빠져도 부모 layout 이 freeze 되어 24px 만큼 빈 공간이 남는다.
-   absolute 라 처음부터 layout 흐름에서 빠지므로 캡처/온스크린 모두 깔끔.
+   상단 헤더 + 이미지 그룹 — Figma Frame 2636 (gap 16).
+   header 에는 우측 정렬된 share-2 아이콘 슬롯만 노출.
    첫인상 나이 pill 은 의도적으로 제외.
+   캡처 시 헤더는 data-capture-exclude 로 통째로 빠져,
+   imageGroup 에 imageBlock 단독으로 남으면 16px gap 도 함께 사라진다.
    ============================================================ */
 
-.header {
-  position: absolute;
-  top: var(--gap-20);
-  right: var(--gap-20);
-  z-index: 1;
+.imageGroup {
   display: flex;
+  flex-direction: column;
+  gap: var(--gap-16);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
+  width: 100%;
+  min-height: 24px;
 }
 
 .shareSlot {

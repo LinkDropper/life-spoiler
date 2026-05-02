@@ -63,67 +63,70 @@ export const PreviewProfileCard = ({
 
   return (
     <article id={FACE_SPOILER_HERO_CAPTURE_ID} className={styles.card}>
-      {showShareSlot && (
-        /*
-         * 헤더는 absolute 로 띄워 layout 흐름에서 분리한다.
-         * flex 자식으로 두면 캡처 시 data-capture-exclude 로 노드는 빠져도
-         * html-to-image 가 부모(.card)의 layout 을 freeze 해 24px 만큼 빈 공간이 남는다.
-         * absolute 라 처음부터 공간을 차지하지 않으므로 캡처/온스크린 모두 깔끔.
-         */
-        <div className={styles.header} data-capture-exclude="true">
-          <div
-            id={FACE_SPOILER_DOWNLOAD_SLOT_ID}
-            className={styles.shareSlot}
-          />
-        </div>
-      )}
-      <div
-        className={
-          isResultMode
-            ? `${styles.imageBlock} ${styles.imageBlockResult}`
-            : styles.imageBlock
-        }
-      >
-        {isResultMode ? (
-          /* 결과 모드 — 실제 생성된 캐릭터 이미지 (외부 URL, 동적). */
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className={styles.resultImage}
-            src={characterImageUrl}
-            alt={characterImageAlt ?? ""}
-          />
-        ) : (
-          <>
-            <Image
-              className={styles.placeholderImage}
-              src="/images/face-spoiler/preview/icon-character-placeholder.svg"
-              alt=""
-              width={303}
-              height={303}
-              aria-hidden
-              priority
+      <div className={styles.imageGroup}>
+        {showShareSlot && (
+          /*
+           * 헤더는 figma Frame 2636 기준 이미지 위 별도 row 로 배치 (gap-16).
+           * 캡처 시엔 data-capture-exclude 로 헤더 노드 자체가 제거되어
+           * imageGroup 안에 imageBlock 단독으로 남아 16px gap 도 사라진다.
+           */
+          <div className={styles.header} data-capture-exclude="true">
+            <div
+              id={FACE_SPOILER_DOWNLOAD_SLOT_ID}
+              className={styles.shareSlot}
             />
-            {placeholderCaption && (
-              <p className={styles.placeholderCaption}>{placeholderCaption}</p>
-            )}
-          </>
+          </div>
         )}
-        {animalChars.length > 0 && (
-          <span
-            className={
-              isResultMode
-                ? `${styles.animalVertical} ${styles.animalVerticalResult}`
-                : styles.animalVertical
-            }
-            aria-label={animalShortName ?? undefined}
-          >
-            {animalChars.map((ch, idx) => (
-              <span key={idx} className={styles.animalChar}>
-                {ch}
-              </span>
-            ))}
-          </span>
-        )}
+        <div
+          className={
+            isResultMode
+              ? `${styles.imageBlock} ${styles.imageBlockResult}`
+              : styles.imageBlock
+          }
+        >
+          {isResultMode ? (
+            /* 결과 모드 — 실제 생성된 캐릭터 이미지 (외부 URL, 동적). */
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className={styles.resultImage}
+              src={characterImageUrl}
+              alt={characterImageAlt ?? ""}
+            />
+          ) : (
+            <>
+              <Image
+                className={styles.placeholderImage}
+                src="/images/face-spoiler/preview/icon-character-placeholder.svg"
+                alt=""
+                width={303}
+                height={303}
+                aria-hidden
+                priority
+              />
+              {placeholderCaption && (
+                <p className={styles.placeholderCaption}>
+                  {placeholderCaption}
+                </p>
+              )}
+            </>
+          )}
+          {animalChars.length > 0 && (
+            <span
+              className={
+                isResultMode
+                  ? `${styles.animalVertical} ${styles.animalVerticalResult}`
+                  : styles.animalVertical
+              }
+              aria-label={animalShortName ?? undefined}
+            >
+              {animalChars.map((ch, idx) => (
+                <span key={idx} className={styles.animalChar}>
+                  {ch}
+                </span>
+              ))}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className={styles.scoreBlock}>
