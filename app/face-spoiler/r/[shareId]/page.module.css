@@ -1,34 +1,24 @@
 .container {
   width: 100%;
+  max-width: 500px;
   min-height: 100vh;
   margin: 0 auto;
   padding-top: 60px;
+  padding-bottom: 120px;
+  background: var(--bg-primary);
 }
 
 .content {
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 0 16px 120px;
-}
-
-.characterBlock {
+  padding: 16px 16px 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 24px 0 32px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
 }
 
-.characterImage {
-  display: block;
-  width: 100%;
-  max-width: 360px;
-  height: auto;
-  object-fit: contain;
-}
+/* preview/[shareId] 와 동일한 카드 스타일을 공유. 섹션 3 이후는 마크다운으로
+   계속 노출되므로, 마크다운 영역은 카드 사이 gap 안에서 자연스럽게 배치된다. */
 
 .legacyNotice {
   margin-top: 64px;

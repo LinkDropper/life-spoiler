@@ -89,6 +89,12 @@ export const generateCharacterImage = async (
         contents: [{ role: "user", parts }],
         generationConfig: {
           responseModalities: ["IMAGE"],
+          // 결과 페이지/Preview 가 카드 안에 1:1 영역으로 렌더하므로
+          // 모델 출력 자체를 1:1 로 강제. 프롬프트의 텍스트 명시만으론
+          // 종종 약간 어긋난 비율이 나와 letter-box 가 생기는 문제 차단.
+          imageConfig: {
+            aspectRatio: "1:1",
+          },
         },
       }),
     },
