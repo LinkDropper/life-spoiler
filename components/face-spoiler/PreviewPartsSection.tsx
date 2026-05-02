@@ -78,9 +78,7 @@ export const PreviewPartsSection = ({
             <article className={styles.card}>
               <h3 className={styles.cardTitle}>{summaryLabel}</h3>
               <div className={styles.cardBody}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {summary}
-                </ReactMarkdown>
+                <p>{summary}</p>
               </div>
             </article>
           )}

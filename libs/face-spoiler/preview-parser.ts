@@ -78,6 +78,15 @@ const stripBold = (text: string): string =>
 const stripLeadingBullet = (line: string): string =>
   line.replace(/^\s*[-*+]\s+/, "").trim();
 
+// 불릿 리스트/줄바꿈이 섞인 짧은 요약을 한 줄 평문으로 평탄화한다.
+// "- 첫째\n- 둘째" → "첫째 둘째"
+const flattenToPlainSentence = (text: string): string =>
+  text
+    .split(/\n/)
+    .map((line) => stripBold(stripLeadingBullet(line)).trim())
+    .filter((line) => line.length > 0)
+    .join(" ");
+
 const splitParagraphs = (body: string): string[] =>
   body
     .split(/\n{2,}/)
@@ -131,7 +140,7 @@ const extractOneLinerSummary = (body: string): string | null => {
           continue;
         }
         if (/^#{1,6}\s/.test(next)) break;
-        collected.push(stripBold(next));
+        collected.push(stripBold(stripLeadingBullet(next)));
       }
       if (collected.length > 0) return collected.join(" ").trim();
     }
@@ -280,8 +289,8 @@ export const parseParts = (section2Body: string): PartsParsed => {
   );
   let summary: string | null = null;
   if (summaryIndex !== -1) {
-    // body 는 ReactMarkdown 이 그대로 받으므로 줄바꿈을 보존한다(불릿/단락 보존).
-    summary = items[summaryIndex].body.trim();
+    // 불릿/줄바꿈이 섞여 있어도 한 줄 평문으로 평탄화해서 노출한다.
+    summary = flattenToPlainSentence(items[summaryIndex].body) || null;
     items.splice(summaryIndex, 1);
   }
 

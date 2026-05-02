@@ -136,7 +136,7 @@ describe("parseParts", () => {
     expect(parsed.summary).toBe("요약 본문.");
   });
 
-  it("줄바꿈이 포함된 summary 본문은 ReactMarkdown 렌더 위해 보존한다", () => {
+  it("불릿 리스트 형태의 summary 본문은 한 줄 평문으로 평탄화한다", () => {
     const body = `### 눈
 설명.
 
@@ -144,6 +144,6 @@ describe("parseParts", () => {
 - 첫째 포인트
 - 둘째 포인트`;
     const parsed = parseParts(body);
-    expect(parsed.summary).toBe("- 첫째 포인트\n- 둘째 포인트");
+    expect(parsed.summary).toBe("첫째 포인트 둘째 포인트");
   });
 });
