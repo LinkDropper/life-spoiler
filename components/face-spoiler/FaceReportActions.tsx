@@ -42,9 +42,7 @@ export const FaceReportActions = ({
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [downloadSlotNode, setDownloadSlotNode] = useState<HTMLElement | null>(
-    null
-  );
+  const [shareSlotNode, setShareSlotNode] = useState<HTMLElement | null>(null);
   const toastTimerRef = useRef<number | null>(null);
 
   const {
@@ -65,11 +63,11 @@ export const FaceReportActions = ({
       return;
     }
     const slotNode = document.getElementById(FACE_SPOILER_DOWNLOAD_SLOT_ID);
-    setDownloadSlotNode(slotNode);
+    setShareSlotNode(slotNode);
     const heroNode = document.getElementById(
       FACE_SPOILER_HERO_CAPTURE_ID
-    ) as HTMLDivElement | null;
-    captureRef.current = heroNode;
+    ) as HTMLElement | null;
+    captureRef.current = heroNode as HTMLDivElement | null;
   }, [isOwner, captureRef]);
 
   useEffect(() => {
@@ -161,13 +159,12 @@ export const FaceReportActions = ({
     return null;
   }
 
-  const downloadButton = (
+  const shareIconButton = (
     <button
       type="button"
-      className={styles.downloadButton}
-      onClick={handleDownloadImage}
-      disabled={isDownloading}
-      aria-label={t("downloadButtonAria")}
+      className={styles.iconButton}
+      onClick={handleOpenShareDrawer}
+      aria-label={t("footerShareButton")}
     >
       <Share size={24} strokeWidth={2} />
     </button>
@@ -175,7 +172,7 @@ export const FaceReportActions = ({
 
   return (
     <>
-      {downloadSlotNode ? createPortal(downloadButton, downloadSlotNode) : null}
+      {shareSlotNode ? createPortal(shareIconButton, shareSlotNode) : null}
 
       <footer className={styles.footer}>
         <button

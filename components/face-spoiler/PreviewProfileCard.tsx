@@ -1,5 +1,10 @@
 import Image from "next/image";
 
+import {
+  FACE_SPOILER_DOWNLOAD_SLOT_ID,
+  FACE_SPOILER_HERO_CAPTURE_ID,
+} from "./face-report-actions-constants";
+
 import styles from "./PreviewProfileCard.module.css";
 
 interface PreviewProfileCardProps {
@@ -20,6 +25,11 @@ interface PreviewProfileCardProps {
   animalShortName?: string | null;
   /** preview 모드 — placeholder 위 안내 문구. characterImageUrl 가 있으면 무시. */
   placeholderCaption?: string;
+  /**
+   * 결과 페이지에서만 공유 아이콘 슬롯 노출.
+   * 미리보기(/face-spoiler/preview/[shareId]) 페이지는 결제 전이므로 공유 대상이 없어 노출하지 않는다.
+   */
+  showShareSlot?: boolean;
 }
 
 /**
@@ -44,6 +54,7 @@ export const PreviewProfileCard = ({
   characterImageAlt,
   animalShortName,
   placeholderCaption,
+  showShareSlot = false,
 }: PreviewProfileCardProps) => {
   const scoreText = getScoreOutOfTen(totalScore);
   const filledRatio = Math.max(0, Math.min(1, totalScore / 100));
@@ -51,7 +62,21 @@ export const PreviewProfileCard = ({
   const animalChars = animalShortName ? splitVertically(animalShortName) : [];
 
   return (
-    <article className={styles.card}>
+    <article id={FACE_SPOILER_HERO_CAPTURE_ID} className={styles.card}>
+      {showShareSlot && (
+        /*
+         * 헤더는 absolute 로 띄워 layout 흐름에서 분리한다.
+         * flex 자식으로 두면 캡처 시 data-capture-exclude 로 노드는 빠져도
+         * html-to-image 가 부모(.card)의 layout 을 freeze 해 24px 만큼 빈 공간이 남는다.
+         * absolute 라 처음부터 공간을 차지하지 않으므로 캡처/온스크린 모두 깔끔.
+         */
+        <div className={styles.header} data-capture-exclude="true">
+          <div
+            id={FACE_SPOILER_DOWNLOAD_SLOT_ID}
+            className={styles.shareSlot}
+          />
+        </div>
+      )}
       <div
         className={
           isResultMode
@@ -104,7 +129,10 @@ export const PreviewProfileCard = ({
       <div className={styles.scoreBlock}>
         <div className={styles.scoreRow}>
           <span className={styles.scoreLabel}>종합 점수</span>
-          <span className={styles.scoreValue}>{scoreText} / 10</span>
+          <span className={styles.scoreValue}>
+            <span className={styles.scoreNumber}>{scoreText}</span>
+            <span className={styles.scoreOutOf}> / 10</span>
+          </span>
         </div>
         <div
           className={styles.scoreBar}
