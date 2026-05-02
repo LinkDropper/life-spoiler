@@ -161,13 +161,12 @@ export const FaceReportActions = ({
     return null;
   }
 
-  const downloadButton = (
+  const shareIconButton = (
     <button
       type="button"
       className={styles.downloadButton}
-      onClick={handleDownloadImage}
-      disabled={isDownloading}
-      aria-label={t("downloadButtonAria")}
+      onClick={handleOpenShareDrawer}
+      aria-label={t("footerShareButton")}
     >
       <Share size={24} strokeWidth={2} />
     </button>
@@ -175,7 +174,9 @@ export const FaceReportActions = ({
 
   return (
     <>
-      {downloadSlotNode ? createPortal(downloadButton, downloadSlotNode) : null}
+      {downloadSlotNode
+        ? createPortal(shareIconButton, downloadSlotNode)
+        : null}
 
       <footer className={styles.footer}>
         <button

@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Share } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { ShareDrawer } from "@/components/fortune/ShareDrawer";
@@ -9,7 +11,10 @@ import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareFaceSpoilerImage } from "@/libs/kakao";
 import { createBrowserClient } from "@/libs/supabase/browser";
 
-import { FACE_SPOILER_HERO_CAPTURE_ID } from "./face-report-actions-constants";
+import {
+  FACE_SPOILER_DOWNLOAD_SLOT_ID,
+  FACE_SPOILER_HERO_CAPTURE_ID,
+} from "./face-report-actions-constants";
 
 import styles from "./GuestFaceActions.module.css";
 
@@ -34,6 +39,7 @@ export const GuestFaceActions = ({
 
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [shareSlotNode, setShareSlotNode] = useState<HTMLElement | null>(null);
   const toastTimerRef = useRef<number | null>(null);
 
   const {
@@ -53,6 +59,8 @@ export const GuestFaceActions = ({
       FACE_SPOILER_HERO_CAPTURE_ID
     ) as HTMLDivElement | null;
     captureRef.current = heroNode;
+    const slotNode = document.getElementById(FACE_SPOILER_DOWNLOAD_SLOT_ID);
+    setShareSlotNode(slotNode);
   }, [captureRef]);
 
   useEffect(() => {
@@ -135,8 +143,21 @@ export const GuestFaceActions = ({
     }
   };
 
+  const shareIconButton = (
+    <button
+      type="button"
+      className={styles.iconButton}
+      onClick={handleOpenShareDrawer}
+      aria-label={t("footerShareButton")}
+    >
+      <Share size={24} strokeWidth={2} />
+    </button>
+  );
+
   return (
     <>
+      {shareSlotNode ? createPortal(shareIconButton, shareSlotNode) : null}
+
       <footer className={styles.footer}>
         <button
           type="button"

@@ -116,30 +116,27 @@
   }
 }
 
+/*
+ * 카드 상단 헤더에 portal 로 렌더되는 share-2 아이콘 버튼.
+ * 클릭 시 ShareDrawer 를 열며, 캡처에서는 data-capture-exclude 슬롯 안이라 자동 제외된다.
+ */
 .downloadButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
   background: transparent;
   color: #ffffff;
   cursor: pointer;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5))
-    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
   transition: transform 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.downloadButton:active:not(:disabled) {
+.downloadButton:active {
   transform: translateY(1px);
-}
-
-.downloadButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .toast {
