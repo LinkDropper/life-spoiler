@@ -114,6 +114,7 @@
   background: transparent;
   color: #ffffff;
   cursor: pointer;
+  transition: transform 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 

@@ -57,8 +57,8 @@ export const GuestFaceActions = ({
   useEffect(() => {
     const heroNode = document.getElementById(
       FACE_SPOILER_HERO_CAPTURE_ID
-    ) as HTMLDivElement | null;
-    captureRef.current = heroNode;
+    ) as HTMLElement | null;
+    captureRef.current = heroNode as HTMLDivElement | null;
     const slotNode = document.getElementById(FACE_SPOILER_DOWNLOAD_SLOT_ID);
     setShareSlotNode(slotNode);
   }, [captureRef]);

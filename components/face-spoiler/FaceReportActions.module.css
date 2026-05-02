@@ -120,7 +120,7 @@
  * 카드 상단 헤더에 portal 로 렌더되는 share-2 아이콘 버튼.
  * 클릭 시 ShareDrawer 를 열며, 캡처에서는 data-capture-exclude 슬롯 안이라 자동 제외된다.
  */
-.downloadButton {
+.iconButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +135,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.downloadButton:active {
+.iconButton:active {
   transform: translateY(1px);
 }
 
