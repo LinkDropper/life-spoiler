@@ -22,18 +22,19 @@ import { createServerClient } from "@/libs/supabase";
 import styles from "./page.module.css";
 
 /**
- * 잠금된 섹션 라벨 — 결제 후 해제됨을 안내하는 마케팅 카피.
- * 새 프롬프트 9섹션 구성 기준 (sections 3~9). title 변동성 차단을 위해 고정.
+ * 잠금된 섹션 라벨의 i18n 키 — 결제 후 해제됨을 안내하는 마케팅 카피.
+ * 새 프롬프트 9섹션 구성 기준 (sections 3~9). 라벨 텍스트는 translations.json
+ * 의 \`faceSpoiler.preview.lockedSections\` 에서 ko/en/ja 별로 관리한다.
  */
-const LOCKED_SECTION_LABELS: ReadonlyArray<string> = [
-  "나의 동물상 특징",
-  "첫인상 오해 포인트",
-  "재물운",
-  "연애운",
-  "잘 어울리는 직업",
-  "화났을 때 특징",
-  "종합 평가",
-];
+const LOCKED_SECTION_KEYS = [
+  "animalTraits",
+  "firstImpression",
+  "wealth",
+  "love",
+  "career",
+  "anger",
+  "overallEvaluation",
+] as const;
 
 interface PreviewPageProps {
   params: Promise<{ shareId: string }>;
@@ -147,6 +148,8 @@ export default async function FaceSpoilerPreviewPage({
   }
 
   const tPreview = await getTranslations("faceSpoiler.preview");
+  const tLocked = await getTranslations("faceSpoiler.preview.lockedSections");
+  const lockedSectionLabels = LOCKED_SECTION_KEYS.map((key) => tLocked(key));
 
   const {
     sections,
@@ -214,7 +217,7 @@ export default async function FaceSpoilerPreviewPage({
             default:
               "동물상의 세부 매칭 근거, 숨겨진 매력, 일과 재물의 흐름까지 본편에서 몰래 스포해 드릴게요 🤫",
           })}
-          lockedLabels={LOCKED_SECTION_LABELS}
+          lockedLabels={lockedSectionLabels}
         />
       </div>
 
