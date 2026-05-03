@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { env } from "@/env";
+import { AnimalFeatureCard } from "@/components/face-spoiler/AnimalFeatureCard";
 import { FaceReportActions } from "@/components/face-spoiler/FaceReportActions";
 import { FaceReportMarkdown } from "@/components/face-spoiler/FaceReportMarkdown";
 import { GuestFaceActions } from "@/components/face-spoiler/GuestFaceActions";
@@ -12,11 +13,15 @@ import { PreviewBulletPoints } from "@/components/face-spoiler/PreviewBulletPoin
 import { PreviewPartsSection } from "@/components/face-spoiler/PreviewPartsSection";
 import { PreviewProfileCard } from "@/components/face-spoiler/PreviewProfileCard";
 import { PreviewSummaryCard } from "@/components/face-spoiler/PreviewSummaryCard";
+import { padCjkBoldEmphasis } from "@/libs/face-spoiler/format";
 import {
   extractAnimalShortName,
   findSectionByNumber,
+  parseAnimalRatios,
   parseFirstImpression,
   parseParts,
+  stripAnimalRatioPrefix,
+  stripOneLinerSubsections,
 } from "@/libs/face-spoiler/preview-parser";
 import { isFaceReport } from "@/libs/face-spoiler/types";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
@@ -197,9 +202,19 @@ export default async function FaceSpoilerReportPage({
     ? extractAnimalShortName(section3.body)
     : null;
 
-  // section 1, 2 는 preview 카드 컴포넌트로 렌더하므로 마크다운 영역에선 제외.
-  // section 3 이후 (동물상/오해 포인트/재물운/연애운/...) 는 기존 스타일 유지.
-  const remainingSections = report.sections.filter((s) => s.number >= 3);
+  const animalRatios = section3 ? parseAnimalRatios(section3.body) : [];
+  const animalSectionOneLiner = section3 ? section3.oneLiner.trim() : "";
+  // 비율 메타 prefix + 한 줄 평/한 줄 정리/최종 한 줄 평 subsection·인라인 라인을
+  // UI 측에서 모두 제거. legacy 리포트나 LLM 비순응 케이스에서도 깨끗하게 렌더.
+  const animalSectionBody = section3
+    ? padCjkBoldEmphasis(
+        stripOneLinerSubsections(stripAnimalRatioPrefix(section3.body))
+      )
+    : "";
+
+  // section 1·2·3 는 전용 카드로 렌더하므로 마크다운 영역에선 제외.
+  // section 4 이후 (오해 포인트/재물운/연애운/...) 는 기존 마크다운 스타일 유지.
+  const remainingSections = report.sections.filter((s) => s.number >= 4);
 
   return (
     <>
@@ -231,6 +246,15 @@ export default async function FaceSpoilerReportPage({
               default: "한 줄 정리",
             })}
           />
+
+          {animalRatios.length > 0 && (
+            <AnimalFeatureCard
+              title={tPreview("animalSectionTitle")}
+              animals={animalRatios}
+              oneLiner={animalSectionOneLiner}
+              body={animalSectionBody}
+            />
+          )}
 
           {remainingSections.length > 0 && (
             <FaceReportMarkdown sections={remainingSections} />
