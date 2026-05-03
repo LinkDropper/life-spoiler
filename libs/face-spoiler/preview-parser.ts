@@ -30,6 +30,41 @@ const ANIMAL_NAMES = [
 
 export type AnimalShortName = (typeof ANIMAL_NAMES)[number];
 
+interface AnimalHit {
+  name: AnimalShortName;
+  ratio: number;
+  firstIndex: number;
+}
+
+const collectAnimalHits = (body: string): AnimalHit[] => {
+  const hits: AnimalHit[] = [];
+
+  for (const name of ANIMAL_NAMES) {
+    const firstIndex = body.indexOf(name);
+    if (firstIndex === -1) continue;
+
+    const ratioRegex = new RegExp(
+      `${name}\\s*([0-9]{1,3})\\s*%|([0-9]{1,3})\\s*%\\s*${name}`,
+      "g"
+    );
+    let bestRatio = 0;
+    let m: RegExpExecArray | null;
+    while ((m = ratioRegex.exec(body)) !== null) {
+      const value = Number(m[1] ?? m[2] ?? "0");
+      if (Number.isFinite(value) && value > bestRatio) bestRatio = value;
+    }
+
+    hits.push({ name, ratio: bestRatio, firstIndex });
+  }
+
+  hits.sort((a, b) => {
+    if (b.ratio !== a.ratio) return b.ratio - a.ratio;
+    return a.firstIndex - b.firstIndex;
+  });
+
+  return hits;
+};
+
 /**
  * 동물상 섹션(번호 3) 본문에서 대표 동물상 이름을 추출한다.
  * - 본문 안의 "비율%" 패턴을 우선 탐지해 가장 높은 비율의 동물상을 선택.
@@ -40,36 +75,192 @@ export const extractAnimalShortName = (
   section3Body: string
 ): AnimalShortName | null => {
   if (!section3Body) return null;
+  const hits = collectAnimalHits(section3Body);
+  return hits.length > 0 ? hits[0].name : null;
+};
 
-  type Hit = { name: AnimalShortName; ratio: number; firstIndex: number };
-  const hits: Hit[] = [];
+export interface AnimalRatio {
+  name: AnimalShortName;
+  /** 0~100 정수. 비율 표기가 없으면 0. */
+  ratio: number;
+}
 
-  for (const name of ANIMAL_NAMES) {
-    const firstIndex = section3Body.indexOf(name);
-    if (firstIndex === -1) continue;
+/**
+ * 동물상 섹션 본문에서 첫 줄/단락이 비율 메타("**여우상 65% + 곰상 35%**" 같은
+ * 라벨성 라인)면 제거한다. 카드 상단 배지(oneLiner) 와 중복되는 것을 막는다.
+ *
+ * 판단 기준: 첫 단락에 동물상 이름이 등장하고, 텍스트의 절반 이상이 비율/이름/
+ * 마크다운 강조/구분자로만 이뤄져 있으면 메타로 본다.
+ */
+export const stripAnimalRatioPrefix = (section3Body: string): string => {
+  if (!section3Body) return "";
+  const paragraphs = section3Body.split(/\n{2,}/);
+  if (paragraphs.length === 0) return section3Body;
 
-    const ratioRegex = new RegExp(
-      `${name}\\s*([0-9]{1,3})\\s*%|([0-9]{1,3})\\s*%\\s*${name}`,
-      "g"
-    );
-    let bestRatio = 0;
-    let m: RegExpExecArray | null;
-    while ((m = ratioRegex.exec(section3Body)) !== null) {
-      const value = Number(m[1] ?? m[2] ?? "0");
-      if (Number.isFinite(value) && value > bestRatio) bestRatio = value;
+  const first = paragraphs[0].trim();
+  const compact = first.replace(/\s+/g, "");
+  const hasAnimal = ANIMAL_NAMES.some((name) => first.includes(name));
+  const hasRatio = /[0-9]{1,3}\s*%/.test(first);
+  // 이 줄이 본문 설명이 아닌 메타 라벨인지 — 글자 수가 짧고 비율 토큰이 들어 있을 때.
+  const isLikelyMeta =
+    hasAnimal && hasRatio && compact.length <= 40 && !/[.!?]/.test(first);
+
+  if (!isLikelyMeta) return section3Body;
+  return paragraphs.slice(1).join("\n\n").trim();
+};
+
+export interface AnimalSectionParsed {
+  /** 본문(prose) — 비율 메타 + 한 줄 정리 subsection 제거 후. */
+  description: string;
+  /** "한 줄 정리" 등의 한 줄 평. 알림 카드로 별도 노출. */
+  summary: string | null;
+}
+
+const ANIMAL_SUMMARY_HEADING_REGEX =
+  /^#{1,6}\s*\**\s*(?:최종\s*)?(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한\s*줄\s*정리|한마디로|기억에\s*남는\s*한\s*줄|마지막\s*한\s*마디)\s*\**\s*$/u;
+
+/**
+ * 다른 소제목(heading) 으로 보이는 라인 — summary block 종료 판정용.
+ *
+ * markdown 표준은 `# ` 뒤에 공백을 요구하지만, LLM 이 \`###제목\` 처럼 공백 없이
+ * 출력하는 경우도 종료 시그널로 인정해야 한다(그러지 않으면 summary block 이
+ * 영속되어 본문이 통째로 잘려 데이터 손실로 이어짐).
+ * (?!#) 로 7+ 연속 해시(코드/구분자)는 제외.
+ */
+const HEADING_LINE_REGEX = /^#{1,6}(?!#)/;
+
+/**
+ * "**한 줄 평:** ...", "**최종 한 줄 평:** ..." 같은 인라인 한 줄 평 라인.
+ * 라벨 + 콜론 + 본문 형태가 한 줄 안에 들어 있는 경우만 매칭.
+ */
+const ONE_LINER_INLINE_LINE_REGEX =
+  /^\s*\**\s*(?:최종\s*)?(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한\s*줄\s*정리|한마디로|기억에\s*남는\s*한\s*줄|마지막\s*한\s*마디)\s*\**\s*[:：]\s*\**\s*\S.*$/u;
+
+/**
+ * body 에서 한 줄 평 / 한 줄 정리 / 최종 한 줄 평 등의 subsection 과 인라인
+ * 한 줄 평 라인을 모두 제거한다.
+ *
+ * - 헤딩(`### 한 줄 정리`, `### 최종 한 줄 평` 등) + 그 아래 본문(다음 헤딩까지)
+ *   을 통째로 버린다.
+ * - "**한 줄 평:** ..." 같은 인라인 한 줄도 라인 단위로 버린다.
+ * - 동물상 섹션의 비율 prefix 처리는 별도 (stripAnimalRatioPrefix).
+ *
+ * 새 프롬프트는 이런 subsection 을 만들지 않도록 지시하지만, legacy 리포트나
+ * LLM 비순응 케이스를 위해 UI 측에서도 방어적으로 잘라낸다.
+ */
+export const stripOneLinerSubsections = (body: string): string => {
+  if (!body) return "";
+
+  const lines = body.split(/\n/);
+  const kept: string[] = [];
+  let inSummaryBlock = false;
+
+  for (const raw of lines) {
+    const trimmed = raw.trim();
+
+    if (ANIMAL_SUMMARY_HEADING_REGEX.test(trimmed)) {
+      inSummaryBlock = true;
+      continue;
     }
 
-    hits.push({ name, ratio: bestRatio, firstIndex });
+    // summary block 진행 중인데 새로운 헤딩(다른 소제목)을 만나면 종료
+    if (inSummaryBlock && HEADING_LINE_REGEX.test(raw)) {
+      inSummaryBlock = false;
+      kept.push(raw);
+      continue;
+    }
+
+    if (inSummaryBlock) continue;
+
+    // 단독 인라인 한 줄 평 라인 — 라인 통째 제거
+    if (ONE_LINER_INLINE_LINE_REGEX.test(trimmed)) continue;
+
+    kept.push(raw);
   }
 
-  if (hits.length === 0) return null;
+  return kept
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+};
 
-  hits.sort((a, b) => {
-    if (b.ratio !== a.ratio) return b.ratio - a.ratio;
-    return a.firstIndex - b.firstIndex;
-  });
+/**
+ * 동물상 섹션 본문을 description(평문) + summary(한 줄 알림) 으로 분리한다.
+ *
+ * - body 안에 `### 한 줄 정리` 류 헤딩이 있으면 그 아래 본문을 summary 로 빼낸다.
+ * - 빼낸 summary 는 불릿/줄바꿈을 평탄화해 평문 한 문장으로 정규화한다.
+ * - 비율 메타 prefix(stripAnimalRatioPrefix) 도 description 에서 제거한다.
+ * - summary 가 헤딩 형태로 없으면 인라인 `**한 줄 평:** ...` 패턴도 시도.
+ */
+export const parseAnimalSection = (
+  section3Body: string
+): AnimalSectionParsed => {
+  if (!section3Body) return { description: "", summary: null };
 
-  return hits[0].name;
+  const stripped = stripAnimalRatioPrefix(section3Body);
+  const lines = stripped.split(/\n/);
+
+  // 헤딩 기반 추출
+  const keptLines: string[] = [];
+  const summaryLines: string[] = [];
+  let inSummaryBlock = false;
+  let foundSummaryHeading = false;
+
+  for (const raw of lines) {
+    if (ANIMAL_SUMMARY_HEADING_REGEX.test(raw.trim())) {
+      foundSummaryHeading = true;
+      inSummaryBlock = true;
+      continue;
+    }
+    // 새 헤딩을 만나면 summary block 종료 (공백 없는 \`###제목\` 도 인정)
+    if (inSummaryBlock && HEADING_LINE_REGEX.test(raw)) {
+      inSummaryBlock = false;
+      keptLines.push(raw);
+      continue;
+    }
+    if (inSummaryBlock) {
+      summaryLines.push(raw);
+    } else {
+      keptLines.push(raw);
+    }
+  }
+
+  const description = keptLines
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  let summary: string | null = null;
+  if (foundSummaryHeading) {
+    summary = flattenToPlainSentence(summaryLines.join("\n")) || null;
+  } else {
+    // 인라인 패턴 fallback
+    summary = extractOneLinerSummary(stripped);
+  }
+
+  return { description, summary };
+};
+
+/**
+ * 동물상 섹션 본문에서 최대 2개 동물상과 비율을 추출한다.
+ * - 비율이 명시된 hit 우선, 그 다음 등장 순.
+ * - 단일 동물상(100%)인 경우엔 1개만 반환.
+ * - 두 개의 비율 합이 100이 안되면 부족분은 0으로 둔다 (UI 측에서 처리).
+ */
+export const parseAnimalRatios = (section3Body: string): AnimalRatio[] => {
+  if (!section3Body) return [];
+  const hits = collectAnimalHits(section3Body);
+  if (hits.length === 0) return [];
+
+  const top = hits.slice(0, 2).map((h) => ({ name: h.name, ratio: h.ratio }));
+
+  // 둘 다 비율이 있으면 그대로 반환.
+  // 단일 동물상이면 100%로 보정 (비율 표기가 없는 경우).
+  if (top.length === 1 && top[0].ratio === 0) {
+    return [{ name: top[0].name, ratio: 100 }];
+  }
+
+  return top;
 };
 
 const stripBold = (text: string): string =>
