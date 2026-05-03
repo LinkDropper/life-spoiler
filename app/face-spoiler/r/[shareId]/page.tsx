@@ -181,6 +181,22 @@ export default async function FaceSpoilerReportPage({
   const characterImageUrl = buildCharacterImageUrl(record.character_image_path);
 
   const tPreview = await getTranslations("faceSpoiler.preview");
+  const tLocked = await getTranslations("faceSpoiler.preview.lockedSections");
+
+  /**
+   * section number → 잠금 섹션 i18n 키.
+   * 결과 페이지에서도 마케팅 teaser(미리보기 페이지) 와 동일한 라벨을 노출해
+   * legacy 리포트(LLM이 옛 프롬프트로 생성한 "직업운"/"종합 점수")가 새 라벨로
+   * 정정되도록 한다.
+   */
+  const SECTION_NUMBER_TO_LOCKED_KEY: Readonly<Record<number, string>> = {
+    4: "firstImpression",
+    5: "wealth",
+    6: "love",
+    7: "career",
+    8: "anger",
+    9: "overallEvaluation",
+  };
 
   const finalCharacterTitle = report.finalCharacterTitle.trim();
   const section1 = findSectionByNumber(report.sections, 1);
@@ -213,8 +229,15 @@ export default async function FaceSpoilerReportPage({
     : "";
 
   // section 1·2·3 는 전용 카드로 렌더하므로 마크다운 영역에선 제외.
-  // section 4 이후 (오해 포인트/재물운/연애운/...) 는 기존 마크다운 스타일 유지.
-  const remainingSections = report.sections.filter((s) => s.number >= 4);
+  // section 4 이후 (오해 포인트/재물운/연애운/...) 는 마크다운 카드로 렌더.
+  // 카드 헤더 title 은 LLM 출력 그대로 쓰지 않고 i18n 라벨로 override —
+  // legacy 리포트의 옛 라벨("직업운"/"종합 점수") 도 새 라벨로 정정된다.
+  const remainingSections = report.sections
+    .filter((s) => s.number >= 4)
+    .map((s) => {
+      const lockedKey = SECTION_NUMBER_TO_LOCKED_KEY[s.number];
+      return lockedKey ? { ...s, title: tLocked(lockedKey) } : s;
+    });
 
   return (
     <>
