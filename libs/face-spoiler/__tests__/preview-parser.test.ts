@@ -1,7 +1,11 @@
 import {
   extractAnimalShortName,
+  parseAnimalRatios,
+  parseAnimalSection,
   parseFirstImpression,
   parseParts,
+  stripAnimalRatioPrefix,
+  stripOneLinerSubsections,
 } from "../preview-parser";
 
 describe("extractAnimalShortName", () => {
@@ -26,6 +30,189 @@ describe("extractAnimalShortName", () => {
   it("숫자가 % 앞에 붙은 형태도 인식한다", () => {
     const body = "30% 너구리상과 70% 강아지상의 조합입니다.";
     expect(extractAnimalShortName(body)).toBe("강아지상");
+  });
+});
+
+describe("parseAnimalRatios", () => {
+  it("두 동물상 + 비율을 비율 내림차순으로 반환한다", () => {
+    const body = "**여우상 65% + 곰상 35%** 묵직한데 은근 계산 빠른 상.";
+    expect(parseAnimalRatios(body)).toEqual([
+      { name: "여우상", ratio: 65 },
+      { name: "곰상", ratio: 35 },
+    ]);
+  });
+
+  it("단일 동물상이면 100% 로 보정해 1개 반환한다", () => {
+    const body = "이 얼굴은 또렷한 여우상입니다. 다른 인상은 거의 없습니다.";
+    expect(parseAnimalRatios(body)).toEqual([{ name: "여우상", ratio: 100 }]);
+  });
+
+  it("비율이 한쪽만 있으면 비율 있는 쪽이 먼저 정렬된다", () => {
+    const body =
+      "주로 강아지상 80% 인상이 강하고, 약간의 사슴상 느낌도 같이 있습니다.";
+    expect(parseAnimalRatios(body)).toEqual([
+      { name: "강아지상", ratio: 80 },
+      { name: "사슴상", ratio: 0 },
+    ]);
+  });
+
+  it("매칭되는 동물상이 없으면 빈 배열", () => {
+    expect(parseAnimalRatios("동물상이 정의되지 않았습니다.")).toEqual([]);
+  });
+});
+
+describe("stripAnimalRatioPrefix", () => {
+  it("**여우상 65% + 곰상 35%** 같은 메타 라벨 첫 단락은 제거한다", () => {
+    const body = `**여우상 65% + 곰상 35%**
+
+전체적인 얼굴의 안정감이 곰상의 분위기를 자아냅니다.`;
+    expect(stripAnimalRatioPrefix(body)).toBe(
+      "전체적인 얼굴의 안정감이 곰상의 분위기를 자아냅니다."
+    );
+  });
+
+  it("동물상 이름이 들어간 일반 본문 단락은 보존한다", () => {
+    const body = `사진을 보면 여우상의 인상이 60% 정도로 가장 두드러집니다. 동시에 곰상의 안정감이 곁들여져 있습니다.
+
+추가 단락.`;
+    expect(stripAnimalRatioPrefix(body)).toBe(body);
+  });
+
+  it("비율 메타가 없으면 본문 그대로 반환한다", () => {
+    const body = "여우상의 매력이 두드러진 인상입니다.";
+    expect(stripAnimalRatioPrefix(body)).toBe(body);
+  });
+});
+
+describe("parseAnimalSection", () => {
+  it("'### 한 줄 정리' 블록을 summary 로 분리하고 description 에서 제거한다", () => {
+    const body = `**여우상 65% + 곰상 35%**
+
+### 선택 동물상
+- **여우상 65%**: 맑고 단정한 인상.
+- **곰상 35%**: 안정감.
+
+### 한 줄 정리
+- 사슴의 순함에 고양이의 거리감 한 꼬집 얹은 캐릭터입니다.`;
+
+    const parsed = parseAnimalSection(body);
+    expect(parsed.summary).toBe(
+      "사슴의 순함에 고양이의 거리감 한 꼬집 얹은 캐릭터입니다."
+    );
+    // 본문 부분은 보존 (선택 동물상 헤딩 + 불릿)
+    expect(parsed.description).toContain("선택 동물상");
+    expect(parsed.description).toContain("**여우상 65%**");
+    // 비율 메타 prefix 와 한 줄 정리 헤딩은 제거
+    expect(parsed.description).not.toContain("한 줄 정리");
+    expect(parsed.description.startsWith("**여우상 65% + 곰상 35%**")).toBe(
+      false
+    );
+  });
+
+  it("불릿 없는 한 줄 정리도 평문으로 추출한다", () => {
+    const body = `### 본문
+설명입니다.
+
+### 한 줄 정리
+요약 문장.`;
+    const parsed = parseAnimalSection(body);
+    expect(parsed.summary).toBe("요약 문장.");
+  });
+
+  it("인라인 **한 줄 평:** 패턴도 summary 로 추출한다", () => {
+    const body = `여우상 인상이 강합니다.
+
+**한 줄 평:** 깔끔한 인상에 은은한 미스터리.`;
+    const parsed = parseAnimalSection(body);
+    expect(parsed.summary).toBe("깔끔한 인상에 은은한 미스터리.");
+  });
+
+  it("한 줄 정리 블록이 없으면 summary 는 null 이다", () => {
+    const body = "여우상이 분명히 보입니다.";
+    const parsed = parseAnimalSection(body);
+    expect(parsed.summary).toBeNull();
+    expect(parsed.description).toBe("여우상이 분명히 보입니다.");
+  });
+});
+
+describe("stripOneLinerSubsections", () => {
+  it("'### 한 줄 정리' 블록과 그 본문(불릿 포함)을 제거한다", () => {
+    const body = `### 본문
+설명입니다.
+
+### 한 줄 정리
+- 한 줄 평 텍스트입니다.`;
+    expect(stripOneLinerSubsections(body)).toBe(`### 본문
+설명입니다.`);
+  });
+
+  it("'### 최종 한 줄 평' 블록도 제거한다", () => {
+    const body = `### 종합 점수
+87점.
+
+### 최종 한 줄 평
+보일 듯 말 듯한 신뢰감.`;
+    expect(stripOneLinerSubsections(body)).toBe(`### 종합 점수
+87점.`);
+  });
+
+  it("'**한 줄 평:** ...' 인라인 라인을 제거한다", () => {
+    const body = `본문 단락.
+
+**한 줄 평:** 깔끔한 인상.
+
+이어지는 단락.`;
+    expect(stripOneLinerSubsections(body)).toBe(`본문 단락.
+
+이어지는 단락.`);
+  });
+
+  it("'**최종 한 줄 평:** ...' 인라인 라인도 제거한다", () => {
+    const body = `종합 점수 87점.
+
+**최종 한 줄 평:** 보일 듯 말 듯한 신뢰감.`;
+    expect(stripOneLinerSubsections(body)).toBe("종합 점수 87점.");
+  });
+
+  it("'한 줄 평' 헤딩 다음에 또 다른 헤딩이 오면 그 이후는 보존한다", () => {
+    const body = `### 한 줄 정리
+요약 문장.
+
+### 다음 섹션
+이어지는 본문.`;
+    expect(stripOneLinerSubsections(body)).toBe(`### 다음 섹션
+이어지는 본문.`);
+  });
+
+  it("일반 본문 안에 한 줄 평이 단어로만 등장하면 보존한다", () => {
+    const body = "한 줄 평을 언급하는 평범한 문장입니다.";
+    expect(stripOneLinerSubsections(body)).toBe(body);
+  });
+
+  it("한 줄 평 관련 헤딩이 전혀 없으면 본문이 그대로 반환된다", () => {
+    const body = `### 본문
+설명입니다.
+
+추가 설명.`;
+    expect(stripOneLinerSubsections(body)).toBe(body);
+  });
+
+  it("빈 본문은 빈 문자열을 반환한다", () => {
+    expect(stripOneLinerSubsections("")).toBe("");
+  });
+
+  it("공백 없는 '###제목' 도 다음 헤딩으로 인식해 summary block 을 종료한다", () => {
+    // LLM 이 마크다운 공백을 빠뜨리고 \`###제목\` 으로 출력해도 다음 본문이
+    // 통째로 삭제되지 않아야 한다 (regression: legacy data 손실 방지)
+    const body = `### 한 줄 정리
+요약 문장.
+
+###다음섹션
+이어지는 본문.`;
+    const result = stripOneLinerSubsections(body);
+    expect(result).toContain("###다음섹션");
+    expect(result).toContain("이어지는 본문.");
+    expect(result).not.toContain("요약 문장.");
   });
 });
 

@@ -1,215 +1,243 @@
 /* ============================================================
-   섹션 카드 레이아웃
+   공통 섹션 카드 (첫인상 오해 포인트 ~ 종합 점수) — Figma 743-122.
+   collapsible 헤더 + 한 줄 정리 alert (gold) + 마크다운 본문 (mint h + 70% prose).
    ============================================================ */
 
 .sections {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: 100%;
 }
 
 .section {
-  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 28px 24px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 3px solid #3fd9ad;
-}
-
-.sectionHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: var(--gap-16);
+  width: 100%;
 }
 
 /* ============================================================
-   섹션 한 줄 평 (pull-quote)
-   각 카드의 시각적 anchor — 본문에 들어가기 전 핵심을 한 호흡에 전달.
+   Header — Frame 2641 (343x36, padding 0 0 12, border-bottom 1px)
    ============================================================ */
 
-.oneLiner {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  line-height: 1.55;
-  color: #3fd9ad;
-  font-style: normal;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-10);
+  width: 100%;
+  padding: 0 0 var(--gap-12);
+  border: 0;
+  border-bottom: var(--stroke-1) solid var(--color-border-default);
+  background: transparent;
+  color: var(--color-text-default);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  border-radius: 0;
+}
+
+.header:focus-visible {
+  outline: 2px solid var(--face-mint);
+  outline-offset: 4px;
+}
+
+.title {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.193;
+  letter-spacing: 0.05em;
+  color: var(--color-text-default);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-text-default);
+  transition: transform 200ms ease;
+}
+
+.chevronUp {
+  transform: rotate(0deg);
+}
+
+.chevronDown {
+  transform: rotate(180deg);
+}
+
+/* ============================================================
+   Body — Frame 2672 (column, gap 24).
+   alert + markdown 사이 24px, 마크다운 sub-section 사이도 24px.
+   ============================================================ */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-24);
+  width: 100%;
+}
+
+/* ============================================================
+   한 줄 정리 alert — Frame 2523
+   bg rgba(255,255,255,0.08), radius 8, padding 16, gold text Bold/18px
+   ============================================================ */
+
+.alert {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding: var(--gap-16);
+  background: var(--color-surface-primary-0);
+  border-radius: var(--radius-8);
+  box-sizing: border-box;
+}
+
+.alertText {
   margin: 0;
-  padding: 14px 16px 14px 18px;
-  background: rgba(63, 217, 173, 0.06);
-  border-left: 3px solid #3fd9ad;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.4;
+  color: var(--face-gold);
   word-break: keep-all;
-  overflow-wrap: anywhere;
 }
 
-.oneLiner::before {
-  content: "“";
-  margin-right: 4px;
-  opacity: 0.65;
-  font-size: 1.125em;
-  line-height: 0.8;
-}
+/* ============================================================
+   마크다운 본문 — Regular/18px, lineHeight 1.4, white-70%.
+   sub-heading: mint Bold/18px (Frame 2671 의 "오해받기 쉬운 지점").
+   heading 마진으로 sub-section 사이 24, heading→body 사이 16 을 만든다.
+   ============================================================ */
 
-.oneLiner::after {
-  content: "”";
-  margin-left: 4px;
-  opacity: 0.65;
-  font-size: 1.125em;
-  line-height: 0.8;
-}
-
-.sectionNumber {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #3fd9ad;
-  letter-spacing: 0.18em;
-}
-
-.sectionTitle {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1.375rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-  line-height: 1.35;
-  margin: 0;
-}
-
-.sectionBody {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-size: 1rem;
-  line-height: 1.75;
-  color: var(--text-primary);
+.markdown {
+  width: 100%;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.4;
+  color: var(--color-text-secondary);
   word-break: keep-all;
-  overflow-wrap: anywhere;
 }
 
-.sectionBody :global(p) {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: var(--text-secondary);
-  margin: 0 0 18px;
+.markdown :global(p) {
+  margin: 0 0 14px;
   white-space: pre-wrap;
 }
 
-.sectionBody :global(p:last-child) {
+.markdown :global(p:last-child) {
   margin-bottom: 0;
 }
 
-/* Lead 단락 — 섹션 본문의 첫 문단을 한 단계 강조해 진입 anchor 제공 */
-.sectionBody > :global(p:first-child) {
-  font-size: 1.0625rem;
-  color: var(--text-primary);
-  font-weight: 500;
+.markdown :global(strong) {
+  color: var(--color-text-default);
+  font-weight: var(--font-weight-bold);
 }
 
-.sectionBody :global(strong) {
-  color: var(--text-primary);
-  font-weight: 700;
-}
-
-.sectionBody :global(em) {
-  color: var(--text-primary);
+.markdown :global(em) {
+  color: var(--color-text-default);
   font-style: italic;
 }
 
-/* body 안의 소제목 — 카드 메인 타이틀과 시각적 충돌 방지를 위해 톤 다운 */
-.sectionBody :global(h1),
-.sectionBody :global(h2),
-.sectionBody :global(h3),
-.sectionBody :global(h4) {
-  font-family: "Pretendard Variable", Pretendard, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+/* sub-heading — mint Bold/18px. heading 위 24, heading→본문 16 gap. */
+.markdown :global(h1),
+.markdown :global(h2),
+.markdown :global(h3),
+.markdown :global(h4),
+.markdown :global(h5),
+.markdown :global(h6) {
+  margin: var(--gap-24) 0 var(--gap-16);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-bold);
   line-height: 1.4;
-  margin: 18px 0 8px;
+  color: var(--face-mint);
 }
 
-.sectionBody :global(h1),
-.sectionBody :global(h2) {
-  font-size: 1.0625rem;
-  color: #3fd9ad;
+.markdown :global(h1:first-child),
+.markdown :global(h2:first-child),
+.markdown :global(h3:first-child),
+.markdown :global(h4:first-child),
+.markdown :global(h5:first-child),
+.markdown :global(h6:first-child) {
+  margin-top: 0;
 }
 
-.sectionBody :global(h3),
-.sectionBody :global(h4) {
-  font-size: 1rem;
-  color: var(--text-primary);
+/* heading 직후 본문은 14px 마진을 0 으로 (heading 의 margin-bottom 16 만 적용). */
+.markdown :global(h1 + p),
+.markdown :global(h2 + p),
+.markdown :global(h3 + p),
+.markdown :global(h4 + p) {
+  margin-top: 0;
 }
 
-.sectionBody :global(ul),
-.sectionBody :global(ol) {
-  margin: 0 0 18px;
+.markdown :global(ul),
+.markdown :global(ol) {
+  margin: 0 0 14px;
   padding-left: 1.4em;
-  color: var(--text-secondary);
 }
 
-.sectionBody :global(li) {
-  margin: 8px 0;
-  line-height: 1.7;
+.markdown :global(li) {
+  margin: 6px 0;
   padding-left: 4px;
+  line-height: 1.55;
 }
 
-.sectionBody :global(li::marker) {
-  color: #3fd9ad;
-  font-weight: 700;
+.markdown :global(li::marker) {
+  color: var(--face-mint);
+  font-weight: var(--font-weight-bold);
 }
 
-.sectionBody :global(li > p) {
+.markdown :global(li > p) {
   margin: 0 0 6px;
 }
 
-.sectionBody :global(blockquote) {
-  margin: 18px 0;
+.markdown :global(blockquote) {
+  margin: 14px 0;
   padding: 14px 18px;
-  background: rgba(63, 217, 173, 0.04);
-  border-left: 3px solid #3fd9ad;
-  color: var(--text-primary);
-  font-weight: 500;
+  background: rgba(63, 217, 173, 0.06);
+  border-left: 3px solid var(--face-mint);
+  color: var(--color-text-default);
+  font-weight: var(--font-weight-medium);
   font-style: normal;
 }
 
-.sectionBody :global(hr) {
+.markdown :global(hr) {
   border: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  margin: 22px 0;
+  border-top: var(--stroke-1) solid var(--color-border-default);
+  margin: var(--gap-24) 0;
 }
 
-.sectionBody :global(code) {
+.markdown :global(code) {
   font-family:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   font-size: 0.9em;
   padding: 0.1em 0.35em;
   background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
+  color: var(--color-text-default);
   border-radius: 3px;
 }
 
-.sectionBody :global(pre) {
+.markdown :global(pre) {
   margin: 14px 0;
   padding: 14px 16px;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: var(--stroke-1) solid var(--color-border-default);
   overflow-x: auto;
 }
 
-.sectionBody :global(pre code) {
+.markdown :global(pre code) {
   padding: 0;
   background: transparent;
 }
 
-.sectionBody :global(a) {
-  color: #3fd9ad;
+.markdown :global(a) {
+  color: var(--face-mint);
   text-decoration: underline;
 }
 
-.sectionBody :global(table) {
+/* 직업운 표 — section 7. */
+.markdown :global(table) {
   display: block;
   width: 100%;
   margin: 14px 0;
@@ -218,69 +246,52 @@
   font-size: 0.9375rem;
 }
 
-.sectionBody :global(thead) {
+.markdown :global(thead) {
   background: rgba(63, 217, 173, 0.08);
 }
 
-.sectionBody :global(th),
-.sectionBody :global(td) {
+.markdown :global(th),
+.markdown :global(td) {
   padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: var(--stroke-1) solid var(--color-border-default);
   text-align: left;
   vertical-align: top;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 }
 
-.sectionBody :global(th) {
-  color: var(--text-primary);
-  font-weight: 700;
+.markdown :global(th) {
+  color: var(--color-text-default);
+  font-weight: var(--font-weight-bold);
 }
 
-.sectionBody :global(tbody tr:nth-child(even)) {
+.markdown :global(tbody tr:nth-child(even)) {
   background: rgba(255, 255, 255, 0.02);
 }
 
-@media (max-width: 640px) {
-  .sections {
-    gap: 20px;
+@media (max-width: 360px) {
+  .alertText {
+    font-size: var(--font-size-16);
   }
 
-  .section {
-    padding: 24px 20px;
+  .markdown {
+    font-size: var(--font-size-16);
   }
 
-  .sectionTitle {
-    font-size: 1.1875rem;
+  .markdown :global(h1),
+  .markdown :global(h2),
+  .markdown :global(h3),
+  .markdown :global(h4),
+  .markdown :global(h5),
+  .markdown :global(h6) {
+    font-size: var(--font-size-16);
   }
 
-  .sectionNumber {
-    font-size: 0.6875rem;
-  }
-
-  .oneLiner {
-    font-size: 1rem;
-    padding: 12px 14px 12px 16px;
-  }
-
-  .sectionBody {
-    font-size: 0.9375rem;
-  }
-
-  .sectionBody > :global(p:first-child) {
-    font-size: 1rem;
-  }
-
-  .sectionBody :global(p),
-  .sectionBody :global(li) {
-    font-size: 0.9375rem;
-  }
-
-  .sectionBody :global(table) {
+  .markdown :global(table) {
     font-size: 0.875rem;
   }
 
-  .sectionBody :global(th),
-  .sectionBody :global(td) {
+  .markdown :global(th),
+  .markdown :global(td) {
     padding: 8px 10px;
   }
 }

@@ -1,0 +1,259 @@
+/* ============================================================
+   나의 동물상 특징 카드 — Figma 683-3273.
+   collapsible 헤더 + 280x280 pie chart + 한 줄 배지 + 본문.
+   ============================================================ */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-16);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-10);
+  width: 100%;
+  padding: 0 0 var(--gap-12);
+  border: 0;
+  border-bottom: var(--stroke-1) solid var(--color-border-default);
+  background: transparent;
+  color: var(--color-text-default);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  border-radius: 0;
+}
+
+.header:focus-visible {
+  outline: 2px solid var(--face-mint);
+  outline-offset: 4px;
+}
+
+.title {
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.193;
+  letter-spacing: 0.05em;
+  color: var(--color-text-default);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-text-default);
+  transition: transform 200ms ease;
+}
+
+.chevronUp {
+  transform: rotate(0deg);
+}
+
+.chevronDown {
+  transform: rotate(180deg);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-16);
+  width: 100%;
+}
+
+/* ============================================================
+   pie chart + 배지 묶음 (Frame 2665).
+   alignItems center, gap 8.
+   ============================================================ */
+
+.chartFrame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--gap-16);
+}
+
+/*
+ * Figma 280x280 기준 — 컨테이너 폭 안에서 최대 280px 까지 확장.
+ * aspect-ratio 1 로 비율 유지. 좁은 화면 에서도 자동으로 축소된다.
+ */
+.chart {
+  position: relative;
+  width: min(280px, 100%);
+  aspect-ratio: 1 / 1;
+  /* 자식 mark 의 sizing 기준이 chart 너비가 되도록 inline-size 컨테이너 지정 */
+  container-type: inline-size;
+}
+
+.chartSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  shape-rendering: geometricPrecision;
+}
+
+/* sector centroid 기준점에 icon+label 그룹 배치 — translate 로 중앙 정렬. */
+.mark {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.markIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 280px 차트 기준 34px 아이콘 = 12.14% */
+  width: 12.14cqw;
+  aspect-ratio: 34 / 32;
+}
+
+.markIcon :global(img) {
+  width: 100%;
+  height: auto;
+}
+
+.markLabel {
+  font-family: var(--font-pretendard);
+  /* 280px 차트 기준 16px = 5.71% */
+  font-size: clamp(13px, 5.71cqw, 16px);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  color: var(--color-text-default);
+  text-align: center;
+}
+
+/* ============================================================
+   한 줄 배지 (oneLiner) — Frame 2520
+   padding 2px 6px, bg rgba(255,255,255,0.08), radius 4
+   ============================================================ */
+
+.badgeRow {
+  display: flex;
+  /* Figma Frame 2666 — pill 은 (0,0) 위치. 좌측·상단 정렬로 chart 와의 gap 이
+   * .chartFrame 의 8px 만큼 정확히 떨어지도록 한다. (center 정렬 시 row 의
+   * min-height 와 pill 실제 높이 차로 시각 gap 이 1~2px 늘어남) */
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: var(--color-surface-primary-0);
+  border-radius: var(--radius-4);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  color: var(--color-text-default);
+  text-align: center;
+  word-break: keep-all;
+  max-width: 100%;
+}
+
+/* ============================================================
+   본문 — Pretendard 18px / 1.6 / rgba(255,255,255,0.7)
+   LLM 마크다운(헤딩/불릿/강조)이 들어와도 톤다운된 prose 로 일관 렌더.
+   ============================================================ */
+
+.description {
+  width: 100%;
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+  word-break: keep-all;
+}
+
+.description :global(p) {
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+}
+
+.description :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.description :global(strong) {
+  color: var(--color-text-default);
+  font-weight: var(--font-weight-bold);
+}
+
+.description :global(em) {
+  font-style: italic;
+  color: var(--color-text-default);
+}
+
+/* 마크다운 sub-heading — 다른 섹션(FaceReportMarkdown)과 시각 언어 통일.
+ * mint Bold/18px, sub-section 사이 24px / heading→body 16px 의 마진.
+ */
+.description :global(h1),
+.description :global(h2),
+.description :global(h3),
+.description :global(h4),
+.description :global(h5),
+.description :global(h6) {
+  margin: var(--gap-24) 0 var(--gap-16);
+  font-family: var(--font-pretendard);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.4;
+  color: var(--face-mint);
+}
+
+.description :global(h1:first-child),
+.description :global(h2:first-child),
+.description :global(h3:first-child),
+.description :global(h4:first-child),
+.description :global(h5:first-child),
+.description :global(h6:first-child) {
+  margin-top: 0;
+}
+
+.description :global(h1 + p),
+.description :global(h2 + p),
+.description :global(h3 + p),
+.description :global(h4 + p) {
+  margin-top: 0;
+}
+
+.description :global(ul),
+.description :global(ol) {
+  margin: 0 0 14px;
+  padding-left: 1.4em;
+}
+
+.description :global(li) {
+  margin: 6px 0;
+  padding-left: 4px;
+  line-height: 1.55;
+}
+
+.description :global(li::marker) {
+  color: var(--face-mint);
+  font-weight: var(--font-weight-bold);
+}
+
+@media (max-width: 360px) {
+  .markLabel {
+    font-size: var(--font-size-14);
+  }
+
+  .description {
+    font-size: var(--font-size-16);
+  }
+}

@@ -1038,6 +1038,7 @@
         "summaryLabel": "한마디로",
         "partsTitle": "부위별 관상",
         "partsSummaryLabel": "한 줄 정리",
+        "animalSectionTitle": "나의 동물상 특징",
         "teaserHeadline": "지금 보신 건 예고편이에요"
       },
       "payment": {
@@ -2231,6 +2232,7 @@
         "summaryLabel": "In a word",
         "partsTitle": "Feature-by-feature reading",
         "partsSummaryLabel": "One-line summary",
+        "animalSectionTitle": "My animal traits",
         "teaserHeadline": "What you've seen is just the trailer"
       },
       "payment": {
@@ -3424,6 +3426,7 @@
         "summaryLabel": "ひとことで",
         "partsTitle": "部位別観相",
         "partsSummaryLabel": "ひとことまとめ",
+        "animalSectionTitle": "私の動物相タイプ",
         "teaserHeadline": "ご覧いただいたのは予告編です"
       },
       "payment": {
