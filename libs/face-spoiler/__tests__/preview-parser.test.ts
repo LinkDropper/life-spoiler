@@ -200,6 +200,20 @@ describe("stripOneLinerSubsections", () => {
   it("빈 본문은 빈 문자열을 반환한다", () => {
     expect(stripOneLinerSubsections("")).toBe("");
   });
+
+  it("공백 없는 '###제목' 도 다음 헤딩으로 인식해 summary block 을 종료한다", () => {
+    // LLM 이 마크다운 공백을 빠뜨리고 \`###제목\` 으로 출력해도 다음 본문이
+    // 통째로 삭제되지 않아야 한다 (regression: legacy data 손실 방지)
+    const body = `### 한 줄 정리
+요약 문장.
+
+###다음섹션
+이어지는 본문.`;
+    const result = stripOneLinerSubsections(body);
+    expect(result).toContain("###다음섹션");
+    expect(result).toContain("이어지는 본문.");
+    expect(result).not.toContain("요약 문장.");
+  });
 });
 
 describe("parseFirstImpression", () => {

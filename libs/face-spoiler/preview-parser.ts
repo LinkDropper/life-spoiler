@@ -120,6 +120,16 @@ const ANIMAL_SUMMARY_HEADING_REGEX =
   /^#{1,6}\s*\**\s*(?:최종\s*)?(?:한\s*줄\s*평|한\s*줄\s*요약|한\s*줄\s*해석|한\s*줄\s*정리|한마디로|기억에\s*남는\s*한\s*줄|마지막\s*한\s*마디)\s*\**\s*$/u;
 
 /**
+ * 다른 소제목(heading) 으로 보이는 라인 — summary block 종료 판정용.
+ *
+ * markdown 표준은 `# ` 뒤에 공백을 요구하지만, LLM 이 \`###제목\` 처럼 공백 없이
+ * 출력하는 경우도 종료 시그널로 인정해야 한다(그러지 않으면 summary block 이
+ * 영속되어 본문이 통째로 잘려 데이터 손실로 이어짐).
+ * (?!#) 로 7+ 연속 해시(코드/구분자)는 제외.
+ */
+const HEADING_LINE_REGEX = /^#{1,6}(?!#)/;
+
+/**
  * "**한 줄 평:** ...", "**최종 한 줄 평:** ..." 같은 인라인 한 줄 평 라인.
  * 라벨 + 콜론 + 본문 형태가 한 줄 안에 들어 있는 경우만 매칭.
  */
@@ -154,7 +164,7 @@ export const stripOneLinerSubsections = (body: string): string => {
     }
 
     // summary block 진행 중인데 새로운 헤딩(다른 소제목)을 만나면 종료
-    if (inSummaryBlock && /^#{1,6}\s+\S/.test(raw)) {
+    if (inSummaryBlock && HEADING_LINE_REGEX.test(raw)) {
       inSummaryBlock = false;
       kept.push(raw);
       continue;
@@ -202,8 +212,8 @@ export const parseAnimalSection = (
       inSummaryBlock = true;
       continue;
     }
-    // 새 헤딩을 만나면 summary block 종료
-    if (inSummaryBlock && /^#{1,6}\s+\S/.test(raw)) {
+    // 새 헤딩을 만나면 summary block 종료 (공백 없는 \`###제목\` 도 인정)
+    if (inSummaryBlock && HEADING_LINE_REGEX.test(raw)) {
       inSummaryBlock = false;
       keptLines.push(raw);
       continue;

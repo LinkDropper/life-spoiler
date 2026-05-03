@@ -45,10 +45,25 @@ const polarToCartesian = (angleDeg: number, distance: number): Point => {
   };
 };
 
-/** 12 o'clock 시작, 시계방향으로 startDeg → endDeg sector 를 그린다. */
+/**
+ * 12 o'clock 시작, 시계방향으로 startDeg → endDeg sector 를 그린다.
+ *
+ * 360° (full circle) 는 SVG arc 명령에서 시작/끝 좌표가 동일해 일부 브라우저가
+ * 렌더하지 않는다. 두 개의 180° 호(상→하→상)로 분할해 안정적으로 그린다.
+ * 예: parseAnimalRatios 가 [100%, 0%] 같은 한쪽 0% 조합을 반환했을 때 primary
+ * sector 가 360° 가 되는 케이스.
+ */
 const describeSector = (startDeg: number, endDeg: number): string => {
   const sweep = endDeg - startDeg;
   if (sweep <= 0) return "";
+  if (sweep >= 360) {
+    return [
+      `M ${CENTER} ${CENTER - RADIUS}`,
+      `A ${RADIUS} ${RADIUS} 0 1 1 ${CENTER} ${CENTER + RADIUS}`,
+      `A ${RADIUS} ${RADIUS} 0 1 1 ${CENTER} ${CENTER - RADIUS}`,
+      "Z",
+    ].join(" ");
+  }
   const start = polarToCartesian(startDeg, RADIUS);
   const end = polarToCartesian(endDeg, RADIUS);
   const largeArc = sweep > 180 ? 1 : 0;
