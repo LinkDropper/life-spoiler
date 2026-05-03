@@ -1039,6 +1039,15 @@
         "partsTitle": "부위별 관상",
         "partsSummaryLabel": "한 줄 정리",
         "animalSectionTitle": "나의 동물상 특징",
+        "lockedSections": {
+          "animalTraits": "나의 동물상 특징",
+          "firstImpression": "첫인상 오해 포인트",
+          "wealth": "재물운",
+          "love": "연애운",
+          "career": "잘 어울리는 직업",
+          "anger": "화났을 때 특징",
+          "overallEvaluation": "종합 평가"
+        },
         "teaserHeadline": "지금 보신 건 예고편이에요"
       },
       "payment": {
@@ -2233,6 +2242,15 @@
         "partsTitle": "Feature-by-feature reading",
         "partsSummaryLabel": "One-line summary",
         "animalSectionTitle": "My animal traits",
+        "lockedSections": {
+          "animalTraits": "My animal traits",
+          "firstImpression": "First-impression misreads",
+          "wealth": "Wealth fortune",
+          "love": "Love fortune",
+          "career": "Best-fit careers",
+          "anger": "When you're angry",
+          "overallEvaluation": "Overall verdict"
+        },
         "teaserHeadline": "What you've seen is just the trailer"
       },
       "payment": {
@@ -3427,6 +3445,15 @@
         "partsTitle": "部位別観相",
         "partsSummaryLabel": "ひとことまとめ",
         "animalSectionTitle": "私の動物相タイプ",
+        "lockedSections": {
+          "animalTraits": "私の動物相タイプ",
+          "firstImpression": "第一印象の誤解ポイント",
+          "wealth": "金運",
+          "love": "恋愛運",
+          "career": "向いている職業",
+          "anger": "怒った時の特徴",
+          "overallEvaluation": "総合評価"
+        },
         "teaserHeadline": "ご覧いただいたのは予告編です"
       },
       "payment": {
