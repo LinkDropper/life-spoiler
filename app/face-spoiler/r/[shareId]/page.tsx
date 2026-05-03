@@ -181,7 +181,6 @@ export default async function FaceSpoilerReportPage({
   const characterImageUrl = buildCharacterImageUrl(record.character_image_path);
 
   const tPreview = await getTranslations("faceSpoiler.preview");
-  const tLocked = await getTranslations("faceSpoiler.preview.lockedSections");
 
   /**
    * section number → 잠금 섹션 i18n 키.
@@ -236,7 +235,9 @@ export default async function FaceSpoilerReportPage({
     .filter((s) => s.number >= 4)
     .map((s) => {
       const lockedKey = SECTION_NUMBER_TO_LOCKED_KEY[s.number];
-      return lockedKey ? { ...s, title: tLocked(lockedKey) } : s;
+      return lockedKey
+        ? { ...s, title: tPreview(`lockedSections.${lockedKey}`) }
+        : s;
     });
 
   return (

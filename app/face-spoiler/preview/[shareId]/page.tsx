@@ -148,8 +148,9 @@ export default async function FaceSpoilerPreviewPage({
   }
 
   const tPreview = await getTranslations("faceSpoiler.preview");
-  const tLocked = await getTranslations("faceSpoiler.preview.lockedSections");
-  const lockedSectionLabels = LOCKED_SECTION_KEYS.map((key) => tLocked(key));
+  const lockedSectionLabels = LOCKED_SECTION_KEYS.map((key) =>
+    tPreview(`lockedSections.${key}`)
+  );
 
   const {
     sections,
