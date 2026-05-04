@@ -265,6 +265,9 @@ export default function LifetimeFortunePage() {
     },
   };
 
+  // 한 줄 정리 alert 라벨 (i18n)
+  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
+
   return (
     <div className={styles.page}>
       <HeaderClient />
@@ -350,7 +353,10 @@ export default function LifetimeFortunePage() {
                   items={interpretation.lifeSpoiler.subSections}
                 />
                 {interpretation.lifeSpoiler.oneLiner && (
-                  <OneLinerAlert text={interpretation.lifeSpoiler.oneLiner} />
+                  <OneLinerAlert
+                    text={interpretation.lifeSpoiler.oneLiner}
+                    label={oneLinerLabel}
+                  />
                 )}
               </>
             ) : (
@@ -389,6 +395,7 @@ export default function LifetimeFortunePage() {
                     {interpretation.coreScenario.oneLiner && (
                       <OneLinerAlert
                         text={interpretation.coreScenario.oneLiner}
+                        label={oneLinerLabel}
                       />
                     )}
                   </>
@@ -424,6 +431,7 @@ export default function LifetimeFortunePage() {
                   content={interpretation.categories[key].content}
                   subSections={interpretation.categories[key].subSections}
                   oneLiner={interpretation.categories[key].oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                   tags={interpretation.categories[key].tags}
                   showHashtag={false}
                 />
@@ -450,6 +458,7 @@ export default function LifetimeFortunePage() {
                   content={scenario.content}
                   bullets={scenario.bullets}
                   oneLiner={scenario.oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                 />
               ))}
             </ScenarioList>

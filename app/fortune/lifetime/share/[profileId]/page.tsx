@@ -130,6 +130,9 @@ export default function LifetimeFortuneSharePage() {
     health: interpretation.categories.health.score ?? 0,
   };
 
+  // 한 줄 정리 alert 라벨 (i18n)
+  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
+
   // 프로필 카드용 레이블
   const storyLabels: InstagramStoryCardLabels = {
     mainStar: tStory("mainStar"),
@@ -215,7 +218,10 @@ export default function LifetimeFortuneSharePage() {
                   items={interpretation.lifeSpoiler.subSections}
                 />
                 {interpretation.lifeSpoiler.oneLiner && (
-                  <OneLinerAlert text={interpretation.lifeSpoiler.oneLiner} />
+                  <OneLinerAlert
+                    text={interpretation.lifeSpoiler.oneLiner}
+                    label={oneLinerLabel}
+                  />
                 )}
               </>
             ) : (
@@ -254,6 +260,7 @@ export default function LifetimeFortuneSharePage() {
                     {interpretation.coreScenario.oneLiner && (
                       <OneLinerAlert
                         text={interpretation.coreScenario.oneLiner}
+                        label={oneLinerLabel}
                       />
                     )}
                   </>
@@ -289,6 +296,7 @@ export default function LifetimeFortuneSharePage() {
                   content={interpretation.categories[key].content}
                   subSections={interpretation.categories[key].subSections}
                   oneLiner={interpretation.categories[key].oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                   tags={interpretation.categories[key].tags}
                   showHashtag={false}
                 />
@@ -315,6 +323,7 @@ export default function LifetimeFortuneSharePage() {
                   content={scenario.content}
                   bullets={scenario.bullets}
                   oneLiner={scenario.oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                 />
               ))}
             </ScenarioList>

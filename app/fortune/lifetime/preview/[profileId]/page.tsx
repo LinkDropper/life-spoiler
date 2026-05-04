@@ -176,7 +176,10 @@ export default function LifetimeFortunePreviewPage() {
                   items={interpretation.lifeSpoiler.subSections}
                 />
                 {interpretation.lifeSpoiler.oneLiner && (
-                  <OneLinerAlert text={interpretation.lifeSpoiler.oneLiner} />
+                  <OneLinerAlert
+                    text={interpretation.lifeSpoiler.oneLiner}
+                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
+                  />
                 )}
               </>
             ) : (

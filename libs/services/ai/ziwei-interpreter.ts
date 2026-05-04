@@ -51,7 +51,12 @@ const LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
     headline: { type: "string" },
     description: { type: "string" },
     summary: { type: "string" },
-    subSections: { type: "array", items: SUB_SECTION_SCHEMA },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 3,
+      maxItems: 5,
+    },
     oneLiner: { type: "string" },
   },
   required: ["headline", "description"],
@@ -63,7 +68,12 @@ const LIFETIME_CORE_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
-    subSections: { type: "array", items: SUB_SECTION_SCHEMA },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 3,
+      maxItems: 5,
+    },
     oneLiner: { type: "string" },
   },
   required: ["headline"],
@@ -75,7 +85,12 @@ const LIFETIME_CATEGORY_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
-    subSections: { type: "array", items: SUB_SECTION_SCHEMA },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
     oneLiner: { type: "string" },
     tags: {
       type: "array",
@@ -98,7 +113,12 @@ const AGE_SCENARIOS_SCHEMA: GeminiResponseSchema = {
           period: { type: "string" },
           headline: { type: "string" },
           content: { type: "string" },
-          bullets: { type: "array", items: { type: "string" } },
+          bullets: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 2,
+            maxItems: 4,
+          },
           oneLiner: { type: "string" },
         },
         required: ["period", "headline"],
@@ -191,7 +211,9 @@ const extractOpeningLine = (
     oneLiner?.trim() ||
     legacyText?.split("\n\n")[0]?.trim() ||
     "";
-  return candidate.slice(0, maxLength);
+  // previousContext 는 "- 첫 문장: \"...\"" 형태의 불릿 안에 들어가므로
+  // 줄바꿈이 들어가면 마크다운 구조가 깨진다. 공백으로 평탄화.
+  return candidate.replace(/\s+/g, " ").slice(0, maxLength).trim();
 };
 
 // ============================================================
