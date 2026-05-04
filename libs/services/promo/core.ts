@@ -67,20 +67,30 @@ const getUserCodeUsageCount = async (
 };
 
 /**
- * 특정 프로필+운세타입에 코드가 이미 적용되었는지 확인
+ * 궁합 운세는 subjectId 가 compatibility_pairs.id 를 가리킨다.
+ */
+const isCompatibility = (fortuneType: FortuneType): boolean =>
+  fortuneType === "compatibility";
+
+/**
+ * 특정 프로필(또는 페어)+운세타입에 코드가 이미 적용되었는지 확인.
+ * - 일반 운세: profile_id 기준
+ * - 궁합 운세: pair_id 기준
  */
 const isAlreadyApplied = async (
   promoCodeId: string,
-  profileId: string,
+  subjectId: string,
   fortuneType: FortuneType
 ): Promise<boolean> => {
   const supabase = createServerClient() as SupabaseDB;
+
+  const subjectColumn = isCompatibility(fortuneType) ? "pair_id" : "profile_id";
 
   const { count, error } = await supabase
     .from("promo_code_usages")
     .select("*", { count: "exact", head: true })
     .eq("promo_code_id", promoCodeId)
-    .eq("profile_id", profileId)
+    .eq(subjectColumn, subjectId)
     .eq("fortune_type", fortuneType);
 
   if (error) {
@@ -91,7 +101,7 @@ const isAlreadyApplied = async (
 };
 
 /**
- * 프로필 소유권 확인
+ * 프로필 소유권 확인 (일반 운세).
  */
 const verifyProfileOwnership = async (
   profileId: string,
@@ -114,6 +124,45 @@ const verifyProfileOwnership = async (
   }
 
   return !!data;
+};
+
+/**
+ * 궁합 페어 소유권 확인.
+ */
+const verifyPairOwnership = async (
+  pairId: string,
+  userId: string
+): Promise<boolean> => {
+  const supabase = createServerClient() as SupabaseDB;
+
+  const { data, error } = await supabase
+    .from("compatibility_pairs")
+    .select("id")
+    .eq("id", pairId)
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    if (error.code === "PGRST116") {
+      return false;
+    }
+    throw new PromoError("DATABASE_ERROR", { originalError: error });
+  }
+
+  return !!data;
+};
+
+/**
+ * 운세 타입에 따라 subject(프로필 or 페어) 소유권 검증.
+ */
+const verifySubjectOwnership = async (
+  subjectId: string,
+  userId: string,
+  fortuneType: FortuneType
+): Promise<boolean> => {
+  return isCompatibility(fortuneType)
+    ? verifyPairOwnership(subjectId, userId)
+    : verifyProfileOwnership(subjectId, userId);
 };
 
 /**
@@ -170,8 +219,9 @@ export const validatePromoCode = async (
     throw new PromoError("CODE_EXHAUSTED", { promoCode: code });
   }
 
-  // 5. 프로필 소유권 확인
-  const isOwner = await verifyProfileOwnership(profileId, userId);
+  // 5. 프로필(또는 페어) 소유권 확인
+  // 궁합 운세는 profileId 가 compatibility_pairs.id 를 가리킨다.
+  const isOwner = await verifySubjectOwnership(profileId, userId, fortuneType);
   if (!isOwner) {
     throw new PromoError("PROFILE_NOT_FOUND", {
       promoCode: code,
@@ -226,12 +276,17 @@ export const applyPromoCode = async (
 
   const supabase = createServerClient() as SupabaseDB;
 
+  // subject 컬럼 분기: 궁합은 pair_id, 그 외는 profile_id
+  const subjectColumns = isCompatibility(fortuneType)
+    ? { pair_id: profileId, profile_id: null }
+    : { profile_id: profileId, pair_id: null };
+
   // 2. 무료 접근 권한 생성
   const { data: freeAccess, error: freeAccessError } =
     await // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (supabase.from("profile_free_access") as any)
       .insert({
-        profile_id: profileId,
+        ...subjectColumns,
         fortune_type: fortuneType,
         granted_by: `promo:${promoCode.code}`,
         memo: promoCode.campaign_name
@@ -255,7 +310,7 @@ export const applyPromoCode = async (
       .insert({
         promo_code_id: promoCode.id,
         user_id: userId,
-        profile_id: profileId,
+        ...subjectColumns,
         fortune_type: fortuneType,
         free_access_id: freeAccess.id,
       })
@@ -335,7 +390,7 @@ export const getPromoCodeInfo = async (
   return {
     code: promoCode.code,
     benefitType: promoCode.benefit_type as "free_fortune" | "discount",
-    fortuneType: promoCode.fortune_type as "lifetime" | "yearly" | "all",
+    fortuneType: promoCode.fortune_type,
     discountPercent: promoCode.discount_percent,
     campaignName: promoCode.campaign_name,
     validUntil: promoCode.valid_until,
@@ -347,7 +402,8 @@ export const getPromoCodeInfo = async (
  */
 interface PromoUsageWithCode {
   id: string;
-  profile_id: string;
+  profile_id: string | null;
+  pair_id: string | null;
   fortune_type: string;
   used_at: string;
   promo_codes: {
@@ -367,6 +423,7 @@ export const getUserPromoUsages = async (
       `
       id,
       profile_id,
+      pair_id,
       fortune_type,
       used_at,
       promo_codes (
@@ -386,6 +443,7 @@ export const getUserPromoUsages = async (
     id: usage.id,
     code: usage.promo_codes.code,
     profileId: usage.profile_id,
+    pairId: usage.pair_id,
     fortuneType: usage.fortune_type as FortuneType,
     usedAt: usage.used_at,
     campaignName: usage.promo_codes.campaign_name,
@@ -393,18 +451,19 @@ export const getUserPromoUsages = async (
 };
 
 /**
- * 프로필에 프로모션 코드가 적용되었는지 확인
+ * 프로필(또는 페어)에 프로모션 코드가 적용되었는지 확인
  */
 export const hasPromoAppliedToProfile = async (
-  profileId: string,
+  subjectId: string,
   fortuneType: FortuneType
 ): Promise<boolean> => {
   const supabase = createServerClient() as SupabaseDB;
+  const subjectColumn = isCompatibility(fortuneType) ? "pair_id" : "profile_id";
 
   const { count, error } = await supabase
     .from("promo_code_usages")
     .select("*", { count: "exact", head: true })
-    .eq("profile_id", profileId)
+    .eq(subjectColumn, subjectId)
     .eq("fortune_type", fortuneType);
 
   if (error) {

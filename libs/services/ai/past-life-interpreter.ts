@@ -38,7 +38,20 @@ import {
 // Gemini responseSchema 정의 (전생 운세)
 // ============================================================
 
-/** 전생 스포일러 스키마 */
+/** Sub-section (heading + body) — 신규 구조화 응답용 */
+const SUB_SECTION_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    heading: { type: "string" },
+    body: { type: "string" },
+  },
+  required: ["heading", "body"],
+};
+
+/**
+ * 전생 스포일러 스키마.
+ * 신규: subSections + oneLiner / 레거시: summary.
+ */
 const PAST_LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
@@ -49,15 +62,16 @@ const PAST_LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
     },
     description: { type: "string" },
     summary: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 3,
+      maxItems: 5,
+    },
+    oneLiner: { type: "string" },
     imagePrompt: { type: "string" },
   },
-  required: [
-    "headline",
-    "existenceType",
-    "description",
-    "summary",
-    "imagePrompt",
-  ],
+  required: ["headline", "existenceType", "description", "imagePrompt"],
 };
 
 /** 전생 탄생 스키마 */
@@ -66,8 +80,15 @@ const PAST_LIFE_BIRTH_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
+    oneLiner: { type: "string" },
   },
-  required: ["headline", "content"],
+  required: ["headline"],
 };
 
 /** 전생 삶 스키마 */
@@ -89,8 +110,15 @@ const PAST_LIFE_JOURNEY_SCHEMA: GeminiResponseSchema = {
       maxItems: 5,
     },
     content: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
+    oneLiner: { type: "string" },
   },
-  required: ["headline", "events", "content"],
+  required: ["headline", "events"],
 };
 
 /** 전생 죽음과 카르마 스키마 */
@@ -99,9 +127,16 @@ const PAST_LIFE_END_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
+    oneLiner: { type: "string" },
     lastWords: { type: "string" },
   },
-  required: ["headline", "content", "lastWords"],
+  required: ["headline", "lastWords"],
 };
 
 /** 전생 인연 스키마 */
@@ -110,8 +145,15 @@ const PAST_LIFE_CONNECTIONS_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
+    oneLiner: { type: "string" },
   },
-  required: ["headline", "content"],
+  required: ["headline"],
 };
 
 /** 전생 프로필 카드 스키마 */
@@ -193,8 +235,15 @@ const PAST_LIFE_LESSONS_SCHEMA: GeminiResponseSchema = {
         properties: {
           headline: { type: "string" },
           content: { type: "string" },
+          bullets: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 2,
+            maxItems: 4,
+          },
+          oneLiner: { type: "string" },
         },
-        required: ["headline", "content"],
+        required: ["headline"],
       },
       minItems: 2,
       maxItems: 3,
@@ -254,6 +303,24 @@ const PAST_LIFE_RESPONSE_SCHEMA_MAP: Record<
   past_life_lessons: PAST_LIFE_LESSONS_SCHEMA,
   past_life_world: PAST_LIFE_WORLD_SCHEMA,
   past_life_traces: PAST_LIFE_TRACES_SCHEMA,
+};
+
+/**
+ * 신규(subSections+oneLiner) / 레거시(content) 어느 쪽이든 안전하게 첫 문장 발췌.
+ * previousContext 불릿에 들어가므로 모든 whitespace 평탄화.
+ */
+const extractPastLifeOpening = (
+  subSections: { heading: string; body: string }[] | undefined,
+  oneLiner: string | undefined,
+  legacyText: string | undefined,
+  maxLength = 100
+): string => {
+  const candidate =
+    subSections?.[0]?.body?.trim() ||
+    oneLiner?.trim() ||
+    legacyText?.split("\n\n")[0]?.trim() ||
+    "";
+  return candidate.replace(/\s+/g, " ").slice(0, maxLength).trim();
 };
 
 // ============================================================
@@ -580,12 +647,18 @@ export const generatePastLifeInterpretation = async (
     ? generatePastLifeImage(spoiler.imagePrompt, profileId)
     : Promise.resolve(null);
 
-  // Stage 1 맥락 생성
+  // Stage 1 맥락 생성 (신구조/레거시 모두 안전)
+  const birthOpening = extractPastLifeOpening(
+    birth.subSections,
+    birth.oneLiner,
+    birth.content,
+    100
+  );
   const stage1Context = `## 이전 섹션 맥락 (일관성 유지, 표현 반복 금지)
 - 전생 존재: ${spoiler.headline} (${spoiler.existenceType})
 - 전생 설명: ${spoiler.description}
 - 탄생 headline: "${birth.headline}"
-- 탄생 첫 문장: "${birth.content.split("\n\n")[0]?.slice(0, 100)}"
+- 탄생 첫 문장: "${birthOpening}"
 위 표현과 같은 구조·어휘·패턴을 사용하지 마세요. 완전히 다른 표현을 창작하세요.
 전생 존재 유형(${spoiler.existenceType})에 맞는 서사 톤을 유지하세요.`;
 

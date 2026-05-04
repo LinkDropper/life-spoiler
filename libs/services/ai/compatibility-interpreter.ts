@@ -30,6 +30,16 @@ import type { CompatibilityResult } from "@/libs/hooks/compatibility/types";
 // Gemini responseSchema 정의 (궁합)
 // ============================================================
 
+/** Sub-section (heading + body) — 신규 구조화 응답용 */
+const SUB_SECTION_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    heading: { type: "string" },
+    body: { type: "string" },
+  },
+  required: ["heading", "body"],
+};
+
 const INSIGHT_ITEM_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
@@ -41,22 +51,27 @@ const INSIGHT_ITEM_SCHEMA: GeminiResponseSchema = {
   required: ["score", "label", "headline", "content"],
 };
 
+/**
+ * 궁합 오버뷰 스키마.
+ * 신규: subSections + oneLiner / 레거시: spoiler.
+ */
 const COMPATIBILITY_OVERVIEW_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
     headline: { type: "string" },
     tags: { type: "array", items: { type: "string" } },
     spoiler: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 3,
+      maxItems: 5,
+    },
+    oneLiner: { type: "string" },
     profileASummary: { type: "string" },
     profileBSummary: { type: "string" },
   },
-  required: [
-    "headline",
-    "tags",
-    "spoiler",
-    "profileASummary",
-    "profileBSummary",
-  ],
+  required: ["headline", "tags", "profileASummary", "profileBSummary"],
 };
 
 const COMPATIBILITY_INSIGHTS_SCHEMA: GeminiResponseSchema = {
@@ -93,13 +108,29 @@ const COMPATIBILITY_SCENARIOS_SCHEMA: GeminiResponseSchema = {
         properties: {
           title: { type: "string" },
           content: { type: "string" },
+          subSections: {
+            type: "array",
+            items: SUB_SECTION_SCHEMA,
+            minItems: 2,
+            maxItems: 4,
+          },
+          oneLiner: { type: "string" },
         },
-        required: ["title", "content"],
+        required: ["title"],
       },
+      minItems: 2,
+      maxItems: 4,
     },
     advice: { type: "string" },
+    adviceSubSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
+    adviceOneLiner: { type: "string" },
   },
-  required: ["coreScenarios", "advice"],
+  required: ["coreScenarios"],
 };
 
 const COMPATIBILITY_CATEGORY_SCHEMA: GeminiResponseSchema = {
@@ -107,9 +138,16 @@ const COMPATIBILITY_CATEGORY_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
+    oneLiner: { type: "string" },
     tags: { type: "array", items: { type: "string" } },
   },
-  required: ["headline", "content", "tags"],
+  required: ["headline", "tags"],
 };
 
 /** 4개 카테고리 통합 스키마 (1회 호출로 통합) */
@@ -161,6 +199,24 @@ const getCompatibilityPrompts = (
 // ============================================================
 // 프롬프트 입력 데이터 정리
 // ============================================================
+
+/**
+ * 신규(subSections+oneLiner) / 레거시(spoiler) 어느 쪽이든 안전하게 첫 문장 발췌.
+ * previousContext 불릿 안에 들어가므로 모든 whitespace 를 단일 공백으로 평탄화.
+ */
+const extractCompatibilityOpening = (
+  subSections: { heading: string; body: string }[] | undefined,
+  oneLiner: string | undefined,
+  legacyText: string | undefined,
+  maxLength = 150
+): string => {
+  const candidate =
+    subSections?.[0]?.body?.trim() ||
+    oneLiner?.trim() ||
+    legacyText?.trim() ||
+    "";
+  return candidate.replace(/\s+/g, " ").slice(0, maxLength).trim();
+};
 
 /** 별 간 상호작용 문자열에서 "= 설명" 부분만 추출하는 헬퍼 */
 const sanitizeStarInteraction = (interaction: string): string => {
@@ -826,11 +882,18 @@ export const generateCompatibilityInterpretation = async (
   }
 
   // Stage 1 context (Stage 2 전달용)
+  // 신규(subSections+oneLiner)·레거시(spoiler) 모두 안전하게 발췌
+  const overviewOpening = extractCompatibilityOpening(
+    overview.subSections,
+    overview.oneLiner,
+    overview.spoiler,
+    150
+  );
   const stage1Context = `${personalityAnchor}
 
 ## 이미 사용한 표현 (절대 반복 금지!)
 - 궁합 headline: "${overview.headline}"
-- 궁합 spoiler: "${overview.spoiler.slice(0, 150)}"
+- 궁합 spoiler: "${overviewOpening}"
 - insights overall: "${insights.overall.headline}" — ${insights.overall.content.slice(0, 80)}
 - insights chemistry: "${insights.chemistry.headline}" — ${insights.chemistry.content.slice(0, 80)}
 위 headline·표현과 같은 구조·어휘·패턴을 사용하지 마세요.
@@ -909,6 +972,8 @@ export const generateCompatibilityInterpretation = async (
       tags: sanitizedOverview.tags,
       insights: sanitizedInsights,
       spoiler: sanitizedOverview.spoiler,
+      overviewSubSections: sanitizedOverview.subSections,
+      overviewOneLiner: sanitizedOverview.oneLiner,
       coreScenarios: sanitizedScenarios.coreScenarios,
       categories: {
         communication: sanitizedCategories.communication,
@@ -917,6 +982,8 @@ export const generateCompatibilityInterpretation = async (
         crisis: sanitizedCategories.crisis,
       },
       advice: sanitizedScenarios.advice,
+      adviceSubSections: sanitizedScenarios.adviceSubSections,
+      adviceOneLiner: sanitizedScenarios.adviceOneLiner,
       meta: {
         generatedAt: new Date().toISOString(),
         model: GEMINI_MODEL_NAME,

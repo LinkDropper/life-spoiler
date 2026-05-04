@@ -28,7 +28,20 @@ import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
 // Gemini responseSchema 정의 (유년)
 // ============================================================
 
-/** 올해 스포일러 스키마 */
+/** Sub-section (heading + body) — 신규 구조화 응답용 */
+const SUB_SECTION_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    heading: { type: "string" },
+    body: { type: "string" },
+  },
+  required: ["heading", "body"],
+};
+
+/**
+ * 올해 스포일러 스키마.
+ * 신규: subSections + oneLiner / 레거시: summary.
+ */
 const YEARLY_OVERVIEW_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
@@ -39,8 +52,15 @@ const YEARLY_OVERVIEW_SCHEMA: GeminiResponseSchema = {
       items: { type: "string" },
     },
     summary: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 3,
+      maxItems: 5,
+    },
+    oneLiner: { type: "string" },
   },
-  required: ["headline", "description", "tags", "summary"],
+  required: ["headline", "description", "tags"],
 };
 
 /** 올해 핵심 시나리오 스키마 */
@@ -49,8 +69,15 @@ const YEARLY_CORE_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 3,
+      maxItems: 5,
+    },
+    oneLiner: { type: "string" },
   },
-  required: ["headline", "content"],
+  required: ["headline"],
 };
 
 /** 올해 카테고리 응답 스키마 (재물/직업/인연/건강) */
@@ -59,13 +86,20 @@ const YEARLY_CATEGORY_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 2,
+      maxItems: 4,
+    },
+    oneLiner: { type: "string" },
     tags: {
       type: "array",
       items: { type: "string" },
     },
     score: { type: "integer", minimum: 0, maximum: 100 },
   },
-  required: ["headline", "content", "tags", "score"],
+  required: ["headline", "tags", "score"],
 };
 
 /** 월별 시나리오 스키마 */
@@ -80,8 +114,15 @@ const YEARLY_MONTHLY_SCHEMA: GeminiResponseSchema = {
           month: { type: "integer", minimum: 1, maximum: 12 },
           headline: { type: "string" },
           content: { type: "string" },
+          bullets: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 2,
+            maxItems: 4,
+          },
+          oneLiner: { type: "string" },
         },
-        required: ["month", "headline", "content"],
+        required: ["month", "headline"],
       },
     },
   },
@@ -100,6 +141,26 @@ const YEARLY_RESPONSE_SCHEMA_MAP: Record<
   yearly_relationship: YEARLY_CATEGORY_SCHEMA,
   yearly_health: YEARLY_CATEGORY_SCHEMA,
   yearly_monthly: YEARLY_MONTHLY_SCHEMA,
+};
+
+/**
+ * 신규/레거시 응답 어느 쪽이든 안전하게 첫 문장(요약)을 뽑아낸다.
+ * - 신규: subSections[0].body 또는 oneLiner
+ * - 레거시: summary/content 의 첫 단락
+ * previousContext 불릿 안에 들어가므로 모든 whitespace 를 단일 공백으로 평탄화.
+ */
+const extractOpeningLine = (
+  subSections: { heading: string; body: string }[] | undefined,
+  oneLiner: string | undefined,
+  legacyText: string | undefined,
+  maxLength = 80
+): string => {
+  const candidate =
+    subSections?.[0]?.body?.trim() ||
+    oneLiner?.trim() ||
+    legacyText?.split("\n\n")[0]?.trim() ||
+    "";
+  return candidate.replace(/\s+/g, " ").slice(0, maxLength).trim();
 };
 
 // ============================================================
@@ -556,10 +617,15 @@ export const generateYearlyInterpretation = async (
   ]);
 
   // 2단계: 재물 + 직업 (이전 headline 전달)
+  const overviewOpening = extractOpeningLine(
+    overview.subSections,
+    overview.oneLiner,
+    overview.summary
+  );
   const stage1Context = `## 이미 사용한 표현 (절대 반복 금지!)
 - 올해 스포일러 headline: "${overview.headline}"
 - 올해 시나리오 headline: "${coreScenario.headline}"
-- 스포일러 첫 문장: "${overview.summary.split("\n\n")[0]?.slice(0, 80)}"
+- 스포일러 첫 문장: "${overviewOpening}"
 위 headline과 같은 구조·어휘·패턴을 사용하지 마세요. 완전히 다른 표현을 창작하세요.`;
 
   const [wealth, career] = await Promise.all([
@@ -568,14 +634,26 @@ export const generateYearlyInterpretation = async (
   ]);
 
   // 3단계: 인연 + 건강 (모든 이전 headline 전달)
+  const wealthOpening = extractOpeningLine(
+    wealth.subSections,
+    wealth.oneLiner,
+    wealth.content,
+    60
+  );
+  const careerOpening = extractOpeningLine(
+    career.subSections,
+    career.oneLiner,
+    career.content,
+    60
+  );
   const stage2Context = `## 이미 사용한 표현 (절대 반복 금지!)
 - 올해 스포일러 headline: "${overview.headline}"
 - 올해 시나리오 headline: "${coreScenario.headline}"
 - 재물 headline: "${wealth.headline}"
 - 직업 headline: "${career.headline}"
-- 스포일러 첫 문장: "${overview.summary.split("\n\n")[0]?.slice(0, 80)}"
-- 재물 첫 문장: "${wealth.content.split("\n\n")[0]?.slice(0, 60)}"
-- 직업 첫 문장: "${career.content.split("\n\n")[0]?.slice(0, 60)}"
+- 스포일러 첫 문장: "${overviewOpening}"
+- 재물 첫 문장: "${wealthOpening}"
+- 직업 첫 문장: "${careerOpening}"
 위 headline·첫 문장과 같은 구조·어휘·패턴을 사용하지 마세요.`;
 
   const [relationship, health] = await Promise.all([

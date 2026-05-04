@@ -105,7 +105,7 @@ function PaymentSuccessContent() {
   const handleViewFortune = () => {
     if (profileId && fortuneType) {
       if (fortuneType === "compatibility") {
-        router.push(`/compatibility/${profileId}`);
+        router.push(`/compatibility/${profileId}/fortune/result`);
       } else if (fortuneType === "past_life") {
         router.push(`/fortune/past-life/${profileId}`);
       } else {
