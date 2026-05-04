@@ -45,7 +45,10 @@ export interface PromoCodeInfo {
 export interface UserPromoUsage {
   id: string;
   code: string;
-  profileId: string;
+  /** profileId 와 pairId 중 정확히 하나만 set (fortuneType 에 따라) */
+  profileId: string | null;
+  /** 궁합 운세용 — compatibility_pairs.id */
+  pairId: string | null;
   fortuneType: FortuneType;
   usedAt: string;
   campaignName: string | null;

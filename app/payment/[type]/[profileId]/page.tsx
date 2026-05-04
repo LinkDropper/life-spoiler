@@ -214,15 +214,10 @@ function PaymentPageContent() {
     tPayment,
   ]);
 
-  // 프로모 코드 적용 여부 확인 (궁합은 프로모 미지원)
+  // 프로모 코드 적용 여부 확인 (궁합은 profileId 가 compatibility_pairs.id)
   useEffect(() => {
     const checkPromoApplied = async () => {
-      if (
-        isCompatibility ||
-        authStatus !== "authenticated" ||
-        !profileId ||
-        !fortuneType
-      ) {
+      if (authStatus !== "authenticated" || !profileId || !fortuneType) {
         return;
       }
 
@@ -508,7 +503,7 @@ function PaymentPageContent() {
 
   const handleViewFortune = () => {
     if (isCompatibility) {
-      router.push(`/compatibility/${profileId}`);
+      router.push(`/compatibility/${profileId}/fortune/result`);
     } else if (fortuneType === "past_life") {
       router.push(`/fortune/past-life/${profileId}`);
     } else {

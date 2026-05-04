@@ -194,7 +194,10 @@ export interface FaceReportInsert {
 
 export interface ProfileFreeAccessRow {
   id: string;
-  profile_id: string;
+  /** profile_id 와 pair_id 중 정확히 하나만 NOT NULL (DB CHECK 제약) */
+  profile_id: string | null;
+  /** 궁합 운세용 — compatibility_pairs FK */
+  pair_id: string | null;
   fortune_type: FortuneType;
   granted_at: string;
   granted_by: string | null;
@@ -206,7 +209,10 @@ export interface ProfileFreeAccessRow {
 
 export interface ProfileFreeAccessInsert {
   id?: string;
-  profile_id: string;
+  /** profile_id 와 pair_id 중 정확히 하나만 NOT NULL (DB CHECK 제약) */
+  profile_id?: string | null;
+  /** 궁합 운세용 — compatibility_pairs FK */
+  pair_id?: string | null;
   fortune_type: FortuneType;
   granted_at?: string;
   granted_by?: string | null;
@@ -221,6 +227,7 @@ export type PromoFortuneType =
   | "lifetime"
   | "yearly"
   | "past_life"
+  | "compatibility"
   | "face_spoiler"
   | "all";
 
@@ -268,6 +275,7 @@ export type PromoUsageFortuneType =
   | "lifetime"
   | "yearly"
   | "past_life"
+  | "compatibility"
   | "face_spoiler";
 
 export interface PromoCodeUsageRow {
@@ -275,6 +283,8 @@ export interface PromoCodeUsageRow {
   promo_code_id: string;
   user_id: string;
   profile_id: string | null;
+  /** 궁합 운세용 — compatibility_pairs FK */
+  pair_id: string | null;
   face_report_id: string | null;
   fortune_type: PromoUsageFortuneType | null;
   free_access_id: string | null;
@@ -287,6 +297,8 @@ export interface PromoCodeUsageInsert {
   promo_code_id: string;
   user_id: string;
   profile_id?: string | null;
+  /** 궁합 운세용 — compatibility_pairs FK */
+  pair_id?: string | null;
   face_report_id?: string | null;
   fortune_type?: PromoUsageFortuneType | null;
   free_access_id?: string | null;
@@ -475,6 +487,12 @@ export type Database = {
             referencedRelation: "profiles";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "profile_free_access_pair_id_fkey";
+            columns: ["pair_id"];
+            referencedRelation: "compatibility_pairs";
+            referencedColumns: ["id"];
+          },
         ];
       };
       promo_codes: {
@@ -504,6 +522,12 @@ export type Database = {
             foreignKeyName: "promo_code_usages_profile_id_fkey";
             columns: ["profile_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "promo_code_usages_pair_id_fkey";
+            columns: ["pair_id"];
+            referencedRelation: "compatibility_pairs";
             referencedColumns: ["id"];
           },
           {

@@ -226,6 +226,29 @@ export async function POST(
       );
     }
 
+    // 3-1. paid_at 이 NULL 이면 profile_free_access(promo) 보유 시 paid_at 승격
+    if (!pair.paid_at) {
+      const now = new Date().toISOString();
+      const { data: freeAccess } =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (supabase.from("profile_free_access") as any)
+          .select("id")
+          .eq("pair_id", pairId)
+          .eq("fortune_type", "compatibility")
+          .or(`expires_at.is.null,expires_at.gt.${now}`)
+          .maybeSingle();
+      if (freeAccess) {
+        const { error: updateError } =
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (supabase.from("compatibility_pairs") as any)
+            .update({ paid_at: now })
+            .eq("id", pairId);
+        if (!updateError) {
+          pair.paid_at = now;
+        }
+      }
+    }
+
     // 4. 이미 결과가 있으면 기존 결과 반환 (BYPASS 모드면 스킵)
     if (pair.result !== null && !BYPASS_INTERPRETATION_CACHE) {
       return NextResponse.json({
