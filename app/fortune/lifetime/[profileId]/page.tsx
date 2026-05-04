@@ -14,6 +14,8 @@ import {
   ScenarioItem,
   ScenarioList,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
   CopyToast,
   ErrorState,
   ShareDrawer,
@@ -341,9 +343,23 @@ export default function LifetimeFortunePage() {
             <h2 className={styles.overviewHeadline}>
               {interpretation.lifeSpoiler.headline}
             </h2>
-            <MarkdownContent className={styles.overviewSummary}>
-              {interpretation.lifeSpoiler.summary}
-            </MarkdownContent>
+            {interpretation.lifeSpoiler.subSections &&
+            interpretation.lifeSpoiler.subSections.length > 0 ? (
+              <>
+                <SubSectionList
+                  items={interpretation.lifeSpoiler.subSections}
+                />
+                {interpretation.lifeSpoiler.oneLiner && (
+                  <OneLinerAlert text={interpretation.lifeSpoiler.oneLiner} />
+                )}
+              </>
+            ) : (
+              interpretation.lifeSpoiler.summary && (
+                <MarkdownContent className={styles.overviewSummary}>
+                  {interpretation.lifeSpoiler.summary}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
 
@@ -354,20 +370,38 @@ export default function LifetimeFortunePage() {
           onToggle={() => setCoreExpanded(!coreExpanded)}
         />
 
-        {coreExpanded && interpretation.coreScenario.content && (
-          <section className={styles.section}>
-            <div className={styles.coreScenario}>
-              {interpretation.coreScenario.headline && (
-                <h3 className={styles.coreHeadline}>
-                  {interpretation.coreScenario.headline}
-                </h3>
-              )}
-              <MarkdownContent>
-                {interpretation.coreScenario.content}
-              </MarkdownContent>
-            </div>
-          </section>
-        )}
+        {coreExpanded &&
+          (interpretation.coreScenario.subSections?.length ||
+            interpretation.coreScenario.content) && (
+            <section className={styles.section}>
+              <div className={styles.coreScenario}>
+                {interpretation.coreScenario.headline && (
+                  <h3 className={styles.coreHeadline}>
+                    {interpretation.coreScenario.headline}
+                  </h3>
+                )}
+                {interpretation.coreScenario.subSections &&
+                interpretation.coreScenario.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList
+                      items={interpretation.coreScenario.subSections}
+                    />
+                    {interpretation.coreScenario.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.coreScenario.oneLiner}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.coreScenario.content && (
+                    <MarkdownContent>
+                      {interpretation.coreScenario.content}
+                    </MarkdownContent>
+                  )
+                )}
+              </div>
+            </section>
+          )}
 
         {/* 상세 시나리오 섹션 */}
         <SectionHeader
@@ -388,6 +422,8 @@ export default function LifetimeFortunePage() {
                   })}
                   headline={interpretation.categories[key].headline}
                   content={interpretation.categories[key].content}
+                  subSections={interpretation.categories[key].subSections}
+                  oneLiner={interpretation.categories[key].oneLiner}
                   tags={interpretation.categories[key].tags}
                   showHashtag={false}
                 />
@@ -412,6 +448,8 @@ export default function LifetimeFortunePage() {
                   label={scenario.period}
                   headline={scenario.headline}
                   content={scenario.content}
+                  bullets={scenario.bullets}
+                  oneLiner={scenario.oneLiner}
                 />
               ))}
             </ScenarioList>
