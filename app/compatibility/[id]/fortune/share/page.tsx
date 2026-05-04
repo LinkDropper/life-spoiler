@@ -16,6 +16,8 @@ import {
   ScenarioItem,
   ScenarioList,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
   ChevronIcon,
 } from "@/components/fortune";
 import { CompatibilityProfileCard } from "@/components/fortune/CompatibilityProfileCard";
@@ -126,6 +128,7 @@ export default function CompatibilitySharePage() {
   const { interpretation, charts, subScores } = result;
   const nameA = charts.profileA.name;
   const nameB = charts.profileB.name;
+  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
 
   const scoreBadgeText = `${tFortune("score")} ${result.score}${tCard("scoreUnit")}`;
   const profileCardLabels = {
@@ -236,9 +239,24 @@ export default function CompatibilitySharePage() {
             <h2 className={styles.spoilerHeadline}>
               {interpretation.headline}
             </h2>
-            <MarkdownContent className={styles.spoilerText}>
-              {interpretation.spoiler}
-            </MarkdownContent>
+            {interpretation.overviewSubSections &&
+            interpretation.overviewSubSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.overviewSubSections} />
+                {interpretation.overviewOneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.overviewOneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.spoiler && (
+                <MarkdownContent className={styles.spoilerText}>
+                  {interpretation.spoiler}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
 
@@ -257,6 +275,9 @@ export default function CompatibilitySharePage() {
                   label={`${idx + 1}`}
                   headline={scenario.title}
                   content={scenario.content}
+                  subSections={scenario.subSections}
+                  oneLiner={scenario.oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                 />
               ))}
             </ScenarioList>
@@ -280,6 +301,9 @@ export default function CompatibilitySharePage() {
                     label={tResult(`categories.${key}`)}
                     headline={category.headline}
                     content={category.content}
+                    subSections={category.subSections}
+                    oneLiner={category.oneLiner}
+                    oneLinerLabel={oneLinerLabel}
                     tags={category.tags}
                   />
                 );
@@ -296,9 +320,24 @@ export default function CompatibilitySharePage() {
         />
         {adviceExpanded && (
           <section className={styles.section}>
-            <MarkdownContent className={styles.adviceContent}>
-              {interpretation.advice}
-            </MarkdownContent>
+            {interpretation.adviceSubSections &&
+            interpretation.adviceSubSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.adviceSubSections} />
+                {interpretation.adviceOneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.adviceOneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.advice && (
+                <MarkdownContent className={styles.adviceContent}>
+                  {interpretation.advice}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
       </main>
@@ -324,7 +363,10 @@ export default function CompatibilitySharePage() {
 interface CompatibilityCategoryItemProps {
   label: string;
   headline: string;
-  content: string;
+  content?: string;
+  subSections?: { heading: string; body: string }[];
+  oneLiner?: string;
+  oneLinerLabel?: string;
   tags: string[];
 }
 
@@ -332,9 +374,13 @@ const CompatibilityCategoryItem = ({
   label,
   headline,
   content,
+  subSections,
+  oneLiner,
+  oneLinerLabel,
   tags,
 }: CompatibilityCategoryItemProps) => {
   const [expanded, setExpanded] = useState(true);
+  const hasStructured = !!subSections && subSections.length > 0;
 
   return (
     <div>
@@ -381,18 +427,31 @@ const CompatibilityCategoryItem = ({
               {headline}
             </h4>
           )}
-          <MarkdownContent
-            style={{
-              fontSize: 18,
-              fontWeight: 400,
-              lineHeight: 1.6,
-              color: "rgba(255, 255, 255, 0.7)",
-              margin: "16px 0 0 0",
-              letterSpacing: 0.5,
-            }}
-          >
-            {content}
-          </MarkdownContent>
+          {hasStructured ? (
+            <div style={{ marginTop: 16 }}>
+              <SubSectionList items={subSections!} />
+            </div>
+          ) : (
+            content && (
+              <MarkdownContent
+                style={{
+                  fontSize: 18,
+                  fontWeight: 400,
+                  lineHeight: 1.6,
+                  color: "rgba(255, 255, 255, 0.7)",
+                  margin: "16px 0 0 0",
+                  letterSpacing: 0.5,
+                }}
+              >
+                {content}
+              </MarkdownContent>
+            )
+          )}
+          {oneLiner && (
+            <div style={{ marginTop: 16 }}>
+              <OneLinerAlert text={oneLiner} label={oneLinerLabel} />
+            </div>
+          )}
           {tags.length > 0 && (
             <div
               style={{

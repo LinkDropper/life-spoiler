@@ -63,3 +63,25 @@
   white-space: pre-wrap;
   letter-spacing: 0.5px;
 }
+
+.scenarioBullets {
+  margin: 0;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.78));
+  letter-spacing: 0.3px;
+}
+
+.scenarioBullets li {
+  padding-left: 4px;
+}
+
+@media (max-width: 640px) {
+  .scenarioBullets {
+    font-size: 15px;
+  }
+}

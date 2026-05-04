@@ -72,9 +72,19 @@ export interface CompatibilityInsights {
 // 핵심 시나리오
 // ============================================================
 
+/** sub-section block (관상스포 패턴) */
+export interface CompatibilitySubSection {
+  heading: string;
+  body: string;
+}
+
 export interface CompatibilityScenario {
   title: string;
-  content: string;
+  /** 레거시 */
+  content?: string;
+  /** 신규 구조화 */
+  subSections?: CompatibilitySubSection[];
+  oneLiner?: string;
 }
 
 // ============================================================
@@ -83,7 +93,11 @@ export interface CompatibilityScenario {
 
 export interface CompatibilityCategorySection {
   headline: string;
-  content: string;
+  /** 레거시 */
+  content?: string;
+  /** 신규 구조화 */
+  subSections?: CompatibilitySubSection[];
+  oneLiner?: string;
   tags: string[];
 }
 
@@ -98,8 +112,11 @@ export interface CompatibilityInterpretation {
   tags: string[];
   /** 6. 궁합 인사이트 (8개 항목) */
   insights: CompatibilityInsights;
-  /** 7. 궁합 스포일러 (임팩트 한 줄) */
-  spoiler: string;
+  /** 7. 궁합 스포일러 — 레거시 텍스트 (en/ja, 기존 캐시) */
+  spoiler?: string;
+  /** 7. 궁합 스포일러 — 신규 구조화 (ko) */
+  overviewSubSections?: CompatibilitySubSection[];
+  overviewOneLiner?: string;
   /** 8. 핵심 시나리오 */
   coreScenarios: CompatibilityScenario[];
   /** 9-12. 상세 카테고리 */
@@ -113,8 +130,11 @@ export interface CompatibilityInterpretation {
     /** 12. 위기 & 극복 */
     crisis: CompatibilityCategorySection;
   };
-  /** 13. 종합 조언 */
-  advice: string;
+  /** 13. 종합 조언 — 레거시 */
+  advice?: string;
+  /** 13. 종합 조언 — 신규 구조화 */
+  adviceSubSections?: CompatibilitySubSection[];
+  adviceOneLiner?: string;
   meta: {
     generatedAt: string;
     model: string;

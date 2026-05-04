@@ -39,14 +39,10 @@ import type {
 import { ZiweiInputSchema } from "@/libs/zi-wei-dou-shu/types";
 
 // ============================================================
-// ⚠️ 임시 캐시 우회 토글 — 프롬프트 변경(마크다운 + 잡소리 차단 룰) 검증 중.
-// 켜져 있으면 기존 fortunes 행 / chart-hash 캐시를 모두 무시하고 항상 새로
-// LLM 호출을 실행한다. 캐시 쓰기는 그대로 유지되므로 토글을 false로 되돌리면
-// 즉시 정상 동작 복구.
-//
-// 검증 끝나면 false로 되돌리거나 이 블록 자체를 제거할 것.
+// ⚠️ 임시 캐시 우회 토글 — 검증 시 true 반환하도록 수정.
+// false 면 기존 fortunes 행 / chart-hash 캐시를 정상 사용한다.
 // ============================================================
-const BYPASS_INTERPRETATION_CACHE = false;
+const shouldBypassInterpretationCache = (_language: Locale): boolean => false;
 
 // ============================================================
 // 차트 변환 유틸리티
@@ -254,9 +250,10 @@ export async function POST(request: NextRequest) {
 
     // 캐시 키에 언어 포함 (항상 full 타입으로 저장)
     const cacheKey = `full-${language}` as `full-${Locale}`;
+    const bypassCache = shouldBypassInterpretationCache(language);
 
     // 1. profileId가 있으면 저장된 fortune 먼저 확인 (BYPASS 모드면 스킵)
-    if (profileId && !BYPASS_INTERPRETATION_CACHE) {
+    if (profileId && !bypassCache) {
       const existingFortune = await getFortune(profileId, "lifetime", 0);
       if (existingFortune?.result) {
         const storedData =
@@ -294,7 +291,7 @@ export async function POST(request: NextRequest) {
       calculateDayun(chart, 100, language)
     );
     // chart-hash 글로벌 캐시도 BYPASS 모드면 스킵 (캐시 쓰기는 아래에서 그대로 진행)
-    const cachedResult = BYPASS_INTERPRETATION_CACHE
+    const cachedResult = bypassCache
       ? null
       : await getCachedResult(chartHash, cacheKey);
 

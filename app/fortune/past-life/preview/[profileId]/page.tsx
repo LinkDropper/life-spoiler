@@ -11,6 +11,8 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
 } from "@/components/fortune";
 import { usePastLifePreview } from "@/libs/hooks/fortune";
 
@@ -176,9 +178,24 @@ export default function PastLifePreviewPage() {
 
         {spoilerExpanded && (
           <section className={styles.spoilerSection}>
-            <MarkdownContent className={styles.spoilerSummary}>
-              {interpretation.spoiler.summary}
-            </MarkdownContent>
+            {interpretation.spoiler.subSections &&
+            interpretation.spoiler.subSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.spoiler.subSections} />
+                {interpretation.spoiler.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.spoiler.oneLiner}
+                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.spoiler.summary && (
+                <MarkdownContent className={styles.spoilerSummary}>
+                  {interpretation.spoiler.summary}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
 

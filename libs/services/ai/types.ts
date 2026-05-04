@@ -195,29 +195,46 @@ export interface ZiweiInterpretationRequest {
 // 해석 결과 타입 (인생 운세)
 // ============================================================
 
-// 인생 스포일러 응답 스키마 (제목 + 설명 + 본문 300~400자)
+// ============================================================
+// 구조화 sub-section (관상스포 패턴 — 짧은 heading + 마크다운 body)
+// ============================================================
+export const SubSectionSchema = z.object({
+  heading: z.string(), // 예: "돈 흐름의 결"
+  body: z.string(), // 마크다운(불릿/굵게 가능). 1~2문장 또는 짧은 불릿.
+});
+export type SubSection = z.infer<typeof SubSectionSchema>;
+
+// 인생 스포일러 응답 스키마
+// - 신규(ko): subSections + oneLiner 사용
+// - 레거시(en/ja, 기존 캐시): summary 사용
 export const LifeSpoilerResponseSchema = z.object({
   headline: z.string(),
   description: z.string(),
-  summary: z.string(),
+  summary: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
+  oneLiner: z.string().optional(),
 });
 
 export type LifeSpoilerResponse = z.infer<typeof LifeSpoilerResponseSchema>;
 
-// 핵심 시나리오 응답 스키마 (제목 + 본문 700~800자)
+// 핵심 시나리오 응답 스키마
 export const LifetimeCoreScenarioResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
+  oneLiner: z.string().optional(),
 });
 
 export type LifetimeCoreScenarioResponse = z.infer<
   typeof LifetimeCoreScenarioResponseSchema
 >;
 
-// 상세 시나리오 카테고리 응답 스키마 (제목 + 본문 200~300자 + 태그 1~2개 + 점수)
+// 상세 시나리오 카테고리 응답 스키마 (재물/직업/인연/건강)
 export const LifetimeCategoryResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  oneLiner: z.string().optional(),
   tags: z.array(z.string()).min(1).max(2),
   score: z.number().min(0).max(100),
 });
@@ -226,13 +243,15 @@ export type LifetimeCategoryResponse = z.infer<
   typeof LifetimeCategoryResponseSchema
 >;
 
-// 나이대별 시나리오 응답 스키마 (제목 + 본문 200~300자)
+// 나이대별 시나리오 응답 스키마
 export const AgeScenarioResponseSchema = z.object({
   ageScenarios: z.array(
     z.object({
       period: z.string(), // "4~13세", "14~23세" 등
       headline: z.string(),
-      content: z.string(),
+      content: z.string().optional().default(""),
+      bullets: z.array(z.string()).min(2).max(4).optional(),
+      oneLiner: z.string().optional(),
     })
   ),
 });
@@ -408,32 +427,40 @@ export interface YearlyInterpretationRequest {
   language?: Locale;
 }
 
-// 올해 스포일러 응답 스키마 (제목 + 설명 + 태그 + 본문)
+// 올해 스포일러 응답 스키마
+// - 신규(ko): subSections + oneLiner 사용
+// - 레거시(en/ja, 기존 캐시): summary 사용
 export const YearlyOverviewResponseSchema = z.object({
   headline: z.string(),
   description: z.string(),
   tags: z.array(z.string()).min(2).max(3),
-  summary: z.string(),
+  summary: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
+  oneLiner: z.string().optional(),
 });
 
 export type YearlyOverviewResponse = z.infer<
   typeof YearlyOverviewResponseSchema
 >;
 
-// 핵심 시나리오 응답 스키마 (제목 + 본문)
+// 올해 핵심 시나리오 응답 스키마
 export const YearlyCoreScenarioResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
+  oneLiner: z.string().optional(),
 });
 
 export type YearlyCoreScenarioResponse = z.infer<
   typeof YearlyCoreScenarioResponseSchema
 >;
 
-// 상세 시나리오 카테고리 응답 스키마 (제목 + 재물운, 직업운, 인연운, 건강운 + 점수)
+// 올해 상세 시나리오 카테고리 응답 스키마 (재물/직업/인연/건강)
 export const YearlyCategoryResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  oneLiner: z.string().optional(),
   tags: z.array(z.string()).min(1).max(2),
   score: z.number().min(0).max(100),
 });
@@ -448,7 +475,9 @@ export const YearlyMonthlyFortuneSchema = z.object({
     z.object({
       month: z.number(),
       headline: z.string(),
-      content: z.string(),
+      content: z.string().optional().default(""),
+      bullets: z.array(z.string()).min(2).max(4).optional(),
+      oneLiner: z.string().optional(),
     })
   ),
 });
@@ -574,11 +603,15 @@ export interface CompatibilityInterpretationRequest {
   language?: Locale;
 }
 
-// 궁합 오버뷰 응답 스키마 (headline + tags + spoiler)
+// 궁합 오버뷰 응답 스키마
+// - 신규: subSections + oneLiner 사용 (spoiler 대체)
+// - 레거시: spoiler 한 덩어리 텍스트
 export const CompatibilityOverviewResponseSchema = z.object({
   headline: z.string(),
   tags: z.array(z.string()).min(2).max(4),
-  spoiler: z.string(),
+  spoiler: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
+  oneLiner: z.string().optional(),
   profileASummary: z.string(),
   profileBSummary: z.string(),
 });
@@ -612,17 +645,23 @@ export type CompatibilityInsightsResponse = z.infer<
 >;
 
 // 궁합 핵심 시나리오 + 종합 조언 응답 스키마
+// - 신규: 각 scenario 에 subSections + oneLiner / advice 도 동일 구조
+// - 레거시: scenario.content + advice 텍스트
 export const CompatibilityScenariosResponseSchema = z.object({
   coreScenarios: z
     .array(
       z.object({
         title: z.string(),
-        content: z.string(),
+        content: z.string().optional().default(""),
+        subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+        oneLiner: z.string().optional(),
       })
     )
     .min(2)
     .max(4),
-  advice: z.string(),
+  advice: z.string().optional().default(""),
+  adviceSubSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  adviceOneLiner: z.string().optional(),
 });
 
 export type CompatibilityScenariosResponse = z.infer<
@@ -632,7 +671,9 @@ export type CompatibilityScenariosResponse = z.infer<
 // 궁합 카테고리 응답 스키마 (소통/성장/감정/위기)
 export const CompatibilityCategoryResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  oneLiner: z.string().optional(),
   tags: z.array(z.string()).min(1).max(3),
 });
 
@@ -670,11 +711,14 @@ export type PastLifeInterpretationType =
   | "past_life_traces";
 
 // 전생 스포일러 + 이미지 프롬프트
+// - 신규: subSections + oneLiner / 레거시: summary
 export const PastLifeSpoilerResponseSchema = z.object({
   headline: z.string(),
   existenceType: z.enum(["human", "animal", "plant", "insect", "nature"]),
   description: z.string(),
-  summary: z.string(),
+  summary: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
+  oneLiner: z.string().optional(),
   imagePrompt: z.string(),
 });
 
@@ -685,7 +729,9 @@ export type PastLifeSpoilerResponse = z.infer<
 // 전생 스토리 — 탄생
 export const PastLifeBirthResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  oneLiner: z.string().optional(),
 });
 
 export type PastLifeBirthResponse = z.infer<typeof PastLifeBirthResponseSchema>;
@@ -702,7 +748,9 @@ export const PastLifeJourneyResponseSchema = z.object({
     )
     .min(3)
     .max(5),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  oneLiner: z.string().optional(),
 });
 
 export type PastLifeJourneyResponse = z.infer<
@@ -712,7 +760,9 @@ export type PastLifeJourneyResponse = z.infer<
 // 전생 스토리 — 죽음과 카르마
 export const PastLifeEndResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  oneLiner: z.string().optional(),
   lastWords: z.string(),
 });
 
@@ -721,7 +771,9 @@ export type PastLifeEndResponse = z.infer<typeof PastLifeEndResponseSchema>;
 // 전생 인연
 export const PastLifeConnectionsResponseSchema = z.object({
   headline: z.string(),
-  content: z.string(),
+  content: z.string().optional().default(""),
+  subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
+  oneLiner: z.string().optional(),
 });
 
 export type PastLifeConnectionsResponse = z.infer<
@@ -784,12 +836,16 @@ export type PastLifeContrastResponse = z.infer<
 >;
 
 // 전생 교훈
+// - 신규: 각 lesson 에 bullets + oneLiner
+// - 레거시: lesson.content 텍스트
 export const PastLifeLessonsResponseSchema = z.object({
   lessons: z
     .array(
       z.object({
         headline: z.string(),
-        content: z.string(),
+        content: z.string().optional().default(""),
+        bullets: z.array(z.string()).min(2).max(4).optional(),
+        oneLiner: z.string().optional(),
       })
     )
     .min(2)

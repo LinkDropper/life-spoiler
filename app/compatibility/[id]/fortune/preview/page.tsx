@@ -10,6 +10,8 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
 } from "@/components/fortune";
 import { CompatibilityCard } from "@/components/compatibility";
 import { useCompatibilityFortune } from "@/libs/hooks/compatibility";
@@ -51,6 +53,7 @@ const KEYWORD_INSIGHT_KEYS: ReadonlySet<string> = new Set([
 
 export default function CompatibilityFortunePage() {
   const tFortune = useTranslations("compatibility.fortune");
+  const tCommon = useTranslations("fortune.common");
 
   const {
     isLoading,
@@ -213,9 +216,24 @@ export default function CompatibilityFortunePage() {
             <h2 className={styles.spoilerHeadline}>
               {interpretation.headline}
             </h2>
-            <MarkdownContent className={styles.spoilerText}>
-              {interpretation.spoiler}
-            </MarkdownContent>
+            {interpretation.overviewSubSections &&
+            interpretation.overviewSubSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.overviewSubSections} />
+                {interpretation.overviewOneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.overviewOneLiner}
+                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.spoiler && (
+                <MarkdownContent className={styles.spoilerText}>
+                  {interpretation.spoiler}
+                </MarkdownContent>
+              )
+            )}
             <p className={styles.spoilerTeaser}>{tFortune("teaser")}</p>
           </section>
         )}
