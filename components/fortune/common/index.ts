@@ -4,5 +4,7 @@ export { CategoryItem, type CategoryKey } from "./CategoryItem";
 export { ScenarioItem, ScenarioList } from "./ScenarioItem";
 export { FormattedText } from "./FormattedText";
 export { MarkdownContent } from "./MarkdownContent";
+export { SubSectionList } from "./SubSectionList";
+export { OneLinerAlert } from "./OneLinerAlert";
 export { CopyToast } from "./CopyToast";
 export { ErrorState } from "./ErrorState";
