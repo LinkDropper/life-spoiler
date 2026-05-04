@@ -85,7 +85,11 @@ export interface LifetimePreviewResult {
   interpretation: {
     lifeSpoiler: {
       headline: string;
-      summary: string;
+      /** 레거시 / en·ja */
+      summary?: string;
+      /** 신규 구조화 — 한국어 lifetime 응답 */
+      subSections?: { heading: string; body: string }[];
+      oneLiner?: string;
     };
   };
 }

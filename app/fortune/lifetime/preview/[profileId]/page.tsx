@@ -11,6 +11,8 @@ import {
   SectionHeader,
   KeywordGrid,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
 } from "@/components/fortune";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
 import {
@@ -167,9 +169,26 @@ export default function LifetimeFortunePreviewPage() {
             <h2 className={styles.previewHeadline}>
               {interpretation.lifeSpoiler.headline}
             </h2>
-            <MarkdownContent className={styles.previewDescription}>
-              {interpretation.lifeSpoiler.summary}
-            </MarkdownContent>
+            {interpretation.lifeSpoiler.subSections &&
+            interpretation.lifeSpoiler.subSections.length > 0 ? (
+              <>
+                <SubSectionList
+                  items={interpretation.lifeSpoiler.subSections}
+                />
+                {interpretation.lifeSpoiler.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.lifeSpoiler.oneLiner}
+                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.lifeSpoiler.summary && (
+                <MarkdownContent className={styles.previewDescription}>
+                  {interpretation.lifeSpoiler.summary}
+                </MarkdownContent>
+              )
+            )}
             <p className={styles.previewTeaser}>{tPreview("teaser")}</p>
           </section>
         )}

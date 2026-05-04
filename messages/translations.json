@@ -436,7 +436,8 @@
         "huaji": "화기",
         "back": "뒤로가기",
         "checkMyFortune": "내 운세도 확인해보기",
-        "fortuneNotFound": "운세 데이터를 찾을 수 없습니다."
+        "fortuneNotFound": "운세 데이터를 찾을 수 없습니다.",
+        "oneLinerLabel": "한 줄 정리"
       },
       "preview": {
         "chartTitle": "자미두수 명반",
@@ -1639,7 +1640,8 @@
         "huaji": "Hua Ji",
         "back": "Back",
         "checkMyFortune": "Discover What Your Stars Say",
-        "fortuneNotFound": "Fortune data not found."
+        "fortuneNotFound": "Fortune data not found.",
+        "oneLinerLabel": "In one line"
       },
       "preview": {
         "chartTitle": "Zi Wei Dou Shu Chart",
@@ -2842,7 +2844,8 @@
         "huaji": "化忌",
         "back": "戻る",
         "checkMyFortune": "私の運勢も確認する",
-        "fortuneNotFound": "運勢データが見つかりません。"
+        "fortuneNotFound": "運勢データが見つかりません。",
+        "oneLinerLabel": "ひとことで"
       },
       "preview": {
         "chartTitle": "紫微斗数命盤",

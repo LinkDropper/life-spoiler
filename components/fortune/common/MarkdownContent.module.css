@@ -12,7 +12,6 @@
   line-height: 1.6;
   color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   letter-spacing: 0.5px;
-  word-break: keep-all;
   overflow-wrap: anywhere;
 }
 
