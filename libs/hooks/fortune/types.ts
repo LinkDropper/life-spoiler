@@ -105,7 +105,11 @@ export interface YearlyPreviewResult {
   interpretation: {
     overview: {
       headline: string;
-      summary: string;
+      /** 레거시 / en·ja */
+      summary?: string;
+      /** 신규 구조화 — 한국어 yearly 응답 */
+      subSections?: { heading: string; body: string }[];
+      oneLiner?: string;
       keywords: string[];
     };
   };
