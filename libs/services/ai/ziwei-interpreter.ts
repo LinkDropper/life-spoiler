@@ -30,15 +30,31 @@ import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
 // Gemini responseSchema 정의
 // ============================================================
 
-/** 인생 스포일러 스키마 */
+/** Sub-section (heading + body) — 신규 구조화 응답용 */
+const SUB_SECTION_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    heading: { type: "string" },
+    body: { type: "string" },
+  },
+  required: ["heading", "body"],
+};
+
+/**
+ * 인생 스포일러 스키마.
+ * 신규 구조: subSections + oneLiner / 레거시: summary.
+ * 두 형태 모두 허용하기 위해 summary·subSections·oneLiner 는 required 에서 제외.
+ */
 const LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
     headline: { type: "string" },
     description: { type: "string" },
     summary: { type: "string" },
+    subSections: { type: "array", items: SUB_SECTION_SCHEMA },
+    oneLiner: { type: "string" },
   },
-  required: ["headline", "description", "summary"],
+  required: ["headline", "description"],
 };
 
 /** 핵심 시나리오 스키마 */
@@ -47,8 +63,10 @@ const LIFETIME_CORE_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: { type: "array", items: SUB_SECTION_SCHEMA },
+    oneLiner: { type: "string" },
   },
-  required: ["headline", "content"],
+  required: ["headline"],
 };
 
 /** 카테고리 응답 스키마 (재물/직업/인연/건강) */
@@ -57,13 +75,15 @@ const LIFETIME_CATEGORY_SCHEMA: GeminiResponseSchema = {
   properties: {
     headline: { type: "string" },
     content: { type: "string" },
+    subSections: { type: "array", items: SUB_SECTION_SCHEMA },
+    oneLiner: { type: "string" },
     tags: {
       type: "array",
       items: { type: "string" },
     },
     score: { type: "integer", minimum: 0, maximum: 100 },
   },
-  required: ["headline", "content", "tags", "score"],
+  required: ["headline", "tags", "score"],
 };
 
 /** 나이대별 시나리오 스키마 */
@@ -78,8 +98,10 @@ const AGE_SCENARIOS_SCHEMA: GeminiResponseSchema = {
           period: { type: "string" },
           headline: { type: "string" },
           content: { type: "string" },
+          bullets: { type: "array", items: { type: "string" } },
+          oneLiner: { type: "string" },
         },
-        required: ["period", "headline", "content"],
+        required: ["period", "headline"],
       },
     },
   },
@@ -150,6 +172,26 @@ const RESPONSE_SCHEMA_MAP: Record<InterpretationType, GeminiResponseSchema> = {
   lifetime_health: LIFETIME_CATEGORY_SCHEMA,
   lifetime_age_scenarios: AGE_SCENARIOS_SCHEMA,
   lifetime_profile_traits: PROFILE_TRAITS_SCHEMA,
+};
+
+/**
+ * 신규/레거시 응답 어느 쪽이든 안전하게 첫 문장(요약)을 뽑아낸다.
+ * - 신규: subSections[0].body 또는 oneLiner
+ * - 레거시: summary/content 의 첫 단락
+ * 섹션 간 중복 방지 컨텍스트 생성에만 쓰는 짧은 발췌.
+ */
+const extractOpeningLine = (
+  subSections: { heading: string; body: string }[] | undefined,
+  oneLiner: string | undefined,
+  legacyText: string | undefined,
+  maxLength = 80
+): string => {
+  const candidate =
+    subSections?.[0]?.body?.trim() ||
+    oneLiner?.trim() ||
+    legacyText?.split("\n\n")[0]?.trim() ||
+    "";
+  return candidate.slice(0, maxLength);
 };
 
 // ============================================================
@@ -595,10 +637,16 @@ export const generateFullInterpretation = async (
     ]);
 
     // 이전 해석 맥락 생성 (섹션 간 중복 방지)
+    // 신규 구조(subSections+oneLiner)와 레거시(summary/content) 모두 안전 처리
+    const lifeSpoilerOpening = extractOpeningLine(
+      lifeSpoiler.subSections,
+      lifeSpoiler.oneLiner,
+      lifeSpoiler.summary
+    );
     const stage1Context = `## 이미 사용한 표현 (절대 반복 금지!)
 - 스포일러 headline: "${lifeSpoiler.headline}"
 - 시나리오 headline: "${coreScenario.headline}"
-- 스포일러 첫 문장: "${lifeSpoiler.summary.split("\n\n")[0]?.slice(0, 80)}"
+- 스포일러 첫 문장: "${lifeSpoilerOpening}"
 위 headline과 같은 구조·어휘·패턴을 사용하지 마세요. 완전히 다른 표현을 창작하세요.`;
     const requestWithContext = { ...request, previousContext: stage1Context };
 
@@ -609,14 +657,24 @@ export const generateFullInterpretation = async (
     ]);
 
     // 3단계: 상세 시나리오 (인연, 건강) - 이전 headline 모두 전달
+    const wealthOpening = extractOpeningLine(
+      wealth.subSections,
+      wealth.oneLiner,
+      wealth.content
+    );
+    const careerOpening = extractOpeningLine(
+      career.subSections,
+      career.oneLiner,
+      career.content
+    );
     const stage2Context = `## 이미 사용한 표현 (절대 반복 금지!)
 - 스포일러 headline: "${lifeSpoiler.headline}"
 - 시나리오 headline: "${coreScenario.headline}"
 - 재물 headline: "${wealth.headline}"
 - 직업 headline: "${career.headline}"
-- 스포일러 첫 문장: "${lifeSpoiler.summary.split("\n\n")[0]?.slice(0, 80)}"
-- 재물 첫 문장: "${wealth.content.split("\n\n")[0]?.slice(0, 60)}"
-- 직업 첫 문장: "${career.content.split("\n\n")[0]?.slice(0, 60)}"
+- 스포일러 첫 문장: "${lifeSpoilerOpening}"
+- 재물 첫 문장: "${wealthOpening}"
+- 직업 첫 문장: "${careerOpening}"
 위 headline·첫 문장과 같은 구조·어휘·패턴을 사용하지 마세요.`;
     const requestWithStage2Context = {
       ...request,
