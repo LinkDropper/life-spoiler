@@ -5,15 +5,20 @@ import { useState } from "react";
 import { ChevronIcon } from "./ChevronIcon";
 import { MarkdownContent } from "./MarkdownContent";
 import { OneLinerAlert } from "./OneLinerAlert";
+import { SubSectionList } from "./SubSectionList";
 
 import styles from "./ScenarioItem.module.css";
+
+import type { SubSection } from "@/libs/services/ai/types";
 
 interface ScenarioItemProps {
   label: string;
   headline: string;
   content?: string;
-  /** 신규 구조: 짧은 불릿 리스트 */
+  /** 신규 구조: 짧은 불릿 리스트 (월별/나이대별 시나리오용) */
   bullets?: string[];
+  /** 신규 구조: heading + body 카드 리스트 (궁합 핵심 시나리오용) */
+  subSections?: SubSection[];
   /** 신규 구조: 마무리 alert 한 줄 정리 */
   oneLiner?: string;
   oneLinerLabel?: string;
@@ -25,12 +30,14 @@ export const ScenarioItem = ({
   headline,
   content,
   bullets,
+  subSections,
   oneLiner,
   oneLinerLabel,
   defaultExpanded = true,
 }: ScenarioItemProps) => {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const hasBullets = !!bullets && bullets.length > 0;
+  const hasSubSections = !!subSections && subSections.length > 0;
 
   return (
     <div className={styles.scenarioItem}>
@@ -47,7 +54,9 @@ export const ScenarioItem = ({
       </button>
       {expanded && (
         <>
-          {hasBullets ? (
+          {hasSubSections ? (
+            <SubSectionList items={subSections!} />
+          ) : hasBullets ? (
             <ul className={styles.scenarioBullets}>
               {bullets!.map((b, i) => (
                 <li key={i}>{b}</li>

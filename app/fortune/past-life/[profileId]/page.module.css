@@ -401,6 +401,21 @@
   margin: 0;
 }
 
+.lessonBullets {
+  margin: 0 0 12px;
+  padding-left: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.78));
+}
+
+.lessonBullets li {
+  padding-left: 4px;
+}
+
 /* ============================================================
    면책 문구
    ============================================================ */

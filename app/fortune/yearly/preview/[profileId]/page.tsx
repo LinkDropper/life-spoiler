@@ -11,6 +11,8 @@ import {
   SectionHeader,
   YearlyInsightsCard,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
 } from "@/components/fortune";
 import { useYearlyPreview } from "@/libs/hooks/fortune";
 import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
@@ -159,9 +161,24 @@ export default function YearlyFortunePreviewPage() {
             <h2 className={styles.previewHeadline}>
               {interpretation.overview.headline}
             </h2>
-            <MarkdownContent className={styles.previewDescription}>
-              {interpretation.overview.summary}
-            </MarkdownContent>
+            {interpretation.overview.subSections &&
+            interpretation.overview.subSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.overview.subSections} />
+                {interpretation.overview.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.overview.oneLiner}
+                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.overview.summary && (
+                <MarkdownContent className={styles.previewDescription}>
+                  {interpretation.overview.summary}
+                </MarkdownContent>
+              )
+            )}
             <p className={styles.previewTeaser}>{tPreview("yearlyTeaser")}</p>
           </section>
         )}

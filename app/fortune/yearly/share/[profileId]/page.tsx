@@ -16,6 +16,8 @@ import {
   ScenarioItem,
   ScenarioList,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
   ErrorState,
   type CategoryKey,
 } from "@/components/fortune";
@@ -105,6 +107,7 @@ export default function YearlyFortuneSharePage() {
   }
 
   const { interpretation, rawChart, yearlySihua } = result;
+  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
 
   // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
   const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
@@ -190,9 +193,24 @@ export default function YearlyFortuneSharePage() {
             <h2 className={styles.overviewHeadline}>
               {interpretation.overview.headline}
             </h2>
-            <MarkdownContent className={styles.overviewSummary}>
-              {interpretation.overview.summary}
-            </MarkdownContent>
+            {interpretation.overview.subSections &&
+            interpretation.overview.subSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.overview.subSections} />
+                {interpretation.overview.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.overview.oneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.overview.summary && (
+                <MarkdownContent className={styles.overviewSummary}>
+                  {interpretation.overview.summary}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
 
@@ -203,20 +221,39 @@ export default function YearlyFortuneSharePage() {
           onToggle={() => setCoreExpanded(!coreExpanded)}
         />
 
-        {coreExpanded && interpretation.coreScenario.content && (
-          <section className={styles.section}>
-            <div className={styles.coreScenario}>
-              {interpretation.coreScenario.headline && (
-                <h3 className={styles.coreHeadline}>
-                  {interpretation.coreScenario.headline}
-                </h3>
-              )}
-              <MarkdownContent>
-                {interpretation.coreScenario.content}
-              </MarkdownContent>
-            </div>
-          </section>
-        )}
+        {coreExpanded &&
+          (interpretation.coreScenario.subSections?.length ||
+            interpretation.coreScenario.content) && (
+            <section className={styles.section}>
+              <div className={styles.coreScenario}>
+                {interpretation.coreScenario.headline && (
+                  <h3 className={styles.coreHeadline}>
+                    {interpretation.coreScenario.headline}
+                  </h3>
+                )}
+                {interpretation.coreScenario.subSections &&
+                interpretation.coreScenario.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList
+                      items={interpretation.coreScenario.subSections}
+                    />
+                    {interpretation.coreScenario.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.coreScenario.oneLiner}
+                        label={oneLinerLabel}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.coreScenario.content && (
+                    <MarkdownContent>
+                      {interpretation.coreScenario.content}
+                    </MarkdownContent>
+                  )
+                )}
+              </div>
+            </section>
+          )}
 
         {/* 상세 시나리오 섹션 */}
         <SectionHeader
@@ -237,6 +274,9 @@ export default function YearlyFortuneSharePage() {
                   })}
                   headline={interpretation.categories[key].headline}
                   content={interpretation.categories[key].content}
+                  subSections={interpretation.categories[key].subSections}
+                  oneLiner={interpretation.categories[key].oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                   tags={interpretation.categories[key].tags}
                   showHashtag={true}
                 />
@@ -261,6 +301,9 @@ export default function YearlyFortuneSharePage() {
                   label={`${fortune.month}${t("monthly.monthUnit", { default: "월" })}`}
                   headline={fortune.headline}
                   content={fortune.content}
+                  bullets={fortune.bullets}
+                  oneLiner={fortune.oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                 />
               ))}
             </ScenarioList>

@@ -11,6 +11,8 @@ import {
   ZiweiChartGrid,
   SectionHeader,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
   CopyToast,
   ErrorState,
   ShareDrawer,
@@ -173,6 +175,7 @@ export default function PastLifeFortunePage() {
   }
 
   const { interpretation } = result;
+  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
 
   return (
     <div className={styles.page}>
@@ -272,9 +275,24 @@ export default function PastLifeFortunePage() {
             <h2 className={styles.overviewHeadline}>
               {interpretation.spoiler.headline}
             </h2>
-            <MarkdownContent className={styles.overviewSummary}>
-              {interpretation.spoiler.summary}
-            </MarkdownContent>
+            {interpretation.spoiler.subSections &&
+            interpretation.spoiler.subSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.spoiler.subSections} />
+                {interpretation.spoiler.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.spoiler.oneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.spoiler.summary && (
+                <MarkdownContent className={styles.overviewSummary}>
+                  {interpretation.spoiler.summary}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
 
@@ -322,20 +340,37 @@ export default function PastLifeFortunePage() {
           onToggle={() => setBirthExpanded(!birthExpanded)}
         />
 
-        {birthExpanded && interpretation.birth.content && (
-          <section className={styles.section}>
-            <div className={styles.sectionContent}>
-              {interpretation.birth.headline && (
-                <h3 className={styles.sectionHeadline}>
-                  {interpretation.birth.headline}
-                </h3>
-              )}
-              <MarkdownContent className={styles.sectionText}>
-                {interpretation.birth.content}
-              </MarkdownContent>
-            </div>
-          </section>
-        )}
+        {birthExpanded &&
+          (interpretation.birth.subSections?.length ||
+            interpretation.birth.content) && (
+            <section className={styles.section}>
+              <div className={styles.sectionContent}>
+                {interpretation.birth.headline && (
+                  <h3 className={styles.sectionHeadline}>
+                    {interpretation.birth.headline}
+                  </h3>
+                )}
+                {interpretation.birth.subSections &&
+                interpretation.birth.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList items={interpretation.birth.subSections} />
+                    {interpretation.birth.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.birth.oneLiner}
+                        label={oneLinerLabel}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.birth.content && (
+                    <MarkdownContent className={styles.sectionText}>
+                      {interpretation.birth.content}
+                    </MarkdownContent>
+                  )
+                )}
+              </div>
+            </section>
+          )}
 
         {/* 섹션 4: 삶의 여정 */}
         <SectionHeader
@@ -344,36 +379,56 @@ export default function PastLifeFortunePage() {
           onToggle={() => setJourneyExpanded(!journeyExpanded)}
         />
 
-        {journeyExpanded && interpretation.journey.content && (
-          <section className={styles.section}>
-            <div className={styles.sectionContent}>
-              {interpretation.journey.headline && (
-                <h3 className={styles.sectionHeadline}>
-                  {interpretation.journey.headline}
-                </h3>
-              )}
+        {journeyExpanded &&
+          (interpretation.journey.subSections?.length ||
+            interpretation.journey.content ||
+            interpretation.journey.events.length > 0) && (
+            <section className={styles.section}>
+              <div className={styles.sectionContent}>
+                {interpretation.journey.headline && (
+                  <h3 className={styles.sectionHeadline}>
+                    {interpretation.journey.headline}
+                  </h3>
+                )}
 
-              {interpretation.journey.events.length > 0 && (
-                <div className={styles.scenarioList}>
-                  {interpretation.journey.events.map((event, idx) => (
-                    <div key={idx} className={styles.scenarioItem}>
-                      <div className={styles.scenarioHeader}>
-                        <span className={styles.scenarioPeriod}>
-                          {event.period}
-                        </span>
+                {interpretation.journey.events.length > 0 && (
+                  <div className={styles.scenarioList}>
+                    {interpretation.journey.events.map((event, idx) => (
+                      <div key={idx} className={styles.scenarioItem}>
+                        <div className={styles.scenarioHeader}>
+                          <span className={styles.scenarioPeriod}>
+                            {event.period}
+                          </span>
+                        </div>
+                        <p className={styles.scenarioContent}>{event.event}</p>
                       </div>
-                      <p className={styles.scenarioContent}>{event.event}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
 
-              <MarkdownContent className={styles.sectionText}>
-                {interpretation.journey.content}
-              </MarkdownContent>
-            </div>
-          </section>
-        )}
+                {interpretation.journey.subSections &&
+                interpretation.journey.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList
+                      items={interpretation.journey.subSections}
+                    />
+                    {interpretation.journey.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.journey.oneLiner}
+                        label={oneLinerLabel}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.journey.content && (
+                    <MarkdownContent className={styles.sectionText}>
+                      {interpretation.journey.content}
+                    </MarkdownContent>
+                  )
+                )}
+              </div>
+            </section>
+          )}
 
         {/* 섹션 5: 죽음과 카르마 */}
         <SectionHeader
@@ -382,28 +437,46 @@ export default function PastLifeFortunePage() {
           onToggle={() => setEndExpanded(!endExpanded)}
         />
 
-        {endExpanded && interpretation.end.content && (
-          <section className={styles.section}>
-            <div className={styles.sectionContent}>
-              {interpretation.end.headline && (
-                <h3 className={styles.sectionHeadline}>
-                  {interpretation.end.headline}
-                </h3>
-              )}
-              <MarkdownContent className={styles.sectionText}>
-                {interpretation.end.content}
-              </MarkdownContent>
+        {endExpanded &&
+          (interpretation.end.subSections?.length ||
+            interpretation.end.content ||
+            interpretation.end.lastWords) && (
+            <section className={styles.section}>
+              <div className={styles.sectionContent}>
+                {interpretation.end.headline && (
+                  <h3 className={styles.sectionHeadline}>
+                    {interpretation.end.headline}
+                  </h3>
+                )}
+                {interpretation.end.subSections &&
+                interpretation.end.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList items={interpretation.end.subSections} />
+                    {interpretation.end.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.end.oneLiner}
+                        label={oneLinerLabel}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.end.content && (
+                    <MarkdownContent className={styles.sectionText}>
+                      {interpretation.end.content}
+                    </MarkdownContent>
+                  )
+                )}
 
-              {interpretation.end.lastWords && (
-                <div className={styles.lastWordsContainer}>
-                  <p className={styles.lastWordsText}>
-                    &ldquo;{interpretation.end.lastWords}&rdquo;
-                  </p>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+                {interpretation.end.lastWords && (
+                  <div className={styles.lastWordsContainer}>
+                    <p className={styles.lastWordsText}>
+                      &ldquo;{interpretation.end.lastWords}&rdquo;
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
 
         {/* 섹션 6: 전생 vs 현생 */}
         {interpretation.contrast &&
@@ -472,20 +545,39 @@ export default function PastLifeFortunePage() {
           onToggle={() => setConnectionsExpanded(!connectionsExpanded)}
         />
 
-        {connectionsExpanded && interpretation.connections.content && (
-          <section className={styles.section}>
-            <div className={styles.sectionContent}>
-              {interpretation.connections.headline && (
-                <h3 className={styles.sectionHeadline}>
-                  {interpretation.connections.headline}
-                </h3>
-              )}
-              <MarkdownContent className={styles.sectionText}>
-                {interpretation.connections.content}
-              </MarkdownContent>
-            </div>
-          </section>
-        )}
+        {connectionsExpanded &&
+          (interpretation.connections.subSections?.length ||
+            interpretation.connections.content) && (
+            <section className={styles.section}>
+              <div className={styles.sectionContent}>
+                {interpretation.connections.headline && (
+                  <h3 className={styles.sectionHeadline}>
+                    {interpretation.connections.headline}
+                  </h3>
+                )}
+                {interpretation.connections.subSections &&
+                interpretation.connections.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList
+                      items={interpretation.connections.subSections}
+                    />
+                    {interpretation.connections.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.connections.oneLiner}
+                        label={oneLinerLabel}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.connections.content && (
+                    <MarkdownContent className={styles.sectionText}>
+                      {interpretation.connections.content}
+                    </MarkdownContent>
+                  )
+                )}
+              </div>
+            </section>
+          )}
 
         {/* 섹션 8: 전생의 흔적 */}
         {interpretation.traces && interpretation.traces.traces.length > 0 && (
@@ -532,9 +624,25 @@ export default function PastLifeFortunePage() {
                         <h4 className={styles.lessonHeadline}>
                           {lesson.headline}
                         </h4>
-                        <MarkdownContent className={styles.lessonContent}>
-                          {lesson.content}
-                        </MarkdownContent>
+                        {lesson.bullets && lesson.bullets.length > 0 ? (
+                          <ul className={styles.lessonBullets}>
+                            {lesson.bullets.map((b, i) => (
+                              <li key={i}>{b}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          lesson.content && (
+                            <MarkdownContent className={styles.lessonContent}>
+                              {lesson.content}
+                            </MarkdownContent>
+                          )
+                        )}
+                        {lesson.oneLiner && (
+                          <OneLinerAlert
+                            text={lesson.oneLiner}
+                            label={oneLinerLabel}
+                          />
+                        )}
                       </div>
                     ))}
                   </div>

@@ -15,6 +15,8 @@ import {
   ScenarioItem,
   ScenarioList,
   MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
   ChevronIcon,
   EventBadge,
 } from "@/components/fortune";
@@ -184,6 +186,7 @@ export default function CompatibilityResultPage() {
 
   const { interpretation, charts, subScores } = result;
   const nameA = charts.profileA.name;
+  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
   const nameB = charts.profileB.name;
 
   const scoreBadgeText = `${tFortune("score")} ${result.score}${tCard("scoreUnit")}`;
@@ -196,11 +199,18 @@ export default function CompatibilityResultPage() {
 
   const shareUrl = `${window.location.origin}/compatibility/${pairId}/fortune/share?ref=${user?.id ?? ""}`;
 
+  // 카카오톡 공유용 짧은 설명 (신구조 oneLiner 우선, 레거시 spoiler 폴백)
+  const overviewBlurb =
+    interpretation.overviewOneLiner ||
+    interpretation.overviewSubSections?.[0]?.body ||
+    interpretation.spoiler ||
+    "";
+
   // 카카오톡 공유 핸들러
   const handleShareKakao = () => {
     shareToKakao({
       title: interpretation.headline,
-      description: interpretation.spoiler,
+      description: overviewBlurb,
       name: `${nameA} × ${nameB}`,
       webDomain: shareUrl,
     });
@@ -352,9 +362,24 @@ export default function CompatibilityResultPage() {
             <h2 className={styles.spoilerHeadline}>
               {interpretation.headline}
             </h2>
-            <MarkdownContent className={styles.spoilerText}>
-              {interpretation.spoiler}
-            </MarkdownContent>
+            {interpretation.overviewSubSections &&
+            interpretation.overviewSubSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.overviewSubSections} />
+                {interpretation.overviewOneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.overviewOneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.spoiler && (
+                <MarkdownContent className={styles.spoilerText}>
+                  {interpretation.spoiler}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
 
@@ -373,6 +398,9 @@ export default function CompatibilityResultPage() {
                   label={`${idx + 1}`}
                   headline={scenario.title}
                   content={scenario.content}
+                  subSections={scenario.subSections}
+                  oneLiner={scenario.oneLiner}
+                  oneLinerLabel={oneLinerLabel}
                 />
               ))}
             </ScenarioList>
@@ -396,6 +424,9 @@ export default function CompatibilityResultPage() {
                     label={tResult(`categories.${key}`)}
                     headline={category.headline}
                     content={category.content}
+                    subSections={category.subSections}
+                    oneLiner={category.oneLiner}
+                    oneLinerLabel={oneLinerLabel}
                     tags={category.tags}
                   />
                 );
@@ -412,9 +443,24 @@ export default function CompatibilityResultPage() {
         />
         {adviceExpanded && (
           <section className={styles.section}>
-            <MarkdownContent className={styles.adviceContent}>
-              {interpretation.advice}
-            </MarkdownContent>
+            {interpretation.adviceSubSections &&
+            interpretation.adviceSubSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.adviceSubSections} />
+                {interpretation.adviceOneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.adviceOneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.advice && (
+                <MarkdownContent className={styles.adviceContent}>
+                  {interpretation.advice}
+                </MarkdownContent>
+              )
+            )}
           </section>
         )}
       </main>
@@ -522,7 +568,10 @@ export default function CompatibilityResultPage() {
 interface CompatibilityCategoryItemProps {
   label: string;
   headline: string;
-  content: string;
+  content?: string;
+  subSections?: { heading: string; body: string }[];
+  oneLiner?: string;
+  oneLinerLabel?: string;
   tags: string[];
 }
 
@@ -530,9 +579,13 @@ const CompatibilityCategoryItem = ({
   label,
   headline,
   content,
+  subSections,
+  oneLiner,
+  oneLinerLabel,
   tags,
 }: CompatibilityCategoryItemProps) => {
   const [expanded, setExpanded] = useState(true);
+  const hasStructured = !!subSections && subSections.length > 0;
 
   return (
     <div>
@@ -579,18 +632,31 @@ const CompatibilityCategoryItem = ({
               {headline}
             </h4>
           )}
-          <MarkdownContent
-            style={{
-              fontSize: 18,
-              fontWeight: 400,
-              lineHeight: 1.6,
-              color: "rgba(255, 255, 255, 0.7)",
-              margin: "16px 0 0 0",
-              letterSpacing: 0.5,
-            }}
-          >
-            {content}
-          </MarkdownContent>
+          {hasStructured ? (
+            <div style={{ marginTop: 16 }}>
+              <SubSectionList items={subSections!} />
+            </div>
+          ) : (
+            content && (
+              <MarkdownContent
+                style={{
+                  fontSize: 18,
+                  fontWeight: 400,
+                  lineHeight: 1.6,
+                  color: "rgba(255, 255, 255, 0.7)",
+                  margin: "16px 0 0 0",
+                  letterSpacing: 0.5,
+                }}
+              >
+                {content}
+              </MarkdownContent>
+            )
+          )}
+          {oneLiner && (
+            <div style={{ marginTop: 16 }}>
+              <OneLinerAlert text={oneLiner} label={oneLinerLabel} />
+            </div>
+          )}
           {tags.length > 0 && (
             <div
               style={{
