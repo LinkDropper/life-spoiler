@@ -229,21 +229,25 @@ export async function POST(
     // 3-1. paid_at 이 NULL 이면 profile_free_access(promo) 보유 시 paid_at 승격
     if (!pair.paid_at) {
       const now = new Date().toISOString();
-      const { data: freeAccess } =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (supabase.from("profile_free_access") as any)
-          .select("id")
-          .eq("pair_id", pairId)
-          .eq("fortune_type", "compatibility")
-          .or(`expires_at.is.null,expires_at.gt.${now}`)
-          .maybeSingle();
+      const { data: freeAccess } = await supabase
+        .from("profile_free_access")
+        .select("id")
+        .eq("pair_id", pairId)
+        .eq("fortune_type", "compatibility")
+        .or(`expires_at.is.null,expires_at.gt.${now}`)
+        .maybeSingle();
       if (freeAccess) {
         const { error: updateError } =
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           await (supabase.from("compatibility_pairs") as any)
             .update({ paid_at: now })
             .eq("id", pairId);
-        if (!updateError) {
+        if (updateError) {
+          console.error("궁합 페어 paid_at 자동 승격 실패:", {
+            pairId,
+            error: updateError,
+          });
+        } else {
           pair.paid_at = now;
         }
       }
