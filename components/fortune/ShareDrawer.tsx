@@ -110,7 +110,7 @@ export const ShareDrawer = ({
             </span>
             <span className={styles.eventBannerText}>
               {eventBannerMessage ??
-                "공유한 링크로 친구가 가입하면 무료 운세 쿠폰을 메일로 보내드려요!"}
+                "공유한 링크로 친구가 가입하면 무료 운세 쿠폰을 쿠폰함에 넣어드려요!"}
             </span>
           </div>
         )}
