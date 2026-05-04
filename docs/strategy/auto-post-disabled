@@ -1,0 +1,18 @@
+생성일: 2026-05-04 KST
+사유: routine `life-spoiler-cmo`가 09시 일일 브리핑에서 결정한 "오늘 T3 1건만 발행"을 무시하고
+      12/15/18시 슬롯에서 모두 X 포스트를 발행함 (Phase 1 일일 상한 1건 초과).
+
+오늘 GitHub Actions post-to-x dispatch 트리거 (모두 routine에서 발생):
+- 12:16 KST (T3) — 브리핑 일치, OK
+- 15:41 KST (T4) — 브리핑 "슬롯 없음" 무시
+- 18:26 KST (T5) — 브리핑 "슬롯 없음" 무시
+
+조치:
+1. routine 프롬프트 신규 안 작성 (docs/strategy/cmo-routine-prompt.md) — 슬롯 검증 게이트 강화
+2. 사용자가 https://claude.ai/code/routines/trig_01VoTspzDZoJ2LnbEoBGwNRf 에서 prompt 본문 수동 교체 필요
+   (API의 v1→v2 변환에서 unknown field 에러로 자동 업데이트 실패)
+
+이 파일을 삭제하기 전:
+1. 프롬프트 수정 반영 확인
+2. 1~2일 routine fire를 모니터링해 슬롯 외 시각에 발행 안 되는 것 확인
+3. social-tracker.csv가 매 발행 후 정상 commit되는지 확인 (5/1 이후 4일간 누락)
