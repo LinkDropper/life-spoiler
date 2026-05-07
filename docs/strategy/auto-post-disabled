@@ -1,0 +1,10 @@
+자동 발행 중단 (Shadow ban 자동 감지)
+
+생성일: 2026-05-07T13:15:48.317Z
+사유: 직전 5건 평균 impressions 26.4 (임계값 30 미만)
+재개 조건:
+1. X Account analytics에서 reach 회복 확인
+2. 사용자가 본 파일을 수동 삭제
+3. 필요 시 Phase 단계 후퇴
+
+post-approval.md G7 규칙에 따라 shadow-ban-check.js가 자동 생성한 파일입니다.
