@@ -1,6 +1,12 @@
+import { defaultLocale } from "@/i18n/config";
+
 import { AIError } from "./errors";
 import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
 import { generatePastLifeImage } from "./image-generator";
+import {
+  formatCoordinatesForPrompt,
+  generatePastLifeCoordinates,
+} from "./past-life-seed";
 import { getPastLifePrompts } from "./prompts";
 import type {
   GeminiResponseSchema,
@@ -58,7 +64,19 @@ const PAST_LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
     headline: { type: "string" },
     existenceType: {
       type: "string",
-      enum: ["human", "animal", "plant", "insect", "nature"],
+      enum: [
+        "human",
+        "mammal",
+        "bird",
+        "reptile",
+        "fish",
+        "insect",
+        "plant",
+        "fungi",
+        "mineral",
+        "weather",
+        "landform",
+      ],
     },
     description: { type: "string" },
     summary: { type: "string" },
@@ -371,14 +389,22 @@ const PAST_LIFE_PALACES = [
 
 /**
  * 전생 운세용 명반 데이터를 AI에게 전달할 문자열로 포맷팅
+ *
+ * 전생 좌표(시드 기반)가 항상 데이터의 맨 앞에 와서, 모든 단계 프롬프트가
+ * 동일한 무대·시대·카테고리 위에서 일관되게 작동하도록 한다.
  */
 const formatPastLifeDataForAI = (
   request: Omit<ZiweiInterpretationRequest, "requestType">,
   previousContext?: string
 ): string => {
   const { user, chart, palaces } = request;
+  const locale = request.language ?? defaultLocale;
+  const coordinates = generatePastLifeCoordinates(request, locale);
+  const coordinateBlock = formatCoordinatesForPrompt(coordinates, locale);
 
-  let dataStr = `## User Info
+  let dataStr = `${coordinateBlock}
+
+## User Info
 - gender: ${user.gender === "male" ? "남성" : "여성"}
 - lunarBirthInfo: ${user.lunarBirthInfo}
 

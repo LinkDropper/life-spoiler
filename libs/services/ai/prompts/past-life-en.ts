@@ -4,52 +4,37 @@ import type { PastLifeInterpretationType } from "../types";
 // Past Life Fortune EN Prompts
 // ============================================================
 
-/** Main star × brightness past life existence type guide */
-const EXISTENCE_TYPE_GUIDE = `## 🌀 Main Star × Brightness Past Life Existence Type Guide
+/** Character derivation guide — coordinates first, no table */
+const EXISTENCE_TYPE_GUIDE = `## 🌀 Character Derivation Principles
 
-### ⚠️ Table Usage Rules (Critical!)
-- The table below is a **directional reference only** — using it as-is means **failure**.
-- **Do NOT pick specific beings listed in the table** (lotus, pine, bamboo, eagle, wolf, firefly, etc.).
-- Only reference the **type category** (human/animal/plant/etc.) from the table, and **always create an original being**.
-- Combine the main star's characteristics + brightness + Five Element Bureau + Four Transformations to derive a **unique being not found in this table**.
-- Example: Tian Tong Medium → Plant type reference → lotus/water lily (X, table copy) → marsh cattail, wetland sweet flag, pond water parsley, etc. (O, original creation)
+### 🔑 Priority 1: Honor the "Past Life Coordinates" in the input
+The input data contains 6-axis past life coordinates determined per user (stage, era, being category, scale, dramaturgy, position).
+**Pick a real, specific species or human archetype within these coordinates and create the character.**
+Drifting to a different category, era, or region is a failure.
 
-| Main Star | Bright (廟/旺) | Medium (得/利) | Dim (平/陷) |
-|-----------|---------------|---------------|------------|
-| Zi Wei | Human: royalty, noble, leader | Human: official, scholar | Animal: eagle, lion (lonely ruler) |
-| Tian Ji | Human: inventor, astronomer | Insect: spider, bee (intricate structure) | Insect: firefly, butterfly (faint light) |
-| Tai Yang | Human: general, politician, visionary | Human: teacher, healer | Nature: dawn mist, sunset |
-| Wu Qu | Human: blacksmith, merchant, warrior | Human: farmer, artisan | Nature: rock, mineral |
-| Tian Tong | Human: wandering poet, artist | Plant: lotus, water lily | Plant: moss, fern (quiet existence) |
-| Lian Zhen | Human: dancer, actor, diplomat | Animal: fox, peacock | Nature: bonfire, will-o'-wisp |
-| Tian Fu | Human: landowner, guild master | Human: steward, librarian | Animal: turtle, elephant |
-| Tai Yin | Human: poet, painter, healer | Plant: evening primrose, lily | Plant: dewdrop on a blade of grass |
-| Tan Lang | Animal: wolf, leopard (instinctive being) | Animal: cat, crow | Insect: mantis, beetle |
-| Ju Men | Human: judge, philosopher | Animal: owl, parrot | Nature: echo in a cave |
-| Tian Xiang | Human: chancellor, advisor | Animal: dolphin, hummingbird | Plant: ivy, wisteria |
-| Tian Liang | Human: hermit, sage, herbalist | Plant: bamboo, pine | Insect: ant, termite |
-| Qi Sha | Animal: hawk, eagle (lone hunter) | Animal: wolf, wild horse | Nature: storm, lightning |
-| Po Jun | Animal: humpback whale, migratory bird | Nature: river, volcano | Nature: meteor, wildfire |
-| (Empty) | — | — | Nature: wind, fog, stream (formless being) |
+### Priority 2: Color the character with the chart's energy
+Once coordinates set the stage, the chart data (Fortune Palace main star, brightness, Four Transformations) decides the **personality, fate, and temperament** of the character on that stage.
+- Same coordinates ("East Asia · Medieval · Human · Medium · Fierce trials") — proud star + Hua Quan → general; analytical star + Hua Ke → court historian.
+- Same coordinates ("Deep ocean · Antiquity · Fish · Medium · Serene") — stable star → schooling fish among many; lonely star → solitary wanderer.
 
-### Narrative Tone by Existence Type
-- **Human**: Historical period + social role + relationship-centered narrative. Specific era and region. Don't limit to East Asian courts — freely explore ALL eras, cultures, and occupations worldwide.
-- **Animal**: Habitat + instinct/behavior + survival in nature. Describe the world from the animal's perspective. Don't limit to common animals (eagle, wolf, cat) — explore diverse species.
-- **Plant**: Growing place + seasonal cycles + quiet observer's viewpoint. Slow the passage of time. Avoid cliché choices (lotus, pine, bamboo) — explore diverse plant species from around the world.
-- **Insect/Small creature**: Short but intense life + drama of the micro world. Greatness of the small world.
-- **Nature/Phenomenon**: Abstract, poetic narrative + cycles and flow. Senses of a formless being.
+### Narrative Tone by Category
+- **Human**: era, region, status/occupation, relationships — never limited to East Asian courts. All continents, cultures, occupations.
+- **Mammal / bird / reptile / fish**: habitat + instinct + group or solitary survival. Indigenous or endemic species of the coordinate's region, not generic ones.
+- **Insect / arthropod**: short, intense life, drama of the micro world.
+- **Flower / grass / shrub / tree / ancient tree**: growing place + seasonal cycles + quiet observer's viewpoint.
+- **Fungi / moss**: decay and rebirth, life in the shade. Real species (matsutake, reishi, rock moss).
+- **Mineral / rock**: real minerals (obsidian, amethyst, salt, mica). Narrative of formation and discovery.
+- **Weather phenomenon**: monsoon, thunderhead, morning fog, hail. Brief and fierce, or long and quiet.
+- **Landform**: river, mountain, cave, canyon, ocean current. Breathing on a thousand-year scale.
 
-### 🔑 Diversity Core Principle
-- **The entire Earth is your stage**: Don't limit to Korea/East Asia. Use all environments — Africa, South America, the Arctic, deep sea, deserts, etc.
-- **Time periods are free**: Not just ancient/medieval/modern — prehistoric, Ice Age, age of dinosaurs are all valid.
-- **Prefer rare and unexpected beings**: Choose beings that make people think "This can be a past life too?!" over obvious, predictable choices.
+### ⚠️ Hard Restrictions
+- **Forbidden**: spirits, fairies, ghosts, gods, dragons, unicorns, phoenixes, mermaids — any fantasy / mythological being.
+- **Forbidden**: "water spirit", "wind guardian", or any supernatural personification.
+- All beings must be **real or have really existed**.
 
-### ⚠️ Existence Type Restrictions (Critical!)
-- **Only things that exist in reality are allowed!**
-- Forbidden: spirits, fairies, ghosts, gods, dragons, unicorns, phoenixes, mermaids, and any fantasy/mythological creatures
-- Forbidden: "water spirit", "wind guardian", "forest spirit" and any supernatural beings
-- For nature type: only real natural phenomena/materials like "fog", "wind", "river", "rock", "wave"
-- Animals/plants/insects must be real species only (no imaginary creatures)`;
+### ⚠️ Specific Names Required
+- Generic / abstract names like "flower / tree / bird / fish" are **forbidden** — always a real species name.
+- Use species native to the coordinate's region — e.g., Andes → condor, llama, quinoa; Siberia → reindeer, tundra moss; Arabia → date palm, Arabian oryx.`;
 
 /** Five Element Bureau world-building guide */
 const WUXING_WORLD_GUIDE = `## 🌍 Five Element Bureau Past Life World
@@ -227,68 +212,53 @@ export const pastLifeUserPromptsEn: Record<PastLifeInterpretationType, string> =
 ## 🎯 Role: First Impression of the Past Life
 "Your past life was a ___!" — A striking, curiosity-provoking one-line spoiler.
 
-### Existence Type Decision
-1. Check the Fortune Palace main star and brightness
-2. Reference the existence type guide table
-3. Determine background/atmosphere from Five Element Bureau
-4. Determine past life mood (abundance/trials) from transformation positions
-5. Select final existenceType: one of "human", "animal", "plant", "insect", "nature"
+### Character Decision Procedure
+1. **Check the "Past Life Coordinates" in the input** (6 axes: stage, era, being category, scale, dramaturgy, position).
+2. Within the category, region, and era set by the coordinates, **pick a specific real species or human archetype** directly.
+3. Use the chart energy (Fortune Palace main star, brightness, Four Transformations) to color the **personality and fate** of that character.
+4. Pick existenceType aligned with the coordinate's "being category":
+   - Human → "human"
+   - Land mammal → "mammal" / Bird → "bird" / Reptile / amphibian → "reptile" / Fish / marine → "fish"
+   - Insect / arthropod → "insect"
+   - Flower / grass / shrub / tree / ancient tree → "plant" / Fungi / moss → "fungi"
+   - Mineral / rock → "mineral" / Weather phenomenon → "weather" / Landform → "landform"
 
-### ⚠️ Existence Type Restrictions (Critical!)
-- **Only things that exist in reality are allowed!**
-- Forbidden: spirits, fairies, ghosts, gods, dragons, unicorns, phoenixes, mermaids, and any fantasy/mythological creatures
-- Forbidden: "water spirit", "wind guardian", "forest spirit" and any supernatural beings
-- For nature type: only real natural phenomena/materials like "fog", "wind", "river", "rock", "wave"
-- Animals/plants/insects must be real species only (no imaginary creatures)
-
-### ⚠️ Specific Names Required (Critical!)
-- **Generic/abstract names like "flower", "tree", "bird", "fish" are absolutely forbidden!**
-- Must use **exact species names**:
-  - flower (X) → sunflower, forsythia, cherry blossom, camellia, daffodil (O)
-  - bird (X) → swallow, magpie, crane, owl, sparrow (O)
-  - fish (X) → sweetfish, carp, sea bream, clownfish (O)
-  - insect (X) → rhinoceros beetle, swallowtail butterfly, honeybee, praying mantis (O)
-  - tree (X) → ginkgo tree, pine tree, willow, zelkova (O)
-- Only use specific, real species that exist(ed). Headlines must include the specific species name.
+### ⚠️ Hard Restrictions
+- **No fantasy / mythological beings** (spirits, fairies, ghosts, gods, dragons, unicorns, phoenixes, mermaids).
+- **No supernatural personifications** ("water spirit", "wind guardian").
+- **No generic names** like "flower / tree / bird / fish" — always a real species name.
+- **Never drift off the coordinates** — if coordinates say "South America / Andes · Bird", only Andean birds (condor, Andean flamingo, Inca dove). Do not move to East Asia.
 
 ### headline (under 10 words)
-- A compressed one-line identity of the past life being
-- Concrete and visually evocative
-- Must include specific species/name (no abstract expressions)
-- Reference examples (do NOT copy): "A Wild Strawberry on a Misty Mountain", "A Wandering Poet of Joseon", "A Humpback Whale in the Pacific"
+- One line compressing coordinates + character
+- Must include specific species / name (no abstract terms)
+- Era and region of the coordinates should naturally show through
 
 ### description (under 20 words)
-- A supplementary one-line description of the headline
+- One supplementary line for the headline
 - Atmosphere or core characteristic of the being
 
 ### summary (200~300 words)
 Summarize the essence of the past life being in 2~3 paragraphs:
-- What kind of being it was (era/place/form)
+- What kind of being it was (era / place / form)
 - What temperament and energy it carried
 - Hints of connection to the present life
 
 ### imagePrompt (English, 100~200 words)
 Write an image generation prompt in **English**:
 - Style: "3D rendered, Pixar style, soft lighting, vibrant colors, dreamy atmosphere"
-- **⚠️ Image Diversity Required**: Every image must be unique and fresh. The following subjects are **BANNED** due to overuse:
-  - Lotus, pine tree, bamboo, cherry blossom
-  - Court lady / woman in hanbok
-  - Eagle, wolf, butterfly
-- Create a **specific, original visual scene** that matches the past life being
-- **Rules by existence type**:
-  - **Human**: portrait of specific person description — period attire, face/upper body close-up, mood, color palette
-  - **Animal**: "3D render of a [exact animal species], close-up. NEVER add human face or human features!" — describe the animal's pose, environment hints, lighting
-  - **Plant**: "3D render of a [exact plant species], close-up. NEVER add human face! Depict only the plant!" — describe the plant's form, light, colors
-  - **Insect**: "3D render of a [exact insect species], macro close-up. NEVER add human face!" — describe details, environment hints, lighting
-  - **Nature**: "3D render of [natural phenomenon], close-up. NEVER add human face!" — describe the phenomenon's form, colors, mood
-- **IMPORTANT: For non-human subjects, NEVER use words like 'portrait', 'face', 'person', 'human'!**
-- Include color palette and mood direction
+- Composition: subject centered, close-up (no full-body or wide-landscape shots)
+- The coordinates (region · era · species) must show visually
 - No text or characters in the image
+
+#### ⚠️ Rules by existenceType
+- **human**: "portrait of a [specific person matching coordinate era / region]" — period attire, face / upper body close-up.
+- **All other categories**: "3D render of a [exact species / phenomenon name], close-up" — **never** add human face or human features. Do not use the words "portrait", "face", "person", "human".
 
 Response format (JSON):
 {
   "headline": "Past life identity, under 10 words",
-  "existenceType": "human|animal|plant|insect|nature",
+  "existenceType": "human|mammal|bird|reptile|fish|insect|plant|fungi|mineral|weather|landform",
   "description": "Supplementary description, under 20 words",
   "summary": "200~300 words, essence of past life",
   "imagePrompt": "English image prompt, 100~200 words"
@@ -548,9 +518,13 @@ Response format (JSON):
 ## 🎯 Role: The World of Past Life
 Concretely depict the era, location, and atmosphere where the past life existed.
 
+### ⚠️ Coordinate Alignment Required
+The "Past Life Coordinates" in the input data fix the **stage (continent / region) and era** — match them exactly.
+If coordinates say "South America / Andes · Early modern", the era and location must be Andean and early-modern. Do not shift to Korea or East Asia.
+
 ### Narrative Points
-1. **Era**: Specific historical period (e.g., "Mid-Goryeo Dynasty", "Late Ice Age", "1800s Europe")
-2. **Location**: Specific region and environment (e.g., "A foggy fishing village on the southern coast", "Deep within the Siberian taiga forest")
+1. **Era**: Specific historical period (direction only — coordinates take priority): "11th-century Andalusia", "End of the last ice age", "1800s Balkans"
+2. **Location**: Specific region and environment (direction only — coordinates take priority): "A llama-herd path in the Andean highlands", "An oasis village on the edge of the Sahara"
 3. **Atmosphere**: Sensory description of that world - sounds, smells, temperature (100~150 chars)
 4. **Social Role**: The role/position of the past life in that world (30 chars max)
 5. **Description**: A narrative depiction of the world (400~600 chars, 3~4 paragraphs)
