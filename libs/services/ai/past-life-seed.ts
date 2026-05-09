@@ -225,9 +225,13 @@ const AXIS_OPTIONS: Record<Locale, Record<AxisName, string[]>> = {
 // ============================================================
 // 명반 → 소프트 가중치
 // ----------------------------------------------------------------
-// 캐릭터 결정의 70%는 시드(균등 분포)에서, 30%는 명반에서.
-// 가중치가 너무 강하면 다시 "복덕궁 = 캐릭터" 구조로 돌아가므로
-// 인덱스를 ±2 이내로만 미세 조정한다.
+// 캐릭터 결정의 다수는 시드(균등 분포)에서, 일부는 명반에서.
+// scale·drama·position 축은 ±2 이내로만 미세 조정한다 — 인접한
+// 톤만 바꾸고 좌표 자체를 뒤집지는 않기 위함.
+// category 축만 예외적으로 ±5까지 사용한다. 12개 카테고리는 인간/
+// 동물/식물/자연물 같은 큰 그룹으로 나뉘어 있어, 같은 그룹 내에서
+// 1~2칸 움직여 봐야 의미가 약하기 때문이다. "조용한 별 → 식물쪽"
+// 같은 그룹 간 이동이 필요할 때만 큰 값을 부여한다.
 // ============================================================
 
 interface ChartBias {
@@ -426,6 +430,20 @@ export const formatCoordinatesForPrompt = (
 // 실패 시 "human"으로 폴백.
 // ============================================================
 
+const VALID_EXISTENCE_TYPES = new Set([
+  "human",
+  "mammal",
+  "bird",
+  "reptile",
+  "fish",
+  "insect",
+  "plant",
+  "fungi",
+  "mineral",
+  "weather",
+  "landform",
+]);
+
 const CATEGORY_TO_TYPE: Array<{ pattern: RegExp; type: string }> = [
   { pattern: /인간|human|人間/i, type: "human" },
   { pattern: /포유류|mammal|哺乳/i, type: "mammal" },
@@ -433,7 +451,7 @@ const CATEGORY_TO_TYPE: Array<{ pattern: RegExp; type: string }> = [
   { pattern: /파충|양서|reptile|amphibian|爬虫|両生/i, type: "reptile" },
   { pattern: /어류|해양|fish|marine|魚|海洋/i, type: "fish" },
   { pattern: /곤충|절지|insect|arthropod|昆虫|節足/i, type: "insect" },
-  { pattern: /꽃|풀|관목|교목|고목|tree|flower|grass|shrub|花|草|低木|高木|古木/i, type: "plant" },
+  { pattern: /꽃|풀|관목|교목|고목|plant|tree|flower|grass|shrub|花|草|低木|高木|古木/i, type: "plant" },
   { pattern: /균류|이끼|fungi|moss|菌|苔/i, type: "fungi" },
   { pattern: /광물|암석|mineral|rock|鉱物|岩石/i, type: "mineral" },
   { pattern: /기상|weather|wind|cloud|rain|気象|風|雲|雨/i, type: "weather" },
@@ -441,6 +459,10 @@ const CATEGORY_TO_TYPE: Array<{ pattern: RegExp; type: string }> = [
 ];
 
 export const categoryLabelToExistenceType = (categoryLabel: string): string => {
+  // LLM이 이미 schema enum 값을 정확히 반환한 경우 그대로 통과
+  const trimmed = categoryLabel.trim().toLowerCase();
+  if (VALID_EXISTENCE_TYPES.has(trimmed)) return trimmed;
+  // 좌표 라벨이 들어왔으면 매핑
   for (const { pattern, type } of CATEGORY_TO_TYPE) {
     if (pattern.test(categoryLabel)) return type;
   }

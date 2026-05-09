@@ -4,6 +4,7 @@ import { AIError } from "./errors";
 import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
 import { generatePastLifeImage } from "./image-generator";
 import {
+  categoryLabelToExistenceType,
   formatCoordinatesForPrompt,
   generatePastLifeCoordinates,
 } from "./past-life-seed";
@@ -470,6 +471,20 @@ ${userPrompt}`;
   );
 
   const parsed = parseJsonResponse<unknown>(response);
+
+  // spoiler.existenceType은 schema enum 11종 중 하나여야 하지만, LLM이 좌표
+  // 라벨("인간"·"포유류 (육상)"·"Land mammal" 등)을 그대로 출력해 zod 검증이
+  // 깨지는 경우를 대비해 parse 직전 정규화한다.
+  if (
+    interpretationType === "past_life_spoiler" &&
+    parsed !== null &&
+    typeof parsed === "object" &&
+    "existenceType" in parsed &&
+    typeof (parsed as { existenceType: unknown }).existenceType === "string"
+  ) {
+    const obj = parsed as { existenceType: string };
+    obj.existenceType = categoryLabelToExistenceType(obj.existenceType);
+  }
 
   try {
     return schema.parse(parsed);

@@ -175,6 +175,20 @@ describe("formatCoordinatesForPrompt", () => {
 
 describe("categoryLabelToExistenceType", () => {
   const cases: [string, string][] = [
+    // LLM이 이미 enum 값을 정확히 반환한 경우 — 그대로 통과
+    ["human", "human"],
+    ["mammal", "mammal"],
+    ["bird", "bird"],
+    ["reptile", "reptile"],
+    ["fish", "fish"],
+    ["insect", "insect"],
+    ["plant", "plant"],
+    ["fungi", "fungi"],
+    ["mineral", "mineral"],
+    ["weather", "weather"],
+    ["landform", "landform"],
+    [" Human ", "human"], // trim + lowercase 확인
+    // 좌표 라벨 (KO/EN/JA) → enum 매핑
     ["인간", "human"],
     ["Human", "human"],
     ["人間", "human"],
