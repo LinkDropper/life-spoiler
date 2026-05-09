@@ -714,7 +714,23 @@ export type PastLifeInterpretationType =
 // - 신규: subSections + oneLiner / 레거시: summary
 export const PastLifeSpoilerResponseSchema = z.object({
   headline: z.string(),
-  existenceType: z.enum(["human", "animal", "plant", "insect", "nature"]),
+  // 신규 11개 카테고리 + 레거시 2개("animal","nature") — 기존 캐시 호환용.
+  // 새 응답은 신규 11개만 사용한다 (Gemini schema enum도 신규 11개).
+  existenceType: z.enum([
+    "human",
+    "mammal",
+    "bird",
+    "reptile",
+    "fish",
+    "insect",
+    "plant",
+    "fungi",
+    "mineral",
+    "weather",
+    "landform",
+    "animal",
+    "nature",
+  ]),
   description: z.string(),
   summary: z.string().optional().default(""),
   subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
