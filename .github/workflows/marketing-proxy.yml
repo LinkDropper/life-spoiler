@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Preflight 안전 게이트 (G1~G6)
+      - name: Preflight 검증 (일일 상한 + jitter)
         id: preflight
         run: node scripts/marketing/preflight-check.js
         env:
@@ -70,7 +70,7 @@ jobs:
           DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
           DISCORD_USERNAME: "Social Media Marketer"
           DISCORD_TEXT: |
-            X 포스트 발행 완료 (${{ steps.preflight.outputs.phase }})
+            X 포스트 발행 완료
             ${{ steps.post.outputs.tweet_url }}
 
             ${{ github.event.client_payload.text }}
@@ -192,27 +192,11 @@ jobs:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           X_METRICS_DEBUG: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
 
-      - name: Shadow ban 자동 감지 (G7)
-        id: shadow_check
-        run: node scripts/marketing/shadow-ban-check.js --csv docs/metrics/daily-x-latest.csv
-
-      - name: Discord 알림 (Shadow ban 감지)
-        if: steps.shadow_check.outputs.shadow_ban_detected == 'true'
-        run: node scripts/marketing/discord-notify.js
-        env:
-          DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
-          DISCORD_USERNAME: "Safety Gate"
-          DISCORD_TEXT: |
-            ⚠️ Shadow ban 의심 — 자동 발행 중단
-            직전 5건 평균 impressions: ${{ steps.shadow_check.outputs.avg_impressions }}
-            Kill switch (`docs/strategy/auto-post-disabled`) 자동 활성화됨.
-            X 노출 회복 확인 후 파일 수동 삭제 필요.
-
-      - name: 메트릭 파일 + kill switch 커밋
+      - name: 메트릭 파일 커밋
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/metrics/daily-x-latest.csv docs/strategy/auto-post-disabled 2>/dev/null || true
+          git add docs/metrics/daily-x-latest.csv
           if git diff --cached --quiet; then
             echo "변경사항 없음"
           else
