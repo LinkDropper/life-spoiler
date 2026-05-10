@@ -18,10 +18,9 @@ X 계정 재정지 방지를 위한 사전 게이트. 하나라도 실패하면 
 ### G1. Kill switch 확인
 - `docs/strategy/auto-post-disabled` 파일이 존재하면 발행 중단. Discord 알림만 발송, social-tracker.csv 기록 없음
 
-### G2. Phase별 발행 상한 준수 (`docs/strategy/weekly-plan.md`의 Phase 표 참조)
-- **Phase 1** (~2026-05-10): 일 1건. 같은 날 이미 `posted` 기록 있으면 중단
-- **Phase 2** (2026-05-11~2026-05-26): 일 2건
-- **Phase 3** (2026-05-27~): 일 3건
+### G2. 일일 발행 상한 준수 (`docs/strategy/weekly-plan.md`의 Phase 표 참조)
+- **모든 Phase**: 일 1건/일 고정 (2026-05-10 결정, 재정지 방지 보수 운영). 같은 날 이미 `posted` 기록 있으면 중단
+- 향후 데이터 안정성 확인 후 별도 PR로 상향 조정. Phase 구분 자체는 외부 링크·실험 정책에만 적용
 
 ### G3. 같은 자연시(hour) 다중 발행 금지
 - 직전 60분 이내 `posted` 기록 있으면 다음 슬롯으로 미룸 (3분할 운세 같은 봇 시그니처 차단)
@@ -84,7 +83,7 @@ X 계정 재정지 방지를 위한 사전 게이트. 하나라도 실패하면 
 위 G1~G7 게이트가 정식 안전 장치다. 아래는 운영 시 자주 참조하는 요약:
 
 - **동시 실행 금지**: 같은 자연시(60분 window) 안에 이미 posted 기록이 있으면 작성 중단 (G3)
-- **일일 상한**: Phase별 동적 (Phase 1: 1건, Phase 2: 2건, Phase 3: 3건). 정지 이전의 4건 상한은 폐기 (G2)
+- **일일 상한**: 모든 Phase에서 1건/일 고정 (2026-05-10 결정). 정지 이전의 4건 상한은 폐기. 향후 안정성 확인 후 상향 조정 검토 (G2)
 - **Kill switch**: `docs/strategy/auto-post-disabled` 파일이 존재하면 모든 자동 발행을 건너뛰고 Discord로 알림만 발송 (G1)
 - **Shadow ban 자동 감지**: 평균 impressions < 30이면 자동 kill switch 활성화 (G7)
 

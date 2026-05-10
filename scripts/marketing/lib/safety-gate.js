@@ -19,10 +19,12 @@ const KILL_SWITCH_PATH = path.join(
 );
 const TRACKER_PATH = path.join(REPO_ROOT, "docs", "social-tracker.csv");
 
+// dailyLimit은 당분간 모든 Phase에서 1건/일로 고정 (재정지 방지 보수 운영).
+// 외부 링크/실험 정책은 Phase별로 차등 유지.
 const PHASE_TABLE = [
   { id: "phase-1", start: "2026-04-27", end: "2026-05-10", dailyLimit: 1 },
-  { id: "phase-2", start: "2026-05-11", end: "2026-05-26", dailyLimit: 2 },
-  { id: "phase-3", start: "2026-05-27", end: "9999-12-31", dailyLimit: 3 },
+  { id: "phase-2", start: "2026-05-11", end: "2026-05-26", dailyLimit: 1 },
+  { id: "phase-3", start: "2026-05-27", end: "9999-12-31", dailyLimit: 1 },
 ];
 
 const STAR_KEYWORDS = [
