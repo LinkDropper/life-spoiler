@@ -4,7 +4,51 @@
 
 ## 최신 인사이트
 
-_최종 업데이트: 2026-04-20 14:25 KST (주간 리뷰 A단계 — 일요일 4/19 21:07 실패 복구 실행)_
+_최종 업데이트: 2026-05-10 21:06 KST (일요일 T6 주간 리뷰 — Phase 1 전환 평가 포함)_
+
+### 2026-05-04~10 주간 리뷰 (W19 종합, Phase 1 연장주)
+
+**리뷰 컨텍스트**
+- Phase 1 (계정 복구 모드) 14일 완료 시점. Phase 전환 평가 실시.
+- GA4 traffic/campaigns 자동 수집 데이터 부재 (수집 잡 갱신 필요). X 메트릭은 daily-x-latest.csv 기준.
+- Naver 트렌드 데이터: weekly-naver-trends.csv 미생성 (cron 실패 추정). 트렌드 분석 skip.
+
+**단계 0: Phase 전환 평가 결과**
+- 조건 (a) 정지/락 0건: ✓ (Phase 1 기간 중 정지/락 없음)
+- 조건 (b) 평균 impressions ≥ 30: ✗ **미달** (Phase 1 포스트 4건 평균 21.0 — 데이터: 7, 26, 26, 25)
+- **결론: Phase 1 7일 연장 → 2026-05-17까지. Phase 2 시작 2026-05-18로 순연.**
+
+**North Star (activeUsers)**
+- GA4 수집 데이터 없음 (가장 최근 파일: 2026-04-20 기준). 측정 불가.
+
+**X 포스트 현황 (Phase 1 전체, 2026-04-27~05-10)**
+- X metrics 기준 확인된 Phase 1 포스트: 4건 (04-30 포스트는 X metrics에 미포함)
+  - 2026-05-07 T5: 공감형 — impressions **7** (최저)
+  - 2026-05-04 T3: 지식형(대한) — impressions **26**
+  - 2026-05-04 T3: 지식형(의지력) — impressions **26** ⚠️ 당일 2건 발행 (일일 상한 위반 가능성)
+  - 2026-05-02 T6: 지식형(천기성) — impressions **25**
+- social-tracker.csv 기록 누락 심각: X metrics 4건 중 1건만 CSV에 기록됨 → 추후 수동 보완 필요
+- 주간 성과 (W19, 05-04~10): 총 3건, impressions 59, likes 3, RT 0, clicks 0
+
+**G7 Shadow ban 상태**
+- 직전 5건 평균: (7+26+26+25+67) / 5 = **30.2** — 임계값 30 이상 유지. Kill switch 생성 안 함.
+- ⚠️ 경고: 5/7 포스트 impressions 7로 급락. 5/11 이후 impressions 회복 필요. 다음 평가 시 30 이하이면 kill switch 자동 활성화.
+
+**단계 1.5: 상위 포스트 패턴**
+- social-tracker.csv posted 24건 (임계값 20건 충족)
+- Phase 1은 UTM 링크 금지 → GA4 캠페인 매핑 불가 → activeUsers/post 측정 불가
+- 결론: **데이터 부족 (UTM 없어 캠페인 귀속 불가)** → 이번 주 패턴 추출 skip
+
+**단계 3: Naver 트렌드**
+- weekly-naver-trends.csv 미존재 (KST 17:30 cron 실패 추정) → skip
+
+**개선 필요 사항 (W19)**
+- social-tracker.csv 정합성: Phase 1 X 발행 다수가 CSV에 누락됨. GA 없는 상황에서 유일한 발행 이력인 만큼 기록 완전성 확보 필요.
+- 2026-05-04 2건 발행: X metrics에 같은 날 2건 기록 → 일일 상한(1건/일) 위반 여부 조사 필요. preflight-check.js 또는 cron 설정 점검 권고.
+- Naver trends cron 실패: weekly-naver-trends 잡 실행 여부 GitHub Actions 로그 확인 필요.
+- GA4 수집 재개: daily-ga4-{traffic|campaigns}.csv가 04-16 이후 갱신되지 않음. 수집 잡 점검 필요.
+
+---
 
 ### 2026-04-13~19 주간 리뷰 (W16 종합)
 
