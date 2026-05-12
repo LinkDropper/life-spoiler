@@ -105,6 +105,12 @@ const REDIRECTS: Record<string, RedirectConfig> = {
     utm_medium: "social",
     utm_campaign: "2026-04-spring-start",
   },
+  wuqu: {
+    destination: "/",
+    utm_source: "x",
+    utm_medium: "social",
+    utm_campaign: "2026-05-star-wuqu",
+  },
   jeonttaek: {
     destination: "/",
     utm_source: "x",
