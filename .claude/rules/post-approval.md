@@ -28,7 +28,7 @@ globs:
 
 ## AI 자체 승인 체크리스트
 
-위 게이트를 통과한 후, 아래 11개 항목을 **전부 통과**해야 발행한다. 하나라도 실패하면 발행을 건너뛰고 실패 사유를 social-tracker.csv에 `status=failed`, notes 컬럼에 기록한다.
+위 게이트를 통과한 후, 아래 14개 항목을 **전부 통과**해야 발행한다. 하나라도 실패하면 발행을 건너뛰고 실패 사유를 social-tracker.csv에 `status=failed`, notes 컬럼에 기록한다.
 
 **브랜드 보이스**
 1. 존댓말 사용 (`~요`, `~습니다`) — 반말 금지
@@ -44,6 +44,7 @@ globs:
 7. X 포스트: 단일 포스트 280자 이내 (스레드는 포스트당 280자)
 8. 링크 포함 시 UTM 파라미터 완비 (`utm_source`, `utm_medium`, `utm_campaign` 모두 있음, 값은 소문자/하이픈)
 9. 해시태그 2~4개
+14. **본문 URL은 CTA형(`--type cta`)에서만 허용**. 그 외 유형(질문/지식/스토리/트렌드/공감)에는 어떤 URL도 포함하지 않는다. `safety-gate.js`의 `checkUrlPolicy`가 차단.
 
 **중복/일관성**
 10. `docs/social-tracker.csv` 최근 7일 기록 확인, 유사 주제/동일 문구 없음
@@ -55,9 +56,9 @@ globs:
 
 ## 발행 절차
 
-1. 초안 작성 후 11개 체크리스트 자체 검증
+1. 초안 작성 후 14개 체크리스트 자체 검증
 2. 전부 통과 → social-tracker.csv에 `status=approved` 기록
-3. `node scripts/marketing/post-to-x.js --text "내용" --via-github` 실행
+3. `node scripts/marketing/post-to-x.js --text "내용" --summary "한 줄 요약" --type {cta|knowledge|question|story|trend|empathy} --via-github` 실행 (summary·type 필수)
 4. `marketing-proxy.yml`의 `post-to-x`가 발행 + Discord 알림 자동 처리
 5. social-tracker.csv status를 posted로 업데이트
 6. 체크리스트 실패 항목이 있으면 `status=failed`, notes 컬럼에 실패 사유 기록 (Discord 알림 발송 안 함 — 노이즈 방지)

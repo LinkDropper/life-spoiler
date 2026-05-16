@@ -89,10 +89,23 @@ const computeJitterDelaySeconds = (rows = parseTracker()) => {
   return minute * 60;
 };
 
-const runAllGates = (_text) => {
+const checkUrlPolicy = (text, postType) => {
+  const containsUrl = /https?:\/\//i.test(text || "");
+  if (!containsUrl) return { ok: true };
+  if (postType === "cta") return { ok: true };
+  return {
+    ok: false,
+    reason: `URL은 CTA형 포스트(type=cta)에서만 허용됩니다 (현재 type="${postType || "미지정"}")`,
+  };
+};
+
+const runAllGates = (text, opts = {}) => {
+  const postType = opts.postType ?? process.env.TWEET_TYPE ?? "";
   const rows = parseTracker();
-  const result = checkDailyLimit(rows);
-  if (!result.ok) return result;
+  const limit = checkDailyLimit(rows);
+  if (!limit.ok) return limit;
+  const url = checkUrlPolicy(text, postType);
+  if (!url.ok) return url;
   return { ok: true };
 };
 
@@ -101,5 +114,6 @@ module.exports = {
   parseTracker,
   checkDailyLimit,
   computeJitterDelaySeconds,
+  checkUrlPolicy,
   runAllGates,
 };

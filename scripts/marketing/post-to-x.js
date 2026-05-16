@@ -4,7 +4,12 @@
  * X (Twitter) 자동 발행 스크립트 — OAuth 2.0 PKCE refresh flow.
  *
  * 사용법:
- *   node scripts/marketing/post-to-x.js --text "포스트 내용"
+ *   node scripts/marketing/post-to-x.js --text "포스트 내용" --summary "한 줄 요약" --type knowledge --via-github
+ *
+ * 옵션:
+ *   --text     본문 (필수)
+ *   --summary  social-tracker.csv content_summary 열에 들어갈 50자 이내 요약 (GitHub Actions가 사용)
+ *   --type     포스트 유형 (cta/knowledge/question/story/trend/empathy). URL은 cta에서만 허용.
  *
  * 실행 환경에 따라 자동으로 경로를 선택합니다:
  *   - 로컬(CMO 에이전트): GitHub Actions를 트리거하여 발행
@@ -35,9 +40,34 @@ const getArg = (name) => {
 };
 
 const text = getArg("text") || process.env.TWEET_TEXT;
+const summary = getArg("summary") || process.env.TWEET_SUMMARY || "";
+const postType = getArg("type") || process.env.TWEET_TYPE || "";
 
 if (!text) {
   console.error("Error: --text 또는 TWEET_TEXT 환경변수가 필요합니다.");
+  process.exit(1);
+}
+
+const ALLOWED_TYPES = new Set([
+  "cta",
+  "knowledge",
+  "question",
+  "story",
+  "trend",
+  "empathy",
+]);
+if (postType && !ALLOWED_TYPES.has(postType)) {
+  console.error(
+    `Error: --type 값 "${postType}"가 허용 목록에 없습니다 (${[...ALLOWED_TYPES].join("/")}).`
+  );
+  process.exit(1);
+}
+
+const containsUrl = /https?:\/\//i.test(text);
+if (containsUrl && postType !== "cta") {
+  console.error(
+    "Error: 본문 URL은 --type cta 포스트에서만 허용됩니다. (post-approval.md 항목 14)"
+  );
   process.exit(1);
 }
 
@@ -165,7 +195,7 @@ const postTweet = async (accessToken, tweetText) => {
 
 const dispatchViaGithub = async () => {
   const { dispatch } = require("./lib/github-dispatch");
-  await dispatch("post-to-x", { text });
+  await dispatch("post-to-x", { text, summary, type: postType });
   console.log(
     "GitHub Actions 릴레이로 트윗 발행 요청 완료.\n" +
       "→ https://github.com/linkdropper/life-spoiler/actions 에서 진행 확인"
