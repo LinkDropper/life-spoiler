@@ -48,7 +48,7 @@ The success criterion: a close friend or family member of the subject must recog
 ## Distinctive features (scan the photo and include any that exist)
 - **Moles, freckles, beauty marks, scars** that are prominent on the face → render them as small flat shapes in matching tones.
 - **Dimples** when smiling or visible at rest → render as a tiny soft shadow shape.
-- **Glasses** that define the person's look → keep them, rendered as a simple flat frame shape.
+- **Glasses (transparent / prescription eyewear)**: whenever the subject is wearing glasses in the source photo, always keep them. Render the frame as a single simple flat-color shape that follows the actual frame silhouette (round / square / oval / cat-eye / rimless), with the eyes clearly visible through the lenses.
 - **Beard, mustache, stubble** → render as a flat darker plane following the hair color tone.
 - **Visible earrings or jewelry that define the look** → omit (jewelry is generally simplified away), unless it is part of the silhouette.
 - **Ethnic or cultural styling cues** (hijab, religious accessories, traditional collar) that define the silhouette → preserve.
@@ -78,7 +78,7 @@ Produce a single square (1:1) poster portrait of one person, framed from above t
 - Overall mood: serene, poised, approachable.
 
 ## Core stylistic principle
-Every form is defined by **the edges where adjacent flat color planes meet**. Construct the portrait the way a papercut artist assembles interlocking shapes, or a screen-printer lays down successive flat color layers. The image reads as a **vector illustration poster**, not a painting and not a photograph.
+Every form is defined by **the edges where adjacent flat color planes meet**. Construct the portrait the way a papercut artist assembles interlocking shapes, or a screen-printer lays down successive flat color layers. The image reads as a **vector illustration poster**, not a painting and not a photograph. Edges between planes are generally sharp and clean, **with the two specific exceptions called out below** — one narrow soft-edged shadow plane on the nose-side, and one soft-edged shadow plane on the clothing's shadow side. Everywhere else, plane edges stay crisp.
 
 ## How to render each part
 - **Face**: sculpt with **two to three flat skin tones** — one base midtone for the lit side, plus one or two darker tones placed as distinct shapes on the shadow side (cheek-side, jaw underside, nose-side, neck under chin). The *shapes* of the darker planes give the face its volume.
@@ -135,7 +135,7 @@ Choose colors only from the following palette so the portrait stays tonally unif
 - Lip detail → flat color shapes only.
 
 # HANDLING SOURCE-PHOTO VARIATIONS
-- **Sunglasses or opaque eyewear**: render the eyes that sit beneath, inferred from facial structure. Keep eyewear when it is clearly transparent and part of the personal look.
+- **Sunglasses or opaque eyewear** (lenses block the eyes): omit the eyewear and render the eyes that sit beneath, inferred from facial structure. (Transparent prescription glasses are handled by the Distinctive features rule above — they are always kept.)
 - **Mask or partially covered face**: reconstruct the complete unmasked face from visible cues (eyes, forehead, jawline, hair).
 - **Side or angled view**: reconstruct a front-facing version of the subject based on the visible features. The output always faces the viewer directly. Even when reconstructing, preserve the identity anchors above.
 - **Hat**: keep when it defines the silhouette and personality; otherwise render the natural hair.
@@ -146,7 +146,7 @@ Choose colors only from the following palette so the portrait stays tonally unif
 - The subject's apparent age, gender presentation, ethnic features, skin depth, and hairstyle all match the source photo.
 - Any distinctive features (mole / glasses / dimple / beard / hairline) present in the photo are visible in the illustration.
 - The image reads unmistakably as a **flat vector poster illustration** at the level of a Monocle cover or a Korean editorial illustration column.
-- All color transitions are **sharp clean edges between flat color planes**.
+- Color transitions are **sharp clean edges between flat color planes**, except for the two permitted soft-edged shadow planes on the nose-side and on the clothing's shadow side.
 - The face feels **warm, calm, and approachable** — alive, never blank.
 - The composition feels **spacious**: head sits inside a generous frame with breathing room on all four sides.
 - The background is one uniform #ECBA5E filling every pixel outside the subject.
