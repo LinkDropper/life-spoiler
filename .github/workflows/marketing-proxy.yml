@@ -31,19 +31,23 @@ jobs:
   post-to-x:
     if: github.event.action == 'post-to-x'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           ref: develop
+          token: ${{ secrets.AUTO_FIX_PAT }}
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Preflight 검증 (일일 상한 + jitter)
+      - name: Preflight 검증 (일일 상한 + jitter + URL 정책)
         id: preflight
         run: node scripts/marketing/preflight-check.js
         env:
           TWEET_TEXT: ${{ github.event.client_payload.text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type }}
 
       - name: Jitter 대기 (인간적 발행 패턴)
         if: steps.preflight.outputs.passed == 'true' && github.event.client_payload.skip_jitter != true
@@ -62,6 +66,26 @@ jobs:
           X_REFRESH_TOKEN: ${{ secrets.X_REFRESH_TOKEN }}
           AUTO_FIX_PAT: ${{ secrets.AUTO_FIX_PAT }}
           TWEET_TEXT: ${{ github.event.client_payload.text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type }}
+
+      - name: social-tracker.csv 자동 기록
+        if: success() && steps.post.outputs.tweet_url != ''
+        env:
+          TWEET_TEXT: ${{ github.event.client_payload.text }}
+          TWEET_SUMMARY: ${{ github.event.client_payload.summary }}
+          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_URL: ${{ steps.post.outputs.tweet_url }}
+        run: |
+          node scripts/marketing/lib/append-tracker.js
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/social-tracker.csv
+          if git diff --cached --quiet; then
+            echo "tracker 변경 없음 (이미 기록됨)"
+          else
+            git commit -m "[마케팅] social-tracker.csv 자동 기록 — $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+            git push
+          fi
 
       - name: Discord 알림 (트윗 URL 포함)
         if: success() && steps.post.outputs.tweet_url != ''
