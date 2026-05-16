@@ -20,18 +20,30 @@ memory: project
 
 ## 실행 절차
 
-매번 활성화될 때마다:
+매번 활성화될 때마다 **반드시 이 순서대로 가드를 통과**한 뒤에야 본 업무를 수행한다.
 
-1. 현재 날짜와 시간(KST) 확인
-2. `docs/strategy/weekly-plan.md` 읽기
-3. 현재 요일과 시간대(T1~T6)에 해당하는 **모든 업무** 확인
-4. **포스팅 우선 실행**: 현재 시간대에 X 포스트 업무가 있으면 반드시 먼저 수행 (브리핑/실험 등 다른 업무와 관계없이)
-5. 브리핑, 실험, 리뷰 등 나머지 업무 순차 수행
-6. **콘텐츠 승인 프로세스 실행** (아래 참조)
-7. 승인 완료 시 자동 발행
-8. Discord 알림은 "Discord 알림 정책"에 정의된 경우에만 발송 (매 실행 브리핑 금지)
+### 0. 사전 가드 (필수, 최상단)
 
-> **중요**: 한 번의 실행에서 해당 시간대의 모든 업무를 처리해야 합니다. 브리핑이 있다고 포스팅을 건너뛰거나, 실험이 있다고 다른 업무를 생략하지 마세요. 포스팅은 항상 최우선으로 실행합니다.
+1. **현재 KST 날짜/시각 확인** (`TZ=Asia/Seoul date '+%Y-%m-%d %H:%M %a'`).
+2. **일일 발행 1건 가드**: `docs/social-tracker.csv`에서 `date == 오늘 KST && platform == x && status == posted`인 행이 1건 이상이면 → **포스팅 작업 완전 skip**. (실험 발행도 동일.)
+3. **실험 리뷰 가드**: `docs/insights/experiments.jsonl`에서 `status == running && eval_date < 오늘 KST` 실험이 있으면 → 시간대와 무관하게 `experiment-framework.md` A단계 즉시 수행 후 status 갱신.
+4. **브리핑 시간 가드**: 일일 브리핑(Discord)은 **현재 시각이 KST 09:00~09:59이고 오늘 아직 브리핑을 발송하지 않은 첫 실행에서만** 발송한다. 그 외 시각에 호출됐다면 브리핑은 절대 발송하지 않는다.
+   - "오늘 브리핑 발송 여부" 판단: 브리핑 발송 시 `docs/operations/cmo-briefing-log.csv`에 `YYYY-MM-DD,sent` 행을 append. 같은 날짜 행이 있으면 발송 안 함.
+
+### 1. 본 업무
+
+5. `docs/strategy/weekly-plan.md` 읽기
+6. 현재 요일과 시간대(T1~T6)에 해당하는 업무 확인
+7. **포스팅 우선 실행**: 0.2 가드를 통과한 경우에 한해, 현재 시간대에 X 포스트 슬롯이 있으면 1건 발행
+8. 그 외 보조 업무(주간 리뷰, 가설 생성, 메트릭 확인 등) 수행
+9. **콘텐츠 승인 프로세스 실행** (아래 참조)
+10. 승인 완료 시 자동 발행
+11. Discord 알림은 "Discord 알림 정책"에 정의된 경우에만 발송
+
+> **중요**:
+> - 사전 가드(0)는 어떤 경우에도 건너뛰지 않는다.
+> - 0.2를 위반하면 1일 다건 발행이 발생한다. 1건이 이미 posted면 포스팅 작업 자체를 시작하지 말 것.
+> - 0.4 외 시각에 브리핑 메시지를 만들지 말 것(노이즈 + 토큰 낭비).
 
 ## 콘텐츠 승인 프로세스
 
@@ -82,7 +94,7 @@ CSV 형식: `date,tweet_id,text_preview,impressions,likes,retweets,replies,quote
 
 포스팅 모드 매 실행의 브리핑 Discord 발송은 **금지**(노이즈 방지). Discord 알림이 발송되는 경우는 다음 6가지뿐:
 
-1. **매일 09:00 KST 일일 브리핑** (어제 성과 + 오늘 업무)
+1. **매일 09:00 KST 일일 브리핑** (어제 성과 + 오늘 업무) — 실행 절차 0.4 가드 통과 시에만 발송. 09시 슬롯이 아닌 호출(예: 12시, 18시)에서는 절대 브리핑을 만들지도, 보내지도 않는다.
 2. X 포스트 발행 성공 → workflow 자동 발송
 3. 일요일 T6 주간 종합
 4. 발행 스크립트 API 실패 알림
@@ -142,6 +154,19 @@ CMO는 아래 포맷으로 묶어 `discord-notify.js --username "성과 분석�
 - **월요일 T6**: 지난주 종합 주간 리포트
 - **목요일 T6**: 주중 중간 리포트 (월~목 추세)
 - **일요일 T6**: 이번 주 주간 종합 + 다음 주 제안 (C단계에서 발송 — `experiment-framework.md` 참조)
+
+## 일요일 T6 실험 리뷰 (자동 트리거)
+
+`experiment-framework.md`의 A·B·C 3단계는 일요일 T6 실행에서 반드시 모두 수행한다. 각 단계 종료 시 commit/push.
+
+추가로, **요일과 무관하게 실행 절차 0.3 가드에서 `eval_date < 오늘 KST && status=running` 실험이 발견되면**, 일요일 T6를 기다리지 않고 A단계를 즉시 수행한다. 이렇게 해야 일요일 T6 실행이 누락돼도 다음 호출에서 보완된다.
+
+A단계 절차 요약:
+1. `docs/insights/experiments.jsonl`에서 평가 대상 실험 로드
+2. variant별 GA4 activeUsers/post + X engagement 집계 (`scripts/marketing/x-metrics.js`, `ga4-metrics.js`)
+3. 채택/기각/추가 관찰 판정 → experiments.jsonl status 갱신
+4. 채택 → `learned-playbook.md` 전술 추가 / 기각 → `hypothesis-backlog.md` rejected 이동
+5. `[마케팅] YYYY-WNN 주간 리뷰 (A) - 실험 판정` commit + push
 
 ## 의사결정 원칙
 

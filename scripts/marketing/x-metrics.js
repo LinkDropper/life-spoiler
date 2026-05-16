@@ -5,7 +5,7 @@
  *
  * Bearer Token (OAuth 2.0 App-only) 인증.
  * impression_count는 public_metrics로 이전됐기 때문에 Bearer Token만으로
- * shadow ban 감지(G7)에 필요한 모든 지표를 수집할 수 있다.
+ * 주요 지표를 수집할 수 있다.
  * non_public_metrics(url_link_clicks 등)는 OAuth 1.0a User context 필요 → 0으로 기록.
  *
  * 사용법:

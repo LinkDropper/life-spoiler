@@ -31,19 +31,23 @@ jobs:
   post-to-x:
     if: github.event.action == 'post-to-x'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           ref: develop
+          token: ${{ secrets.AUTO_FIX_PAT }}
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Preflight 안전 게이트 (G1~G6)
+      - name: Preflight 검증 (일일 상한 + jitter + URL 정책)
         id: preflight
         run: node scripts/marketing/preflight-check.js
         env:
           TWEET_TEXT: ${{ github.event.client_payload.text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type }}
 
       - name: Jitter 대기 (인간적 발행 패턴)
         if: steps.preflight.outputs.passed == 'true' && github.event.client_payload.skip_jitter != true
@@ -62,6 +66,26 @@ jobs:
           X_REFRESH_TOKEN: ${{ secrets.X_REFRESH_TOKEN }}
           AUTO_FIX_PAT: ${{ secrets.AUTO_FIX_PAT }}
           TWEET_TEXT: ${{ github.event.client_payload.text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type }}
+
+      - name: social-tracker.csv 자동 기록
+        if: success() && steps.post.outputs.tweet_url != ''
+        env:
+          TWEET_TEXT: ${{ github.event.client_payload.text }}
+          TWEET_SUMMARY: ${{ github.event.client_payload.summary }}
+          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_URL: ${{ steps.post.outputs.tweet_url }}
+        run: |
+          node scripts/marketing/lib/append-tracker.js
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/social-tracker.csv
+          if git diff --cached --quiet; then
+            echo "tracker 변경 없음 (이미 기록됨)"
+          else
+            git commit -m "[마케팅] social-tracker.csv 자동 기록 — $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+            git push
+          fi
 
       - name: Discord 알림 (트윗 URL 포함)
         if: success() && steps.post.outputs.tweet_url != ''
@@ -70,7 +94,7 @@ jobs:
           DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
           DISCORD_USERNAME: "Social Media Marketer"
           DISCORD_TEXT: |
-            X 포스트 발행 완료 (${{ steps.preflight.outputs.phase }})
+            X 포스트 발행 완료
             ${{ steps.post.outputs.tweet_url }}
 
             ${{ github.event.client_payload.text }}
@@ -192,27 +216,11 @@ jobs:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           X_METRICS_DEBUG: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
 
-      - name: Shadow ban 자동 감지 (G7)
-        id: shadow_check
-        run: node scripts/marketing/shadow-ban-check.js --csv docs/metrics/daily-x-latest.csv
-
-      - name: Discord 알림 (Shadow ban 감지)
-        if: steps.shadow_check.outputs.shadow_ban_detected == 'true'
-        run: node scripts/marketing/discord-notify.js
-        env:
-          DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
-          DISCORD_USERNAME: "Safety Gate"
-          DISCORD_TEXT: |
-            ⚠️ Shadow ban 의심 — 자동 발행 중단
-            직전 5건 평균 impressions: ${{ steps.shadow_check.outputs.avg_impressions }}
-            Kill switch (`docs/strategy/auto-post-disabled`) 자동 활성화됨.
-            X 노출 회복 확인 후 파일 수동 삭제 필요.
-
-      - name: 메트릭 파일 + kill switch 커밋
+      - name: 메트릭 파일 커밋
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/metrics/daily-x-latest.csv docs/strategy/auto-post-disabled 2>/dev/null || true
+          git add docs/metrics/daily-x-latest.csv
           if git diff --cached --quiet; then
             echo "변경사항 없음"
           else
