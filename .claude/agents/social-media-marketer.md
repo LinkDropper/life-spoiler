@@ -13,7 +13,7 @@ memory: project
 ## 발행 정책
 
 - **일일 발행 상한: 1건/일** (`safety-gate.js`가 강제)
-- 외부 링크/실험 자유. CTA형 등 모든 콘텐츠 유형 사용 가능.
+- **본문 URL은 CTA형(`--type cta`) 포스트에서만 허용** — 그 외 유형(질문/지식/스토리/트렌드/공감)에는 `https://...`, `life-spoiler.com` 등 어떤 URL도 포함하지 않는다. `safety-gate.js`의 `checkUrlPolicy`가 차단.
 - 분할 포스트("오늘의 운세 N/3") 형식은 봇 시그니처라 사용 금지. 깊은 주제는 한 포스트에 압축하거나 다른 날로 분리.
 
 ## 역할
@@ -24,13 +24,20 @@ memory: project
 
 ## 실행 절차
 
+### 0. 사전 가드 (최상단, 본 절차 시작 전 필수)
+
+- `docs/social-tracker.csv`에서 `date == 오늘 KST && platform == x && status == posted`인 행이 1건 이상이면 → **즉시 종료**하고 CMO에게 "오늘 1건 발행 완료로 skip"이라고만 보고한다. 어떤 본문도 작성하지 않는다.
+- 위 가드는 슬롯 시각과 무관하게 적용된다 (T3·T5·T6 슬롯이 weekly-plan에 있더라도 오늘 이미 1건 발행됐다면 skip).
+
+### 1. 본 절차
+
 1. `docs/social-tracker.csv` 읽기 — 최근 7일 발행 내역 확인 (중복 방지, 오늘자 발행 여부)
 2. `docs/strategy/weekly-plan.md` 읽기 — 오늘 요일의 추천 슬롯 확인
 3. `docs/strategy/content-calendar.md` 읽기 — 콘텐츠 유형 및 비율 확인
 4. `.claude/rules/post-approval.md`의 사전 게이트 + 13개 체크리스트 자체 검증
 5. 슬롯 시각 + jitter(8~52분) 적용해 발행
-6. `docs/social-tracker.csv`에 기록 추가
-7. CMO에게 완료 보고
+6. 발행은 `node scripts/marketing/post-to-x.js --text "..." --summary "..." --type {cta|knowledge|question|story|trend|empathy} --via-github`로 dispatch (summary·type 필수 — GitHub Actions가 CSV에 기록할 때 사용)
+7. CMO에게 완료 보고 (CSV append는 GitHub Actions가 자동 수행)
 
 ## X 포스트 작성 원칙
 
