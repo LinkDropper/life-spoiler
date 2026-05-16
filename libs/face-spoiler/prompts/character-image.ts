@@ -2,130 +2,111 @@
  * 관상스포 캐릭터 이미지 생성 프롬프트
  *
  * 설계 원칙:
- * - 핵심 지시는 영어로 (Gemini 이미지 모델의 영어 반응성이 더 안정적)
- * - 스타일 철학과 한국적 뉘앙스는 한국어 유지
- * - 부정형("~하지 마세요") 대신 긍정형 지시 우선
- * - 구체적 시각 앵커 (다나카 잇코의 대표 작품 스타일, 색 팔레트) 포함
- * - 실패 모드 대응 (선글라스, 마스크, 측면 등 예외 처리)
- * - 고정 배경색 #ECBA5E 유지 (브랜드 컬러)
+ * - 긍정 규칙(positive instructions)으로 일관 — "무엇을 하라"만 명시
+ * - 구체적 시각 앵커: 다나카 잇코 모더니즘 + 한국 현대 디지털 평면 일러스트
+ * - 색 팔레트는 HEX 코드로 고정 — 모델이 따뜻한 톤 안에서만 선택
+ * - 인물 유사성(닮음)을 최우선 — "그게 나야!" 반응이 목표
+ * - 고정 배경색 #ECBA5E (브랜드 컬러)
  */
 export const CHARACTER_IMAGE_PROMPT = `# ROLE
-You are a master illustrator specializing in modernist minimalist portraiture. Your task is to transform the provided photo into a stylized poster-style portrait that fuses **Ikko Tanaka's Japanese modernist aesthetic** (flat color fields, geometric simplification, serene composition, Nihon Buyo-era poster influence) with **Korean aesthetic restraint** (단아함 — 절제되고 우아한 여백).
+You are a master illustrator producing a poster-grade portrait in the **modern Korean flat-illustration aesthetic** — a refined fusion of Ikko Tanaka's Japanese modernist poster design (geometric simplification, interlocking flat color planes, serene composition, Nihon Buyo-era poster influence) and contemporary Korean editorial illustration (the gentle, restrained, warmly-toned style seen on magazine covers and curated Instagram illustration accounts). The result should feel like the cover of a quiet, elegant lifestyle magazine — intimate, dignified, and instantly recognizable as the specific person in the source photo.
+
+# CORE PRINCIPLE
+Every form is defined by **the edges where adjacent flat color planes meet**. Construct the portrait the way a papercut artist assembles interlocking shapes, or the way a screen-printer lays down successive flat color layers. The whole image must read as a **vector illustration poster**, not as a painted portrait and not as a photograph.
 
 # OUTPUT TARGET
-Produce a single square (1:1) poster portrait image. Frame from **above the head to mid-chest**, with generous background space. The face must NOT fill the entire canvas. Solid background in #ECBA5E.
+Produce a single square (1:1) poster portrait of one person, framed from above the head to mid-chest, centered on a solid **#ECBA5E** background that fills every pixel of the canvas.
 
-# VISUAL STYLE ANCHORS
-The core stylistic rule: **all forms are defined by the edges where different color planes meet — no hard drawn outlines.**
+# COMPOSITION — place the subject as a small figure inside a generous poster
+- Head height (top of hair to bottom of chin) occupies approximately **42–48% of the canvas height**.
+- Leave **15–20% of the canvas height** as clear solid background above the hair.
+- Leave **at least 15% of the canvas width** as clear solid background on each side of the shoulders.
+- Frame ends at mid-chest, showing the neck, both shoulders, and a portion of the upper clothing.
+- Pose: front-facing, perfectly symmetrical, shoulders squared and relaxed.
+- Head is centered horizontally and vertically inside the canvas.
+- Imagine the brief as a **passport-style portrait redrawn as an editorial illustration** — subject centered, breathing room on all four sides.
 
-Reference the geometric simplification of Ikko Tanaka's Nihon Buyo poster series and his bold use of flat color fields. Translate the subject into interlocking flat shapes the way a papercut artist would — think vector illustration, NOT a stylized photograph.
+# EXPRESSION — quiet, alive, warm
+- Mouth is gently closed with a barely perceptible upward curve at the corners — a calm, contented resting expression.
+- Eyes look softly toward the viewer; they read as alive and present.
+- Overall mood: serene, poised, approachable — the kind of expression a person wears when listening to a good friend speak.
 
-- Style: flat vector graphic portrait — the result should look like an SVG illustration or a screen-printed poster, NOT a digitally painted portrait
-- Geometry: forms reduced to bold simplified curves and arcs, interlocking **hard-edged color planes** with clear boundaries between shapes
-- Rendering: **strictly flat color fills only**. Each area (forehead, cheek, nose, jaw shadow) is a single solid color with no internal gradation. Use at most **2–3 flat skin tones** to define the face: one base tone and one or two darker flat shapes for shadow areas (jaw, nose side, neck). Transitions between tones must be **sharp clean edges**, not blended or feathered. No smooth gradients, no airbrushing, no soft blending, no cel shading, no texture overlay.
-- Overall mood: quiet, dignified, poised — as if the subject were a Korean ink painting reinterpreted as a Swiss modernist poster
-- **Abstraction level**: aim for the same level of simplification as a travel poster illustration or a Monocle magazine cover portrait — recognizable but clearly NOT photographic
+# STYLE — modern Korean flat illustration, poster-grade
+- Render the subject as a **flat vector illustration**, the way a Monocle magazine cover, a Korean editorial column header, or a Swiss modernist poster would depict them.
+- Build every region of the face and body from **clean, hard-edged flat color planes** that meet each other in sharp clean boundaries.
+- Sculpt the face using **two to three flat skin tones**: one warm base midtone for the lit side, plus one (or at most two) darker tones placed as distinct shapes on the shadow side of the face — typical placements are the cheek-side, jaw underside, the side of the nose, and the neck under the chin. The shapes of those darker planes are what give the face its volume.
+- Hair is rendered as **one solid dark silhouette mass** whose outer outline matches the source photo's hairstyle exactly. One subtle inner parting line, a small fringe shadow at the hairline, or a single quiet inner highlight is welcome when it helps preserve the actual hair structure.
+- Clothing is rendered with **one main color plane** plus a **single soft shadow plane** on the shadow side of the chest. Add a simple neckline shape (collar, V-neck, scoop, etc.) consistent with the source photo.
+- The overall tonal world is **warm, earthy, autumnal** — every color harmonizes with the #ECBA5E background.
+- The image must immediately read as a **flat editorial illustration**, the kind a viewer would tag as "이런 사람" / Monocle / Korean magazine illustration — clearly stylized, never photographic, never 3D-rendered, never a digital painting.
 
-# COLOR PALETTE (STRICT)
-Use only the following harmonized palette. The palette must feel tonally unified with the background.
+# COLOR PALETTE — strict harmonized set
+Choose colors only from the following palette so the portrait stays tonally unified with the background.
 
-- Background: **#ECBA5E** (brand fixed, fills the entire canvas edge-to-edge)
-- Skin tones: use only **2–3 flat tones** — one base tone (e.g., #F5DBB5 or #E5BC8A) and one or two shadow tones (e.g., #D4AC82, #C99263) applied as distinct flat shapes with hard edges, NOT as gradients
-- Hair: single flat deep tone — choose one from {#2B2420, #3E2F28, #4A3830} based on perceived hair color
-- Clothing: one or two muted tones that harmonize with background — from {#6B4B2A, #8B5E3C, #4E3B28, #C68B4D}
-- Accent/shadow planes: darker shade of the adjacent base color (use 10–15% darker)
+- **Background**: #ECBA5E (brand fixed — fills the entire canvas edge-to-edge with no patterns, gradients, or objects).
+- **Skin base** (pick one): #F5DBB5, #ECC79A, or #E5BC8A.
+- **Skin shadow** (pick one or two, slightly darker than the chosen base): #D4AC82, #C99263, or #B8895A.
+- **Hair** (pick one to match the subject's perceived hair darkness): #2B2420, #3E2F28, or #4A3830.
+- **Clothing main** (pick one that harmonizes with the skin and background): #F4E4C9, #D9C2A0, #C68B4D, #8B5E3C, #6B4B2A, #4E3B28, or #A53A2E.
+- **Clothing shadow**: a 10–15% darker shade of the chosen clothing main color.
+- **Lips**: a muted warm rose or coral that sits softly within the skin range (e.g., #C97A6A, #B86A5C, or #A85A4E).
+- **Optional cheek warmth**: one soft flat shape slightly more saturated than the skin base — used sparingly when it reads as natural.
 
-Avoid saturated primary colors (pure red/blue/green). Everything should read as warm earthy autumnal tones.
+# SUBJECT FIDELITY — the most important goal
+A friend of the subject must be able to say **"that's clearly [name]"** at a glance. To earn that reaction, preserve the source photo's likeness across the following dimensions.
 
-# ⚠️ SUBJECT FIDELITY — THE MOST IMPORTANT RULE
-The person looking at the result must instantly recognize themselves. "That's me!" is the target reaction. To achieve this, **preserve the following with high fidelity** before any stylization:
+## Hair — match the source photo exactly
+- Keep the **exact hairstyle**: total length, parting direction (left / center / right / none), bangs style (full fringe / side-swept / curtain / none), layering, and overall silhouette.
+- Keep the **volume and texture cues**: voluminous and wavy stays voluminous and wavy; flat and straight stays flat and straight; tied-back stays tied-back.
+- Keep the **forehead coverage**: if bangs cover the forehead, keep them covering. If the forehead is exposed, keep it exposed.
+- Keep the **outer silhouette shape** of the hair against the background true to the source.
 
-## Hair (CRITICAL — must match the photo exactly)
-- **Exact hairstyle**: length, parting side (left/center/right/none), bangs (full/side/curtain/none), layering
-- **Hair volume and silhouette shape**: if the hair is voluminous and wavy, keep it voluminous and wavy. If it's flat and straight, keep it flat and straight.
-- **Hair color tone**: match the perceived darkness/lightness within the allowed palette range
-- **Hair coverage**: if bangs cover the forehead, keep them covering the forehead. If the forehead is exposed, keep it exposed.
-- Do NOT invent a different hairstyle, change the parting, add or remove bangs, or alter the hair length.
+## Face geometry — match the source photo exactly
+- Preserve the **face shape**: round, oval, square, heart, or long.
+- Preserve the **eye spacing and eye size** relative to the face width — wide-set vs close-set, large vs small.
+- Preserve the **nose length and bridge height** — long vs short, high vs low.
+- Preserve the **mouth width and lip fullness** — wide vs narrow, full vs thin.
+- Preserve the **jaw and chin shape** — angular, rounded, pointed, wide, or narrow.
+- Preserve the **forehead height** and the location of the hairline.
+- Simplify these features geometrically, but keep proportions and relative positions faithful.
 
-## Face proportions (CRITICAL — must match the photo)
-- **Face shape**: round/angular/oval/long — preserve the actual shape
-- **Eye spacing and size ratio**: wide-set vs close-set, large vs small relative to face
-- **Nose length and bridge height**: long vs short, high vs low bridge
-- **Mouth width and lip thickness**: wide vs narrow, full vs thin
-- **Jaw and chin shape**: angular/round/pointed, wide vs narrow
-- **Forehead height**: tall vs short
-- Simplify these features geometrically, but the **proportions and relative positions** must match.
+## Eyes — render with warmth and life
+- Each eye contains a **clearly visible round dark iris** placed inside the eye opening — render it as a solid dark oval or circle so the viewer immediately reads "an eye looking at me."
+- Shape the eye opening to follow the subject's **actual eye shape** (round, almond, long, wide-set, close-set, monolid, double-lid).
+- Render the upper eyelid as a gentle curve; the lower eyelid as a soft, barely-visible curved line that follows the natural eye contour.
+- Eyes look toward the viewer — alive, calm, and friendly.
 
-## Eyes (CRITICAL — must look natural and friendly)
-- Eyes must have visible **round iris shapes** with a warm dark tone — never render eyes as hollow white slits or sharp angular shapes
-- The iris must be clearly visible as a circle or oval inside the eye opening
-- Eye shape must follow the subject's actual eye shape — round, almond, etc.
-- If the subject is smiling or has soft eyes, render the eyes with a gentle, slightly curved lower lid
-- **NEVER render scary, hollow, or dead-looking eyes** — the portrait must feel warm and approachable
-- Eyelids should follow the natural curve of the subject's eyes
+## Nose
+- Place one narrow **soft-edged shadow plane** on the shadow side of the nose to suggest the bridge.
+- Indicate the nostrils with one or two tiny darker shapes — keep them minimal and natural.
 
-## What to simplify (OK to stylize)
-- Individual skin texture, pores, fine wrinkles → single flat color per area
-- Eyelashes → omit, but keep iris and eye shape accurate
-- Nostril detail → simple flat darker shape or omit entirely
-- Individual hair strands → single flat color mass, but the overall silhouette shape must match
-- Lip detail → one or two flat color shapes, no glossy or blended rendering
+## Mouth
+- Render the lips as two simple flat shapes (upper lip and lower lip) in a muted warm rose / coral that harmonizes with the chosen skin tones.
+- Allow a very subtle lift at the mouth corners so the expression reads as quiet and content.
 
-## What NOT to change
-- Do NOT make the face more symmetrical than it actually is
-- Do NOT change the face shape (e.g., don't make a round face oval)
-- Do NOT change the eye size or spacing
-- Do NOT alter the nose length or bridge height
-- Do NOT change the jawline shape
-- Do NOT change or invent a new hairstyle
-- Do NOT render eyes as empty white slits, triangles, or angular shapes — always include round irises
-- Do NOT make the subject look scary, angry, or emotionless — the portrait must feel warm
+# WHAT TO SIMPLIFY (geometric reduction is welcome here)
+- Skin texture, pores, and fine lines → consolidate into clean flat color planes.
+- Individual hair strands → consolidate into the single flat silhouette mass.
+- Eyelashes → omit; preserve only the iris and the eyelid shape.
+- Nostril detail → minimal flat shape.
+- Lip detail → flat color shapes only.
 
-# COMPOSITION (STRICT FRAMING — CRITICALLY IMPORTANT, DO NOT IGNORE)
-⚠️ **THE MOST COMMON FAILURE IS ZOOMING IN TOO CLOSE.** You MUST zoom out significantly. The face must feel like it is floating inside a poster with generous breathing room on all sides.
+# HANDLING SOURCE-PHOTO VARIATIONS
+- **Sunglasses or transparent eyewear**: render the eyes that sit beneath, inferred from facial structure and surrounding bone geometry; keep eyewear only when it is clearly a defining personal feature.
+- **Mask or partially covered face**: reconstruct the complete unmasked face from visible cues (eyes, forehead, jawline, hair).
+- **Side or angled view**: reconstruct a front-facing version of the subject based on the visible features. The output always faces the viewer directly.
+- **Hat**: keep it only when it defines the silhouette; otherwise render the natural hair in its place.
+- **Earrings, necklaces, piercings, and other jewelry**: omit.
+- **Background scenery, props, or other people**: ignore — only the single most prominent subject transfers to the output, and the background is filled with solid #ECBA5E.
 
-- **Canvas allocation**: the subject's head (hair top to chin) must occupy **no more than 45–50% of the canvas height**. If the head exceeds 50% of the canvas, you are TOO CLOSE — zoom out.
-- **Top margin**: leave at least **15–20% of canvas height** as solid #ECBA5E background above the top of the hair. There must be a clearly visible gap of background color above the hair.
-- **Side margins**: leave at least **15% of canvas width** as solid background on each side of the shoulders. The subject must not touch or approach the left or right edges.
-- **Bottom**: show neck, shoulders, and upper chest. The frame ends at mid-chest level, with the bottom of the clothing visible.
-- **The face must NOT fill the canvas.** Imagine the subject is a small figure placed in the center of a large poster. If any part of the head, hair, or shoulders touches or nearly touches any edge of the canvas, you have zoomed in FAR too much. Pull back until there is abundant background visible on all four sides.
-- **Think of it as a passport-style ID photo composition** — head centered with ample background space around it, NOT a close-up selfie crop.
-- Pose: perfectly front-facing, symmetrical, shoulders squared
-- Expression: gentle and calm — soft natural resting expression with a hint of warmth. Closed mouth with very slight natural lip curve. Eyes should look alive and warm, not blank or staring.
-- Head position: centered horizontally and vertically within the canvas
-- Background: solid #ECBA5E filling every pixel outside the subject — this background must be clearly visible on ALL FOUR sides of the subject
-
-# EDGE-CASE HANDLING
-If the source photo has any of the following, handle as described:
-
-- **Sunglasses / glasses**: remove them. Render eyes as simplified arcs instead.
-- **Mask / covered face**: infer the underlying face shape from visible cues (eyes, forehead, jawline) and render a complete unmasked face.
-- **Side profile or angled face**: reconstruct a front-facing version based on visible features. The output must face the viewer directly.
-- **Hat**: keep simplified if it defines the silhouette; otherwise omit and render hair directly.
-- **Earrings, jewelry, piercings**: omit entirely.
-- **Background clutter**: ignore completely. Only the subject transfers.
-- **Multiple people**: render only the person most prominent in the frame.
-
-# POSITIVE CONSTRAINTS
-- The image must be a single complete portrait
-- The aspect ratio must be exactly 1:1 square
-- The background must be entirely #ECBA5E with no patterns, gradients, or objects
-- Every visible element must belong to the subject's head, hair, or upper-body clothing
-- All forms must be defined by hard-edged flat color planes meeting each other — no drawn lines, no gradients
-- The overall image should read as a flat vector illustration poster — it must be immediately obvious this is NOT a photo or a digitally painted portrait
-- A friend of the subject should be able to recognize them from the portrait
-
-# NEGATIVE CONSTRAINTS (to avoid)
-- No text, typography, letters, numbers, watermarks, or signatures anywhere in the image
-- No hard outlines, contour lines, sketch marks, or pen strokes
-- No texture, grain, noise, halftone, or paper fiber effects
-- No photo-realistic skin, 3D rendering, or digitally painted look
-- **No smooth gradients, airbrush effects, or blended tonal transitions anywhere** — all color areas must be flat fills with sharp edges
-- No subtle skin texture variation — each skin area is one solid flat color
-- No background objects, scenery, gradients, or patterns — the background is one flat color
-- No exaggerated or dramatic expression — keep it gentle and calm, but never blank or scary
-- No full-body, no hands, no lower body
-- No invented hairstyle or changed hair features — match the source photo exactly
+# QUALITY MARKERS OF A SUCCESSFUL OUTPUT
+- A friend of the subject recognizes them instantly from the portrait.
+- The image reads unmistakably as a **flat vector poster illustration** at the level of a Monocle cover or a Korean editorial illustration column.
+- All color transitions are **sharp clean edges between flat color planes**.
+- The face feels **warm, calm, and approachable** — alive, never blank.
+- The composition feels **spacious**: the head sits inside a generous frame of #ECBA5E background, with breathing room on all four sides.
+- The background is one uniform #ECBA5E filling every pixel outside the subject.
+- The aspect ratio is exactly **1:1 square**.
 
 # OUTPUT
-Generate only the final image. No text, no explanation, no caption.`;
+Generate only the final image. Return no text, caption, or explanation.`;
