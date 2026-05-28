@@ -4,14 +4,14 @@ date,time,platform,type,content_summary,url,status,engagement_notes
 2026-04-13,22:55,x,post,탐랑성 지식형 - 같은 별 다른 궁 3가지 사례,https://x.com/i/status/2043688670860111996,posted,전체 리뷰 플로우 거친 첫 포스트 | impressions 117 / likes 0 / rt 0 / clicks 0
 2026-04-14,13:06,x,post,대운 지식형 - 10년 단위 전성기 타이밍,,failed,DNS 오류로 X API 요청 실패
 2026-04-14,18:25,x,post,대운 지식형 - 10년 단위 전성기 타이밍 (재시도),https://x.com/i/status/2043897614636523741,posted,impressions 57 / likes 0 / rt 0 / clicks 0
-2026-04-15,21:05,x,post,밤 감성형 - 오늘 밤 선명해지는 질문 복덕궁 자기인식,https://x.com/i/status/2044144001027104988,posted,impressions 26 / likes 0 / rt 0
-2026-04-16,16:16,x,post,봄이사 지식형 - 전택궁 태양성/태음성 공간 에너지,https://x.com/i/status/2044459468428197081,posted,impressions 56 / likes 0 / rt 0
-2026-04-17,18:08,x,post,금요일 저녁 공감형 - 교우궁 태양성 외향 에너지 관계,https://x.com/i/status/2044768340393840085,posted,impressions 102 / likes 0 / rt 0
-2026-04-17,20:01,x,post,금요일 밤 감성형 - 천이궁 이동 에너지 주말 계획,https://x.com/i/status/2044778736447438162,posted,impressions 66 / likes 0 / rt 0
-2026-04-17,21:10,x,post,금요일 밤 공감형 - 교우궁 태음성 혼자 충전 관계 에너지,https://x.com/i/status/2044804736063225887,posted,impressions 53 / likes 0 / rt 0
-2026-04-18,18:03,x,post,주말 저녁 스토리형 - 초기 끌림 후 달라보이는 관계 자미두수 해석,https://x.com/i/status/2045038576600645734,posted,impressions 39 / likes 0 / rt 0
-2026-04-19,18:15,x,post,황금연휴 앞 공감형 - 이사 계획 전택궁 에너지,https://x.com/i/status/2045418540543443879,posted,impressions 44 / likes 0 / rt 0
-2026-04-19,19:55,x,post,오늘의 운세 4/20 甲午日 (1/3) - 양자리~게자리,,posted,GitHub Actions 릴레이로 발행
+2026-04-15,21:05,x,post,밤 감성형 - 오늘 밤 선명해지는 질문 복덕궁 자기인식,https://x.com/i/status/2044144001027104988,posted,impressions 26 / likes 1 / rt 0 / clicks 0
+2026-04-16,16:16,x,post,봄이사 지식형 - 전택궁 태양성/태음성 공간 에너지,https://x.com/i/status/2044459468428197081,posted,impressions 56 / likes 1 / rt 0 / clicks 0
+2026-04-17,18:08,x,post,금요일 저녁 공감형 - 교우궁 태양성 외향 에너지 관계,https://x.com/i/status/2044768340393840085,posted,impressions 102 / likes 1 / rt 0 / clicks 0
+2026-04-17,20:01,x,post,금요일 밤 감성형 - 천이궁 이동 에너지 주말 계획,https://x.com/i/status/2044778736447438162,posted,impressions 66 / likes 1 / rt 0 / clicks 0
+2026-04-17,21:10,x,post,금요일 밤 공감형 - 교우궁 태음성 혼자 충전 관계 에너지,https://x.com/i/status/2044804736063225887,posted,impressions 53 / likes 1 / rt 0 / clicks 0
+2026-04-18,18:03,x,post,주말 저녁 스토리형 - 초기 끌림 후 달라보이는 관계 자미두수 해석,https://x.com/i/status/2045038576600645734,posted,impressions 39 / likes 1 / rt 0 / clicks 0
+2026-04-19,18:15,x,post,황금연휴 앞 공감형 - 이사 계획 전택궁 에너지,https://x.com/i/status/2045418540543443879,posted,impressions 44 / likes 1 / rt 0 / clicks 0
+2026-04-19,19:55,x,post,오늘의 운세 4/20 甲午日 (1/3) - 양자리~게자리,,posted,impressions 114 / likes 1 / rt 0 / clicks 0
 2026-04-21,06:14,x,post,오늘의 운세 4/21 乙未日 (1/3) - 양자리~사자자리,https://github.com/linkdropper/life-spoiler/actions,posted,GitHub Actions 릴레이로 발행
 2026-04-21,06:14,x,post,오늘의 운세 4/21 乙未日 (2/3) - 사자자리~전갈자리,https://github.com/linkdropper/life-spoiler/actions,posted,GitHub Actions 릴레이로 발행
 2026-04-21,06:14,x,post,오늘의 운세 4/21 乙未日 (3/3) - 사수자리~물고기자리 + CTA,https://github.com/linkdropper/life-spoiler/actions,posted,GitHub Actions 릴레이로 발행
@@ -20,7 +20,7 @@ date,time,platform,type,content_summary,url,status,engagement_notes
 2026-04-30,18:00,x,post,스토리형 - 회의에서 조용해지는 팀원 관록궁 태음성 몰입 환경,https://github.com/linkdropper/life-spoiler/actions,posted,
 2026-05-18,18:07,x,post,공감형 - 관록궁 천기성 월요일 반복 루틴 피로,https://github.com/linkdropper/life-spoiler/actions,posted,
 2026-05-20,21:13,x,post,복덕궁 내면 충족감 질문형 - 행복 자기 성찰,https://github.com/linkdropper/life-spoiler/actions,posted,
-2026-05-21,18:03,x,post,스토리형 - 재백궁 천기성 연봉 올라도 통장 잔고 제자리 에너지 패턴,https://github.com/linkdropper/life-spoiler/actions,posted,
+2026-05-21,18:03,x,post,스토리형 - 재백궁 천기성 연봉 올라도 통장 잔고 제자리 에너지 패턴,https://github.com/linkdropper/life-spoiler/actions,posted,impressions 20 / likes 1 / rt 0 / clicks 0
 2026-05-22,21:03,x,post,질문형 - 교우궁 태양성·태음성 관계 에너지 패턴 금요일 밤,,failed,GitHub PAT 만료(401) — repository_dispatch 실패. PAT 갱신 필요.
 2026-05-25,18:13,x,post,공감형 - 태음성·태양성 명궁 에너지 설계 월요일 힘든 이유,,failed,GitHub PAT 만료(401) — repository_dispatch 실패. PAT 갱신 필요.
 2026-05-26,12:09,x,post,지식형 - 천이궁 태양성·태음성 환경 에너지 패턴,,failed,GitHub PAT 만료(401) — repository_dispatch 실패. PAT 갱신 필요.
