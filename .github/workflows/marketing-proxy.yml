@@ -23,13 +23,28 @@ on:
         default: "daily-x-metrics"
         type: choice
         options:
+          - post-to-x
           - daily-x-metrics
           - daily-ga4-metrics
           - weekly-naver-trends
+      tweet_text:
+        description: "트윗 본문 (post-to-x 전용)"
+        required: false
+        type: string
+      tweet_summary:
+        description: "social-tracker 요약 (post-to-x 전용)"
+        required: false
+        type: string
+      tweet_type:
+        description: "포스트 유형 (post-to-x 전용: cta/knowledge/question/story/trend/empathy)"
+        required: false
+        type: string
 
 jobs:
   post-to-x:
-    if: github.event.action == 'post-to-x'
+    if: >-
+      github.event.action == 'post-to-x' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'post-to-x')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,11 +61,11 @@ jobs:
         id: preflight
         run: node scripts/marketing/preflight-check.js
         env:
-          TWEET_TEXT: ${{ github.event.client_payload.text }}
-          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_TEXT: ${{ github.event.client_payload.text || github.event.inputs.tweet_text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type || github.event.inputs.tweet_type }}
 
       - name: Jitter 대기 (인간적 발행 패턴)
-        if: steps.preflight.outputs.passed == 'true' && github.event.client_payload.skip_jitter != true
+        if: steps.preflight.outputs.passed == 'true'
         run: |
           SECONDS=${{ steps.preflight.outputs.jitter_seconds }}
           echo "jitter ${SECONDS}초 대기..."
@@ -65,15 +80,15 @@ jobs:
           X_OAUTH2_CLIENT_SECRET: ${{ secrets.X_OAUTH2_CLIENT_SECRET }}
           X_REFRESH_TOKEN: ${{ secrets.X_REFRESH_TOKEN }}
           AUTO_FIX_PAT: ${{ secrets.AUTO_FIX_PAT }}
-          TWEET_TEXT: ${{ github.event.client_payload.text }}
-          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_TEXT: ${{ github.event.client_payload.text || github.event.inputs.tweet_text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type || github.event.inputs.tweet_type }}
 
       - name: social-tracker.csv 자동 기록
         if: success() && steps.post.outputs.tweet_url != ''
         env:
-          TWEET_TEXT: ${{ github.event.client_payload.text }}
-          TWEET_SUMMARY: ${{ github.event.client_payload.summary }}
-          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_TEXT: ${{ github.event.client_payload.text || github.event.inputs.tweet_text }}
+          TWEET_SUMMARY: ${{ github.event.client_payload.summary || github.event.inputs.tweet_summary }}
+          TWEET_TYPE: ${{ github.event.client_payload.type || github.event.inputs.tweet_type }}
           TWEET_URL: ${{ steps.post.outputs.tweet_url }}
         run: |
           node scripts/marketing/lib/append-tracker.js
@@ -97,7 +112,7 @@ jobs:
             X 포스트 발행 완료
             ${{ steps.post.outputs.tweet_url }}
 
-            ${{ github.event.client_payload.text }}
+            ${{ github.event.client_payload.text || github.event.inputs.tweet_text }}
 
       - name: Discord 알림 (Preflight 실패)
         if: failure() && steps.preflight.outcome == 'failure'
@@ -109,7 +124,7 @@ jobs:
             X 발행 차단 (Preflight 실패)
             사유: ${{ steps.preflight.outputs.fail_reason }}
 
-            본문: ${{ github.event.client_payload.text }}
+            본문: ${{ github.event.client_payload.text || github.event.inputs.tweet_text }}
 
       - name: Discord 알림 (발행/토큰 갱신 실패)
         if: failure() && steps.preflight.outcome == 'success' && steps.post.outcome == 'failure'
@@ -122,7 +137,7 @@ jobs:
             run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             refresh_token이 무효화됐을 수 있음 — 로그 확인 후 필요시 OAuth setup 재실행.
 
-            본문: ${{ github.event.client_payload.text }}
+            본문: ${{ github.event.client_payload.text || github.event.inputs.tweet_text }}
 
   weekly-metrics:
     if: github.event.action == 'weekly-metrics'
