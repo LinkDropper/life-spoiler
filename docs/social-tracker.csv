@@ -37,3 +37,4 @@ date,time,platform,type,content_summary,url,status,engagement_notes
 2026-06-05,12:06,x,post,트렌드 반응형 - 6월 하반기 전환기 대한 주기 패턴,,failed,GitHub PAT 만료(401) — repository_dispatch 실패. 6번째 연속 실패. GITHUB_PAT 즉각 갱신 필요.
 2026-06-07,18:09,x,post,공감형 - 복덕궁 휴식 충전 방식 일요일 저녁 패턴,,failed,GitHub PAT 만료(401) — repository_dispatch 실패. 7번째 연속 실패 (5/22부터 누적). GITHUB_PAT 즉각 갱신 필요 — 2주 이상 발행/Discord 알림 전면 중단 상태.
 2026-06-08,18:10,x,post,공감형 - 거문성 명궁·관록궁 월요일 회의 전 곱씹는 패턴,,failed,GitHub PAT 만료(401) — repository_dispatch 실패. 8번째 연속 실패 (5/22부터 누적). 세션에 새로 제공된 GITHUB_PAT도 재검증 결과 동일 401(Bad credentials) — 토큰 자체가 무효. 사람의 직접 개입(신규 PAT 발급 + Secrets/세션 환경변수 갱신) 없이는 해결 불가. 발행/Discord 알림/메트릭 수집 18일째 전면 중단.
+2026-06-10,21:11,x,post,질문형 - 명궁 자기인식 수요일 밤 자기성찰,,failed,GitHub PAT 만료(401) — repository_dispatch 실패. 9번째 연속 실패 (5/22부터 누적). PAT 갱신 없이 발행 불가.
