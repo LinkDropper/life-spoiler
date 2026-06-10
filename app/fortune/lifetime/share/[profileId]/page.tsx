@@ -195,6 +195,7 @@ export default function LifetimeFortuneSharePage() {
               chart={rawChart}
               profileName={profile.name}
               wuxingJu={result.chart.wuxingJu}
+              interactive={false}
             />
           </section>
         )}

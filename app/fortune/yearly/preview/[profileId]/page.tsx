@@ -131,6 +131,7 @@ export default function YearlyFortunePreviewPage() {
               profileName={profile.name}
               wuxingJu={result.chart.wuxingJu}
               yearlySihua={yearlySihua}
+              interactive={false}
             />
           </section>
         )}
