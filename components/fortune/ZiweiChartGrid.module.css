@@ -1,3 +1,8 @@
+/* 명반 + 설명 패널 래퍼 */
+.chartWrapper {
+  width: 100%;
+}
+
 /* 명반 그리드 컨테이너 */
 .chartGrid {
   display: grid;
@@ -47,6 +52,60 @@
 /* 명궁 강조 */
 .palaceCell.mingGong {
   background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+}
+
+/* 탭 가능한 셀 어포던스 */
+.palaceCell.interactive {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+@media (hover: hover) {
+  .palaceCell.interactive:hover:not(.selected) {
+    background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.palaceCell.interactive:active {
+  background: var(--primitive-primary-opacity-1, rgba(255, 204, 217, 0.08));
+}
+
+.palaceCell.interactive:focus-visible {
+  outline: 2px solid var(--primitive-primary, #ffccd9);
+  outline-offset: -2px;
+}
+
+/* 선택된 궁 셀 — 핑크 보더 + 글로우 (위치별 보더 규칙을 이기도록 높은 specificity) */
+.chartGrid .palaceCell.selected {
+  background: var(--primitive-primary-opacity-1, rgba(255, 204, 217, 0.08));
+  box-shadow: inset 0 0 0 1.5px var(--primitive-primary, #ffccd9),
+    0 0 12px 0 rgba(255, 204, 217, 0.25);
+  position: relative;
+  z-index: 1;
+}
+
+.chartGrid .palaceCell.mingGong.selected {
+  background: rgba(255, 204, 217, 0.16);
+}
+
+/* 탭 안내 힌트 */
+.tapHint {
+  margin: var(--gap-12, 12px) 0 0;
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palaceCell.interactive {
+    transition: none;
+  }
 }
 
 /* 궁 헤더 (궁 이름 + 지지) */

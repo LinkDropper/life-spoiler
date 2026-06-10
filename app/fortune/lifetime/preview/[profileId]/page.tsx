@@ -140,6 +140,7 @@ export default function LifetimeFortunePreviewPage() {
               chart={rawChart}
               profileName={profile.name}
               wuxingJu={result.chart.wuxingJu}
+              interactive={false}
             />
           </section>
         )}

@@ -177,6 +177,7 @@ export default function YearlyFortuneSharePage() {
               profileName={profile.name}
               wuxingJu={result.chart.wuxingJu}
               yearlySihua={yearlySihua}
+              interactive={false}
             />
           </section>
         )}
