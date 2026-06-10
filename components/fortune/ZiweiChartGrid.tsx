@@ -8,7 +8,7 @@ import {
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 
 import {
@@ -155,7 +155,7 @@ const PalaceCell = ({
   const position = PALACE_GRID_POSITIONS[palace.branch];
   const [firstMainStar, ...additionalMainStars] = palace.mainStars;
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       onSelect();
@@ -399,7 +399,7 @@ export const ZiweiChartGrid = ({
   // Esc 로 닫기
   useEffect(() => {
     if (selectedBranch === null) return;
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") setSelectedBranch(null);
     };
     window.addEventListener("keydown", handleKeyDown);
