@@ -174,6 +174,7 @@ export default function CompatibilitySharePage() {
               chart={charts.profileA.rawChart}
               profileName={nameA}
               wuxingJu={charts.profileA.chart.wuxingJu}
+              interactive={false}
             />
           </section>
         )}
@@ -190,6 +191,7 @@ export default function CompatibilitySharePage() {
               chart={charts.profileB.rawChart}
               profileName={nameB}
               wuxingJu={charts.profileB.chart.wuxingJu}
+              interactive={false}
             />
           </section>
         )}

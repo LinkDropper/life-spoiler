@@ -165,6 +165,7 @@ export default function PastLifePreviewPage() {
               chart={rawChart}
               profileName={profile.name}
               wuxingJu={result.chart.wuxingJu}
+              interactive={false}
             />
           </section>
         )}
