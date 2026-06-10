@@ -2,6 +2,14 @@
 
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 
 import {
   translatePalaceName,
@@ -12,11 +20,13 @@ import {
   translateSihuaMarker,
   translateStarName,
 } from "@/libs/zi-wei-dou-shu/i18n";
+import { buildPalaceExplanation } from "@/libs/zi-wei-dou-shu/palace-explanation";
 
 import type { Locale } from "@/i18n/config";
 import type { YearlySihua } from "@/libs/zi-wei-dou-shu/calculators";
 import type { ZiweiChart, Palace } from "@/libs/zi-wei-dou-shu/types";
 
+import { PalaceDetailPanel } from "./PalaceDetailPanel";
 import styles from "./ZiweiChartGrid.module.css";
 
 // ============================================================
@@ -59,11 +69,36 @@ const PALACE_GRID_POSITIONS: Record<number, { row: number; col: number }> = {
   11: { row: 4, col: 4 }, // 해
 };
 
+// 좌측 상단(첫 행·첫 열) 셀의 지지 — 기본 선택값
+const TOP_LEFT_BRANCH = (() => {
+  const found = Object.keys(PALACE_GRID_POSITIONS).find((branch) => {
+    const pos = PALACE_GRID_POSITIONS[Number(branch)];
+    return pos.row === 1 && pos.col === 1;
+  });
+  return found ? Number(found) : 5;
+})();
+
 // ============================================================
 // 유년 사화 마커 타입
 // ============================================================
 
 type SihuaType = "hualu" | "huaquan" | "huake" | "huaji";
+
+// ============================================================
+// UI 라벨 (간단한 chrome 문구만)
+// ============================================================
+
+const TAP_HINT: Record<Locale, string> = {
+  ko: "궁을 눌러보세요. 그 자리에 대한 풀이가 아래에 나타나요.",
+  en: "Tap a palace to see its reading below.",
+  ja: "宮をタップすると、その場所の読み解きが下に表示されます。",
+};
+
+const VIEW_DETAIL: Record<Locale, string> = {
+  ko: "자세히 보기",
+  en: "view details",
+  ja: "詳しく見る",
+};
 
 // ============================================================
 // 타입 정의
@@ -74,6 +109,8 @@ interface ZiweiChartGridProps {
   profileName: string;
   wuxingJu: string;
   yearlySihua?: YearlySihua;
+  /** 궁 셀 클릭 → 설명 패널 인터랙션 활성화 (기본 true). 공유/미리보기/이미지에서는 false */
+  interactive?: boolean;
 }
 
 // ============================================================
@@ -103,24 +140,58 @@ const PalaceCell = ({
   isMingGong,
   yearlySihua,
   locale,
+  interactive,
+  isSelected,
+  onSelect,
 }: {
   palace: Palace;
   isMingGong: boolean;
   yearlySihua?: YearlySihua;
   locale: Locale;
+  interactive: boolean;
+  isSelected: boolean;
+  onSelect: () => void;
 }) => {
   const position = PALACE_GRID_POSITIONS[palace.branch];
   const [firstMainStar, ...additionalMainStars] = palace.mainStars;
 
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelect();
+    }
+  };
+
+  const interactiveProps = interactive
+    ? {
+        role: "button",
+        tabIndex: 0,
+        "aria-pressed": isSelected,
+        "aria-label": `${translatePalaceName(palace.name, locale)}, ${
+          VIEW_DETAIL[locale]
+        }`,
+        onClick: onSelect,
+        onKeyDown: handleKeyDown,
+      }
+    : {};
+
   return (
     <div
-      className={`${styles.palaceCell} ${isMingGong ? styles.mingGong : ""}`}
+      className={[
+        styles.palaceCell,
+        isMingGong ? styles.mingGong : "",
+        interactive ? styles.interactive : "",
+        isSelected ? styles.selected : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       style={{
         gridRow: position.row,
         gridColumn: position.col,
       }}
       data-row={position.row}
       data-col={position.col}
+      {...interactiveProps}
     >
       {/* 상단: 궁 이름 + 지지 */}
       <div className={styles.palaceHeader}>
@@ -279,8 +350,61 @@ export const ZiweiChartGrid = ({
   profileName,
   wuxingJu,
   yearlySihua,
+  interactive = true,
 }: ZiweiChartGridProps) => {
   const locale = useLocale() as Locale;
+  // 기본으로 좌측 상단 궁을 선택해둔다 (비인터랙티브일 때만 선택 없음)
+  const [selectedBranch, setSelectedBranch] = useState<number | null>(
+    interactive ? TOP_LEFT_BRANCH : null
+  );
+  const panelRef = useRef<HTMLDivElement>(null);
+  const wasClosedRef = useRef(true);
+  const didMountRef = useRef(false);
+
+  const handleSelect = useCallback((branch: number) => {
+    setSelectedBranch((prev) => (prev === branch ? null : branch));
+  }, []);
+
+  const handleClose = useCallback(() => setSelectedBranch(null), []);
+
+  // 선택된 궁의 해석 조립 (상수 기반, AI 호출 없음)
+  const explanation = useMemo(() => {
+    if (selectedBranch === null || !chart?.palaces) return null;
+    const palace = chart.palaces.find((p) => p.branch === selectedBranch);
+    if (!palace) return null;
+    return buildPalaceExplanation(palace, chart.palaces, locale);
+  }, [selectedBranch, chart, locale]);
+
+  // 패널이 새로 열릴 때만 부드럽게 스크롤 (내용 교체 시엔 유지)
+  useEffect(() => {
+    if (selectedBranch === null) {
+      wasClosedRef.current = true;
+      return;
+    }
+    // 최초 마운트의 기본 선택에서는 자동 스크롤하지 않음
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      wasClosedRef.current = false;
+      return;
+    }
+    if (wasClosedRef.current && panelRef.current) {
+      panelRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+    wasClosedRef.current = false;
+  }, [selectedBranch]);
+
+  // Esc 로 닫기
+  useEffect(() => {
+    if (selectedBranch === null) return;
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setSelectedBranch(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedBranch]);
 
   // chart가 없으면 렌더링하지 않음
   if (!chart || !chart.palaces) {
@@ -294,31 +418,50 @@ export const ZiweiChartGrid = ({
   });
 
   return (
-    <div className={styles.chartGrid}>
-      {/* 12궁 렌더링 */}
-      {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((branchIndex) => {
-        const palace = palacesByBranch[branchIndex];
-        if (!palace) return null;
+    <div className={styles.chartWrapper}>
+      <div className={styles.chartGrid}>
+        {/* 12궁 렌더링 */}
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((branchIndex) => {
+          const palace = palacesByBranch[branchIndex];
+          if (!palace) return null;
 
-        return (
-          <PalaceCell
-            key={branchIndex}
-            palace={palace}
-            isMingGong={branchIndex === chart.mingGong}
-            yearlySihua={yearlySihua}
-            locale={locale}
-          />
-        );
-      })}
+          return (
+            <PalaceCell
+              key={branchIndex}
+              palace={palace}
+              isMingGong={branchIndex === chart.mingGong}
+              yearlySihua={yearlySihua}
+              locale={locale}
+              interactive={interactive}
+              isSelected={interactive && selectedBranch === branchIndex}
+              onSelect={() => handleSelect(branchIndex)}
+            />
+          );
+        })}
 
-      {/* 가운데 셀 */}
-      <CenterCell
-        chart={chart}
-        profileName={profileName}
-        wuxingJu={wuxingJu}
-        yearlySihua={yearlySihua}
-        locale={locale}
-      />
+        {/* 가운데 셀 */}
+        <CenterCell
+          chart={chart}
+          profileName={profileName}
+          wuxingJu={wuxingJu}
+          yearlySihua={yearlySihua}
+          locale={locale}
+        />
+      </div>
+
+      {interactive && (
+        <div ref={panelRef}>
+          {explanation ? (
+            <PalaceDetailPanel
+              explanation={explanation}
+              locale={locale}
+              onClose={handleClose}
+            />
+          ) : (
+            <p className={styles.tapHint}>{TAP_HINT[locale]}</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
