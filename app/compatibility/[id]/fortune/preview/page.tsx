@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
@@ -15,6 +16,10 @@ import {
 } from "@/components/fortune";
 import { CompatibilityCard } from "@/components/compatibility";
 import { useCompatibilityFortune } from "@/libs/hooks/compatibility";
+import {
+  useFirstPaymentEligibility,
+  toEventPriceText,
+} from "@/libs/hooks/payment";
 
 import styles from "./page.module.css";
 
@@ -69,6 +74,14 @@ export default function CompatibilityFortunePage() {
   const [chartBExpanded, setChartBExpanded] = useState(true);
   const [insightsExpanded, setInsightsExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+
+  // 첫 결제 100원 자격 시 CTA 금액 표기를 100원으로 (궁합은 pairId 기준)
+  const params = useParams();
+  const pairId = params.id as string;
+  const firstPaymentEligible = useFirstPaymentEligibility(
+    pairId,
+    "compatibility"
+  );
 
   if (isLoading) {
     return <Loading />;
@@ -270,7 +283,9 @@ export default function CompatibilityFortunePage() {
           onClick={handlePayment}
           disabled={!!error || !isAIGenerated}
         >
-          {tFortune("ctaButton")}
+          {firstPaymentEligible
+            ? toEventPriceText(tFortune("ctaButton"))
+            : tFortune("ctaButton")}
         </button>
       </footer>
     </div>

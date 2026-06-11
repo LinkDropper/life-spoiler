@@ -2,6 +2,7 @@ import {
   MainHero,
   FeatureSection,
   ProductPreview,
+  FirstPaymentEventBanner,
   PromotionBanner,
   ReviewSection,
   FAQSection,
@@ -22,6 +23,7 @@ export default function Home() {
         <FeatureSection />
         <ReviewSection />
         <ProductPreview />
+        <FirstPaymentEventBanner />
         <PromotionBanner />
         <FAQSection />
         <DisclaimerSection />

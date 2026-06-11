@@ -15,6 +15,10 @@ import {
   OneLinerAlert,
 } from "@/components/fortune";
 import { useYearlyPreview } from "@/libs/hooks/fortune";
+import {
+  useFirstPaymentEligibility,
+  toEventPriceText,
+} from "@/libs/hooks/payment";
 import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
 
@@ -41,6 +45,11 @@ export default function YearlyFortunePreviewPage() {
     onUnknownError: () => tCommon("unknownError"),
     onAIGenerationFailed: () => tYearly("fetchError"),
   });
+
+  const firstPaymentEligible = useFirstPaymentEligibility(
+    profile?.id,
+    "yearly"
+  );
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [insightsExpanded, setInsightsExpanded] = useState(true);
@@ -214,7 +223,9 @@ export default function YearlyFortunePreviewPage() {
           onClick={handlePayment}
           disabled={!!error || !isAIGenerated}
         >
-          {tPreview("ctaButton")}
+          {firstPaymentEligible
+            ? toEventPriceText(tPreview("ctaButton"))
+            : tPreview("ctaButton")}
         </button>
       </footer>
     </div>

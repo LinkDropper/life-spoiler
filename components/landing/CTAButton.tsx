@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+import { useIsFirstPaymentEvent, toEventPriceText } from "@/libs/hooks/payment";
 import { useUser, useAuthStatus } from "@/libs/stores/user";
 
 import styles from "./CTAButton.module.css";
@@ -13,6 +14,7 @@ export const CTAButton = () => {
   const user = useUser();
   const authStatus = useAuthStatus();
   const t = useTranslations("landing.cta");
+  const isEvent = useIsFirstPaymentEvent();
 
   const isAuthenticated = authStatus === "authenticated";
 
@@ -56,7 +58,9 @@ export const CTAButton = () => {
                 })}
               </span>
               <span className={styles.priceBadge}>
-                {t("priceBadge", { default: "990원" })}
+                {isEvent
+                  ? toEventPriceText(t("priceBadge", { default: "990원" }))
+                  : t("priceBadge", { default: "990원" })}
               </span>
             </>
           )}

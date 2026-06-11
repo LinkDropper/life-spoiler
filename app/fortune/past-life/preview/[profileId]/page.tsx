@@ -15,6 +15,10 @@ import {
   OneLinerAlert,
 } from "@/components/fortune";
 import { usePastLifePreview } from "@/libs/hooks/fortune";
+import {
+  useFirstPaymentEligibility,
+  toEventPriceText,
+} from "@/libs/hooks/payment";
 
 import styles from "./page.module.css";
 
@@ -40,6 +44,11 @@ export default function PastLifePreviewPage() {
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+
+  const firstPaymentEligible = useFirstPaymentEligibility(
+    profile?.id,
+    "past_life"
+  );
 
   if (isLoading) {
     return <Loading />;
@@ -288,7 +297,9 @@ export default function PastLifePreviewPage() {
           onClick={handlePayment}
           disabled={!!error || !isAIGenerated}
         >
-          {tPastLife("ctaButton")}
+          {firstPaymentEligible
+            ? toEventPriceText(tPastLife("ctaButton"))
+            : tPastLife("ctaButton")}
         </button>
       </footer>
     </div>

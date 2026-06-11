@@ -3,6 +3,7 @@ export { MainHero } from "./MainHero";
 export { FeatureSection } from "./FeatureSection";
 export { ProductPreview } from "./ProductPreview";
 export { PromotionBanner } from "./PromotionBanner";
+export { FirstPaymentEventBanner } from "./FirstPaymentEventBanner";
 export { ReviewSection } from "./ReviewSection";
 export { FAQSection } from "./FAQSection";
 export { DisclaimerSection } from "./DisclaimerSection";
