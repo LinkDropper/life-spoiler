@@ -15,6 +15,7 @@ import {
 } from "@/libs/stores/profile";
 import { useAuthStatus, useUser } from "@/libs/stores/user";
 import { FIRST_PAYMENT_AMOUNT_KRW } from "@/libs/services/payment/first-payment-event";
+import { useFirstPaymentEligibility } from "@/libs/hooks/payment";
 
 import styles from "./page.module.css";
 
@@ -127,8 +128,11 @@ function PaymentPageContent() {
     ? PAYMENT_METHODS_FOREIGN
     : PAYMENT_METHODS_KO;
 
-  // 첫 결제 100원 이벤트 자격 (국내 KRW 전용) — 서버에서 확인
-  const [firstPaymentApplied, setFirstPaymentApplied] = useState(false);
+  // 첫 결제 100원 이벤트 자격 (국내 KRW 전용) — 공용 훅으로 서버 확인
+  const firstPaymentApplied = useFirstPaymentEligibility(
+    profileId,
+    fortuneType
+  );
   const effectiveKrwAmount = firstPaymentApplied
     ? FIRST_PAYMENT_AMOUNT_KRW
     : PAYMENT_AMOUNT_KRW;
@@ -175,31 +179,6 @@ function PaymentPageContent() {
       }
     };
   }, []);
-
-  // 첫 결제 100원 자격 조회 (국내 KRW만; 해외는 정상가 유지)
-  useEffect(() => {
-    if (isForeignLocale || !profileId || !fortuneType) {
-      return;
-    }
-    let cancelled = false;
-    fetch(
-      `/api/payment/first-payment-eligibility?profileId=${encodeURIComponent(
-        profileId
-      )}&type=${fortuneType}`
-    )
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!cancelled && data) {
-          setFirstPaymentApplied(Boolean(data.eligible));
-        }
-      })
-      .catch(() => {
-        // 자격 조회 실패 시 정상가 유지
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [isForeignLocale, profileId, fortuneType]);
 
   useEffect(() => {
     if (authStatus === "authenticated" && !isProfilesLoaded) {
