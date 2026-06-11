@@ -145,16 +145,26 @@ const generateImageWithImagen = async (prompt: string): Promise<Buffer> => {
 
       const elapsed = Date.now() - attemptStart;
       const isAbort = error instanceof Error && error.name === "AbortError";
+      const errorName = error instanceof Error ? error.name : "UnknownError";
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
 
       console.warn(
         `Imagen 시도 ${attempt + 1}/${IMAGEN_CONFIG.maxRetries + 1} 실패 ` +
-          `(${elapsed}ms, ${isAbort ? "타임아웃" : (error as Error).name}): ` +
-          `${(error as Error).message}`
+          `(${elapsed}ms, ${isAbort ? "타임아웃" : errorName}): ${errorMessage}`
       );
 
-      // 타임아웃(Abort)은 재시도해도 같은 시간만 더 소모하므로 즉시 중단.
+      // 타임아웃(Abort)은 재시도해도 같은 시간만 더 소모하므로
+      // 표준 AIError(TIMEOUT)로 래핑해 즉시 중단.
+      if (isAbort) {
+        throw new AIError("이미지 생성 요청 시간이 초과되었습니다.", {
+          code: "TIMEOUT",
+          originalError: error instanceof Error ? error : undefined,
+        });
+      }
+
       // 그 외(일시적 네트워크/5xx)만 백오프 후 재시도.
-      if (!isAbort && attempt < IMAGEN_CONFIG.maxRetries) {
+      if (attempt < IMAGEN_CONFIG.maxRetries) {
         const backoffDelay = IMAGEN_CONFIG.retryDelay * Math.pow(2, attempt);
         await sleep(backoffDelay);
         continue;
