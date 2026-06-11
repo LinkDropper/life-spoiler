@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { sendPaymentNotification } from "@/libs/discord";
 import {
+  FIRST_PAYMENT_AMOUNT_KRW,
+  NORMAL_AMOUNT_KRW,
+  NORMAL_AMOUNT_USD,
+} from "@/libs/services/payment/first-payment-event";
+import { isFirstPaymentEligible } from "@/libs/services/payment/first-payment-eligibility";
+import {
   createServerClient,
   updateCompatibilityPaidAt,
   updateFortunePaidAt,
@@ -16,10 +22,6 @@ const PAYPAL_SECRET_KEY = process.env.TOSS_PAYPAL_SECRET_KEY;
 if (!SECRET_KEY) {
   throw new Error("TOSS_SECRET_KEY environment variable is required");
 }
-
-// 예상 결제 금액
-const EXPECTED_AMOUNT_KRW = 990;
-const EXPECTED_AMOUNT_USD = 0.99;
 
 type Currency = "KRW" | "USD";
 
@@ -72,9 +74,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 통화에 따른 예상 금액 검증
-    const expectedAmount =
-      currency === "USD" ? EXPECTED_AMOUNT_USD : EXPECTED_AMOUNT_KRW;
+    // 예상 결제 금액을 서버에서 독립적으로 결정 (클라이언트 금액 신뢰 안 함).
+    // 국내(KRW)이고 본편 운세 첫 결제 자격이 확정되면 100원, 아니면 정상가.
+    let expectedAmount: number;
+    if (currency === "USD") {
+      expectedAmount = NORMAL_AMOUNT_USD;
+    } else {
+      const eligibleForFirstPayment =
+        profileId && fortuneType
+          ? await isFirstPaymentEligible(fortuneType, profileId)
+          : false;
+      expectedAmount = eligibleForFirstPayment
+        ? FIRST_PAYMENT_AMOUNT_KRW
+        : NORMAL_AMOUNT_KRW;
+    }
 
     if (amount !== expectedAmount) {
       return NextResponse.json(
