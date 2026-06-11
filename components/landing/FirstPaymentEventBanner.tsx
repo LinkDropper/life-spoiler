@@ -6,18 +6,16 @@ import { useLocale, useTranslations } from "next-intl";
 import { isFirstPaymentEventActive } from "@/libs/services/payment/first-payment-event";
 import { useUser, useAuthStatus } from "@/libs/stores/user";
 
-import styles from "./PromotionBanner.module.css";
+import styles from "./FirstPaymentEventBanner.module.css";
 
-export const PromotionBanner = () => {
+export const FirstPaymentEventBanner = () => {
   const router = useRouter();
   const locale = useLocale();
   const user = useUser();
   const authStatus = useAuthStatus();
-  const t = useTranslations("landing.promotion");
+  const t = useTranslations("landing.eventFirstPayment");
 
-  // 첫 결제 100원 이벤트 기간(ko)에는 FirstPaymentEventBanner가 노출되므로
-  // 핑크 배너 중복을 막기 위해 990원 배너는 숨긴다.
-  if (locale === "ko" && isFirstPaymentEventActive()) {
+  if (locale !== "ko" || !isFirstPaymentEventActive()) {
     return null;
   }
 
@@ -33,25 +31,25 @@ export const PromotionBanner = () => {
   return (
     <div className={styles.container}>
       <div className={styles.badge}>
-        {t("badge", { default: "이번 달만 90% 할인" })}
+        {t("badge", { default: "첫 결제 100원" })}
       </div>
       <div className={styles.priceWrapper}>
         <span className={styles.originalPrice}>
-          {t("originalPrice", { default: "9,900원" })}
+          {t("originalPrice", { default: "990원" })}
         </span>
-        <span className={styles.price}>{t("price", { default: "990원" })}</span>
+        <span className={styles.price}>{t("price", { default: "100원" })}</span>
       </div>
       <p className={styles.text}>
         {t("text", {
-          default: "커피 한 잔 값으로, 내 인생의 골든타임을 확인하세요",
+          default: "본편 운세 첫 결제 1건을 100원에. 1인 1회 한정이에요.",
         })}
       </p>
       <button type="button" className={styles.ctaButton} onClick={handleClick}>
         {authStatus === "authenticated"
           ? t("ctaButtonAuthenticated", {
-              default: "내 결과 확인하기",
+              default: "100원으로 내 운세 보기",
             })
-          : t("ctaButton", { default: "지금 바로 확인하기" })}
+          : t("ctaButton", { default: "100원으로 시작하기" })}
       </button>
     </div>
   );

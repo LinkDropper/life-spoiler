@@ -45,6 +45,14 @@
         "ctaButton": "지금 바로 확인하기",
         "ctaButtonAuthenticated": "내 결과 확인하기"
       },
+      "eventFirstPayment": {
+        "badge": "첫 결제 100원",
+        "originalPrice": "990원",
+        "price": "100원",
+        "text": "본편 운세 첫 결제 1건을 100원에.\n1인 1회 한정이에요.",
+        "ctaButton": "100원으로 시작하기",
+        "ctaButtonAuthenticated": "100원으로 내 운세 보기"
+      },
       "cta": {
         "button": "내 전성기 확인하기",
         "buttonAuthenticated": "내 운세 결과 보기",
@@ -1249,6 +1257,14 @@
         "ctaButton": "Check Now",
         "ctaButtonAuthenticated": "View My Results"
       },
+      "eventFirstPayment": {
+        "badge": "First Payment 100 KRW",
+        "originalPrice": "990 KRW",
+        "price": "100 KRW",
+        "text": "Your first main fortune reading for just 100 KRW.\nOne per person.",
+        "ctaButton": "Start for 100 KRW",
+        "ctaButtonAuthenticated": "See My Fortune for 100 KRW"
+      },
       "cta": {
         "button": "Discover My Prime Years",
         "buttonAuthenticated": "View My Fortune Results",
@@ -2452,6 +2468,14 @@
         "text": "占いカフェ5万円 vs ライフスポイラー990円、より精密に",
         "ctaButton": "今すぐチェック",
         "ctaButtonAuthenticated": "結果を確認する"
+      },
+      "eventFirstPayment": {
+        "badge": "初回決済100ウォン",
+        "originalPrice": "990ウォン",
+        "price": "100ウォン",
+        "text": "本編の運勢、初回の1件を100ウォンで。\nお一人様1回限りです。",
+        "ctaButton": "100ウォンで始める",
+        "ctaButtonAuthenticated": "100ウォンで運勢を見る"
       },
       "cta": {
         "button": "私の全盛期を確認する",
