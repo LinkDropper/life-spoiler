@@ -9,9 +9,12 @@ import { AIError } from "./errors";
 
 const IMAGEN_CONFIG = {
   baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
-  model: "imagen-4.0-generate-001",
-  timeout: 60000, // 60초 (이미지 생성은 텍스트보다 오래 걸림)
-  maxRetries: 2,
+  // 표준 imagen-4.0-generate-001은 용량 제한(429/503)이 잦고 응답이 매우 느려
+  // (실측 시 503이 ~78초 후 반환) 프로덕션에서 60초 타임아웃이 터졌다.
+  // Fast 모델은 동일 프롬프트를 ~5초에 안정적으로 생성하므로 이를 사용한다.
+  model: "imagen-4.0-fast-generate-001",
+  timeout: 45000, // 45초 (Fast는 보통 ~5초, 지연 대비 넉넉한 마진)
+  maxRetries: 2, // 일시적 429/503은 백오프 재시도, 타임아웃(Abort)은 즉시 중단
   retryDelay: 2000,
   bucket: "past-life-images",
 } as const;
@@ -60,9 +63,7 @@ const sleep = (ms: number): Promise<void> => {
 /**
  * Imagen 3 API로 이미지 생성
  */
-const generateImageWithImagen = async (
-  prompt: string
-): Promise<Buffer> => {
+const generateImageWithImagen = async (prompt: string): Promise<Buffer> => {
   const apiKey = env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -85,6 +86,7 @@ const generateImageWithImagen = async (
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= IMAGEN_CONFIG.maxRetries; attempt++) {
+    const attemptStart = Date.now();
     try {
       const url = `${IMAGEN_CONFIG.baseUrl}/${IMAGEN_CONFIG.model}:predict`;
 
@@ -115,13 +117,10 @@ const generateImageWithImagen = async (
             });
           }
 
-          throw new AIError(
-            `Imagen API 요청 실패: ${errorText}`,
-            {
-              code: "API_REQUEST_FAILED",
-              statusCode: response.status,
-            }
-          );
+          throw new AIError(`Imagen API 요청 실패: ${errorText}`, {
+            code: "API_REQUEST_FAILED",
+            statusCode: response.status,
+          });
         }
 
         const data: ImagenResponse = await response.json();
@@ -144,12 +143,23 @@ const generateImageWithImagen = async (
         throw error;
       }
 
-      if (attempt < IMAGEN_CONFIG.maxRetries) {
-        const backoffDelay =
-          IMAGEN_CONFIG.retryDelay * Math.pow(2, attempt);
+      const elapsed = Date.now() - attemptStart;
+      const isAbort = error instanceof Error && error.name === "AbortError";
+
+      console.warn(
+        `Imagen 시도 ${attempt + 1}/${IMAGEN_CONFIG.maxRetries + 1} 실패 ` +
+          `(${elapsed}ms, ${isAbort ? "타임아웃" : (error as Error).name}): ` +
+          `${(error as Error).message}`
+      );
+
+      // 타임아웃(Abort)은 재시도해도 같은 시간만 더 소모하므로 즉시 중단.
+      // 그 외(일시적 네트워크/5xx)만 백오프 후 재시도.
+      if (!isAbort && attempt < IMAGEN_CONFIG.maxRetries) {
+        const backoffDelay = IMAGEN_CONFIG.retryDelay * Math.pow(2, attempt);
         await sleep(backoffDelay);
         continue;
       }
+      break;
     }
   }
 
@@ -194,9 +204,7 @@ const uploadToStorage = async (
 
   const {
     data: { publicUrl },
-  } = supabase.storage
-    .from(IMAGEN_CONFIG.bucket)
-    .getPublicUrl(data.path);
+  } = supabase.storage.from(IMAGEN_CONFIG.bucket).getPublicUrl(data.path);
 
   return publicUrl;
 };
