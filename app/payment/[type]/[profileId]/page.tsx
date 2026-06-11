@@ -14,6 +14,7 @@ import {
   useProfileActions,
 } from "@/libs/stores/profile";
 import { useAuthStatus, useUser } from "@/libs/stores/user";
+import { FIRST_PAYMENT_AMOUNT_KRW } from "@/libs/services/payment/first-payment-event";
 
 import styles from "./page.module.css";
 
@@ -125,9 +126,15 @@ function PaymentPageContent() {
   const paymentMethods = isForeignLocale
     ? PAYMENT_METHODS_FOREIGN
     : PAYMENT_METHODS_KO;
+
+  // 첫 결제 100원 이벤트 자격 (국내 KRW 전용) — 서버에서 확인
+  const [firstPaymentApplied, setFirstPaymentApplied] = useState(false);
+  const effectiveKrwAmount = firstPaymentApplied
+    ? FIRST_PAYMENT_AMOUNT_KRW
+    : PAYMENT_AMOUNT_KRW;
   const paymentAmount = isForeignLocale
     ? PAYMENT_AMOUNT_USD
-    : PAYMENT_AMOUNT_KRW;
+    : effectiveKrwAmount;
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -168,6 +175,31 @@ function PaymentPageContent() {
       }
     };
   }, []);
+
+  // 첫 결제 100원 자격 조회 (국내 KRW만; 해외는 정상가 유지)
+  useEffect(() => {
+    if (isForeignLocale || !profileId || !fortuneType) {
+      return;
+    }
+    let cancelled = false;
+    fetch(
+      `/api/payment/first-payment-eligibility?profileId=${encodeURIComponent(
+        profileId
+      )}&type=${fortuneType}`
+    )
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data) {
+          setFirstPaymentApplied(Boolean(data.eligible));
+        }
+      })
+      .catch(() => {
+        // 자격 조회 실패 시 정상가 유지
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isForeignLocale, profileId, fortuneType]);
 
   useEffect(() => {
     if (authStatus === "authenticated" && !isProfilesLoaded) {
@@ -355,7 +387,7 @@ function PaymentPageContent() {
       const basePaymentConfig = {
         amount: {
           currency: "KRW",
-          value: PAYMENT_AMOUNT_KRW,
+          value: effectiveKrwAmount,
         },
         orderId,
         orderName,
@@ -663,6 +695,17 @@ function PaymentPageContent() {
               </span>
               <span className={styles.discountedAmount}>
                 {isForeignLocale ? "$0.00" : `0${tPayment("currency")}`}
+              </span>
+            </div>
+          ) : firstPaymentApplied && !isForeignLocale ? (
+            <div className={styles.amountWithDiscount}>
+              <span className={styles.originalAmount}>
+                {`${PAYMENT_AMOUNT_KRW.toLocaleString()}${tPayment("currency")}`}
+              </span>
+              <span className={styles.discountedAmount}>
+                {`${FIRST_PAYMENT_AMOUNT_KRW.toLocaleString()}${tPayment(
+                  "currency"
+                )}`}
               </span>
             </div>
           ) : (
