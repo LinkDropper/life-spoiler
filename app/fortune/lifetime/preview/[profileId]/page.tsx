@@ -16,6 +16,10 @@ import {
 } from "@/components/fortune";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
 import {
+  useFirstPaymentEligibility,
+  toEventPriceText,
+} from "@/libs/hooks/payment";
+import {
   extractKeywordsFromChart,
   extractOneLinerFromChart,
 } from "@/libs/zi-wei-dou-shu/calculators";
@@ -46,6 +50,12 @@ export default function LifetimeFortunePreviewPage() {
 
   const [chartExpanded, setChartExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+
+  // 첫 결제 100원 자격 시 CTA 금액 표기를 100원으로
+  const firstPaymentEligible = useFirstPaymentEligibility(
+    profile?.id,
+    "lifetime"
+  );
 
   // 키워드 추출 (12궁 주성 + 밝기 기반, 영향력 점수순)
   const keywords = useMemo(() => {
@@ -224,7 +234,9 @@ export default function LifetimeFortunePreviewPage() {
           onClick={handlePayment}
           disabled={!!error || !isAIGenerated}
         >
-          {tPreview("ctaButton")}
+          {firstPaymentEligible
+            ? toEventPriceText(tPreview("ctaButton"))
+            : tPreview("ctaButton")}
         </button>
       </footer>
     </div>

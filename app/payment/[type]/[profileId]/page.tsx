@@ -14,6 +14,8 @@ import {
   useProfileActions,
 } from "@/libs/stores/profile";
 import { useAuthStatus, useUser } from "@/libs/stores/user";
+import { FIRST_PAYMENT_AMOUNT_KRW } from "@/libs/services/payment/first-payment-event";
+import { useFirstPaymentEligibility } from "@/libs/hooks/payment";
 
 import styles from "./page.module.css";
 
@@ -125,9 +127,18 @@ function PaymentPageContent() {
   const paymentMethods = isForeignLocale
     ? PAYMENT_METHODS_FOREIGN
     : PAYMENT_METHODS_KO;
+
+  // 첫 결제 100원 이벤트 자격 (국내 KRW 전용) — 공용 훅으로 서버 확인
+  const firstPaymentApplied = useFirstPaymentEligibility(
+    profileId,
+    fortuneType
+  );
+  const effectiveKrwAmount = firstPaymentApplied
+    ? FIRST_PAYMENT_AMOUNT_KRW
+    : PAYMENT_AMOUNT_KRW;
   const paymentAmount = isForeignLocale
     ? PAYMENT_AMOUNT_USD
-    : PAYMENT_AMOUNT_KRW;
+    : effectiveKrwAmount;
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -355,7 +366,7 @@ function PaymentPageContent() {
       const basePaymentConfig = {
         amount: {
           currency: "KRW",
-          value: PAYMENT_AMOUNT_KRW,
+          value: effectiveKrwAmount,
         },
         orderId,
         orderName,
@@ -663,6 +674,17 @@ function PaymentPageContent() {
               </span>
               <span className={styles.discountedAmount}>
                 {isForeignLocale ? "$0.00" : `0${tPayment("currency")}`}
+              </span>
+            </div>
+          ) : firstPaymentApplied && !isForeignLocale ? (
+            <div className={styles.amountWithDiscount}>
+              <span className={styles.originalAmount}>
+                {`${PAYMENT_AMOUNT_KRW.toLocaleString()}${tPayment("currency")}`}
+              </span>
+              <span className={styles.discountedAmount}>
+                {`${FIRST_PAYMENT_AMOUNT_KRW.toLocaleString()}${tPayment(
+                  "currency"
+                )}`}
               </span>
             </div>
           ) : (

@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { useIsFirstPaymentEvent, toEventPriceText } from "@/libs/hooks/payment";
+
 import styles from "./ProductPreview.module.css";
 
 import type { LucideIcon } from "lucide-react";
@@ -52,11 +54,16 @@ const FeatureList = ({ items, getTranslation }: FeatureListProps) => (
 
 export const ProductPreview = () => {
   const t = useTranslations("landing.productPreview");
+  const isEvent = useIsFirstPaymentEvent();
+
+  const title = t("title", {
+    default: "커피 한 잔 값에 이 모든 걸 받아보세요",
+  });
 
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>
-        {t("title", { default: "커피 한 잔 값에 이 모든 걸 받아보세요" })}
+        {isEvent ? toEventPriceText(title) : title}
       </h2>
 
       <FeatureList
