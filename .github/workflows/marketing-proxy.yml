@@ -19,17 +19,36 @@ on:
     inputs:
       job:
         description: "실행할 잡"
-        required: false
-        default: "daily-x-metrics"
+        required: true
         type: choice
         options:
           - daily-x-metrics
           - daily-ga4-metrics
           - weekly-naver-trends
+          - post-to-x
+          - discord-notify
+      text:
+        description: "포스트 본문 또는 Discord 메시지"
+        required: false
+        type: string
+      summary:
+        description: "social-tracker.csv 요약 (post-to-x용)"
+        required: false
+        type: string
+      post_type:
+        description: "포스트 유형 (post-to-x용: cta/knowledge/question/story/trend/empathy)"
+        required: false
+        type: string
+      username:
+        description: "Discord 사용자명 (discord-notify용)"
+        required: false
+        type: string
 
 jobs:
   post-to-x:
-    if: github.event.action == 'post-to-x'
+    if: |
+      github.event.action == 'post-to-x'
+      || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'post-to-x')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,8 +65,8 @@ jobs:
         id: preflight
         run: node scripts/marketing/preflight-check.js
         env:
-          TWEET_TEXT: ${{ github.event.client_payload.text }}
-          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_TEXT: ${{ github.event.client_payload.text || github.event.inputs.text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type || github.event.inputs.post_type }}
 
       - name: Jitter 대기 (인간적 발행 패턴)
         if: steps.preflight.outputs.passed == 'true' && github.event.client_payload.skip_jitter != true
@@ -65,15 +84,15 @@ jobs:
           X_OAUTH2_CLIENT_SECRET: ${{ secrets.X_OAUTH2_CLIENT_SECRET }}
           X_REFRESH_TOKEN: ${{ secrets.X_REFRESH_TOKEN }}
           AUTO_FIX_PAT: ${{ secrets.AUTO_FIX_PAT }}
-          TWEET_TEXT: ${{ github.event.client_payload.text }}
-          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_TEXT: ${{ github.event.client_payload.text || github.event.inputs.text }}
+          TWEET_TYPE: ${{ github.event.client_payload.type || github.event.inputs.post_type }}
 
       - name: social-tracker.csv 자동 기록
         if: success() && steps.post.outputs.tweet_url != ''
         env:
-          TWEET_TEXT: ${{ github.event.client_payload.text }}
-          TWEET_SUMMARY: ${{ github.event.client_payload.summary }}
-          TWEET_TYPE: ${{ github.event.client_payload.type }}
+          TWEET_TEXT: ${{ github.event.client_payload.text || github.event.inputs.text }}
+          TWEET_SUMMARY: ${{ github.event.client_payload.summary || github.event.inputs.summary }}
+          TWEET_TYPE: ${{ github.event.client_payload.type || github.event.inputs.post_type }}
           TWEET_URL: ${{ steps.post.outputs.tweet_url }}
         run: |
           node scripts/marketing/lib/append-tracker.js
@@ -97,7 +116,7 @@ jobs:
             X 포스트 발행 완료
             ${{ steps.post.outputs.tweet_url }}
 
-            ${{ github.event.client_payload.text }}
+            ${{ github.event.client_payload.text || github.event.inputs.text }}
 
       - name: Discord 알림 (Preflight 실패)
         if: failure() && steps.preflight.outcome == 'failure'
@@ -109,7 +128,7 @@ jobs:
             X 발행 차단 (Preflight 실패)
             사유: ${{ steps.preflight.outputs.fail_reason }}
 
-            본문: ${{ github.event.client_payload.text }}
+            본문: ${{ github.event.client_payload.text || github.event.inputs.text }}
 
       - name: Discord 알림 (발행/토큰 갱신 실패)
         if: failure() && steps.preflight.outcome == 'success' && steps.post.outcome == 'failure'
@@ -122,7 +141,7 @@ jobs:
             run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             refresh_token이 무효화됐을 수 있음 — 로그 확인 후 필요시 OAuth setup 재실행.
 
-            본문: ${{ github.event.client_payload.text }}
+            본문: ${{ github.event.client_payload.text || github.event.inputs.text }}
 
   weekly-metrics:
     if: github.event.action == 'weekly-metrics'
@@ -229,7 +248,9 @@ jobs:
           fi
 
   discord-notify:
-    if: github.event.action == 'discord-notify'
+    if: |
+      github.event.action == 'discord-notify'
+      || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'discord-notify')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -240,8 +261,8 @@ jobs:
         run: node scripts/marketing/discord-notify.js
         env:
           DISCORD_MARKETING_WEBHOOK: ${{ secrets.DISCORD_MARKETING_WEBHOOK }}
-          DISCORD_TEXT: ${{ github.event.client_payload.text }}
-          DISCORD_USERNAME: ${{ github.event.client_payload.username }}
+          DISCORD_TEXT: ${{ github.event.client_payload.text || github.event.inputs.text }}
+          DISCORD_USERNAME: ${{ github.event.client_payload.username || github.event.inputs.username }}
 
   daily-ga4-metrics:
     if: |
