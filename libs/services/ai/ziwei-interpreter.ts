@@ -24,7 +24,11 @@ import {
   LifetimeCoreScenarioResponseSchema,
   ProfileTraitsResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
+import {
+  chatCompletion,
+  parseJsonResponse,
+  CURRENT_MODEL_NAME,
+} from "./provider";
 
 // ============================================================
 // Gemini responseSchema 정의
@@ -724,7 +728,7 @@ export const generateFullInterpretation = async (
       profileTraits,
       meta: {
         generatedAt: new Date().toISOString(),
-        model: GEMINI_MODEL_NAME,
+        model: CURRENT_MODEL_NAME,
         isFallback: false,
       },
     };
@@ -745,7 +749,7 @@ export const generateFullInterpretation = async (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: GEMINI_MODEL_NAME,
+      model: CURRENT_MODEL_NAME,
       isFallback: false,
     },
   };
@@ -782,7 +786,7 @@ export const createFallbackInterpretation = (
     ageScenarios: [],
     meta: {
       generatedAt: new Date().toISOString(),
-      model: GEMINI_MODEL_NAME,
+      model: CURRENT_MODEL_NAME,
       isFallback: true,
     },
   };

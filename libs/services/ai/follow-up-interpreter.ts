@@ -1,5 +1,5 @@
 import { AIError } from "./errors";
-import { chatCompletion, parseJsonResponse } from "./gemini";
+import { chatCompletion, parseJsonResponse } from "./provider";
 import {
   buildFollowUpSystemPrompt,
   buildFollowUpUserPrompt,
