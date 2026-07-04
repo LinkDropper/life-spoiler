@@ -152,6 +152,18 @@ export const chatCompletion = async (
         throw error;
       }
 
+      // 4xx(429 제외)는 재시도해도 성공할 수 없는 클라이언트 오류(잘못된 스키마,
+      // 인증 실패 등) — 즉시 throw해 불필요한 재시도 대기를 건너뛴다.
+      if (
+        error instanceof AIError &&
+        error.statusCode !== undefined &&
+        error.statusCode >= 400 &&
+        error.statusCode < 500 &&
+        error.statusCode !== 429
+      ) {
+        throw error;
+      }
+
       if (attempt < OPENAI_CONFIG.maxRetries) {
         const backoffDelay = OPENAI_CONFIG.retryDelay * Math.pow(2, attempt);
 
@@ -210,6 +222,29 @@ const sleep = (ms: number): Promise<void> => {
 };
 
 /**
+ * OpenAI strict 모드는 optional 필드도 required에 넣어야 하므로 값이 없으면
+ * `null`로 채워 보낸다. 우리 Zod 스키마는 `.optional()`(undefined만 허용)을
+ * 쓰므로 null이 오면 파싱이 깨진다 — null 값을 가진 키를 재귀적으로 제거해
+ * "필드 없음"과 동일하게 취급한다. provider.ts에서 OpenAI 응답에만 적용한다.
+ */
+export const stripNullValues = <T>(value: T): T => {
+  if (Array.isArray(value)) {
+    return value.map((item) => stripNullValues(item)) as unknown as T;
+  }
+
+  if (value !== null && typeof value === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [key, v] of Object.entries(value as Record<string, unknown>)) {
+      if (v === null) continue;
+      result[key] = stripNullValues(v);
+    }
+    return result as T;
+  }
+
+  return value;
+};
+
+/**
  * Gemini용 느슨한 responseSchema(일부 필드만 required)를
  * OpenAI Structured Outputs strict 모드 스키마로 변환한다.
  * strict 모드는 모든 프로퍼티가 required에 있어야 하므로, 원래 optional이던
@@ -235,6 +270,9 @@ const toStrictJsonSchema = (
       additionalProperties: false,
       properties: convertedProperties,
       required: Object.keys(properties),
+      ...("description" in schema && schema.description
+        ? { description: schema.description }
+        : {}),
     };
   }
 
@@ -244,6 +282,9 @@ const toStrictJsonSchema = (
       items: schema.items
         ? toStrictJsonSchema(schema.items)
         : { type: "string" },
+      ...("description" in schema && schema.description
+        ? { description: schema.description }
+        : {}),
     };
   }
 

@@ -424,30 +424,6 @@ const escapeQuotesInValues = (str: string): string => {
 };
 
 /**
- * OpenAI strict 모드는 optional 필드도 required에 넣어야 하므로 값이 없으면
- * `null`로 채워 보낸다. 우리 Zod 스키마는 `.optional()`(undefined만 허용)을
- * 쓰므로 null이 오면 파싱이 깨진다 — null 값을 가진 키를 재귀적으로 제거해
- * "필드 없음"과 동일하게 취급한다. Gemini는 애초에 null을 보내지 않으므로
- * 해당 경로에서는 no-op.
- */
-const stripNullValues = <T>(value: T): T => {
-  if (Array.isArray(value)) {
-    return value.map((item) => stripNullValues(item)) as unknown as T;
-  }
-
-  if (value !== null && typeof value === "object") {
-    const result: Record<string, unknown> = {};
-    for (const [key, v] of Object.entries(value as Record<string, unknown>)) {
-      if (v === null) continue;
-      result[key] = stripNullValues(v);
-    }
-    return result as T;
-  }
-
-  return value;
-};
-
-/**
  * JSON 응답 파싱 (AI가 마크다운 코드 블록으로 감쌀 수 있음)
  */
 export const parseJsonResponse = <T>(content: string): T => {
@@ -455,7 +431,7 @@ export const parseJsonResponse = <T>(content: string): T => {
 
   // 1차 시도: 기본 파싱
   try {
-    return stripNullValues(JSON.parse(jsonStr)) as T;
+    return JSON.parse(jsonStr) as T;
   } catch {
     // 1차 실패 - 계속 진행
   }
@@ -472,7 +448,7 @@ export const parseJsonResponse = <T>(content: string): T => {
       .replace(/\r\n/g, "\n")
       .replace(/\r/g, "\n");
 
-    return stripNullValues(JSON.parse(cleaned)) as T;
+    return JSON.parse(cleaned) as T;
   } catch {
     // 2차 실패 - 계속 진행
   }
@@ -480,7 +456,7 @@ export const parseJsonResponse = <T>(content: string): T => {
   // 3차 시도: 문자열 내 이스케이프되지 않은 따옴표 처리
   try {
     const escaped = escapeQuotesInValues(jsonStr);
-    return stripNullValues(JSON.parse(escaped)) as T;
+    return JSON.parse(escaped) as T;
   } catch {
     // 3차 실패 - 계속 진행
   }
@@ -488,7 +464,7 @@ export const parseJsonResponse = <T>(content: string): T => {
   // 4차 시도: 줄바꿈을 공백으로 치환하고 다시 시도
   try {
     const singleLine = jsonStr.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
-    return stripNullValues(JSON.parse(singleLine)) as T;
+    return JSON.parse(singleLine) as T;
   } catch (finalError) {
     // 디버깅을 위해 원본 응답의 일부 로깅
     console.error(
