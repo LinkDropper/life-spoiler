@@ -15,17 +15,22 @@ const envSchema = z
     OAUTH_KAKAO_CLIENT_ID: z.string().optional(),
     OAUTH_KAKAO_CLIENT_SECRET: z.string().optional(),
 
-    // AI - Gemini
+    // AI - Gemini (인생스포 텍스트 해석 롤백용, LIFE_SPOILER_LLM_PROVIDER=gemini일 때 사용)
     GEMINI_API_KEY: z.string().optional(),
 
-    // AI - OpenAI (face-spoiler GPT-5.4 mini 실험용 — Phase 20)
+    // AI - OpenAI (face-spoiler + 인생스포 텍스트 해석 공용)
     OPENAI_API_KEY: z.string().optional(),
 
     // Face-spoiler 텍스트 리포트 LLM 제공자 스위칭.
     // "gemini" (default) 또는 "openai". 실험 중에만 "openai"로 지정.
     FACE_SPOILER_LLM_PROVIDER: z.enum(["gemini", "openai"]).default("gemini"),
 
-    // OpenAI 모델 ID. 공식 release 시 snapshot ID 주입. Default는 2026-03-17 snapshot.
+    // 인생스포(자미두수/궁합/전생/추가질문) 텍스트 해석 LLM 제공자 스위칭.
+    // "openai" (default). 장애 시 "gemini"로 즉시 롤백 가능.
+    LIFE_SPOILER_LLM_PROVIDER: z.enum(["gemini", "openai"]).default("openai"),
+
+    // OpenAI 모델 ID. face-spoiler와 인생스포 텍스트 해석이 공유. 공식 release 시 snapshot ID 주입.
+    // Default는 2026-03-17 snapshot.
     OPENAI_FACE_MODEL: z.string().default("gpt-5.4-mini-2026-03-17"),
 
     // Phase 20.6 (2026-04-23) — FaceMetrics 파생 정보 노출 레벨 실험.

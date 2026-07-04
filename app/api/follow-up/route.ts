@@ -487,7 +487,7 @@ export const POST = async (request: Request) => {
       limit: HISTORY_LIMIT,
     });
 
-    // Gemini 호출
+    // LLM 호출 (LIFE_SPOILER_LLM_PROVIDER)
     const todayDate = getTodayKst();
 
     let answer: string;

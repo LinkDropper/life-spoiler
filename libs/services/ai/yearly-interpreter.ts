@@ -22,7 +22,11 @@ import {
   YearlyMonthlyFortuneSchema,
   YearlyOverviewResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
+import {
+  chatCompletion,
+  parseJsonResponse,
+  CURRENT_MODEL_NAME,
+} from "./provider";
 
 // ============================================================
 // Gemini responseSchema 정의 (유년)
@@ -680,7 +684,7 @@ export const generateYearlyInterpretation = async (
     meta: {
       year: request.targetYear,
       generatedAt: new Date().toISOString(),
-      model: GEMINI_MODEL_NAME,
+      model: CURRENT_MODEL_NAME,
       isFallback: false,
     },
   };
@@ -749,7 +753,7 @@ export const createYearlyFallbackInterpretation = (
     meta: {
       year: targetYear,
       generatedAt: new Date().toISOString(),
-      model: GEMINI_MODEL_NAME,
+      model: CURRENT_MODEL_NAME,
       isFallback: true,
     },
   };

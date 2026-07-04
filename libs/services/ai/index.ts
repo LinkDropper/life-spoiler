@@ -1,4 +1,4 @@
-// AI 서비스 모듈 - Gemini 1.5 Flash를 사용한 자미두수 해석
+// AI 서비스 모듈 - OpenAI(default)/Gemini를 사용한 자미두수 해석
 
 // 에러
 export { AIError } from "./errors";
@@ -32,9 +32,9 @@ export type {
   YearlySihuaData,
 } from "./types";
 
-// Gemini 클라이언트
-export { chatCompletion, parseJsonResponse } from "./gemini";
-export type { ChatCompletionOptions } from "./gemini";
+// LLM 클라이언트 (LIFE_SPOILER_LLM_PROVIDER로 openai/gemini 전환)
+export { chatCompletion, parseJsonResponse } from "./provider";
+export type { ChatCompletionOptions } from "./provider";
 
 // 자미두수 해석 서비스 (인생 운세)
 export {
