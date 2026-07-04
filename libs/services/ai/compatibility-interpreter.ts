@@ -23,7 +23,11 @@ import {
   CompatibilityOverviewResponseSchema,
   CompatibilityScenariosResponseSchema,
 } from "./types";
-import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
+import {
+  chatCompletion,
+  parseJsonResponse,
+  CURRENT_MODEL_NAME,
+} from "./provider";
 import type { CompatibilityResult } from "@/libs/hooks/compatibility/types";
 
 // ============================================================
@@ -986,7 +990,7 @@ export const generateCompatibilityInterpretation = async (
       adviceOneLiner: sanitizedScenarios.adviceOneLiner,
       meta: {
         generatedAt: new Date().toISOString(),
-        model: GEMINI_MODEL_NAME,
+        model: CURRENT_MODEL_NAME,
         isFallback: false,
       },
     },
@@ -1070,7 +1074,7 @@ export const createCompatibilityFallbackResult = (
       advice: "",
       meta: {
         generatedAt: new Date().toISOString(),
-        model: GEMINI_MODEL_NAME,
+        model: CURRENT_MODEL_NAME,
         isFallback: true,
       },
     },

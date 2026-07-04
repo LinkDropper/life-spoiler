@@ -1,7 +1,11 @@
 import { defaultLocale } from "@/i18n/config";
 
 import { AIError } from "./errors";
-import { chatCompletion, parseJsonResponse, GEMINI_MODEL_NAME } from "./gemini";
+import {
+  chatCompletion,
+  parseJsonResponse,
+  CURRENT_MODEL_NAME,
+} from "./provider";
 import { generatePastLifeImage } from "./image-generator";
 import {
   categoryLabelToExistenceType,
@@ -755,7 +759,7 @@ export const generatePastLifeInterpretation = async (
     imageUrl,
     meta: {
       generatedAt: new Date().toISOString(),
-      model: GEMINI_MODEL_NAME,
+      model: CURRENT_MODEL_NAME,
       isFallback: false,
     },
   };
@@ -805,7 +809,7 @@ export const createPastLifeFallbackInterpretation = (
     imageUrl: null,
     meta: {
       generatedAt: new Date().toISOString(),
-      model: GEMINI_MODEL_NAME,
+      model: CURRENT_MODEL_NAME,
       isFallback: true,
     },
   };

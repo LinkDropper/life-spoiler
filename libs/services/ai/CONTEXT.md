@@ -1,6 +1,7 @@
 # AI 서비스 모듈
 
-Gemini 2.0 Flash 모델을 사용한 자미두수(紫微斗數) 해석 서비스입니다.
+자미두수(紫微斗數) 해석 서비스입니다. 텍스트 해석 LLM은 `LIFE_SPOILER_LLM_PROVIDER`
+env var로 OpenAI(default)/Gemini 전환 가능합니다.
 
 ## 아키텍처
 
@@ -9,7 +10,9 @@ libs/services/ai/
 ├── index.ts              # Public exports
 ├── types.ts              # 타입 정의 + Zod 스키마
 ├── errors.ts             # AIError 클래스
-├── gemini.ts             # Gemini API 클라이언트
+├── provider.ts           # gemini.ts/openai.ts 디스패처 (LIFE_SPOILER_LLM_PROVIDER)
+├── gemini.ts             # Gemini API 클라이언트 (롤백용)
+├── openai.ts             # OpenAI API 클라이언트 (기본 제공자)
 ├── prompts/              # 다국어 프롬프트
 │   ├── index.ts          # 프롬프트 export
 │   ├── ko.ts             # 한국어 프롬프트
@@ -22,16 +25,26 @@ libs/services/ai/
 ## 주요 파일
 
 ### types.ts
-- `GeminiMessage`, `GeminiRequest`, `GeminiResponse`: API 통신 타입
+- `GeminiMessage`, `GeminiRequest`, `GeminiResponse`: API 통신 타입 (이름은 Gemini 기준이지만 OpenAI 호출에도 그대로 재사용됨)
 - `ZiweiInterpretationRequest`: 인생 운세 해석 요청 데이터
 - `YearlyInterpretationRequest`: 올해 운세 해석 요청 데이터
 - Zod 응답 스키마 (LifeSpoilerResponseSchema, LifetimeCategoryResponseSchema 등)
 - `FortuneInterpretation`, `YearlyFortuneInterpretation`: 최종 해석 결과 타입
 
-### upstage.ts (Gemini 클라이언트)
+### provider.ts (LLM 디스패처)
+- 인터프리터들은 이 파일에서 `chatCompletion`/`parseJsonResponse`/`CURRENT_MODEL_NAME`을 import한다 (gemini.ts/openai.ts를 직접 import하지 않음)
+- `env.LIFE_SPOILER_LLM_PROVIDER`가 `"openai"`(default)면 openai.ts, `"gemini"`면 gemini.ts로 라우팅
+
+### openai.ts (OpenAI 클라이언트, 기본 제공자)
+- `chatCompletion()`: `/v1/chat/completions` 호출 (재시도 로직 포함), gemini.ts와 동일한 시그니처
+- `responseSchema`(Gemini 느슨한 스키마)를 OpenAI Structured Outputs strict 모드 스키마로 자동 변환 (`toStrictJsonSchema`) — 원래 optional이던 필드는 nullable 타입으로 표현
+- 설정: temperature 0.8, maxTokens 12000, timeout 60초, 최대 3회 재시도
+- 모델: `env.OPENAI_FACE_MODEL` (face-spoiler와 공유)
+
+### gemini.ts (Gemini 클라이언트, 롤백용)
 - `chatCompletion()`: Gemini API 호출 (재시도 로직 포함)
-- `parseJsonResponse()`: AI 응답 JSON 파싱 (마크다운 코드블록 처리, truncation 복구)
-- 설정: temperature 0.7, maxTokens 4000, timeout 30초, 최대 2회 재시도
+- `parseJsonResponse()`: AI 응답 JSON 파싱 (마크다운 코드블록 처리, truncation 복구) — provider 공용 유틸이라 openai.ts 경로에서도 이 함수를 그대로 사용
+- 설정: temperature 0.8, maxTokens 12000, timeout 30초, 최대 3회 재시도
 - JSON 응답 모드 사용 (`responseMimeType: "application/json"`)
 
 ### prompts/
@@ -81,7 +94,10 @@ try {
 ## 환경 변수
 
 ```env
-GEMINI_API_KEY=your-api-key
+LIFE_SPOILER_LLM_PROVIDER=openai   # openai(default) | gemini
+OPENAI_API_KEY=your-openai-api-key
+OPENAI_FACE_MODEL=gpt-5.4-mini-2026-03-17
+GEMINI_API_KEY=your-gemini-api-key # gemini 롤백 시에만 필요
 ```
 
 ## 의존성
