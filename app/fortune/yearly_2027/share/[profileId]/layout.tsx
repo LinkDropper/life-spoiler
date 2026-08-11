@@ -8,10 +8,10 @@ export async function generateMetadata({
   params: Promise<{ profileId: string }>;
 }): Promise<Metadata> {
   const { profileId } = await params;
-  return generateYearlyShareMetadata("yearly", profileId);
+  return generateYearlyShareMetadata("yearly_2027", profileId);
 }
 
-export default function YearlyShareLayout({
+export default function Yearly2027ShareLayout({
   children,
 }: {
   children: React.ReactNode;

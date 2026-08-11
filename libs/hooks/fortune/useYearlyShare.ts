@@ -3,9 +3,14 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 
+import type { YearlyEdition } from "@/libs/fortune/yearly-editions";
+import { resolveTargetYear } from "@/libs/fortune/yearly-editions";
+
 import type { ShareProfileData, YearlyFortuneResult } from "./types";
 
 interface UseYearlyShareOptions {
+  /** 연 단위 운세 상품 edition. 기본값 "yearly" — 기존 호출부 무변경 */
+  edition?: YearlyEdition;
   onFortuneNotFound?: () => string;
   onUnknownError?: () => string;
 }
@@ -23,12 +28,13 @@ interface UseYearlyShareReturn {
 export const useYearlyShare = (
   options: UseYearlyShareOptions = {}
 ): UseYearlyShareReturn => {
+  const edition = options.edition ?? "yearly";
   const params = useParams();
   const router = useRouter();
   const profileId = params.profileId as string;
 
   // Memoize currentYear to prevent recalculation on every render
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const currentYear = useMemo(() => resolveTargetYear(edition), [edition]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +49,7 @@ export const useYearlyShare = (
     const fetchYearlyFortune = async () => {
       try {
         const response = await fetch(
-          `/api/fortune/${profileId}?type=yearly&year=${currentYear}`
+          `/api/fortune/${profileId}?type=${edition}&year=${currentYear}`
         );
 
         if (!response.ok) {
@@ -71,7 +77,7 @@ export const useYearlyShare = (
     };
 
     fetchYearlyFortune();
-  }, [profileId, currentYear]);
+  }, [profileId, currentYear, edition]);
 
   const handleCheckMyFortune = useCallback(() => {
     router.push("/");
