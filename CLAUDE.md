@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-이 문서는 AI 어시스턴트가 이 프로젝트에서 작업할 때 따라야 할 코드 컨벤션과 규칙을 정의합니다.
+이 문서는 AI 어시스턴트가 이 프로젝트에서 작업할 때 따라야 할 핵심 규칙과, 상황별로 어떤 문서를 참조해야 하는지 안내하는 지도입니다. 상세 규칙은 각 문서에 있으므로 여기서는 요약하지 않습니다.
 
 ## 프로젝트 개요
 
@@ -21,203 +21,25 @@ pnpm test         # 테스트 실행
 pnpm test:watch   # 테스트 watch 모드
 ```
 
-## 코드 스타일
+## 상황별 참조 지도
 
-### 포맷팅 (Prettier)
+작업을 시작하기 전, 아래 표에서 현재 상황에 맞는 문서를 먼저 읽으세요.
 
-- 세미콜론: 사용 (`semi: true`)
-- 따옴표: 쌍따옴표 (`singleQuote: false`)
-- 들여쓰기: 스페이스 2칸 (`tabWidth: 2`)
-- 줄 길이: 80자 (`printWidth: 80`)
-- 후행 쉼표: ES5 호환 (`trailingComma: "es5"`)
-- 화살표 함수 괄호: 항상 사용 (`arrowParens: "always"`)
-
-### 네이밍 규칙
-
-| 대상                     | 규칙             | 예시                                       |
-| ------------------------ | ---------------- | ------------------------------------------ |
-| 변수                     | camelCase, 명사  | `userName`, `userList`, `isLoading`        |
-| 함수                     | camelCase, 동사  | `fetchData`, `createUser`, `validateInput` |
-| 이벤트 핸들러 (Props)    | on + 동사        | `onClick`, `onSubmit`, `onChange`          |
-| 이벤트 핸들러 (내부)     | handle + 동사    | `handleClick`, `handleSubmit`              |
-| 상수                     | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT`, `API_BASE_URL`          |
-| 타입, 인터페이스, 클래스 | PascalCase       | `UserProfile`, `OAuthClient`               |
-| React 컴포넌트           | PascalCase       | `UserCard`, `LoginButton`                  |
-| 파일명 (일반)            | kebab-case       | `oauth-client.ts`, `types.ts`              |
-| 파일명 (React 컴포넌트)  | PascalCase       | `UserCard.tsx`                             |
-| 디렉토리                 | kebab-case       | `auth-provider`, `user-profile`            |
-
-**변수와 함수 네이밍 원칙:**
-
-- 변수는 명사로 작성: 데이터가 무엇인지 표현 (`user`, `errorMessage`, `selectedItems`)
-- 함수는 동사로 시작: 어떤 동작을 하는지 표현 (`getUser`, `setName`, `handleError`)
-- 이벤트 핸들러:
-  - **Props로 전달되는 핸들러**: `on` 접두사 사용 (`onClick`, `onSubmit`)
-  - **컴포넌트 내부 핸들러**: `handle` 접두사 사용 (`handleClick`, `handleSubmit`)
-
-```typescript
-// Good
-const userName = "John"; // 명사 - 데이터
-const fetchUser = () => {}; // 동사 - 동작
-
-// 이벤트 핸들러 네이밍
-interface ButtonProps {
-  onClick: () => void; // Props는 'on' 접두사
-}
-
-function Button({ onClick }: ButtonProps) {
-  // 내부 핸들러는 'handle' 접두사
-  const handleClick = () => {
-    console.log("Button clicked!");
-    onClick();
-  };
-
-  return <button onClick={handleClick}>Click me</button>;
-}
-
-// Bad
-const getName = "John"; // 동사를 변수에 사용
-const user = () => {}; // 명사를 함수에 사용
-const changeHandler = (e) => {}; // 접두사 컨벤션 미준수
-```
-
-### TypeScript 규칙
-
-- `any` 타입 사용 금지 - `unknown`을 사용하고 타입 가드로 좁히기
-- 명시적 반환 타입 권장 (복잡한 함수의 경우)
-- `interface` vs `type`: 객체 형태는 `interface`, 유니온/인터섹션은 `type` 사용
-- Non-null assertion (`!`) 사용 최소화
-- 타입 추론이 명확한 경우 타입 어노테이션 생략 가능
-
-```typescript
-// Good
-interface UserProfile {
-  id: string;
-  name: string;
-}
-
-type OAuthProvider = "google" | "kakao";
-
-// Bad
-const user: any = fetchUser();
-```
-
-### 함수 작성 규칙
-
-- 화살표 함수 선호 (`prefer-arrow-callback`)
-- 함수는 한 가지 일만 수행 (단일 책임 원칙)
-- 순수 함수 선호 - 사이드 이펙트 최소화
-- 조기 반환(early return) 패턴 사용
-
-```typescript
-// Good - 조기 반환
-const processUser = (user: User | null): string => {
-  if (!user) {
-    return "Unknown";
-  }
-  return user.name;
-};
-
-// Bad - 중첩된 조건문
-const processUser = (user: User | null): string => {
-  if (user) {
-    return user.name;
-  } else {
-    return "Unknown";
-  }
-};
-```
-
-### 변수 선언
-
-- `const` 우선 사용 (`prefer-const`)
-- `var` 사용 금지 (`no-var`)
-- 구조 분해 할당 사용 (`prefer-destructuring`)
-- 템플릿 리터럴 사용 (`prefer-template`)
-
-```typescript
-// Good
-const { id, name } = user;
-const message = `Hello, ${name}!`;
-
-// Bad
-var id = user.id;
-const message = "Hello, " + name + "!";
-```
-
-### Import 규칙
-
-- 경로 별칭 사용: `@/*` (프로젝트 루트 기준)
-- import 순서:
-  1. 외부 패키지 (react, next, etc.)
-  2. 내부 모듈 (@/libs, @/components)
-  3. 상대 경로 (./types, ../utils)
-- **import 그룹 사이에는 빈 줄 추가**
-- 타입 import는 `import type` 구문으로 값 import와 분리
-
-```typescript
-// Good
-import { z } from "zod/v4";
-
-import { OAuthError } from "./errors";
-import { OAuthTokenResponseSchema } from "./types";
-import type { OAuthClient, OAuthProvider } from "./types";
-```
-
-### 에러 처리
-
-- 커스텀 에러 클래스 사용 권장
-- 에러 메시지는 한국어로 작성 (사용자에게 노출되는 경우)
-- 에러에 컨텍스트 정보 포함
-
-```typescript
-throw new OAuthError("토큰 교환에 실패했습니다.", {
-  code: "TOKEN_EXCHANGE_FAILED",
-  provider,
-  httpStatus: response.status,
-});
-```
-
-### React/Next.js 규칙
-
-- 서버 컴포넌트 기본 사용 (App Router)
-- 클라이언트 컴포넌트는 `"use client"` 지시문 명시
-- 컴포넌트는 단일 책임 원칙 준수
-- Props 인터페이스는 컴포넌트와 같은 파일에 정의
-
-```typescript
-// Good
-interface UserCardProps {
-  user: User;
-  onSelect?: (id: string) => void;
-}
-
-export const UserCard = ({ user, onSelect }: UserCardProps) => {
-  // ...
-};
-```
-
-### 테스트 규칙
-
-- 테스트 파일: `__tests__` 디렉토리에 `*.test.ts` 형식
-- describe/it 블록으로 구조화
-- 테스트 설명은 한국어로 작성
-- AAA 패턴 (Arrange-Act-Assert) 사용
-
-```typescript
-describe("createOAuthClient", () => {
-  it("유효한 설정으로 클라이언트를 생성한다", () => {
-    // Arrange
-    const credentials = { clientId: "id", clientSecret: "secret" };
-
-    // Act
-    const client = createOAuthClient("google", credentials);
-
-    // Assert
-    expect(client).toBeDefined();
-  });
-});
-```
+| 상황 | 참조 문서 |
+|---|---|
+| 코드 스타일/네이밍/TypeScript/Import 규칙 확인 | `.claude/rules/code-style.md` |
+| 에러 처리 작성, 버그 수정 | `.claude/rules/error-handling.md` |
+| React/Next.js 컴포넌트 작성 | `.claude/rules/react-conventions.md` |
+| 테스트 코드 작성 | `/create-jest` 스킬 |
+| DB 스키마 변경, Supabase 마이그레이션, MCP로 원격 DB 작업 | `.claude/rules/database-safety.md` |
+| UI 접근성(a11y), 다국어(KO/EN/JA) 작업 | `.claude/rules/ui-accessibility-i18n.md` |
+| 마케팅 콘텐츠 작성/발행, UTM, 발행 승인 절차 | `.claude/rules/brand-voice.md`, `content-guidelines.md`, `post-approval.md`, `social-media-tracker.md`, `utm-parameters.md` |
+| 조직 구조 파악, 누구(어느 에이전트)에게 위임할지 판단 | `.claude/ORG.md` |
+| 여러 부서에 걸친 작업 위임 | `/team` |
+| 특정 모듈 코드 파악 | 해당 폴더의 `CONTEXT.md` (없으면 `/w-context`로 생성) |
+| 새 기능 구현 | `specs/{name}.md` 작성 후 `/spec {name}` |
+| 커밋/PR 생성 | `/pr` |
+| PR 리뷰 코멘트 반영 | `/apply-review` |
 
 ## 디렉토리 구조
 
@@ -230,7 +52,8 @@ describe("createOAuthClient", () => {
 │   └── services/          # 외부 서비스 연동
 │       └── oauth/         # OAuth 클라이언트
 ├── public/                # 정적 파일
-└── env.ts                 # 환경 변수 스키마
+├── specs/                  # 기능 명세서 (PRD)
+└── env.ts                  # 환경 변수 스키마
 ```
 
 ## 환경 변수
@@ -239,21 +62,19 @@ describe("createOAuthClient", () => {
 - `.env.example`에 필수 환경 변수 문서화
 - 민감한 정보는 절대 커밋하지 않음
 
-## 코드 파악 규칙
+## 조직 구조
 
-모듈의 코드를 파악할 때는 **CONTEXT.md 파일을 먼저 참조**합니다.
+이 프로젝트는 CMO(마케팅) / CTO(엔지니어링) / CPO(프로덕트) 3개 부서로 구성된 서브에이전트 조직을 사용합니다. 각 부서장이 IC(실무자) 에이전트를 조율하고, 필요 시 `SendMessage`로 서로 교차 검토합니다. 전체 조직도·의사결정권·에스컬레이션 규칙·네이밍 규약은 `.claude/ORG.md`를 참조하세요. 에이전트 정의는 `.claude/agents/*.md`, 여러 부서에 걸친 작업은 `/team`으로 위임합니다.
 
-- 각 모듈 폴더에 `CONTEXT.md` 파일이 존재
-- 모듈의 설계 의도, 파일 구조, 사용 패턴이 정리되어 있음
-- 코드를 직접 읽기 전에 CONTEXT.md로 전체 맥락 파악
-- CONTEXT.md가 없는 모듈은 `/w-context` 명령어로 생성
+## 메모리 정책
 
-```
-libs/fetch/CONTEXT.md      # fetch 모듈 컨텍스트
-libs/logger/CONTEXT.md     # logger 모듈 컨텍스트
-libs/services/oauth/CONTEXT.md  # OAuth 서비스 컨텍스트
-```
+세션 간 맥락 유지는 두 경로로만 이루어집니다.
 
-# 작업 규칙
+1. 하네스 기본 auto-memory (사용자 개인 로컬, 이 저장소에는 커밋되지 않음)
+2. 각 서브에이전트의 `memory: project` 설정 (`.claude/agent-memory/<agent>/`, 저장소에 커밋되어 공유됨)
 
-허락없이 마음대로 커밋이나 푸쉬 금지.
+이 외의 수동 메모리 파일(예: 별도 `MEMORY.md`, 노트 파일)을 새로 만들지 않습니다. 운영 데이터(`docs/social-tracker.csv`, `docs/insights/*` 등)는 메모리가 아니라 공유 운영 데이터이며, 해당 에이전트/rule 문서에서 직접 참조합니다.
+
+## 작업 규칙
+
+허락없이 마음대로 커밋이나 푸쉬 금지. 이 원칙은 CMO/CTO/CPO 및 산하 모든 서브에이전트에게 동일하게 적용됩니다. 단, 마케팅팀의 GitHub Actions 자동 발행 경로(`cmo`/`social-media-marketer`/`content-writer`, `scripts/marketing/post-to-x.js` 등)는 기존에 승인된 예외입니다.
