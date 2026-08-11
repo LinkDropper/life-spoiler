@@ -40,10 +40,16 @@ export default function ProfilesPage() {
   const isRestrictedUser = user?.id === RESTRICTED_USER_ID;
 
   const typeParam = searchParams.get("type");
-  const fortuneType: "lifetime" | "yearly" | "past-life" | null =
+  const fortuneType:
+    | "lifetime"
+    | "yearly"
+    | "past-life"
+    | "yearly_2027"
+    | null =
     typeParam === "lifetime" ||
     typeParam === "yearly" ||
-    typeParam === "past-life"
+    typeParam === "past-life" ||
+    typeParam === "yearly_2027"
       ? typeParam
       : null;
 
@@ -116,6 +122,14 @@ export default function ProfilesPage() {
       return;
     }
     navigateToFortune("past-life");
+  }, [selectedProfileId, navigateToFortune, t]);
+
+  const handleYearly2027Fortune = useCallback(() => {
+    if (!selectedProfileId) {
+      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      return;
+    }
+    navigateToFortune("yearly_2027");
   }, [selectedProfileId, navigateToFortune, t]);
 
   const onDeleteConfirm = useCallback(async () => {
@@ -218,6 +232,16 @@ export default function ProfilesPage() {
             disabled={!selectedProfileId}
           >
             {t("pastLifeFortune", { default: "전생 운세 보기" })}
+          </button>
+        )}
+        {fortuneType === "yearly_2027" && (
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={handleYearly2027Fortune}
+            disabled={!selectedProfileId}
+          >
+            {t("yearly2027Fortune", { default: "내년 운세 보기" })}
           </button>
         )}
       </footer>

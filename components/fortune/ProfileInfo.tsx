@@ -2,14 +2,16 @@
 
 import { useTranslations } from "next-intl";
 
+import { isYearlyEdition } from "@/libs/fortune/yearly-editions";
+
 import styles from "./ProfileInfo.module.css";
 
 interface ProfileInfoProps {
   /** 프로필 이름 */
   name: string;
-  /** 제목 타입: "lifetime" | "yearly" | "past_life" */
-  fortuneType: "lifetime" | "yearly" | "past_life";
-  /** 연도 (yearly 타입일 때만 사용) */
+  /** 제목 타입: "lifetime" | "yearly" | "past_life" | "yearly_2027" */
+  fortuneType: "lifetime" | "yearly" | "past_life" | "yearly_2027";
+  /** 연도 (yearly/yearly_2027 타입일 때만 사용) */
   year?: number;
   /** 생년월일 (YYYY-MM-DD 형식) */
   birthDate: string;
@@ -38,7 +40,7 @@ export const ProfileInfo = ({
 
   // 제목 생성
   const title =
-    fortuneType === "yearly" && year
+    isYearlyEdition(fortuneType) && year
       ? t("yearly.title", { name, year })
       : fortuneType === "past_life"
         ? t("pastLife.title")

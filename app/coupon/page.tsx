@@ -26,6 +26,7 @@ const FORTUNE_TYPE_LABEL: Record<string, string> = {
   yearly: "연간 운세",
   compatibility: "궁합 운세",
   past_life: "전생 운세",
+  yearly_2027: "내년 운세",
 };
 
 const STATUS_LABEL: Record<string, string> = {

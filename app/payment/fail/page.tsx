@@ -21,6 +21,7 @@ function PaymentFailContent() {
     | "yearly"
     | "lifetime"
     | "compatibility"
+    | "yearly_2027"
     | null;
 
   const handleRetry = () => {
