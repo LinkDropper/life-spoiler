@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import {
+  isYearlyEdition,
+  resolveTargetYear,
+} from "@/libs/fortune/yearly-editions";
 import { createServerClient } from "@/libs/supabase/client";
 import { getFortune, updateFortunePaidAt } from "@/libs/supabase/fortune";
 import type { FortuneType } from "@/libs/supabase/fortune";
@@ -55,17 +59,17 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const fortuneType: FortuneType =
       typeParam === "lifetime" ||
       typeParam === "yearly" ||
-      typeParam === "past_life"
+      typeParam === "past_life" ||
+      typeParam === "yearly_2027"
         ? typeParam
         : "lifetime";
 
     let year = 0;
-    if (fortuneType === "yearly") {
+    if (isYearlyEdition(fortuneType)) {
+      const defaultYear = resolveTargetYear(fortuneType);
       const yearParam = searchParams.get("year");
-      const parsedYear = yearParam
-        ? parseInt(yearParam, 10)
-        : new Date().getFullYear();
-      year = Number.isNaN(parsedYear) ? new Date().getFullYear() : parsedYear;
+      const parsedYear = yearParam ? parseInt(yearParam, 10) : defaultYear;
+      year = Number.isNaN(parsedYear) ? defaultYear : parsedYear;
     }
 
     const fortune = await getFortune(profileId, fortuneType, year);

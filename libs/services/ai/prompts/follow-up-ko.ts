@@ -7,6 +7,7 @@ import type { FollowUpFortuneType } from "@/libs/supabase/types";
 const FORTUNE_TYPE_LABELS: Record<FollowUpFortuneType, string> = {
   lifetime: "평생운세",
   yearly: "올해운세",
+  yearly_2027: "내년운세",
   past_life: "전생",
   compatibility: "궁합",
 };

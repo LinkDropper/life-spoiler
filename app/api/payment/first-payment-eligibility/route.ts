@@ -14,6 +14,7 @@ const VALID_TYPES: FortuneType[] = [
   "yearly",
   "compatibility",
   "past_life",
+  "yearly_2027",
 ];
 
 const isFortuneType = (value: string | null): value is FortuneType =>

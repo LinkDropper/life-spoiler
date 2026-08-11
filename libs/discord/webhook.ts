@@ -3,6 +3,11 @@
  */
 
 import { env } from "@/env";
+import {
+  isYearlyEdition,
+  resolveTargetYear,
+} from "@/libs/fortune/yearly-editions";
+import type { FortuneType } from "@/libs/supabase/types";
 
 const DISCORD_EMBED_COLORS = {
   SUCCESS: 0x4ade80, // 초록색
@@ -77,7 +82,7 @@ interface PaymentNotificationParams {
   amount: number;
   currency: "KRW" | "USD";
   method: string;
-  fortuneType: "yearly" | "lifetime" | "compatibility" | "past_life";
+  fortuneType: FortuneType;
   profileId: string;
   profileName?: string;
   approvedAt: string;
@@ -108,8 +113,8 @@ export const sendPaymentNotification = async (
   const productName =
     fortuneType === "compatibility"
       ? "궁합"
-      : fortuneType === "yearly"
-        ? `${year ?? new Date().getFullYear()} 신년운세`
+      : isYearlyEdition(fortuneType)
+        ? `${year ?? resolveTargetYear(fortuneType)} 신년운세`
         : fortuneType === "past_life"
           ? "전생운세"
           : "평생운세";
@@ -285,7 +290,9 @@ export const sendFaceReportPaymentNotification = async (
   }
 
   const embed: DiscordEmbed = {
-    title: updateFailed ? "⚠️ 관상스포 결제 완료 (동기화 실패)" : "🎭 관상스포 결제 완료",
+    title: updateFailed
+      ? "⚠️ 관상스포 결제 완료 (동기화 실패)"
+      : "🎭 관상스포 결제 완료",
     description: updateFailed
       ? "결제는 완료되었으나 DB 동기화에 실패했습니다!"
       : "새로운 관상 리포트 결제가 완료되었습니다!",
@@ -311,6 +318,7 @@ interface ReviewNotificationParams {
 const FORTUNE_TYPE_LABELS: Record<string, string> = {
   lifetime: "인생운세",
   yearly: "올해운세",
+  yearly_2027: "내년운세",
   past_life: "전생운세",
   compatibility: "궁합",
   face_spoiler: "관상스포",

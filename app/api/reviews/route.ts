@@ -10,6 +10,7 @@ const VALID_FORTUNE_TYPES: ReadonlySet<ReviewFortuneType> = new Set([
   "yearly",
   "past_life",
   "compatibility",
+  "yearly_2027",
 ]);
 
 const MIN_CONTENT_LENGTH = 5;
