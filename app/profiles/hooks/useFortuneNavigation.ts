@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 
 import type { ProfileWithFortunes } from "@/libs/stores/profile";
 
-type FortuneType = "lifetime" | "yearly" | "past-life";
+type FortuneType = "lifetime" | "yearly" | "past-life" | "yearly_2027";
 
 const toDbFortuneType = (
   type: FortuneType
-): "lifetime" | "yearly" | "past_life" =>
+): "lifetime" | "yearly" | "past_life" | "yearly_2027" =>
   type === "past-life" ? "past_life" : type;
 
 interface UseFortuneNavigationProps {

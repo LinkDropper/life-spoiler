@@ -23,7 +23,12 @@ import type { Database, FortuneInsert, FortuneRow } from "./types";
 
 type SupabaseDB = SupabaseClient<Database>;
 
-export type FortuneType = "lifetime" | "yearly" | "compatibility" | "past_life";
+export type FortuneType =
+  | "lifetime"
+  | "yearly"
+  | "compatibility"
+  | "past_life"
+  | "yearly_2027";
 
 /**
  * 인생 운세 전체 데이터 (저장용)

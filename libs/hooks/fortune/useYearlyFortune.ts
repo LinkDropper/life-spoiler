@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
+import type { YearlyEdition } from "@/libs/fortune/yearly-editions";
+import { resolveTargetYear } from "@/libs/fortune/yearly-editions";
 import {
   useProfileById,
   useIsProfilesLoaded,
@@ -14,6 +16,8 @@ import { useAuthStatus, useUser } from "@/libs/stores/user";
 import type { ProfileData, YearlyFortuneResult } from "./types";
 
 interface UseYearlyFortuneOptions {
+  /** 연 단위 운세 상품 edition. 기본값 "yearly" — 기존 호출부 무변경 */
+  edition?: YearlyEdition;
   onProfileNotFound?: () => string;
   onFetchError?: () => string;
   onUnknownError?: () => string;
@@ -33,6 +37,7 @@ interface UseYearlyFortuneReturn {
 export const useYearlyFortune = (
   options: UseYearlyFortuneOptions = {}
 ): UseYearlyFortuneReturn => {
+  const edition = options.edition ?? "yearly";
   const params = useParams();
   const router = useRouter();
   const authStatus = useAuthStatus();
@@ -50,7 +55,7 @@ export const useYearlyFortune = (
   const [showCopyToast, setShowCopyToast] = useState(false);
 
   // Memoize currentYear to prevent recalculation on every render
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const currentYear = useMemo(() => resolveTargetYear(edition), [edition]);
 
   // Use refs to avoid unnecessary re-renders and race conditions
   const optionsRef = useRef(options);
@@ -119,12 +124,12 @@ export const useYearlyFortune = (
       try {
         // 결제 상태 확인
         const paymentStatusRes = await fetch(
-          `/api/fortune/${profileId}/payment-status?type=yearly&year=${currentYear}`
+          `/api/fortune/${profileId}/payment-status?type=${edition}&year=${currentYear}`
         );
 
         if (!paymentStatusRes.ok) {
           // API 실패 시 preview로 안전하게 리다이렉트
-          router.replace(`/fortune/yearly/preview/${profileId}`);
+          router.replace(`/fortune/${edition}/preview/${profileId}`);
           return;
         }
 
@@ -132,7 +137,7 @@ export const useYearlyFortune = (
 
         // 결제 정보가 없으면 preview로 리다이렉트
         if (!paymentStatus.data?.paid) {
-          router.replace(`/fortune/yearly/preview/${profileId}`);
+          router.replace(`/fortune/${edition}/preview/${profileId}`);
           return;
         }
 
@@ -163,6 +168,7 @@ export const useYearlyFortune = (
               occupationStatusCustom: targetProfile.occupation_status_custom,
             }),
             targetYear: currentYear,
+            fortuneType: edition,
             profileId: targetProfile.id,
             language: localeRef.current,
           }),
@@ -170,8 +176,7 @@ export const useYearlyFortune = (
 
         if (!res.ok) {
           throw new Error(
-            optionsRef.current.onFetchError?.() ??
-              "올해 운세 조회에 실패했습니다."
+            optionsRef.current.onFetchError?.() ?? "운세 조회에 실패했습니다."
           );
         }
 
@@ -190,10 +195,10 @@ export const useYearlyFortune = (
     };
 
     fetchYearlyFortune();
-  }, [authStatus, profileId, router, isProfilesLoaded, currentYear]);
+  }, [authStatus, profileId, router, isProfilesLoaded, currentYear, edition]);
 
   const handleShare = useCallback(async () => {
-    const shareUrl = `${window.location.origin}/fortune/yearly/share/${profileId}?ref=${user?.id ?? ""}`;
+    const shareUrl = `${window.location.origin}/fortune/${edition}/share/${profileId}?ref=${user?.id ?? ""}`;
 
     // Clear previous timer if exists
     if (toastTimerRef.current) {
@@ -220,7 +225,7 @@ export const useYearlyFortune = (
         );
       }
     }
-  }, [profileId, user]);
+  }, [profileId, user, edition]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;

@@ -9,7 +9,13 @@ import type { FortuneType } from "@/libs/supabase/types";
 const RequestSchema = z.object({
   code: z.string().min(1),
   profileId: z.string().uuid(),
-  fortuneType: z.enum(["lifetime", "yearly", "past_life", "compatibility"]),
+  fortuneType: z.enum([
+    "lifetime",
+    "yearly",
+    "past_life",
+    "compatibility",
+    "yearly_2027",
+  ]),
 });
 
 /**

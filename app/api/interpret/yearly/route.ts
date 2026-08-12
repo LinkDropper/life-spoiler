@@ -3,6 +3,7 @@ import { z } from "zod/v4";
 
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
+import { resolveTargetYear } from "@/libs/fortune/yearly-editions";
 import type {
   PalaceData,
   SihuaData,
@@ -52,6 +53,7 @@ const BYPASS_INTERPRETATION_CACHE = false;
 const YearlyRequestSchema = ZiweiInputSchema.extend({
   targetYear: z.number().int().min(1900).max(2100),
   profileId: z.string().optional(),
+  fortuneType: z.enum(["yearly", "yearly_2027"]).default("yearly"),
 });
 
 // ============================================================
@@ -131,8 +133,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { targetYear, profileId, ...inputData } = parseResult.data;
+    const { targetYear, profileId, fortuneType, ...inputData } =
+      parseResult.data;
     const input: ZiweiInput = inputData;
+
+    // targetYear와 fortuneType이 모순되면 데이터 오염을 막기 위해 거절한다
+    if (targetYear !== resolveTargetYear(fortuneType)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "targetYear와 fortuneType이 일치하지 않습니다.",
+        },
+        { status: 400 }
+      );
+    }
 
     // 언어 파라미터 검증
     const requestedLanguage = body.language;
@@ -144,7 +158,11 @@ export async function POST(request: NextRequest) {
 
     // 1. profileId가 있으면 저장된 fortune 먼저 확인 (BYPASS 모드면 스킵)
     if (profileId && !BYPASS_INTERPRETATION_CACHE) {
-      const existingFortune = await getFortune(profileId, "yearly", targetYear);
+      const existingFortune = await getFortune(
+        profileId,
+        fortuneType,
+        targetYear
+      );
       if (existingFortune?.result) {
         const storedData =
           existingFortune.result as unknown as YearlyFortuneData;
@@ -215,7 +233,7 @@ export async function POST(request: NextRequest) {
       if (profileId) {
         const saved = await saveFortune({
           profileId,
-          fortuneType: "yearly",
+          fortuneType,
           year: targetYear,
           result: responseData,
         });
@@ -360,7 +378,7 @@ export async function POST(request: NextRequest) {
     if (profileId && isAISuccess) {
       const saved = await saveFortune({
         profileId,
-        fortuneType: "yearly",
+        fortuneType,
         year: targetYear,
         result: responseData,
       });

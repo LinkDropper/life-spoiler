@@ -25,6 +25,7 @@ export const FIRST_PAYMENT_EVENT = {
   eligibleTypes: [
     "lifetime",
     "yearly",
+    "yearly_2027",
     "compatibility",
     "past_life",
   ] as FortuneType[],

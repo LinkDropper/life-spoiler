@@ -1,0 +1,95 @@
+/**
+ * "루미너스 블루 (Luminous Blue)" 카드 규격
+ *
+ * 제안 토큰 (globals.css에 아직 등록되지 않음, 하드코딩된 hex는 다른 홈 카드들과
+ * 동일한 기존 관례를 따른 것 — 필요 시 아래 이름으로 globals.css에 승격):
+ *   --color-card-next-year-surface-start: #1e4fd8
+ *   --color-card-next-year-surface-end:   #101b4d
+ *   --color-card-next-year-border:        #0f1e52
+ *   --color-card-next-year-button-text:   #0f1e52
+ *
+ * 대비 검증 (WCAG AA, 4.5:1 기준):
+ *   - 흰색(#ffffff) 텍스트 on #1e4fd8 (그라데이션 밝은 쪽) = 6.64:1 → 통과
+ *   - 흰색(#ffffff) 텍스트 on #101b4d (그라데이션 어두운 쪽) = 16.32:1 → 통과
+ *   - #0f1e52 버튼 텍스트 on 흰 배경(#ffffff)            = 15.82:1 → 통과
+ *
+ * 이미지 규격:
+ *   YearlyFortuneCard.module.css(.illustration: 368x368, top:-75px, right:-85px)와
+ *   동일 규격을 그대로 사용. "올해 운세"/"내년 운세" 두 카드는 같은 연간운세
+ *   카테고리로 나란히 배치되므로 동일한 대형 일러스트 스케일을 공유해야 시각적으로
+ *   한 쌍처럼 읽힘. (Lifetime/Compatibility/PastLife/FaceReading은 150~213px대의
+ *   소형 아이콘형 일러스트를 쓰는 별도 그룹이라 여기서는 기준으로 삼지 않음.)
+ *   이미지 경로: /public/images/home/2027-yearly.png (원본 304x304, 368x368로 확대 렌더링)
+ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:hover {
+  opacity: 0.95;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 164px;
+  padding: 24px;
+  background: linear-gradient(180deg, #1e4fd8 0%, #101b4d 100%);
+  border-bottom: 1px solid #0f1e52;
+  overflow: hidden;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  color: var(--color-text-default, #ffffff);
+  font-family: "SB AggroOTF";
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: 0;
+}
+
+.subtitle {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-default, #ffffff);
+}
+
+.illustration {
+  position: absolute;
+  top: -75px;
+  right: -85px;
+  width: 368px;
+  height: 368px;
+  pointer-events: none;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  background: var(--primitive-white, #ffffff);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #0f1e52;
+}
