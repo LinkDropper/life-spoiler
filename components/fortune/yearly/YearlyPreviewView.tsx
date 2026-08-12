@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
@@ -58,6 +58,15 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
   const [insightsExpanded, setInsightsExpanded] = useState(true);
   const [spoilerExpanded, setSpoilerExpanded] = useState(true);
 
+  // 행운 키워드 인사이트 (12개월치 계산이 무거우므로 result 변경 시에만 재계산)
+  const insights = useMemo(
+    () =>
+      result
+        ? calculateYearlyInsights(result.rawChart, currentYear, locale)
+        : null,
+    [result, currentYear, locale]
+  );
+
   if (isLoading) {
     return <Loading />;
   }
@@ -109,8 +118,6 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
 
   const { interpretation, rawChart, yearlySihua } = result;
 
-  const insights = calculateYearlyInsights(rawChart, currentYear, locale);
-
   return (
     <div className={styles.page}>
       <HeaderClient />
@@ -155,7 +162,7 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
           onToggle={() => setInsightsExpanded(!insightsExpanded)}
         />
 
-        {insightsExpanded && (
+        {insights && insightsExpanded && (
           <section className={styles.blurredSection}>
             <YearlyInsightsCard insights={insights} preview />
           </section>

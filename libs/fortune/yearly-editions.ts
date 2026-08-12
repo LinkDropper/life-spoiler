@@ -3,11 +3,9 @@ export const YEARLY_EDITIONS = {
   yearly: {
     /** null이면 조회 시점의 현재 연도를 사용 */
     targetYear: null,
-    i18nKey: "yearly",
   },
   yearly_2027: {
     targetYear: 2027,
-    i18nKey: "yearly2027",
   },
 } as const;
 

@@ -554,6 +554,7 @@
       },
       "yearly": {
         "title": "{name}님의 {year}년 운세",
+        "followUpName": "{year}년 운세",
         "fetchError": "운세 조회에 실패했습니다.",
         "yearInfo": "{stem}{branch}년",
         "shareButton": "공유하기",
@@ -1775,6 +1776,7 @@
       },
       "yearly": {
         "title": "{name}'s {year} Fortune",
+        "followUpName": "{year} Fortune",
         "fetchError": "Failed to fetch fortune.",
         "yearInfo": "Year of {stem}{branch}",
         "shareButton": "Share",
@@ -2996,6 +2998,7 @@
       },
       "yearly": {
         "title": "{name}さんの{year}年運勢",
+        "followUpName": "{year}年運勢",
         "fetchError": "運勢の取得に失敗しました。",
         "yearInfo": "{stem}{branch}年",
         "shareButton": "シェアする",

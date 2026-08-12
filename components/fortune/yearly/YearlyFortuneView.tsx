@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -193,6 +193,15 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     }
   }, [result, profile, profileId, profileCardToBlob, user, edition]);
 
+  // 행운 키워드 인사이트 (12개월치 계산이 무거우므로 result 변경 시에만 재계산)
+  const insights = useMemo(
+    () =>
+      result
+        ? calculateYearlyInsights(result.rawChart, currentYear, locale)
+        : null,
+    [result, currentYear, locale]
+  );
+
   if (isLoading) {
     return <Loading />;
   }
@@ -222,9 +231,6 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
   const monthUnit = t("monthly.monthUnit", { default: "월" });
   const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
 
-  // 행운 키워드 인사이트
-  const insights = calculateYearlyInsights(rawChart, currentYear, locale);
-
   // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
   const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
   const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
@@ -248,7 +254,10 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     },
   };
 
-  const followUpFortuneName = edition === "yearly" ? "올해운세" : "내년운세";
+  const followUpFortuneName = t("followUpName", {
+    year: currentYear,
+    default: `${currentYear}년 운세`,
+  });
 
   return (
     <div className={styles.page}>
@@ -306,7 +315,7 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
           onToggle={() => setInsightsExpanded(!insightsExpanded)}
         />
 
-        {insightsExpanded && (
+        {insights && insightsExpanded && (
           <section className={styles.section}>
             <YearlyInsightsCard insights={insights} />
           </section>
