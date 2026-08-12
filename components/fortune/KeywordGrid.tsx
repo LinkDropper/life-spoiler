@@ -5,8 +5,8 @@ import styles from "./KeywordGrid.module.css";
 interface KeywordGridProps {
   /** 키워드 8개 배열 */
   keywords: string[];
-  /** 한줄 표현 */
-  oneLiner: string;
+  /** 한줄 표현 (명궁이 空宮이면 없을 수 있음) */
+  oneLiner?: string | null;
   /** 이름 */
   name: string;
   /** 미리보기 모드 (3행 블러 처리) */
@@ -72,7 +72,7 @@ export default function KeywordGrid({
         <span className={styles.tag}>#{gridKeywords[3]}</span>
       </div>
       <div className={styles.cellCenter}>
-        <span className={styles.oneLiner}>{oneLiner}</span>
+        {oneLiner && <span className={styles.oneLiner}>{oneLiner}</span>}
         <span className={styles.name}>{name}</span>
       </div>
       <div className={styles.cell}>

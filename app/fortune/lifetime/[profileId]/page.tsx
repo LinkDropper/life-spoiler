@@ -323,8 +323,8 @@ export default function LifetimeFortunePage() {
           </section>
         )}
 
-        {/* 키워드 그리드 섹션 */}
-        {keywords.length > 0 && oneLiner && (
+        {/* 키워드 그리드 섹션 (명궁이 空宮이면 oneLiner 없이 키워드만 노출) */}
+        {keywords.length > 0 && (
           <section className={styles.keywordGridSection}>
             <KeywordGrid
               keywords={keywords}
