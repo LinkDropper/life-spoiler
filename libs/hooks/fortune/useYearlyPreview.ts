@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
+import type { YearlyEdition } from "@/libs/fortune/yearly-editions";
+import { resolveTargetYear } from "@/libs/fortune/yearly-editions";
 import {
   useProfileById,
   useIsProfilesLoaded,
@@ -14,6 +16,8 @@ import { useAuthStatus } from "@/libs/stores/user";
 import type { ProfileData, YearlyPreviewResult } from "./types";
 
 interface UseYearlyPreviewOptions {
+  /** 연 단위 운세 상품 edition. 기본값 "yearly" — 기존 호출부 무변경 */
+  edition?: YearlyEdition;
   onProfileNotFound?: () => string;
   onFetchError?: () => string;
   onUnknownError?: () => string;
@@ -36,6 +40,7 @@ interface UseYearlyPreviewReturn {
 export const useYearlyPreview = (
   options: UseYearlyPreviewOptions = {}
 ): UseYearlyPreviewReturn => {
+  const edition = options.edition ?? "yearly";
   const params = useParams();
   const router = useRouter();
   const authStatus = useAuthStatus();
@@ -52,7 +57,7 @@ export const useYearlyPreview = (
   const [isAIGenerated, setIsAIGenerated] = useState(false);
 
   // Memoize currentYear to prevent recalculation on every render
-  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const currentYear = useMemo(() => resolveTargetYear(edition), [edition]);
 
   // Use refs to avoid unnecessary re-renders and race conditions
   const optionsRef = useRef(options);
@@ -134,6 +139,7 @@ export const useYearlyPreview = (
               occupationStatusCustom: targetProfile.occupation_status_custom,
             }),
             targetYear: currentYear,
+            fortuneType: edition,
             profileId: targetProfile.id,
             language: localeRef.current,
           }),
@@ -141,8 +147,7 @@ export const useYearlyPreview = (
 
         if (!res.ok) {
           throw new Error(
-            optionsRef.current.onFetchError?.() ??
-              "올해 운세 조회에 실패했습니다."
+            optionsRef.current.onFetchError?.() ?? "운세 조회에 실패했습니다."
           );
         }
 
@@ -150,7 +155,7 @@ export const useYearlyPreview = (
 
         // 이미 결제한 경우 결과 페이지로 리다이렉트
         if (fortuneData.isPaid) {
-          router.replace(`/fortune/yearly/${profileId}`);
+          router.replace(`/fortune/${edition}/${profileId}`);
           return;
         }
 
@@ -177,19 +182,19 @@ export const useYearlyPreview = (
     };
 
     fetchPreviewData();
-  }, [authStatus, profileId, router, isProfilesLoaded, currentYear]);
+  }, [authStatus, profileId, router, isProfilesLoaded, currentYear, edition]);
 
   const handlePayment = useCallback(() => {
     // AI 생성 실패 시 결제 페이지로 이동하지 않음
     if (!isAIGenerated) {
       return;
     }
-    router.push(`/payment/yearly/${profileId}`);
-  }, [router, profileId, isAIGenerated]);
+    router.push(`/payment/${edition}/${profileId}`);
+  }, [router, profileId, isAIGenerated, edition]);
 
   const handleBack = useCallback(() => {
-    router.push("/profiles?type=yearly");
-  }, [router]);
+    router.push(`/profiles?type=${edition}`);
+  }, [router, edition]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;

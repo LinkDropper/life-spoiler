@@ -7,6 +7,10 @@ import { useTranslations } from "next-intl";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import { trackPurchase } from "@/libs/analytics";
+import {
+  isYearlyEdition,
+  resolveTargetYear,
+} from "@/libs/fortune/yearly-editions";
 
 import styles from "./page.module.css";
 
@@ -28,6 +32,7 @@ function PaymentSuccessContent() {
     | "lifetime"
     | "compatibility"
     | "past_life"
+    | "yearly_2027"
     | null;
   const currency = (searchParams.get("currency") as "KRW" | "USD") || "KRW";
 
@@ -57,7 +62,9 @@ function PaymentSuccessContent() {
             profileId: profileId ?? undefined,
             fortuneType: fortuneType ?? undefined,
             year:
-              fortuneType === "yearly" ? new Date().getFullYear() : undefined,
+              fortuneType && isYearlyEdition(fortuneType)
+                ? resolveTargetYear(fortuneType)
+                : undefined,
             currency,
           }),
         });
@@ -84,7 +91,9 @@ function PaymentSuccessContent() {
                     ? tPayment("productNameCompatibility")
                     : fortuneType === "yearly"
                       ? tPayment("productNameYearly")
-                      : tPayment("productNameLifetime"),
+                      : fortuneType === "yearly_2027"
+                        ? tPayment("productNameYearly2027")
+                        : tPayment("productNameLifetime"),
                 price: Number(amount),
                 quantity: 1,
               },

@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { sendPaymentNotification } from "@/libs/discord";
 import {
+  isYearlyEdition,
+  resolveTargetYear,
+} from "@/libs/fortune/yearly-editions";
+import {
   FIRST_PAYMENT_AMOUNT_KRW,
   NORMAL_AMOUNT_KRW,
   NORMAL_AMOUNT_USD,
@@ -163,8 +167,9 @@ export async function POST(request: NextRequest) {
         }
       } else {
         // 일반 운세: fortunes 테이블의 paid_at 업데이트
-        const yearValue =
-          fortuneType === "yearly" ? (year ?? new Date().getFullYear()) : 0;
+        const yearValue = isYearlyEdition(fortuneType)
+          ? (year ?? resolveTargetYear(fortuneType))
+          : 0;
         const updateSuccess = await updateFortunePaidAt(
           profileId,
           fortuneType,
@@ -183,10 +188,9 @@ export async function POST(request: NextRequest) {
 
     // 디스코드 결제 알림 전송 (비동기로 실행, 실패해도 결제 응답에 영향 없음)
     if (profileId && fortuneType) {
-      const yearValue =
-        fortuneType === "yearly"
-          ? (year ?? new Date().getFullYear())
-          : undefined;
+      const yearValue = isYearlyEdition(fortuneType)
+        ? (year ?? resolveTargetYear(fortuneType))
+        : undefined;
 
       // 프로필 이름 조회
       let profileName: string | undefined;

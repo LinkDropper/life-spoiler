@@ -42,7 +42,12 @@ export type CompatibilityRelationshipType =
 export type OAuthProvider = "kakao" | "google" | "email";
 export type CalendarType = "solar" | "lunar";
 export type Gender = "male" | "female";
-export type FortuneType = "lifetime" | "yearly" | "compatibility" | "past_life";
+export type FortuneType =
+  | "lifetime"
+  | "yearly"
+  | "compatibility"
+  | "past_life"
+  | "yearly_2027";
 export type RelationshipStatus =
   | "solo"
   | "dating"
@@ -229,7 +234,8 @@ export type PromoFortuneType =
   | "past_life"
   | "compatibility"
   | "face_spoiler"
-  | "all";
+  | "all"
+  | "yearly_2027";
 
 export interface PromoCodeRow {
   id: string;
@@ -276,7 +282,8 @@ export type PromoUsageFortuneType =
   | "yearly"
   | "past_life"
   | "compatibility"
-  | "face_spoiler";
+  | "face_spoiler"
+  | "yearly_2027";
 
 export interface PromoCodeUsageRow {
   id: string;
@@ -339,7 +346,8 @@ export type ReviewFortuneType =
   | "lifetime"
   | "yearly"
   | "past_life"
-  | "compatibility";
+  | "compatibility"
+  | "yearly_2027";
 
 export interface ReviewRow {
   id: string;
@@ -381,7 +389,8 @@ export type FollowUpFortuneType =
   | "lifetime"
   | "yearly"
   | "past_life"
-  | "compatibility";
+  | "compatibility"
+  | "yearly_2027";
 
 export interface FollowUpQuestionRow {
   id: string;

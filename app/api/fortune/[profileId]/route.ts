@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import {
+  isYearlyEdition,
+  resolveTargetYear,
+} from "@/libs/fortune/yearly-editions";
 import { createServerClient } from "@/libs/supabase/client";
 import { getFortune } from "@/libs/supabase/fortune";
 import type { FortuneType } from "@/libs/supabase/fortune";
@@ -18,13 +22,12 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const { searchParams } = new URL(request.url);
 
     const fortuneType = (searchParams.get("type") || "lifetime") as FortuneType;
-    const year =
-      fortuneType === "yearly"
-        ? parseInt(
-            searchParams.get("year") || String(new Date().getFullYear()),
-            10
-          )
-        : 0;
+    const year = isYearlyEdition(fortuneType)
+      ? parseInt(
+          searchParams.get("year") || String(resolveTargetYear(fortuneType)),
+          10
+        )
+      : 0;
 
     const supabase = createServerClient() as SupabaseDB;
     const { data: profile, error: profileError } = await supabase
@@ -66,7 +69,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       data: {
         profile,
         fortune: fortune.result,
-        year: fortuneType === "yearly" ? year : undefined,
+        year: isYearlyEdition(fortuneType) ? year : undefined,
       },
     });
   } catch (error) {

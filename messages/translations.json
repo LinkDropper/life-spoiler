@@ -226,6 +226,11 @@
         "subtitle": "올해 공략 방법 보기",
         "button": "올해 운세 확인하기"
       },
+      "yearly2027": {
+        "title": "내년 운세",
+        "subtitle": "2027년 공략 방법 미리 보기",
+        "button": "내년 운세 확인하기"
+      },
       "compatibility": {
         "title": "궁합 운세",
         "subtitle": "내 인간관계 분석하기",
@@ -248,6 +253,7 @@
       "selectProfile": "프로필을 선택해주세요.",
       "lifetimeFortune": "인생 운세 보기",
       "yearlyFortune": "올해 운세 보기",
+      "yearly2027Fortune": "내년 운세 보기",
       "pastLifeFortune": "전생 운세 보기",
       "newProfile": "새 프로필 만들기",
       "deleteModal": {
@@ -266,6 +272,7 @@
         "deleteAriaLabel": "프로필 삭제",
         "lifetimeFortune": "인생 운세",
         "yearlyFortune": "올해 운세",
+        "yearly2027Fortune": "내년 운세",
         "pastLifeFortune": "전생 운세"
       }
     },
@@ -547,7 +554,8 @@
       },
       "yearly": {
         "title": "{name}님의 {year}년 운세",
-        "fetchError": "올해 운세 조회에 실패했습니다.",
+        "followUpName": "{year}년 운세",
+        "fetchError": "운세 조회에 실패했습니다.",
         "yearInfo": "{stem}{branch}년",
         "shareButton": "공유하기",
         "reviewButton": "후기 남기기",
@@ -700,6 +708,7 @@
       "payButtonSimple": "990원 결제하기",
       "processing": "결제 처리 중...",
       "productNameYearly": "올해 운세 스포일러",
+      "productNameYearly2027": "내년 운세 스포일러",
       "productNameLifetime": "인생 운세 스포일러",
       "productNamePastLife": "전생 운세 스포일러",
       "productNameCompatibility": "궁합 스포일러",
@@ -707,6 +716,7 @@
       "refundPolicy": "디지털 콘텐츠 특성상 결제 후 결과 확인 시 환불이 불가능합니다.",
       "viewPeriod": "본 상품의 열람 기간은 결제일로부터 1년입니다.",
       "orderNameYearly": "{name}님의 올해 운세 스포일러",
+      "orderNameYearly2027": "{name}님의 내년 운세 스포일러",
       "orderNameLifetime": "{name}님의 인생 스포일러",
       "orderNamePastLife": "{name}님의 전생 운세 스포일러",
       "orderNameCompatibility": "{nameA} X {nameB} 궁합 스포일러",
@@ -1438,6 +1448,11 @@
         "subtitle": "See how to navigate this year",
         "button": "View This Year's Fortune"
       },
+      "yearly2027": {
+        "title": "Next Year's Fortune",
+        "subtitle": "Preview how to navigate 2027",
+        "button": "View Next Year's Fortune"
+      },
       "compatibility": {
         "title": "Compatibility",
         "subtitle": "Analyze my relationships",
@@ -1460,6 +1475,7 @@
       "selectProfile": "Please select a profile.",
       "lifetimeFortune": "View Lifetime Fortune",
       "yearlyFortune": "View This Year's Fortune",
+      "yearly2027Fortune": "View Next Year's Fortune",
       "pastLifeFortune": "View Past Life Fortune",
       "newProfile": "Create New Profile",
       "deleteModal": {
@@ -1478,6 +1494,7 @@
         "deleteAriaLabel": "Delete Profile",
         "lifetimeFortune": "Lifetime Fortune",
         "yearlyFortune": "Yearly Fortune",
+        "yearly2027Fortune": "Next Year's Fortune",
         "pastLifeFortune": "Past Life Fortune"
       }
     },
@@ -1759,7 +1776,8 @@
       },
       "yearly": {
         "title": "{name}'s {year} Fortune",
-        "fetchError": "Failed to fetch this year's fortune.",
+        "followUpName": "{year} Fortune",
+        "fetchError": "Failed to fetch fortune.",
         "yearInfo": "Year of {stem}{branch}",
         "shareButton": "Share",
         "reviewButton": "Write Review",
@@ -1912,6 +1930,7 @@
       "payButtonSimple": "Pay $0.99",
       "processing": "Processing payment...",
       "productNameYearly": "Yearly Fortune Spoiler",
+      "productNameYearly2027": "Next Year's Fortune Spoiler",
       "productNameLifetime": "Lifetime Fortune Spoiler",
       "productNamePastLife": "Past Life Fortune Spoiler",
       "productNameCompatibility": "Compatibility Spoiler",
@@ -1919,6 +1938,7 @@
       "refundPolicy": "Due to the nature of digital content, refunds are not available after viewing the results.",
       "viewPeriod": "This product can be viewed for 1 year from the date of purchase.",
       "orderNameYearly": "{name}'s Yearly Fortune Spoiler",
+      "orderNameYearly2027": "{name}'s Next Year Fortune Spoiler",
       "orderNameLifetime": "{name}'s Life Spoiler",
       "orderNamePastLife": "{name}'s Past Life Fortune Spoiler",
       "orderNameCompatibility": "{nameA} X {nameB} Compatibility Spoiler",
@@ -2650,6 +2670,11 @@
         "subtitle": "今年の攻略法を見る",
         "button": "今年の運勢を見る"
       },
+      "yearly2027": {
+        "title": "来年の運勢",
+        "subtitle": "2027年の攻略法を先取り",
+        "button": "来年の運勢を見る"
+      },
       "compatibility": {
         "title": "相性占い",
         "subtitle": "人間関係を分析する",
@@ -2672,6 +2697,7 @@
       "selectProfile": "プロフィールを選択してください。",
       "lifetimeFortune": "人生運勢を見る",
       "yearlyFortune": "今年の運勢を見る",
+      "yearly2027Fortune": "来年の運勢を見る",
       "pastLifeFortune": "前世占いを見る",
       "newProfile": "新しいプロフィールを作成",
       "deleteModal": {
@@ -2690,6 +2716,7 @@
         "deleteAriaLabel": "プロフィール削除",
         "lifetimeFortune": "人生運勢",
         "yearlyFortune": "今年の運勢",
+        "yearly2027Fortune": "来年の運勢",
         "pastLifeFortune": "前世運勢"
       }
     },
@@ -2971,7 +2998,8 @@
       },
       "yearly": {
         "title": "{name}さんの{year}年運勢",
-        "fetchError": "今年の運勢取得に失敗しました。",
+        "followUpName": "{year}年運勢",
+        "fetchError": "運勢の取得に失敗しました。",
         "yearInfo": "{stem}{branch}年",
         "shareButton": "シェアする",
         "reviewButton": "レビューを書く",
@@ -3124,6 +3152,7 @@
       "payButtonSimple": "$0.99を決済する",
       "processing": "決済処理中...",
       "productNameYearly": "今年の運勢ネタバレ",
+      "productNameYearly2027": "来年の運勢ネタバレ",
       "productNameLifetime": "人生運勢ネタバレ",
       "productNamePastLife": "前世運勢ネタバレ",
       "productNameCompatibility": "相性ネタバレ",
@@ -3131,6 +3160,7 @@
       "refundPolicy": "デジタルコンテンツの特性上、決済後に結果を確認すると返金ができません。",
       "viewPeriod": "本商品の閲覧期間は決済日から1年間です。",
       "orderNameYearly": "{name}さんの今年の運勢ネタバレ",
+      "orderNameYearly2027": "{name}さんの来年の運勢ネタバレ",
       "orderNameLifetime": "{name}さんの人生ネタバレ",
       "orderNamePastLife": "{name}さんの前世運勢ネタバレ",
       "orderNameCompatibility": "{nameA} X {nameB} 相性ネタバレ",

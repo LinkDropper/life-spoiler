@@ -7,7 +7,13 @@ import type { FortuneType } from "@/libs/supabase/types";
 
 const QuerySchema = z.object({
   profileId: z.string().uuid(),
-  fortuneType: z.enum(["lifetime", "yearly", "past_life", "compatibility"]),
+  fortuneType: z.enum([
+    "lifetime",
+    "yearly",
+    "past_life",
+    "compatibility",
+    "yearly_2027",
+  ]),
 });
 
 /**

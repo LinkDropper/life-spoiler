@@ -6,9 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { HeaderClient } from "@/components/landing";
 import {
   CompatibilityFortuneCard,
-  FaceReadingCard,
   LifetimeFortuneCard,
-  PastLifeCard,
+  NextYearFortuneCard,
   YearlyFortuneCard,
 } from "@/components/home";
 import { useReferral } from "@/libs/hooks/useReferral";
@@ -48,20 +47,16 @@ export default function HomePage() {
     router.push("/profiles?type=lifetime");
   }, [router]);
 
+  const handleNextYearFortune = useCallback(() => {
+    router.push("/profiles?type=yearly_2027");
+  }, [router]);
+
   const handleYearlyFortune = useCallback(() => {
     router.push("/profiles?type=yearly");
   }, [router]);
 
   const handleCompatibilityFortune = useCallback(() => {
     router.push("/compatibility");
-  }, [router]);
-
-  const handlePastLifeFortune = useCallback(() => {
-    router.push("/profiles?type=past-life");
-  }, [router]);
-
-  const handleFaceReading = useCallback(() => {
-    router.push("/face-spoiler/profiles");
   }, [router]);
 
   if (authStatus === "loading" || authStatus === "unauthenticated") {
@@ -73,10 +68,9 @@ export default function HomePage() {
       <HeaderClient />
       <main className={styles.main}>
         <LifetimeFortuneCard onClick={handleLifetimeFortune} />
+        <NextYearFortuneCard onClick={handleNextYearFortune} />
         <YearlyFortuneCard onClick={handleYearlyFortune} />
         <CompatibilityFortuneCard onClick={handleCompatibilityFortune} />
-        <PastLifeCard onClick={handlePastLifeFortune} />
-        <FaceReadingCard onClick={handleFaceReading} />
       </main>
     </div>
   );

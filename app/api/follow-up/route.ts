@@ -19,6 +19,7 @@ const VALID_FORTUNE_TYPES: ReadonlySet<FollowUpFortuneType> = new Set([
   "yearly",
   "past_life",
   "compatibility",
+  "yearly_2027",
 ]);
 
 const MIN_QUESTION_LENGTH = 2;

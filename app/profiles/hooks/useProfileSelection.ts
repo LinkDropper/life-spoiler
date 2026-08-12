@@ -64,10 +64,14 @@ export const useProfileSelection = ({
       const hasPastLife = profile.fortunes.some(
         (f) => f.fortune_type === "past_life" && f.paid_at
       );
+      const hasYearly2027 = profile.fortunes.some(
+        (f) => f.fortune_type === "yearly_2027" && f.paid_at
+      );
 
       if (hasLifetime) types.push("lifetime");
       if (hasYearly) types.push("yearly");
       if (hasPastLife) types.push("past_life");
+      if (hasYearly2027) types.push("yearly_2027");
 
       return types;
     },

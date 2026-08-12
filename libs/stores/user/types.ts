@@ -1,7 +1,7 @@
 export type OAuthProvider = "kakao" | "google" | "email";
 export type CalendarType = "solar" | "lunar";
 export type Gender = "male" | "female";
-export type FortuneType = "lifetime" | "yearly" | "past_life";
+export type FortuneType = "lifetime" | "yearly" | "past_life" | "yearly_2027";
 export type RelationshipStatus =
   | "solo"
   | "dating"

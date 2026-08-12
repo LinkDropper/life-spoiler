@@ -9,6 +9,10 @@ import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import {
+  isYearlyEdition,
+  resolveTargetYear,
+} from "@/libs/fortune/yearly-editions";
+import {
   useProfileById,
   useIsProfilesLoaded,
   useProfileActions,
@@ -27,7 +31,12 @@ const PAYPAL_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_PAYPAL_CLIENT_KEY ?? "";
 const PAYMENT_AMOUNT_KRW = 990;
 const PAYMENT_AMOUNT_USD = 0.99;
 
-type FortuneType = "yearly" | "lifetime" | "compatibility" | "past_life";
+type FortuneType =
+  | "yearly"
+  | "lifetime"
+  | "compatibility"
+  | "past_life"
+  | "yearly_2027";
 
 type PaymentMethod =
   | "CARD"
@@ -200,7 +209,8 @@ function PaymentPageContent() {
       fortuneType !== "yearly" &&
       fortuneType !== "lifetime" &&
       fortuneType !== "compatibility" &&
-      fortuneType !== "past_life"
+      fortuneType !== "past_life" &&
+      fortuneType !== "yearly_2027"
     ) {
       setError(tPayment("invalidFortuneType"));
       setIsLoading(false);
@@ -306,13 +316,17 @@ function PaymentPageContent() {
           ? tPayment("orderNameYearly", {
               name: cachedProfile?.name ?? "",
             })
-          : fortuneType === "past_life"
-            ? tPayment("orderNamePastLife", {
+          : fortuneType === "yearly_2027"
+            ? tPayment("orderNameYearly2027", {
                 name: cachedProfile?.name ?? "",
               })
-            : tPayment("orderNameLifetime", {
-                name: cachedProfile?.name ?? "",
-              });
+            : fortuneType === "past_life"
+              ? tPayment("orderNamePastLife", {
+                  name: cachedProfile?.name ?? "",
+                })
+              : tPayment("orderNameLifetime", {
+                  name: cachedProfile?.name ?? "",
+                });
 
       // PayPal 결제 (v2 결제창 - API 개별 연동 방식)
       if (selectedMethod === "PAYPAL") {
@@ -344,8 +358,8 @@ function PaymentPageContent() {
                 currency: "USD",
                 description: isCompatibility
                   ? "Compatibility Fortune"
-                  : fortuneType === "yearly"
-                    ? "2025 Yearly Fortune"
+                  : isYearlyEdition(fortuneType)
+                    ? `${resolveTargetYear(fortuneType)} Yearly Fortune`
                     : fortuneType === "past_life"
                       ? "Past Life Fortune"
                       : "Lifetime Fortune",
@@ -428,6 +442,9 @@ function PaymentPageContent() {
     }
     if (fortuneType === "yearly") {
       return tPayment("productNameYearly");
+    }
+    if (fortuneType === "yearly_2027") {
+      return tPayment("productNameYearly2027");
     }
     if (fortuneType === "past_life") {
       return tPayment("productNamePastLife");
