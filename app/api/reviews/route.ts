@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { sendReviewNotification } from "@/libs/discord/webhook";
+import { MAX_REVIEW_REASON_PREFIX_LENGTH } from "@/libs/reviews/review-reason";
 import { createAuthClient } from "@/libs/supabase";
 
 import type { ReviewFortuneType, ReviewInsert } from "@/libs/supabase/types";
@@ -13,8 +14,11 @@ const VALID_FORTUNE_TYPES: ReadonlySet<ReviewFortuneType> = new Set([
   "yearly_2027",
 ]);
 
-const MIN_CONTENT_LENGTH = 5;
+// 자유 텍스트 상한(사용자에게 노출되는 값). 실제 저장되는 content는 여기에 칩 인코딩
+// 프리픽스(MAX_REVIEW_REASON_PREFIX_LENGTH)가 더 붙을 수 있으므로 검증 시 함께 고려한다.
 const MAX_CONTENT_LENGTH = 200;
+const MAX_STORED_CONTENT_LENGTH =
+  MAX_CONTENT_LENGTH + MAX_REVIEW_REASON_PREFIX_LENGTH;
 const MIN_RATING = 1;
 const MAX_RATING = 5;
 
@@ -45,17 +49,14 @@ const validateRequest = (body: ReviewCreateRequest): string | null => {
     return `별점은 ${MIN_RATING}~${MAX_RATING} 사이의 정수여야 합니다.`;
   }
 
-  if (!content || typeof content !== "string") {
-    return "후기 내용이 필요합니다.";
+  // 별점만으로도 제출 가능 — content는 칩 선택 + 자유 텍스트가 인코딩된 문자열이며 빈 문자열을 허용한다.
+  if (typeof content !== "string") {
+    return "후기 내용이 올바르지 않습니다.";
   }
 
   const trimmedLength = content.trim().length;
 
-  if (trimmedLength < MIN_CONTENT_LENGTH) {
-    return `후기는 최소 ${MIN_CONTENT_LENGTH}자 이상이어야 합니다.`;
-  }
-
-  if (trimmedLength > MAX_CONTENT_LENGTH) {
+  if (trimmedLength > MAX_STORED_CONTENT_LENGTH) {
     return `후기는 최대 ${MAX_CONTENT_LENGTH}자까지 작성할 수 있습니다.`;
   }
 
