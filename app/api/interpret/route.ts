@@ -117,6 +117,11 @@ const convertToDayunData = (
       return `${s.name}(${s.brightness})`;
     });
 
+    // 보성 이름 + 밝기 (예: "문창(리)")
+    const minorStars = period.palace.minorStars.map(
+      (s) => `${s.name}(${s.brightness})`
+    );
+
     // 대운 천간으로부터 사화 계산
     const dayunSihuaResult = calculateSihua(period.stemIndex);
 
@@ -124,6 +129,7 @@ const convertToDayunData = (
       period: formatAgeRange(period.startAge, period.endAge, locale),
       palaceName: period.palaceName,
       mainStars,
+      minorStars,
       dayunSihua: {
         hualu: dayunSihuaResult.hualu,
         huaquan: dayunSihuaResult.huaquan,
@@ -134,6 +140,10 @@ const convertToDayunData = (
         huakePalace: findPalaceForStar(dayunSihuaResult.huake),
         huajiPalace: findPalaceForStar(dayunSihuaResult.huaji),
       },
+      // NOTE: period.score 는 의도적으로 전달하지 않는다.
+      // dayun.ts 의 점수 산출이 삼방사정·살성·대한사화를 반영하도록 보강되기 전(P1-6)까지는
+      // 검증되지 않은 길흉 점수를 AI 판단의 앵커로 물리면 안 된다.
+      // 보강 완료 후 이 줄을 `score: period.score,` 로 되살리면 프롬프트 배선은 이미 준비돼 있다.
     };
   });
 };
