@@ -3,6 +3,8 @@ import type { MainStarName } from "../constants/stars";
 import { MAIN_STAR_NAMES } from "../constants/stars";
 import type { Brightness, Sihua, ZiweiChart } from "../types";
 
+import { getEffectiveMainStars } from "./empty-palace";
+
 /**
  * 성격 프로필 (궁합 사전 분석용)
  *
@@ -140,6 +142,13 @@ const SIHUA_SCORE: Record<Sihua, number> = {
   화기: -20,
 };
 
+/**
+ * 空宮에서 차용한 주성의 영향력 감쇠 계수
+ * 근거: 삼합파 통설상 借星安宮은 본궁에 실제로 좌한 주성보다 힘이 약하다
+ * ("차성안궁, 감력이용" — 차용 별은 감력하여 쓴다)
+ */
+const BORROWED_INFLUENCE_FACTOR = 0.7;
+
 // ============================================================
 // 오행 매핑
 // ============================================================
@@ -193,7 +202,11 @@ const collectWeightedTraits = (
     const weights = PALACE_PROFILE_WEIGHTS[palace.name];
     if (!weights) continue;
 
-    for (const star of palace.mainStars) {
+    const effectiveStars = getEffectiveMainStars(palace);
+    const isBorrowed = palace.mainStars.length === 0;
+    const borrowFactor = isBorrowed ? BORROWED_INFLUENCE_FACTOR : 1;
+
+    for (const star of effectiveStars) {
       if (!isMainStar(star.name)) continue;
 
       const brightnessGroup = toBrightnessGroup(star.brightness);
@@ -201,10 +214,10 @@ const collectWeightedTraits = (
         STAR_TRAITS[star.name as MainStarName]?.[brightnessGroup];
       if (!traitSet) continue;
 
-      // 밝기+사화 기반 영향력 점수
+      // 밝기+사화 기반 영향력 점수 (차용 주성은 감쇠 계수 적용)
       const baseScore = BRIGHTNESS_SCORE[star.brightness];
       const sihuaBonus = star.sihua ? SIHUA_SCORE[star.sihua] : 0;
-      const influence = (baseScore + sihuaBonus) / 100;
+      const influence = ((baseScore + sihuaBonus) / 100) * borrowFactor;
 
       // 카테고리별 가중치 적용
       for (const t of traitSet.personality) {
@@ -287,11 +300,22 @@ const describeSihua = (chart: ZiweiChart): string => {
  */
 const buildCoreSentence = (chart: ZiweiChart): string => {
   const mingGong = chart.palaces.find((p) => p.name === "명궁");
-  if (!mingGong || mingGong.mainStars.length === 0) {
+  if (!mingGong) {
     return "명궁 주성 없음 (차입궁으로 대궁 참조)";
   }
 
-  const starDescriptions = mingGong.mainStars
+  const effectiveStars = getEffectiveMainStars(mingGong);
+  if (effectiveStars.length === 0) {
+    return "명궁 주성 없음 (차입궁으로 대궁 참조)";
+  }
+
+  const isBorrowed = mingGong.mainStars.length === 0;
+  const borrowSuffix =
+    isBorrowed && mingGong.borrowedFromPalace
+      ? ` (명궁 空宮, ${mingGong.borrowedFromPalace} 차용)`
+      : "";
+
+  const starDescriptions = effectiveStars
     .filter((s) => isMainStar(s.name))
     .map((star) => {
       const group = toBrightnessGroup(star.brightness);
@@ -303,7 +327,7 @@ const buildCoreSentence = (chart: ZiweiChart): string => {
       return `${personality}(${star.brightness}${sihuaNote})`;
     });
 
-  return starDescriptions.join(" + ");
+  return starDescriptions.join(" + ") + borrowSuffix;
 };
 
 /**

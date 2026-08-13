@@ -155,8 +155,8 @@ export default function LifetimeFortunePreviewPage() {
           </section>
         )}
 
-        {/* 키워드 그리드 (미리보기 - 3행 블러) */}
-        {keywords.length > 0 && oneLiner && (
+        {/* 키워드 그리드 (미리보기 - 3행 블러, 명궁 空宮이면 oneLiner 없이 노출) */}
+        {keywords.length > 0 && (
           <section className={styles.keywordGridSection}>
             <KeywordGrid
               keywords={keywords}

@@ -73,7 +73,8 @@ CPO: SendMessage(to: "cmo", message: "궁합 기능 UI 개편이 이번 주 GTM 
 |---|---|---|---|
 | `growth-strategist` (구 `marketer`) | agent | CRO/카피 **제안**, 발행 없음 | `cmo`/`social-media-marketer`(실제 발행 집행)와 혼동 주의 — 서로 다른 팀 |
 | `cmo`, `content-writer`, `social-media-marketer`, `performance-analyst` | agent | 실제 콘텐츠 발행/마케팅 실행 | GitHub Actions 자동화 대상, 무변경 |
-| `cto`, `cpo` | agent | 부서장, 전체 도구 상속 + SendMessage로 위임/협의 | `tools:` 미선언 (CMO와 동일 패턴) |
+| `cpo` | agent | 부서장, 전체 도구 상속 + SendMessage로 위임/협의 | `tools:` 미선언 (CMO와 동일 패턴) |
+| `cto` | agent | 부서장, `tools:` 화이트리스트로 제한 + SendMessage로 위임/협의 | 업무 무관 MCP(figma/tosspayments-docs/gmail/calendar/drive) 스키마 로드 방지 목적의 예외. 상세는 8번 변경 이력 참조 |
 | `planner`, `designer`, `growth-strategist`, `fullstack`, `ai-dev`, `ziwei-expert` | agent | IC(실무자), `tools:` 화이트리스트로 권한 하드 제한 | 상세는 각 파일 frontmatter 참조 |
 
 ## 7. 공통 제약 (모든 부서장/IC 동일 적용)
@@ -85,3 +86,6 @@ CPO: SendMessage(to: "cmo", message: "궁합 기능 UI 개편이 이번 주 GTM 
 ## 8. 변경 이력
 
 - 2026-08-11: CTO/CPO 신설, 6개 페르소나 커맨드 → 서브에이전트 전환, `marketer` → `growth-strategist` 개명, 레거시 메모리 시스템 정리
+- 2026-08-13: CTO 토큰 사용량(세션 46%) 원인 조사 후 2건 수정.
+  1. `fullstack`의 `Agent` 툴 제거 — 유일하게 IC가 IC를 직접 스폰할 수 있던 경로였고, `ziwei-expert`/`ai-dev`까지 콜드 스폰이 3단 중첩되며 같은 컨텍스트(CONTEXT.md, 관련 코드)를 매 단계 재도출하던 게 주요 원인. 이제 fullstack은 교차검증 필요성을 최종 보고서에 남기고, CTO가 위임을 판단하는 단일 스폰 지점 구조로 변경.
+  2. `cto`에 `tools:` 화이트리스트 추가 — figma/tosspayments-docs/gmail/calendar/drive 등 업무 무관 MCP 스키마가 매 턴 로드되던 것을 방지. `cpo`/`cmo`는 기존 전체 상속 패턴 유지(사용자 확인 하에 CTO만 예외 처리).

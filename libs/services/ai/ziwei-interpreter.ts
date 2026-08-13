@@ -1,5 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import { BRANCH_INDEX_MAP } from "@/libs/zi-wei-dou-shu/constants/branches";
+import { PALACE_ORDER } from "@/libs/zi-wei-dou-shu/constants/palaces";
 import { calculateSamBangSaJeong } from "@/libs/zi-wei-dou-shu/calculators/sam-bang";
 import type { BranchIndex, Palace } from "@/libs/zi-wei-dou-shu/types";
 
@@ -63,7 +64,7 @@ const LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
     },
     oneLiner: { type: "string" },
   },
-  required: ["headline", "description"],
+  required: ["headline", "description", "oneLiner"],
 };
 
 /** 핵심 시나리오 스키마 */
@@ -80,7 +81,7 @@ const LIFETIME_CORE_SCHEMA: GeminiResponseSchema = {
     },
     oneLiner: { type: "string" },
   },
-  required: ["headline"],
+  required: ["headline", "oneLiner"],
 };
 
 /** 카테고리 응답 스키마 (재물/직업/인연/건강) */
@@ -102,7 +103,7 @@ const LIFETIME_CATEGORY_SCHEMA: GeminiResponseSchema = {
     },
     score: { type: "integer", minimum: 0, maximum: 100 },
   },
-  required: ["headline", "tags", "score"],
+  required: ["headline", "tags", "score", "oneLiner"],
 };
 
 /** 나이대별 시나리오 스키마 */
@@ -125,7 +126,7 @@ const AGE_SCENARIOS_SCHEMA: GeminiResponseSchema = {
           },
           oneLiner: { type: "string" },
         },
-        required: ["period", "headline"],
+        required: ["period", "headline", "oneLiner"],
       },
     },
   },
@@ -226,6 +227,7 @@ const extractOpeningLine = (
 
 /** 대운 정보가 필요한 해석 유형 */
 const DAYUN_REQUIRED_TYPES: InterpretationType[] = [
+  "life_spoiler",
   "lifetime_core",
   "lifetime_wealth",
   "lifetime_career",
@@ -315,6 +317,32 @@ const palaceDataToPalace = (
   isShenGong: false,
 });
 
+/** 대운 점수(0-100)를 정성적 티어로 변환 — 원 숫자를 프롬프트에 그대로 노출하지 않기 위함 */
+const scoreToTier = (score: number): string => {
+  if (score >= 80) return "매우 강함";
+  if (score >= 65) return "강함";
+  if (score >= 45) return "보통";
+  if (score >= 30) return "약함";
+  return "매우 약함";
+};
+
+/**
+ * 12궁 전체를 압축 요약 (궁별 주성 + 밝기만, 삼방사정 등 상세는 유지한 채 입력 엔트로피 보강용)
+ */
+const formatAllPalacesSummary = (
+  palaces: Record<string, PalaceData>
+): string => {
+  return PALACE_ORDER.map((name) => {
+    const palace = palaces[name];
+    if (!palace) return `- ${name}: 데이터 없음`;
+    const starsStr =
+      palace.mainStars.length > 0
+        ? palace.mainStars.map((s) => `${s.name}(${s.brightness})`).join(", ")
+        : "주성 없음";
+    return `- ${name}: ${starsStr}`;
+  }).join("\n");
+};
+
 /**
  * 명반 데이터를 AI에게 전달할 문자열로 포맷팅
  */
@@ -381,6 +409,10 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
     }
   }
 
+  // 12궁 전체 압축 요약 (대상 궁 4궁 외 나머지 궁의 존재감을 위한 입력 엔트로피 보강)
+  dataStr += `\n\n## All 12 Palaces Summary (main stars + brightness only)
+${formatAllPalacesSummary(palaces)}`;
+
   // 대상 궁 + 삼방사정 데이터
   dataStr += `\n\n## Target Palace: ${prompts.palaceNameMap[requestType]} (${targetPalaceName})
 ${targetPalace ? formatPalaceData(targetPalace) : "Palace data not available"}`;
@@ -424,6 +456,10 @@ ${formatPalaceFromPalaceType(samBang.triangle2)}`;
         period.mainStars.length > 0
           ? period.mainStars.join(", ")
           : "No main stars";
+      const minorStarsStr =
+        period.minorStars && period.minorStars.length > 0
+          ? ` | 보성: ${period.minorStars.join(", ")}`
+          : "";
       const sihuaStr =
         period.sihua && period.sihua.length > 0
           ? ` [${period.sihua.join(", ")}]`
@@ -435,11 +471,15 @@ ${formatPalaceFromPalaceType(samBang.triangle2)}`;
           : ` | dayunSihua: 록→${period.dayunSihua.hualu}, 권→${period.dayunSihua.huaquan}, 과→${period.dayunSihua.huake}, 기→${period.dayunSihua.huaji}`;
         dayunSihuaStr = palaceMapping;
       }
-      dataStr += `\n- ${period.period} (${period.palaceName}): ${starsStr}${sihuaStr}${dayunSihuaStr}`;
+      const scoreStr = period.score
+        ? ` | 흐름(내부참고용, 그대로 출력 금지): 종합 ${scoreToTier(period.score.overall)}, 재물 ${scoreToTier(period.score.wealth)}, 직업 ${scoreToTier(period.score.career)}, 인연 ${scoreToTier(period.score.relationship)}, 건강 ${scoreToTier(period.score.health)}`
+        : "";
+      dataStr += `\n- ${period.period} (${period.palaceName}): ${starsStr}${minorStarsStr}${sihuaStr}${dayunSihuaStr}${scoreStr}`;
     }
     if (user.currentAge) {
       dataStr += `\n- **Focus on current age ${user.currentAge} Dayun period!**`;
     }
+    dataStr += `\n- **위 "흐름" 정보는 이 시기가 좋은지 나쁜지 방향을 잡는 내부 판단 근거일 뿐입니다. "종합", "강함", "약함" 같은 티어 단어나 숫자를 문장에 그대로 노출하지 말고, 반드시 자연스러운 서술로 녹여서 표현하세요.**`;
   }
 
   return dataStr;
@@ -739,12 +779,18 @@ export const generateFullInterpretation = async (
 
   return {
     lifeSpoiler,
-    coreScenario: { headline: "", content: "" },
+    coreScenario: { headline: "", content: "", oneLiner: "" },
     categories: {
-      wealth: { headline: "", content: "", tags: [], score: 0 },
-      career: { headline: "", content: "", tags: [], score: 0 },
-      relationship: { headline: "", content: "", tags: [], score: 0 },
-      health: { headline: "", content: "", tags: [], score: 0 },
+      wealth: { headline: "", content: "", tags: [], score: 0, oneLiner: "" },
+      career: { headline: "", content: "", tags: [], score: 0, oneLiner: "" },
+      relationship: {
+        headline: "",
+        content: "",
+        tags: [],
+        score: 0,
+        oneLiner: "",
+      },
+      health: { headline: "", content: "", tags: [], score: 0, oneLiner: "" },
     },
     ageScenarios: [],
     meta: {
@@ -775,13 +821,20 @@ export const createFallbackInterpretation = (
       summary: isRateLimited
         ? "현재 많은 분들이 이용 중입니다. 잠시 후 다시 시도해주세요."
         : "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      oneLiner: "",
     },
-    coreScenario: { headline: "", content: "" },
+    coreScenario: { headline: "", content: "", oneLiner: "" },
     categories: {
-      wealth: { headline: "", content: "", tags: [], score: 0 },
-      career: { headline: "", content: "", tags: [], score: 0 },
-      relationship: { headline: "", content: "", tags: [], score: 0 },
-      health: { headline: "", content: "", tags: [], score: 0 },
+      wealth: { headline: "", content: "", tags: [], score: 0, oneLiner: "" },
+      career: { headline: "", content: "", tags: [], score: 0, oneLiner: "" },
+      relationship: {
+        headline: "",
+        content: "",
+        tags: [],
+        score: 0,
+        oneLiner: "",
+      },
+      health: { headline: "", content: "", tags: [], score: 0, oneLiner: "" },
     },
     ageScenarios: [],
     meta: {
