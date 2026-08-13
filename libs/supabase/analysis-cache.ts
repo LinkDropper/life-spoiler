@@ -24,8 +24,22 @@ import type {
 type SupabaseDB = SupabaseClient<Database>;
 
 /**
+ * ⚠️ 인생 운세(lifetime) 프롬프트 버전
+ *
+ * `libs/services/ai/prompts/{ko,en,ja}.ts` 의 인생 운세용 프롬프트 내용을 바꿨다면
+ * 이 값을 올리세요. 캐시 키(`interpretation_type`)에 버전이 섞여 들어가므로,
+ * 버전을 올리는 즉시 새 캐시 키로만 조회/저장되어 옛 프롬프트로 만든 캐시 행을
+ * 더 이상 히트하지 않게 됩니다.
+ *
+ * - 기존 캐시 행(`full-{lang}` 등)은 삭제/수정하지 않아도 됩니다. 자연히 미사용 상태로 남습니다.
+ * - 올해 운세(`yearly-{year}-{lang}`), 전생 운세(`full-past_life-{lang}`)는 별도의
+ *   `interpretation_type` 문자열을 쓰므로 이 버전과 무관하게 캐시가 유지됩니다.
+ */
+export const LIFETIME_PROMPT_VERSION = "v2";
+
+/**
  * 캐시 키 타입
- * - 인생 운세: preview-{lang}, full-{lang}
+ * - 인생 운세: preview-{version}-{lang}, full-{version}-{lang}
  * - 올해 운세: yearly-{year}-{lang}
  */
 type CacheKeyType =
@@ -34,6 +48,8 @@ type CacheKeyType =
   | `yearly-${number}`
   | `preview-${Locale}`
   | `full-${Locale}`
+  | `preview-${typeof LIFETIME_PROMPT_VERSION}-${Locale}`
+  | `full-${typeof LIFETIME_PROMPT_VERSION}-${Locale}`
   | `full-past_life-${Locale}`
   | `yearly-${number}-${Locale}`;
 

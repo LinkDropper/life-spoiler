@@ -452,7 +452,31 @@
         "back": "뒤로가기",
         "checkMyFortune": "내 운세도 확인해보기",
         "fortuneNotFound": "운세 데이터를 찾을 수 없습니다.",
-        "oneLinerLabel": "한 줄 정리"
+        "oneLinerLabel": "한 줄 정리",
+        "review": {
+          "title": "후기 남기기",
+          "subtitle": "이 결과가 마음에 드셨나요?",
+          "placeholder": "더 해주고 싶은 말이 있다면 적어주세요 (선택)",
+          "reasonPromptLow": "어떤 점이 아쉬웠나요? (선택, 복수 선택 가능)",
+          "reasonPromptHigh": "더 자세히 알려주시면 도움이 돼요 (선택)",
+          "reasonsGroupAriaLabel": "아쉬운 점 선택",
+          "reasons": {
+            "generic": "내용이 뻔해요",
+            "cantTrust": "좋은 말만 있어서 못 믿겠어요",
+            "notMatching": "제 상황과 안 맞아요",
+            "shallow": "너무 짧고 얕아요",
+            "notSpecific": "구체적인 답이 없어요"
+          },
+          "submit": "후기 남기기",
+          "submitting": "제출 중...",
+          "loading": "불러오는 중...",
+          "completedMessage": "소중한 후기 감사합니다!",
+          "completedSub": "더 좋은 서비스로 보답할게요",
+          "errorSave": "후기 저장에 실패했습니다.",
+          "errorNetwork": "네트워크 오류가 발생했습니다. 다시 시도해주세요.",
+          "starAriaLabel": "{star}점",
+          "charCountLabel": "{count}/{max}자"
+        }
       },
       "preview": {
         "chartTitle": "자미두수 명반",
@@ -1674,7 +1698,31 @@
         "back": "Back",
         "checkMyFortune": "Discover What Your Stars Say",
         "fortuneNotFound": "Fortune data not found.",
-        "oneLinerLabel": "In one line"
+        "oneLinerLabel": "In one line",
+        "review": {
+          "title": "Write a Review",
+          "subtitle": "Did you like this result?",
+          "placeholder": "Anything else you'd like to share? (optional)",
+          "reasonPromptLow": "What felt off? (optional, select all that apply)",
+          "reasonPromptHigh": "Tell us more — it really helps (optional)",
+          "reasonsGroupAriaLabel": "Select what felt off",
+          "reasons": {
+            "generic": "Felt generic",
+            "cantTrust": "Too positive to trust",
+            "notMatching": "Didn't match my situation",
+            "shallow": "Too short and shallow",
+            "notSpecific": "No specific answers"
+          },
+          "submit": "Submit Review",
+          "submitting": "Submitting...",
+          "loading": "Loading...",
+          "completedMessage": "Thank you for your review!",
+          "completedSub": "We'll keep improving our service",
+          "errorSave": "Failed to save your review.",
+          "errorNetwork": "A network error occurred. Please try again.",
+          "starAriaLabel": "{star} stars",
+          "charCountLabel": "{count}/{max}"
+        }
       },
       "preview": {
         "chartTitle": "Zi Wei Dou Shu Chart",
@@ -2896,7 +2944,31 @@
         "back": "戻る",
         "checkMyFortune": "私の運勢も確認する",
         "fortuneNotFound": "運勢データが見つかりません。",
-        "oneLinerLabel": "ひとことで"
+        "oneLinerLabel": "ひとことで",
+        "review": {
+          "title": "レビューを書く",
+          "subtitle": "この結果は満足できましたか？",
+          "placeholder": "他に伝えたいことがあれば書いてください（任意）",
+          "reasonPromptLow": "どこが物足りなかったですか？（任意・複数選択可）",
+          "reasonPromptHigh": "もう少し詳しく教えてください（任意）",
+          "reasonsGroupAriaLabel": "物足りなかった点を選択",
+          "reasons": {
+            "generic": "内容がありきたり",
+            "cantTrust": "良いことばかりで信じられない",
+            "notMatching": "自分の状況と合わない",
+            "shallow": "内容が短くて浅い",
+            "notSpecific": "具体的な答えがない"
+          },
+          "submit": "レビューを送る",
+          "submitting": "送信中...",
+          "loading": "読み込み中...",
+          "completedMessage": "大切なレビューをありがとうございます！",
+          "completedSub": "より良いサービスでお応えします",
+          "errorSave": "レビューの保存に失敗しました。",
+          "errorNetwork": "ネットワークエラーが発生しました。もう一度お試しください。",
+          "starAriaLabel": "{star}点",
+          "charCountLabel": "{count}/{max}文字"
+        }
       },
       "preview": {
         "chartTitle": "紫微斗数命盤",

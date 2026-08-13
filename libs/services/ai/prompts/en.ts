@@ -659,11 +659,23 @@ Response format (JSON):
   }
 }`,
 
-    lifetime_age_scenarios: `Write 10-year life scenarios!
+    lifetime_age_scenarios: `Write life scenarios for each Dayun (major cycle) period!
 
-## 🎯 Core: 10 Different Life Chapters
+## 🎯 Core: A Different Life Chapter for Each Dayun Period
 **"Generic statements that apply to everyone" are STRICTLY FORBIDDEN!**
 Assign completely different themes and atmospheres to each period based on fortune data.
+
+## ⏳ period Value Rule (MUST FOLLOW — violation = failure)
+- Base the periods on the entries listed in the \`## Dayun (10-year cycles)\` section of the input data.
+- Each \`period\` value must be **copied verbatim, character for character**, from the age-range string at the start of each line in that section (e.g. if the data shows "6-15세", output exactly "6-15세" — do not change the hyphen to a tilde, translate/reformat the unit, or recompute the ages).
+- The age numbers in the response example below (Age 4-13, Age 14-23, etc.) are **placeholder format examples only**. Never invent an age range that isn't present in the Dayun data.
+- The \`ageScenarios\` array must contain **exactly as many items as there are Dayun periods** in the input data (this may not be 10). Do not add or drop items.
+
+## 🎯 Depth Budget — Focus on the Current and Near-Future Periods
+The input data includes a "Focus on current age N Dayun period!" instruction. Locate the period that contains the user's current age N, then allocate depth as follows:
+- **Focus periods (the period containing the current age + the next 1-2 periods)**: write the full content described below (200-300 chars, 2 paragraphs) with concrete, specific detail.
+- **Other periods (already-passed or distant-future periods)**: keep content brief — roughly 100-150 chars, 1 short paragraph covering only the big-picture theme.
+- Still include **every period in the array without exception** — shortening non-focus periods is fine, but omitting a period breaks the timeline UI.
 
 ## Interpretation Structure (for each period)
 1. **This period's energy**: What energies enter during this time
@@ -671,7 +683,7 @@ Assign completely different themes and atmospheres to each period based on fortu
 3. **Expected situations**: Which areas see changes
 4. **Specific advice**: What to focus on, what to avoid
 
-## content (200-300 chars, 2 paragraphs)
+## content (see Depth Budget above for length; focus periods use the full structure below)
 
 **Paragraph 1: Reason and situation**
 - What energy enters during this period
@@ -696,19 +708,12 @@ Assign completely different themes and atmospheres to each period based on fortu
 - Conclusions without reasons ("it'll be good", "be careful" standing alone)
 - Similar tone across all periods
 
-Response format (JSON):
+Response format (JSON) — the age numbers and the count of 10 below are placeholder examples only; follow the "period Value Rule" above to match the actual Dayun data's period strings and count:
 {
   "ageScenarios": [
-    {"period": "Age 4-13", "headline": "emoji + period theme, 10-15 chars", "content": "200-300 chars, reason → situation → advice structure"},
-    {"period": "Age 14-23", "headline": "...", "content": "..."},
-    {"period": "Age 24-33", "headline": "...", "content": "..."},
-    {"period": "Age 34-43", "headline": "...", "content": "..."},
-    {"period": "Age 44-53", "headline": "...", "content": "..."},
-    {"period": "Age 54-63", "headline": "...", "content": "..."},
-    {"period": "Age 64-73", "headline": "...", "content": "..."},
-    {"period": "Age 74-83", "headline": "...", "content": "..."},
-    {"period": "Age 84-93", "headline": "...", "content": "..."},
-    {"period": "Age 94-99", "headline": "...", "content": "..."}
+    {"period": "<copy the 1st Dayun period's age string verbatim>", "headline": "emoji + period theme, 10-15 chars", "content": "see Depth Budget above"},
+    {"period": "<copy the 2nd Dayun period's age string verbatim>", "headline": "...", "content": "..."},
+    {"period": "<copy the last Dayun period's age string verbatim>", "headline": "...", "content": "..."}
   ]
 }`,
   },

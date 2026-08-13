@@ -18,6 +18,7 @@ import {
   generateChartHash,
   getCachedResult,
   getFortune,
+  LIFETIME_PROMPT_VERSION,
   saveFortune,
   setCachedResult,
   type LifetimeFortuneData,
@@ -71,11 +72,31 @@ const calculateAge = (birthDate: string): number => {
 };
 
 /**
+ * 대운 구간을 로케일에 맞는 나이 표기로 변환
+ * (AI 프롬프트가 이 문자열을 그대로 복사하므로 로케일 무관 "세" 고정 금지)
+ */
+const formatAgeRange = (
+  startAge: number,
+  endAge: number,
+  locale: Locale
+): string => {
+  switch (locale) {
+    case "en":
+      return `Age ${startAge}-${endAge}`;
+    case "ja":
+      return `${startAge}-${endAge}歳`;
+    default:
+      return `${startAge}-${endAge}세`;
+  }
+};
+
+/**
  * DayunResult를 DayunData[]로 변환
  */
 const convertToDayunData = (
   dayunResult: DayunResult,
-  palaces: Palace[]
+  palaces: Palace[],
+  locale: Locale
 ): DayunData[] => {
   // 별→궁 맵을 한 번만 생성하여 조회 성능 개선
   const starToPalaceMap = new Map<string, string>();
@@ -96,13 +117,19 @@ const convertToDayunData = (
       return `${s.name}(${s.brightness})`;
     });
 
+    // 보성 이름 + 밝기 (예: "문창(리)")
+    const minorStars = period.palace.minorStars.map(
+      (s) => `${s.name}(${s.brightness})`
+    );
+
     // 대운 천간으로부터 사화 계산
     const dayunSihuaResult = calculateSihua(period.stemIndex);
 
     return {
-      period: `${period.startAge}-${period.endAge}세`,
+      period: formatAgeRange(period.startAge, period.endAge, locale),
       palaceName: period.palaceName,
       mainStars,
+      minorStars,
       dayunSihua: {
         hualu: dayunSihuaResult.hualu,
         huaquan: dayunSihuaResult.huaquan,
@@ -113,6 +140,10 @@ const convertToDayunData = (
         huakePalace: findPalaceForStar(dayunSihuaResult.huake),
         huajiPalace: findPalaceForStar(dayunSihuaResult.huaji),
       },
+      // NOTE: period.score 는 의도적으로 전달하지 않는다.
+      // dayun.ts 의 점수 산출이 삼방사정·살성·대한사화를 반영하도록 보강되기 전(P1-6)까지는
+      // 검증되지 않은 길흉 점수를 AI 판단의 앵커로 물리면 안 된다.
+      // 보강 완료 후 이 줄을 `score: period.score,` 로 되살리면 프롬프트 배선은 이미 준비돼 있다.
     };
   });
 };
@@ -248,8 +279,10 @@ export async function POST(request: NextRequest) {
         ? (requestedLanguage as Locale)
         : defaultLocale;
 
-    // 캐시 키에 언어 포함 (항상 full 타입으로 저장)
-    const cacheKey = `full-${language}` as `full-${Locale}`;
+    // 캐시 키에 언어 + 프롬프트 버전 포함 (항상 full 타입으로 저장)
+    // 프롬프트를 고치면 LIFETIME_PROMPT_VERSION만 올리면 됨 — 상세: libs/supabase/analysis-cache.ts
+    const cacheKey =
+      `full-${LIFETIME_PROMPT_VERSION}-${language}` as `full-${typeof LIFETIME_PROMPT_VERSION}-${Locale}`;
     const bypassCache = shouldBypassInterpretationCache(language);
 
     // 1. profileId가 있으면 저장된 fortune 먼저 확인 (BYPASS 모드면 스킵)
@@ -336,7 +369,11 @@ export async function POST(request: NextRequest) {
     }
 
     const currentAge = calculateAge(input.birthDate);
-    const dayunPeriods = convertToDayunData(dayunResult, chart.palaces);
+    const dayunPeriods = convertToDayunData(
+      dayunResult,
+      chart.palaces,
+      language
+    );
     const interpretRequest = {
       ...convertChartToRequest(chart, {
         currentAge,

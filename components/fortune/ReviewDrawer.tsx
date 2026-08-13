@@ -2,13 +2,20 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { CircleCheckBig } from "lucide-react";
+import { useTranslations } from "next-intl";
 
+import {
+  encodeReviewContent,
+  REVIEW_REASON_CODES,
+  type ReviewReasonCode,
+} from "@/libs/reviews/review-reason";
 import type { ReviewFortuneType } from "@/libs/supabase/types";
 
 import styles from "./ReviewDrawer.module.css";
 
 const MAX_CONTENT_LENGTH = 200;
-const MIN_CONTENT_LENGTH = 5;
+/** 이 평점 이하면 "아쉬운 점" 칩을 더 적극적으로(먼저) 노출한다 */
+const LOW_RATING_THRESHOLD = 3;
 
 interface ReviewDrawerProps {
   isOpen: boolean;
@@ -23,13 +30,18 @@ export const ReviewDrawer = ({
   profileId,
   fortuneType,
 }: ReviewDrawerProps) => {
+  const t = useTranslations("fortune.common.review");
+  const tCommon = useTranslations("common");
+
   const [rating, setRating] = useState(0);
+  const [selectedReasons, setSelectedReasons] = useState<ReviewReasonCode[]>(
+    []
+  );
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [contentTouched, setContentTouched] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -50,10 +62,10 @@ export const ReviewDrawer = ({
     } else {
       document.body.style.overflow = "";
       setRating(0);
+      setSelectedReasons([]);
       setContent("");
       setIsCompleted(false);
       setError(null);
-      setContentTouched(false);
     }
 
     return () => {
@@ -78,30 +90,37 @@ export const ReviewDrawer = ({
     }
 
     setError(null);
-    setContentTouched(false);
   };
-
-  const handleContentBlur = () => {
-    if (content.length > 0) {
-      setContentTouched(true);
-    }
-  };
-
-  const showContentHint =
-    contentTouched && content.trim().length < MIN_CONTENT_LENGTH;
 
   const handleStarClick = (star: number) => {
     setRating(star);
     setError(null);
   };
 
-  const isValid = rating >= 1 && content.trim().length >= MIN_CONTENT_LENGTH;
+  const handleReasonToggle = (reason: ReviewReasonCode) => {
+    setSelectedReasons((prev) =>
+      prev.includes(reason)
+        ? prev.filter((item) => item !== reason)
+        : [...prev, reason]
+    );
+    setError(null);
+  };
+
+  // 별점만 있으면 제출 가능 — 텍스트/칩은 선택 사항
+  const isValid = rating >= 1;
+  const showReasons = rating >= 1;
+  const reasonPrompt =
+    rating > 0 && rating <= LOW_RATING_THRESHOLD
+      ? t("reasonPromptLow")
+      : t("reasonPromptHigh");
 
   const handleSubmit = async () => {
     if (!isValid || isSubmitting) return;
 
     setIsSubmitting(true);
     setError(null);
+
+    const encodedContent = encodeReviewContent(selectedReasons, content);
 
     try {
       const response = await fetch("/api/reviews", {
@@ -111,20 +130,20 @@ export const ReviewDrawer = ({
           profileId,
           fortuneType,
           rating,
-          content: content.trim(),
+          content: encodedContent,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error ?? "후기 저장에 실패했습니다.");
+        setError(data.error ?? t("errorSave"));
         return;
       }
 
       setIsCompleted(true);
     } catch {
-      setError("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+      setError(t("errorNetwork"));
     } finally {
       setIsSubmitting(false);
     }
@@ -137,7 +156,7 @@ export const ReviewDrawer = ({
       <div className={styles.backdrop} onClick={handleBackdropClick}>
         <div className={styles.drawer}>
           <div className={styles.completedBody}>
-            <span className={styles.completedSub}>불러오는 중...</span>
+            <span className={styles.completedSub}>{t("loading")}</span>
           </div>
         </div>
       </div>
@@ -149,11 +168,12 @@ export const ReviewDrawer = ({
       <div className={styles.backdrop} onClick={handleBackdropClick}>
         <div className={styles.drawer}>
           <div className={styles.header}>
-            <span className={styles.title}>후기 남기기</span>
+            <span className={styles.title}>{t("title")}</span>
             <button
               type="button"
               className={styles.closeButton}
               onClick={onClose}
+              aria-label={tCommon("close")}
             >
               <CloseIcon />
             </button>
@@ -163,8 +183,8 @@ export const ReviewDrawer = ({
           </div>
           <div className={styles.completedBody}>
             <CircleCheckBig size={40} color="#ffccd9" strokeWidth={1.5} />
-            <p className={styles.completedMessage}>소중한 후기 감사합니다!</p>
-            <p className={styles.completedSub}>더 좋은 서비스로 보답할게요</p>
+            <p className={styles.completedMessage}>{t("completedMessage")}</p>
+            <p className={styles.completedSub}>{t("completedSub")}</p>
           </div>
         </div>
       </div>
@@ -175,12 +195,13 @@ export const ReviewDrawer = ({
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.drawer}>
         <div className={styles.header}>
-          <span className={styles.title}>후기 남기기</span>
+          <span className={styles.title}>{t("title")}</span>
           <button
             type="button"
             className={styles.closeButton}
             onClick={onClose}
             disabled={isSubmitting}
+            aria-label={tCommon("close")}
           >
             <CloseIcon />
           </button>
@@ -193,9 +214,7 @@ export const ReviewDrawer = ({
         <div className={styles.body}>
           {/* 별점 */}
           <div className={styles.ratingSection}>
-            <span className={styles.ratingLabel}>
-              이 결과가 마음에 드셨나요?
-            </span>
+            <span className={styles.ratingLabel}>{t("subtitle")}</span>
             <div className={styles.stars}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
@@ -203,7 +222,8 @@ export const ReviewDrawer = ({
                   type="button"
                   className={styles.starButton}
                   onClick={() => handleStarClick(star)}
-                  aria-label={`${star}점`}
+                  aria-label={t("starAriaLabel", { star })}
+                  aria-pressed={star <= rating}
                 >
                   <StarIcon filled={star <= rating} />
                 </button>
@@ -211,23 +231,46 @@ export const ReviewDrawer = ({
             </div>
           </div>
 
+          {/* 불만 유형 칩 (별점을 매긴 뒤에만 노출) */}
+          {showReasons && (
+            <div
+              className={styles.reasonSection}
+              role="group"
+              aria-label={t("reasonsGroupAriaLabel")}
+            >
+              <span className={styles.reasonLabel}>{reasonPrompt}</span>
+              <div className={styles.reasonChips}>
+                {REVIEW_REASON_CODES.map((reason) => (
+                  <button
+                    key={reason}
+                    type="button"
+                    className={`${styles.reasonChip} ${
+                      selectedReasons.includes(reason)
+                        ? styles.reasonChipSelected
+                        : ""
+                    }`}
+                    onClick={() => handleReasonToggle(reason)}
+                    aria-pressed={selectedReasons.includes(reason)}
+                  >
+                    {t(`reasons.${reason}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 텍스트 입력 */}
           <div className={styles.textSection}>
             <textarea
               className={styles.textarea}
-              placeholder="어떤 점이 인상 깊었나요?"
+              placeholder={t("placeholder")}
               value={content}
               onChange={handleContentChange}
-              onBlur={handleContentBlur}
               maxLength={MAX_CONTENT_LENGTH}
               disabled={isSubmitting}
+              aria-label={t("placeholder")}
             />
             <div className={styles.textMeta}>
-              {showContentHint && (
-                <span className={styles.contentHint}>
-                  {MIN_CONTENT_LENGTH}글자 이상 입력해주세요.
-                </span>
-              )}
               <span
                 className={`${styles.charCount} ${
                   content.length > MAX_CONTENT_LENGTH
@@ -235,7 +278,10 @@ export const ReviewDrawer = ({
                     : ""
                 }`}
               >
-                {content.length}/{MAX_CONTENT_LENGTH}
+                {t("charCountLabel", {
+                  count: content.length,
+                  max: MAX_CONTENT_LENGTH,
+                })}
               </span>
             </div>
           </div>
@@ -250,7 +296,7 @@ export const ReviewDrawer = ({
             onClick={handleSubmit}
             disabled={!isValid || isSubmitting}
           >
-            {isSubmitting ? "제출 중..." : "후기 남기기"}
+            {isSubmitting ? t("submitting") : t("submit")}
           </button>
         </div>
       </div>

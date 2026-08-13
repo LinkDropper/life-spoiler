@@ -127,13 +127,27 @@ export interface DayunSihuaMapping {
   huajiPalace?: string;
 }
 
+/** 대운 구간 운세 점수 (0-100). AI가 길흉 방향을 내부적으로 판단하는 근거일 뿐,
+ * 궁/별 이름과 마찬가지로 숫자·필드명 그대로 출력하면 안 된다. */
+export interface DayunScoreData {
+  overall: number;
+  wealth: number;
+  career: number;
+  relationship: number;
+  health: number;
+}
+
 // 대운 데이터
 export interface DayunData {
   period: string; // "2-11세", "12-21세" 등
   palaceName: string;
   mainStars: string[];
+  /** 보성(補星) 목록. 空宮(주성 없음)일 때 흐름 판단의 보조 근거로 쓰인다. */
+  minorStars?: string[];
   sihua?: string[];
   dayunSihua?: DayunSihuaMapping;
+  /** 엔진이 계산한 이 대운 구간의 길흉 점수 (내부 근거 전용) */
+  score?: DayunScoreData;
 }
 
 // 사용자 상태 정보 (프로필 기반)
@@ -212,7 +226,7 @@ export const LifeSpoilerResponseSchema = z.object({
   description: z.string(),
   summary: z.string().optional().default(""),
   subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
-  oneLiner: z.string().optional(),
+  oneLiner: z.string(),
 });
 
 export type LifeSpoilerResponse = z.infer<typeof LifeSpoilerResponseSchema>;
@@ -222,7 +236,7 @@ export const LifetimeCoreScenarioResponseSchema = z.object({
   headline: z.string(),
   content: z.string().optional().default(""),
   subSections: z.array(SubSectionSchema).min(3).max(5).optional(),
-  oneLiner: z.string().optional(),
+  oneLiner: z.string(),
 });
 
 export type LifetimeCoreScenarioResponse = z.infer<
@@ -234,7 +248,7 @@ export const LifetimeCategoryResponseSchema = z.object({
   headline: z.string(),
   content: z.string().optional().default(""),
   subSections: z.array(SubSectionSchema).min(2).max(4).optional(),
-  oneLiner: z.string().optional(),
+  oneLiner: z.string(),
   tags: z.array(z.string()).min(1).max(2),
   score: z.number().min(0).max(100),
 });
@@ -251,7 +265,7 @@ export const AgeScenarioResponseSchema = z.object({
       headline: z.string(),
       content: z.string().optional().default(""),
       bullets: z.array(z.string()).min(2).max(4).optional(),
-      oneLiner: z.string().optional(),
+      oneLiner: z.string(),
     })
   ),
 });
@@ -829,9 +843,7 @@ export const PastLifeStatsResponseSchema = z.object({
     .length(5),
 });
 
-export type PastLifeStatsResponse = z.infer<
-  typeof PastLifeStatsResponseSchema
->;
+export type PastLifeStatsResponse = z.infer<typeof PastLifeStatsResponseSchema>;
 
 // 전생 vs 현생 대비
 export const PastLifeContrastResponseSchema = z.object({
@@ -881,9 +893,7 @@ export const PastLifeWorldResponseSchema = z.object({
   description: z.string(),
 });
 
-export type PastLifeWorldResponse = z.infer<
-  typeof PastLifeWorldResponseSchema
->;
+export type PastLifeWorldResponse = z.infer<typeof PastLifeWorldResponseSchema>;
 
 // 전생의 흔적 (현생에 남은 것들)
 export const PastLifeTracesResponseSchema = z.object({
