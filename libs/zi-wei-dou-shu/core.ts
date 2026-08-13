@@ -13,6 +13,7 @@ import {
   getPalaceStem,
   getStarBrightness,
   parseTimeToTimeBranch,
+  resolveEmptyPalaces,
 } from "./calculators";
 import { PALACE_ORDER } from "./constants";
 import { ZiWeiError } from "./errors";
@@ -66,7 +67,7 @@ export const generateZiweiChart = (input: ZiweiInput): ZiweiChart => {
 
   const sihua = calculateSihua(lunarDate.yearStem);
 
-  const palaces: Palace[] = PALACE_ORDER.map((palaceName) => {
+  const rawPalaces: Palace[] = PALACE_ORDER.map((palaceName) => {
     const branch = palaceArrangement.get(palaceName) as BranchIndex;
     const stem = getPalaceStem(lunarDate.yearStem, branch);
 
@@ -95,6 +96,10 @@ export const generateZiweiChart = (input: ZiweiInput): ZiweiChart => {
       isShenGong: branch === shenGong,
     };
   });
+
+  // 空宮(주성 없는 궁)에 借對宮 원칙으로 차용 주성을 채운다.
+  // 삼방사정 계산은 12궁 전체가 필요하므로 배치가 끝난 뒤 별도 패스로 처리한다.
+  const palaces: Palace[] = resolveEmptyPalaces(rawPalaces);
 
   return {
     input,

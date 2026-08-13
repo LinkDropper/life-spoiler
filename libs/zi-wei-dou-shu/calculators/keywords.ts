@@ -5,6 +5,8 @@ import { getOneLiner, getToneFromBrightness } from "../constants/one-liners";
 import type { MainStarName } from "../constants/stars";
 import type { Brightness, Sihua, ZiweiChart } from "../types";
 
+import { getEffectiveMainStars } from "./empty-palace";
+
 /**
  * 키워드 추출 대상 궁 (우선순위 순서)
  */
@@ -110,7 +112,7 @@ const collectAllStarKeywords = (
     const palace = palaceMap.get(palaceName);
     if (!palace) continue;
 
-    for (const star of palace.mainStars) {
+    for (const star of getEffectiveMainStars(palace)) {
       const details = getStarDetails(star, locale);
 
       if (details.keyword) {
@@ -235,7 +237,7 @@ export const extractKeywordsWithDetails = (
     const palace = palaceMap.get(palaceName);
     if (!palace) continue;
 
-    const stars = palace.mainStars.map((star) => {
+    const stars = getEffectiveMainStars(palace).map((star) => {
       const details = getStarDetails(star, locale);
       return {
         name: star.name,
@@ -271,17 +273,18 @@ export const extractOneLinerFromChart = (
   chart: ZiweiChart,
   locale: Locale = "ko"
 ): string | null => {
-  // 명궁 찾기
+  // 명궁 찾기 (空宮이면 借對宮 차용 주성 사용)
   const mingGong = chart.palaces.find((p) => p.name === "명궁");
-  if (!mingGong || mingGong.mainStars.length === 0) {
+  const effectiveStars = mingGong ? getEffectiveMainStars(mingGong) : [];
+  if (!mingGong || effectiveStars.length === 0) {
     return null;
   }
 
-  // 명궁의 주성들 중 영향력 점수가 가장 높은 것 선택
-  let [topStar] = mingGong.mainStars;
+  // 명궁의 (차용 포함) 주성들 중 영향력 점수가 가장 높은 것 선택
+  let [topStar] = effectiveStars;
   let topScore = calculateStarScore(topStar.brightness, topStar.sihua);
 
-  for (const star of mingGong.mainStars) {
+  for (const star of effectiveStars) {
     const score = calculateStarScore(star.brightness, star.sihua);
     if (score > topScore) {
       topStar = star;

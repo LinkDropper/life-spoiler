@@ -100,6 +100,12 @@ export interface Palace {
   mainStars: StarInfo[];
   minorStars: StarInfo[];
   isShenGong: boolean;
+  /** 주성이 없는 궁(空宮)인가 */
+  isEmptyPalace?: boolean;
+  /** 空宮일 때 借對宮 원칙으로 차용한 주성 (본궁의 mainStars는 그대로 빈 배열 유지) */
+  borrowedMainStars?: StarInfo[];
+  /** 차용 주성의 출처 궁 이름 (예: "천이궁") */
+  borrowedFromPalace?: string;
 }
 
 export interface SihuaResult {

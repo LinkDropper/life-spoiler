@@ -91,6 +91,8 @@ export {
 
 export { calculateSamBangSaJeong, type SamBangSaJeong } from "./sam-bang";
 
+export { resolveEmptyPalaces, getEffectiveMainStars } from "./empty-palace";
+
 export { identifyGeokGuk, type IdentifiedGeokGuk } from "./geok-guk";
 
 export {
