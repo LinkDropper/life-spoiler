@@ -57,9 +57,11 @@ describe("오행국 계산", () => {
       expect(result).toBe(2);
     });
 
-    it("갑자년 인궁 명궁은 금사국(4)이다", () => {
+    it("갑자년 인궁 명궁은 화육국(6)이다", () => {
+      // 오호둔(五虎遁) "갑기지년병작수(甲己之年丙作首)": 갑년 인궁 천간 = 병(丙)
+      // 병인(丙寅)의 납음오행 = 노중화(爐中火) = 화(火) → 화육국(6)
       const result = calculateWuxingJu(0 as StemIndex, 2 as BranchIndex);
-      expect(result).toBe(4);
+      expect(result).toBe(6);
     });
   });
 
