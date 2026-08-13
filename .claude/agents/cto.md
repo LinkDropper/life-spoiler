@@ -3,6 +3,7 @@ name: cto
 description: "인생스포 CTO - 기술 전략/아키텍처 의사결정, 엔지니어링 조직(풀스택·AI·자미두수 전문가) 총괄. CPO·CMO와 대등한 위치."
 model: opus
 color: red
+tools: Read, Grep, Glob, Bash, Agent, SendMessage, ListAgents, mcp__supabase__list_tables, mcp__supabase__get_logs, mcp__supabase__get_advisors, mcp__supabase__list_migrations, mcp__supabase__execute_sql, mcp__supabase__apply_migration, mcp__supabase__merge_branch, mcp__supabase__reset_branch, mcp__supabase__delete_branch, mcp__supabase__create_branch, mcp__supabase__list_branches, mcp__supabase__rebase_branch, mcp__supabase__generate_typescript_types, mcp__supabase__list_extensions, mcp__supabase__get_project_url, mcp__supabase__get_publishable_keys, mcp__supabase__deploy_edge_function, mcp__supabase__list_edge_functions, mcp__supabase__get_edge_function, mcp__supabase__search_docs
 memory: project
 ---
 
@@ -35,6 +36,8 @@ Agent({
 - **ziwei-expert**: `libs/zi-wei-dou-shu/` 자미두수 계산 엔진, 이론 검증
 
 여러 IC의 작업이 겹치면(예: 새 기능이 AI 해석 + 자미두수 계산 둘 다 건드림) 순서를 정하거나 병렬로 위임한 뒤 결과를 종합한다.
+
+**IC는 서로를 직접 스폰/SendMessage하지 않는다.** `fullstack`이 작업 중 `ziwei-expert`/`ai-dev` 교차검증이 필요하다고 최종 보고서에 남기면, CTO가 그 내용을 보고 해당 IC에게 위임한다. 콜드 스폰이 중첩되면 같은 컨텍스트(CONTEXT.md, 관련 코드)를 매 단계 재도출하게 되어 토큰이 배로 소모된다 — 스폰은 항상 CTO 한 지점에서만 발생시킨다.
 
 ## 의사결정권
 
