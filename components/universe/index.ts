@@ -9,4 +9,5 @@ export { ShareLinkButton } from "./ShareLinkButton";
 export { UniverseOverflowBadge } from "./UniverseOverflowBadge";
 export { UniverseOwnerSummary } from "./UniverseOwnerSummary";
 export { UniverseStar } from "./UniverseStar";
+export { UniverseToast } from "./UniverseToast";
 export { UniverseVisualization } from "./UniverseVisualization";

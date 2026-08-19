@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useCallback, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -13,9 +13,14 @@ import {
   OtherFortunesPromo,
   ShareLinkButton,
   UniverseOwnerSummary,
+  UniverseToast,
   UniverseVisualization,
 } from "@/components/universe";
-import { useGuestSubmit, useUniverse } from "@/libs/hooks/universe";
+import {
+  useGuestSubmit,
+  useShareUniverseLink,
+  useUniverse,
+} from "@/libs/hooks/universe";
 
 import styles from "./page.module.css";
 
@@ -40,12 +45,32 @@ export default function UniversePage({ params }: UniversePageProps) {
   const t = useTranslations("universe.detail");
   const locale = useLocale();
 
+  // detail 로딩 전에도 useShareUniverseLink(훅)를 호출해야 하므로 publicId만으로 계산한다
+  const shareUrl =
+    typeof window === "undefined"
+      ? `/universe/${publicId}`
+      : `${window.location.origin}/universe/${publicId}`;
+
   const { state, detail, reload, applyGuest } = useUniverse(publicId);
   const { isSubmitting, submitError, submit } = useGuestSubmit(publicId);
+  const { copyState, showToast, handleShare } = useShareUniverseLink({
+    shareUrl,
+    shareText: t("shareText"),
+  });
   const [justSubmittedGuest, setJustSubmittedGuest] =
     useState<UniverseGuestDto | null>(null);
   const [isDuplicateNotice, setIsDuplicateNotice] = useState(false);
   const [detailGuest, setDetailGuest] = useState<UniverseGuestDto | null>(null);
+
+  // 4번 영역(빈 상태 버튼)에서 클립보드 복사에 실패하면, fallback 안내/원문 URL이
+  // 있는 6번 영역으로 스크롤시켜 사용자가 수동 복사를 이어갈 수 있게 한다.
+  useEffect(() => {
+    if (copyState === "fallback") {
+      document
+        .getElementById("universe-share")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [copyState]);
 
   const scrollToListItem = useCallback((starSeed: string | null) => {
     const target = starSeed
@@ -83,12 +108,6 @@ export default function UniversePage({ params }: UniversePageProps) {
     },
     [applyGuest, scrollToListItem, submit]
   );
-
-  const handleShareScroll = useCallback(() => {
-    document
-      .getElementById("universe-share")
-      ?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, []);
 
   if (state === "loading") {
     return (
@@ -144,11 +163,6 @@ export default function UniversePage({ params }: UniversePageProps) {
       </div>
     );
   }
-
-  const shareUrl =
-    typeof window === "undefined"
-      ? `/universe/${publicId}`
-      : `${window.location.origin}/universe/${publicId}`;
 
   // owner가 시간 미상이면 모든 쌍이 estimated가 된다.
   // 이 경우 고지는 섹션1 배너 + 섹션3 캡션에서 각 1회만 하고,
@@ -211,7 +225,7 @@ export default function UniversePage({ params }: UniversePageProps) {
           selfStarSeed={selfStarSeed}
           isUniverseEstimated={isUniverseEstimated}
           showLocaleNotice={locale !== "ko"}
-          onShareClick={handleShareScroll}
+          onShareClick={handleShare}
           onGuestClick={setDetailGuest}
         />
 
@@ -220,7 +234,12 @@ export default function UniversePage({ params }: UniversePageProps) {
 
         {/* 6. 공유 링크 복사 */}
         <div id="universe-share">
-          <ShareLinkButton shareUrl={shareUrl} guestCount={detail.guestCount} />
+          <ShareLinkButton
+            shareUrl={shareUrl}
+            guestCount={detail.guestCount}
+            copyState={copyState}
+            onShare={handleShare}
+          />
         </div>
       </main>
 
@@ -228,6 +247,8 @@ export default function UniversePage({ params }: UniversePageProps) {
         guest={detailGuest}
         onClose={() => setDetailGuest(null)}
       />
+
+      {showToast && <UniverseToast message={t("shareCopied")} />}
     </div>
   );
 }
