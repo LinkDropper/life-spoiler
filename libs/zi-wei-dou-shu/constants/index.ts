@@ -70,3 +70,27 @@ export {
   type CompatLevel,
   type StarCompatEntry,
 } from "./star-compatibility-table";
+
+// 친구 우주 궁합 매트릭스 (결정론적, LLM 미사용)
+export {
+  FRIEND_COMPATIBILITY_MATRIX_VERSION,
+  FRIEND_COMPATIBILITY_BASE_SCORE,
+  FRIEND_COMPATIBILITY_SPREAD,
+  FRIEND_COMPATIBILITY_MIN_SCORE,
+  FRIEND_COMPATIBILITY_MAX_SCORE,
+  FRIEND_COMPATIBILITY_TIERS,
+  FRIEND_ONE_LINERS,
+  UNKNOWN_TIME_FACTOR,
+  ZODIAC_RELATION_DELTA,
+  ELEMENT_RELATION_DELTA,
+  PALACE_RELATION_DELTA,
+  SIHUA_CROSS_DELTA,
+  STEM_RELATION_DELTA,
+  buildOneLinerId,
+  type FriendZodiacRelation,
+  type FriendElementRelation,
+  type FriendPalaceRelation,
+  type FriendStemRelation,
+  type FriendCompatibilityTier,
+  type FriendOneLiner,
+} from "./friend-compatibility-table";
