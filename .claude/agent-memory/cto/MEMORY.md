@@ -5,3 +5,4 @@
 - [다항목 작업은 증분 위임](feedback_incremental_delegation.md) — 순서 매기고 "하나 끝낼 때마다 저장" 명시; 20~30분 무변경이면 재기동
 - [require/*.md는 완료된 과거 계획서일 수 있음](project_require_docs_are_stale_plans.md) — 위임 전 산출물 존재 여부와 git log 먼저 확인
 - [인생운세 만족도 계측 공백](project_lifetime_quality_measurement_gap.md) — 제품 내 후기 신호 사실상 0, 대표 피드백은 제품 밖 채널; 저트래픽이라 A/B 불가
+- [친구 우주 궁합 진행 상태](project_friend_universe.md) — 005 원격 적용됨(이후 006 신규), Phase 1 구현 완료·미커밋, 375px 시각 QA 미수행
