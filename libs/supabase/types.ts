@@ -1,3 +1,7 @@
+// 궁합 스냅샷의 factors는 엔진 출력 그 자체이므로 타입을 복제하지 않고 엔진에서 가져온다.
+// (type-only import라 런타임 의존성/번들 영향 없음. 순환 참조 회피를 위해 라이브러리 루트에서 import)
+import type { FriendCompatibilityFactor } from "@/libs/zi-wei-dou-shu";
+
 export type Json =
   | string
   | number
@@ -444,6 +448,128 @@ export interface ReferralInsert {
   created_at?: string;
 }
 
+// Friend Universe Types (친구 우주 궁합 — 익명 링크 기반 무료 기능)
+
+/**
+ * 결과 확신도.
+ * - exact: owner/guest 양쪽 시간이 확정됨 (명반 1개)
+ * - estimated: 한쪽 이상 시간 미상 → 시진을 전수 열거해 평균
+ *
+ * 엔진이 fu-1.1.0을 릴리스하면 `FriendCompatibilityResult["confidence"]`로 교체할 것.
+ * (작성 시점 엔진은 fu-1.0.0이라 해당 필드가 아직 없다)
+ */
+export type FriendUniverseConfidence = "exact" | "estimated";
+
+export interface UniverseRow {
+  id: string;
+  /** URL 공개 식별자 (nanoid 12자). 내부 id는 노출 금지 */
+  public_id: string;
+  owner_name: string | null;
+  birth_date: string;
+  /** birth_time_unknown 이 true 이면 NULL (DB CHECK 제약) */
+  birth_time: string | null;
+  birth_time_unknown: boolean;
+  calendar_type: CalendarType;
+  is_leap_month: boolean;
+  gender: Gender;
+  /** 트리거로 자동 유지되는 친구 별 개수 */
+  guest_count: number;
+  owner_token_hash: string | null;
+  creator_ip_hash: string | null;
+  created_at: string;
+  last_viewed_at: string | null;
+  /** owner 한줄평 템플릿 ID 스냅샷 (컬럼 추가 이전 우주는 NULL → 조회 시점 지연 산출) */
+  owner_one_liner_id: string | null;
+  /** 한줄평 산출에 쓰인 매트릭스 버전 스냅샷 (예: oo-1.0.0) */
+  owner_one_liner_version: string | null;
+  /** 귀속된 계정. 생성 시 로그인 상태였거나 이후 로그인 시 owner_token_hash로 귀속됨 */
+  user_id: string | null;
+}
+
+export interface UniverseInsert {
+  id?: string;
+  public_id: string;
+  owner_name?: string | null;
+  birth_date: string;
+  birth_time?: string | null;
+  birth_time_unknown?: boolean;
+  calendar_type?: CalendarType;
+  is_leap_month?: boolean;
+  gender: Gender;
+  guest_count?: number;
+  owner_token_hash?: string | null;
+  creator_ip_hash?: string | null;
+  created_at?: string;
+  last_viewed_at?: string | null;
+  owner_one_liner_id?: string | null;
+  owner_one_liner_version?: string | null;
+  user_id?: string | null;
+}
+
+export interface UniverseGuestRow {
+  id: string;
+  universe_id: string;
+  /** twinkle/float 애니메이션 위상 산출용 안정 시드 (좌표는 아래 pos_*_ratio가 담당) */
+  star_seed: string;
+  /**
+   * 별 좌표 — 컨테이너 기준 비율(0~1).
+   * 등록 시점에 서버가 랜덤 산출해 영구 저장하며 이후 절대 재계산하지 않는다
+   * (점수 순위에서 파생하던 구조를 폐기한 결과다 — `libs/universe/placement.ts` 참조).
+   */
+  pos_x_ratio: number;
+  pos_y_ratio: number;
+  guest_name: string;
+  birth_date: string;
+  /** birth_time_unknown 이 true 이면 NULL (DB CHECK 제약) */
+  birth_time: string | null;
+  birth_time_unknown: boolean;
+  calendar_type: CalendarType;
+  is_leap_month: boolean;
+  score: number;
+  tier: string;
+  /** 한줄평 템플릿 ID (문구 자체는 렌더 시점에 조회) */
+  one_liner_id: string;
+  /** 엔진 계약: delta 음수 가능, 길이 3~8, label 8종 고정 */
+  factors: FriendCompatibilityFactor[];
+  matrix_version: string;
+  confidence: FriendUniverseConfidence;
+  /**
+   * 평균에 사용한 명반 조합 수 (현재 1 | 12 | 144).
+   * 리터럴 유니온이 아닌 number인 이유: Row는 여러 matrix_version의 과거 행을 읽어오는
+   * 타입이라, 향후 열거 전략이 바뀐 행까지 정확히 표현하려면 리터럴이 거짓말이 된다.
+   * 표시 전용 값이라 앱이 이 값으로 분기하지 않으므로 exhaustiveness도 불필요하다.
+   */
+  chart_combinations: number;
+  calculated_at: string;
+  creator_ip_hash: string | null;
+  created_at: string;
+}
+
+export interface UniverseGuestInsert {
+  id?: string;
+  universe_id: string;
+  star_seed?: string;
+  /** NOT NULL이고 DB 기본값이 없다 — 서버가 배치 계산 결과를 항상 넣어야 한다 */
+  pos_x_ratio: number;
+  pos_y_ratio: number;
+  guest_name: string;
+  birth_date: string;
+  birth_time?: string | null;
+  birth_time_unknown?: boolean;
+  calendar_type?: CalendarType;
+  is_leap_month?: boolean;
+  score: number;
+  tier: string;
+  one_liner_id: string;
+  factors?: FriendCompatibilityFactor[];
+  matrix_version: string;
+  confidence: FriendUniverseConfidence;
+  chart_combinations: number;
+  calculated_at?: string;
+  creator_ip_hash?: string | null;
+  created_at?: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -676,6 +802,25 @@ export type Database = {
             foreignKeyName: "compatibility_pairs_profile_b_id_fkey";
             columns: ["profile_b_id"];
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      universes: {
+        Row: UniverseRow;
+        Insert: UniverseInsert;
+        Update: Partial<UniverseInsert>;
+        Relationships: [];
+      };
+      universe_guests: {
+        Row: UniverseGuestRow;
+        Insert: UniverseGuestInsert;
+        Update: Partial<UniverseGuestInsert>;
+        Relationships: [
+          {
+            foreignKeyName: "universe_guests_universe_id_fkey";
+            columns: ["universe_id"];
+            referencedRelation: "universes";
             referencedColumns: ["id"];
           },
         ];

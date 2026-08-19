@@ -1,0 +1,297 @@
+.section {
+  position: relative;
+  width: 100%;
+}
+
+/*
+  별밭 바로 위 캡션. 설명 문장이므로 별 이름 라벨과 반대로
+  줄바꿈을 허용하고 nowrap/말줄임을 쓰지 않는다.
+*/
+.estimatedCaption {
+  max-width: 480px;
+  margin: 0 auto 8px;
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  text-align: center;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 캔버스 바로 아래, 별 크기/밝기가 궁합 점수라는 걸 알려주는 작은 범례 */
+.legend {
+  max-width: 480px;
+  margin: 8px auto 0;
+  color: rgba(255, 255, 255, 0.56);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1.05;
+  border-radius: 20px;
+  overflow: hidden;
+  /* 성운은 이미지 에셋 없이 CSS 그라디언트 레이어로만 구현 (이 레이어 자체는 애니메이션 없음).
+     별먼지는 아래 ::before 레이어가 담당한다. */
+  background:
+    radial-gradient(
+      circle at 22% 28%,
+      rgba(126, 92, 220, 0.32) 0%,
+      rgba(126, 92, 220, 0) 55%
+    ),
+    radial-gradient(
+      circle at 76% 68%,
+      rgba(80, 120, 220, 0.26) 0%,
+      rgba(80, 120, 220, 0) 58%
+    ),
+    radial-gradient(
+      circle at 55% 12%,
+      rgba(224, 160, 255, 0.18) 0%,
+      rgba(224, 160, 255, 0) 50%
+    ),
+    linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+}
+
+/*
+  배경 별밭.
+
+  가상요소 1겹으로만 구현해 TSX/DOM 변경이 없다. 타일 크기를 90px과 170px 두 종류로
+  섞어 반복 패턴이 눈에 띄지 않게 한다.
+
+  **friend 별과 절대 혼동되면 안 되는 경계값 (임의 조정 금지)**
+  1. 크기 1~2px — friend 별 최소 직경 10px의 1/5 이하
+  2. 최대 밝기 0.42 — friend 별 최소 coreOpacity 0.55보다 항상 낮게
+  3. glow 없음 + pointer-events: none (비인터랙티브)
+  이 값을 올리는 순간 배경이 "참여한 별"로 읽히기 시작한다.
+
+  애니메이션은 레이어 전체에 1개뿐이라 friend 별 30개의 twinkle과 비용이 겹치지 않는다.
+*/
+.canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    /* 1px 미세 별 6개 */
+    radial-gradient(
+      1px 1px at 18px 24px,
+      rgba(255, 255, 255, 0.34),
+      transparent
+    ),
+    radial-gradient(1px 1px at 62px 8px, rgba(214, 226, 255, 0.3), transparent),
+    radial-gradient(
+      1px 1px at 34px 71px,
+      rgba(255, 255, 255, 0.26),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 79px 52px,
+      rgba(226, 214, 255, 0.32),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 7px 58px,
+      rgba(255, 255, 255, 0.24),
+      transparent
+    ),
+    radial-gradient(
+      1px 1px at 51px 37px,
+      rgba(210, 220, 255, 0.28),
+      transparent
+    ),
+    /* 1.5~2px 별 6개 */
+    radial-gradient(
+        2px 2px at 128px 42px,
+        rgba(255, 255, 255, 0.42),
+        transparent
+      ),
+    radial-gradient(
+      1.5px 1.5px at 24px 132px,
+      rgba(232, 224, 255, 0.36),
+      transparent
+    ),
+    radial-gradient(
+      2px 2px at 152px 118px,
+      rgba(255, 255, 255, 0.38),
+      transparent
+    ),
+    radial-gradient(
+      1.5px 1.5px at 96px 88px,
+      rgba(218, 228, 255, 0.34),
+      transparent
+    ),
+    radial-gradient(
+      2px 2px at 61px 158px,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    ),
+    radial-gradient(
+      1.5px 1.5px at 137px 14px,
+      rgba(228, 218, 255, 0.32),
+      transparent
+    );
+  background-size:
+    90px 90px,
+    90px 90px,
+    90px 90px,
+    90px 90px,
+    90px 90px,
+    90px 90px,
+    170px 170px,
+    170px 170px,
+    170px 170px,
+    170px 170px,
+    170px 170px,
+    170px 170px;
+  background-repeat: repeat;
+  animation: starfield-breathe 11s ease-in-out infinite;
+}
+
+@keyframes starfield-breathe {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas::before {
+    animation: none;
+  }
+}
+
+.ownerStar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ownerCore {
+  position: relative;
+  display: block;
+  width: var(--owner-size);
+  height: var(--owner-size);
+  border-radius: 50%;
+  /* friend 별과 같은 기법(정지 스톱 + 2겹 글로우). 값은 owner 전용 변수를 그대로 쓴다. */
+  background: radial-gradient(
+    circle at 35% 35%,
+    #ffffff 0%,
+    #ffffff 14%,
+    rgba(240, 230, 255, 0.96) 32%,
+    rgba(214, 196, 255, 0.9) 58%,
+    rgba(201, 179, 255, 0.7) 82%,
+    rgba(201, 179, 255, 0) 100%
+  );
+  box-shadow:
+    0 0 var(--owner-glow-blur) var(--owner-glow-spread)
+      rgba(201, 179, 255, var(--owner-glow-alpha)),
+    0 0 calc(var(--owner-glow-blur) * 0.35) 0
+      rgba(255, 255, 255, calc(var(--owner-glow-alpha) * 0.9));
+}
+
+/*
+  안 A — 비대칭 유기적 헤일로(designer 산출 / 사용자 최종 확정). friend 별과 같은
+  기법이지만 owner는 화면에 1개뿐이라 --star-shape-intensity 없이 고정 opacity를 쓴다.
+*/
+.ownerCore::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--owner-size) * 1.5);
+  height: calc(var(--owner-size) * 1.5);
+  transform: translate(-50%, -50%) rotate(-14deg);
+  border-radius: 42% 58% 55% 45% / 58% 42% 58% 42%;
+  background: radial-gradient(
+    circle at 38% 34%,
+    rgba(255, 248, 230, 0.65) 0%,
+    rgba(232, 220, 255, 0.38) 46%,
+    rgba(201, 179, 255, 0) 78%
+  );
+  filter: blur(1.6px);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.ownerCore::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--owner-size) * 1.6);
+  height: calc(var(--owner-size) * 1.6);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(214, 196, 255, 0.3) 0%,
+    rgba(214, 196, 255, 0) 70%
+  );
+  filter: blur(2.4px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/*
+  오버플로 본인 별과 링 군집을 잇는 가는 연결선.
+
+  30위 밖 본인 별은 링 바깥에 혼자 떨어져 있어 "누락된 별"처럼 보일 수 있다.
+  이 선이 군집과 이어 붙여 "바깥에 있지만 같은 우주"임을 전달한다.
+  장식이므로 aria-hidden + pointer-events: none 이고, 점수·순위와 무관한 고정 값이다.
+
+  좌표 근거 (star-visual.ts의 오버플로 상수와 한 세트로 움직인다):
+  - 반경 0.40 지점에서 시작 → ring2 최대 반경 0.38보다 바깥이라 군집을 가로지르지 않는다
+  - 길이 4.42%(폭 기준) = 별 중심까지 30.8px 중 별 반지름 16px을 뺀 14.8px → 별 코앞에서 끝난다
+  - 각도 41.40°는 배치 각도 40°가 아니다. 캔버스 aspect-ratio가 1/1.05라 세로가 1.05배로
+    늘어나 시각적 실제 각도가 달라진다. 비율 기반이라 해상도와 무관한 상수다.
+  → aspect-ratio나 오버플로 상수를 바꾸면 이 세 값을 함께 다시 계산해야 한다.
+*/
+.overflowTether {
+  position: absolute;
+  left: 80.64%;
+  top: 75.71%;
+  width: 4.42%;
+  height: 1.5px;
+  margin-top: -0.75px;
+  transform-origin: 0 50%;
+  transform: rotate(41.4deg);
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.32) 55%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  pointer-events: none;
+}
+
+.ownerName {
+  max-width: 96px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(12, 18, 32, 0.72);
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}

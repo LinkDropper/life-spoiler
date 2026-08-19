@@ -138,3 +138,9 @@ export {
   type CategoryAnalysis,
   type ScoreConstraint,
 } from "./compatibility-analysis";
+
+// NOTE: `calculators/friend-compatibility.ts`는 `core.ts`(generateZiweiChart)에
+// 의존하고 `core.ts`는 이 index를 import하므로, 여기서 re-export하면 순환 참조가 된다.
+// 친구 우주 궁합은 라이브러리 루트 `index.ts`에서만 export한다.
+// 같은 이유로 `calculators/owner-one-liner.ts`(owner 1인 운세 한줄평)도
+// 여기서 re-export하지 않고 루트 `index.ts`에서만 export한다.

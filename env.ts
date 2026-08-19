@@ -69,6 +69,12 @@ const envSchema = z
 
     // Internal proxy (마케팅 스케쥴러 샌드박스 egress 우회용)
     INTERNAL_API_TOKEN: z.string().optional(),
+
+    // 친구 우주 궁합 — IP 해시용 서버 시크릿.
+    // rate limit 판정에만 쓰이며 IP 원문은 저장하지 않는다.
+    // 단순 SHA-256은 IPv4 전수 대입으로 역산되므로 반드시 이 시크릿을 키로 HMAC을 쓴다.
+    // 미설정 시 rate limit이 비활성화된다(기능 자체는 정상 동작).
+    UNIVERSE_IP_HASH_SECRET: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (!!data.OAUTH_GOOGLE_CLIENT_ID !== !!data.OAUTH_GOOGLE_CLIENT_SECRET) {

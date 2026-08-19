@@ -1,0 +1,132 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(126, 92, 220, 0.16) 0%,
+      rgba(126, 92, 220, 0) 55%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(80, 120, 220, 0.14) 0%,
+      rgba(80, 120, 220, 0) 60%
+    ),
+    rgba(255, 255, 255, 0.05);
+}
+
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/*
+  전체 우주 중 별 개수 순위 — 카드 맨 위, 성취감을 주는 요소라 statPill(중립 정보)과
+  달리 primary 색으로 눈에 띄게 한다. word-break: keep-all로 이름이 길어도
+  단어 중간에서 안 끊긴다.
+*/
+.rankBadge {
+  align-self: flex-start;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--primitive-primary, #ffccd9);
+  color: var(--primitive-primary, #ffccd9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+/*
+  기존 .ownerCore(UniverseVisualization) 기법을 22px 고정 크기로 축소한 것.
+  순수 장식이므로 aria-hidden + pointer-events: none 처리한다.
+  캐치라이트(::before/::after)와 sparkle-glint 애니메이션은 22px에서 안 보이고
+  불필요한 모션만 늘어나므로 가져오지 않는다.
+*/
+.miniStar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 35% 35%,
+    #ffffff 0%,
+    #ffffff 14%,
+    rgba(240, 230, 255, 0.96) 32%,
+    rgba(214, 196, 255, 0.9) 58%,
+    rgba(201, 179, 255, 0.7) 82%,
+    rgba(201, 179, 255, 0) 100%
+  );
+  box-shadow: 0 0 10px 2px rgba(201, 179, 255, 0.35);
+}
+
+/*
+  h1의 텍스트/heading level은 그대로 두고 시각적으로만 축소한다
+  (스크린리더/SEO를 위해 h1은 계속 "OO님의 우주"를 유지해야 한다).
+*/
+.eyebrow {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/*
+  owner 한줄평(oneLinerKo)을 헤드라인으로 승격.
+  기존 .title이 쓰던 SB AggroOTF 서체를 여기로 옮긴다.
+  EN/JA는 KO보다 길어지므로 고정 높이를 두지 않고 자연스럽게 감싼다.
+*/
+.headline {
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: #ffffff;
+  word-break: keep-all;
+}
+
+/* 클릭 불가한 정보 배지 — 인터랙션이 없으므로 44px 터치 타겟 규칙 대상이 아니다. */
+.statPill {
+  align-self: flex-start;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/*
+  설명 문장이므로 별 이름 라벨과 정반대 원칙을 쓴다:
+  줄바꿈을 허용하고 nowrap/말줄임을 쓰지 않는다.
+  EN/JA는 KO보다 길어지므로 높이를 고정하지 않는다.
+*/
+.estimatedBanner {
+  margin-top: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}

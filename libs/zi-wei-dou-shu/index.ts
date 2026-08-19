@@ -52,6 +52,7 @@ export type {
   BranchIndex,
   StemIndex,
   WuxingJu,
+  TimeBranchValue,
 } from "./types";
 
 // 스키마 (입력 검증용)
@@ -93,6 +94,45 @@ export {
   getStarBrightness,
   getBrightnessScore,
 } from "./calculators";
+
+// ============================================================
+// 친구 우주 궁합 (무료 바이럴 기능 — 결정론적, LLM 미사용, 성별 비의존)
+// ============================================================
+
+export {
+  calculateFriendCompatibility,
+  type FriendCompatibilityPerson,
+  type FriendCompatibilityFactor,
+  type FriendCompatibilityResult,
+  type FriendCompatibilityBirthTime,
+  type FriendCompatibilityConfidence,
+} from "./calculators/friend-compatibility";
+
+export {
+  FRIEND_COMPATIBILITY_MATRIX_VERSION,
+  FRIEND_COMPATIBILITY_TIERS,
+  FRIEND_ONE_LINERS,
+  type FriendCompatibilityTier,
+  type FriendOneLiner,
+} from "./constants/friend-compatibility-table";
+
+// ============================================================
+// 우주 주인(owner) 1인 운세 한줄평 (결정론적, LLM 미사용, 날짜 비의존)
+// ============================================================
+
+export {
+  calculateOwnerOneLiner,
+  type OwnerOneLinerPerson,
+  type OwnerOneLinerResult,
+  type OwnerOneLinerBirthTime,
+  type OwnerOneLinerConfidence,
+} from "./calculators/owner-one-liner";
+
+export {
+  OWNER_ONE_LINER_MATRIX_VERSION,
+  OWNER_ONE_LINERS,
+  type OwnerOneLiner,
+} from "./constants/owner-one-liner-table";
 
 // ============================================================
 // 음력 변환
