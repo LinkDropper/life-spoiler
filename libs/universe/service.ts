@@ -119,7 +119,8 @@ export const findMyUniversePublicId = async (
 ): Promise<string | null> => findUniverseByOwnerUserId(userId);
 
 export const getUniverseDetail = async (
-  publicId: string
+  publicId: string,
+  selfStarSeed: string | null = null
 ): Promise<UniverseDetailDto> => {
   const { universeId, ownerSummary, guests } =
     await findUniverseForDisplay(publicId);
@@ -153,6 +154,7 @@ export const getUniverseDetail = async (
     guests,
     guestCount: ownerSummary.guestCount,
     isFull: ownerSummary.guestCount >= GUEST_LIMIT_PER_UNIVERSE,
+    selfGuest: guests.find((guest) => guest.starSeed === selfStarSeed) ?? null,
   };
 };
 

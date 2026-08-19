@@ -1,5 +1,7 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { guestStarSeedCookieName } from "@/libs/universe/constants";
 import { universeNotFound } from "@/libs/universe/errors";
 import { toErrorResponse } from "@/libs/universe/http";
 import { isValidPublicId } from "@/libs/universe/identity";
@@ -24,7 +26,10 @@ export const GET = async (_request: Request, context: RouteContext) => {
       throw universeNotFound();
     }
 
-    const detail = await getUniverseDetail(publicId);
+    const cookieStore = await cookies();
+    const selfStarSeed =
+      cookieStore.get(guestStarSeedCookieName(publicId))?.value ?? null;
+    const detail = await getUniverseDetail(publicId, selfStarSeed);
 
     return NextResponse.json(detail);
   } catch (error) {

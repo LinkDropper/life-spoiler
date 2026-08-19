@@ -1,0 +1,123 @@
+.name {
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.score {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--primitive-primary, #ffccd9);
+  color: var(--primitive-primary, #ffccd9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tier {
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.oneLiner {
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.estimatedNote {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.factorsSection {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.factorsTitle {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.56);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.factorList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.factorItem {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.factorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.factorLabel {
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.factorDelta {
+  flex-shrink: 0;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 양수는 브랜드 accent로 강조하고, 음수는 자극적이지 않게 옅은 흰색으로만 낮춘다(빨강 미사용) */
+.factorDeltaPositive {
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.factorDeltaNegative {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.factorDetail {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  word-break: keep-all;
+}
