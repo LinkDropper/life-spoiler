@@ -51,6 +51,9 @@ const GUEST_PUBLIC_COLUMNS =
 /** 배치 계산 전용 — 좌표/점수만. 이름·생년월일 등 개인정보는 포함하지 않는다 */
 const GUEST_PLACEMENT_COLUMNS = "score, pos_x_ratio, pos_y_ratio";
 
+/** 계정 소유 우주 조회 전용 — public_id는 이미 공개 식별자라 DTO 개인정보 가드 대상이 아니다 */
+const UNIVERSE_OWNER_LOOKUP_COLUMNS = "public_id";
+
 interface UniversePublicRow {
   id: string;
   public_id: string;
@@ -136,6 +139,8 @@ export interface UniverseInsertParams {
   /** 우주 생성 시점에 산출한 owner 한줄평 스냅샷 */
   ownerOneLinerId: string;
   ownerOneLinerVersion: string;
+  /** 생성 시점에 로그인 상태였다면 그 계정 id, 아니면 null(추후 로그인 시 귀속 가능) */
+  userId: string | null;
 }
 
 export interface GuestUpsertParams {
@@ -289,10 +294,33 @@ export const insertUniverse = async (
     creator_ip_hash: params.creatorIpHash,
     owner_one_liner_id: params.ownerOneLinerId,
     owner_one_liner_version: params.ownerOneLinerVersion,
+    user_id: params.userId,
   });
 
   if (error) {
     throw new Error(`우주 생성에 실패했습니다: ${error.message}`);
+  }
+};
+
+/**
+ * owner 토큰 소유자를 계정에 귀속시킨다.
+ *
+ * `user_id IS NULL` 조건으로 이미 귀속된 우주는 덮어쓰지 않는다. 매칭되는 행이 없어도
+ * (쿠키가 없거나 만료됐거나 이미 귀속된 경우) 정상 케이스이므로 에러가 아니다.
+ */
+export const claimUniverseOwner = async (
+  userId: string,
+  ownerTokenHash: string
+): Promise<void> => {
+  const supabase = createServerClient();
+
+  const { error } = await writableTable(supabase, "universes")
+    .update({ user_id: userId })
+    .eq("owner_token_hash", ownerTokenHash)
+    .is("user_id", null);
+
+  if (error) {
+    throw new Error(`우주 계정 귀속에 실패했습니다: ${error.message}`);
   }
 };
 
@@ -446,6 +474,27 @@ const findExistingGuest = async (
     posXRatio: data.pos_x_ratio,
     posYRatio: data.pos_y_ratio,
   };
+};
+
+/** 계정이 소유한 가장 최근 우주의 public_id (없으면 null) */
+export const findUniverseByOwnerUserId = async (
+  userId: string
+): Promise<string | null> => {
+  const supabase = createServerClient();
+
+  const { data, error } = await supabase
+    .from("universes")
+    .select(UNIVERSE_OWNER_LOOKUP_COLUMNS)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle<{ public_id: string }>();
+
+  if (error) {
+    throw new Error(`소유 우주 조회에 실패했습니다: ${error.message}`);
+  }
+
+  return data?.public_id ?? null;
 };
 
 /** IP당 최근 N시간 우주 생성 건수 */

@@ -482,6 +482,8 @@ export interface UniverseRow {
   owner_one_liner_id: string | null;
   /** 한줄평 산출에 쓰인 매트릭스 버전 스냅샷 (예: oo-1.0.0) */
   owner_one_liner_version: string | null;
+  /** 귀속된 계정. 생성 시 로그인 상태였거나 이후 로그인 시 owner_token_hash로 귀속됨 */
+  user_id: string | null;
 }
 
 export interface UniverseInsert {
@@ -501,6 +503,7 @@ export interface UniverseInsert {
   last_viewed_at?: string | null;
   owner_one_liner_id?: string | null;
   owner_one_liner_version?: string | null;
+  user_id?: string | null;
 }
 
 export interface UniverseGuestRow {

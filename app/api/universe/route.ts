@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { sendUniverseCreatedNotification } from "@/libs/discord";
+import { createAuthClient } from "@/libs/supabase";
 import {
   OWNER_TOKEN_COOKIE,
   OWNER_TOKEN_MAX_AGE_SECONDS,
@@ -32,9 +33,14 @@ export const POST = async (request: Request) => {
     }
 
     const creatorIpHash = resolveIpHash(request);
+    const authClient = await createAuthClient();
+    const {
+      data: { user },
+    } = await authClient.auth.getUser();
     const { publicId, ownerToken } = await createUniverse(
       parsed.data,
-      creatorIpHash
+      creatorIpHash,
+      user?.id ?? null
     );
 
     // 알림 실패가 우주 생성 실패로 이어지면 안 되므로 fire-and-forget으로 호출한다.

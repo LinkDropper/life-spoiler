@@ -20,6 +20,7 @@ interface WriteResult {
 interface WriteFilterBuilder extends PromiseLike<WriteResult> {
   eq(column: string, value: string | number | boolean): WriteFilterBuilder;
   or(filters: string): WriteFilterBuilder;
+  is(column: string, value: null): WriteFilterBuilder;
 }
 
 export interface WritableTable {

@@ -34,7 +34,9 @@ type PersonalDataKey =
   | "creatorIpHash"
   | "creator_ip_hash"
   | "ownerTokenHash"
-  | "owner_token_hash";
+  | "owner_token_hash"
+  | "userId"
+  | "user_id";
 
 type HasNoPersonalData<T> =
   Extract<keyof T, PersonalDataKey> extends never ? true : false;

@@ -20,10 +20,12 @@ import {
 import { resolveOneLinerKo, resolveOwnerOneLinerKo } from "./one-liner";
 import { computeGuestPlacement } from "./placement";
 import {
+  claimUniverseOwner,
   countRecentGuestsByIp,
   countRecentUniversesByIp,
   findGuestCountRank,
   findGuestPlacementContext,
+  findUniverseByOwnerUserId,
   findUniverseForCalculation,
   findUniverseForDisplay,
   insertUniverse,
@@ -51,7 +53,8 @@ const hoursAgoIso = (hours: number): string =>
  */
 export const createUniverse = async (
   input: UniverseCreateInput,
-  creatorIpHash: string | null
+  creatorIpHash: string | null,
+  userId: string | null
 ): Promise<{ publicId: string; ownerToken: string }> => {
   if (creatorIpHash) {
     const recentCount = await countRecentUniversesByIp(
@@ -93,10 +96,27 @@ export const createUniverse = async (
     creatorIpHash,
     ownerOneLinerId: ownerOneLiner.oneLinerId,
     ownerOneLinerVersion: ownerOneLiner.matrixVersion,
+    userId,
   });
 
   return { publicId, ownerToken };
 };
+
+/**
+ * 비로그인 상태에서 생성된 우주를 로그인 시점에 계정으로 귀속시킨다.
+ * OAuth 콜백에서 호출하며, 매칭되는 우주가 없어도(쿠키 없음/만료/이미 귀속됨) 정상 케이스다.
+ */
+export const claimUniverseByOwnerToken = async (
+  userId: string,
+  ownerToken: string
+): Promise<void> => {
+  await claimUniverseOwner(userId, hashOwnerToken(ownerToken));
+};
+
+/** 계정이 이미 소유한 우주가 있으면 그 public_id를 반환한다 */
+export const findMyUniversePublicId = async (
+  userId: string
+): Promise<string | null> => findUniverseByOwnerUserId(userId);
 
 export const getUniverseDetail = async (
   publicId: string

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
 
+import { createAuthClient } from "@/libs/supabase";
+import { findMyUniversePublicId } from "@/libs/universe/service";
 import { getOpenGraphImage } from "@/libs/utils/og";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
@@ -46,10 +49,30 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function UniverseCreateLayout({
+export default async function UniverseCreateLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const publicId = await findMyExistingUniversePublicId();
+
+  if (publicId) {
+    redirect(`/universe/${publicId}`);
+  }
+
   return <>{children}</>;
 }
+
+/** 로그인 유저가 이미 소유한 우주가 있는지 확인한다. 비로그인이면 확인 없이 null. */
+const findMyExistingUniversePublicId = async (): Promise<string | null> => {
+  const supabase = await createAuthClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return null;
+  }
+
+  return findMyUniversePublicId(user.id);
+};
