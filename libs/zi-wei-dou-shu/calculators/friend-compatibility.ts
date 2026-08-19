@@ -22,6 +22,7 @@ import {
   UNKNOWN_TIME_FACTOR,
   ZODIAC_RELATION_DELTA,
   ZODIAC_RELATION_LABEL,
+  buildNeutralOneLinerId,
   buildOneLinerId,
   type FriendElementRelation,
   type FriendPalaceRelation,
@@ -674,7 +675,12 @@ export const calculateFriendCompatibility = (
     FRIEND_COMPATIBILITY_MAX_SCORE
   );
 
-  const oneLinerId = buildOneLinerId(zodiacRelation, elementRelation);
+  // 띠 관계가 neutral(약 42%, 최빈)이면 명궁 자리 관계로 한 번 더 세분화한
+  // 슬러그를 쓴다 — 점수는 그대로, 한줄평 선택만 더 세밀해진다 (fu-1.2.0).
+  const oneLinerId =
+    zodiacRelation === "neutral"
+      ? buildNeutralOneLinerId(elementRelation, palaceRelation)
+      : buildOneLinerId(zodiacRelation, elementRelation);
   const oneLiner = FRIEND_ONE_LINERS[oneLinerId];
 
   if (!oneLiner) {
