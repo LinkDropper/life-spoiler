@@ -15,14 +15,24 @@ import type { Sihua } from "../types";
  */
 
 /**
- * 매트릭스 버전 — 점수 튜닝 시 반드시 올린다 (DB 스냅샷에 저장됨).
+ * 매트릭스 버전 — 점수 튜닝 또는 슬러그 스키마(축 구성) 변경 시 올린다
+ * (DB 스냅샷에 저장됨). 문구(`ko`) 워딩만 다듬는 경우는 대상이 아니다.
  *
  * - `fu-1.0.0`: 최초 (양쪽 시진 확정 전제)
  * - `fu-1.1.0`: 시간 미상(`"unknown"`) 경로 추가, `confidence`/`chartCombinations` 필드 추가.
  *   기능 추가이므로 **시진을 모두 아는 경우의 점수는 1.0.0과 완전히 동일**하다
  *   (`__tests__/friend-compatibility.test.ts`의 골든 회귀 테스트가 고정).
+ * - `fu-1.2.0`: 띠 관계 `neutral`(전체 쌍의 약 42%, 단일 슬롯 최대 약 17%로
+ *   최빈)을 명궁 자리 관계(`FriendPalaceRelation`, 5종)로 한 번 더 세분화한
+ *   `fu-neutral-{element}-{palace}` 슬러그 15종 추가(`buildNeutralOneLinerId`).
+ *   **점수 계산식은 전혀 바뀌지 않는다** — `palaceRelation`은 이미 축 3(명궁
+ *   자리)에서 계산해 점수에 반영하던 값을 한줄평 선택에도 재사용할 뿐이다.
+ *   기존 3종(`fu-neutral-generate/same/overcome`)은 이미 발급된 게스트
+ *   스냅샷이 가리키므로 절대 삭제하지 않는다(append-only) — 신규 계산부터만
+ *   세분화된 슬러그를 받는다. 1.0.0→1.1.0과 동일한 선례(기능 추가는 기존
+ *   케이스의 점수/문구를 바꾸지 않아도 버전을 올린다)를 따랐다.
  */
-export const FRIEND_COMPATIBILITY_MATRIX_VERSION = "fu-1.1.0";
+export const FRIEND_COMPATIBILITY_MATRIX_VERSION = "fu-1.2.0";
 
 // ============================================================
 // 축 1. 띠(年支) 관계
@@ -293,6 +303,30 @@ export const buildOneLinerId = (
   element: FriendElementRelation
 ): string => `fu-${zodiac}-${element}`;
 
+/**
+ * `neutral` 띠 세분화 ID 생성 규칙: `fu-neutral-{오행관계}-{명궁자리관계}`.
+ *
+ * @세분화_배경_2026 띠 관계가 삼합/육합/충/형/해/파/같은띠 같은 "이름 붙은"
+ * 특수 관계가 아니면 전부 `neutral`로 떨어진다(`resolveZodiacRelation`).
+ * 실측(48샘플 1,128쌍) 결과 `neutral`이 전체의 약 42%, 그중 `fu-neutral-generate`
+ * 하나가 약 17%로 전체 24종 중 최빈이었다(대표 지적 — "왜 맨날 이 문구인가").
+ * 이미 축 3(명궁 자리, `resolvePalaceRelation`)에서 계산해 **점수에도 반영하던
+ * 값**을 한줄평 선택에 재사용해 `neutral` 버킷만 5배 세분화했다(점수 계산식
+ * 자체는 무변경). 명궁 자리 안에서도 `neutral`(자리끼리도 무관계)이 다시
+ * 최빈(약 63~66%)이라 완전히 균등하진 않지만, 최대 단일 슬롯 점유율이
+ * 약 17% → 약 11%로 줄어든다(실측 재검증은 `matrixVersion` 개정이력 참고).
+ * 명궁 자리 대신 생년 천간 관계(`resolveStemRelation`, 3종)로 세분화하는
+ * 대안도 실측했으나 그쪽은 `neutral`이 80~83%로 더 쏠려 있어 기각했다 —
+ * "독립 축이면 아무거나 된다"가 아니라 실측 분포가 고른 축을 골라야 한다.
+ *
+ * 나머지 7개 띠 관계(삼합/육합/충/형/해/파/같은띠)는 각각 8~17%대로 상대적으로
+ * 덜 쏠려 있어 이번 세분화 대상에서 제외했다 — 필요하면 같은 패턴으로 확장 가능.
+ */
+export const buildNeutralOneLinerId = (
+  element: FriendElementRelation,
+  palace: FriendPalaceRelation
+): string => `fu-neutral-${element}-${palace}`;
+
 export const FRIEND_ONE_LINERS: Record<string, FriendOneLiner> = {
   // ===== 삼합 =====
   "fu-samhap-generate": {
@@ -407,5 +441,69 @@ export const FRIEND_ONE_LINERS: Record<string, FriendOneLiner> = {
   "fu-neutral-overcome": {
     id: "fu-neutral-overcome",
     ko: "크게 부딪힐 일은 없지만 결정적인 순간에 의견이 갈리는 사이예요. 중요한 결정만큼은 각자 내리는 편이 낫습니다.",
+  },
+
+  // ===== 무관계 세분화 (fu-1.2.0, buildNeutralOneLinerId) =====
+  // 위 3종(fu-neutral-generate/same/overcome)은 이미 발급된 게스트 스냅샷이
+  // 가리키므로 그대로 둔다(append-only). 신규 계산은 아래 15종을 받는다.
+  "fu-neutral-generate-same": {
+    id: "fu-neutral-generate-same",
+    ko: "성격의 결이 꽤 비슷해서 처음 봐도 낯설지 않은 사이예요. 거기다 서로 있으면 자연스럽게 힘이 붙거든요.",
+  },
+  "fu-neutral-generate-samhap": {
+    id: "fu-neutral-generate-samhap",
+    ko: "딱히 접점이 없어 보여도 지향하는 방향은 은근히 비슷한 관계예요. 그래서인지 같이 있으면 묘하게 시너지가 나더라고요.",
+  },
+  "fu-neutral-generate-yukhap": {
+    id: "fu-neutral-generate-yukhap",
+    ko: "따로 있을 땐 안 어울릴 것 같은데 막상 붙여두면 잘 맞는 사이예요. 서로가 서로를 은근히 끌어올려 주거든요.",
+  },
+  "fu-neutral-generate-opposite": {
+    id: "fu-neutral-generate-opposite",
+    ko: "성향은 꽤 다른데 그래서 더 배울 게 많은 조합이에요. 마주 보고 있는 것처럼 서로에게 좋은 자극이 되거든요.",
+  },
+  "fu-neutral-generate-neutral": {
+    id: "fu-neutral-generate-neutral",
+    ko: "겹치는 부분은 딱히 없어도 필요할 때 꼭 곁에 있어 주는 관계예요. 오래 볼수록 진가를 알게 되는 조합이에요.",
+  },
+  "fu-neutral-same-same": {
+    id: "fu-neutral-same-same",
+    ko: "성격도 자리도 닮은 데가 많아서 편한 사이예요. 편한 만큼 서로의 약한 부분도 잘 보일 겁니다.",
+  },
+  "fu-neutral-same-samhap": {
+    id: "fu-neutral-same-samhap",
+    ko: "결이 잘 맞아서 오래 볼수록 편해지는 조합이에요. 다만 새로운 자극은 다른 데서 채우는 편이 좋아요.",
+  },
+  "fu-neutral-same-yukhap": {
+    id: "fu-neutral-same-yukhap",
+    ko: "붙어 있을 때 자연스러운 짝처럼 느껴져요. 편안함을 오래 유지하고 싶다면 가끔은 새로운 것도 같이 해보세요.",
+  },
+  "fu-neutral-same-opposite": {
+    id: "fu-neutral-same-opposite",
+    ko: "관심사는 통하는데 스타일은 완전히 딴판인 사이예요. 그 덕분에 매번 새로운 조합이 나오더라고요.",
+  },
+  "fu-neutral-same-neutral": {
+    id: "fu-neutral-same-neutral",
+    ko: "특별한 연결고리는 없어도 편하게 흘러가는 관계예요. 애쓰지 않아도 오래 볼수록 편안해지는 조합이에요.",
+  },
+  "fu-neutral-overcome-same": {
+    id: "fu-neutral-overcome-same",
+    ko: "자리는 닮았는데 기 싸움이 은근히 있는 사이예요. 취향은 비슷해도 방식에서 자꾸 부딪힐 겁니다.",
+  },
+  "fu-neutral-overcome-samhap": {
+    id: "fu-neutral-overcome-samhap",
+    ko: "가는 길은 비슷한데 그 안에서 미묘한 긴장감이 흐르는 조합이에요. 같은 목표를 다른 방식으로 풀어가는 느낌이랄까요.",
+  },
+  "fu-neutral-overcome-yukhap": {
+    id: "fu-neutral-overcome-yukhap",
+    ko: "가까이 붙을수록 은근히 신경전이 생기는 사이예요. 적당한 거리를 둘 때 오히려 더 편하고요.",
+  },
+  "fu-neutral-overcome-opposite": {
+    id: "fu-neutral-overcome-opposite",
+    ko: "취향도 방식도 안 맞을 때가 많아서 자주 부딪히는 관계예요. 그래도 한번 맞춰지면 이보다 든든한 조합이 없어요.",
+  },
+  "fu-neutral-overcome-neutral": {
+    id: "fu-neutral-overcome-neutral",
+    ko: "겉으론 부딪힐 일이 없어 보여도 중요한 순간엔 뜻이 갈리는 관계예요. 큰 결정 앞에서는 서로의 의견을 존중해 주세요.",
   },
 };

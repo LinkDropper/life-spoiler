@@ -344,7 +344,7 @@ describe("친구 우주 궁합 — 결과 불변식", () => {
   });
 
   it("matrixVersion이 고정되어 있다", () => {
-    expect(FRIEND_COMPATIBILITY_MATRIX_VERSION).toBe("fu-1.1.0");
+    expect(FRIEND_COMPATIBILITY_MATRIX_VERSION).toBe("fu-1.2.0");
 
     for (const result of results) {
       expect(result.matrixVersion).toBe(FRIEND_COMPATIBILITY_MATRIX_VERSION);
@@ -409,12 +409,30 @@ describe("친구 우주 궁합 — 한줄평", () => {
   ];
   const ELEMENT_KEYS = ["generate", "same", "overcome"];
 
-  it("띠 관계 8종 × 오행 관계 3종 = 24개 템플릿이 모두 정의되어 있다", () => {
-    expect(Object.keys(FRIEND_ONE_LINERS)).toHaveLength(24);
+  const PALACE_KEYS = ["same", "samhap", "yukhap", "opposite", "neutral"];
 
+  it("띠 관계 8종 × 오행 관계 3종 = 24개 기본 템플릿이 모두 정의되어 있다", () => {
     for (const zodiac of ZODIAC_KEYS) {
       for (const element of ELEMENT_KEYS) {
         const id = `fu-${zodiac}-${element}`;
+        expect(FRIEND_ONE_LINERS[id]).toBeDefined();
+        expect(FRIEND_ONE_LINERS[id].id).toBe(id);
+      }
+    }
+  });
+
+  /**
+   * fu-1.2.0 — 띠 neutral(최빈, 약 42%)을 명궁 자리 관계(5종)로 세분화한
+   * `fu-neutral-{element}-{palace}` 15개가 추가로 정의되어 있다. 위 24개
+   * 기본 템플릿 중 `fu-neutral-generate/same/overcome` 3개는 이미 발급된
+   * 게스트 스냅샷용으로 그대로 남아 있으므로(append-only) 총합은 24+15=39.
+   */
+  it("neutral 세분화 15개 템플릿이 모두 정의되어 있고, 테이블 총합은 39다", () => {
+    expect(Object.keys(FRIEND_ONE_LINERS)).toHaveLength(39);
+
+    for (const element of ELEMENT_KEYS) {
+      for (const palace of PALACE_KEYS) {
+        const id = `fu-neutral-${element}-${palace}`;
         expect(FRIEND_ONE_LINERS[id]).toBeDefined();
         expect(FRIEND_ONE_LINERS[id].id).toBe(id);
       }
@@ -631,13 +649,22 @@ describe("친구 우주 궁합 — 점수 분포", () => {
     expect(sorted[Math.floor(total * 0.9)]).toBeGreaterThanOrEqual(85);
   });
 
-  it("24개 한줄평이 모두 실제로 도달 가능하다", () => {
-    expect(oneLinerIds.size).toBe(24);
+  /**
+   * fu-1.2.0부터 신규 계산은 옛 `fu-neutral-generate/same/overcome` 3개
+   * 대신 세분화된 15개를 받으므로, 실제 도달 가능한 슬러그는
+   * (24 - 3) + 15 = 36개다(옛 3개는 과거 스냅샷 전용으로 테이블엔 남지만
+   * 새 계산에서는 나오지 않는다).
+   */
+  it("36개 한줄평(구 neutral 3종 제외, 세분화 15종 포함)이 모두 실제로 도달 가능하다", () => {
+    expect(oneLinerIds.size).toBe(36);
+    expect(oneLinerIds.has("fu-neutral-generate")).toBe(false);
+    expect(oneLinerIds.has("fu-neutral-same")).toBe(false);
+    expect(oneLinerIds.has("fu-neutral-overcome")).toBe(false);
   });
 });
 
 // ============================================================
-// 8. exact 경로 골든 회귀 (fu-1.0.0 → fu-1.1.0 점수 불변)
+// 8. exact 경로 골든 회귀 (fu-1.0.0 → fu-1.1.0 → fu-1.2.0 점수 불변)
 // ============================================================
 
 /**
@@ -645,6 +672,11 @@ describe("친구 우주 궁합 — 점수 분포", () => {
  * 시간 미상 지원은 **기능 추가**이므로 시진을 모두 아는 경우의 결과가 바뀌면 안 된다.
  * 이 표가 깨지면 매트릭스 튜닝이 섞여 들어간 것이니, 의도한 튜닝이라면
  * `FRIEND_COMPATIBILITY_MATRIX_VERSION`을 올리고 이 표를 함께 갱신해야 한다.
+ *
+ * `fu-1.2.0`(띠 `neutral` 세분화, `buildNeutralOneLinerId`)에서 `score`/`tier`는
+ * 6개 행 모두 그대로이고(점수 계산식 무변경 — 재계산해 확인함) `oneLinerId`만
+ * 옛 2단 슬러그(`fu-neutral-generate`/`fu-neutral-overcome`)에서 명궁 자리까지
+ * 반영한 3단 슬러그로 바뀌었다.
  */
 const EXACT_GOLDEN: ReadonlyArray<{
   a: [string, TimeBranchValue];
@@ -658,7 +690,7 @@ const EXACT_GOLDEN: ReadonlyArray<{
     b: ["1975-01-20", "신"],
     score: 65,
     tier: "steady-orbit",
-    oneLinerId: "fu-neutral-overcome",
+    oneLinerId: "fu-neutral-overcome-samhap",
   },
   {
     a: ["1973-12-27", "축"],
@@ -686,7 +718,7 @@ const EXACT_GOLDEN: ReadonlyArray<{
     b: ["1979-01-15", "진"],
     score: 81,
     tier: "bright-orbit",
-    oneLinerId: "fu-neutral-generate",
+    oneLinerId: "fu-neutral-generate-samhap",
   },
   {
     a: ["1977-04-25", "유"],
@@ -700,7 +732,7 @@ const EXACT_GOLDEN: ReadonlyArray<{
     b: ["1981-07-26", "인"],
     score: 90,
     tier: "twin-star",
-    oneLinerId: "fu-neutral-generate",
+    oneLinerId: "fu-neutral-generate-samhap",
   },
   {
     a: ["1979-06-24", "미"],
@@ -742,7 +774,7 @@ const EXACT_GOLDEN: ReadonlyArray<{
     b: ["1987-01-05", "신"],
     score: 79,
     tier: "bright-orbit",
-    oneLinerId: "fu-neutral-generate",
+    oneLinerId: "fu-neutral-generate-samhap",
   },
   {
     a: ["1985-12-21", "축"],
@@ -770,7 +802,7 @@ const EXACT_GOLDEN: ReadonlyArray<{
     b: ["1991-01-27", "진"],
     score: 53,
     tier: "crossing-comet",
-    oneLinerId: "fu-neutral-overcome",
+    oneLinerId: "fu-neutral-overcome-yukhap",
   },
   {
     a: ["1989-04-19", "유"],
@@ -784,7 +816,7 @@ const EXACT_GOLDEN: ReadonlyArray<{
     b: ["1993-07-11", "인"],
     score: 47,
     tier: "crossing-comet",
-    oneLinerId: "fu-neutral-overcome",
+    oneLinerId: "fu-neutral-overcome-samhap",
   },
   {
     a: ["1991-06-18", "미"],
@@ -875,6 +907,22 @@ describe("친구 우주 궁합 — 슬러그 append-only 계약", () => {
     "fu-neutral-generate",
     "fu-neutral-same",
     "fu-neutral-overcome",
+    // fu-1.2.0 — 띠 neutral 세분화 (buildNeutralOneLinerId)
+    "fu-neutral-generate-same",
+    "fu-neutral-generate-samhap",
+    "fu-neutral-generate-yukhap",
+    "fu-neutral-generate-opposite",
+    "fu-neutral-generate-neutral",
+    "fu-neutral-same-same",
+    "fu-neutral-same-samhap",
+    "fu-neutral-same-yukhap",
+    "fu-neutral-same-opposite",
+    "fu-neutral-same-neutral",
+    "fu-neutral-overcome-same",
+    "fu-neutral-overcome-samhap",
+    "fu-neutral-overcome-yukhap",
+    "fu-neutral-overcome-opposite",
+    "fu-neutral-overcome-neutral",
   ];
 
   const RELEASED_TIERS = [
@@ -1150,6 +1198,24 @@ const ONE_LINER_POLARITY: Record<string, "positive" | "neutral" | "negative"> =
     "fu-neutral-generate": "positive",
     "fu-neutral-same": "neutral",
     "fu-neutral-overcome": "neutral",
+    // fu-1.2.0 — 띠 neutral 세분화. 옛 3종과 같은 규칙(generate→positive,
+    // same/overcome→neutral, 단 punishment/harm/break처럼 "이름 붙은 악연"이
+    // 아니므로 overcome도 negative로 내리지 않는다)을 그대로 따랐다.
+    "fu-neutral-generate-same": "positive",
+    "fu-neutral-generate-samhap": "positive",
+    "fu-neutral-generate-yukhap": "positive",
+    "fu-neutral-generate-opposite": "positive",
+    "fu-neutral-generate-neutral": "positive",
+    "fu-neutral-same-same": "neutral",
+    "fu-neutral-same-samhap": "neutral",
+    "fu-neutral-same-yukhap": "neutral",
+    "fu-neutral-same-opposite": "neutral",
+    "fu-neutral-same-neutral": "neutral",
+    "fu-neutral-overcome-same": "neutral",
+    "fu-neutral-overcome-samhap": "neutral",
+    "fu-neutral-overcome-yukhap": "neutral",
+    "fu-neutral-overcome-opposite": "neutral",
+    "fu-neutral-overcome-neutral": "neutral",
   };
 
 const TIER_BAND: Record<string, "high" | "mid" | "low"> = {
