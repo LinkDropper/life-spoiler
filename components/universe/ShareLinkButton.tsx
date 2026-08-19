@@ -1,49 +1,34 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import styles from "./ShareLinkButton.module.css";
+
+import type { CopyState } from "@/libs/hooks/universe";
 
 interface ShareLinkButtonProps {
   shareUrl: string;
   /** 친구 유입 유도 캡션 문구 선택용 (0명이면 빈 상태 안내로 전환) */
   guestCount: number;
+  /** 복사 결과 상태 — `useShareUniverseLink`를 페이지가 소유하고 내려준다 */
+  copyState: CopyState;
+  onShare: () => void;
 }
-
-type CopyState = "idle" | "copied" | "fallback";
 
 /**
  * 6번 영역 — 공유 링크 복사.
  *
- * Web Share API를 먼저 시도하고(모바일 네이티브 시트), 없으면 클립보드,
- * 그것도 막히면 링크를 그대로 노출해 수동 복사할 수 있게 한다.
- * 세 경로 모두 실패하면 사용자가 링크를 얻을 방법이 사라지므로 폴백을 끝까지 둔다.
+ * 실제 공유/복사 로직은 `useShareUniverseLink`가 페이지 레벨에서 관리한다
+ * (4번 영역의 빈 상태 버튼과 결과를 공유해야 하기 때문). 이 컴포넌트는
+ * 트리거와 fallback(클립보드 실패 시 수동 복사 안내) 표시만 담당한다.
  */
 export const ShareLinkButton = ({
   shareUrl,
   guestCount,
+  copyState,
+  onShare,
 }: ShareLinkButtonProps) => {
   const t = useTranslations("universe.detail");
-  const [copyState, setCopyState] = useState<CopyState>("idle");
-
-  const handleShare = async () => {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({ text: t("shareText"), url: shareUrl });
-        return;
-      } catch {
-        // 사용자가 공유 시트를 닫은 경우도 여기로 오므로 클립보드로 이어서 시도한다
-      }
-    }
-
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopyState("copied");
-    } catch {
-      setCopyState("fallback");
-    }
-  };
 
   return (
     <section className={styles.section}>
@@ -59,14 +44,15 @@ export const ShareLinkButton = ({
           : t("ownerOneLiner", { count: guestCount })}
       </p>
 
-      <button type="button" className={styles.button} onClick={handleShare}>
+      <button type="button" className={styles.button} onClick={onShare}>
         {t("shareButton")}
       </button>
 
-      <p className={styles.status} role="status">
-        {copyState === "copied" && t("shareCopied")}
-        {copyState === "fallback" && t("shareFallback")}
-      </p>
+      {copyState === "fallback" && (
+        <p className={styles.status} role="status">
+          {t("shareFallback")}
+        </p>
+      )}
 
       {copyState === "fallback" && <p className={styles.rawUrl}>{shareUrl}</p>}
     </section>
