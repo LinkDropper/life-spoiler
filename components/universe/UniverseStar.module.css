@@ -1,0 +1,216 @@
+.star {
+  position: absolute;
+  left: var(--star-left);
+  top: var(--star-top);
+  transform: translate(-50%, -50%);
+  /* 시각 원 크기와 무관하게 터치 타겟은 항상 44px 이상 */
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: star-float 7.5s ease-in-out infinite;
+  animation-delay: var(--star-float-delay);
+}
+
+/*
+  시각 레이어(core). 버튼 히트 영역과 분리된 실제 DOM 요소다.
+  ::before/::after(비대칭 유기적 헤일로, 안 A)를 더 얹어 "원"이 아니라
+  "빛이 새어나오는 별" 형태로 읽히게 한다 — 이 요소 자신은 여전히 부드러운 코어 원이다.
+*/
+.core {
+  position: relative;
+  display: block;
+  width: var(--star-size);
+  height: var(--star-size);
+  border-radius: 50%;
+  /*
+    단단한 코어 → 부드러운 림.
+    정지 스톱(0~14% 순백)이 코어를 또렷하게 만들고, 바깥으로 갈수록 투명해져
+    원의 경계선이 아니라 빛이 사그라드는 것처럼 보이게 한다.
+
+    **색은 점수 채널이 아니다.** 이 스톱들은 모든 별에 동일하며,
+    별마다 달라지는 것은 --star-opacity / --star-glow-* 뿐이다.
+  */
+  background: radial-gradient(
+    circle at 35% 35%,
+    #ffffff 0%,
+    #ffffff 14%,
+    rgba(232, 224, 255, 0.96) 32%,
+    rgba(200, 180, 255, 0.88) 58%,
+    rgba(168, 148, 255, 0.65) 82%,
+    rgba(168, 148, 255, 0) 100%
+  );
+  opacity: var(--star-opacity);
+  /* 넓고 옅은 색글로우 + 좁고 밝은 속글로우 2겹.
+     두 번째 그림자도 점수와 무관하게 동일한 비율(0.35 / 0.9)로 파생된다. */
+  box-shadow:
+    0 0 var(--star-glow-blur) var(--star-glow-spread)
+      rgba(178, 156, 255, var(--star-glow-alpha)),
+    0 0 calc(var(--star-glow-blur) * 0.35) 0
+      rgba(255, 255, 255, calc(var(--star-glow-alpha) * 0.9));
+  animation: star-twinkle 4.2s ease-in-out infinite;
+  animation-delay: var(--star-twinkle-delay);
+}
+
+/*
+  안 A — 비대칭 유기적 헤일로 (rays 없이 글로우만, designer 산출 / 사용자 최종 확정).
+  완벽한 원이 아닌 비대칭 border-radius 실루엣 + 중심에서 벗어난 웜톤 하이라이트로
+  "빛이 한쪽에서 새어나오는" 인상을 만든다. 스파이크·캐치라이트 점 등 이전 대안들의
+  뾰족한 장식은 전부 제거했다 — 이 안은 부드러운 글로우 2겹뿐이다.
+
+  --star-shape-intensity 스케일 규칙은 기존과 동일하게 유지한다: 최소 직경(10px)에서
+  opacity가 가장 낮고, 최대 직경(32px)에서 가장 높아 작은 별은 은은하게,
+  큰 별은 또렷하게 빛난다.
+*/
+.core::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--star-size) * 1.5);
+  height: calc(var(--star-size) * 1.5);
+  transform: translate(-50%, -50%) rotate(-14deg);
+  /* 비대칭 border-radius = 완벽한 원이 아닌 유기적 실루엣 */
+  border-radius: 42% 58% 55% 45% / 58% 42% 58% 42%;
+  background: radial-gradient(
+    circle at 38% 34%,
+    rgba(255, 248, 230, 0.55) 0%,
+    rgba(226, 214, 255, 0.3) 46%,
+    rgba(168, 148, 255, 0) 78%
+  );
+  filter: blur(1.4px);
+  opacity: calc(var(--star-shape-intensity) * 0.7);
+  pointer-events: none;
+}
+
+.core::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--star-size) * 1.6);
+  height: calc(var(--star-size) * 1.6);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(200, 190, 255, 0.22) 0%,
+    rgba(200, 190, 255, 0) 70%
+  );
+  filter: blur(2px);
+  opacity: calc(var(--star-shape-intensity) * 0.5 + 0.1);
+  pointer-events: none;
+}
+
+.star:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+  border-radius: 8px;
+  /* 포커스된 별 전체(코어+캐치라이트)를 형제 별들보다 위로 올려
+     포커스 링이 다른 별의 시각 레이어에 가려지지 않게 한다. */
+  z-index: 2;
+}
+
+/*
+  hover:hover(정밀 포인터 = 마우스)에서만 적용한다.
+  터치는 hover:none이라 탭 후에도 이 규칙이 걸리지 않는다.
+  이 화면은 별의 밝기가 궁합 점수를 나타내므로, 터치에서 hover가 "탭 후 잔류"하면
+  방금 누른 별만 계속 밝게 남아 점수를 잘못 읽히게 만든다 — 주 유입 경로가
+  인스타그램/카카오톡 공유(터치)라 데스크톱 편의 기능이 정보를 왜곡하면 안 된다.
+*/
+@media (hover: hover) {
+  .star:hover .core {
+    filter: brightness(1.18);
+    transition: filter 0.15s ease-out;
+  }
+
+  .star:hover .core::after {
+    opacity: calc(var(--star-shape-intensity) * 0.5 + 0.25);
+    transition: opacity 0.15s ease-out;
+  }
+}
+
+/* 본인 별: 크기를 부풀리지 않고 별도 레이어(outline + pulse)로만 식별시킨다 */
+.self .core {
+  outline: 1.5px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
+.self {
+  animation:
+    star-float 7.5s ease-in-out infinite,
+    star-arrival 1.2s ease-out 1;
+  animation-delay: var(--star-float-delay), 0s;
+}
+
+/* 이름 라벨은 별 밝기와 완전히 분리 — 항상 흰색 + 스크림으로 4.5:1 이상 유지 */
+.name {
+  max-width: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(12, 18, 32, 0.72);
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+@keyframes star-twinkle {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.35);
+  }
+}
+
+@keyframes star-float {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-50%, calc(-50% - 4px));
+  }
+}
+
+@keyframes star-arrival {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star,
+  .self,
+  .core {
+    animation: none;
+  }
+
+  .star:hover .core,
+  .star:hover .core::after {
+    transition: none;
+  }
+}

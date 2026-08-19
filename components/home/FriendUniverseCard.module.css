@@ -1,0 +1,108 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:hover {
+  opacity: 0.95;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* 다른 홈 카드는 164px 고정이지만, EN/JA에서 타이틀이 2줄로 감기면 넘치므로
+     최소 높이만 두고 내용에 따라 늘어나게 한다 */
+  min-height: 164px;
+  padding: 24px;
+  background: linear-gradient(135deg, #2b1b57 0%, #3f2170 100%);
+  border-bottom: 1px solid #1b1030;
+  overflow: hidden;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 140%;
+  word-break: keep-all;
+}
+
+.subtitle {
+  position: relative;
+  z-index: 1;
+  max-width: 200px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.86);
+  word-break: keep-all;
+}
+
+.badge {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #ffe27a;
+  color: #2b1b57;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* 이미지 에셋 없이 CSS만으로 우주 느낌을 낸다 */
+.orbit {
+  position: absolute;
+  top: -40px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0) 12%
+    ),
+    radial-gradient(
+      circle at 68% 58%,
+      rgba(255, 226, 122, 0.85) 0%,
+      rgba(255, 226, 122, 0) 8%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(150, 120, 255, 0.35) 0%,
+      rgba(150, 120, 255, 0) 62%
+    );
+  pointer-events: none;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  background: var(--primitive-white, #ffffff);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #2d1b4e;
+}

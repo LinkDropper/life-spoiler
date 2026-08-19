@@ -1,0 +1,80 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.timeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/*
+  align-items를 flex-end로 주면(자식 우측 정렬 목적) flex-direction:column에서는
+  가로축이 교차축이 되어 "stretch 해제"까지 함께 일어난다 — width:100%인 Checkbox
+  버튼까지 내용물 크기로 쪼그라들어(실측 286px, 원래 가용폭 343px) 라벨이
+  2줄로 밀리고 둘째 줄이 배경 밖으로 삐져나오는 버그로 이어졌다. 컨테이너는
+  기본(stretch)으로 두고, 우측 정렬은 아래 .privacyLink에 align-self로만 준다.
+*/
+.consentSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 앱 전역의 태그/칩 스타일(예: GuestScoreList의 estimatedTag)을 따르는 작은 필 */
+.privacyLink {
+  align-self: flex-end;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--primitive-primary, #ffccd9);
+  color: var(--primitive-primary, #ffccd9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.privacyLink:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.error {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 120, 120, 0.16);
+  color: #ffd5d5;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.blocked {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.86);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
