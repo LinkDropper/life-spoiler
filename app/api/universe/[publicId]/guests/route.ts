@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+import {
+  guestStarSeedCookieName,
+  OWNER_TOKEN_MAX_AGE_SECONDS,
+} from "@/libs/universe/constants";
 import { universeNotFound, validationFailed } from "@/libs/universe/errors";
 import { parseJsonBody, toErrorResponse } from "@/libs/universe/http";
 import { isValidPublicId, resolveIpHash } from "@/libs/universe/identity";
@@ -37,9 +41,22 @@ export const POST = async (request: Request, context: RouteContext) => {
     const creatorIpHash = resolveIpHash(request);
     const result = await submitGuest(publicId, parsed.data, creatorIpHash);
 
-    return NextResponse.json(result, {
+    const response = NextResponse.json(result, {
       status: result.isDuplicate ? 200 : 201,
     });
+
+    // 재제출(업서트)이어도 "참여함" 상태는 동일하므로 duplicate 여부와 무관하게 심는다.
+    response.cookies.set({
+      name: guestStarSeedCookieName(publicId),
+      value: result.starSeed,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: OWNER_TOKEN_MAX_AGE_SECONDS,
+    });
+
+    return response;
   } catch (error) {
     return toErrorResponse(error);
   }

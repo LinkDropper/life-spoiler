@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 
-import { getTierLabelKo } from "@/libs/universe/tier";
-
+import { GuestCompatibilityContent } from "./GuestCompatibilityContent";
 import styles from "./GuestDetailDrawer.module.css";
 
 import type { UniverseGuestDto } from "@/libs/universe/types";
@@ -16,7 +15,7 @@ interface GuestDetailDrawerProps {
 }
 
 /**
- * 친구 등록 직후 / 궁합 순위 목록 항목 클릭 시 뜨는 바텀시트.
+ * 궁합 순위 목록 항목 클릭 시 뜨는 바텀시트.
  *
  * `components/fortune/ShareDrawer.tsx`와 같은 배경 dim + 하단 슬라이드업 패턴을
  * 따르되, 색은 앱 전역 다크 서피스 토큰 대신 이 기능의 우주 테마(남색/보라
@@ -71,47 +70,7 @@ export const GuestDetailDrawer = ({
           ×
         </button>
 
-        <p className={styles.name}>{guest.name}</p>
-
-        <div className={styles.scoreRow}>
-          <span className={styles.score}>
-            {t("scoreTag", { score: guest.score })}
-          </span>
-          <span className={styles.tier}>{getTierLabelKo(guest.tier)}</span>
-        </div>
-
-        <p className={styles.oneLiner}>{guest.oneLinerKo}</p>
-
-        {guest.confidence === "estimated" && (
-          <p className={styles.estimatedNote}>{t("estimatedStarAria")}</p>
-        )}
-
-        {guest.factors.length > 0 && (
-          <div className={styles.factorsSection}>
-            <p className={styles.factorsTitle}>{t("drawerFactorsTitle")}</p>
-            <ul className={styles.factorList}>
-              {guest.factors.map((factor) => (
-                <li key={factor.label} className={styles.factorItem}>
-                  <div className={styles.factorHeader}>
-                    <span className={styles.factorLabel}>{factor.label}</span>
-                    {/*
-                      "시간 정보" 안내 factor는 delta가 항상 0이다(계산에 기여하지
-                      않는 UX 유도용 문구) — 의미 없는 "+0" 배지를 보여주지 않는다.
-                    */}
-                    {factor.delta !== 0 && (
-                      <span
-                        className={`${styles.factorDelta} ${factor.delta > 0 ? styles.factorDeltaPositive : styles.factorDeltaNegative}`}
-                      >
-                        {factor.delta > 0 ? `+${factor.delta}` : factor.delta}
-                      </span>
-                    )}
-                  </div>
-                  <p className={styles.factorDetail}>{factor.detail}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <GuestCompatibilityContent guest={guest} className={styles.content} />
       </div>
     </div>
   );

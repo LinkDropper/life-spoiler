@@ -9,6 +9,7 @@ import {
   GuestDetailDrawer,
   GuestEntryForm,
   GuestScoreList,
+  MyCompatibilitySummary,
   OtherFortunesPromo,
   ShareLinkButton,
   UniverseOwnerSummary,
@@ -41,7 +42,8 @@ export default function UniversePage({ params }: UniversePageProps) {
 
   const { state, detail, reload, applyGuest } = useUniverse(publicId);
   const { isSubmitting, submitError, submit } = useGuestSubmit(publicId);
-  const [selfStarSeed, setSelfStarSeed] = useState<string | null>(null);
+  const [justSubmittedGuest, setJustSubmittedGuest] =
+    useState<UniverseGuestDto | null>(null);
   const [isDuplicateNotice, setIsDuplicateNotice] = useState(false);
   const [detailGuest, setDetailGuest] = useState<UniverseGuestDto | null>(null);
 
@@ -75,12 +77,9 @@ export default function UniversePage({ params }: UniversePageProps) {
       };
 
       applyGuest(guestDto, result.isDuplicate);
-      setSelfStarSeed(result.starSeed);
+      setJustSubmittedGuest(guestDto);
       setIsDuplicateNotice(result.isDuplicate);
       scrollToListItem(result.starSeed);
-      // 등록 직후 결과를 스크롤 대신(과 함께) 바로 드로어로 보여준다 —
-      // 목록까지 스크롤해서 찾아보게 하는 것보다 즉시 피드백이 낫다.
-      setDetailGuest(guestDto);
     },
     [applyGuest, scrollToListItem, submit]
   );
@@ -156,6 +155,11 @@ export default function UniversePage({ params }: UniversePageProps) {
   // 리스트 행과 별에는 반복하지 않는다 (30개에 같은 태그가 붙으면 벽지가 된다).
   const isUniverseEstimated = detail.ownerSummary.confidence === "estimated";
 
+  // 방금 이 세션에서 등록했으면 그 결과를, 아니면 참여 기록 쿠키로 서버가 내려준
+  // detail.selfGuest를 쓴다 — "방금 등록"과 "재방문" 두 경로 모두 이 값 하나로 커버된다.
+  const selfGuest = justSubmittedGuest ?? detail.selfGuest;
+  const selfStarSeed = selfGuest?.starSeed ?? null;
+
   return (
     <div className={styles.page}>
       <HeaderClient />
@@ -170,18 +174,27 @@ export default function UniversePage({ params }: UniversePageProps) {
           guestCountRank={detail.ownerSummary.guestCountRank}
         />
 
-        {/* 2. 친구 입력 폼 */}
-        {isDuplicateNotice && (
-          <p className={styles.duplicateNotice} role="status">
-            {t("duplicateNotice")}
-          </p>
+        {/* 2. 친구 입력 폼 — 이미 참여한 방문자(쿠키로 판별)에게는 궁합 카드로 대체 */}
+        {selfGuest ? (
+          <MyCompatibilitySummary
+            guest={selfGuest}
+            ownerName={detail.ownerSummary.ownerName}
+          />
+        ) : (
+          <>
+            {isDuplicateNotice && (
+              <p className={styles.duplicateNotice} role="status">
+                {t("duplicateNotice")}
+              </p>
+            )}
+            <GuestEntryForm
+              isSubmitting={isSubmitting}
+              isFull={detail.isFull}
+              submitError={submitError}
+              onSubmit={handleGuestSubmit}
+            />
+          </>
         )}
-        <GuestEntryForm
-          isSubmitting={isSubmitting}
-          isFull={detail.isFull}
-          submitError={submitError}
-          onSubmit={handleGuestSubmit}
-        />
 
         {/* 3. 우주 시각화 */}
         <UniverseVisualization

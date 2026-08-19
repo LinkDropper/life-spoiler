@@ -110,6 +110,11 @@ export interface UniverseDetailDto {
   guestCount: number;
   /** 참여 인원 하드캡 도달 여부 (등록 버튼 비활성화용) */
   isFull: boolean;
+  /**
+   * 참여 기록 쿠키(`guestStarSeedCookieName`)로 판별한 "나"의 게스트 항목.
+   * 재방문 시 친구 입력 폼 대신 궁합 정보를 바로 보여주는 데 쓴다. 미참여면 null.
+   */
+  selfGuest: UniverseGuestDto | null;
 }
 
 export interface GuestSubmitResultDto extends UniverseGuestDto {

@@ -1,7 +1,9 @@
+export { GuestCompatibilityContent } from "./GuestCompatibilityContent";
 export { GuestDetailDrawer } from "./GuestDetailDrawer";
 export { GuestEntryForm } from "./GuestEntryForm";
 export type { GuestFormValues } from "./GuestEntryForm";
 export { GuestScoreList } from "./GuestScoreList";
+export { MyCompatibilitySummary } from "./MyCompatibilitySummary";
 export { OtherFortunesPromo } from "./OtherFortunesPromo";
 export { ShareLinkButton } from "./ShareLinkButton";
 export { UniverseOverflowBadge } from "./UniverseOverflowBadge";

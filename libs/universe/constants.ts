@@ -4,6 +4,13 @@ export const OWNER_TOKEN_COOKIE = "universe_owner_token";
 /** owner 토큰 쿠키 수명 — 1년 */
 export const OWNER_TOKEN_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
 
+/** 게스트 참여 기록 쿠키 접두사. 우주(publicId)마다 별도 쿠키를 쓴다 */
+export const GUEST_STAR_SEED_COOKIE_PREFIX = "universe_guest_";
+
+/** 우주(publicId)별 게스트 참여 기록 쿠키명. 한 브라우저가 여러 우주에 참여할 수 있다 */
+export const guestStarSeedCookieName = (publicId: string): string =>
+  `${GUEST_STAR_SEED_COOKIE_PREFIX}${publicId}`;
+
 /** IP당 우주 생성 상한 (사용자 확정: 일 5회) */
 export const UNIVERSE_CREATE_LIMIT_PER_DAY = 5;
 
