@@ -1,7 +1,11 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { sendSignupNotification } from "@/libs/discord";
+import { logger } from "@/libs/logger";
 import { createAuthClient } from "@/libs/supabase";
+import { OWNER_TOKEN_COOKIE } from "@/libs/universe/constants";
+import { claimUniverseByOwnerToken } from "@/libs/universe/service";
 
 import type { OAuthProvider, UserInsert } from "@/libs/supabase/types";
 
@@ -84,6 +88,20 @@ export const GET = async (request: Request) => {
     if (upsertError) {
       console.error("User upsert failed:", upsertError);
     } else if (upsertedUser) {
+      const ownerToken = (await cookies()).get(OWNER_TOKEN_COOKIE)?.value;
+
+      if (ownerToken) {
+        try {
+          await claimUniverseByOwnerToken(user.id, ownerToken);
+        } catch (error) {
+          logger.error(
+            "[universe] 계정 귀속 실패",
+            error instanceof Error ? error : new Error(String(error)),
+            { userId: user.id }
+          );
+        }
+      }
+
       const createdAt = new Date(upsertedUser.created_at);
       const lastLoginAt = new Date(loginTime);
 

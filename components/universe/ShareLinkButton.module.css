@@ -1,0 +1,67 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+/* EN/JA는 KO보다 길어지므로 고정 높이를 두지 않고 자연스럽게 감싼다 */
+.inviteCaption {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.86);
+  word-break: keep-all;
+}
+
+/*
+  인생스포 전역에서 반복되는 "primary 아웃라인" 패턴(배경 투명 +
+  --primitive-primary 테두리/글자색)을 따른다. border-radius는
+  OtherFortunesPromo의 "내 우주 만들러 가기" 카드와 동일하게 맞춘다
+  (같은 페이지의 두 핵심 CTA라 서로 짝이 맞아야 한다).
+*/
+.button {
+  min-height: 52px;
+  padding: 0 20px;
+  border: 1px solid var(--primitive-primary, #ffccd9);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--primitive-primary, #ffccd9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.status {
+  min-height: 18px;
+  color: rgba(255, 255, 255, 0.86);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.rawUrl {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-all;
+  user-select: all;
+}

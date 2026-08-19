@@ -1,0 +1,195 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(8, 10, 20, 0.65);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.drawer {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  /* factors가 3~8개까지 붙으면 내용이 길어질 수 있어 뷰포트 안에 담고 내부 스크롤한다 */
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px 20px 32px;
+  /* 캔버스(UniverseVisualization)와 같은 우주 톤 그라디언트로 이 기능 전용 룩을 유지한다 */
+  background: linear-gradient(180deg, #171029 0%, #2e1431 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+  animation: slideUp 0.25s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.name {
+  padding-right: 40px;
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.score {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--primitive-primary, #ffccd9);
+  color: var(--primitive-primary, #ffccd9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tier {
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.oneLiner {
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.estimatedNote {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.factorsSection {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.factorsTitle {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.56);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.factorList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.factorItem {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.factorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.factorLabel {
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.factorDelta {
+  flex-shrink: 0;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 양수는 브랜드 accent로 강조하고, 음수는 자극적이지 않게 옅은 흰색으로만 낮춘다(빨강 미사용) */
+.factorDeltaPositive {
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.factorDeltaNegative {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.factorDetail {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  word-break: keep-all;
+}

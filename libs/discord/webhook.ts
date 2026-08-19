@@ -394,6 +394,69 @@ const SERVICE_FOOTER: Record<SignupService, string> = {
   "face-spoiler": "Face Spoiler",
 };
 
+interface UniverseCreatedNotificationParams {
+  /** owner 표시 이름 (미입력 시 null → "익명"으로 표기) */
+  ownerName: string | null;
+  publicId: string;
+  createdAt: string;
+}
+
+const resolveSiteUrl = (): string =>
+  process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
+
+/**
+ * 친구 우주 궁합 생성 알림 전송.
+ *
+ * **개인정보 경계**: 이 기능은 생년월일시 비공개 원칙(B안)을 따른다.
+ * 생년월일/생시/성별/내부 PK/IP 해시/owner 토큰은 절대 포함하지 않는다.
+ * 공유 링크는 애초에 공유를 위해 발급되는 값이라 노출해도 무해하다.
+ */
+export const sendUniverseCreatedNotification = async (
+  params: UniverseCreatedNotificationParams
+): Promise<boolean> => {
+  const { ownerName, publicId, createdAt } = params;
+
+  const createdDate = new Date(createdAt);
+  const formattedDate = createdDate.toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  const embed: DiscordEmbed = {
+    title: "🌌 새 우주 생성",
+    description: "친구 우주 궁합이 새로 생성되었습니다!",
+    color: DISCORD_EMBED_COLORS.INFO,
+    fields: [
+      {
+        name: "👤 owner",
+        value: ownerName ?? "익명",
+        inline: true,
+      },
+      {
+        name: "🔗 공유 링크",
+        value: `${resolveSiteUrl()}/universe/${publicId}`,
+        inline: false,
+      },
+      {
+        name: "🕐 생성 시각",
+        value: formattedDate,
+        inline: true,
+      },
+    ],
+    footer: {
+      text: "Life Spoiler",
+    },
+    timestamp: createdAt,
+  };
+
+  return sendWebhookMessage({ embeds: [embed] });
+};
+
 export const sendSignupNotification = async (
   params: SignupNotificationParams
 ): Promise<boolean> => {
