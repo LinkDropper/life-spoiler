@@ -245,3 +245,20 @@
   background: #6b7280;
   cursor: not-allowed;
 }
+
+.menuItemRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.freeBadge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #ffe27a;
+  color: #2b1b57;
+  font-family: "Pretendard", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}

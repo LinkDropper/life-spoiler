@@ -1,6 +1,7 @@
 export { HeaderClient } from "./HeaderClient";
 export { MainHero } from "./MainHero";
 export { FeatureSection } from "./FeatureSection";
+export { FriendUniverseAlert } from "./FriendUniverseAlert";
 export { ProductPreview } from "./ProductPreview";
 export { PromotionBanner } from "./PromotionBanner";
 export { FirstPaymentEventBanner } from "./FirstPaymentEventBanner";

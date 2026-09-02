@@ -15,6 +15,8 @@
         "loginViaGoogle": "구글 이메일로 로그인 했습니다.",
         "loginViaKakao": "카카오 이메일로 로그인 했습니다.",
         "loggedIn": "로그인 했습니다.",
+        "friendUniverse": "나만의 별자리 만들기",
+        "freeBadge": "무료",
         "lifetimeFortune": "인생 운세 보기",
         "yearlyFortune": "올해 운세 보기",
         "login": "로그인",
@@ -44,6 +46,14 @@
         "text": "사주 카페 5만원 vs 인생스포 990원,\n더 정밀한 분석을",
         "ctaButton": "지금 바로 확인하기",
         "ctaButtonAuthenticated": "내 결과 확인하기"
+      },
+      "friendUniverse": {
+        "alert": {
+          "badge": "무료",
+          "text": "친구들과 별자리 궁합, 로그인 없이 바로 볼 수 있어요",
+          "action": "만들기",
+          "ariaLabel": "로그인 없이 무료로 나만의 별자리 만들기"
+        }
       },
       "eventFirstPayment": {
         "badge": "첫 결제 100원",
@@ -1358,6 +1368,8 @@
         "loginViaGoogle": "Logged in with Google.",
         "loginViaKakao": "Logged in with Kakao.",
         "loggedIn": "Logged in.",
+        "friendUniverse": "Create my universe",
+        "freeBadge": "FREE",
         "lifetimeFortune": "View Lifetime Fortune",
         "yearlyFortune": "View This Year's Fortune",
         "login": "Login",
@@ -1387,6 +1399,14 @@
         "text": "Astrology cafe $50 vs Life Spoiler $0.99 — more precise",
         "ctaButton": "Check Now",
         "ctaButtonAuthenticated": "View My Results"
+      },
+      "friendUniverse": {
+        "alert": {
+          "badge": "FREE",
+          "text": "Check star compatibility with friends — no login needed",
+          "action": "Create",
+          "ariaLabel": "Create my universe for free, no login needed"
+        }
       },
       "eventFirstPayment": {
         "badge": "First Payment 100 KRW",
@@ -2701,6 +2721,8 @@
         "loginViaGoogle": "Googleでログインしました。",
         "loginViaKakao": "カカオでログインしました。",
         "loggedIn": "ログインしました。",
+        "friendUniverse": "自分のユニバースを作る",
+        "freeBadge": "無料",
         "lifetimeFortune": "人生運勢を見る",
         "yearlyFortune": "今年の運勢を見る",
         "login": "ログイン",
@@ -2730,6 +2752,14 @@
         "text": "占いカフェ5万円 vs ライフスポイラー990円、より精密に",
         "ctaButton": "今すぐチェック",
         "ctaButtonAuthenticated": "結果を確認する"
+      },
+      "friendUniverse": {
+        "alert": {
+          "badge": "無料",
+          "text": "友達との星座相性、ログインなしですぐ見られます",
+          "action": "作成",
+          "ariaLabel": "ログインなしで無料で自分のユニバースを作る"
+        }
       },
       "eventFirstPayment": {
         "badge": "初回決済100ウォン",

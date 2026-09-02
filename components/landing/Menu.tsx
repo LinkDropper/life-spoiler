@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState, useCallback, useEffect } from "react";
 
 import { useUser, useUserActions } from "@/libs/stores/user";
@@ -17,6 +17,7 @@ interface MenuProps {
 
 export const Menu = ({ isOpen, onClose }: MenuProps) => {
   const t = useTranslations("landing.menu");
+  const locale = useLocale();
   const tFooter = useTranslations("landing.footer");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -160,6 +161,33 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
 
           {/* Menu List */}
           <ul className={styles.menuList}>
+            {/*
+              친구 우주 궁합은 로그인이 필요 없는 무료 기능이므로
+              `handleFortuneNavigate`(미로그인 시 /login)가 아니라 바로 이동시킨다.
+              KO 로케일 전용 노출은 홈 카드(`FriendUniverseCard`)와 동일 정책.
+            */}
+            {locale === "ko" && (
+              <li>
+                <button
+                  type="button"
+                  className={styles.menuItem}
+                  onClick={() => handleNavigate("/universe/create")}
+                >
+                  <span className={styles.menuItemText}>
+                    {t("friendUniverse")}
+                  </span>
+                  <span className={styles.menuItemRight}>
+                    <span className={styles.freeBadge}>{t("freeBadge")}</span>
+                    <Image
+                      src="/images/landing/chevron-right.svg"
+                      alt=""
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                </button>
+              </li>
+            )}
             <li>
               <button
                 type="button"
