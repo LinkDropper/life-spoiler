@@ -1,0 +1,66 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #2b1b57 0%, #3f2170 100%);
+  border-bottom: 1px solid rgba(255, 226, 122, 0.35);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bar:hover {
+  background: linear-gradient(135deg, #33206a 0%, #4a2885 100%);
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #ffe27a;
+  color: #2b1b57;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #ffffff;
+  /* KO보다 긴 EN/JA에서도 잘리지 않도록 두 줄까지 자연스럽게 감기게 둔다 */
+  word-break: keep-all;
+}
+
+.action {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  color: #ffe27a;
+}
+
+.actionText {
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+@media (max-width: 375px) {
+  .bar {
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  .text {
+    font-size: 13px;
+  }
+}

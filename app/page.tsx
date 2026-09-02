@@ -1,6 +1,7 @@
 import {
   MainHero,
   FeatureSection,
+  FriendUniverseAlert,
   ProductPreview,
   FirstPaymentEventBanner,
   PromotionBanner,
@@ -19,6 +20,8 @@ export default function Home() {
     <div className={styles.page}>
       <HeaderClient />
       <main className={styles.main}>
+        {/* 스크롤 없이 첫 화면에서 무료·비로그인 기능의 존재를 알리는 상단 알림 바 */}
+        <FriendUniverseAlert />
         <MainHero />
         <FeatureSection />
         <ReviewSection />
