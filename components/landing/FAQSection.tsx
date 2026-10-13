@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import styles from "./FAQSection.module.css";
@@ -32,11 +33,15 @@ const FAQItem = ({ id, question, answer, isOpen, onToggle }: FAQItemProps) => {
           ›
         </span>
       </button>
-      {isOpen && (
-        <div className={styles.answer} id={answerId} role="region">
-          <p className={styles.answerText}>{answer}</p>
-        </div>
-      )}
+      {/* 접힌 상태에서도 답변을 HTML에 남겨둔다. JS를 실행하지 않는 검색·AI 크롤러가
+          답변을 읽을 수 있어야 하므로 조건부 렌더링 대신 CSS로만 숨긴다. */}
+      <div
+        className={`${styles.answer} ${isOpen ? "" : styles.answerCollapsed}`}
+        id={answerId}
+        role="region"
+      >
+        <p className={styles.answerText}>{answer}</p>
+      </div>
     </div>
   );
 };
@@ -74,6 +79,9 @@ export const FAQSection = () => {
           />
         ))}
       </div>
+      <Link href="/ziwei-doushu" className={styles.moreLink}>
+        {t("moreLink")} ›
+      </Link>
     </section>
   );
 };

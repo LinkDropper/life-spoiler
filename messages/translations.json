@@ -185,7 +185,8 @@
             "question": "태어난 시간을 모르면 어떡하나요?",
             "answer": "태어난 시간을 모르셔도 이용 가능합니다. 다만 시간 정보가 있으면 114개 별의 배치가 더 정확해져서 분석의 정밀도가 높아집니다. 출생 신고서, 부모님께 여쭤보시거나, 대략적인 시간대만 아셔도 충분합니다."
           }
-        }
+        },
+        "moreLink": "자미두수에 대해 더 알아보기"
       },
       "event": {
         "title": "인생스포",
@@ -1350,6 +1351,217 @@
         "network": "네트워크 연결을 확인해주세요.",
         "unknown": "일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요."
       }
+    },
+    "ziweiGuide": {
+      "meta": {
+        "title": "자미두수란? 뜻·역사·사주 차이·명반 구조 총정리",
+        "description": "자미두수는 음력 생년월일시로 12궁과 14주성의 명반을 만드는 중국 전통 명리 체계예요. 역사, 구조, 사주와의 차이, 대운을 정리했습니다.",
+        "h1": "자미두수란 무엇인가요? 뜻부터 명반 구조, 사주와의 차이까지"
+      },
+      "intro": "자미두수(紫微斗數)는 음력 생년월일시를 바탕으로 12개 궁에 14개 주성과 보조성을 배치한 명반(命盤)을 만들고, 이를 통해 성향과 시기별 흐름을 해석하는 중국 전통 명리 체계예요. 사주팔자와 함께 동아시아에서 널리 알려진 운명 해석법이며, 별의 위치와 궁의 관계를 읽는다는 점이 특징입니다. 과학적으로 검증된 예측 도구는 아니므로, 자기 이해와 재미를 위한 참고 자료로 보시길 권해요.",
+      "sections": [
+        {
+          "id": "whatIs",
+          "heading": "자미두수란 무엇인가요?",
+          "paragraphs": [
+            "자미두수란 음력 생년월일시로 12칸짜리 도표인 명반(命盤)을 만들고, 그 안에 놓인 별(星)과 궁(宮)의 관계로 개인의 성향과 시기별 흐름을 해석하는 중국 전통 명리학의 한 갈래입니다. 이름의 자미(紫微)는 하늘의 중심인 북극성 주변 구역 자미원(紫微垣)에서 온 말로, 명반의 중심 별인 자미성을 가리켜요.",
+            "명반은 인생의 영역을 명궁, 재백궁, 관록궁, 부처궁 등 12궁으로 나누고, 각 궁에 어떤 별이 앉았는지를 살핍니다. 같은 별이라도 어느 궁에 있는지, 밝기가 묘·왕·득·리·평·함 중 어디인지에 따라 해석이 달라져요.",
+            "자미두수는 전통 문화이자 해석 체계일 뿐, 과학적으로 검증된 예측 도구가 아닙니다. 별의 배치는 계산으로 정해지지만 그 의미를 풀어내는 일은 해석의 영역이라서, 결과는 나를 돌아보는 하나의 관점으로 받아들이시는 것이 좋아요."
+          ]
+        },
+        {
+          "id": "history",
+          "heading": "자미두수의 기원과 역사",
+          "paragraphs": [
+            "자미두수의 기원은 전통적으로 오대십국에서 북송 초(10세기)에 활동한 도사 진단(陳摶, 호 희이선생)에게 돌려지지만, 이는 전승일 뿐 사료로 직접 확인된 사실은 아닙니다.",
+            "대표 문헌인 《자미두수전서(紫微斗數全書)》에는 진희이의 이름이 붙어 있어요. 다만 현재 전하는 판본은 명(明)대에 간행된 것으로 알려져 있고, 후대에 이름을 빌렸을 가능성도 자주 거론됩니다. 그래서 창시자와 정확한 성립 시기는 지금도 확정하기 어렵다고 보는 것이 안전해요.",
+            "20세기 후반 홍콩과 대만에서 연구서와 학파가 늘며 대중화됐고, 이후 한국과 일본, 동남아시아로도 퍼졌습니다. 오늘날 유파는 《전서》의 방식을 따르는 삼합파(三合派), 사화의 비성(飛星)을 중시하는 비성파, 흠천사화파 등으로 나뉘며, 인생스포는 삼합파 방식을 사용해요."
+          ]
+        },
+        {
+          "id": "structure",
+          "heading": "명반의 구조: 12궁, 14주성, 사화",
+          "paragraphs": [
+            "자미두수 명반은 12궁, 14주성, 보조성, 사화라는 네 가지 요소로 구성됩니다. 12궁은 명궁(命宮), 형제궁, 부처궁, 자녀궁, 재백궁, 질액궁, 천이궁, 교우궁, 관록궁, 전택궁, 복덕궁, 부모궁으로, 각각 나 자신, 형제, 배우자, 자녀, 재물, 건강, 이동과 외부 환경, 인간관계, 직업, 집과 부동산, 정신적 여유, 부모를 나타내요.",
+            "14주성은 명반의 중심이 되는 별로, 자미성 계열 6개(자미, 천기, 태양, 무곡, 천동, 염정)와 천부성 계열 8개(천부, 태음, 탐랑, 거문, 천상, 천량, 칠살, 파군)로 이루어집니다. 두 계열은 배치 방향이 서로 반대이고, 천부의 위치는 자미의 위치에서 정해져요.",
+            "보조성은 주성을 돕거나 흔드는 별로, 좌보·우필·문창·문곡 같은 길성과 화성·영성·양인·타라·지겁·지공 같은 살성, 천마·홍란·천희 등이 있습니다. 인생스포는 이 가운데 록존을 포함한 16종을 배치해요.",
+            "사화(四化)는 태어난 해의 천간에 따라 네 별에 붙는 변화로, 화록(化祿), 화권(化權), 화과(化科), 화기(化忌)를 말합니다. 예를 들어 갑(甲)년생은 염정에 화록, 파군에 화권, 무곡에 화과, 태양에 화기가 붙어요."
+          ]
+        },
+        {
+          "id": "vsSaju",
+          "heading": "자미두수와 사주는 무엇이 다른가요?",
+          "paragraphs": [
+            "자미두수와 사주(四柱八字)의 가장 큰 차이는 해석의 단위입니다. 사주는 태어난 해·달·날·시를 네 기둥, 여덟 글자로 세워 오행의 균형을 읽고, 자미두수는 음력 생일과 시진으로 명반을 만들어 별과 12궁의 배치를 읽어요.",
+            "기준이 되는 달력도 달라요. 사주의 월은 24절기를 기준으로 나누지만, 자미두수는 음력 월과 일을 그대로 씁니다. 해의 경계를 어디에 두는지는 유파마다 다르며, 인생스포는 음력 연도를 사용해요.",
+            "두 체계는 같은 출생 정보를 서로 다른 틀로 읽는 방법이지, 한쪽이 다른 쪽을 대체하거나 더 정확하다고 말할 수 있는 관계가 아닙니다. 둘 다 천간지지를 쓰고 10년 단위 대운을 보지만, 과학적으로 검증된 예측 체계는 아니라는 점도 같아요."
+          ]
+        },
+        {
+          "id": "birthTime",
+          "heading": "태어난 시간이 중요한 이유와 모를 때의 방법",
+          "paragraphs": [
+            "자미두수에서 태어난 시간이 중요한 이유는 시진(時辰)이 명궁의 위치를 결정하기 때문입니다. 하루를 2시간 단위 12시진으로 나누고, 명궁은 음력 생월과 시진으로 정해지므로 시진이 달라지면 명반의 틀 자체가 달라져요.",
+            "태어난 시간을 모를 때는 출생증명서, 산모수첩, 가족의 기억 등으로 먼저 확인해 보세요. 정확한 시각이 없어도 새벽인지 낮인지 같은 대략적인 시간대를 좁혀 두면 도움이 됩니다.",
+            "인생스포는 출생 시간을 모른다고 선택할 수 있고, 이 경우 정오(오시, 11시~12시 59분)를 임의의 대표 시각으로 가정해 명반을 계산합니다. 따라서 시간에 따라 달라지는 명궁과 일부 보조성의 위치는 실제와 다를 수 있어서, 결과에 참고용이라는 안내를 함께 드려요."
+          ]
+        },
+        {
+          "id": "daeun",
+          "heading": "대운과 유년: 시기를 읽는 방식",
+          "paragraphs": [
+            "대운(大運)은 자미두수에서 10년 단위로 바뀌는 운의 큰 흐름을 가리키며, 첫 대운은 오행국의 숫자와 같은 나이에 시작합니다. 수2국은 2세, 목3국은 3세, 금4국은 4세, 토5국은 5세, 화6국은 6세부터예요.",
+            "대운은 명궁에서 출발해 10년마다 한 궁씩 옮겨 갑니다. 방향은 성별과 태어난 해의 음양으로 정해져서, 양남·음녀는 순행, 음남·양녀는 역행해요. 화6국이라면 6세~15세가 첫 대운, 16세~25세가 두 번째 대운이 됩니다.",
+            "유년(流年)은 특정한 한 해의 운을 보는 방식으로, 그해 천간에 따른 사화를 명반에 겹쳐 읽고 월별로도 나누어 봅니다. 대운이 10년의 배경이라면 유년은 그 안에서 한 해의 흐름을 보여 주는 셈이에요."
+          ]
+        },
+        {
+          "id": "howLifeSpoilerUses",
+          "heading": "인생스포는 자미두수를 어떻게 쓰나요?",
+          "paragraphs": [
+            "인생스포는 삼합파 방식으로 명반을 계산하는 자미두수 서비스입니다. 양력을 음력으로 바꾸고 시진을 구한 뒤 명궁, 12궁, 오행국, 자미성 위치 순서로 계산하며, 14주성과 보조성 16종, 연간 기준 사화 4성을 배치하고 주성의 밝기도 조회해요.",
+            "명반 계산은 정해진 표와 공식으로 이루어지고, 문장으로 풀어 쓰는 해석에는 AI 모델을 사용합니다. 계산된 명반 데이터를 AI에 전달해 재물, 직업, 인연, 건강 같은 영역별 풀이를 만들기 때문에, 전문 명리가의 감정과는 다를 수 있어요.",
+            "현재는 평생 흐름과 대운을 보여 주는 인생 운세, 올해 운세, 두 사람의 궁합, 친구 관계를 모아 보는 기능을 제공합니다. 모두 재미와 자기 이해를 위한 참고용이며, 의료·법률·투자 같은 중요한 판단을 대신하지 않아요."
+          ]
+        }
+      ],
+      "comparison": {
+        "caption": "자미두수와 사주(四柱八字) 비교",
+        "headers": [
+          "항목",
+          "자미두수",
+          "사주"
+        ],
+        "rows": [
+          [
+            "기본 구성",
+            "12궁에 14주성과 보조성을 배치한 명반",
+            "연주·월주·일주·시주 네 기둥, 여덟 글자"
+          ],
+          [
+            "달력 기준",
+            "음력 월·일",
+            "24절기 기준의 월"
+          ],
+          [
+            "태어난 시간의 역할",
+            "시진이 명궁의 위치를 결정",
+            "시주 한 기둥을 구성"
+          ],
+          [
+            "해석의 중심",
+            "궁에 앉은 별, 밝기, 사화",
+            "일간과 오행의 균형, 십성"
+          ],
+          [
+            "시기 해석",
+            "10년 단위 대운과 유년",
+            "10년 단위 대운과 세운"
+          ]
+        ]
+      },
+      "faq": [
+        {
+          "q": "자미두수란 무엇인가요?",
+          "a": "자미두수는 음력 생년월일시로 12궁 명반을 만들어 별의 배치를 읽는 중국 전통 명리 체계입니다. 14개 주성과 여러 보조성, 사화를 함께 봅니다. 과학적으로 검증된 예측 도구는 아니고, 자기 이해를 위한 참고용으로 활용하는 것이 좋아요."
+        },
+        {
+          "q": "자미두수와 사주는 어떻게 다른가요?",
+          "a": "사주는 네 기둥 여덟 글자의 오행 균형을 읽고, 자미두수는 별과 12궁이 놓인 명반을 읽는다는 점이 다릅니다. 사주의 월은 절기를 기준으로 하고 자미두수는 음력 월과 일을 씁니다. 어느 쪽이 더 정확하다고 단정할 수는 없어요."
+        },
+        {
+          "q": "자미두수는 누가 만들었고 얼마나 오래됐나요?",
+          "a": "전통적으로는 10세기 도사 진단(진희이)이 만들었다고 전해지지만, 사료로 확인된 사실은 아닙니다. 대표 문헌인 《자미두수전서》의 현존 판본은 명대에 간행된 것으로 알려져 있어요. 정확한 성립 시기는 확정하기 어렵습니다."
+        },
+        {
+          "q": "태어난 시간을 모르면 자미두수를 볼 수 있나요?",
+          "a": "볼 수는 있지만 정확도에 한계가 있어요. 시진이 명궁의 위치를 정하기 때문에 시간이 바뀌면 명반의 틀이 달라집니다. 인생스포는 시간 미상 시 정오를 임의로 가정하므로, 결과를 확정적 해석이 아닌 참고용으로 봐 주세요."
+        },
+        {
+          "q": "자미두수 결과를 믿어도 되나요?",
+          "a": "자미두수는 수백 년간 전해 내려온 전통 해석 체계이지만, 과학적으로 입증된 예측 방법은 아닙니다. 그래서 결과는 재미와 자기 이해를 위한 참고로 보시고, 건강이나 재무, 법률 같은 중요한 결정은 본인의 판단과 전문가의 도움을 우선해 주세요."
+        },
+        {
+          "q": "14주성은 무엇인가요?",
+          "a": "14주성은 명반의 중심이 되는 별 14개를 말합니다. 자미, 천기, 태양, 무곡, 천동, 염정의 자미성 계열 6개와 천부, 태음, 탐랑, 거문, 천상, 천량, 칠살, 파군의 천부성 계열 8개로 나뉘어요."
+        },
+        {
+          "q": "대운은 몇 살부터 시작하나요?",
+          "a": "첫 대운은 오행국의 숫자와 같은 나이에 시작해서 2세에서 6세 사이에 해당합니다. 수2국은 2세, 화6국은 6세부터이고 이후 10년마다 바뀌어요. 방향은 성별과 태어난 해의 음양으로 정해집니다."
+        },
+        {
+          "q": "인생스포는 어떤 유파의 자미두수를 쓰나요?",
+          "a": "인생스포는 삼합파 방식으로 명반을 계산합니다. 명반 계산은 정해진 표와 공식으로 이루어지고, 풀이 문장은 AI 모델이 작성해요. 유파에 따라 별의 배치나 밝기에 일부 차이가 있을 수 있습니다."
+        }
+      ],
+      "glossary": [
+        {
+          "term": "명반",
+          "reading": "命盤",
+          "definition": "생년월일시로 12궁에 별을 배치해 만든, 자미두수 해석의 바탕이 되는 도표입니다."
+        },
+        {
+          "term": "명궁",
+          "reading": "命宮",
+          "definition": "음력 생월과 시진으로 정해지는 12궁의 출발점으로, 타고난 성향을 나타내는 궁입니다."
+        },
+        {
+          "term": "12궁",
+          "reading": "十二宮",
+          "definition": "명궁부터 부모궁까지 인생의 영역을 열두 가지로 나눈 명반의 칸입니다."
+        },
+        {
+          "term": "주성",
+          "reading": "主星",
+          "definition": "자미성 계열 6개와 천부성 계열 8개로 이루어진, 명반의 중심이 되는 14개 별입니다."
+        },
+        {
+          "term": "보조성",
+          "reading": "輔星·煞星",
+          "definition": "좌보·우필 같은 길성과 화성·영성 같은 살성 등 주성을 돕거나 흔드는 별입니다."
+        },
+        {
+          "term": "오행국",
+          "reading": "五行局",
+          "definition": "수2·목3·금4·토5·화6국 중 하나로, 자미성의 위치와 대운 시작 나이를 정하는 기준입니다."
+        },
+        {
+          "term": "사화",
+          "reading": "四化",
+          "definition": "태어난 해의 천간에 따라 네 별에 붙는 화록·화권·화과·화기의 변화입니다."
+        },
+        {
+          "term": "삼방사정",
+          "reading": "三方四正",
+          "definition": "본궁과 맞은편 대궁, 그리고 삼합을 이루는 두 궁을 함께 읽는 해석 방식입니다."
+        },
+        {
+          "term": "대운",
+          "reading": "大運",
+          "definition": "명궁에서 시작해 10년마다 궁을 옮기며 바뀌는 운의 큰 흐름입니다."
+        },
+        {
+          "term": "유년",
+          "reading": "流年",
+          "definition": "특정한 한 해의 운을 그해 천간의 사화와 함께 읽는 방식입니다."
+        },
+        {
+          "term": "삼합파",
+          "reading": "三合派",
+          "definition": "《자미두수전서》의 방식을 따르며 삼방사정을 중시하는 자미두수 유파입니다."
+        }
+      ],
+      "ui": {
+        "breadcrumbHome": "홈",
+        "updatedLabel": "최종 업데이트",
+        "faqTitle": "자주 묻는 질문",
+        "glossaryTitle": "자미두수 용어 정리",
+        "ctaTitle": "내 명반은 어떻게 생겼을까요?",
+        "ctaDescription": "생년월일시만 입력하면 12궁과 14주성이 배치된 내 명반과 10년 단위 대운 흐름을 확인할 수 있어요.",
+        "ctaButton": "내 명반 확인하기",
+        "disclaimer": "인생스포의 자미두수 풀이는 재미와 자기 이해를 위한 참고 자료이며, 의료·법률·투자 판단을 대신하지 않습니다.",
+        "breadcrumbLabel": "현재 위치"
+      }
     }
   },
   "en": {
@@ -1538,7 +1750,8 @@
             "question": "What if I don't know my exact birth time?",
             "answer": "You can still use the service without your exact birth time. However, having time info makes the 114-star placement more accurate, improving analysis precision. Check your birth certificate, ask your parents, or even a rough time range works."
           }
-        }
+        },
+        "moreLink": "Learn more about Zi Wei Dou Shu"
       },
       "event": {
         "title": "Life Spoiler",
@@ -2703,6 +2916,217 @@
         "network": "Please check your network connection.",
         "unknown": "Something went wrong. Please try again in a moment."
       }
+    },
+    "ziweiGuide": {
+      "meta": {
+        "title": "Zi Wei Dou Shu (Purple Star Astrology) Explained",
+        "description": "Zi Wei Dou Shu (Purple Star Astrology) is a Chinese chart system of 12 palaces and 14 major stars. Its history, structure, and differences from Bazi.",
+        "h1": "What Is Zi Wei Dou Shu (Purple Star Astrology)?"
+      },
+      "intro": "Zi Wei Dou Shu (Purple Star Astrology) is a traditional Chinese system that builds a chart from the lunar date and hour of birth, places 14 major stars and several minor stars across 12 palaces, and reads that chart for personality and life timing. Alongside Bazi (Four Pillars of Destiny), it is one of the best-known fate-reading traditions in East Asia. It is not a scientifically validated predictive tool, so it is best treated as a reference for self-reflection and enjoyment.",
+      "sections": [
+        {
+          "id": "whatIs",
+          "heading": "What is Zi Wei Dou Shu?",
+          "paragraphs": [
+            "Zi Wei Dou Shu is a branch of traditional Chinese fate analysis that draws a 12-palace chart (mingpan) from the lunar date and hour of birth, then interprets the relationships between the stars and palaces in it. The name comes from Zi Wei, the Purple Forbidden Enclosure, a region of sky around the pole star, and it refers to the chart's central star.",
+            "The chart divides life into 12 areas such as the Life Palace, Wealth Palace, Career Palace, and Spouse Palace, and looks at which stars sit in each. The same star can read differently depending on its palace and its brightness grade, which runs from temple (miao) and prosperous (wang) down to fallen (xian).",
+            "Zi Wei Dou Shu is a cultural tradition and an interpretive framework, not a scientifically validated prediction method. Star positions follow fixed calculations, but the meanings attached to them are matters of interpretation, so results are best taken as one perspective for reflecting on yourself."
+          ]
+        },
+        {
+          "id": "history",
+          "heading": "Origins and history",
+          "paragraphs": [
+            "Tradition credits Zi Wei Dou Shu to Chen Tuan (陳摶, styled Chen Xiyi), a Taoist who lived in the Five Dynasties and early Northern Song period around the 10th century, but this is legend rather than a fact confirmed by historical sources.",
+            "The best-known text, the Zi Wei Dou Shu Quan Shu (Complete Book of Zi Wei Dou Shu), carries Chen Xiyi's name. However, the surviving editions are generally understood to date from the Ming dynasty, and later attribution to a famous figure is often suggested, so the true author and date of formation remain uncertain.",
+            "The system became popular in Hong Kong and Taiwan in the second half of the 20th century and then spread to Korea, Japan, and Southeast Asia. Today it has several schools, including the Sanhe school that follows the Quan Shu tradition, the Feixing (flying star) school, and the Qintian Sihua school. Life Spoiler uses the Sanhe school."
+          ]
+        },
+        {
+          "id": "structure",
+          "heading": "Chart structure: 12 palaces, 14 major stars, and the four transformations",
+          "paragraphs": [
+            "A Zi Wei Dou Shu chart has four components: 12 palaces, 14 major stars, minor stars, and the four transformations (Si Hua). The 12 palaces are Life, Siblings, Spouse, Children, Wealth, Health, Travel, Friends, Career, Property, Fortune and Virtue, and Parents, covering the self, family, money, health, environment, relationships, work, home, inner contentment, and parents.",
+            "The 14 major stars are the core of the chart: six in the Zi Wei group (Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen) and eight in the Tian Fu group (Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun). The two groups are placed in opposite directions, and the position of Tian Fu is derived from that of Zi Wei.",
+            "Minor stars support or disturb the major stars. They include auspicious stars such as Zuo Fu, You Bi, Wen Chang, and Wen Qu, malefic stars such as Huo Xing, Ling Xing, Qing Yang, Tuo Luo, Di Jie, and Di Kong, and others such as Tian Ma, Hong Luan, and Tian Xi. Life Spoiler places 16 minor stars, including Lu Cun.",
+            "The four transformations are changes attached to four stars according to the heavenly stem of the birth year: Hua Lu (Prosperity), Hua Quan (Authority), Hua Ke (Renown), and Hua Ji (Obstruction). For a Jia year, for example, Lian Zhen gets Hua Lu, Po Jun gets Hua Quan, Wu Qu gets Hua Ke, and Tai Yang gets Hua Ji."
+          ]
+        },
+        {
+          "id": "vsSaju",
+          "heading": "How does Zi Wei Dou Shu differ from Bazi?",
+          "paragraphs": [
+            "The main difference between Zi Wei Dou Shu and Bazi (Four Pillars of Destiny) is the unit of interpretation. Bazi sets up four pillars of eight characters from the year, month, day, and hour of birth and reads the balance of the five elements, while Zi Wei Dou Shu builds a chart from the lunar birthday and birth hour and reads the placement of stars across 12 palaces.",
+            "The calendar basis also differs. Bazi divides months by the 24 solar terms, whereas Zi Wei Dou Shu uses the lunar month and day directly. Where the year begins also varies by school, and Life Spoiler uses the lunar year.",
+            "The two are different frameworks for reading the same birth information; neither replaces the other, and neither can be called more accurate. Both use the heavenly stems and earthly branches and look at 10-year luck cycles, and both lack scientific validation as predictive systems."
+          ]
+        },
+        {
+          "id": "birthTime",
+          "heading": "Why birth time matters and what to do if you do not know it",
+          "paragraphs": [
+            "Birth time matters in Zi Wei Dou Shu because the double-hour (shichen) of birth determines the position of the Life Palace. The day is divided into 12 two-hour periods, and since the Life Palace is set by the lunar birth month and the double-hour, a different double-hour changes the whole frame of the chart.",
+            "If you do not know your birth time, first try a birth certificate, a maternal health record, or family memory. Even without an exact time, narrowing it to a rough range such as early morning or afternoon helps.",
+            "Life Spoiler lets you choose that your birth time is unknown. In that case it assumes noon (the Horse hour, 11:00 to 12:59) as a placeholder to calculate the chart. The Life Palace and some minor stars depend on the hour and may differ from the real ones, so results are marked as reference only."
+          ]
+        },
+        {
+          "id": "daeun",
+          "heading": "Major luck cycles and annual luck: how timing is read",
+          "paragraphs": [
+            "A major luck cycle (da yun) is a 10-year period of luck in Zi Wei Dou Shu, and the first cycle begins at an age equal to the number of the five-element bureau. Water 2 starts at age 2, Wood 3 at 3, Metal 4 at 4, Earth 5 at 5, and Fire 6 at 6.",
+            "Cycles start from the Life Palace and move one palace every 10 years. The direction depends on gender and the yin or yang of the birth year: yang males and yin females move forward, and yin males and yang females move backward. For Fire 6, the first cycle covers ages 6 to 15 and the second ages 16 to 25.",
+            "Annual luck (liu nian) looks at a single year by overlaying the transformations of that year's heavenly stem on the chart, and it can be broken down by month. If a major luck cycle is the 10-year backdrop, annual luck shows the flow of one year within it."
+          ]
+        },
+        {
+          "id": "howLifeSpoilerUses",
+          "heading": "How does Life Spoiler use Zi Wei Dou Shu?",
+          "paragraphs": [
+            "Life Spoiler is a Zi Wei Dou Shu service that calculates charts using the Sanhe school method. It converts the solar date to the lunar date, finds the double-hour, then calculates the Life Palace, 12 palaces, five-element bureau, and Zi Wei position, placing 14 major stars, 16 minor stars, and the four transformations by birth-year stem, and looking up the brightness of the major stars.",
+            "The chart calculation itself runs on fixed tables and formulas, while an AI model writes the narrative interpretation. The calculated chart data is passed to the AI to produce readings on areas such as wealth, career, relationships, and health, so the output may differ from a professional practitioner's reading.",
+            "Currently the service offers a lifetime reading showing overall flow and major luck cycles, an annual reading, two-person compatibility, and a feature for viewing friend relationships together. All of these are for enjoyment and self-understanding, and they are not a substitute for medical, legal, or investment decisions."
+          ]
+        }
+      ],
+      "comparison": {
+        "caption": "Zi Wei Dou Shu compared with Bazi (Four Pillars of Destiny)",
+        "headers": [
+          "Item",
+          "Zi Wei Dou Shu",
+          "Bazi"
+        ],
+        "rows": [
+          [
+            "Basic structure",
+            "A chart placing 14 major stars and minor stars in 12 palaces",
+            "Four pillars (year, month, day, hour) of eight characters"
+          ],
+          [
+            "Calendar basis",
+            "Lunar month and day",
+            "Months defined by the 24 solar terms"
+          ],
+          [
+            "Role of birth hour",
+            "The double-hour sets the Life Palace position",
+            "Forms one pillar, the hour pillar"
+          ],
+          [
+            "Interpretive focus",
+            "Stars in palaces, brightness, transformations",
+            "Day master, balance of five elements, ten gods"
+          ],
+          [
+            "Timing",
+            "10-year major luck cycles and annual luck",
+            "10-year luck cycles and annual luck"
+          ]
+        ]
+      },
+      "faq": [
+        {
+          "q": "What is Zi Wei Dou Shu?",
+          "a": "Zi Wei Dou Shu is a traditional Chinese fate-analysis system that reads a 12-palace chart built from the lunar date and hour of birth. It considers 14 major stars, minor stars, and the four transformations together. It is not a scientifically validated predictive tool, so it is best used as a reference for self-understanding."
+        },
+        {
+          "q": "How is Zi Wei Dou Shu different from Bazi?",
+          "a": "Bazi reads the balance of five elements across four pillars and eight characters, while Zi Wei Dou Shu reads a chart of stars placed in 12 palaces. Bazi divides months by solar terms and Zi Wei Dou Shu uses the lunar month and day. Neither can be called more accurate than the other."
+        },
+        {
+          "q": "Who created Zi Wei Dou Shu and how old is it?",
+          "a": "Tradition credits the 10th-century Taoist Chen Tuan (Chen Xiyi), but this is not confirmed by historical sources. The surviving editions of the main text, the Zi Wei Dou Shu Quan Shu, are generally understood to date from the Ming dynasty. The exact time of its formation is hard to determine."
+        },
+        {
+          "q": "Can I use Zi Wei Dou Shu if I do not know my birth time?",
+          "a": "You can, but accuracy is limited. The double-hour of birth sets the Life Palace, so a different hour changes the frame of the chart. Life Spoiler assumes noon when the time is unknown, so please treat the result as a rough reference rather than a firm reading."
+        },
+        {
+          "q": "Can I trust Zi Wei Dou Shu results?",
+          "a": "Zi Wei Dou Shu is an interpretive tradition handed down over centuries, but it is not a scientifically proven way of predicting events. Please treat results as a reference for enjoyment and self-understanding, and rely on your own judgment and qualified professionals for health, financial, or legal decisions."
+        },
+        {
+          "q": "What are the 14 major stars?",
+          "a": "The 14 major stars are the core stars of a Zi Wei Dou Shu chart. They split into six in the Zi Wei group (Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen) and eight in the Tian Fu group (Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun)."
+        },
+        {
+          "q": "At what age do major luck cycles begin?",
+          "a": "The first major luck cycle begins at an age equal to the five-element bureau number, which means between age 2 and age 6. Water 2 starts at 2 and Fire 6 starts at 6, and the cycle changes every 10 years after that. The direction depends on gender and the yin or yang of the birth year."
+        },
+        {
+          "q": "Which school of Zi Wei Dou Shu does Life Spoiler use?",
+          "a": "Life Spoiler calculates charts using the Sanhe school method. The chart calculation runs on fixed tables and formulas, and an AI model writes the interpretation text. Star placement and brightness can differ somewhat between schools."
+        }
+      ],
+      "glossary": [
+        {
+          "term": "Mingpan (Chart)",
+          "reading": "Mìngpán / 命盤",
+          "definition": "The table of 12 palaces and stars, built from birth data, that serves as the basis for Zi Wei Dou Shu interpretation."
+        },
+        {
+          "term": "Ming Gong (Life Palace)",
+          "reading": "Mìnggōng / 命宮",
+          "definition": "The starting palace of the 12, set by lunar birth month and birth hour, which represents innate disposition."
+        },
+        {
+          "term": "Twelve Palaces",
+          "reading": "Shí'èr Gōng / 十二宮",
+          "definition": "The twelve divisions of a chart, from the Life Palace to the Parents Palace, each covering an area of life."
+        },
+        {
+          "term": "Major Stars",
+          "reading": "Zhǔxīng / 主星",
+          "definition": "The 14 central stars of a chart, made up of six in the Zi Wei group and eight in the Tian Fu group."
+        },
+        {
+          "term": "Minor Stars",
+          "reading": "Fǔxīng, Shàxīng / 輔星・煞星",
+          "definition": "Supporting or disturbing stars, such as the auspicious Zuo Fu and You Bi and the malefic Huo Xing and Ling Xing."
+        },
+        {
+          "term": "Five-Element Bureau",
+          "reading": "Wǔxíng Jú / 五行局",
+          "definition": "One of Water 2, Wood 3, Metal 4, Earth 5, or Fire 6, which determines the Zi Wei position and the age at which major luck begins."
+        },
+        {
+          "term": "Si Hua (Four Transformations)",
+          "reading": "Sìhuà / 四化",
+          "definition": "Hua Lu, Hua Quan, Hua Ke, and Hua Ji, the four changes attached to stars according to the birth-year stem."
+        },
+        {
+          "term": "San Fang Si Zheng",
+          "reading": "Sānfāng Sìzhèng / 三方四正",
+          "definition": "A method of reading a palace together with its opposite palace and the two palaces that form a trine with it."
+        },
+        {
+          "term": "Da Yun (Major Luck Cycle)",
+          "reading": "Dàyùn / 大運",
+          "definition": "A 10-year period of luck that begins at the Life Palace and moves to a new palace every decade."
+        },
+        {
+          "term": "Liu Nian (Annual Luck)",
+          "reading": "Liúnián / 流年",
+          "definition": "A method of reading a single year by overlaying the transformations of that year's heavenly stem on the chart."
+        },
+        {
+          "term": "Sanhe School",
+          "reading": "Sānhépài / 三合派",
+          "definition": "A Zi Wei Dou Shu school that follows the Quan Shu tradition and emphasizes the San Fang Si Zheng method."
+        }
+      ],
+      "ui": {
+        "breadcrumbHome": "Home",
+        "updatedLabel": "Last updated",
+        "faqTitle": "Frequently Asked Questions",
+        "glossaryTitle": "Zi Wei Dou Shu Glossary",
+        "ctaTitle": "What does your own chart look like?",
+        "ctaDescription": "Enter your birth date and time to see your chart with the 12 palaces and 14 major stars, plus your 10-year luck periods.",
+        "ctaButton": "See my chart",
+        "disclaimer": "Life Spoiler readings are for entertainment and self-reflection only and do not replace medical, legal, or financial advice.",
+        "breadcrumbLabel": "Breadcrumb"
+      }
     }
   },
   "ja": {
@@ -2891,7 +3315,8 @@
             "question": "生まれた時間がわからない場合は？",
             "answer": "生まれた時間がわからなくてもご利用いただけます。ただし時間情報があると114個の星の配置がより正確になり、分析の精度が上がります。出生届、ご両親への確認、おおよその時間帯だけでも大丈夫です。"
           }
-        }
+        },
+        "moreLink": "紫微斗数についてもっと知る"
       },
       "event": {
         "title": "ライフスポイラー",
@@ -4055,6 +4480,217 @@
       "errors": {
         "network": "ネットワーク接続をご確認ください。",
         "unknown": "一時的なエラーが発生しました。しばらくしてからお試しください。"
+      }
+    },
+    "ziweiGuide": {
+      "meta": {
+        "title": "紫微斗数とは?意味・歴史・四柱推命との違いを解説",
+        "description": "紫微斗数は、生年月日と時刻から12宮と14主星の命盤を作る中国の伝統的な命理体系です。歴史、構造、四柱推命との違い、大運をわかりやすく解説します。",
+        "h1": "紫微斗数とは何か?意味から命盤の構造、四柱推命との違いまで"
+      },
+      "intro": "紫微斗数(しびとすう)は、旧暦の生年月日と生まれた時刻をもとに、12の宮に14の主星と補助星を配置した命盤を作り、性格や時期ごとの流れを読み解く中国の伝統的な命理体系です。四柱推命と並んで東アジアで広く知られる運命解釈の方法で、星の位置と宮の関係を読む点が特徴です。科学的に検証された予測手法ではありませんので、自己理解や楽しみのための参考としてご覧ください。",
+      "sections": [
+        {
+          "id": "whatIs",
+          "heading": "紫微斗数とは何ですか",
+          "paragraphs": [
+            "紫微斗数とは、旧暦の生年月日と時刻から12の宮を持つ命盤(めいばん)を作り、その中にある星と宮の関係から性格や時期ごとの流れを読み解く、中国の伝統的な命理学の一分野です。名前の紫微は、天の中心である北極星の周辺領域「紫微垣」に由来し、命盤の中心となる紫微星を指します。",
+            "命盤は人生の領域を命宮、財帛宮、官禄宮、夫妻宮などの12宮に分け、それぞれの宮にどの星が入っているかを見ます。同じ星でも、どの宮にあるか、そして廟・旺・得・利・平・陥という明るさの段階によって、解釈が変わります。",
+            "紫微斗数は伝統文化であり解釈の体系であって、科学的に検証された予測手法ではありません。星の配置は計算で決まりますが、その意味づけは解釈の領域ですので、結果は自分を振り返るための一つの視点として受け止めるのがおすすめです。"
+          ]
+        },
+        {
+          "id": "history",
+          "heading": "紫微斗数の起源と歴史",
+          "paragraphs": [
+            "紫微斗数の起源は、伝統的には五代から北宋初期(10世紀)に活動した道士・陳摶(ちんたん、号は希夷先生)に帰せられていますが、これは言い伝えであり、史料で直接確認された事実ではありません。",
+            "代表的な文献『紫微斗数全書』には陳希夷の名が冠されています。ただし現存する版は明代に刊行されたものとされ、後世に名を借りた可能性もしばしば指摘されます。そのため、創始者や正確な成立時期は今も確定が難しいと考えるのが無難です。",
+            "20世紀後半に香港や台湾で研究書や流派が増えて広まり、その後、韓国、日本、東南アジアにも伝わりました。現在の流派には、『全書』の方法に沿う三合派、四化の飛星を重視する飛星派、欽天四化派などがあり、ライフスポイラーは三合派の方式を用いています。"
+          ]
+        },
+        {
+          "id": "structure",
+          "heading": "命盤の構造:12宮、14主星、四化",
+          "paragraphs": [
+            "紫微斗数の命盤は、12宮、14主星、補助星、四化という四つの要素で構成されます。12宮は命宮、兄弟宮、夫妻宮、子女宮、財帛宮、疾厄宮、遷移宮、交友宮、官禄宮、田宅宮、福徳宮、父母宮で、それぞれ自分自身、兄弟、配偶者、子ども、お金、健康、移動や外部環境、人間関係、仕事、住まいや不動産、精神的な豊かさ、両親を表します。",
+            "14主星は命盤の中心となる星で、紫微星系の6星(紫微、天機、太陽、武曲、天同、廉貞)と、天府星系の8星(天府、太陰、貪狼、巨門、天相、天梁、七殺、破軍)から成ります。二つの系統は配置の方向が逆で、天府の位置は紫微の位置から決まります。",
+            "補助星は主星を助けたり揺さぶったりする星で、左輔・右弼・文昌・文曲などの吉星、火星・鈴星・擎羊・陀羅・地劫・地空などの煞星、天馬・紅鸞・天喜などがあります。ライフスポイラーでは禄存を含む16種を配置しています。",
+            "四化は、生まれ年の天干によって四つの星に付く変化で、化禄、化権、化科、化忌を指します。たとえば甲の年生まれは、廉貞に化禄、破軍に化権、武曲に化科、太陽に化忌が付きます。"
+          ]
+        },
+        {
+          "id": "vsSaju",
+          "heading": "紫微斗数と四柱推命は何が違いますか",
+          "paragraphs": [
+            "紫微斗数と四柱推命の最大の違いは、解釈の単位です。四柱推命は生まれた年・月・日・時を四本の柱、八文字として立て、五行のバランスを読みます。一方、紫微斗数は旧暦の誕生日と時刻から命盤を作り、星と12宮の配置を読みます。",
+            "基準となる暦も異なります。四柱推命の月は二十四節気で区切りますが、紫微斗数は旧暦の月と日をそのまま使います。年の境目をどこに置くかは流派によって異なり、ライフスポイラーは旧暦の年を採用しています。",
+            "二つは同じ出生情報を別の枠組みで読む方法であり、一方が他方に取って代わったり、どちらが正確だと言ったりできる関係ではありません。どちらも天干地支を使い、10年単位の大運を見ますが、科学的に検証された予測体系ではない点も共通しています。"
+          ]
+        },
+        {
+          "id": "birthTime",
+          "heading": "生まれた時間が重要な理由と、わからない場合の対処",
+          "paragraphs": [
+            "紫微斗数で生まれた時間が重要なのは、時辰(じしん)が命宮の位置を決めるからです。一日を2時間ごとの12時辰に分け、命宮は旧暦の生まれ月と時辰で決まるため、時辰が変わると命盤の枠組みそのものが変わります。",
+            "生まれた時間がわからないときは、出生証明書や母子手帳、ご家族の記憶などでまず確認してみてください。正確な時刻がなくても、明け方か昼かといった大まかな時間帯を絞っておくと役立ちます。",
+            "ライフスポイラーでは出生時間を「不明」として選択でき、その場合は正午(午の刻、11時から12時59分)を仮の代表時刻として命盤を計算します。そのため、時間に左右される命宮や一部の補助星の位置は実際と異なる可能性があり、結果には参考用であるとの案内を添えています。"
+          ]
+        },
+        {
+          "id": "daeun",
+          "heading": "大運と流年:時期を読む方法",
+          "paragraphs": [
+            "大運(たいうん)は、紫微斗数で10年ごとに切り替わる運の大きな流れを指し、最初の大運は五行局の数字と同じ年齢から始まります。水二局は2歳、木三局は3歳、金四局は4歳、土五局は5歳、火六局は6歳からです。",
+            "大運は命宮から出発し、10年ごとに一つずつ宮を移ります。方向は性別と生まれ年の陰陽で決まり、陽男・陰女は順行、陰男・陽女は逆行です。火六局なら、6歳から15歳が最初の大運、16歳から25歳が二番目の大運になります。",
+            "流年(りゅうねん)は特定の一年の運を見る方法で、その年の天干による四化を命盤に重ねて読み、月ごとにも分けて見ます。大運が10年の背景だとすれば、流年はその中での一年の流れを示すものです。"
+          ]
+        },
+        {
+          "id": "howLifeSpoilerUses",
+          "heading": "ライフスポイラーは紫微斗数をどう使っていますか",
+          "paragraphs": [
+            "ライフスポイラーは、三合派の方式で命盤を計算する紫微斗数のサービスです。新暦を旧暦に変換して時辰を求め、命宮、12宮、五行局、紫微星の位置の順に計算し、14主星と補助星16種、生まれ年の天干による四化4星を配置して、主星の明るさも参照します。",
+            "命盤の計算は決まった表と数式で行い、文章としての解釈にはAIモデルを使っています。計算した命盤のデータをAIに渡し、金運、仕事、縁、健康といった領域別の読み解きを作るため、専門の命理家の鑑定とは異なる場合があります。",
+            "現在は、生涯の流れと大運を示す人生の運勢、今年の運勢、二人の相性、友人関係をまとめて見る機能を提供しています。いずれも楽しみと自己理解のための参考であり、医療・法律・投資といった重要な判断の代わりにはなりません。"
+          ]
+        }
+      ],
+      "comparison": {
+        "caption": "紫微斗数と四柱推命の比較",
+        "headers": [
+          "項目",
+          "紫微斗数",
+          "四柱推命"
+        ],
+        "rows": [
+          [
+            "基本の構成",
+            "12宮に14主星と補助星を配置した命盤",
+            "年柱・月柱・日柱・時柱の四柱、八文字"
+          ],
+          [
+            "暦の基準",
+            "旧暦の月・日",
+            "二十四節気で区切る月"
+          ],
+          [
+            "生まれた時間の役割",
+            "時辰が命宮の位置を決める",
+            "時柱という一本の柱を構成する"
+          ],
+          [
+            "解釈の中心",
+            "宮に入った星、明るさ、四化",
+            "日干と五行のバランス、通変星"
+          ],
+          [
+            "時期の読み方",
+            "10年単位の大運と流年",
+            "10年単位の大運と年運"
+          ]
+        ]
+      },
+      "faq": [
+        {
+          "q": "紫微斗数とは何ですか",
+          "a": "紫微斗数は、旧暦の生年月日と時刻から作る12宮の命盤を読む、中国の伝統的な命理体系です。14主星、補助星、四化を合わせて見ます。科学的に検証された予測手法ではないため、自己理解のための参考としてご利用ください。"
+        },
+        {
+          "q": "紫微斗数と四柱推命はどう違いますか",
+          "a": "四柱推命は四本の柱、八文字の五行バランスを読み、紫微斗数は星が12宮に配置された命盤を読む点が違います。四柱推命の月は節気を基準にし、紫微斗数は旧暦の月と日を使います。どちらが正確かを断定することはできません。"
+        },
+        {
+          "q": "紫微斗数は誰が作り、どれくらい古いのですか",
+          "a": "伝統的には10世紀の道士・陳摶(陳希夷)が作ったと伝えられますが、史料で確認された事実ではありません。代表的な文献『紫微斗数全書』の現存する版は、明代に刊行されたものとされています。正確な成立時期は確定が難しいです。"
+        },
+        {
+          "q": "生まれた時間がわからなくても紫微斗数は見られますか",
+          "a": "見ることはできますが、精度には限界があります。時辰が命宮の位置を決めるため、時間が変わると命盤の枠組みも変わるからです。ライフスポイラーは時間不明の場合に正午を仮定しますので、確定的な解釈ではなく参考としてご覧ください。"
+        },
+        {
+          "q": "紫微斗数の結果は信じてもよいですか",
+          "a": "紫微斗数は何百年も受け継がれてきた伝統的な解釈体系ですが、科学的に証明された予測方法ではありません。結果は楽しみと自己理解のための参考にとどめ、健康、お金、法律などの重要な判断は、ご自身の考えや専門家の助言を優先してください。"
+        },
+        {
+          "q": "14主星とは何ですか",
+          "a": "14主星は、紫微斗数の命盤の中心となる14個の星です。紫微、天機、太陽、武曲、天同、廉貞の紫微星系6星と、天府、太陰、貪狼、巨門、天相、天梁、七殺、破軍の天府星系8星に分かれます。"
+        },
+        {
+          "q": "大運は何歳から始まりますか",
+          "a": "最初の大運は五行局の数字と同じ年齢から始まり、2歳から6歳の間に当たります。水二局は2歳、火六局は6歳からで、その後は10年ごとに切り替わります。方向は性別と生まれ年の陰陽で決まります。"
+        },
+        {
+          "q": "ライフスポイラーはどの流派の紫微斗数を使っていますか",
+          "a": "ライフスポイラーは三合派の方式で命盤を計算しています。命盤の計算は決まった表と数式で行い、解釈の文章はAIモデルが作成します。流派によって、星の配置や明るさに一部違いが出ることがあります。"
+        }
+      ],
+      "glossary": [
+        {
+          "term": "命盤",
+          "reading": "めいばん",
+          "definition": "生年月日と時刻から12宮に星を配置して作る、紫微斗数の解釈の土台となる図表です。"
+        },
+        {
+          "term": "命宮",
+          "reading": "めいきゅう",
+          "definition": "旧暦の生まれ月と時辰で決まる12宮の出発点で、生まれ持った性格を表す宮です。"
+        },
+        {
+          "term": "十二宮",
+          "reading": "じゅうにきゅう",
+          "definition": "命宮から父母宮まで、人生の領域を12に分けた命盤の区画です。"
+        },
+        {
+          "term": "主星",
+          "reading": "しゅせい",
+          "definition": "紫微星系6星と天府星系8星から成る、命盤の中心となる14個の星です。"
+        },
+        {
+          "term": "補助星",
+          "reading": "ほじょせい",
+          "definition": "左輔・右弼などの吉星や火星・鈴星などの煞星のように、主星を助けたり揺さぶったりする星です。"
+        },
+        {
+          "term": "五行局",
+          "reading": "ごぎょうきょく",
+          "definition": "水二・木三・金四・土五・火六局のいずれかで、紫微星の位置と大運の開始年齢を決める基準です。"
+        },
+        {
+          "term": "四化",
+          "reading": "しか",
+          "definition": "生まれ年の天干によって四つの星に付く、化禄・化権・化科・化忌の変化です。"
+        },
+        {
+          "term": "三方四正",
+          "reading": "さんぽうしせい",
+          "definition": "ある宮と、その対面の宮、そして三合を成す二つの宮をあわせて読む解釈方法です。"
+        },
+        {
+          "term": "大運",
+          "reading": "たいうん",
+          "definition": "命宮から始まり、10年ごとに宮を移りながら切り替わる運の大きな流れです。"
+        },
+        {
+          "term": "流年",
+          "reading": "りゅうねん",
+          "definition": "特定の一年の運を、その年の天干による四化とあわせて読む方法です。"
+        },
+        {
+          "term": "三合派",
+          "reading": "さんごうは",
+          "definition": "『紫微斗数全書』の方法に沿い、三方四正を重視する紫微斗数の流派です。"
+        }
+      ],
+      "ui": {
+        "breadcrumbHome": "ホーム",
+        "updatedLabel": "最終更新",
+        "faqTitle": "よくある質問",
+        "glossaryTitle": "紫微斗数の用語集",
+        "ctaTitle": "あなたの命盤はどんな形でしょうか",
+        "ctaDescription": "生年月日と出生時間を入力すると、12宮と14主星が配置されたあなたの命盤と、10年ごとの大運の流れを確認できます。",
+        "ctaButton": "自分の命盤を見る",
+        "disclaimer": "ライフスポイラーの紫微斗数の解説は、楽しみと自己理解のための参考情報であり、医療・法律・投資の判断に代わるものではありません。",
+        "breadcrumbLabel": "現在地"
       }
     }
   }
