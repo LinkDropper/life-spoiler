@@ -1,34 +1,38 @@
 import type { Metadata } from "next";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
 import { createAuthClient } from "@/libs/supabase";
 import { findMyUniversePublicId } from "@/libs/universe/service";
+import { getLocalizedAlternates, getSeoLocale } from "@/libs/seo/metadata";
+import {
+  OPEN_GRAPH_LOCALE,
+  SITE_NAME,
+  buildLocalizedUrl,
+} from "@/libs/seo/site";
 import { getOpenGraphImage } from "@/libs/utils/og";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
 
 /**
  * `/universe/create` 오픈그래프. 동적 데이터가 없는 정적 폼 페이지라
  * `/universe/[publicId]/layout.tsx`와 달리 조회 없이 고정 문구만 쓴다.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
+  const locale = await getSeoLocale();
   const ogImage = getOpenGraphImage(locale);
   const t = await getTranslations("universe.create");
 
   const ogTitle = t("title");
   const ogDescription = t("description");
-  const pageUrl = `${SITE_URL}/universe/create`;
+  const pageUrl = buildLocalizedUrl("/universe/create", locale);
 
   return {
     title: ogTitle,
     description: ogDescription,
     openGraph: {
       type: "website",
-      locale: locale === "ko" ? "ko_KR" : locale === "ja" ? "ja_JP" : "en_US",
+      locale: OPEN_GRAPH_LOCALE[locale],
       url: pageUrl,
-      siteName: "인생스포",
+      siteName: SITE_NAME[locale],
       title: ogTitle,
       description: ogDescription,
       images: [
@@ -46,6 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: ogDescription,
       images: [ogImage],
     },
+    alternates: await getLocalizedAlternates("/universe/create"),
   };
 }
 

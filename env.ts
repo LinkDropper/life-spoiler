@@ -58,6 +58,14 @@ const envSchema = z
     // Google Analytics
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
 
+    // 검색엔진 소유권 확인 메타 태그 (선택). Google Search Console / Bing Webmaster Tools에서
+    // "HTML 태그" 방식으로 발급받은 content 값만 넣는다. DNS로 인증했다면 비워둔다.
+    GOOGLE_SITE_VERIFICATION: z.string().optional(),
+    BING_SITE_VERIFICATION: z.string().optional(),
+
+    // IndexNow 키 (public/{키}.txt와 동일한 값). scripts/seo/indexnow.mjs가 사용.
+    INDEXNOW_KEY: z.string().optional(),
+
     // Kakao JavaScript SDK
     NEXT_PUBLIC_KAKAO_JS_KEY: z.string().optional(),
 

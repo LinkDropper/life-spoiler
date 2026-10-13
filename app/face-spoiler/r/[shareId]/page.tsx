@@ -25,6 +25,8 @@ import {
 } from "@/libs/face-spoiler/preview-parser";
 import { isFaceReport } from "@/libs/face-spoiler/types";
 import { createAuthClient, createServerClient } from "@/libs/supabase";
+import { NOINDEX_METADATA } from "@/libs/seo/metadata";
+import { SITE_URL } from "@/libs/seo/site";
 
 import styles from "./page.module.css";
 
@@ -113,9 +115,11 @@ export const generateMetadata = async ({
     default: "사진 한 장으로 받아본 관상 리포트.",
   });
 
-  const reportUrl = `https://life-spoiler.com/face-spoiler/r/${shareId}`;
+  const reportUrl = `${SITE_URL}/face-spoiler/r/${shareId}`;
 
   return {
+    // 개인 관상 리포트라 색인에서 제외한다 (링크 미리보기는 유지).
+    ...NOINDEX_METADATA,
     title,
     description,
     openGraph: {

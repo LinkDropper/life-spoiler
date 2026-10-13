@@ -1,0 +1,33 @@
+name: IndexNow
+
+# Vercel 프로덕션 배포가 성공하면 sitemap에서 최근 변경된 URL을 IndexNow로 제출합니다.
+# (Bing/Copilot·Naver 등 IndexNow 참여 엔진에 변경 사항을 즉시 알림)
+# 최초 1회 또는 대규모 변경 시에는 workflow_dispatch로 all=true 실행.
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      all:
+        description: "sitemap 전체 URL 제출"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  submit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Submit changed URLs
+        run: node scripts/seo/indexnow.mjs ${{ inputs.all && '--all' || '' }}
