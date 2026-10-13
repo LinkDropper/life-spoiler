@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { getLocalizedAlternates } from "@/libs/seo/metadata";
+
 import { PrivacyContent } from "./PrivacyContent";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -10,6 +12,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
     description: t("metaDescription", {
       default: "관상스포 개인정보 처리방침",
     }),
+    alternates: await getLocalizedAlternates("/face-spoiler/policy/privacy"),
   };
 };
 
