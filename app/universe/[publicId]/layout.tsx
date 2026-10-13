@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { getUniverseDetail } from "@/libs/universe/service";
+import { NOINDEX_METADATA } from "@/libs/seo/metadata";
 import { getOpenGraphImage } from "@/libs/utils/og";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
@@ -55,6 +56,8 @@ export async function generateMetadata({
   const pageUrl = `${SITE_URL}/universe/${publicId}`;
 
   return {
+    // 소유자 이름이 노출되는 개인 공유 페이지라 색인에서 제외한다 (링크 미리보기는 유지).
+    ...NOINDEX_METADATA,
     title: ogTitle,
     description: ogDescription,
     openGraph: {

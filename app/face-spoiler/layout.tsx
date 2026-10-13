@@ -1,14 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
+
+import { getSeoLocale } from "@/libs/seo/metadata";
+import { OPEN_GRAPH_LOCALE, buildLocalizedUrl } from "@/libs/seo/site";
 
 import "./face-spoiler.css";
 
-const FACE_SPOILER_URL = "https://life-spoiler.com/face-spoiler";
 const OG_IMAGE = "/images/face-spoiler-open-graph.png";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const t = await getTranslations("faceSpoiler.metadata");
-  const locale = await getLocale();
+  const locale = await getSeoLocale();
 
   const title = t("title", {
     default: "관상스포 — 사진 한 장으로 보는 나의 관상 리포트",
@@ -57,8 +59,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
       title: ogTitle,
       description: ogDescription,
       type: "website",
-      locale: locale === "ko" ? "ko_KR" : locale === "ja" ? "ja_JP" : "en_US",
-      url: FACE_SPOILER_URL,
+      locale: OPEN_GRAPH_LOCALE[locale],
+      url: buildLocalizedUrl("/face-spoiler", locale),
       siteName: "관상스포",
       images: [
         {
@@ -73,9 +75,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
       description: ogDescription,
       images: [OG_IMAGE],
     },
-    alternates: {
-      canonical: FACE_SPOILER_URL,
-    },
+    // canonical은 하위 페이지로 상속되지 않도록 각 page.tsx에서 지정한다.
   };
 };
 

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { getLocalizedAlternates } from "@/libs/seo/metadata";
+
 import { TermsContent } from "./TermsContent";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,6 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
+    alternates: await getLocalizedAlternates("/policy/terms"),
   };
 }
 

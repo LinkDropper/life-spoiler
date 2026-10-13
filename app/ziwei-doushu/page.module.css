@@ -1,0 +1,258 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  color: var(--color-text-default, #ffffff);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 24px 48px;
+
+  @media (max-width: 375px) {
+    padding: 16px 16px 48px;
+  }
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.breadcrumb li + li::before {
+  content: "›";
+  margin-right: 6px;
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--primitive-primary, #ffccd9);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.updated {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.intro {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid rgba(255, 204, 217, 0.25);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.paragraph {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.88);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.tableWrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 204, 217, 0.2);
+  border-radius: 12px;
+}
+
+.table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.caption {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.table th,
+.table td {
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+  vertical-align: top;
+  word-break: keep-all;
+}
+
+.table thead th {
+  background: rgba(255, 204, 217, 0.08);
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.table tbody th {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.faqItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(255, 204, 217, 0.15);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.faqQuestion {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.glossary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.glossaryItem {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glossaryTerm {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.glossaryReading {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.glossaryDefinition {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 20px;
+  border-radius: 16px;
+  background: rgba(255, 204, 217, 0.08);
+  border: 1px solid rgba(255, 204, 217, 0.3);
+}
+
+.ctaTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.ctaDescription {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.ctaButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 52px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  background: var(--color-button-primary-surface, #ffccd9);
+  color: #2d1b4e;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ctaButton:focus-visible,
+.breadcrumb a:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.disclaimer {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}
