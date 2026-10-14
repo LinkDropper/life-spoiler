@@ -72,13 +72,25 @@ AI 서비스 장애 시 폴백 응답을 제공합니다.
 
 ```typescript
 // 시진 타입
-type TimeBranchValue = "자" | "축" | "인" | "묘" | "진" | "사" | "오" | "미" | "신" | "유" | "술" | "해";
+type TimeBranchValue =
+  | "자"
+  | "축"
+  | "인"
+  | "묘"
+  | "진"
+  | "사"
+  | "오"
+  | "미"
+  | "신"
+  | "유"
+  | "술"
+  | "해";
 
 // 입력
 interface ZiweiInput {
   name: string;
-  birthDate: string;           // "YYYY-MM-DD"
-  birthTime: TimeBranchValue;  // 시진 선택 (자, 축, 인 등)
+  birthDate: string; // "YYYY-MM-DD"
+  birthTime: TimeBranchValue; // 시진 선택 (자, 축, 인 등)
   gender: "male" | "female";
   calendarType: "solar" | "lunar";
   isLeapMonth?: boolean;
@@ -88,20 +100,20 @@ interface ZiweiInput {
 interface ZiweiChart {
   input: ZiweiInput;
   lunarDate: LunarDate;
-  mingGong: BranchIndex;  // 0-11
-  wuxingJu: WuxingJu;     // 2, 3, 4, 5, 6
-  palaces: Palace[];      // 12궁
-  sihua: SihuaResult;     // 사화 배치
+  mingGong: BranchIndex; // 0-11
+  wuxingJu: WuxingJu; // 2, 3, 4, 5, 6
+  palaces: Palace[]; // 12궁
+  sihua: SihuaResult; // 사화 배치
 }
 
 // 결과
 interface FortuneResult {
-  summary: string;        // 전체 요약
-  preview: { summary, description };  // 미리보기
-  wealth: FortuneSection;     // 재물운
-  career: FortuneSection;     // 직업운
+  summary: string; // 전체 요약
+  preview: { summary; description }; // 미리보기
+  wealth: FortuneSection; // 재물운
+  career: FortuneSection; // 직업운
   relationship: FortuneSection; // 인연운
-  health: FortuneSection;     // 건강운
+  health: FortuneSection; // 건강운
 }
 ```
 
@@ -116,7 +128,7 @@ import { generateZiweiChart } from "@/libs/zi-wei-dou-shu";
 const chart = generateZiweiChart({
   name: "홍길동",
   birthDate: "1990-05-15",
-  birthTime: "오",  // 오시 (11:00~12:59)
+  birthTime: "오", // 오시 (11:00~12:59)
   gender: "male",
   calendarType: "solar",
 });
@@ -197,15 +209,16 @@ pnpm test libs/zi-wei-dou-shu
 
 #### 1. 자미 계열 주성 오프셋 수정 (`constants/stars.ts`)
 
-| 별 | 수정 전 | 수정 후 | 근거 |
-|---|---|---|---|
-| 천기 | -1 | -1 | 변경 없음 |
-| 태양 | -2 | **-3** | 隔一 (1칸 공석) |
-| 무곡 | -3 | **-4** | 隔一 이후 연속 |
-| 천동 | -4 | **-5** | 隔一 이후 연속 |
-| 염정 | -5 | **-8** | 隔二 (2칸 공석) |
+| 별   | 수정 전 | 수정 후 | 근거            |
+| ---- | ------- | ------- | --------------- |
+| 천기 | -1      | -1      | 변경 없음       |
+| 태양 | -2      | **-3**  | 隔一 (1칸 공석) |
+| 무곡 | -3      | **-4**  | 隔一 이후 연속  |
+| 천동 | -4      | **-5**  | 隔一 이후 연속  |
+| 염정 | -5      | **-8**  | 隔二 (2칸 공석) |
 
 **구결 해석:**
+
 ```
 "紫微天機星逆行，隔一陽武天同行，天同隔二是廉貞"
 
@@ -218,35 +231,38 @@ pnpm test libs/zi-wei-dou-shu
 **원인:** 안성결 나머지 보정값 계산 오류
 **해결:** 레퍼런스 사이트(정통 자미두수) 데이터 기반 전체 교체
 
-| 구간 | 수정 전 (오류) | 수정 후 (정답) |
-|------|---------------|---------------|
-| 1일 | 2 (인) | **9 (유)** |
-| 22일 | 9 (유) | **7 (미)** ✓ 레퍼런스 검증 |
-| 6,12,18,24,30일 | 일부 정확 | 나머지 0인 경우 정확 ✓ |
+| 구간            | 수정 전 (오류) | 수정 후 (정답)             |
+| --------------- | -------------- | -------------------------- |
+| 1일             | 2 (인)         | **9 (유)**                 |
+| 22일            | 9 (유)         | **7 (미)** ✓ 레퍼런스 검증 |
+| 6,12,18,24,30일 | 일부 정확      | 나머지 0인 경우 정확 ✓     |
 
 **검증 케이스:**
+
 - 화6국 22일생 → 자미성 미(未)궁 = 명궁에 천기성 ✓
 
 ### 검증 범위
+
 - 자미성 위치 테이블, 14주성 배치, 보성 배치, 사화성 테이블, 명궁/신궁 계산
 
 ### ✅ 검증 완료 (정확)
 
-| 항목 | 검증 결과 | 참조 |
-|------|----------|------|
-| 명궁/신궁 계산 | 전통 공식 일치 ✓ | `calculators/palace.ts` |
-| 12궁 배치 순서 | 반시계 방향 ✓ | `constants/palaces.ts` |
-| 천부성 대칭 (인-신 축) | 정확 ✓ | `constants/stars.ts` |
-| 납음 테이블 (60갑자) | 정확 ✓ | `constants/nayin.ts` |
-| 오행국 계산 | 정확 ✓ | `calculators/wuxing.ts` |
-| 사화성 테이블 | 정확 ✓ | `constants/sihua-table.ts` |
-| 보좌성 공식 | 정확 ✓ | `calculators/minor-stars.ts` |
-| 수이국 자미성 테이블 | 안성결 일치 ✓ | `constants/ziwei-table.ts` |
-| **자미 계열 오프셋** | **구결 기반 수정 ✓** | `constants/stars.ts` |
+| 항목                   | 검증 결과            | 참조                         |
+| ---------------------- | -------------------- | ---------------------------- |
+| 명궁/신궁 계산         | 전통 공식 일치 ✓     | `calculators/palace.ts`      |
+| 12궁 배치 순서         | 반시계 방향 ✓        | `constants/palaces.ts`       |
+| 천부성 대칭 (인-신 축) | 정확 ✓               | `constants/stars.ts`         |
+| 납음 테이블 (60갑자)   | 정확 ✓               | `constants/nayin.ts`         |
+| 오행국 계산            | 정확 ✓               | `calculators/wuxing.ts`      |
+| 사화성 테이블          | 정확 ✓               | `constants/sihua-table.ts`   |
+| 보좌성 공식            | 정확 ✓               | `calculators/minor-stars.ts` |
+| 수이국 자미성 테이블   | 안성결 일치 ✓        | `constants/ziwei-table.ts`   |
+| **자미 계열 오프셋**   | **구결 기반 수정 ✓** | `constants/stars.ts`         |
 
 ### ⚠️ 학파별 차이 존재
 
 #### 1. 자미성 위치 테이블 (`constants/ziwei-table.ts`)
+
 - **수이국**: 검증 완료 ✓
 - **목삼국, 토오국**: 예시와 일치 ✓
 - **금사국**: 추가 검증 필요
@@ -254,17 +270,20 @@ pnpm test libs/zi-wei-dou-shu
 - **출처**: 삼합파(三合派) 안기정계법
 
 #### 2. 파군 오프셋 (`constants/stars.ts`)
+
 - **현재 값**: 파군 = 천부 + 10 (칠살 + 4)
 - **근거**: 구결 "七殺空三是破軍" (칠살에서 3칸 공백 후 파군)
 - **학파 차이**: 일부 학파에서는 +4로 보는 경우 있음
 - **결론**: 현재 코드는 주류 삼합파 해석을 따름 ✓
 
 #### 3. 14주성 밝기 테이블 (`constants/brightness-table.ts`)
+
 - **출처**: 삼합파(三合派) 전통 밝기표
 - **학파 차이**: 태양/태음의 특정 지지 밝기는 학파마다 다를 수 있음
 - **참고**: 묘(廟) > 왕(旺) > 득(得) > 리(利) > 평(平) > 함(陷)
 
 #### 4. 화성/영성 시작점 (`calculators/minor-stars.ts`)
+
 - **현재 구현**:
   - 인오술년: 화성=축, 영성=묘
   - 신자진년: 화성=인, 영성=술
@@ -314,6 +333,7 @@ pnpm test libs/zi-wei-dou-shu
 ```
 
 **각 궁에 표시할 정보:**
+
 - 궁 이름 (명궁, 부모궁, 재백궁 등)
 - 12지지 (子丑寅卯...)
 - 주성 (이모지 + 이름 + 밝기)
@@ -325,20 +345,23 @@ pnpm test libs/zi-wei-dou-shu
 10년 단위로 인생의 운세 흐름을 계산합니다.
 
 **대운 계산 원리:**
+
 - 명궁에서 시작하여 순행/역행으로 10년마다 이동
 - 남자 양년생/여자 음년생: 순행 (시계방향)
 - 남자 음년생/여자 양년생: 역행 (반시계방향)
 - 오행국 숫자가 대운 시작 나이 결정 (예: 수이국=2세, 화육국=6세)
 
 **대운 데이터 구조:**
+
 ```typescript
 interface DayunPeriod {
-  startAge: number;      // 시작 나이 (예: 2, 12, 22...)
-  endAge: number;        // 종료 나이 (예: 11, 21, 31...)
-  palace: Palace;        // 해당 기간의 대운궁
-  mainStars: Star[];     // 대운궁의 주성들
+  startAge: number; // 시작 나이 (예: 2, 12, 22...)
+  endAge: number; // 종료 나이 (예: 11, 21, 31...)
+  palace: Palace; // 해당 기간의 대운궁
+  mainStars: Star[]; // 대운궁의 주성들
   dayunSihua: SihuaResult; // 대운 사화
-  score: {               // AI가 계산한 운세 점수 (0-100)
+  score: {
+    // AI가 계산한 운세 점수 (0-100)
     overall: number;
     wealth: number;
     career: number;
@@ -352,12 +375,14 @@ interface DayunPeriod {
 나이(X축) vs 운세점수(Y축) 그래프로 인생 흐름을 시각화합니다.
 
 **그래프 종류:**
+
 1. **💰 재물운 그래프**: 나이별 재물/자산 흐름
 2. **💼 직업운 그래프**: 커리어 성장 곡선
 3. **🏃 건강운 그래프**: 건강 주의 시기 표시
 4. **📊 종합운 그래프**: 전체 인생 운세 흐름
 
 **그래프 특징:**
+
 - 10년 단위 구간으로 표시
 - 현재 나이 위치 하이라이트
 - 주요 전환점(기회/주의) 마커 표시
@@ -440,6 +465,7 @@ app/components/
 ```
 
 **AI 응답 예시:**
+
 ```json
 {
   "title": "💰 재물운",
