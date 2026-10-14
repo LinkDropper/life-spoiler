@@ -24,6 +24,8 @@ interface ShareDrawerProps {
   showLine?: boolean;
   /** 이미지 다운로드 메뉴 표시 여부 (기본값: true) */
   showDownloadImage?: boolean;
+  /** 이미지 저장 메뉴 라벨 (기본값: "프로필 이미지 다운로드") */
+  downloadImageLabel?: string;
   /** 이벤트 배너 표시 여부 (기본값: false) */
   showEventBanner?: boolean;
   /** 이벤트 배너 메시지 */
@@ -47,6 +49,7 @@ export const ShareDrawer = ({
   showCopyLink = true,
   showLine = true,
   showDownloadImage = true,
+  downloadImageLabel,
   showEventBanner = false,
   eventBannerMessage,
 }: ShareDrawerProps) => {
@@ -177,7 +180,8 @@ export const ShareDrawer = ({
               <span>
                 {isDownloading
                   ? t("downloading", { default: "다운로드 중..." })
-                  : t("downloadImage", { default: "프로필 이미지 다운로드" })}
+                  : (downloadImageLabel ??
+                    t("downloadImage", { default: "프로필 이미지 다운로드" }))}
               </span>
             </button>
           )}

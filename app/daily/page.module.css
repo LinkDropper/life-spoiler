@@ -1,0 +1,184 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  color: var(--color-text-default, #ffffff);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 24px 48px;
+
+  @media (max-width: 375px) {
+    padding: 16px 16px 48px;
+  }
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb li + li::before {
+  content: "›";
+  margin-right: 6px;
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--primitive-primary, #ffccd9);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #ffe27a;
+  color: #2b1b57;
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.intro {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+  word-break: keep-all;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.paragraph {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.86);
+  word-break: keep-all;
+}
+
+.note {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.example {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.exampleHeadline {
+  margin: 0;
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-size: 20px;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.exampleGrade {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffe27a;
+}
+
+.faqItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.faqQuestion {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.cta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ctaTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+.disclaimer {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  word-break: keep-all;
+}

@@ -3,12 +3,23 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 
+import {
+  hasFortuneAccessOf,
+  hasFreeAccessOf,
+  hasPaidFortuneOf,
+} from "@/libs/fortune/entitlement";
 import type { ProfileWithFortunes } from "@/libs/stores/profile";
 
-type FortuneType = "lifetime" | "yearly" | "past-life" | "yearly_2027";
+type FortuneType =
+  | "lifetime"
+  | "yearly"
+  | "past-life"
+  | "yearly_2027"
+  | "daily";
+type PaidFortuneType = Exclude<FortuneType, "daily">;
 
 const toDbFortuneType = (
-  type: FortuneType
+  type: PaidFortuneType
 ): "lifetime" | "yearly" | "past_life" | "yearly_2027" =>
   type === "past-life" ? "past_life" : type;
 
@@ -17,9 +28,9 @@ interface UseFortuneNavigationProps {
 }
 
 interface UseFortuneNavigationReturn {
-  hasPaidFortune: (fortuneType: FortuneType) => boolean;
-  hasFreeAccess: (fortuneType: FortuneType) => boolean;
-  hasAccess: (fortuneType: FortuneType) => boolean;
+  hasPaidFortune: (fortuneType: PaidFortuneType) => boolean;
+  hasFreeAccess: (fortuneType: PaidFortuneType) => boolean;
+  hasAccess: (fortuneType: PaidFortuneType) => boolean;
   navigateToFortune: (fortuneType: FortuneType) => void;
 }
 
@@ -29,39 +40,22 @@ export const useFortuneNavigation = ({
   const router = useRouter();
 
   const hasPaidFortune = useCallback(
-    (fortuneType: FortuneType): boolean => {
-      if (!selectedProfile?.fortunes) return false;
-
-      const dbType = toDbFortuneType(fortuneType);
-      return selectedProfile.fortunes.some(
-        (f) => f.fortune_type === dbType && f.paid_at !== null
-      );
-    },
+    (fortuneType: PaidFortuneType): boolean =>
+      hasPaidFortuneOf(selectedProfile, toDbFortuneType(fortuneType)),
     [selectedProfile]
   );
 
+  // 호출 시점의 현재 시간으로 만료 체크 (정적 시간 사용하지 않음)
   const hasFreeAccess = useCallback(
-    (fortuneType: FortuneType): boolean => {
-      if (!selectedProfile?.profile_free_access) return false;
-
-      // 호출 시점의 현재 시간으로 만료 체크 (정적 시간 사용하지 않음)
-      const now = new Date().toISOString();
-
-      const dbType = toDbFortuneType(fortuneType);
-      return selectedProfile.profile_free_access.some(
-        (access) =>
-          access.fortune_type === dbType &&
-          (access.expires_at === null || access.expires_at > now)
-      );
-    },
+    (fortuneType: PaidFortuneType): boolean =>
+      hasFreeAccessOf(selectedProfile, toDbFortuneType(fortuneType)),
     [selectedProfile]
   );
 
   const hasAccess = useCallback(
-    (fortuneType: FortuneType): boolean => {
-      return hasPaidFortune(fortuneType) || hasFreeAccess(fortuneType);
-    },
-    [hasPaidFortune, hasFreeAccess]
+    (fortuneType: PaidFortuneType): boolean =>
+      hasFortuneAccessOf(selectedProfile, toDbFortuneType(fortuneType)),
+    [selectedProfile]
   );
 
   const navigateToFortune = useCallback(
@@ -69,6 +63,12 @@ export const useFortuneNavigation = ({
       if (!selectedProfile) return;
 
       const profileId = selectedProfile.id;
+
+      // 오늘의 운세는 무료라 결제/미리보기 분기 없이 결과로 직행한다
+      if (fortuneType === "daily") {
+        router.push(`/fortune/daily/${profileId}`);
+        return;
+      }
 
       if (hasAccess(fortuneType)) {
         router.push(`/fortune/${fortuneType}/${profileId}`);

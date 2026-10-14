@@ -1,4 +1,5 @@
 export { CompatibilityFortuneCard } from "./CompatibilityFortuneCard";
+export { DailyFortuneCard } from "./DailyFortuneCard";
 export { FaceReadingCard } from "./FaceReadingCard";
 export { FriendUniverseCard } from "./FriendUniverseCard";
 export { LifetimeFortuneCard } from "./LifetimeFortuneCard";
