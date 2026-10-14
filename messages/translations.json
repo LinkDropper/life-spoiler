@@ -285,7 +285,8 @@
         "yearlyFortune": "올해 운세",
         "yearly2027Fortune": "내년 운세",
         "pastLifeFortune": "전생 운세"
-      }
+      },
+      "dailyFortune": "오늘의 운세 보기"
     },
     "compatibility": {
       "loading": "로딩 중...",
@@ -1562,6 +1563,162 @@
         "disclaimer": "인생스포의 자미두수 풀이는 재미와 자기 이해를 위한 참고 자료이며, 의료·법률·투자 판단을 대신하지 않습니다.",
         "breadcrumbLabel": "현재 위치"
       }
+    },
+    "daily": {
+      "grade": {
+        "1": "살펴 가는 날",
+        "2": "숨 고르는 날",
+        "3": "잔잔한 날",
+        "4": "환한 날",
+        "5": "빛나는 날"
+      },
+      "stars": {
+        "label": "5점 만점에 {level}점, {grade}"
+      },
+      "category": {
+        "overall": "총운",
+        "love": "애정",
+        "money": "재물",
+        "work": "일·학업",
+        "health": "건강"
+      },
+      "home": {
+        "title": "오늘의 운세",
+        "subtitle": "매일 달라지는 나의 하루를 미리 확인해요",
+        "button": "오늘 운세 보기"
+      },
+      "result": {
+        "pageTitle": "오늘의 운세",
+        "changeProfile": "프로필 변경",
+        "greeting": "{date} · {name}님의 오늘",
+        "headlineLabel": "오늘의 한 줄",
+        "variableLabel": "오늘의 변수",
+        "timeUnknownNotice": "태어난 시간을 몰라 시간과 상관없는 흐름 위주로 보여드려요.",
+        "timeUnknownImprove": "태어난 시간을 입력하면 더 정확해져요",
+        "timeUnknownEdit": "프로필 수정하기",
+        "categoryListLabel": "분야별 오늘의 흐름",
+        "categoryToggleHint": "탭하면 자세히 볼 수 있어요",
+        "keywordsTitle": "오늘의 예고 키워드",
+        "keywordColor": "색",
+        "keywordItem": "소품",
+        "keywordNumber": "숫자",
+        "keywordTime": "시간대",
+        "cautionTitle": "오늘의 주의 포인트",
+        "tipTitle": "오늘의 팁",
+        "ctaLifetimeTitle": "오늘 하루가 아니라 평생의 큰 흐름이 궁금하세요?",
+        "ctaLifetimeBody": "인생운세에서 시기별 흐름을 미리 볼 수 있어요.",
+        "ctaLifetimeButton": "인생운세 보기",
+        "ctaPaidTitle": "다른 흐름도 이어서 볼까요?",
+        "ctaPaidBody": "올해의 흐름과 소중한 사람과의 궁합도 확인해 보세요.",
+        "ctaYearlyButton": "올해운세 보기",
+        "ctaCompatibilityButton": "궁합 보기",
+        "share": "공유하기",
+        "shareTitle": "오늘의 운세",
+        "shareText": "오늘의 한 줄: {headline}",
+        "shareImageFilename": "life_spoiler_daily",
+        "disclaimer": "재미로 보는 엔터테인먼트용 간이 규칙이에요(流日은 유파마다 해석이 달라요). 의료·투자 판단의 근거가 아니에요.",
+        "midnightNotice": "한국 시간 자정에 바뀌어요.",
+        "detailsOpen": "자세히",
+        "detailsClose": "접기",
+        "detailsBody": "밤 11시부터 자정까지(자시)를 오늘로 볼지 내일로 볼지는 유파마다 달라요. 인생스포는 한국 시간 자정(00:00)을 기준으로 하루를 나눠요.",
+        "loading": "오늘의 운세를 불러오는 중이에요.",
+        "refreshing": "새로운 날의 운세를 불러오는 중이에요.",
+        "dateChanged": "날짜가 바뀌어 새 결과로 갱신했어요.",
+        "errorMessage": "결과를 불러오지 못했어요.",
+        "retry": "다시 시도",
+        "copyToast": "링크를 복사했어요.",
+        "saveImage": "결과 이미지 저장",
+        "koOnlyNotice": "결과 문구는 현재 한국어로만 제공돼요."
+      },
+      "share": {
+        "eyebrow": "오늘의 한 줄",
+        "dateLabel": "{date}의 운세",
+        "brand": "오늘의 운세 · 인생스포",
+        "keywordsTitle": "오늘의 예고 키워드",
+        "openMine": "내 오늘도 보기",
+        "disclaimer": "재미로 보는 엔터테인먼트용 간이 규칙이에요.",
+        "koOnlyNotice": "결과 문구는 현재 한국어로만 제공돼요.",
+        "unavailableTitle": "공유 카드를 불러오지 못했어요",
+        "unavailableBody": "잠시 후 다시 시도해 주세요.",
+        "pageTitle": "친구의 오늘의 운세",
+        "ogTitle": "오늘의 운세 · 인생스포",
+        "ogDescription": "친구가 공유한 오늘의 한 줄을 확인해 보세요."
+      },
+      "landing": {
+        "meta": {
+          "title": "오늘의 운세 | 매일 바뀌는 자미두수 운세",
+          "description": "내 명반과 오늘의 일진으로 매일 달라지는 운세를 확인하세요. 오늘의 한 줄, 애정·재물·일·학업·건강 흐름과 예고 키워드를 무료로 보여드려요.",
+          "h1": "오늘의 운세"
+        },
+        "ui": {
+          "breadcrumbHome": "인생스포",
+          "breadcrumbLabel": "현재 위치",
+          "badge": "무료",
+          "exampleTitle": "예시 결과",
+          "exampleNote": "아래는 이해를 돕기 위한 예시예요. 실제 결과는 프로필마다, 날짜마다 달라요.",
+          "faqTitle": "자주 묻는 질문",
+          "ctaTitle": "내 오늘이 궁금하다면",
+          "ctaBody": "로그인하고 프로필을 고르면 바로 오늘의 결과를 볼 수 있어요.",
+          "ctaButton": "로그인하고 내 오늘 보기",
+          "disclaimer": "재미로 보는 엔터테인먼트용 간이 규칙이에요. 의료·투자·법률 판단의 근거가 아니에요."
+        },
+        "intro": "오늘의 운세는 내 명반(자미두수로 그린 타고난 지도)에 그날의 일진을 겹쳐 매일 다른 하루를 보여드리는 무료 서비스예요. 한 줄 요약부터 분야별 흐름, 예고 키워드까지 1분 안에 확인할 수 있어요.",
+        "sections": [
+          {
+            "id": "how",
+            "heading": "내 명반과 오늘의 일진으로 계산해요",
+            "paragraphs": [
+              "로그인한 프로필의 생년월일시로 자미두수 명반을 만들고, 그날의 일진(날짜에 붙는 간지)을 겹쳐서 오늘의 흐름을 계산해요. 같은 사람이어도 날짜가 바뀌면 일진이 달라져서 결과도 달라져요.",
+              "계산은 정해진 규칙으로만 이루어져요. 매번 새로 쓰는 문장이 아니라 미리 준비한 문구를 규칙에 따라 골라 보여드리기 때문에, 같은 날 같은 프로필이면 결과도 같아요."
+            ]
+          },
+          {
+            "id": "contents",
+            "heading": "하루에 이런 것들을 보여드려요",
+            "paragraphs": [
+              "오늘의 한 줄과 총운, 그리고 애정·재물·일·학업·건강 네 가지 흐름을 별 1~5개와 등급 이름(빛나는 날, 환한 날, 잔잔한 날, 숨 고르는 날, 살펴 가는 날)으로 보여드려요. 숫자 점수는 쓰지 않아요.",
+              "여기에 오늘의 예고 키워드(색, 소품, 숫자, 시간대)와 주의 포인트, 작은 팁이 더해져요."
+            ]
+          },
+          {
+            "id": "midnight",
+            "heading": "하루는 한국 시간 자정에 바뀌어요",
+            "paragraphs": [
+              "결과는 한국 시간(KST) 자정을 기준으로 하루에 하나씩 정해져요. 새로고침해도 달라지지 않고, 자정이 지나면 새로운 결과로 바뀌어요."
+            ]
+          }
+        ],
+        "example": {
+          "headline": "미뤄 둔 결정이 오후에 차분히 풀리는 날이에요.",
+          "overall": "오전보다 오후에 판단이 선명해지는 날이에요. 고민하던 일이 있다면 점심 이후에 꺼내 보세요.",
+          "overallGrade": "환한 날",
+          "overallLevel": 4,
+          "keywords": "색 남색 · 소품 따뜻한 차 한 잔 · 숫자 4 · 시간대 오후 3~5시",
+          "tip": "중요한 연락은 오후 3시 이후에 보내 보세요."
+        },
+        "faq": [
+          {
+            "q": "오늘의 운세는 무료인가요?",
+            "a": "네, 무료예요. 로그인하고 등록한 프로필이 있으면 매일 볼 수 있어요."
+          },
+          {
+            "q": "AI가 매일 새로 써 주는 건가요?",
+            "a": "아니에요. 미리 준비한 문구를 정해진 규칙에 따라 골라 보여드려요. 그래서 같은 날 같은 프로필이면 결과가 같아요."
+          },
+          {
+            "q": "태어난 시간을 모르면 볼 수 없나요?",
+            "a": "볼 수 있어요. 태어난 시간을 모르는 프로필은 시간과 상관없는 흐름 위주로 계산해서 보여드려요. 시간을 알면 조금 더 세밀해져요."
+          },
+          {
+            "q": "밤 11시 이후에 보면 어느 날 기준인가요?",
+            "a": "밤 11시부터 자정까지(자시)를 오늘로 볼지 내일로 볼지는 유파마다 달라요. 인생스포는 한국 시간 자정(00:00)을 기준으로 하루를 나눠요."
+          },
+          {
+            "q": "결과를 그대로 믿어도 되나요?",
+            "a": "재미로 보는 엔터테인먼트용 간이 규칙이에요. 流日(그날의 흐름) 해석은 유파마다 달라서 하나의 정답이 아니에요. 의료·투자·법률 판단의 근거로는 쓰지 말아 주세요."
+          }
+        ]
+      }
     }
   },
   "en": {
@@ -1850,7 +2007,8 @@
         "yearlyFortune": "Yearly Fortune",
         "yearly2027Fortune": "Next Year's Fortune",
         "pastLifeFortune": "Past Life Fortune"
-      }
+      },
+      "dailyFortune": "See daily fortune"
     },
     "compatibility": {
       "loading": "Loading...",
@@ -3127,6 +3285,162 @@
         "disclaimer": "Life Spoiler readings are for entertainment and self-reflection only and do not replace medical, legal, or financial advice.",
         "breadcrumbLabel": "Breadcrumb"
       }
+    },
+    "daily": {
+      "grade": {
+        "1": "A day to go carefully",
+        "2": "A day to pause",
+        "3": "A calm day",
+        "4": "A bright day",
+        "5": "A shining day"
+      },
+      "stars": {
+        "label": "{level} out of 5 stars, {grade}"
+      },
+      "category": {
+        "overall": "Overall",
+        "love": "Love",
+        "money": "Money",
+        "work": "Work & study",
+        "health": "Wellbeing"
+      },
+      "home": {
+        "title": "Daily Fortune",
+        "subtitle": "Preview how your day unfolds, fresh every day",
+        "button": "See today's fortune"
+      },
+      "result": {
+        "pageTitle": "Daily Fortune",
+        "changeProfile": "Change profile",
+        "greeting": "{date} · {name}'s today",
+        "headlineLabel": "Today's one-liner",
+        "variableLabel": "Today's wildcard",
+        "timeUnknownNotice": "Your birth time is unknown, so this focuses on patterns that don't depend on time.",
+        "timeUnknownImprove": "Add your birth time for a more precise reading",
+        "timeUnknownEdit": "Edit profile",
+        "categoryListLabel": "Today's flow by area",
+        "categoryToggleHint": "Tap to see details",
+        "keywordsTitle": "Today's preview keywords",
+        "keywordColor": "Color",
+        "keywordItem": "Item",
+        "keywordNumber": "Number",
+        "keywordTime": "Time of day",
+        "cautionTitle": "Today's heads-up",
+        "tipTitle": "Today's tip",
+        "ctaLifetimeTitle": "Curious about the big picture of your whole life, not just today?",
+        "ctaLifetimeBody": "See the flow of each period ahead in your Lifetime Fortune.",
+        "ctaLifetimeButton": "See Lifetime Fortune",
+        "ctaPaidTitle": "Want to keep exploring?",
+        "ctaPaidBody": "Check this year's flow and your compatibility with someone special.",
+        "ctaYearlyButton": "See Yearly Fortune",
+        "ctaCompatibilityButton": "See compatibility",
+        "share": "Share",
+        "shareTitle": "Daily Fortune",
+        "shareText": "Today's one-liner: {headline}",
+        "shareImageFilename": "life_spoiler_daily",
+        "disclaimer": "This is a simplified rule set for entertainment (daily-pillar readings differ between schools). It is not a basis for medical or financial decisions.",
+        "midnightNotice": "Changes at midnight, Korea time.",
+        "detailsOpen": "Details",
+        "detailsClose": "Collapse",
+        "detailsBody": "Schools differ on whether 11 PM to midnight counts as today or tomorrow. Life Spoiler splits days at midnight (00:00) Korea time.",
+        "loading": "Loading your daily fortune.",
+        "refreshing": "Loading the new day's fortune.",
+        "dateChanged": "The date changed, so we refreshed your result.",
+        "errorMessage": "We couldn't load your result.",
+        "retry": "Try again",
+        "copyToast": "Link copied.",
+        "saveImage": "Save result image",
+        "koOnlyNotice": "The fortune text is currently available in Korean only."
+      },
+      "share": {
+        "eyebrow": "Today's one-liner",
+        "dateLabel": "Fortune for {date}",
+        "brand": "Daily Fortune · Life Spoiler",
+        "keywordsTitle": "Today's preview keywords",
+        "openMine": "See my today",
+        "disclaimer": "A simplified rule set for entertainment.",
+        "koOnlyNotice": "The fortune text is currently available in Korean only.",
+        "unavailableTitle": "We couldn't load this share card",
+        "unavailableBody": "Please try again in a moment.",
+        "pageTitle": "A friend's daily fortune",
+        "ogTitle": "Daily Fortune · Life Spoiler",
+        "ogDescription": "See the one-liner your friend shared for today."
+      },
+      "landing": {
+        "meta": {
+          "title": "Daily Fortune | Zi Wei Dou Shu fortune that changes every day",
+          "description": "See a fortune that changes every day, built from your chart and today's day pillar. A one-liner, love, money, work and wellbeing flow, plus preview keywords, free.",
+          "h1": "Daily Fortune"
+        },
+        "ui": {
+          "breadcrumbHome": "Life Spoiler",
+          "breadcrumbLabel": "Breadcrumb",
+          "badge": "Free",
+          "exampleTitle": "Example result",
+          "exampleNote": "This is an example to help you picture it. Real results differ by profile and by date.",
+          "faqTitle": "Frequently asked questions",
+          "ctaTitle": "Curious about your day?",
+          "ctaBody": "Log in and pick a profile to see today's result right away.",
+          "ctaButton": "Log in to see my today",
+          "disclaimer": "A simplified rule set for entertainment. Not a basis for medical, financial or legal decisions."
+        },
+        "intro": "Daily Fortune overlays today's day pillar on your chart, the natal map drawn with Zi Wei Dou Shu, to show you a different day every day. From a one-line summary to the flow of each area and preview keywords, it takes about a minute.",
+        "sections": [
+          {
+            "id": "how",
+            "heading": "Calculated from your chart and today's day pillar",
+            "paragraphs": [
+              "We build a Zi Wei Dou Shu chart from the birth details of your logged-in profile, then overlay today's day pillar, the stem and branch assigned to the date. The same person gets a different result when the date changes because the day pillar changes.",
+              "The calculation follows fixed rules only. Nothing is freshly written each time. Pre-written phrases are picked by those rules, so the same profile on the same day always gets the same result."
+            ]
+          },
+          {
+            "id": "contents",
+            "heading": "What you see each day",
+            "paragraphs": [
+              "You get a one-liner, an overall reading, and four flows (love, money, work and study, wellbeing) shown as 1 to 5 stars with a grade name. We don't use numeric scores.",
+              "Preview keywords (color, item, number, time of day), a heads-up and a small tip come along with it."
+            ]
+          },
+          {
+            "id": "midnight",
+            "heading": "The day changes at midnight, Korea time",
+            "paragraphs": [
+              "One result is set per day, based on midnight Korea Standard Time (KST). Refreshing won't change it, and it switches to a new result after midnight."
+            ]
+          }
+        ],
+        "example": {
+          "headline": "A day when a decision you put off settles calmly in the afternoon.",
+          "overall": "Your judgment sharpens in the afternoon more than in the morning. If something has been on your mind, bring it up after lunch.",
+          "overallGrade": "A bright day",
+          "overallLevel": 4,
+          "keywords": "Color navy · Item a warm cup of tea · Number 4 · Time of day 3 to 5 PM",
+          "tip": "Send important messages after 3 PM."
+        },
+        "faq": [
+          {
+            "q": "Is Daily Fortune free?",
+            "a": "Yes. If you are logged in and have a saved profile, you can check it every day."
+          },
+          {
+            "q": "Does AI write a new one every day?",
+            "a": "No. Pre-written phrases are picked by fixed rules, so the same profile on the same day always gets the same result."
+          },
+          {
+            "q": "What if I don't know my birth time?",
+            "a": "You can still use it. For profiles without a birth time, we focus on patterns that don't depend on time. Knowing the time makes it a bit more detailed."
+          },
+          {
+            "q": "Which day counts after 11 PM?",
+            "a": "Schools differ on whether 11 PM to midnight counts as today or tomorrow. Life Spoiler splits days at midnight (00:00) Korea time."
+          },
+          {
+            "q": "Should I take the result literally?",
+            "a": "It is a simplified rule set for entertainment. Readings of the daily pillar differ between schools, so there is no single right answer. Please don't use it as a basis for medical, financial or legal decisions."
+          }
+        ]
+      }
     }
   },
   "ja": {
@@ -3415,7 +3729,8 @@
         "yearlyFortune": "今年の運勢",
         "yearly2027Fortune": "来年の運勢",
         "pastLifeFortune": "前世運勢"
-      }
+      },
+      "dailyFortune": "今日の運勢を見る"
     },
     "compatibility": {
       "loading": "読み込み中...",
@@ -4691,6 +5006,162 @@
         "ctaButton": "自分の命盤を見る",
         "disclaimer": "ライフスポイラーの紫微斗数の解説は、楽しみと自己理解のための参考情報であり、医療・法律・投資の判断に代わるものではありません。",
         "breadcrumbLabel": "現在地"
+      }
+    },
+    "daily": {
+      "grade": {
+        "1": "慎重に進む日",
+        "2": "一息つく日",
+        "3": "穏やかな日",
+        "4": "明るい日",
+        "5": "輝く日"
+      },
+      "stars": {
+        "label": "5点満点中{level}点、{grade}"
+      },
+      "category": {
+        "overall": "総合運",
+        "love": "恋愛",
+        "money": "金運",
+        "work": "仕事・学業",
+        "health": "健康"
+      },
+      "home": {
+        "title": "今日の運勢",
+        "subtitle": "毎日変わるあなたの一日を先取りチェック",
+        "button": "今日の運勢を見る"
+      },
+      "result": {
+        "pageTitle": "今日の運勢",
+        "changeProfile": "プロフィール変更",
+        "greeting": "{date} · {name}さんの今日",
+        "headlineLabel": "今日のひとこと",
+        "variableLabel": "今日の変数",
+        "timeUnknownNotice": "生まれた時間が不明のため、時間に左右されない流れを中心にお伝えします。",
+        "timeUnknownImprove": "生まれた時間を入力するともっと正確になります",
+        "timeUnknownEdit": "プロフィールを編集",
+        "categoryListLabel": "分野別の今日の流れ",
+        "categoryToggleHint": "タップすると詳しく見られます",
+        "keywordsTitle": "今日の予告キーワード",
+        "keywordColor": "色",
+        "keywordItem": "小物",
+        "keywordNumber": "数字",
+        "keywordTime": "時間帯",
+        "cautionTitle": "今日の注意ポイント",
+        "tipTitle": "今日のヒント",
+        "ctaLifetimeTitle": "今日だけでなく、一生の大きな流れが気になりますか？",
+        "ctaLifetimeBody": "人生運勢で時期ごとの流れを先取りできます。",
+        "ctaLifetimeButton": "人生運勢を見る",
+        "ctaPaidTitle": "ほかの流れも続けて見てみませんか？",
+        "ctaPaidBody": "今年の流れや大切な人との相性もチェックしてみましょう。",
+        "ctaYearlyButton": "今年の運勢を見る",
+        "ctaCompatibilityButton": "相性を見る",
+        "share": "シェアする",
+        "shareTitle": "今日の運勢",
+        "shareText": "今日のひとこと：{headline}",
+        "shareImageFilename": "life_spoiler_daily",
+        "disclaimer": "楽しみのためのエンターテインメント用の簡易ルールです（流日の解釈は流派によって異なります）。医療・投資判断の根拠にはなりません。",
+        "midnightNotice": "韓国時間の0時に切り替わります。",
+        "detailsOpen": "詳しく",
+        "detailsClose": "閉じる",
+        "detailsBody": "夜11時から0時まで（子の刻）を今日とするか明日とするかは流派によって異なります。ライフスポイラーは韓国時間の0時（00:00）で一日を区切ります。",
+        "loading": "今日の運勢を読み込んでいます。",
+        "refreshing": "新しい日の運勢を読み込んでいます。",
+        "dateChanged": "日付が変わったため、新しい結果に更新しました。",
+        "errorMessage": "結果を読み込めませんでした。",
+        "retry": "もう一度試す",
+        "copyToast": "リンクをコピーしました。",
+        "saveImage": "結果画像を保存",
+        "koOnlyNotice": "運勢の文言は現在、韓国語のみで提供しています。"
+      },
+      "share": {
+        "eyebrow": "今日のひとこと",
+        "dateLabel": "{date}の運勢",
+        "brand": "今日の運勢 · ライフスポイラー",
+        "keywordsTitle": "今日の予告キーワード",
+        "openMine": "私の今日も見る",
+        "disclaimer": "楽しみのためのエンターテインメント用の簡易ルールです。",
+        "koOnlyNotice": "運勢の文言は現在、韓国語のみで提供しています。",
+        "unavailableTitle": "シェアカードを読み込めませんでした",
+        "unavailableBody": "しばらくしてからもう一度お試しください。",
+        "pageTitle": "友だちの今日の運勢",
+        "ogTitle": "今日の運勢 · ライフスポイラー",
+        "ogDescription": "友だちがシェアした今日のひとことを見てみましょう。"
+      },
+      "landing": {
+        "meta": {
+          "title": "今日の運勢 | 毎日変わる紫微斗数の運勢",
+          "description": "あなたの命盤と今日の日辰から、毎日変わる運勢をチェック。今日のひとこと、恋愛・金運・仕事・学業・健康の流れと予告キーワードを無料でお届けします。",
+          "h1": "今日の運勢"
+        },
+        "ui": {
+          "breadcrumbHome": "ライフスポイラー",
+          "breadcrumbLabel": "現在位置",
+          "badge": "無料",
+          "exampleTitle": "結果の例",
+          "exampleNote": "イメージをつかむための例です。実際の結果はプロフィールや日付によって変わります。",
+          "faqTitle": "よくある質問",
+          "ctaTitle": "あなたの今日が気になるなら",
+          "ctaBody": "ログインしてプロフィールを選ぶと、すぐに今日の結果が見られます。",
+          "ctaButton": "ログインして私の今日を見る",
+          "disclaimer": "楽しみのためのエンターテインメント用の簡易ルールです。医療・投資・法律判断の根拠にはなりません。"
+        },
+        "intro": "今日の運勢は、あなたの命盤（紫微斗数で描く生まれ持った地図）にその日の日辰を重ねて、毎日違う一日をお見せする無料サービスです。ひとこと要約から分野別の流れ、予告キーワードまで1分で確認できます。",
+        "sections": [
+          {
+            "id": "how",
+            "heading": "あなたの命盤と今日の日辰で計算します",
+            "paragraphs": [
+              "ログインしたプロフィールの生年月日時から紫微斗数の命盤を作り、その日の日辰（日付に割り当てられる干支）を重ねて今日の流れを計算します。同じ人でも日付が変わると日辰が変わるため、結果も変わります。",
+              "計算は決められたルールだけで行われます。毎回新しく書いた文章ではなく、あらかじめ用意した文言をルールに従って選んでお見せするので、同じ日の同じプロフィールなら結果も同じです。"
+            ]
+          },
+          {
+            "id": "contents",
+            "heading": "一日にこんなことをお見せします",
+            "paragraphs": [
+              "今日のひとことと総合運、そして恋愛・金運・仕事・学業・健康の4つの流れを、星1〜5個と等級名でお見せします。数字のスコアは使いません。",
+              "さらに予告キーワード（色、小物、数字、時間帯）と注意ポイント、ちょっとしたヒントが加わります。"
+            ]
+          },
+          {
+            "id": "midnight",
+            "heading": "一日は韓国時間の0時に切り替わります",
+            "paragraphs": [
+              "結果は韓国時間（KST）の0時を基準に、一日に一つ決まります。更新しても変わらず、0時を過ぎると新しい結果に切り替わります。"
+            ]
+          }
+        ],
+        "example": {
+          "headline": "先延ばしにしていた決断が、午後に落ち着いてほどける日です。",
+          "overall": "午前より午後のほうが判断が冴える日です。悩んでいることがあれば、昼食のあとに取り出してみましょう。",
+          "overallGrade": "明るい日",
+          "overallLevel": 4,
+          "keywords": "色 紺色 · 小物 温かいお茶一杯 · 数字 4 · 時間帯 午後3〜5時",
+          "tip": "大事な連絡は午後3時以降に送ってみましょう。"
+        },
+        "faq": [
+          {
+            "q": "今日の運勢は無料ですか？",
+            "a": "はい、無料です。ログインして登録したプロフィールがあれば、毎日見られます。"
+          },
+          {
+            "q": "AIが毎日新しく書いているのですか？",
+            "a": "いいえ。あらかじめ用意した文言を決められたルールに従って選んでお見せしています。そのため、同じ日の同じプロフィールなら結果は同じです。"
+          },
+          {
+            "q": "生まれた時間がわからなくても見られますか？",
+            "a": "見られます。生まれた時間が不明なプロフィールは、時間に左右されない流れを中心に計算します。時間がわかるともう少し細かくなります。"
+          },
+          {
+            "q": "夜11時以降に見た場合はどの日が基準ですか？",
+            "a": "夜11時から0時まで（子の刻）を今日とするか明日とするかは流派によって異なります。ライフスポイラーは韓国時間の0時（00:00）で一日を区切ります。"
+          },
+          {
+            "q": "結果をそのまま信じてもよいですか？",
+            "a": "楽しみのためのエンターテインメント用の簡易ルールです。流日（その日の流れ）の解釈は流派によって異なり、唯一の正解はありません。医療・投資・法律判断の根拠にはしないでください。"
+          }
+        ]
       }
     }
   }

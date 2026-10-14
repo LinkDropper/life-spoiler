@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-import { defaultLocale } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import type { Locale } from "@/i18n/config";
 import { buildLocalizedUrl } from "@/libs/seo/site";
 
 interface SitemapPage {
@@ -13,6 +14,11 @@ interface SitemapPage {
   lastModified: string;
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
   priority: number;
+  /**
+   * 색인을 제공하는 언어. 생략하면 전체 언어(ko/en/ja)로 hreflang을 낸다.
+   * 콘텐츠가 특정 언어로만 있는 페이지(예: KO 전용 /daily)는 해당 언어만 지정한다.
+   */
+  locales?: readonly Locale[];
 }
 
 const PUBLIC_PAGES: SitemapPage[] = [
@@ -33,6 +39,13 @@ const PUBLIC_PAGES: SitemapPage[] = [
     lastModified: "2026-10-13",
     changeFrequency: "weekly",
     priority: 0.9,
+  },
+  {
+    path: "/daily",
+    lastModified: "2026-10-14",
+    changeFrequency: "monthly",
+    priority: 0.8,
+    locales: ["ko"],
   },
   {
     path: "/universe/create",
@@ -68,17 +81,21 @@ const PUBLIC_PAGES: SitemapPage[] = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return PUBLIC_PAGES.map(
-    ({ path, lastModified, changeFrequency, priority }) => ({
+    ({
+      path,
+      lastModified,
+      changeFrequency,
+      priority,
+      locales: pageLocales = locales,
+    }) => ({
       url: buildLocalizedUrl(path, defaultLocale),
       lastModified,
       changeFrequency,
       priority,
       alternates: {
-        languages: {
-          ko: buildLocalizedUrl(path, "ko"),
-          en: buildLocalizedUrl(path, "en"),
-          ja: buildLocalizedUrl(path, "ja"),
-        },
+        languages: Object.fromEntries(
+          pageLocales.map((locale) => [locale, buildLocalizedUrl(path, locale)])
+        ),
       },
     })
   );

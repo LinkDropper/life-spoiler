@@ -6,3 +6,10 @@ export {
   trackPurchase,
 } from "./google-analytics";
 export { NavigationEvents } from "./NavigationEvents";
+export { trackDailyEvent, consumeIsReturnDay } from "./daily";
+export type {
+  DailyConfidenceParam,
+  DailyEntrySource,
+  DailyEventName,
+  DailyShareChannel,
+} from "./daily";

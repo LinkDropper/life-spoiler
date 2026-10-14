@@ -135,6 +135,25 @@ export {
 } from "./constants/owner-one-liner-table";
 
 // ============================================================
+// 오늘의 운세 (결정론적, LLM 미사용, KST 날짜 입력)
+// ============================================================
+
+export { calculateDailyFortune } from "./calculators/daily-fortune";
+
+export type {
+  DailyFortuneKeys,
+  DailyKeywordKeys,
+  CalculateDailyFortune,
+} from "./calculators/daily-fortune-types";
+
+export {
+  DAILY_FORTUNE_TABLE_VERSION,
+  ALL_DAILY_SLUGS,
+  isDailySlug,
+  isDailySlugOfSlot,
+} from "./constants/daily-fortune-table";
+
+// ============================================================
 // 음력 변환
 // ============================================================
 
