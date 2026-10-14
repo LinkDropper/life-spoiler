@@ -7,11 +7,13 @@ import { useLocale } from "next-intl";
 import { HeaderClient } from "@/components/landing";
 import {
   CompatibilityFortuneCard,
+  DailyFortuneCard,
   FriendUniverseCard,
   LifetimeFortuneCard,
   NextYearFortuneCard,
   YearlyFortuneCard,
 } from "@/components/home";
+import { trackDailyEvent } from "@/libs/analytics";
 import { useReferral } from "@/libs/hooks/useReferral";
 import { useAuthStatus } from "@/libs/stores/user";
 
@@ -45,6 +47,11 @@ export default function HomePage() {
     // 레퍼럴 보상 처리 (비동기, fire-and-forget)
     claimReferralReward();
   }, [authStatus, searchParams, claimReferralReward]);
+
+  const handleDailyFortune = useCallback(() => {
+    trackDailyEvent("daily_entry_click", { source: "home" });
+    router.push("/profiles?type=daily");
+  }, [router]);
 
   const handleLifetimeFortune = useCallback(() => {
     router.push("/profiles?type=lifetime");
@@ -82,6 +89,8 @@ export default function HomePage() {
         {locale === "ko" && (
           <FriendUniverseCard onClick={handleFriendUniverse} />
         )}
+        {/* 오늘의 운세는 문구 사전이 KO뿐이라 KO 로케일에서만 진입점을 노출한다 */}
+        {locale === "ko" && <DailyFortuneCard onClick={handleDailyFortune} />}
         <LifetimeFortuneCard onClick={handleLifetimeFortune} />
         <NextYearFortuneCard onClick={handleNextYearFortune} />
         <YearlyFortuneCard onClick={handleYearlyFortune} />

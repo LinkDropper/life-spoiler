@@ -12,8 +12,10 @@ import {
   NewProfileCard,
   DeleteConfirmModal,
 } from "@/components/profile";
+import { trackDailyEvent } from "@/libs/analytics";
 import {
   useProfiles,
+  useIsProfilesLoaded,
   useIsProfilesLoading,
   useProfileActions,
 } from "@/libs/stores/profile";
@@ -45,16 +47,19 @@ export default function ProfilesPage() {
     | "yearly"
     | "past-life"
     | "yearly_2027"
+    | "daily"
     | null =
     typeParam === "lifetime" ||
     typeParam === "yearly" ||
     typeParam === "past-life" ||
-    typeParam === "yearly_2027"
+    typeParam === "yearly_2027" ||
+    typeParam === "daily"
       ? typeParam
       : null;
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
+  const isProfilesLoaded = useIsProfilesLoaded();
   const { fetchProfiles } = useProfileActions();
 
   // 커스텀 훅 사용
@@ -81,6 +86,18 @@ export default function ProfilesPage() {
       fetchProfiles(true);
     }
   }, [authStatus, fetchProfiles]);
+
+  // 오늘의 운세: 프로필이 1개뿐이면 선택 화면을 건너뛰고 바로 결과로 이동
+  const singleProfileId =
+    fortuneType === "daily" && isProfilesLoaded && profiles.length === 1
+      ? profiles[0].id
+      : null;
+
+  useEffect(() => {
+    if (authStatus === "authenticated" && singleProfileId) {
+      router.replace(`/fortune/daily/${singleProfileId}`);
+    }
+  }, [authStatus, singleProfileId, router]);
 
   // 인증되지 않은 사용자 리다이렉트
   useEffect(() => {
@@ -132,6 +149,15 @@ export default function ProfilesPage() {
     navigateToFortune("yearly_2027");
   }, [selectedProfileId, navigateToFortune, t]);
 
+  const handleDailyFortune = useCallback(() => {
+    if (!selectedProfileId) {
+      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      return;
+    }
+    trackDailyEvent("daily_profile_select");
+    navigateToFortune("daily");
+  }, [selectedProfileId, navigateToFortune, t]);
+
   const onDeleteConfirm = useCallback(async () => {
     const success = await handleDeleteConfirm();
     if (!success) {
@@ -147,7 +173,8 @@ export default function ProfilesPage() {
   if (
     authStatus === "loading" ||
     isProfilesLoading ||
-    authStatus === "unauthenticated"
+    authStatus === "unauthenticated" ||
+    singleProfileId
   ) {
     return (
       <div className={styles.page}>
@@ -242,6 +269,16 @@ export default function ProfilesPage() {
             disabled={!selectedProfileId}
           >
             {t("yearly2027Fortune", { default: "내년 운세 보기" })}
+          </button>
+        )}
+        {fortuneType === "daily" && (
+          <button
+            type="button"
+            className={styles.primaryButton}
+            onClick={handleDailyFortune}
+            disabled={!selectedProfileId}
+          >
+            {t("dailyFortune", { default: "오늘의 운세 보기" })}
           </button>
         )}
       </footer>
