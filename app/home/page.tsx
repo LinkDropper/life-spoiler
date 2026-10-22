@@ -8,9 +8,11 @@ import { HeaderClient } from "@/components/landing";
 import {
   CompatibilityFortuneCard,
   DailyFortuneCard,
+  FaceReadingCard,
   FriendUniverseCard,
   LifetimeFortuneCard,
   NextYearFortuneCard,
+  PastLifeCard,
   YearlyFortuneCard,
 } from "@/components/home";
 import { trackDailyEvent } from "@/libs/analytics";
@@ -69,6 +71,14 @@ export default function HomePage() {
     router.push("/compatibility");
   }, [router]);
 
+  const handlePastLifeFortune = useCallback(() => {
+    router.push("/profiles?type=past-life");
+  }, [router]);
+
+  const handleFaceReading = useCallback(() => {
+    router.push("/face-spoiler/profiles");
+  }, [router]);
+
   const handleFriendUniverse = useCallback(() => {
     router.push("/universe/create");
   }, [router]);
@@ -95,6 +105,8 @@ export default function HomePage() {
         <NextYearFortuneCard onClick={handleNextYearFortune} />
         <YearlyFortuneCard onClick={handleYearlyFortune} />
         <CompatibilityFortuneCard onClick={handleCompatibilityFortune} />
+        <PastLifeCard onClick={handlePastLifeFortune} />
+        <FaceReadingCard onClick={handleFaceReading} />
       </main>
     </div>
   );
