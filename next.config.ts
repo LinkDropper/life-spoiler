@@ -20,11 +20,11 @@ const nextConfig: NextConfig = {
       beforeFiles: [
         {
           source: "/insights",
-          destination: "https://test.local.qshop.ai/blog",
+          destination: "http://front.dev.qshop.ai:8082/blog",
         },
         {
           source: "/insights/:path*",
-          destination: "https://test.local.qshop.ai/blog/:path*",
+          destination: "http://front.dev.qshop.ai:8082/blog/:path*",
         },
       ],
     };
