@@ -15,6 +15,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/insights",
+          destination: "https://test.local.qshop.ai/blog",
+        },
+        {
+          source: "/insights/:path*",
+          destination: "https://test.local.qshop.ai/blog/:path*",
+        },
+      ],
+    };
+  },
 };
 
 export default withNextIntl(nextConfig);
