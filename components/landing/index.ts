@@ -1,13 +1,9 @@
 export { HeaderClient } from "./HeaderClient";
-export { MainHero } from "./MainHero";
-export { FeatureSection } from "./FeatureSection";
+export { CinemaLanding } from "./cinema/CinemaLanding";
 export { FriendUniverseAlert } from "./FriendUniverseAlert";
-export { ProductPreview } from "./ProductPreview";
-export { PromotionBanner } from "./PromotionBanner";
-export { FirstPaymentEventBanner } from "./FirstPaymentEventBanner";
-export { ReviewSection } from "./ReviewSection";
 export { FAQSection } from "./FAQSection";
 export { DisclaimerSection } from "./DisclaimerSection";
 export { FooterInfo } from "./FooterInfo";
 export { CTAButton } from "./CTAButton";
+export { getFortuneCount } from "./getFortuneCount";
 export { Menu } from "./Menu";

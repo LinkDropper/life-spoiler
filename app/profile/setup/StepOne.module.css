@@ -26,6 +26,18 @@
   margin: 0;
 }
 
+/* 랜딩에서 넣은 생년월일시로 채웠다는 안내 */
+.prefillNotice {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--primitive-primary-opacity-1, rgba(255, 204, 217, 0.08));
+  border: 1px solid var(--primitive-primary-opacity-3, rgba(255, 204, 217, 0.3));
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-primary-secondary, #ffdde6);
+}
+
 .footer {
   padding: 16px;
   border-top: 1px solid var(--primitive-white-0, rgba(255, 255, 255, 0.08));

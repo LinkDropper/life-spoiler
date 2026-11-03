@@ -479,6 +479,7 @@ export const DailyFortuneScreen = ({
             name,
           })}
           level={view.overall.level}
+          stickText={view.stick.text}
           headline={view.headline.text}
           onDone={handleSantongDone}
         />

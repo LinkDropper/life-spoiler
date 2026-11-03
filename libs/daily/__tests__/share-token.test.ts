@@ -105,6 +105,7 @@ describe("toShareKeys", () => {
       slug: "df-ob-l4-lead-v1",
       text: "t",
     },
+    stick: { slug: "df-st-l4-lead-v1", text: "앞에 서는 날" },
     categories: [
       {
         category: "love",

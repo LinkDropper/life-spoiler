@@ -105,14 +105,19 @@ const createTubeTexture = (random: () => number, fontFamily: string) => {
 };
 
 export interface StickLabel {
-  /** 등급 이름 (예: "환한 날") */
-  grade: string;
+  /** 막대 문구 (예: "말이 통하는 날") */
+  text: string;
   /** 1~5 */
   level: number;
 }
 
+/** 세로 글자가 차지하는 길이 — 이보다 긴 문구는 글자를 줄여 별 위치를 그대로 둔다 */
+const LABEL_SLOT_PX = 920;
+const LABEL_STEP_PX = 184;
+const LABEL_FONT_PX = 160;
+
 /**
- * 산가지: 대나무 결 + 붉은 칠 끝 (+ 뽑힌 막대에는 등급과 별).
+ * 산가지: 대나무 결 + 붉은 칠 끝 (+ 뽑힌 막대에는 막대 문구와 별).
  * UV는 위 끝 = v 0으로 펼쳤으므로 flipY를 끈다.
  */
 const createStickTexture = (
@@ -154,24 +159,23 @@ const createStickTexture = (
     ctx.fillStyle = "#140a05";
     const top = h * 0.24;
     let cursor = top;
-    if (/[A-Za-z]/.test(label.grade)) {
+    if (/[A-Za-z]/.test(label.text)) {
       // 라틴 문자는 세로로 쌓지 않고 막대 방향으로 눕혀 쓴다
       ctx.save();
       ctx.translate(w / 2, top + 420);
       ctx.rotate(Math.PI / 2);
       ctx.font = `900 92px ${fontFamily}`;
-      ctx.fillText(label.grade, 0, 0, 800);
+      ctx.fillText(label.text, 0, 0, 800);
       ctx.restore();
       cursor = top + 880;
     } else {
-      ctx.font = `900 160px ${fontFamily}`;
-      label.grade
-        .replace(/\s+/g, "")
-        .split("")
-        .forEach((ch) => {
-          ctx.fillText(ch, w / 2, cursor);
-          cursor += 184;
-        });
+      const chars = label.text.replace(/\s+/g, "").split("");
+      const step = Math.min(LABEL_STEP_PX, LABEL_SLOT_PX / chars.length);
+      ctx.font = `900 ${Math.round((LABEL_FONT_PX * step) / LABEL_STEP_PX)}px ${fontFamily}`;
+      chars.forEach((ch) => {
+        ctx.fillText(ch, w / 2, cursor);
+        cursor += step;
+      });
     }
     ctx.fillStyle = "#a3162b";
     ctx.font = `900 96px ${fontFamily}`;

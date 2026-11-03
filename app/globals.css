@@ -469,6 +469,15 @@ body {
   overflow-x: hidden;
 }
 
+/* hidden은 body를 스크롤 컨테이너로 만들어 position: sticky를 깨뜨린다(랜딩 고정 장면).
+   clip은 가로 넘침만 잘라내고 스크롤 컨테이너를 만들지 않는다. */
+@supports (overflow-x: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
 body {
   font-family: var(--font-pretendard);
   background: #0c1220;

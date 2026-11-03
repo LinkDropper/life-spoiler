@@ -1,0 +1,259 @@
+.stage {
+  position: relative;
+  height: 380vh;
+  background: var(--cinema-night);
+}
+
+.viewport {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100svh;
+  padding: 76px 40px 40px;
+  overflow: hidden;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) auto;
+  align-items: center;
+  gap: clamp(32px, 6vw, 96px);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: clamp(26px, 3vw, 42px);
+  line-height: 1.3;
+  color: var(--cinema-text);
+  white-space: pre-line;
+}
+
+.description {
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--cinema-haze);
+}
+
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 28px;
+  padding: 18px 20px;
+  background: rgba(255, 231, 163, 0.06);
+  border-left: 2px solid var(--cinema-star);
+}
+
+.readoutTime {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cinema-star);
+  font-variant-numeric: tabular-nums;
+}
+
+.readoutOneLiner {
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.35;
+  color: var(--cinema-text);
+  animation: readoutIn 0.4s ease-out both;
+}
+
+@keyframes readoutIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.readoutStars {
+  font-size: 14px;
+  color: var(--cinema-haze);
+}
+
+/* ---------- 12시진 다이얼 ---------- */
+
+.dial {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.dialItem {
+  min-height: 44px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--cinema-line);
+  border-radius: 10px;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cinema-haze);
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.dialItem:focus-visible {
+  outline: 2px solid var(--cinema-spoiler);
+  outline-offset: 2px;
+}
+
+.dialActive {
+  background: var(--cinema-star);
+  border-color: var(--cinema-star);
+  color: var(--cinema-ink);
+}
+
+/* ---------- 명반 + 움직이는 명궁 표시 ---------- */
+
+/* PC에선 상자 없이 그리드 칸에 명반을 바로 둔다 */
+.chartSlot {
+  display: contents;
+}
+
+.chart {
+  position: relative;
+  width: min(68svh, 580px);
+}
+
+.mingMarker {
+  position: absolute;
+  width: 25%;
+  height: 25%;
+  border: 2px solid var(--cinema-star);
+  box-shadow:
+    0 0 24px rgba(255, 231, 163, 0.45),
+    inset 0 0 18px rgba(255, 231, 163, 0.2);
+  pointer-events: none;
+  transition:
+    left 0.55s cubic-bezier(0.65, 0, 0.35, 1),
+    top 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.mingBadge {
+  position: absolute;
+  top: -11px;
+  right: -11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+  background: var(--cinema-star);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--cinema-ink);
+}
+
+/* ---------- 모바일 ----------
+   다이얼을 2줄 그리드 대신 가로로 넘기는 한 줄로 바꿔(터치 44px 유지) 세로 공간을 아끼고,
+   명반 칸(chartSlot)이 제목·안내·다이얼을 뺀 남은 높이를 차지해 그 안에 정사각형으로 맞춘다. */
+@media (max-width: 767px) {
+  .stage {
+    height: 340vh;
+  }
+
+  .viewport {
+    align-items: flex-start;
+    padding: var(--cinema-safe-top) 0 var(--cinema-safe-bottom);
+  }
+
+  .layout {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* PC용 align-items: center를 그대로 두면 세로 배치에서 본문 폭이 내용(다이얼 12칸) 폭으로
+       늘어나 화면 밖으로 밀린다. 화면 폭에 맞춰 늘이고 명반만 가운데 둔다 */
+    align-items: stretch;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+  }
+
+  .copy {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .title {
+    padding: 0 16px;
+    font-size: 20px;
+  }
+
+  .description {
+    display: none;
+  }
+
+  .readout {
+    gap: 2px;
+    margin: 10px 16px 0;
+    padding: 10px 14px;
+  }
+
+  .readoutOneLiner {
+    overflow: hidden;
+    font-size: 18px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .readoutStars {
+    font-size: 13px;
+  }
+
+  .dial {
+    /* 칩의 offsetLeft를 다이얼 기준으로 재기 위해 */
+    position: relative;
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 0 16px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .dial::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dialItem {
+    flex: 0 0 44px;
+    scroll-snap-align: center;
+  }
+
+  .chartSlot {
+    display: flex;
+    flex: 1 1 0;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+    container-type: size;
+  }
+
+  .chart {
+    width: min(calc(100cqw - 32px), 100cqh);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mingMarker,
+  .dialItem {
+    transition: none;
+  }
+
+  .readoutOneLiner {
+    animation: none;
+  }
+}
