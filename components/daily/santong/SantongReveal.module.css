@@ -18,14 +18,15 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  animation: fadeIn 0.35s ease;
 }
 
+/* 배경은 처음부터 불투명해야 한다 — 페이드 중 아래 결과 화면이 비치면 뽑기 전에 결과가 보인다 */
 .stage {
   position: absolute;
   inset: 0;
   touch-action: none;
   cursor: ns-resize;
+  animation: fadeIn 0.35s ease;
 }
 
 .revealGlow {
@@ -263,7 +264,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .container,
+  .stage,
   .revealGlow,
   .footerScrim,
   .result {
