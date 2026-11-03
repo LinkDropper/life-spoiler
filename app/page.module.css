@@ -1,15 +1,38 @@
 .page {
+  /* 랜딩 시네마 토큰 (docs/landing-redesign-2026-11.md) */
+  --cinema-night: #0c1220;
+  --cinema-text: #ffffff;
+  --cinema-haze: rgba(255, 255, 255, 0.72);
+  --cinema-faint: rgba(255, 255, 255, 0.5);
+  --cinema-line: rgba(255, 255, 255, 0.14);
+  --cinema-spoiler: var(--primitive-primary, #ffccd9);
+  --cinema-star: #ffe7a3;
+  --cinema-ink: #23142d;
+  /* 디스플레이 서체: 홈 카드와 같은 SB 어그로. 일본어는 한자 글리프가 없어 아래에서 바꾼다 */
+  --cinema-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --cinema-display-weight: 400;
+  /* 모바일 고정 장면의 안전 영역: 위는 고정 헤더(60px), 아래는 말풍선 없는 하단 CTA(약 80px) */
+  --cinema-safe-top: 68px;
+  --cinema-safe-bottom: calc(88px + env(safe-area-inset-bottom));
+
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  overflow-wrap: break-word;
+  background: var(--cinema-night);
 }
 
+/* 고정(sticky) 장면이 동작하도록 main에는 overflow를 걸지 않는다 */
 .main {
   flex: 1;
+}
+
+/* 스크롤 연출이 아닌 정적 콘텐츠(FAQ·면책·푸터)는 읽기 좋은 폭으로 */
+.column {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .ctaSpacer {
@@ -20,4 +43,14 @@
   .page {
     min-height: 100svh;
   }
+}
+
+/* 한국어는 어절 단위로 줄바꿈한다. 일본어에 keep-all을 걸면 공백이 없어 줄이 넘치므로 ko에만 적용한다 */
+.page:lang(ko) {
+  word-break: keep-all;
+}
+
+.page:lang(ja) {
+  --cinema-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --cinema-display-weight: 800;
 }

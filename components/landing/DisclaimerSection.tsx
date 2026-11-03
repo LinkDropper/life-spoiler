@@ -1,30 +1,34 @@
 import { getTranslations } from "next-intl/server";
 
+import { CrtScreen } from "./CrtScreen";
 import styles from "./DisclaimerSection.module.css";
 
+/** 비디오테이프 첫 화면의 경고문처럼 읽히는 세 줄 */
+const LINE_KEYS = ["line1", "line2", "line3"] as const;
+
+/**
+ * 면책 안내 — 영화가 시작되기 전 나오는 "FBI WARNING" 화면을 빌린 브랜드 위트.
+ * 웃음 포인트는 유지하되, 콘텐츠 가이드라인의 법적 문구(재미로 보는 운세,
+ * 의료·법률·투자 판단 아님)를 실제로 담는다.
+ * 문구는 서버에서 그리고, 브라운관이 켜지는 연출만 CrtScreen이 맡는다.
+ */
 export const DisclaimerSection = async () => {
   const t = await getTranslations("landing.disclaimer");
 
   return (
-    <section className={styles.container}>
-      <div className={styles.warningBadge}>
-        <span className={styles.warningText}>
-          {t("badge", { default: "FBI WARNING" })}
-        </span>
-      </div>
-      <p className={styles.disclaimerText}>
-        {t("text", {
-          default:
-            "본 서비스는 100% 천문 데이터를 기반으로 분석되었습니다.\n운세 결과가 너무 잘 맞아서 생기는 '소름'과 '과호흡'에 대해\n인생스포 측은 책임지지 않습니다.",
-        })
-          .split("\n")
-          .map((line, index, array) => (
-            <span key={index}>
-              {line}
-              {index < array.length - 1 && <br />}
-            </span>
+    <section className={styles.container} aria-labelledby="disclaimer-title">
+      <CrtScreen className={styles.screen}>
+        <h2 id="disclaimer-title" className={styles.badge} data-crt-badge>
+          {t("badge")}
+        </h2>
+        <div className={styles.body}>
+          {LINE_KEYS.map((key) => (
+            <p key={key} className={styles.line} data-crt-line>
+              {t(key)}
+            </p>
           ))}
-      </p>
+        </div>
+      </CrtScreen>
     </section>
   );
 };

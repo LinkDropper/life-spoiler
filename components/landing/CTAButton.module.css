@@ -6,6 +6,17 @@
   z-index: 100;
   display: flex;
   justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.wrapperHidden {
+  transform: translateY(110%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrapper {
+    transition: none;
+  }
 }
 
 .container {
@@ -38,7 +49,7 @@
   font-size: 19px;
   font-weight: 700;
   line-height: 1.4;
-    color: #2d1b4e;
+  color: #2d1b4e;
 }
 
 .priceBadge {
