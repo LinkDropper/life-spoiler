@@ -43,6 +43,8 @@ interface SantongRevealProps {
   /** 인사말 (예: "11월 3일 화요일 · 지수님의 오늘") */
   greeting: string;
   level: DailyLevel;
+  /** 막대에 적는 문구 (서버가 고른 값) */
+  stickText: string;
   headline: string;
   /** 연출이 끝나(또는 건너뛰어) 결과 화면을 보여줄 때 */
   onDone: () => void;
@@ -70,6 +72,7 @@ export const SantongReveal = ({
   profileId,
   greeting,
   level,
+  stickText,
   headline,
   onDone,
 }: SantongRevealProps) => {
@@ -88,8 +91,6 @@ export const SantongReveal = ({
   const [canShake, setCanShake] = useState(false);
   const [needsMotionPermission, setNeedsMotionPermission] = useState(false);
 
-  const grade = t(`grade.${level}`);
-
   // 씬 생성
   useEffect(() => {
     const stage = stageRef.current;
@@ -105,7 +106,7 @@ export const SantongReveal = ({
         if (isCancelled) return;
         const scene = await createSantongScene({
           container: stage,
-          label: { grade, level },
+          label: { text: stickText, level },
           fontFamily: stickFont.style.fontFamily,
           seed: hashSeed(`${date}:${profileId}`),
           onShakeProgress: setShakeProgress,
@@ -230,7 +231,8 @@ export const SantongReveal = ({
   };
 
   const statusText = (() => {
-    if (phase === "revealed") return t("santong.revealed", { grade });
+    if (phase === "revealed")
+      return t("santong.revealed", { stick: stickText });
     // 물리 엔진을 받는 중에는 당겨도 반응이 없으니 안내하지 않는다
     if (phase === "loading") return "";
     // 흔드는 중에는 글자 없이 통과 소리만 둔다

@@ -45,6 +45,8 @@ export interface DailyFortuneView {
   confidence: DailyConfidence;
   headline: DailyTextItem;
   overall: DailyCategoryResult;
+  /** 산통 막대에 적는 짧은 문구 (총운 본문과 같은 키로 고른다) */
+  stick: DailyTextItem;
   /** 애정 · 재물 · 일·학업 · 건강 순 */
   categories: DailyCategoryResult[];
   variable: DailyTextItem | null;

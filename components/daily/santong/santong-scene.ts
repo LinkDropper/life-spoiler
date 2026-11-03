@@ -151,7 +151,7 @@ export const createSantongScene = async ({
     }
   );
   // 막대에 쓸 글자의 글리프를 미리 받아 둔다 (unicode-range 분할 폰트)
-  await document.fonts.load(`900 160px ${fontFamily}`, `運★${label.grade}`);
+  await document.fonts.load(`900 160px ${fontFamily}`, `運★${label.text}`);
 
   const random = createRandom(seed);
   const isMobile = isCoarsePointer();

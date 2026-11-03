@@ -17,6 +17,7 @@ import type { ZiweiChart, ZiweiInput } from "@/libs/zi-wei-dou-shu/types";
 
 import { resolveDailyCta } from "./cta";
 import { DAILY_DICTIONARY_KO } from "./dictionary/ko";
+import { DAILY_STICK_KO } from "./dictionary/stick-ko";
 import { DailyError } from "./errors";
 import { decodeShareToken } from "./share-token";
 import type {
@@ -101,6 +102,10 @@ export const buildDailyFortuneView = (
     confidence: keys.confidence,
     headline: textItem(keys.headline),
     overall,
+    stick: {
+      slug: categories.overall.slug.replace("df-ob-", "df-st-"),
+      text: DAILY_STICK_KO[categories.overall.slug],
+    },
     categories: subCategories,
     variable: keys.variable ? textItem(keys.variable) : null,
     caution: { category: cautionCategory, ...textItem(caution.slug) },
