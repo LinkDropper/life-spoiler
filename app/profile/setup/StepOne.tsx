@@ -11,9 +11,15 @@ import styles from "./StepOne.module.css";
 interface StepOneProps {
   initialData: StepOneData;
   onNext: (data: StepOneData) => void;
+  /** 랜딩 "내 명반 그려보기"에서 넣은 생년월일시로 채워졌는지 */
+  isPrefilledFromLanding?: boolean;
 }
 
-export const StepOne = ({ initialData, onNext }: StepOneProps) => {
+export const StepOne = ({
+  initialData,
+  onNext,
+  isPrefilledFromLanding = false,
+}: StepOneProps) => {
   const t = useTranslations("profileSetup.stepOne");
   const [formData, setFormData] = useState<StepOneData>(initialData);
   const [errors, setErrors] = useState<
@@ -97,6 +103,11 @@ export const StepOne = ({ initialData, onNext }: StepOneProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.form}>
+        {isPrefilledFromLanding && (
+          <p className={styles.prefillNotice} role="status">
+            {t("prefillNotice")}
+          </p>
+        )}
         <Input
           label={t("name.label", { default: "이름" })}
           name="name"
