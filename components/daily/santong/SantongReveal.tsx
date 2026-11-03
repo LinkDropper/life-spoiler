@@ -38,6 +38,8 @@ interface MotionPermissionApi {
 
 interface SantongRevealProps {
   date: string;
+  /** 막대 배치·흔들림을 프로필마다 다르게 하는 값 (날짜와 함께 시드로 쓴다) */
+  profileId: string;
   /** 인사말 (예: "11월 3일 화요일 · 지수님의 오늘") */
   greeting: string;
   level: DailyLevel;
@@ -53,8 +55,19 @@ interface SantongRevealProps {
  * - 흔들기를 못 하는 환경(데스크톱·센서 없음·iOS 권한 거부)은 당기기 또는 "막대 뽑기" 버튼으로 같은 결과.
  * - WebGL/물리 엔진 초기화 실패 시 연출 없이 바로 결과로 넘어간다.
  */
+/** 문자열 → 32비트 시드 (FNV-1a) */
+const hashSeed = (text: string) => {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
+};
+
 export const SantongReveal = ({
   date,
+  profileId,
   greeting,
   level,
   headline,
@@ -94,8 +107,15 @@ export const SantongReveal = ({
           container: stage,
           label: { grade, level },
           fontFamily: stickFont.style.fontFamily,
-          seed: Number(date.replace(/-/g, "")),
+          seed: hashSeed(`${date}:${profileId}`),
           onShakeProgress: setShakeProgress,
+          onInteractive: () => {
+            if (!isCancelled) setPhase("idle");
+          },
+          onError: (error) => {
+            console.error("[SantongReveal] 물리 엔진 로드 실패:", error);
+            if (!isCancelled) onDoneRef.current();
+          },
           onCollision: sound.playClack,
           onRevealStart: () => {
             sound.playDraw();
@@ -112,8 +132,8 @@ export const SantongReveal = ({
           scene.destroy();
           return;
         }
+        // 통은 이미 보인다. 조작은 물리 엔진이 붙은 뒤(onInteractive)부터 받는다
         sceneRef.current = scene;
-        setPhase("idle");
       } catch (error) {
         console.error("[SantongReveal] 3D 씬 초기화 실패:", error);
         if (!isCancelled) onDoneRef.current();
@@ -211,6 +231,8 @@ export const SantongReveal = ({
 
   const statusText = (() => {
     if (phase === "revealed") return t("santong.revealed", { grade });
+    // 물리 엔진을 받는 중에는 당겨도 반응이 없으니 안내하지 않는다
+    if (phase === "loading") return "";
     // 흔드는 중에는 글자 없이 통과 소리만 둔다
     if (phase === "revealing" || shakeProgress > 0.05) return "";
     if (isPullReady) return t("santong.releaseHint");
