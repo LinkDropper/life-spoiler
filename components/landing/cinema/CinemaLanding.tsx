@@ -35,11 +35,28 @@ export const CinemaLanding = ({
   const [tryResult, setTryResult] = useState<TryResult | null>(null);
   const { protagonist, hours } = data;
 
-  // 내 명반 결과가 열리면 아래 장면들의 스크롤 구간 위치가 바뀌므로 다시 잰다
+  // 페이지 높이가 바뀌면 아래 장면들의 스크롤 구간 위치도 바뀌므로 다시 잰다.
+  // (내 명반 결과가 열릴 때, 인앱 브라우저 툴바가 접혀 vh로 잡은 장면 높이가 달라질 때)
+  // ignoreMobileResize로 높이만 바뀐 resize는 무시하므로, 그대로 두면 예전 위치 기준으로
+  // 연출이 진행돼 관람권에 닿기도 전에 이미 찢어져 있다.
   useEffect(() => {
-    const frameId = requestAnimationFrame(() => ScrollTrigger.refresh());
-    return () => cancelAnimationFrame(frameId);
-  }, [tryResult]);
+    let frameId = 0;
+    let lastHeight = document.body.scrollHeight;
+    const observer = new ResizeObserver(() => {
+      const height = document.body.scrollHeight;
+      if (height === lastHeight || frameId) return;
+      lastHeight = height;
+      frameId = requestAnimationFrame(() => {
+        frameId = 0;
+        ScrollTrigger.refresh();
+      });
+    });
+    observer.observe(document.body);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   return (
     <>
