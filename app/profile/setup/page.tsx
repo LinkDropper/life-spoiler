@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { useProfileActions } from "@/libs/stores/profile";
+import { trackLandingEvent } from "@/libs/analytics";
+import { consumeLandingBirthDraft } from "@/libs/landing/birth-draft";
+import {
+  useProfileActions,
+  useProfileLoadStatus,
+  useProfiles,
+} from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
 import { HeaderClient } from "@/components/landing";
 
@@ -58,6 +64,8 @@ export default function ProfileSetupPage() {
   const typeParam = searchParams.get("type");
   const redirectParam = searchParams.get("redirect");
   const { addProfile } = useProfileActions();
+  const profiles = useProfiles();
+  const profileLoadStatus = useProfileLoadStatus();
   const t = useTranslations("profileSetup");
 
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
@@ -66,6 +74,12 @@ export default function ProfileSetupPage() {
   const [stepTwoData, setStepTwoData] =
     useState<StepTwoData>(initialStepTwoData);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPrefilledFromLanding, setIsPrefilledFromLanding] = useState(false);
+  const hasCheckedDraftRef = useRef(false);
+
+  // 프로필 목록을 받아야 "첫 프로필"인지 알 수 있다. 실패하면 이어 쓰기 없이 빈 폼으로 진행한다.
+  const isProfilesSettled =
+    profileLoadStatus === "loaded" || profileLoadStatus === "error";
 
   useEffect(() => {
     if (authStatus === "unauthenticated") {
@@ -73,7 +87,30 @@ export default function ProfileSetupPage() {
     }
   }, [authStatus, router]);
 
-  if (authStatus === "loading" || authStatus === "unauthenticated") {
+  // 첫 프로필일 때만 랜딩 "내 명반 그려보기"에서 넣은 생년월일시를 채운다.
+  // 두 번째 프로필부터는 가족·친구 정보를 넣는 경우라 남은 값이 있어도 쓰지 않고 버린다.
+  // 목록 조회가 실패하면(error) 프로필이 0개로 보이므로 첫 프로필로 단정하지 않고 채우지 않는다.
+  useEffect(() => {
+    if (authStatus !== "authenticated" || profileLoadStatus !== "loaded")
+      return;
+    if (hasCheckedDraftRef.current) return;
+    hasCheckedDraftRef.current = true;
+
+    const draft = consumeLandingBirthDraft();
+    if (!draft || profiles.length > 0) return;
+
+    setStepOneData((current) => ({ ...current, ...draft }));
+    setIsPrefilledFromLanding(true);
+    trackLandingEvent("landing_draft_applied", {
+      time_known: !draft.birthTimeUnknown,
+    });
+  }, [authStatus, profileLoadStatus, profiles.length]);
+
+  if (
+    authStatus === "loading" ||
+    authStatus === "unauthenticated" ||
+    !isProfilesSettled
+  ) {
     return (
       <div className={styles.page}>
         <div className={styles.loading}>
@@ -165,7 +202,13 @@ export default function ProfileSetupPage() {
 
       <main className={styles.main}>
         {currentStep === 1 ? (
-          <StepOne initialData={stepOneData} onNext={handleStepOneNext} />
+          // 이어 쓰기 값이 들어오면 StepOne이 그 값으로 다시 시작하도록 key를 바꾼다
+          <StepOne
+            key={isPrefilledFromLanding ? "landing-draft" : "empty"}
+            initialData={stepOneData}
+            onNext={handleStepOneNext}
+            isPrefilledFromLanding={isPrefilledFromLanding}
+          />
         ) : (
           <StepTwo
             stepOneData={stepOneData}
