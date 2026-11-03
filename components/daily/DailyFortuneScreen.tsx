@@ -35,8 +35,12 @@ import styles from "./DailyFortuneScreen.module.css";
 const PROFILE_TIME_EDIT_PATH: string | null = null;
 
 const TOAST_DURATION_MS = 2000;
-/** 산통 연출을 본 마지막 KST 날짜 — 하루 첫 열람에만 연출을 보여준다 (날짜만 저장) */
-const SANTONG_LAST_DATE_KEY = "daily_santong_last_date";
+/**
+ * 산통 연출을 본 마지막 KST 날짜 — 프로필마다 하루 첫 열람에만 연출을 보여준다 (날짜만 저장).
+ * 프로필별 키: 한 기기에서 여러 프로필을 보면 각자 그날의 막대를 뽑아야 한다.
+ */
+const getSantongLastDateKey = (profileId: string) =>
+  `daily_santong_last_date:${profileId}`;
 const IMAGE_RENDER_WAIT_MS = 100;
 
 type ScreenStatus = "idle" | "refreshing" | "error";
@@ -98,7 +102,9 @@ export const DailyFortuneScreen = ({
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     try {
-      if (window.localStorage.getItem(SANTONG_LAST_DATE_KEY) !== date) {
+      if (
+        window.localStorage.getItem(getSantongLastDateKey(profileId)) !== date
+      ) {
         setIsSantongOpen(true);
       }
     } catch {
@@ -106,16 +112,16 @@ export const DailyFortuneScreen = ({
     }
     // 첫 화면의 날짜 기준 — 자정 재조회로 날짜가 바뀌어도 연출을 다시 띄우지 않는다
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [profileId]);
 
   const handleSantongDone = useCallback(() => {
     try {
-      window.localStorage.setItem(SANTONG_LAST_DATE_KEY, date);
+      window.localStorage.setItem(getSantongLastDateKey(profileId), date);
     } catch {
       // 저장 실패는 다음 열람 때 연출이 한 번 더 나오는 것뿐이다
     }
     setIsSantongOpen(false);
-  }, [date]);
+  }, [profileId, date]);
 
   // 날짜별 1회 열람 계측
   useEffect(() => {
