@@ -1,0 +1,272 @@
+.container {
+  position: fixed;
+  inset: 0;
+  /* 사이트 헤더(100)보다 위, 메뉴(1000)보다 아래 */
+  z-index: 200;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow: hidden;
+  /* 서비스 공통 배경 + 통 뒤의 은은한 보랏빛 */
+  background:
+    radial-gradient(
+      90% 55% at 50% 42%,
+      rgba(120, 70, 160, 0.38) 0%,
+      rgba(12, 18, 32, 0) 70%
+    ),
+    linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  font-family: var(--font-pretendard), sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: fadeIn 0.35s ease;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: ns-resize;
+}
+
+.revealGlow {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 320px;
+  height: 320px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 204, 217, 0.28) 0%,
+    rgba(255, 204, 217, 0) 65%
+  );
+  pointer-events: none;
+  animation: fadeIn 0.8s ease;
+}
+
+/* 결과 글자 뒤로 통·막대 아랫부분을 어둡게 덮어 글자가 묻히지 않게 한다 */
+.footerScrim {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 48%;
+  background: linear-gradient(
+    0deg,
+    rgba(16, 10, 26, 0.96) 0%,
+    rgba(16, 10, 26, 0.9) 45%,
+    rgba(16, 10, 26, 0) 100%
+  );
+  pointer-events: none;
+  animation: fadeIn 0.6s ease;
+}
+
+.header {
+  position: absolute;
+  top: max(40px, env(safe-area-inset-top));
+  left: 16px;
+  right: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.4;
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.greeting {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.skip {
+  position: absolute;
+  top: max(8px, env(safe-area-inset-top));
+  right: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.footer {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: max(32px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.status {
+  margin: 0;
+  min-height: 1.6em;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+}
+
+.statusRevealed {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primitive-primary, #ffccd9);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.progress {
+  width: 120px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primitive-primary, #ffccd9);
+  transform-origin: left center;
+  transition: transform 0.1s linear;
+}
+
+.drawButton {
+  pointer-events: auto;
+  min-height: 48px;
+  padding: 0 28px;
+  border: 1px solid rgba(255, 204, 217, 0.6);
+  border-radius: 999px;
+  background: rgba(255, 204, 217, 0.06);
+  color: var(--primitive-primary, #ffccd9);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.textButton {
+  pointer-events: auto;
+  min-height: 44px;
+  padding: 0 16px;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  animation: rise 0.5s ease;
+}
+
+.headline {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 204, 217, 0.24);
+  background: rgba(36, 24, 56, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.primaryButton {
+  pointer-events: auto;
+  min-height: 52px;
+  border: none;
+  border-radius: 999px;
+  background: var(--primitive-primary, #ffccd9);
+  color: #7a2a4a;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.drawButton:focus-visible,
+.primaryButton:focus-visible,
+.textButton:focus-visible,
+.skip:focus-visible {
+  outline: 2px solid #ffccd9;
+  outline-offset: 3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@supports (height: 100svh) {
+  .container {
+    height: 100svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container,
+  .revealGlow,
+  .footerScrim,
+  .result {
+    animation: none;
+  }
+}

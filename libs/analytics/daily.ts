@@ -10,6 +10,7 @@ import { trackEvent } from "./google-analytics";
 export type DailyEntrySource = "home" | "landing" | "share";
 export type DailyShareChannel = "copy_link" | "kakao" | "image";
 export type DailyConfidenceParam = "time_known" | "time_unknown";
+export type DailySantongMethod = "shake" | "pull" | "button" | "skip";
 
 interface DailyEventParamMap {
   daily_entry_click: { source: DailyEntrySource };
@@ -35,6 +36,11 @@ interface DailyEventParamMap {
   daily_shared_link_open: Record<string, never>;
   daily_shared_cta_click: Record<string, never>;
   daily_time_unknown_notice_click: Record<string, never>;
+  /** 산통 연출: 어떤 방법으로 막대를 뽑았는지 (skip = 연출 건너뛰기) */
+  daily_santong_draw: {
+    date: string;
+    method: DailySantongMethod;
+  };
 }
 
 export type DailyEventName = keyof DailyEventParamMap;
