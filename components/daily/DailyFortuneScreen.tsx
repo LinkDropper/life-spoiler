@@ -467,6 +467,7 @@ export const DailyFortuneScreen = ({
       {isSantongOpen && (
         <SantongReveal
           date={date}
+          profileId={profileId}
           greeting={t("result.greeting", {
             date: formatDailyDate(view.date, locale),
             name,

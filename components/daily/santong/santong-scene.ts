@@ -1,4 +1,4 @@
-import RAPIER from "@dimforge/rapier3d-compat";
+import type RAPIER from "@dimforge/rapier3d-compat";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
@@ -75,7 +75,8 @@ const REVEAL_LOOK = new THREE.Vector3(0, 3.0, 0.6);
 const REVEAL_POSITION = new THREE.Vector3(0.02, 2.62, 1.2);
 const REVEAL_ROTATION = new THREE.Euler(0.02, 0.06, -0.05);
 
-type Phase = "idle" | "revealing" | "revealed";
+/** loading: 통·막대는 보이지만 물리 엔진을 받는 중 (입력 무시) */
+type Phase = "loading" | "idle" | "revealing" | "revealed";
 
 export interface SantongSceneOptions {
   container: HTMLElement;
@@ -87,6 +88,10 @@ export interface SantongSceneOptions {
   onShakeProgress?: (progress: number) => void;
   /** 막대끼리·통과 부딪힐 때 (세기 0~1) */
   onCollision?: (strength: number) => void;
+  /** 물리 엔진이 붙어 흔들기·당기기를 받을 수 있게 됐을 때 */
+  onInteractive?: () => void;
+  /** 화면이 뜬 뒤 물리 엔진 로드가 실패했을 때 */
+  onError?: (error: unknown) => void;
   onRevealStart?: () => void;
   onRevealed?: () => void;
 }
@@ -133,10 +138,18 @@ export const createSantongScene = async ({
   seed,
   onShakeProgress,
   onCollision,
+  onInteractive,
+  onError,
   onRevealStart,
   onRevealed,
 }: SantongSceneOptions): Promise<SantongScene> => {
-  await RAPIER.init();
+  // 물리 엔진(WASM 내장, 약 1.6MB)은 가장 무겁다 — 먼저 받기 시작하고, 통은 기다리지 않고 그린다
+  const rapierLoading = import("@dimforge/rapier3d-compat").then(
+    async ({ default: rapier }) => {
+      await rapier.init();
+      return rapier;
+    }
+  );
   // 막대에 쓸 글자의 글리프를 미리 받아 둔다 (unicode-range 분할 폰트)
   await document.fonts.load(`900 160px ${fontFamily}`, `運★${label.grade}`);
 
@@ -150,7 +163,8 @@ export const createSantongScene = async ({
     powerPreference: "high-performance",
   });
   renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio || 1, isMobile ? 1.75 : 2)
+    // 휴대폰은 1.5배로 — 1.75배 대비 프레임 약 13% 개선, 3배 화면에서 차이가 거의 안 보인다
+    Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2)
   );
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -207,64 +221,6 @@ export const createSantongScene = async ({
   const tubeGroup = createTube(random, fontFamily);
   scene.add(tubeGroup);
 
-  // ---------- 물리 ----------
-  const world = new RAPIER.World({ x: 0, y: GRAVITY, z: 0 });
-  world.timestep = FIXED_DT;
-  world.integrationParameters.numSolverIterations = 8;
-
-  // 통: 키네마틱 바디 하나에 바닥 + 벽 판 20장 (얇은 판끼리는 트라이메시보다 박스가 안정적)
-  const tubeBody = world.createRigidBody(
-    RAPIER.RigidBodyDesc.kinematicPositionBased()
-  );
-  world.createCollider(
-    RAPIER.ColliderDesc.cuboid(TUBE_R, 0.06, TUBE_R)
-      .setTranslation(0, TUBE_FLOOR_Y - 0.06, 0)
-      .setFriction(0.5),
-    tubeBody
-  );
-  // 충돌 벽은 보이는 벽보다 바깥으로 두껍게 — 얇고 빠른 막대가 벽을 뚫지 못하게 (안쪽 면 위치는 그대로)
-  const COLLIDER_WALL = 0.16;
-  const wallRadius = TUBE_R - TUBE_WALL + COLLIDER_WALL / 2;
-  const panelHalfWidth = ((Math.PI * wallRadius) / WALL_SEGMENTS) * 1.15;
-  const panelRotation = new THREE.Quaternion();
-  for (let i = 0; i < WALL_SEGMENTS; i += 1) {
-    const angle = (i / WALL_SEGMENTS) * Math.PI * 2;
-    // y축으로 angle만큼 돌리면 판의 두께 방향(+z)이 반지름 방향 (sin, 0, cos)을 향한다
-    panelRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), angle);
-    world.createCollider(
-      RAPIER.ColliderDesc.cuboid(panelHalfWidth, TUBE_H / 2, COLLIDER_WALL / 2)
-        .setTranslation(
-          Math.sin(angle) * wallRadius,
-          TUBE_H / 2,
-          Math.cos(angle) * wallRadius
-        )
-        .setRotation(panelRotation)
-        .setFriction(0.3),
-      tubeBody
-    );
-  }
-
-  const fenceHalfWidth = ((Math.PI * FENCE_RADIUS) / WALL_SEGMENTS) * 1.15;
-  for (let i = 0; i < WALL_SEGMENTS; i += 1) {
-    const angle = (i / WALL_SEGMENTS) * Math.PI * 2;
-    panelRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), angle);
-    world.createCollider(
-      RAPIER.ColliderDesc.cuboid(
-        fenceHalfWidth,
-        FENCE_HEIGHT / 2,
-        COLLIDER_WALL / 2
-      )
-        .setTranslation(
-          Math.sin(angle) * FENCE_RADIUS,
-          TUBE_H + FENCE_HEIGHT / 2,
-          Math.cos(angle) * FENCE_RADIUS
-        )
-        .setRotation(panelRotation)
-        .setFriction(0.1),
-      tubeBody
-    );
-  }
-
   // ---------- 막대 ----------
   const stickGeometry = createStickGeometry();
   const plainMaterial = createStickMaterial(random, fontFamily);
@@ -273,47 +229,33 @@ export const createSantongScene = async ({
     mesh: THREE.Mesh;
     body: RAPIER.RigidBody;
   }
-  const sticks: Stick[] = [];
-  const startQuaternion = new THREE.Quaternion();
+  // 물리 엔진이 오기 전에도 보이도록 시작 자세로 먼저 놓아 둔다
+  const stickMeshes: THREE.Mesh[] = [];
   const startEuler = new THREE.Euler();
   for (let i = 0; i < STICK_COUNT; i += 1) {
     const a = (i / STICK_COUNT) * Math.PI * 2 + random() * 0.4;
     const rr = 0.04 + Math.sqrt(random()) * 0.24;
-    const x = Math.cos(a) * rr;
-    const z = Math.sin(a) * rr;
+    const mesh = new THREE.Mesh(stickGeometry, plainMaterial);
+    mesh.position.set(
+      Math.cos(a) * rr,
+      TUBE_FLOOR_Y + STICK_L / 2 + 0.02 + random() * 0.12,
+      Math.sin(a) * rr
+    );
     // 통 안에서 바깥쪽으로 살짝 기대고, 결이 제각각 보이도록 돌린다
     startEuler.set(Math.sin(a) * 0.08, random() * Math.PI, -Math.cos(a) * 0.08);
-    startQuaternion.setFromEuler(startEuler);
-    const body = world.createRigidBody(
-      RAPIER.RigidBodyDesc.dynamic()
-        .setTranslation(
-          x,
-          TUBE_FLOOR_Y + STICK_L / 2 + 0.02 + random() * 0.12,
-          z
-        )
-        .setRotation(startQuaternion)
-        .setLinearDamping(0.4)
-        .setAngularDamping(0.6)
-        .setCcdEnabled(true)
-    );
-    world.createCollider(
-      RAPIER.ColliderDesc.cuboid(STICK_W / 2, STICK_L / 2, STICK_T / 2 + 0.002)
-        .setDensity(0.6)
-        .setFriction(0.35)
-        .setRestitution(0.2),
-      body
-    );
-    const mesh = new THREE.Mesh(stickGeometry, plainMaterial);
+    mesh.quaternion.setFromEuler(startEuler);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     scene.add(mesh);
-    sticks.push({ mesh, body });
+    stickMeshes.push(mesh);
   }
-  // 첫 화면 전에 막대가 통 안에서 자리 잡도록 미리 굴린다
-  for (let i = 0; i < 90; i += 1) world.step();
+  const sticks: Stick[] = [];
 
   // ---------- 상태 ----------
-  let phase: Phase = "idle";
+  let phase: Phase = "loading";
+  let world: RAPIER.World | null = null;
+  let tubeBody: RAPIER.RigidBody | null = null;
+  let kinematicType: RAPIER.RigidBodyType | null = null;
   let elapsed = 0;
   let accumulator = 0;
   let isDestroyed = false;
@@ -345,11 +287,37 @@ export const createSantongScene = async ({
   const scratchQuaternion = new THREE.Quaternion();
   const lookTarget = new THREE.Vector3();
 
-  /** 가장 앞쪽(카메라 쪽) 가운데 막대를 고른다 — 뽑히는 막대가 화면에서 잘 보이도록 */
+  const tubeInverse = new THREE.Quaternion();
+  const stickAxis = new THREE.Vector3();
+  const stickEnd = new THREE.Vector3();
+  /** 입구 아래에서 막대 양끝이 모두 통 안쪽 벽 안에 있는가 (통 기준 좌표) */
+  const isInsideTube = (stick: Stick) => {
+    const p = stick.body.translation();
+    const q = stick.body.rotation();
+    tubeInverse.copy(tubeQuaternion).invert();
+    stickAxis
+      .set(0, STICK_L / 2, 0)
+      .applyQuaternion(scratchQuaternion.set(q.x, q.y, q.z, q.w));
+    return [1, -1].every((sign) => {
+      stickEnd
+        .set(p.x - tubePosition.x, p.y - tubePosition.y, p.z - tubePosition.z)
+        .addScaledVector(stickAxis, sign)
+        .applyQuaternion(tubeInverse);
+      if (stickEnd.y >= TUBE_H) return true;
+      return Math.hypot(stickEnd.x, stickEnd.z) <= TUBE_R - TUBE_WALL;
+    });
+  };
+
+  /**
+   * 통 안에 온전히 들어 있는 막대 중 가장 앞쪽(카메라 쪽) 가운데 막대를 고른다.
+   * 흔들다 벽 밖으로 삐져나간 막대는 앞쪽에 있어도 후보에서 뺀다.
+   */
   const pickHero = (): Stick => {
-    let [best] = sticks;
+    const candidates = sticks.filter(isInsideTube);
+    const pool = candidates.length > 0 ? candidates : sticks;
+    let [best] = pool;
     let bestScore = -Infinity;
-    sticks.forEach((stick) => {
+    pool.forEach((stick) => {
       const p = stick.body.translation();
       const score = p.z - Math.abs(p.x) * 0.6;
       if (score > bestScore) {
@@ -372,12 +340,12 @@ export const createSantongScene = async ({
     heroFrom.set(p.x, p.y, p.z);
     heroFromQuaternion.set(q.x, q.y, q.z, q.w);
     heroRise.set(p.x * 0.4, TUBE_FLOOR_Y + STICK_L / 2 + LIFT_HEIGHT, p.z);
-    hero.body.setBodyType(RAPIER.RigidBodyType.KinematicPositionBased, true);
+    if (kinematicType !== null) hero.body.setBodyType(kinematicType, true);
     onRevealStart?.();
   };
 
   /** 통의 자세: 흔들림(사인) + 당김(아래로·앞으로 기울기) */
-  const stepTube = () => {
+  const stepTube = (tube: RAPIER.RigidBody) => {
     const isAuto = phase === "idle" && elapsed < autoUntil;
     if (isAuto) {
       energy = approach(energy, AUTO_DRAW_ENERGY, 12, FIXED_DT);
@@ -402,8 +370,8 @@ export const createSantongScene = async ({
       energy * 0.12 * Math.sin(w + 0.6)
     );
     tubeQuaternion.setFromEuler(tubeEuler);
-    tubeBody.setNextKinematicTranslation(tubePosition);
-    tubeBody.setNextKinematicRotation(tubeQuaternion);
+    tube.setNextKinematicTranslation(tubePosition);
+    tube.setNextKinematicRotation(tubeQuaternion);
 
     if (phase === "idle") {
       if (energy > SHAKE_ACTIVE_LEVEL) shakeAccum += FIXED_DT;
@@ -490,7 +458,8 @@ export const createSantongScene = async ({
   };
 
   const stepPhysics = () => {
-    stepTube();
+    if (!world || !tubeBody) return;
+    stepTube(tubeBody);
     if (phase !== "idle") stepHero();
     world.step();
     limitStickSpeed();
@@ -499,7 +468,8 @@ export const createSantongScene = async ({
   };
 
   const updateCamera = () => {
-    const t = phase === "idle" ? 0 : elapsed - revealStartedAt;
+    const t =
+      phase === "idle" || phase === "loading" ? 0 : elapsed - revealStartedAt;
     const k = easeInOutCubic(clamp01((t - 0.45) / 1.3));
     camera.position.lerpVectors(IDLE_CAMERA, REVEAL_CAMERA, k);
     lookTarget.lerpVectors(IDLE_LOOK, REVEAL_LOOK, k);
@@ -518,6 +488,22 @@ export const createSantongScene = async ({
     });
   };
 
+  /** 막대·통·카메라가 모두 멈춰 있으면 다시 그릴 필요가 없다 (휴대폰 GPU·배터리 절약) */
+  let needsRender = true;
+  const STILL_SPEED_SQ = 1e-4;
+  const isSceneStill = () => {
+    if (phase !== "idle" && phase !== "revealed") return phase === "loading";
+    if (energy > 0.002 || pull > 0.001 || pullTarget > 0) return false;
+    return sticks.every(({ body }) => {
+      const v = body.linvel();
+      const w = body.angvel();
+      return (
+        v.x * v.x + v.y * v.y + v.z * v.z < STILL_SPEED_SQ &&
+        w.x * w.x + w.y * w.y + w.z * w.z < STILL_SPEED_SQ
+      );
+    });
+  };
+
   // ---------- 리사이즈 ----------
   const resize = () => {
     viewport.width = Math.max(1, container.clientWidth);
@@ -525,10 +511,104 @@ export const createSantongScene = async ({
     renderer.setSize(viewport.width, viewport.height, false);
     camera.aspect = viewport.width / viewport.height;
     camera.updateProjectionMatrix();
+    needsRender = true;
   };
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(container);
   resize();
+
+  // ---------- 물리 (엔진이 도착하면 붙인다) ----------
+  const attachPhysics = (rapier: typeof RAPIER) => {
+    const physicsWorld = new rapier.World({ x: 0, y: GRAVITY, z: 0 });
+    physicsWorld.timestep = FIXED_DT;
+    physicsWorld.integrationParameters.numSolverIterations = 8;
+
+    // 통: 키네마틱 바디 하나에 바닥 + 벽 판 20장 (얇은 판끼리는 트라이메시보다 박스가 안정적)
+    const tube = physicsWorld.createRigidBody(
+      rapier.RigidBodyDesc.kinematicPositionBased()
+    );
+    physicsWorld.createCollider(
+      rapier.ColliderDesc.cuboid(TUBE_R, 0.06, TUBE_R)
+        .setTranslation(0, TUBE_FLOOR_Y - 0.06, 0)
+        .setFriction(0.5),
+      tube
+    );
+    // 충돌 벽은 보이는 벽보다 바깥으로 두껍게 — 얇고 빠른 막대가 벽을 뚫지 못하게 (안쪽 면 위치는 그대로)
+    const COLLIDER_WALL = 0.16;
+    const wallRadius = TUBE_R - TUBE_WALL + COLLIDER_WALL / 2;
+    const panelHalfWidth = ((Math.PI * wallRadius) / WALL_SEGMENTS) * 1.15;
+    const panelRotation = new THREE.Quaternion();
+    for (let i = 0; i < WALL_SEGMENTS; i += 1) {
+      const angle = (i / WALL_SEGMENTS) * Math.PI * 2;
+      // y축으로 angle만큼 돌리면 판의 두께 방향(+z)이 반지름 방향 (sin, 0, cos)을 향한다
+      panelRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+      physicsWorld.createCollider(
+        rapier.ColliderDesc.cuboid(
+          panelHalfWidth,
+          TUBE_H / 2,
+          COLLIDER_WALL / 2
+        )
+          .setTranslation(
+            Math.sin(angle) * wallRadius,
+            TUBE_H / 2,
+            Math.cos(angle) * wallRadius
+          )
+          .setRotation(panelRotation)
+          .setFriction(0.3),
+        tube
+      );
+    }
+
+    const fenceHalfWidth = ((Math.PI * FENCE_RADIUS) / WALL_SEGMENTS) * 1.15;
+    for (let i = 0; i < WALL_SEGMENTS; i += 1) {
+      const angle = (i / WALL_SEGMENTS) * Math.PI * 2;
+      panelRotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+      physicsWorld.createCollider(
+        rapier.ColliderDesc.cuboid(
+          fenceHalfWidth,
+          FENCE_HEIGHT / 2,
+          COLLIDER_WALL / 2
+        )
+          .setTranslation(
+            Math.sin(angle) * FENCE_RADIUS,
+            TUBE_H + FENCE_HEIGHT / 2,
+            Math.cos(angle) * FENCE_RADIUS
+          )
+          .setRotation(panelRotation)
+          .setFriction(0.1),
+        tube
+      );
+    }
+
+    // 보이던 자세 그대로 몸체를 만든다 — 미리 굴리지 않고 화면에서 자연스럽게 자리 잡게 한다
+    stickMeshes.forEach((mesh) => {
+      const body = physicsWorld.createRigidBody(
+        rapier.RigidBodyDesc.dynamic()
+          .setTranslation(mesh.position.x, mesh.position.y, mesh.position.z)
+          .setRotation(mesh.quaternion)
+          .setLinearDamping(0.4)
+          .setAngularDamping(0.6)
+          .setCcdEnabled(true)
+      );
+      physicsWorld.createCollider(
+        rapier.ColliderDesc.cuboid(
+          STICK_W / 2,
+          STICK_L / 2,
+          STICK_T / 2 + 0.002
+        )
+          .setDensity(0.6)
+          .setFriction(0.35)
+          .setRestitution(0.2),
+        body
+      );
+      sticks.push({ mesh, body });
+    });
+    world = physicsWorld;
+    tubeBody = tube;
+    kinematicType = rapier.RigidBodyType.KinematicPositionBased;
+    phase = "idle";
+    onInteractive?.();
+  };
 
   // ---------- 루프 ----------
   const timer = new THREE.Timer();
@@ -546,7 +626,10 @@ export const createSantongScene = async ({
     if (steps === MAX_STEPS_PER_FRAME) accumulator = 0;
     updateCamera();
     syncMeshes();
-    renderer.render(scene, camera);
+    if (needsRender || !isSceneStill()) {
+      renderer.render(scene, camera);
+      needsRender = false;
+    }
     if (phase === "revealed" && !hasReportedRevealed) {
       hasReportedRevealed = true;
       onRevealed?.();
@@ -557,6 +640,16 @@ export const createSantongScene = async ({
   updateCamera();
   await renderer.compileAsync(scene, camera);
   renderer.setAnimationLoop(frame);
+
+  rapierLoading
+    .then((rapier) => {
+      if (isDestroyed) return;
+      attachPhysics(rapier);
+      needsRender = true;
+    })
+    .catch((error: unknown) => {
+      if (!isDestroyed) onError?.(error);
+    });
 
   return {
     setPull: (amount) => {
@@ -574,7 +667,8 @@ export const createSantongScene = async ({
       return true;
     },
     addShake: (intensity) => {
-      if (phase !== "idle") return;
+      // 당기는 손동작이 폰을 흔든 것으로도 잡힌다 — 두 동작이 겹치면 통이 과하게 움직여 막대가 벽을 뚫는다
+      if (phase !== "idle" || pullTarget > 0) return;
       energy = Math.max(energy, clamp01(intensity));
     },
     drawAuto: () => {
@@ -586,7 +680,7 @@ export const createSantongScene = async ({
       renderer.setAnimationLoop(null);
       timer.dispose();
       resizeObserver.disconnect();
-      world.free();
+      world?.free();
       scene.traverse((object) => {
         const mesh = object as THREE.Mesh;
         mesh.geometry?.dispose();
