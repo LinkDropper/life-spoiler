@@ -7,6 +7,8 @@ export {
 } from "./google-analytics";
 export { NavigationEvents } from "./NavigationEvents";
 export { trackDailyEvent, consumeIsReturnDay } from "./daily";
+export { trackLandingEvent } from "./landing";
+export type { LandingCtaPosition } from "./landing";
 export type {
   DailyConfidenceParam,
   DailyEntrySource,
