@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { trackScreeningEvent } from "@/libs/analytics";
 import {
@@ -9,11 +10,13 @@ import {
   SCREENING_MAX_WAIT_MS,
   SCREENING_NAVIGATION_TIMEOUT_MS,
   SCREENING_TIMELINE,
-  decideScreeningVariant,
+  isPlainLeftClick,
   isScreeningDestination,
+  parseScreeningDestination,
 } from "@/libs/screening/screening-policy";
 
 import { ScreeningOverlay } from "./ScreeningOverlay";
+import { preloadTheater } from "./theater-loader";
 
 import type { ReactNode } from "react";
 import type {
@@ -23,7 +26,8 @@ import type {
   ScreeningVariant,
 } from "@/libs/screening/screening-policy";
 
-const SESSION_SCREENED_KEY = "life-spoiler:screening-session";
+/** 관람권처럼 연출을 직접 시작하는 링크에 붙인다 — 전역 링크 가로채기에서 뺀다 */
+export const SCREENING_MANUAL_ATTRIBUTE = "data-screening-manual";
 
 export interface StartScreeningOptions {
   href: string;
@@ -35,8 +39,8 @@ export interface StartScreeningOptions {
 }
 
 interface ScreeningContextValue {
-  /** 연출을 시작했으면 해당 variant, 바로 이동했으면 "none" */
-  startScreening: (options: StartScreeningOptions) => ScreeningVariant;
+  /** 연출을 시작했으면 true, 운세 경로가 아니라 바로 이동했으면 false */
+  startScreening: (options: StartScreeningOptions) => boolean;
   /** 로딩 중인 화면이 부른다. 반환값을 부르면 해제된다 */
   registerHold: () => () => void;
 }
@@ -48,10 +52,10 @@ const ScreeningCoverContext = createContext(false);
 export interface ActiveScreening {
   title: string;
   entry: ScreeningEntry;
-  variant: Exclude<ScreeningVariant, "none">;
+  variant: ScreeningVariant;
   timeline: ScreeningTimeline;
   phase: ScreeningPhase;
-  /** 저사양 기기가 아니면 3D 장면을 쓸 수 있다(이미 받아져 있을 때만) */
+  /** 저사양 기기·모션 줄이기가 아니면 3D 장면 (기기마다 늘 같은 쪽을 쓴다) */
   allow3D: boolean;
 }
 
@@ -67,24 +71,11 @@ interface ScreeningSession {
   phase: ScreeningPhase;
   trigger: HTMLElement | null;
   entry: ScreeningEntry;
-  variant: Exclude<ScreeningVariant, "none">;
+  variant: ScreeningVariant;
 }
 
-const readFlag = (storage: () => Storage, key: string): boolean => {
-  try {
-    return storage().getItem(key) === "1";
-  } catch {
-    return false;
-  }
-};
-
-const writeFlag = (storage: () => Storage, key: string) => {
-  try {
-    storage().setItem(key, "1");
-  } catch {
-    // 저장소를 못 쓰면 다음에 연출이 한 번 더 나올 뿐이다
-  }
-};
+const prefersReducedMotion = (): boolean =>
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const isLowEndDevice = (): boolean => {
   const { connection } = navigator as Navigator & {
@@ -112,11 +103,37 @@ const focusPageHeading = () => {
  * 결과 페이지 로딩을 대신한다: 루트 레이아웃에 있어 페이지가 바뀌어도 유지되고,
  * 목적지가 준비될 때까지(경로 도착 + 공용 <Loading/>이 모두 사라짐) 스크린 앞에서 기다린다.
  * 단계: entering → waiting → revealing. screening-policy.ts 참고.
+ *
+ * 운세를 보러 가는 이동이면 출발 위치·방식과 관계없이 늘 같은 상영관을 보여 준다(2026-11-05).
+ *   - 앱 안의 운세 링크 클릭: 전역에서 가로채 바로 시작 (관람권은 찢김 뒤에 직접 시작)
+ *   - 코드 이동·새로고침 등: 운세 페이지에서 공용 <Loading/>이 뜨는 순간 시작 (예전 로딩은 그리지 않는다)
  */
 export const ScreeningProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const tHome = useTranslations("home");
+  const tDaily = useTranslations("daily.home");
+  const tScreening = useTranslations("screening");
   const [active, setActive] = useState<ActiveScreening | null>(null);
+  /** 건너뛰기·대기 상한으로 걷힌 운세 페이지 — 그 페이지의 남은 로딩은 페이지 자체 화면으로 */
+  const [dismissedPath, setDismissedPath] = useState<string | null>(null);
+
+  /** 경로로 스크린에 띄울 작품명을 만든다 (예: "올해 운세 예고편") */
+  const titleFor = (href: string): string => {
+    const destination = parseScreeningDestination(href);
+    if (!destination) {
+      return "";
+    }
+    if (destination.kind === "daily") {
+      return tDaily("title");
+    }
+    const title = tHome(`${destination.kind}.title`);
+    return destination.isPreview
+      ? tScreening("trailer", { title })
+      : tScreening("feature", { title });
+  };
+  const titleForRef = useRef(titleFor);
+  titleForRef.current = titleFor;
 
   const routerRef = useRef(router);
   routerRef.current = router;
@@ -153,6 +170,10 @@ export const ScreeningProvider = ({ children }: { children: ReactNode }) => {
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
       clearTimeout(settleTimerRef.current);
+      // 로딩이 아직 떠 있는데 걷혔으면(건너뛰기·대기 상한) 이 페이지에서는 다시 덮지 않는다
+      if (holdCountRef.current > 0) {
+        setDismissedPath(window.location.pathname);
+      }
       sessionRef.current = null;
       setActive(null);
       document.body.style.removeProperty("overflow");
@@ -226,6 +247,15 @@ export const ScreeningProvider = ({ children }: { children: ReactNode }) => {
     const registerHold = () => {
       holdCountRef.current += 1;
       clearTimeout(settleTimerRef.current);
+      // 링크를 거치지 않고(코드 이동·새로고침) 운세 페이지에 왔는데 로딩이 뜨면 상영관으로 덮는다
+      const current = window.location.pathname;
+      if (
+        !sessionRef.current &&
+        isScreeningDestination(current) &&
+        current !== dismissedPathRef.current
+      ) {
+        startArrived(current);
+      }
       let isReleased = false;
       return () => {
         if (isReleased) {
@@ -285,64 +315,67 @@ export const ScreeningProvider = ({ children }: { children: ReactNode }) => {
       finish();
     };
 
-    const start = ({ href, title, entry, trigger }: StartScreeningOptions) => {
-      if (sessionRef.current) {
-        return sessionRef.current.variant;
-      }
-      // 운세 예고편·본편이 아닌 곳으로 가면 연출 없이 바로 이동한다
-      if (!isScreeningDestination(href)) {
-        routerRef.current.push(href);
-        return "none";
-      }
-      const variant = decideScreeningVariant(entry, {
-        hasScreenedThisSession: readFlag(
-          () => sessionStorage,
-          SESSION_SCREENED_KEY
-        ),
-        prefersReducedMotion: window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches,
-      });
-      trackScreeningEvent("screening_start", { entry_point: entry, variant });
-
-      if (variant === "none") {
-        routerRef.current.push(href);
-        return variant;
-      }
-
-      writeFlag(() => sessionStorage, SESSION_SCREENED_KEY);
-
+    /** 화면을 덮고 단계·타이머를 건다. 이동이 필요한 경우(navigate)와 이미 도착한 경우 모두 쓴다 */
+    const open = (session: ScreeningSession, title: string) => {
       const timeline = SCREENING_TIMELINE;
-      sessionRef.current = {
-        href,
-        originPathname: window.location.pathname,
-        startedAt: performance.now(),
-        hasNavigated: false,
-        hasArrived: false,
-        readyElapsed: null,
-        isSkipped: false,
-        phase: "entering",
-        trigger: trigger ?? null,
-        entry,
-        variant,
-      };
-      routerRef.current.prefetch(href);
+      sessionRef.current = session;
       document.body.style.overflow = "hidden";
       setActive({
         title,
-        entry,
-        variant,
+        entry: session.entry,
+        variant: session.variant,
         timeline,
         phase: "entering",
-        allow3D: !isLowEndDevice(),
+        allow3D: !isLowEndDevice() && !prefersReducedMotion(),
       });
-
-      schedule(navigate, timeline.navigateAt);
+      trackScreeningEvent("screening_start", {
+        entry_point: session.entry,
+        variant: session.variant,
+      });
       schedule(() => {
         if (sessionRef.current?.phase === "entering") {
           setPhase("waiting");
         }
       }, timeline.readyAt);
+      // 도착했지만 로딩이 너무 길면 걷고 페이지 자체 로딩 화면에 넘긴다
+      schedule(() => {
+        const { current } = sessionRef;
+        if (!current?.hasArrived || current.phase === "revealing") {
+          return;
+        }
+        trackScreeningEvent("screening_recovered", { reason: "max_wait" });
+        current.isSkipped = true;
+        reveal();
+      }, SCREENING_MAX_WAIT_MS);
+    };
+
+    const start = ({ href, title, entry, trigger }: StartScreeningOptions) => {
+      if (sessionRef.current) {
+        return true;
+      }
+      // 운세를 보러 가는 경로가 아니면 연출 없이 바로 이동한다
+      if (!isScreeningDestination(href)) {
+        routerRef.current.push(href);
+        return false;
+      }
+      routerRef.current.prefetch(href);
+      open(
+        {
+          href,
+          originPathname: window.location.pathname,
+          startedAt: performance.now(),
+          hasNavigated: false,
+          hasArrived: false,
+          readyElapsed: null,
+          isSkipped: false,
+          phase: "entering",
+          trigger: trigger ?? null,
+          entry,
+          variant: "short",
+        },
+        title
+      );
+      schedule(navigate, SCREENING_TIMELINE.navigateAt);
       // 경로가 안 바뀌면 어두운 화면에 갇히지 않게 원래 화면으로 돌려준다
       schedule(() => {
         const session = sessionRef.current;
@@ -353,22 +386,66 @@ export const ScreeningProvider = ({ children }: { children: ReactNode }) => {
         finish();
         session.trigger?.focus();
       }, SCREENING_NAVIGATION_TIMEOUT_MS);
-      // 도착했지만 로딩이 너무 길면 걷고 페이지 자체 로딩 화면에 넘긴다
-      schedule(() => {
-        const session = sessionRef.current;
-        if (!session?.hasArrived || session.phase === "revealing") {
-          return;
-        }
-        trackScreeningEvent("screening_recovered", { reason: "max_wait" });
-        session.isSkipped = true;
-        reveal();
-      }, SCREENING_MAX_WAIT_MS);
-      return variant;
+      return true;
+    };
+
+    /** 이미 운세 페이지에 있고 로딩이 막 떴을 때: 이동 없이 덮기만 한다 */
+    function startArrived(pathnameNow: string) {
+      open(
+        {
+          href: pathnameNow,
+          originPathname: pathnameNow,
+          startedAt: performance.now(),
+          hasNavigated: true,
+          hasArrived: true,
+          readyElapsed: null,
+          isSkipped: false,
+          phase: "entering",
+          trigger: null,
+          entry: "arrival",
+          variant: "short",
+        },
+        titleForRef.current(pathnameNow)
+      );
+    }
+
+    /** 앱 안의 운세 링크 클릭을 가로챈다(새 탭·수정 키·외부 링크·관람권은 제외) */
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (!isPlainLeftClick(event) || !(event.target instanceof Element)) {
+        return;
+      }
+      const anchor = event.target.closest("a[href]");
+      if (
+        !(anchor instanceof HTMLAnchorElement) ||
+        anchor.hasAttribute(SCREENING_MANUAL_ATTRIBUTE) ||
+        anchor.hasAttribute("download") ||
+        (anchor.target && anchor.target !== "_self")
+      ) {
+        return;
+      }
+      const url = new URL(anchor.href, window.location.href);
+      if (
+        url.origin !== window.location.origin ||
+        url.pathname === window.location.pathname ||
+        !isScreeningDestination(url.pathname)
+      ) {
+        return;
+      }
+      const href = `${url.pathname}${url.search}${url.hash}`;
+      // Link의 기본 이동을 막고(Link는 defaultPrevented면 이동하지 않는다) 상영관과 함께 이동한다
+      event.preventDefault();
+      start({
+        href,
+        title: titleForRef.current(href),
+        entry: "link",
+        trigger: anchor,
+      });
     };
 
     return {
       start,
       skip,
+      handleDocumentClick,
       registerHold,
       handlePathname,
       recoverFromBfcache,
@@ -379,9 +456,30 @@ export const ScreeningProvider = ({ children }: { children: ReactNode }) => {
     };
   }
 
+  // registerHold가 렌더 밖(자식 effect)에서 읽으므로 ref로도 둔다
+  const dismissedPathRef = useRef(dismissedPath);
+  dismissedPathRef.current = dismissedPath;
+
   useEffect(() => {
     controller.handlePathname(pathname);
+    // 다른 페이지로 가면 "이 페이지에서는 다시 덮지 않음"을 푼다
+    setDismissedPath((current) => (current === pathname ? current : null));
   }, [controller, pathname]);
+
+  // 운세 링크 클릭은 앱 어디서든 같은 상영관으로 (캡처 단계: Link의 이동보다 먼저)
+  useEffect(() => {
+    window.addEventListener("click", controller.handleDocumentClick, true);
+    return () =>
+      window.removeEventListener("click", controller.handleDocumentClick, true);
+  }, [controller]);
+
+  // 3D 상영관은 첫 화면이 다 뜬 뒤 한가할 때 미리 받아 둔다(어느 페이지에서 출발하든 같은 화면이 뜨게)
+  useEffect(() => {
+    const idle =
+      window.requestIdleCallback ??
+      ((callback: () => void) => window.setTimeout(callback, 1500));
+    idle(() => preloadTheater());
+  }, []);
 
   // 뒤로 가기(bfcache)로 돌아오면 남은 오버레이를 걷는다
   useEffect(() => {
@@ -404,7 +502,11 @@ export const ScreeningProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ScreeningContext.Provider value={contextValue}>
       <ScreeningCoverContext.Provider
-        value={!!active && active.phase !== "revealing"}
+        value={
+          active
+            ? active.phase !== "revealing"
+            : isScreeningDestination(pathname) && pathname !== dismissedPath
+        }
       >
         {children}
       </ScreeningCoverContext.Provider>
@@ -426,7 +528,8 @@ export const useScreening = (): ScreeningContextValue => {
 /**
  * 로딩 화면이 떠 있는 동안 상영 전환이 걷히지 않게 붙잡는다.
  * 공용 <Loading/>이 부르므로 결과 페이지마다 따로 신호를 보낼 필요가 없다.
- * 반환값: 지금 상영관이 화면을 덮고 있는가 (덮여 있으면 로딩 영상·Lottie를 그리지 않는다).
+ * 반환값: 상영관이 화면을 덮고 있거나 곧 덮는가 — 운세 페이지에서는 첫 렌더부터 true라
+ * 예전 로딩(영상·Lottie)이 한 프레임도 보이지 않는다.
  * Provider 밖에서는 아무 일도 하지 않고 false를 돌려준다.
  */
 export const useScreeningHold = (): boolean => {

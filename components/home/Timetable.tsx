@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
-import { useScreeningLink } from "@/components/screening";
-import { isScreeningDestination } from "@/libs/screening/screening-policy";
 import { getFortuneHref, getTimetableKeys } from "@/libs/home/home-profile";
 
 import styles from "./Timetable.module.css";
@@ -48,37 +46,15 @@ export const Timetable = ({ profile, nextKey, onClick }: TimetableProps) => {
   const t = useTranslations("home");
   const tUniverse = useTranslations("universe.home");
   const locale = useLocale();
-  const tScreening = useTranslations("screening");
-  const handleScreeningClick = useScreeningLink();
   const { open, owned } = getTimetableKeys(profile, nextKey);
-
-  /** 소장 → 본편, 미소장 → 예고편 */
-  const screeningTitle = (key: HomeFortuneKey, isOwned: boolean) => {
-    const title = t(`${key}.title`);
-    return isOwned
-      ? tScreening("feature", { title })
-      : tScreening("trailer", { title });
-  };
 
   const renderRow = (key: HomeFortuneKey, isOwned: boolean) => (
     <li key={key}>
       <Link
         href={getFortuneHref(profile, key)}
         className={styles.row}
-        onClick={(event) => {
-          onClick("timetable", key);
-          const href = getFortuneHref(profile, key);
-          // 상영관 입장은 운세 예고편·본편으로 갈 때만: 프로필이 없거나(프로필 등록),
-          // 궁합 입력·관상 목록처럼 결과 페이지가 아닌 곳은 그냥 이동한다
-          if (!profile || !isScreeningDestination(href)) {
-            return;
-          }
-          handleScreeningClick(event, {
-            href,
-            title: screeningTitle(key, isOwned),
-            entry: "timetable",
-          });
-        }}
+        // 운세 결과로 가는 줄은 ScreeningProvider가 상영관 입장과 함께 이동시킨다
+        onClick={() => onClick("timetable", key)}
       >
         <span className={styles.text}>
           <b className={styles.name}>{t(`${key}.title`)}</b>
