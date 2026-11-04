@@ -9,6 +9,10 @@ interface DailyStarsProps {
   level: DailyLevel;
   /** 별 아래/옆에 등급명을 함께 보여줄지 (기본 true). 접근성 라벨은 항상 부여한다 */
   showGrade?: boolean;
+  /** inline: 별 옆에 등급명, stacked: 별 한 줄 아래 등급명 한 줄 */
+  layout?: "inline" | "stacked";
+  /** night: 밤색 바탕(금 별), paper: 콜시트 분홍 종이(잉크 별) */
+  tone?: "night" | "paper";
 }
 
 const StarIcon = ({ filled }: { filled: boolean }) => (
@@ -28,12 +32,25 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
  * 별 개수 + 등급명 (숫자 점수 없음).
  * 별/등급명은 모두 같은 level에서 파생되며, 스크린리더에는 "5점 만점에 4점, 환한 날"로 읽힌다.
  */
-export const DailyStars = ({ level, showGrade = true }: DailyStarsProps) => {
+export const DailyStars = ({
+  level,
+  showGrade = true,
+  layout = "inline",
+  tone = "night",
+}: DailyStarsProps) => {
   const t = useTranslations("daily");
   const grade = t(`grade.${level}`);
 
   return (
-    <span className={styles.wrapper}>
+    <span
+      className={[
+        styles.wrapper,
+        layout === "stacked" ? styles.stacked : "",
+        tone === "paper" ? styles.paper : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <span
         className={styles.stars}
         role="img"
