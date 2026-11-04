@@ -27,7 +27,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { publicId } = await params;
   const locale = await getLocale();
-  const ogImage = getOpenGraphImage(locale);
+  const fallbackOgImage = getOpenGraphImage(locale);
   const t = await getTranslations("universe.detail");
   const tMeta = await getTranslations("metadata");
 
@@ -51,6 +51,8 @@ export async function generateMetadata({
   const ogDescription = isFound ? t("ogDescription") : tMeta("description");
 
   const pageUrl = `${SITE_URL}/universe/${publicId}`;
+  // 시사회가 실제로 있을 때만 초대장 이미지를 쓰고, 아니면 사이트 기본 이미지로 폴백한다.
+  const ogImage = isFound ? `${pageUrl}/og?locale=${locale}` : fallbackOgImage;
 
   return {
     // 소유자 이름이 노출되는 개인 공유 페이지라 색인에서 제외한다 (링크 미리보기는 유지).
@@ -68,7 +70,7 @@ export async function generateMetadata({
         {
           url: ogImage,
           width: 1200,
-          height: 600,
+          height: isFound ? 630 : 600,
           alt: ogTitle,
         },
       ],
