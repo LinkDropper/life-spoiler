@@ -91,7 +91,10 @@ const SeatRow = () => (
 );
 
 /** 대기 단계 안내: 처음엔 "상영 준비 중", 대기가 시작되면 차례로, 아주 길어지면 "조금만 더" */
-const useWaitingMessage = (phase: ActiveScreening["phase"]) => {
+const useWaitingMessage = (
+  phase: ActiveScreening["phase"],
+  keys: readonly string[]
+) => {
   const [key, setKey] = useState("preparing");
   const mountedAtRef = useRef(0);
 
@@ -113,18 +116,33 @@ const useWaitingMessage = (phase: ActiveScreening["phase"]) => {
         clearInterval(interval);
         return;
       }
-      setKey(WAITING_MESSAGES[index % WAITING_MESSAGES.length]);
+      setKey(keys[index % keys.length] ?? "preparing");
       index += 1;
     }, WAITING_MESSAGE_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [phase]);
+    // 안내 목록은 한 화면에서 바뀌지 않는다 — 길이만 본다
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, keys.length]);
 
   return key;
 };
 
+/** 운세가 아닌 화면(결제 등)에서 상영관 로딩을 쓸 때 바꿔 끼우는 문구 */
+export interface ScreeningOverlayCopy {
+  preparing: string;
+  /** 대기 중 차례로 보여 줄 안내 */
+  waiting: readonly string[];
+  long: string;
+  /** 스크린리더 상태 안내 */
+  status: string;
+}
+
 interface ScreeningOverlayProps {
   screening: ActiveScreening;
-  onSkip: () => void;
+  /** 없으면 건너뛸 수 없다 (탭·키 무시, 안내 숨김) — 결제 확인처럼 기다려야만 하는 로딩 */
+  onSkip?: () => void;
+  /** 없으면 운세 상영 문구(screening.*) */
+  copy?: ScreeningOverlayCopy;
 }
 
 /**
@@ -140,12 +158,25 @@ interface ScreeningOverlayProps {
 export const ScreeningOverlay = ({
   screening,
   onSkip,
+  copy,
 }: ScreeningOverlayProps) => {
   const t = useTranslations("screening");
   const { timeline, title, phase } = screening;
-  const messageKey = useWaitingMessage(phase);
-  const message =
-    messageKey === "preparing" ? t("preparing") : t(`waiting.${messageKey}`);
+  const waitingKeys = copy
+    ? copy.waiting.map((_, index) => String(index))
+    : WAITING_MESSAGES;
+  const messageKey = useWaitingMessage(phase, waitingKeys);
+  const resolveCopyMessage = (current: ScreeningOverlayCopy): string => {
+    if (messageKey === "preparing") return current.preparing;
+    if (messageKey === "long") return current.long;
+    return current.waiting[Number(messageKey)] ?? current.preparing;
+  };
+  const message = copy
+    ? resolveCopyMessage(copy)
+    : messageKey === "preparing"
+      ? t("preparing")
+      : t(`waiting.${messageKey}`);
+  const statusText = copy ? copy.status : t("status", { title });
 
   // 3D 장면은 전환이 시작될 때 이미 받아져 있을 때만 쓴다(도중에 바꿔 끼우지 않는다)
   // 3D가 기본. 아직 못 받았으면 같은 어두운 객석(pending)에서 잠깐 기다렸다가 3D로 —
@@ -222,6 +253,9 @@ export const ScreeningOverlay = ({
   }, [mode, message]);
 
   useEffect(() => {
+    if (!onSkip) {
+      return;
+    }
     const handleKeyDown = (event: KeyboardEvent) => {
       if (["Escape", "Enter", " "].includes(event.key)) {
         event.preventDefault();
@@ -257,11 +291,13 @@ export const ScreeningOverlay = ({
           ].join(" ")}
           aria-hidden="true"
         />
-        <span className={styles.hint} aria-hidden="true">
-          {t("skipHint")}
-        </span>
+        {onSkip && (
+          <span className={styles.hint} aria-hidden="true">
+            {t("skipHint")}
+          </span>
+        )}
         <p className={styles.srOnly} role="status" aria-live="polite">
-          {t("status", { title })}
+          {statusText}
         </p>
       </div>,
       document.body
@@ -319,11 +355,13 @@ export const ScreeningOverlay = ({
       <SeatRow />
       <div className={styles.vignette} aria-hidden="true" />
 
-      <span className={styles.hint} aria-hidden="true">
-        {t("skipHint")}
-      </span>
+      {onSkip && (
+        <span className={styles.hint} aria-hidden="true">
+          {t("skipHint")}
+        </span>
+      )}
       <p className={styles.srOnly} role="status" aria-live="polite">
-        {t("status", { title })}
+        {statusText}
       </p>
     </div>,
     document.body

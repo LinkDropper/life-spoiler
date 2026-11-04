@@ -4,10 +4,14 @@ import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { HeaderClient } from "@/components/landing";
-import { Loading } from "@/components/loading";
-
-import styles from "./page.module.css";
+import { PaymentResultScreen } from "@/components/payment/PaymentResultScreen";
+import { PaymentTicket } from "@/components/payment/PaymentTicket";
+import {
+  getProductNameKey,
+  isPaymentFortuneType,
+} from "@/components/payment/payment-view";
+import { PaymentScreeningLoading } from "@/components/screening";
+import { useProfileById } from "@/libs/stores/profile";
 
 function PaymentFailContent() {
   const searchParams = useSearchParams();
@@ -17,12 +21,15 @@ function PaymentFailContent() {
   const code = searchParams.get("code");
   const message = searchParams.get("message");
   const profileId = searchParams.get("profileId");
-  const fortuneType = searchParams.get("fortuneType") as
-    | "yearly"
-    | "lifetime"
-    | "compatibility"
-    | "yearly_2027"
-    | null;
+  const rawFortuneType = searchParams.get("fortuneType");
+  const fortuneType = isPaymentFortuneType(rawFortuneType)
+    ? rawFortuneType
+    : null;
+
+  // 궁합은 profileId가 쌍 ID라 이름을 읽을 수 없다. 읽지 못하면 관람권 없이 에러 코드만 보여 준다
+  const profile = useProfileById(
+    fortuneType === "compatibility" ? null : profileId
+  );
 
   const handleRetry = () => {
     if (profileId && fortuneType) {
@@ -36,6 +43,8 @@ function PaymentFailContent() {
     if (profileId && fortuneType) {
       if (fortuneType === "compatibility") {
         router.push(`/compatibility/${profileId}/fortune/preview`);
+      } else if (fortuneType === "past_life") {
+        router.push(`/fortune/past-life/preview/${profileId}`);
       } else {
         router.push(`/fortune/${fortuneType}/preview/${profileId}`);
       }
@@ -44,66 +53,44 @@ function PaymentFailContent() {
     }
   };
 
+  const ticket =
+    fortuneType && profile ? (
+      <PaymentTicket
+        variant="unpaid"
+        ariaLabel={tPayment("unpaidTicketAria")}
+        kicker={tPayment("ticketKicker")}
+        title={tPayment(getProductNameKey(fortuneType))}
+        rows={[
+          {
+            label: tPayment("ticketAudience"),
+            value: tPayment("audienceName", { name: profile.name }),
+          },
+        ]}
+        stub={{
+          label: tPayment("stubStatus"),
+          value: tPayment("stubUnissued"),
+        }}
+      />
+    ) : undefined;
+
   return (
-    <div className={styles.page}>
-      <HeaderClient />
-      <main className={styles.main}>
-        <div className={styles.resultCard}>
-          <div className={styles.iconError}>
-            <svg
-              width="48"
-              height="48"
-              viewBox="0 0 48 48"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="24" cy="24" r="24" fill="#FF6B6B" fillOpacity="0.1" />
-              <path
-                d="M18 18L30 30M30 18L18 30"
-                stroke="#FF6B6B"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <h2 className={styles.title}>{tPayment("failTitle")}</h2>
-          <p className={styles.description}>
-            {message || tPayment("failDescription")}
-          </p>
-
-          {code && (
-            <div className={styles.errorInfo}>
-              <span className={styles.errorLabel}>{tPayment("errorCode")}</span>
-              <span className={styles.errorCode}>{code}</span>
-            </div>
-          )}
-
-          <div className={styles.buttonGroup}>
-            <button
-              type="button"
-              className={styles.primaryButton}
-              onClick={handleRetry}
-            >
-              {tPayment("retry")}
-            </button>
-            <button
-              type="button"
-              className={styles.secondaryButton}
-              onClick={handleGoBack}
-            >
-              {tPayment("goBack")}
-            </button>
-          </div>
-        </div>
-      </main>
-    </div>
+    <PaymentResultScreen
+      tone="failure"
+      title={tPayment("unpaidTitle")}
+      lead={message || tPayment("failDescription")}
+      ticket={ticket}
+      receipt={
+        code ? [{ label: tPayment("errorCode"), value: code }] : undefined
+      }
+      primaryAction={{ label: tPayment("retry"), onClick: handleRetry }}
+      secondaryAction={{ label: tPayment("goBack"), onClick: handleGoBack }}
+    />
   );
 }
 
 export default function PaymentFailPage() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<PaymentScreeningLoading stage="checkout" />}>
       <PaymentFailContent />
     </Suspense>
   );
