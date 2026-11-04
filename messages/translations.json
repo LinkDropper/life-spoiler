@@ -97,7 +97,11 @@
           "nowShowing": "지금 상영 중",
           "edgeCode": "인생스포 필름 ▸ {number}",
           "edgeCodeEnd": "인생스포 필름 ▸ 다음 장면",
-          "emptyPalace": "주성이 비어 맞은편 별을 빌려 읽는 시기"
+          "emptyPalace": "주성이 비어 맞은편 별을 빌려 읽는 시기",
+          "meta": "<b>{palace} 대운</b>을 지나는 10년이에요. 이 시기의 무대는 {theme}{copula}.",
+          "metaNoTheme": "<b>{palace} 대운</b>을 지나는 10년이에요.",
+          "counterAria": "10년 구간 고르기",
+          "skyAria": "{palace}의 밤하늘, 별 {stars}"
         },
         "ticket": {
           "headlineFree": "예고편은 무료,",
@@ -289,33 +293,74 @@
     "home": {
       "lifetime": {
         "title": "인생 운세",
-        "subtitle": "내 사용 설명서 확인하기",
-        "button": "인생 운세 확인하기"
+        "subtitle": "내 사용 설명서 확인하기"
       },
       "yearly": {
         "title": "올해 운세",
-        "subtitle": "올해 공략 방법 보기",
-        "button": "올해 운세 확인하기"
+        "subtitle": "올해 공략 방법 보기"
       },
       "yearly2027": {
         "title": "내년 운세",
-        "subtitle": "2027년 공략 방법 미리 보기",
-        "button": "내년 운세 확인하기"
+        "subtitle": "2027년 공략 방법 미리 보기"
       },
       "compatibility": {
         "title": "궁합 운세",
-        "subtitle": "내 인간관계 분석하기",
-        "button": "궁합 운세 확인하기"
+        "subtitle": "내 인간관계 분석하기"
       },
       "pastLife": {
         "title": "전생 운세",
-        "subtitle": "전생의 나를 만나보기",
-        "button": "전생 운세 확인하기"
+        "subtitle": "전생의 나를 만나보기"
       },
       "faceReading": {
         "title": "관상 운세",
-        "subtitle": "얼굴에 담긴 내 성향 보기",
-        "button": "관상 운세 확인하기"
+        "subtitle": "얼굴에 담긴 내 성향 보기"
+      },
+      "hero": {
+        "label": "{name}님의 인생",
+        "profileLabel": "상영할 프로필 고르기",
+        "filmAria": "{name}님의 인생 필름",
+        "loading": "필름을 감는 중…",
+        "owned": {
+          "cta": "본편 다시 보기",
+          "ctaFirst": "본편 보기",
+          "fallback": "본편이 준비돼 있어요"
+        },
+        "preview": {
+          "label": "{name}님이 미리 본 인생",
+          "fallback": "예고편을 보던 인생이 있어요",
+          "cta": "본편 이어 보기"
+        },
+        "fresh": {
+          "title": "아직 상영 전이에요",
+          "cta": "예고편 무료로 보기"
+        },
+        "noProfile": {
+          "title": "이제 당신의 하늘을\n그려볼 차례예요",
+          "cta": "내 프로필 등록하기"
+        },
+        "skyAria": "{palace}의 밤하늘, 별 {stars}",
+        "counterAria": "10년 구간 고르기",
+        "meta": "<b>{palace} 대운</b>을 지나는 10년이에요. 이 시기의 별은 {stars}{copula}.",
+        "metaEmpty": "<b>{palace} 대운</b>을 지나는 10년이에요. 주성이 없어 맞은편 별을 빌려 읽어요."
+      },
+      "timetable": {
+        "title": "상영 시간표",
+        "owned": "관람 완료",
+        "free": "무료"
+      },
+      "next": {
+        "title": "다음 상영작",
+        "stat": "100명 중 {count}명",
+        "statCaption": "인생 운세 다음에 운세를 더 본 분들이 고른 운세예요.",
+        "ticketTitle": "인생스포 {title} 관람권",
+        "yearlySpoiler": "올해 한 해를 한 줄로 정리한 총평",
+        "yearlyMonthly": "달마다 달라지는 흐름",
+        "free": "예고편은 무료",
+        "cta": "예고편 보기"
+      },
+      "today": {
+        "description": "매일 새로 뽑는 오늘의 산통이 기다려요",
+        "meta": "{date} 무료 회차"
       }
     },
     "profiles": {
@@ -1489,22 +1534,14 @@
       ],
       "comparison": {
         "caption": "자미두수와 사주(四柱八字) 비교",
-        "headers": [
-          "항목",
-          "자미두수",
-          "사주"
-        ],
+        "headers": ["항목", "자미두수", "사주"],
         "rows": [
           [
             "기본 구성",
             "12궁에 14주성과 보조성을 배치한 명반",
             "연주·월주·일주·시주 네 기둥, 여덟 글자"
           ],
-          [
-            "달력 기준",
-            "음력 월·일",
-            "24절기 기준의 월"
-          ],
+          ["달력 기준", "음력 월·일", "24절기 기준의 월"],
           [
             "태어난 시간의 역할",
             "시진이 명궁의 위치를 결정",
@@ -1515,11 +1552,7 @@
             "궁에 앉은 별, 밝기, 사화",
             "일간과 오행의 균형, 십성"
           ],
-          [
-            "시기 해석",
-            "10년 단위 대운과 유년",
-            "10년 단위 대운과 세운"
-          ]
+          ["시기 해석", "10년 단위 대운과 유년", "10년 단위 대운과 세운"]
         ]
       },
       "faq": [
@@ -1792,6 +1825,19 @@
         "viewResult": "오늘 운세 자세히 보기",
         "description": "산통을 흔들거나 화면을 당겼다 놓으면 오늘의 등급이 적힌 막대 하나가 나와요. 막대 뽑기 버튼으로도 같은 결과를 볼 수 있어요."
       }
+    },
+    "screening": {
+      "preparing": "상영 준비 중",
+      "skipHint": "탭하면 건너뛰기",
+      "waiting": {
+        "threading": "필름을 영사기에 거는 중이에요",
+        "chart": "명반을 펼치는 중이에요",
+        "soon": "곧 상영을 시작해요",
+        "long": "조금만 더 기다려 주세요. 이야기를 다듬고 있어요"
+      },
+      "status": "{title} 상영관으로 이동하는 중이에요",
+      "trailer": "{title} 예고편",
+      "feature": "{title} 본편"
     }
   },
   "en": {
@@ -1892,7 +1938,11 @@
           "nowShowing": "Now showing",
           "edgeCode": "Life Spoiler film ▸ {number}",
           "edgeCodeEnd": "Life Spoiler film ▸ next scene",
-          "emptyPalace": "No major star, so it borrows the opposite stars"
+          "emptyPalace": "No major star, so it borrows the opposite stars",
+          "meta": "A decade in the <b>{palace} cycle</b>. Its stage: {theme}.",
+          "metaNoTheme": "A decade in the <b>{palace} cycle</b>.",
+          "counterAria": "Choose a decade",
+          "skyAria": "Night sky of {palace}, stars: {stars}"
         },
         "ticket": {
           "headlineFree": "The preview is free.",
@@ -2084,33 +2134,74 @@
     "home": {
       "lifetime": {
         "title": "Lifetime Fortune",
-        "subtitle": "Check your life manual",
-        "button": "View Lifetime Fortune"
+        "subtitle": "Check your life manual"
       },
       "yearly": {
         "title": "This Year's Fortune",
-        "subtitle": "See how to navigate this year",
-        "button": "View This Year's Fortune"
+        "subtitle": "See how to navigate this year"
       },
       "yearly2027": {
         "title": "Next Year's Fortune",
-        "subtitle": "Preview how to navigate 2027",
-        "button": "View Next Year's Fortune"
+        "subtitle": "Preview how to navigate 2027"
       },
       "compatibility": {
         "title": "Compatibility",
-        "subtitle": "Analyze my relationships",
-        "button": "View Compatibility Fortune"
+        "subtitle": "Analyze my relationships"
       },
       "pastLife": {
         "title": "Past Life Fortune",
-        "subtitle": "Meet Who You Once Were",
-        "button": "Check Past Life Fortune"
+        "subtitle": "Meet Who You Once Were"
       },
       "faceReading": {
         "title": "Face Reading",
-        "subtitle": "See what your face reveals about you",
-        "button": "View Face Reading"
+        "subtitle": "See what your face reveals about you"
+      },
+      "hero": {
+        "label": "{name}'s life",
+        "profileLabel": "Choose a profile to show",
+        "filmAria": "{name}'s life film",
+        "loading": "Winding the film…",
+        "owned": {
+          "cta": "Watch the Full Story Again",
+          "ctaFirst": "Watch the Full Story",
+          "fallback": "Your full story is ready"
+        },
+        "preview": {
+          "label": "The life {name} previewed",
+          "fallback": "You have a trailer in progress",
+          "cta": "Continue to the Full Story"
+        },
+        "fresh": {
+          "title": "Not showing yet",
+          "cta": "Watch the Free Trailer"
+        },
+        "noProfile": {
+          "title": "Now it's your turn\nto draw your sky",
+          "cta": "Create My Profile"
+        },
+        "skyAria": "Night sky of {palace}, stars: {stars}",
+        "counterAria": "Choose a decade",
+        "meta": "A decade in the <b>{palace} cycle</b>. Its stars are {stars}.",
+        "metaEmpty": "A decade in the <b>{palace} cycle</b>. With no major star, it borrows the stars across from it."
+      },
+      "timetable": {
+        "title": "Showtimes",
+        "owned": "Watched",
+        "free": "Free"
+      },
+      "next": {
+        "title": "Up Next",
+        "stat": "{count} in 100",
+        "statCaption": "Of people who watched another reading after Lifetime Fortune, this is the one they chose.",
+        "ticketTitle": "Life Spoiler {title} Ticket",
+        "yearlySpoiler": "A one-line summary of the whole year",
+        "yearlyMonthly": "How each month shifts",
+        "free": "Trailer is free",
+        "cta": "Watch the Trailer"
+      },
+      "today": {
+        "description": "Today's fortune stick is waiting to be drawn",
+        "meta": "Free showing, {date}"
       }
     },
     "profiles": {
@@ -3284,11 +3375,7 @@
       ],
       "comparison": {
         "caption": "Zi Wei Dou Shu compared with Bazi (Four Pillars of Destiny)",
-        "headers": [
-          "Item",
-          "Zi Wei Dou Shu",
-          "Bazi"
-        ],
+        "headers": ["Item", "Zi Wei Dou Shu", "Bazi"],
         "rows": [
           [
             "Basic structure",
@@ -3587,6 +3674,19 @@
         "viewResult": "See today's fortune",
         "description": "Shake the fortune cylinder or pull the screen down and let go to draw a stick showing today's grade. The Draw a stick button gives the same result."
       }
+    },
+    "screening": {
+      "preparing": "Getting the screen ready",
+      "skipHint": "Tap to skip",
+      "waiting": {
+        "threading": "Threading the film",
+        "chart": "Laying out your chart",
+        "soon": "The show starts in a moment",
+        "long": "Just a little longer. We're polishing your story"
+      },
+      "status": "Heading to the screening of {title}",
+      "trailer": "{title} Trailer",
+      "feature": "{title}: The Full Story"
     }
   },
   "ja": {
@@ -3687,7 +3787,11 @@
           "nowShowing": "上映中",
           "edgeCode": "ライフスポイラー フィルム ▸ {number}",
           "edgeCodeEnd": "ライフスポイラー フィルム ▸ 次の場面",
-          "emptyPalace": "主星がなく向かいの星を借りて読む時期"
+          "emptyPalace": "主星がなく向かいの星を借りて読む時期",
+          "meta": "<b>{palace}の大運</b>を進む10年です。この時期の舞台は{theme}です。",
+          "metaNoTheme": "<b>{palace}の大運</b>を進む10年です。",
+          "counterAria": "10年ごとの区間を選ぶ",
+          "skyAria": "{palace}の夜空、星: {stars}"
         },
         "ticket": {
           "headlineFree": "予告編は無料、",
@@ -3879,33 +3983,74 @@
     "home": {
       "lifetime": {
         "title": "人生運勢",
-        "subtitle": "自分の取扱説明書を確認する",
-        "button": "人生運勢を見る"
+        "subtitle": "自分の取扱説明書を確認する"
       },
       "yearly": {
         "title": "今年の運勢",
-        "subtitle": "今年の攻略法を見る",
-        "button": "今年の運勢を見る"
+        "subtitle": "今年の攻略法を見る"
       },
       "yearly2027": {
         "title": "来年の運勢",
-        "subtitle": "2027年の攻略法を先取り",
-        "button": "来年の運勢を見る"
+        "subtitle": "2027年の攻略法を先取り"
       },
       "compatibility": {
         "title": "相性占い",
-        "subtitle": "人間関係を分析する",
-        "button": "相性占いを見る"
+        "subtitle": "人間関係を分析する"
       },
       "pastLife": {
         "title": "前世占い",
-        "subtitle": "前世の自分に会いに行く",
-        "button": "前世占いを確認する"
+        "subtitle": "前世の自分に会いに行く"
       },
       "faceReading": {
         "title": "顔相占い",
-        "subtitle": "顔に表れる自分の性向を見る",
-        "button": "顔相占いを確認する"
+        "subtitle": "顔に表れる自分の性向を見る"
+      },
+      "hero": {
+        "label": "{name}さんの人生",
+        "profileLabel": "上映するプロフィールを選ぶ",
+        "filmAria": "{name}さんの人生フィルム",
+        "loading": "フィルムを巻いています…",
+        "owned": {
+          "cta": "本編をもう一度見る",
+          "ctaFirst": "本編を見る",
+          "fallback": "本編の準備ができています"
+        },
+        "preview": {
+          "label": "{name}さんがプレビューした人生",
+          "fallback": "予告編の途中の人生があります",
+          "cta": "本編の続きを見る"
+        },
+        "fresh": {
+          "title": "まだ上映前です",
+          "cta": "予告編を無料で見る"
+        },
+        "noProfile": {
+          "title": "次はあなたの空を\n描く番です",
+          "cta": "プロフィールを登録する"
+        },
+        "skyAria": "{palace}の夜空、星: {stars}",
+        "counterAria": "10年ごとの区間を選ぶ",
+        "meta": "<b>{palace}の大運</b>を進む10年です。この時期の星は{stars}です。",
+        "metaEmpty": "<b>{palace}の大運</b>を進む10年です。主星がないため、向かいの星を借りて読みます。"
+      },
+      "timetable": {
+        "title": "上映スケジュール",
+        "owned": "鑑賞済み",
+        "free": "無料"
+      },
+      "next": {
+        "title": "次の上映作",
+        "stat": "100人中{count}人",
+        "statCaption": "人生運勢のあとに別の運勢を見た方が選んだ運勢です。",
+        "ticketTitle": "ライフスポイラー {title} チケット",
+        "yearlySpoiler": "今年一年をひと言でまとめた総評",
+        "yearlyMonthly": "月ごとに変わる流れ",
+        "free": "予告編は無料",
+        "cta": "予告編を見る"
+      },
+      "today": {
+        "description": "今日のおみくじが引かれるのを待っています",
+        "meta": "{date}の無料上映"
       }
     },
     "profiles": {
@@ -5079,22 +5224,14 @@
       ],
       "comparison": {
         "caption": "紫微斗数と四柱推命の比較",
-        "headers": [
-          "項目",
-          "紫微斗数",
-          "四柱推命"
-        ],
+        "headers": ["項目", "紫微斗数", "四柱推命"],
         "rows": [
           [
             "基本の構成",
             "12宮に14主星と補助星を配置した命盤",
             "年柱・月柱・日柱・時柱の四柱、八文字"
           ],
-          [
-            "暦の基準",
-            "旧暦の月・日",
-            "二十四節気で区切る月"
-          ],
+          ["暦の基準", "旧暦の月・日", "二十四節気で区切る月"],
           [
             "生まれた時間の役割",
             "時辰が命宮の位置を決める",
@@ -5105,11 +5242,7 @@
             "宮に入った星、明るさ、四化",
             "日干と五行のバランス、通変星"
           ],
-          [
-            "時期の読み方",
-            "10年単位の大運と流年",
-            "10年単位の大運と年運"
-          ]
+          ["時期の読み方", "10年単位の大運と流年", "10年単位の大運と年運"]
         ]
       },
       "faq": [
@@ -5382,6 +5515,19 @@
         "viewResult": "今日の運勢を詳しく見る",
         "description": "おみくじ筒を振るか画面を引いて離すと、今日の等級が書かれた棒が一本出てきます。「棒を引く」ボタンでも同じ結果が見られます。"
       }
+    },
+    "screening": {
+      "preparing": "上映準備中",
+      "skipHint": "タップでスキップ",
+      "waiting": {
+        "threading": "フィルムを映写機にセットしています",
+        "chart": "命盤を広げています",
+        "soon": "まもなく上映が始まります",
+        "long": "もう少しお待ちください。物語を仕上げています"
+      },
+      "status": "{title}の上映館へ移動しています",
+      "trailer": "{title} 予告編",
+      "feature": "{title} 本編"
     }
   }
 }
