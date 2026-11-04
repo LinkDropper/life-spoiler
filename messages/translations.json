@@ -8,17 +8,14 @@
       "header": {
         "logoAlt": "인생스포 로고",
         "menuAriaLabel": "메뉴",
-        "languageAriaLabel": "언어 변경"
+        "languageAriaLabel": "언어 변경",
+        "homeAriaLabel": "인생스포 홈"
       },
       "menu": {
         "logoAlt": "인생스포 로고",
-        "loginViaGoogle": "구글 이메일로 로그인 했습니다.",
-        "loginViaKakao": "카카오 이메일로 로그인 했습니다.",
-        "loggedIn": "로그인 했습니다.",
-        "friendUniverse": "나만의 별자리 만들기",
-        "freeBadge": "무료",
-        "lifetimeFortune": "인생 운세 보기",
-        "yearlyFortune": "올해 운세 보기",
+        "loginViaGoogle": "구글로 로그인했어요",
+        "loginViaKakao": "카카오로 로그인했어요",
+        "loggedIn": "로그인되어 있어요",
         "login": "로그인",
         "logout": "로그아웃",
         "withdraw": "회원탈퇴",
@@ -28,6 +25,47 @@
           "description": "탈퇴 후에는 복구가 불가능합니다. 계정의 모든 프로필의 운세 기록도 모두 삭제됩니다.",
           "confirm": "탈퇴하기",
           "withdrawing": "탈퇴 중..."
+        },
+        "dialogLabel": "메뉴",
+        "nowShowing": "{name}님의 인생",
+        "nowShowingStatus": "상영 중",
+        "toTheater": "상영관",
+        "timetableTitle": "상영 시간표",
+        "ticketsTitle": "내 관람권",
+        "guestTickets": "로그인하면 내가 본 본편과 쿠폰이 여기에 관람권으로 모여요.",
+        "trailerFree": "예고편 무료",
+        "daily": {
+          "title": "오늘의 운세",
+          "subtitle": "하루 한 편, 오늘의 스포일러"
+        },
+        "slot": {
+          "daily": "매일",
+          "lifetime": "1~99세",
+          "yearly": "{year}",
+          "yearly2027": "2027",
+          "pastLife": "전생",
+          "compatibility": "둘이서",
+          "faceReading": "관상",
+          "universe": "친구들"
+        },
+        "ticket": {
+          "count": "1매",
+          "featureKind": "본편 관람권",
+          "couponKind": "할인 관람권",
+          "screening": "상영",
+          "screeningValue": "1~99세",
+          "viewer": "관람",
+          "viewerValue": "{name}님",
+          "status": "상태",
+          "statusOwned": "소장",
+          "rewatch": "다시 보기",
+          "couponTitle": "쿠폰 {count}장",
+          "couponUse": "사용",
+          "couponUseValue": "운세 결제",
+          "couponExpiry": "기한",
+          "couponNoExpiry": "없음",
+          "couponAction": "쿠폰함",
+          "couponLoading": "불러오는 중"
         }
       },
       "cinema": {
@@ -167,10 +205,8 @@
       },
       "friendUniverse": {
         "alert": {
-          "badge": "무료",
-          "text": "친구들과 별자리 궁합, 로그인 없이 바로 볼 수 있어요",
-          "action": "만들기",
-          "ariaLabel": "로그인 없이 무료로 나만의 별자리 만들기"
+          "ariaLabel": "로그인 없이 무료로 나만의 별자리 만들기",
+          "chip": "무료 · 로그인 없이 친구들과 별자리 궁합"
         }
       },
       "cta": {
@@ -1900,17 +1936,14 @@
       "header": {
         "logoAlt": "Life Spoiler Logo",
         "menuAriaLabel": "Menu",
-        "languageAriaLabel": "Change language"
+        "languageAriaLabel": "Change language",
+        "homeAriaLabel": "Life Spoiler home"
       },
       "menu": {
         "logoAlt": "Life Spoiler Logo",
-        "loginViaGoogle": "Logged in with Google.",
-        "loginViaKakao": "Logged in with Kakao.",
-        "loggedIn": "Logged in.",
-        "friendUniverse": "Create my universe",
-        "freeBadge": "FREE",
-        "lifetimeFortune": "View Lifetime Fortune",
-        "yearlyFortune": "View This Year's Fortune",
+        "loginViaGoogle": "Logged in with Google",
+        "loginViaKakao": "Logged in with Kakao",
+        "loggedIn": "You're logged in",
         "login": "Login",
         "logout": "Logout",
         "withdraw": "Delete Account",
@@ -1920,6 +1953,47 @@
           "description": "This action cannot be undone. All your profiles and fortune records will be permanently deleted.",
           "confirm": "Delete Account",
           "withdrawing": "Deleting..."
+        },
+        "dialogLabel": "Menu",
+        "nowShowing": "{name}'s life",
+        "nowShowingStatus": "Now showing",
+        "toTheater": "Theater",
+        "timetableTitle": "Showtimes",
+        "ticketsTitle": "My tickets",
+        "guestTickets": "Log in and the stories you've watched and your coupons gather here as tickets.",
+        "trailerFree": "Free trailer",
+        "daily": {
+          "title": "Daily Fortune",
+          "subtitle": "One short feature a day"
+        },
+        "slot": {
+          "daily": "Daily",
+          "lifetime": "1–99",
+          "yearly": "{year}",
+          "yearly2027": "2027",
+          "pastLife": "Past",
+          "compatibility": "Duo",
+          "faceReading": "Face",
+          "universe": "Friends"
+        },
+        "ticket": {
+          "count": "Admit 1",
+          "featureKind": "Feature ticket",
+          "couponKind": "Discount ticket",
+          "screening": "Runs",
+          "screeningValue": "Ages 1–99",
+          "viewer": "Viewer",
+          "viewerValue": "{name}",
+          "status": "Status",
+          "statusOwned": "Owned",
+          "rewatch": "Rewatch",
+          "couponTitle": "{count} coupons",
+          "couponUse": "Use",
+          "couponUseValue": "Fortunes",
+          "couponExpiry": "Expires",
+          "couponNoExpiry": "None",
+          "couponAction": "Coupons",
+          "couponLoading": "Loading"
         }
       },
       "cinema": {
@@ -2059,10 +2133,8 @@
       },
       "friendUniverse": {
         "alert": {
-          "badge": "FREE",
-          "text": "Check star compatibility with friends — no login needed",
-          "action": "Create",
-          "ariaLabel": "Create my universe for free, no login needed"
+          "ariaLabel": "Create my universe for free, no login needed",
+          "chip": "FREE · Star compatibility with friends, no login"
         }
       },
       "cta": {
@@ -3800,17 +3872,14 @@
       "header": {
         "logoAlt": "ライフスポイラー ロゴ",
         "menuAriaLabel": "メニュー",
-        "languageAriaLabel": "言語変更"
+        "languageAriaLabel": "言語変更",
+        "homeAriaLabel": "ライフスポイラー ホーム"
       },
       "menu": {
         "logoAlt": "ライフスポイラー ロゴ",
-        "loginViaGoogle": "Googleでログインしました。",
-        "loginViaKakao": "カカオでログインしました。",
-        "loggedIn": "ログインしました。",
-        "friendUniverse": "自分のユニバースを作る",
-        "freeBadge": "無料",
-        "lifetimeFortune": "人生運勢を見る",
-        "yearlyFortune": "今年の運勢を見る",
+        "loginViaGoogle": "Googleでログインしています",
+        "loginViaKakao": "カカオでログインしています",
+        "loggedIn": "ログインしています",
         "login": "ログイン",
         "logout": "ログアウト",
         "withdraw": "退会",
@@ -3820,6 +3889,47 @@
           "description": "退会後は復元できません。すべてのプロフィールと運勢記録が削除されます。",
           "confirm": "退会する",
           "withdrawing": "退会中..."
+        },
+        "dialogLabel": "メニュー",
+        "nowShowing": "{name}さんの人生",
+        "nowShowingStatus": "上映中",
+        "toTheater": "上映館",
+        "timetableTitle": "上映スケジュール",
+        "ticketsTitle": "マイチケット",
+        "guestTickets": "ログインすると、観た本編とクーポンがここにチケットとして集まります。",
+        "trailerFree": "予告編無料",
+        "daily": {
+          "title": "今日の運勢",
+          "subtitle": "一日一本、今日のスポイラー"
+        },
+        "slot": {
+          "daily": "毎日",
+          "lifetime": "1〜99歳",
+          "yearly": "{year}",
+          "yearly2027": "2027",
+          "pastLife": "前世",
+          "compatibility": "ふたり",
+          "faceReading": "顔相",
+          "universe": "友達"
+        },
+        "ticket": {
+          "count": "1枚",
+          "featureKind": "本編チケット",
+          "couponKind": "割引チケット",
+          "screening": "上映",
+          "screeningValue": "1〜99歳",
+          "viewer": "鑑賞",
+          "viewerValue": "{name}さん",
+          "status": "状態",
+          "statusOwned": "所蔵",
+          "rewatch": "もう一度観る",
+          "couponTitle": "クーポン{count}枚",
+          "couponUse": "利用",
+          "couponUseValue": "運勢の決済",
+          "couponExpiry": "期限",
+          "couponNoExpiry": "なし",
+          "couponAction": "クーポン",
+          "couponLoading": "読み込み中"
         }
       },
       "cinema": {
@@ -3959,10 +4069,8 @@
       },
       "friendUniverse": {
         "alert": {
-          "badge": "無料",
-          "text": "友達との星座相性、ログインなしですぐ見られます",
-          "action": "作成",
-          "ariaLabel": "ログインなしで無料で自分のユニバースを作る"
+          "ariaLabel": "ログインなしで無料で自分のユニバースを作る",
+          "chip": "無料 · ログインなしで友達と星座相性"
         }
       },
       "cta": {
