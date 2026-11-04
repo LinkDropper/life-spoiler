@@ -1,0 +1,37 @@
+/* 친구 시사회 화면 공통 토큰 — components/home/HomeScreen.module.css, 랜딩과 같은 값.
+   페이지 루트에 이 클래스를 함께 달면 아래 컴포넌트가 var(--cinema-*)를 그대로 쓴다. */
+.theme {
+  --cinema-night: #0c1220;
+  --cinema-text: #ffffff;
+  --cinema-haze: rgba(255, 255, 255, 0.72);
+  --cinema-faint: rgba(255, 255, 255, 0.5);
+  --cinema-line: rgba(255, 255, 255, 0.14);
+  /* 채우면 연핑크(spoiler), 글자·선택이면 진한 핑크(accent), 상태·포커스면 금(star) — app/globals.css 색 역할 */
+  --cinema-spoiler: var(--primitive-primary, #ffccd9);
+  --cinema-spoiler-hover: var(--primitive-primary-hover, #ffa8c0);
+  --cinema-spoiler-pressed: var(--primitive-primary-pressed, #f598b3);
+  --cinema-accent: var(--primitive-primary-strong, #ff8fb1);
+  --cinema-star: var(--primitive-gold, #ffe7a3);
+  --cinema-ink: #23142d;
+  --cinema-paper: #f9ecf0;
+  --cinema-rose: #8a2f55;
+  --cinema-field: #121a30;
+  --cinema-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --cinema-display-weight: 400;
+
+  font-family: var(--font-pretendard), sans-serif;
+  color: var(--cinema-text);
+  overflow-wrap: break-word;
+  background: var(--cinema-night);
+}
+
+/* 한국어는 어절 단위로 줄바꿈. 일본어에 keep-all을 걸면 줄이 넘쳐 ko에만 건다 */
+.theme:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.theme:lang(ja) {
+  --cinema-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --cinema-display-weight: 800;
+}

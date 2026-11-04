@@ -1,5 +1,6 @@
 /* 앱 전역 페이지 패턴(app/home, app/profiles)과 동일한 구조.
-   폭 제한을 .main이 아니라 .page에 두어야 HeaderClient가 같은 컬럼 안에 들어간다. */
+   폭 제한을 .main이 아니라 .page에 두어야 HeaderClient가 같은 컬럼 안에 들어간다.
+   색·서체 토큰은 ScreeningTheme.module.css(.theme)가 함께 깐다. */
 .page {
   display: flex;
   flex-direction: column;
@@ -7,7 +8,6 @@
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
 }
 
 @supports (min-height: 100svh) {
@@ -20,27 +20,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  padding: 28px 20px 56px;
+  gap: 48px;
+  padding: 12px 20px calc(56px + env(safe-area-inset-bottom));
+  overflow-x: clip;
 }
 
 .status {
+  margin: 0;
   padding: 48px 0;
-  color: rgba(255, 255, 255, 0.82);
-  font-family: var(--font-pretendard), sans-serif;
   font-size: 15px;
   text-align: center;
-}
-
-.duplicateNotice {
-  padding: 12px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.5;
+  color: var(--cinema-haze);
 }
 
 .errorState {
@@ -48,47 +38,45 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 56px 20px;
+  padding: 56px 0;
 }
 
 .errorTitle {
-  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  margin: 0;
+  font-family: var(--cinema-display);
   font-size: 24px;
-  font-weight: 400;
+  font-weight: var(--cinema-display-weight);
   line-height: 1.35;
-  color: #ffffff;
   text-align: center;
-  word-break: keep-all;
 }
 
 .errorDescription {
-  color: rgba(255, 255, 255, 0.8);
-  font-family: var(--font-pretendard), sans-serif;
+  margin: 0;
   font-size: 15px;
   line-height: 1.5;
   text-align: center;
-  word-break: keep-all;
+  color: var(--cinema-haze);
 }
 
 .errorAction {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
+  min-height: 56px;
   margin-top: 8px;
   padding: 0 24px;
-  border: none;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #2d1b4e;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 15px;
-  font-weight: 700;
+  border: 1.5px solid var(--cinema-spoiler);
+  border-radius: 12px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--cinema-text);
   text-decoration: none;
   cursor: pointer;
 }
 
 .errorAction:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 3px;
+  outline: 2px solid var(--cinema-star);
+  outline-offset: 2px;
 }

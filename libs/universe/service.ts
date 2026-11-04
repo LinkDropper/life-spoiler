@@ -118,6 +118,25 @@ export const findMyUniversePublicId = async (
   userId: string
 ): Promise<string | null> => findUniverseByOwnerUserId(userId);
 
+/**
+ * 공유 미리보기 이미지용 최소 조회.
+ * 크롤러 요청이라 `getUniverseDetail`과 달리 최근 조회 시각을 갱신하지 않고 순위도 계산하지 않는다.
+ */
+export const getUniverseOgSummary = async (
+  publicId: string
+): Promise<{
+  ownerName: string | null;
+  guestCount: number;
+  guests: UniverseDetailDto["guests"];
+}> => {
+  const { ownerSummary, guests } = await findUniverseForDisplay(publicId);
+  return {
+    ownerName: ownerSummary.ownerName,
+    guestCount: ownerSummary.guestCount,
+    guests,
+  };
+};
+
 export const getUniverseDetail = async (
   publicId: string,
   selfStarSeed: string | null = null

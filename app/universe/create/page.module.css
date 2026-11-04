@@ -1,5 +1,6 @@
 /* 앱 전역 페이지 패턴(app/home, app/profiles)과 동일한 구조.
-   폭 제한을 .main이 아니라 .page에 두어야 HeaderClient가 같은 컬럼 안에 들어간다. */
+   폭 제한을 .main이 아니라 .page에 두어야 HeaderClient가 같은 컬럼 안에 들어간다.
+   색·서체 토큰은 ScreeningTheme.module.css(.theme)가 함께 깐다. */
 .page {
   display: flex;
   flex-direction: column;
@@ -7,7 +8,6 @@
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
 }
 
 @supports (min-height: 100svh) {
@@ -18,107 +18,34 @@
 
 .main {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 32px 20px 48px;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  padding: 12px 20px calc(56px + env(safe-area-inset-bottom));
 }
 
 .title {
-  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1.35;
-  color: #ffffff;
-  word-break: keep-all;
+  margin: 0;
+  font-family: var(--cinema-display);
+  font-size: 32px;
+  font-weight: var(--cinema-display-weight);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
-.description {
-  font-family: var(--font-pretendard), sans-serif;
+.lead {
+  margin: 8px 0 0;
   font-size: 15px;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.82);
-  word-break: keep-all;
+  color: var(--cinema-haze);
 }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 20px 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.06);
+/* 시안: 리드 문구와 스크린 사이 24px (SeatMap 자체 여백 16px + 8px) */
+.seats {
+  margin-top: 8px;
 }
 
-.timeSection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.timeHint {
-  font-family: var(--font-pretendard), sans-serif;
+.legend {
+  margin: 14px 0 0;
   font-size: 13px;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.78);
-  word-break: keep-all;
-}
-
-/*
-  align-items를 flex-end로 주면(자식 우측 정렬 목적) flex-direction:column에서는
-  가로축이 교차축이 되어 "stretch 해제"까지 함께 일어난다 — width:100%인 Checkbox
-  버튼까지 내용물 크기로 쪼그라들어 라벨이 2줄로 밀리고 둘째 줄이 배경 밖으로
-  삐져나오는 버그로 이어졌다(실측으로 확인). 컨테이너는 기본(stretch)으로 두고,
-  우측 정렬은 아래 .privacyLink에 align-self로만 준다.
-*/
-.consentSection {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* 앱 전역의 태그/칩 스타일을 따르는 작은 필 */
-.privacyLink {
-  align-self: flex-end;
-  padding: 5px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--primitive-primary, #ffccd9);
-  color: var(--primitive-primary, #ffccd9);
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.privacyLink:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 2px;
-}
-
-.warning {
-  padding: 12px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.88);
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
-  word-break: keep-all;
-}
-
-.error {
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(255, 120, 120, 0.16);
-  color: #ffd5d5;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
+  text-align: center;
+  color: var(--cinema-haze);
 }

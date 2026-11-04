@@ -1,0 +1,40 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 204, 217, 0.15);
+}
+
+.label {
+  font-size: 15px;
+}
+
+.delta {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--cinema-accent);
+}
+
+/* 음수는 자극적이지 않게 옅은 흰색으로만 낮춘다(빨강 미사용) */
+.negative {
+  color: var(--cinema-haze);
+}
+
+.detail {
+  grid-column: 1;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cinema-haze);
+}
