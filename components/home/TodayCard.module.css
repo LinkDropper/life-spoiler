@@ -1,0 +1,63 @@
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 204, 217, 0.06);
+  border: 1px solid rgba(255, 204, 217, 0.28);
+  border-radius: 16px;
+  color: var(--cinema-text);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cinema-haze);
+}
+
+.meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinema-spoiler);
+  white-space: nowrap;
+}
+
+.chevron {
+  flex: none;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--cinema-spoiler);
+  }
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--cinema-star);
+  outline-offset: 3px;
+}
+
+@media (min-width: 860px) {
+  .card {
+    max-width: 640px;
+  }
+}

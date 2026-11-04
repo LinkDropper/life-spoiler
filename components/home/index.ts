@@ -1,8 +1,6 @@
-export { CompatibilityFortuneCard } from "./CompatibilityFortuneCard";
-export { DailyFortuneCard } from "./DailyFortuneCard";
-export { FaceReadingCard } from "./FaceReadingCard";
-export { FriendUniverseCard } from "./FriendUniverseCard";
-export { LifetimeFortuneCard } from "./LifetimeFortuneCard";
-export { NextYearFortuneCard } from "./NextYearFortuneCard";
-export { PastLifeCard } from "./PastLifeCard";
-export { YearlyFortuneCard } from "./YearlyFortuneCard";
+export { FilmHero } from "./FilmHero";
+export { HomeScreen } from "./HomeScreen";
+export { NextTicket } from "./NextTicket";
+export { ProfileSelect } from "./ProfileSelect";
+export { Timetable } from "./Timetable";
+export { TodayCard } from "./TodayCard";

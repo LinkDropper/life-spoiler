@@ -10,6 +10,7 @@ import { getOpenGraphImage } from "@/libs/utils/og";
 import BrowserRedirect from "@/components/BrowserRedirect";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { KakaoScript } from "@/components/common/KakaoScript";
+import { ScreeningProvider } from "@/components/screening";
 import { NavigationEvents } from "@/libs/analytics";
 import {
   OPEN_GRAPH_LOCALE,
@@ -135,7 +136,9 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <BrowserRedirect />
           <UserProvider>
-            <ProfileProvider>{children}</ProfileProvider>
+            <ProfileProvider>
+              <ScreeningProvider>{children}</ScreeningProvider>
+            </ProfileProvider>
           </UserProvider>
         </NextIntlClientProvider>
       </body>

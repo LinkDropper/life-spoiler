@@ -14,3 +14,20 @@ export const removeEmoji = (text: string): string =>
       ""
     )
     .trim();
+
+/** 마지막 글자가 받침 있는 한글인지. 한글이 아니면 false */
+export const hasKoreanBatchim = (word: string): boolean => {
+  const code = word.trim().charCodeAt(word.trim().length - 1) - 0xac00;
+  return code >= 0 && code <= 11171 && code % 28 !== 0;
+};
+
+/**
+ * 받침 유무로 조사를 고른다.
+ * @example pickParticle("태음", "이에요", "예요") // "이에요"
+ * @example pickParticle("천부", "과", "와") // "와"
+ */
+export const pickParticle = (
+  word: string,
+  withBatchim: string,
+  withoutBatchim: string
+): string => (hasKoreanBatchim(word) ? withBatchim : withoutBatchim);

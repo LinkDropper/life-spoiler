@@ -1,13 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 
+import { OptionSheet } from "@/components/form";
 import { locales, localeNames } from "@/i18n/config";
 import type { Locale } from "@/i18n/config";
-
-import styles from "./LanguageDrawer.module.css";
 
 interface LanguageDrawerProps {
   isOpen: boolean;
@@ -16,6 +13,7 @@ interface LanguageDrawerProps {
   onSelect: (locale: Locale) => void;
 }
 
+/** 헤더 언어 선택 드로어 — 서비스 공용 OptionSheet를 쓴다 */
 export const LanguageDrawer = ({
   isOpen,
   currentLocale,
@@ -23,100 +21,18 @@ export const LanguageDrawer = ({
   onSelect,
 }: LanguageDrawerProps) => {
   const t = useTranslations("landing.header");
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const originalStyle = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = originalStyle;
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, onClose]);
-
-  if (!mounted || !isOpen) {
-    return null;
-  }
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  const handleSelect = (locale: Locale) => {
-    onSelect(locale);
-  };
-
-  return createPortal(
-    <div className={styles.backdrop} onClick={handleBackdropClick}>
-      <div className={styles.drawer}>
-        <div className={styles.header}>
-          <span className={styles.title}>
-            {t("languageAriaLabel", { default: "언어 설정" })}
-          </span>
-        </div>
-
-        <div className={styles.separator}>
-          <hr className={styles.separatorLine} />
-        </div>
-
-        <div className={styles.menuItems}>
-          {locales.map((locale) => (
-            <button
-              key={locale}
-              type="button"
-              className={styles.menuItem}
-              onClick={() => handleSelect(locale)}
-            >
-              <span>{localeNames[locale]}</span>
-              {locale === currentLocale && <CheckIcon />}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>,
-    document.body
+  return (
+    <OptionSheet
+      isOpen={isOpen}
+      title={t("languageAriaLabel", { default: "언어 설정" })}
+      options={locales.map((locale) => ({
+        value: locale,
+        label: localeNames[locale],
+      }))}
+      selectedValue={currentLocale}
+      onSelect={(value) => onSelect(value as Locale)}
+      onClose={onClose}
+    />
   );
 };
-
-const CheckIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className={styles.checkIcon}
-  >
-    <path
-      d="M15 4.5L6.75 12.75L3 9"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);

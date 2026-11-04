@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Lottie from "lottie-react";
 import { useLocale } from "next-intl";
 
+import { useScreeningHold } from "@/components/screening";
+
 import loadingAnimation from "./loading.json";
 
 import styles from "./Loading.module.css";
@@ -57,6 +59,9 @@ const LOADING_MESSAGES: Record<string, string[]> = {
 
 export const Loading = () => {
   const locale = useLocale();
+  // 상영관 입장 전환이 덮고 있으면, 이 로딩이 끝날 때까지 걷히지 않는다.
+  // 덮여 있는 동안은 아무도 못 보므로 영상·Lottie를 띄우지 않는다(디코딩 메모리·CPU 절약)
+  const isCoveredByScreening = useScreeningHold();
   const [messageIndex, setMessageIndex] = useState(0);
   const videoSrc = useRef(
     LOADING_VIDEOS[Math.floor(Math.random() * LOADING_VIDEOS.length)]
@@ -71,6 +76,10 @@ export const Loading = () => {
 
     return () => clearInterval(interval);
   }, [messages.length]);
+
+  if (isCoveredByScreening) {
+    return <div className={styles.container} aria-busy="true" />;
+  }
 
   return (
     <div className={styles.container}>

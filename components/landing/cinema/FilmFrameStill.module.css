@@ -1,0 +1,129 @@
+/* 인생 필름 한 칸 (홈 E안 히어로 기준, docs/home-redesign-2026-11.md §7) */
+.still {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10.5;
+  overflow: hidden;
+  container-type: inline-size;
+  background: #000;
+  border-radius: 3px;
+  /* 실제 필름 칸의 검은 프레임 선 */
+  box-shadow: 0 0 0 3px #000;
+}
+
+/* 가장자리 어둠(비네트) */
+.still::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse 85% 75% at 50% 45%,
+    transparent 55%,
+    rgba(0, 0, 0, 0.75)
+  );
+  pointer-events: none;
+}
+
+/* 필름 그레인 */
+.still::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  z-index: 1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+/* 타임코드 (왼쪽 위). 327px 칸에서 22px, 640px 칸에서 30px */
+.timecode {
+  position: absolute;
+  z-index: 2;
+  top: clamp(12px, 3cqw, 18px);
+  left: clamp(14px, 3.2cqw, 20px);
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: clamp(20px, 4.8cqw, 30px);
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 상영 중 표시 (오른쪽 위): 영사기 불빛처럼 깜박이는 점 */
+.onAir {
+  position: absolute;
+  z-index: 2;
+  top: clamp(12px, 3.2cqw, 20px);
+  right: clamp(14px, 3.2cqw, 20px);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(12px, 2.2cqw, 14px);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.onAir i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff6b8a;
+  box-shadow: 0 0 8px #ff6b8a;
+  animation: onAir 1.6s ease-in-out infinite;
+}
+
+@keyframes onAir {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* 줄거리 = 자막 (화면 아래 가운데). 327px 칸에서 16px, 640px 칸에서 21px */
+.subtitle {
+  position: absolute;
+  z-index: 2;
+  left: 16px;
+  right: 16px;
+  bottom: clamp(14px, 3.4cqw, 22px);
+  margin: 0;
+  font-size: clamp(15px, 3.4cqw, 21px);
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  color: #fff;
+  text-shadow:
+    0 0 2px #000,
+    0 1px 3px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(0, 0, 0, 0.7);
+  text-wrap: balance;
+}
+
+/* 잠긴 줄거리: 반투명 막 아래 흐린 글자 */
+.locked {
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: transparent;
+  text-shadow: 0 0 9px rgba(255, 255, 255, 0.85);
+  user-select: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onAir i {
+    animation: none;
+  }
+}

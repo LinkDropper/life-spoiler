@@ -15,7 +15,7 @@
   justify-content: center;
   gap: clamp(20px, 3.5vh, 40px);
   height: 100svh;
-  /* 하단 고정 CTA가 나이 눈금자를 가리지 않게 아래를 비워 둔다 */
+  /* 하단 고정 CTA가 10년 썸네일 줄을 가리지 않게 아래를 비워 둔다 */
   padding: 60px 0 calc(112px + env(safe-area-inset-bottom));
   overflow: hidden;
 }
@@ -70,197 +70,104 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 35mm 필름 ---------- */
+.nowShowingTheme {
+  margin-left: 8px;
+  font-weight: 600;
+  color: var(--cinema-haze);
+}
+
+/* ---------- 35mm 필름 (홈 첫 화면과 같은 띠·칸, components/home/FilmHero) ---------- */
+
+.reel {
+  --film-edge: #e09a52;
+
+  position: relative;
+  padding: 28px 0 30px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='28'%3E%3Crect x='5' y='9' width='12' height='11' rx='2.5' fill='%2305060a'/%3E%3C/svg%3E")
+      0 0 / 22px 28px repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='28'%3E%3Crect x='5' y='8' width='12' height='11' rx='2.5' fill='%2305060a'/%3E%3C/svg%3E")
+      0 100% / 22px 28px repeat-x,
+    linear-gradient(180deg, #16121c, #0d0b12 18%, #0d0b12 82%, #16121c);
+}
+
+/* 필름 가장자리 인쇄 */
+.edgeRow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 clamp(28px, 6vw, 96px);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--film-edge);
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
 
 .strip {
   position: relative;
 }
 
-/* 필름 위아래 구멍(퍼포레이션)은 필름과 같이 움직이도록 트랙에 그린다 */
 .track {
   display: flex;
+  gap: 6px;
   width: max-content;
   margin: 0;
-  padding: 26px clamp(16px, 6vw, 96px);
+  padding: 0 clamp(16px, 6vw, 96px);
   list-style: none;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='26'%3E%3Crect x='6' y='8' width='12' height='10' rx='2.5' fill='%230c1220'/%3E%3C/svg%3E")
-      0 0 / 24px 26px repeat-x,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='26'%3E%3Crect x='6' y='8' width='12' height='10' rx='2.5' fill='%230c1220'/%3E%3C/svg%3E")
-      0 100% / 24px 26px repeat-x,
-    var(--film-stock);
   will-change: transform;
 }
 
 .track:focus-visible {
-  outline: 2px solid var(--cinema-spoiler);
-  outline-offset: 4px;
+  outline: 2px solid var(--cinema-star);
+  outline-offset: -2px;
 }
 
+/* 칸 안은 공용 FilmFrameStill. 화면 가운데에 가까울수록(--focus) 밝고 선명하다 */
 .frame {
   --focus: 1;
 
   position: relative;
-  display: flex;
-  flex-direction: column;
   flex: 0 0 auto;
-  width: clamp(260px, min(24vw, 37svh), 360px);
-  padding: 14px 12px 16px;
-  border-left: 2px solid #000;
-}
-
-.edgeCode {
-  margin-bottom: 8px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--edge-print);
-  opacity: 0.8;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ---------- 스틸컷 ---------- */
-
-.still {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background:
-    linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.55)),
-    radial-gradient(
-      ellipse at 55% 38%,
-      color-mix(in srgb, var(--tint) 42%, transparent),
-      transparent 72%
-    ),
-    color-mix(in srgb, var(--tint) 8%, #0b0a14);
-  opacity: calc(0.32 + 0.68 * var(--focus));
-  filter: saturate(calc(0.35 + 0.65 * var(--focus)));
-  transform: scale(calc(0.93 + 0.07 * var(--focus)));
-  transform-origin: 50% 60%;
-}
-
-/* 필름 그레인 */
-.still::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-  opacity: 0.35;
-  pointer-events: none;
-}
-
-.stillArt {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.stillLine {
-  stroke: var(--tint);
-  stroke-width: 0.4;
-  stroke-opacity: 0.7;
-}
-
-.stillMain {
-  fill: #fff8ec;
-  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 5px var(--tint));
-}
-
-.stillMinor {
-  fill: var(--tint);
-  fill-opacity: 0.75;
-}
-
-.stillAges {
-  position: absolute;
-  left: 12px;
-  bottom: 8px;
-  font-family: var(--cinema-display);
-  font-weight: var(--cinema-display-weight);
-  font-size: clamp(26px, 2.4vw, 34px);
-  line-height: 1;
-  color: var(--cinema-text);
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
-}
-
-.nowBadge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 10px;
-  background: var(--cinema-star);
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--cinema-ink);
-}
-
-.frameNow .still {
-  box-shadow: inset 0 0 0 2px var(--cinema-star);
-}
-
-/* ---------- 장면 설명 ---------- */
-
-.caption {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 4px 0;
-  opacity: calc(0.4 + 0.6 * var(--focus));
-}
-
-.palace {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--tint);
-}
-
-.theme {
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--cinema-text);
-}
-
-.stars {
-  font-size: 13px;
-  color: var(--cinema-haze);
-}
-
-.spoiler {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
-}
-
-.blurred {
-  display: block;
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
-  filter: blur(5px);
-  user-select: none;
+  width: clamp(320px, min(42vw, calc((100svh - 400px) * 16 / 10.5)), 600px);
+  opacity: calc(0.38 + 0.62 * var(--focus));
+  filter: saturate(calc(0.4 + 0.6 * var(--focus)));
 }
 
 /* ---------- 마지막 장면 ---------- */
 
 .frameFinal {
-  width: clamp(280px, 26vw, 340px);
+  width: clamp(
+    260px,
+    min(30vw, calc((100svh - 400px) * 16 / 10.5 * 0.7)),
+    400px
+  );
 }
 
 .finalBody {
   display: flex;
-  flex: 1;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   gap: 20px;
-  padding: 24px 12px;
+  aspect-ratio: 16 / 10.5;
+  height: 100%;
+  padding: 24px;
+  background: radial-gradient(ellipse at 30% 30%, #1d1830, #05040a 72%);
   border: 1px dashed rgba(255, 231, 163, 0.4);
+  border-radius: 3px;
+  box-shadow: 0 0 0 3px #000;
+}
+
+.frameFinal .finalBody {
+  aspect-ratio: auto;
 }
 
 .finalQuestion {
@@ -291,75 +198,24 @@
   outline-offset: 2px;
 }
 
-/* ---------- 나이 눈금자 ---------- */
+/* ---------- 10년 썸네일 줄 + 지금 장면 설명 ---------- */
 
-.ruler {
+/* 공용 DecadeCounter의 여백을 장면 좌우 여백에 맞춘다 */
+.viewport .counter {
+  padding-inline: clamp(24px, 6vw, 96px);
+}
+
+.meta {
+  margin: 0;
   padding: 0 clamp(16px, 6vw, 96px);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cinema-haze);
 }
 
-.rulerBar {
-  position: relative;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 3px;
-}
-
-.rulerSegment {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background: var(--tint);
-  opacity: 0.5;
-  border-right: 1px solid var(--cinema-night);
-}
-
-.playhead {
-  position: absolute;
-  top: -7px;
-  left: 0;
-  width: 2px;
-  height: 20px;
-  margin-left: -1px;
-  background: var(--cinema-text);
-  transition: left 0.25s ease-out;
-}
-
-.playhead::before {
-  content: "";
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  width: 10px;
-  height: 10px;
-  background: var(--cinema-text);
-  border-radius: 50%;
-}
-
-.rulerNow {
-  position: absolute;
-  bottom: 14px;
-  padding: 2px 8px;
-  transform: translateX(-50%);
-  background: var(--cinema-star);
-  border-radius: 100px;
-  font-size: 11px;
+.metaPalace {
   font-weight: 700;
-  color: var(--cinema-ink);
-  white-space: nowrap;
-}
-
-.rulerTicks {
-  position: relative;
-  height: 20px;
-  margin-top: 8px;
-}
-
-.rulerTick {
-  position: absolute;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: var(--cinema-faint);
-  font-variant-numeric: tabular-nums;
+  color: var(--tint);
 }
 
 .srOnly {
@@ -372,7 +228,7 @@
   white-space: nowrap;
 }
 
-/* 낮은 화면에서는 설명 문단을 접어 필름과 눈금자가 한 화면에 들어오게 한다 */
+/* 낮은 화면에서는 설명 문단을 접어 필름과 썸네일 줄이 한 화면에 들어오게 한다 */
 @media (max-height: 820px) and (min-width: 768px) {
   .description {
     display: none;
@@ -380,13 +236,12 @@
 }
 
 /* ---------- 모바일 ----------
-   필름 띠(strip)가 제목·눈금자를 뺀 남은 높이를 차지하고(컨테이너 쿼리), 프레임은 그 높이에
-   들어가는 4:3 스틸 크기로 정한다. 캡션은 줄마다 한 줄로 고정해 언어별 길이 차이로
-   높이가 달라지지 않게 한다 → 어느 언어·화면 높이에서도 헤더·하단 CTA에 가리지 않는다. */
+   필름 띠가 제목·썸네일·설명을 뺀 남은 높이를 차지하고(컨테이너 쿼리),
+   칸은 그 높이에 들어가는 16:10.5 크기로 정한다 → 어느 화면 높이에서도 헤더·하단 CTA에 가리지 않는다. */
 @media (max-width: 767px) {
   .viewport {
     justify-content: flex-start;
-    gap: 10px;
+    gap: 12px;
     padding: var(--cinema-safe-top) 0 var(--cinema-safe-bottom);
   }
 
@@ -403,68 +258,39 @@
     display: none;
   }
 
-  .strip {
+  /* 남은 높이를 받아(컨테이너 쿼리) 필름 띠를 세로 가운데에 둔다 */
+  .reelArea {
+    display: flex;
     flex: 1 1 0;
+    align-items: center;
     min-height: 0;
     container-type: size;
   }
 
-  .ruler {
-    flex: none;
+  .reel {
+    width: 100%;
   }
 
-  .track {
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  /* 프레임 세로 = 띠 패딩 40 + 가장자리 코드 20 + 프레임 패딩 22 + 캡션 약 92 = 174px + 스틸 */
+  /* 칸 높이 = 남은 높이 - 필름 띠 위아래 58px */
   .frame {
-    width: min(74vw, max(180px, calc((100cqh - 174px) * 4 / 3)));
-    padding: 10px 10px 12px;
+    width: min(84vw, calc((100cqh - 58px) * 16 / 10.5));
   }
 
   .frameFinal {
-    width: min(68vw, max(180px, calc((100cqh - 174px) * 4 / 3)));
-  }
-
-  .caption {
-    gap: 2px;
-    padding-top: 10px;
-  }
-
-  .palace,
-  .theme {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .caption .stars {
-    display: none;
-  }
-
-  .theme {
-    font-size: 15px;
-  }
-
-  .spoiler {
-    margin-top: 6px;
-    padding: 8px 10px;
-  }
-
-  .blurred {
-    overflow: hidden;
-    font-size: 13px;
-    white-space: nowrap;
+    width: min(70vw, calc((100cqh - 58px) * 16 / 10.5 * 0.8));
   }
 
   .finalBody {
-    padding: 16px 10px;
+    padding: 16px;
   }
 
   .finalQuestion {
     font-size: 19px;
+  }
+
+  .viewport .counter,
+  .meta {
+    flex: none;
   }
 }
 
@@ -482,13 +308,11 @@
 
   .strip {
     overflow-x: auto;
+    scroll-snap-type: x mandatory;
   }
 
   .frame {
     --focus: 1 !important;
-  }
-
-  .playhead {
-    display: none;
+    scroll-snap-align: center;
   }
 }
