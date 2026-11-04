@@ -14,7 +14,8 @@ const SCENE_KEYS = ["spoiler", "chart", "categories", "ageScenario"] as const;
 
 /**
  * 장면 6 — "예고편은 무료 / 본편은 990원"이 스크롤을 따라 차오르고,
- * 비스듬히 놓인 관람권이 바로 선 다음 절취선을 따라 찢어진다.
+ * 비스듬히 놓인 가로형 관람권이 바로 선 다음 세로 절취선을 따라 꼬리표가 찢어진다.
+ * 관람권 모양은 홈 다음 상영작·헤더 메뉴 관람권과 같다(본문 | 세로 절취선 | 꼬리표).
  * 첫 결제 이벤트 기간(ko)에는 금액이 이벤트가로 바뀐다.
  */
 export const TicketScene = () => {
@@ -58,7 +59,13 @@ export const TicketScene = () => {
           )
           .to(
             `.${styles.stub}`,
-            { y: 26, rotateZ: -3, transformOrigin: "100% 0%", duration: 0.2 },
+            {
+              x: 14,
+              y: 6,
+              rotateZ: 5,
+              transformOrigin: "0% 0%",
+              duration: 0.2,
+            },
             0.7
           )
           .set({}, {}, 1);
@@ -86,7 +93,10 @@ export const TicketScene = () => {
           <div className={styles.scene3d}>
             <div className={styles.ticket}>
               <div className={styles.body}>
-                <span className={styles.ticketTitle}>{t("ticketTitle")}</span>
+                <span className={styles.ticketTitle}>
+                  {t("ticketTitle")}
+                  <span className={styles.count}>{t("admit")}</span>
+                </span>
                 <ul className={styles.scenes}>
                   {SCENE_KEYS.map((key) => (
                     <li key={key} className={styles.sceneItem}>
@@ -99,35 +109,34 @@ export const TicketScene = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
-              <div className={styles.perforation} aria-hidden="true" />
-              <div className={styles.stub}>
-                <div className={styles.priceRow}>
-                  <span className={styles.originalPrice}>
-                    <span className={styles.srOnly}>
-                      {t("originalPriceLabel")}
-                    </span>
-                    {originalPrice}
-                  </span>
-                  <span className={styles.price}>
-                    <span className={styles.srOnly}>{t("priceLabel")}</span>
-                    {price}
-                  </span>
-                </div>
                 <p className={styles.anchor}>
                   {isEvent ? t("eventNote") : t("anchor")}
                 </p>
-                <button
-                  type="button"
-                  className={styles.button}
-                  onClick={handleCtaClick}
-                  data-landing-cta
-                >
-                  {isAuthenticated ? t("buttonAuthenticated") : t("button")}
-                </button>
-                <p className={styles.note}>{t("freePreviewNote")}</p>
+              </div>
+              {/* 찢겨 나가는 꼬리표: 세로 절취선 오른쪽에 가격 */}
+              <div className={styles.stub}>
+                <span className={styles.originalPrice}>
+                  <span className={styles.srOnly}>
+                    {t("originalPriceLabel")}
+                  </span>
+                  {originalPrice}
+                </span>
+                <span className={styles.price}>
+                  <span className={styles.srOnly}>{t("priceLabel")}</span>
+                  {price}
+                </span>
+                <span className={styles.barcode} aria-hidden="true" />
               </div>
             </div>
+            <button
+              type="button"
+              className={styles.button}
+              onClick={handleCtaClick}
+              data-landing-cta
+            >
+              {isAuthenticated ? t("buttonAuthenticated") : t("button")}
+            </button>
+            <p className={styles.note}>{t("freePreviewNote")}</p>
           </div>
         </div>
       </div>

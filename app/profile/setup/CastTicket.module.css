@@ -1,0 +1,148 @@
+/* 메뉴 "내 관람권"(components/landing/Menu.module.css)과 같은 실물 티켓 */
+.ticket {
+  --ticket-night: #0c1220;
+  --ticket-ink: #23142d;
+  --ticket-stub: 72px;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--ticket-stub);
+  min-height: 92px;
+  border-radius: 8px;
+  background: #f9ecf0;
+  color: var(--ticket-ink);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
+}
+
+/* 절취선 위아래 홈 */
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  right: calc(var(--ticket-stub) - 8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ticket-night);
+}
+
+.ticket::before {
+  top: -8px;
+}
+
+.ticket::after {
+  bottom: -8px;
+}
+
+.body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 12px 10px 14px;
+}
+
+/* 왼쪽 가장자리 홈 */
+.body::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--ticket-night);
+}
+
+.kind {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #8a2f55;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.count {
+  color: rgba(35, 20, 45, 0.6);
+  letter-spacing: 0.04em;
+}
+
+.name {
+  overflow: hidden;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: auto 0 0;
+  padding-top: 6px;
+  border-top: 1px solid rgba(35, 20, 45, 0.16);
+}
+
+.field {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.fieldLabel {
+  color: rgba(35, 20, 45, 0.62);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.fieldValue {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.stub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 6px;
+  border: none;
+  border-left: 2px dashed rgba(35, 20, 45, 0.3);
+  border-radius: 0 8px 8px 0;
+  background: transparent;
+  color: var(--ticket-ink);
+  font-family: var(--font-pretendard), sans-serif;
+  cursor: pointer;
+}
+
+.barcode {
+  width: 44px;
+  height: 22px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--ticket-ink) 0 2px,
+    transparent 2px 4px,
+    var(--ticket-ink) 4px 5px,
+    transparent 5px 7px,
+    var(--ticket-ink) 7px 10px,
+    transparent 10px 11px,
+    var(--ticket-ink) 11px 12px,
+    transparent 12px 15px
+  );
+}
+
+.edit {
+  font-size: 12px;
+  font-weight: 900;
+}

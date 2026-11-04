@@ -1,0 +1,87 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* 둘 중 하나 고르는 칸 */
+.segment {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #121a30;
+}
+
+.segmentItem,
+.pill {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.segmentItem {
+  min-height: 44px;
+  border-radius: 9px;
+}
+
+/* 알약형 선택지 */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #121a30;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+@media (hover: hover) {
+  .segmentItem:hover,
+  .pill:hover {
+    color: #ffffff;
+  }
+}
+
+/* 고른 항목: 선택 = 진한 핑크 (색 역할 규칙) */
+.selected {
+  background: rgba(255, 143, 177, 0.14);
+  box-shadow: inset 0 0 0 1.5px var(--color-border-selected, #ff8fb1);
+  color: var(--color-text-accent, #ff8fb1);
+  font-weight: 700;
+}
+
+.error {
+  margin: 0;
+  color: #fb7194;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segmentItem,
+  .pill {
+    transition: none;
+  }
+}

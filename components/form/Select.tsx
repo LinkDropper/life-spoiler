@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { OptionSheet } from "./OptionSheet";
 import styles from "./Select.module.css";
 
-import type { OptionSheetOption } from "./OptionSheet";
+import type { OptionSheetAction, OptionSheetOption } from "./OptionSheet";
 
 export type SelectOption = OptionSheetOption;
 
@@ -24,6 +24,8 @@ interface SelectProps {
   variant?: "field" | "plain";
   /** 드로어 제목. 없으면 label을 쓴다 */
   sheetTitle?: string;
+  /** 드로어 목록 아래에 두는 이동 항목 */
+  sheetAction?: OptionSheetAction;
   disabled?: boolean;
   className?: string;
 }
@@ -44,6 +46,7 @@ export const Select = ({
   isLabelHidden = false,
   variant = "field",
   sheetTitle,
+  sheetAction,
   disabled,
   className,
 }: SelectProps) => {
@@ -110,6 +113,7 @@ export const Select = ({
         selectedValue={value}
         onSelect={handleSelect}
         onClose={handleClose}
+        action={sheetAction}
       />
     </div>
   );

@@ -171,7 +171,8 @@
           "eventNote": "첫 결제 1건은 100원이에요. 1인 1회 한정이에요.",
           "button": "내 전성기 확인하기",
           "buttonAuthenticated": "내 운세 결과 보기",
-          "freePreviewNote": "결제 전에 명반과 예고편을 무료로 먼저 볼 수 있어요."
+          "freePreviewNote": "결제 전에 명반과 예고편을 무료로 먼저 볼 수 있어요.",
+          "admit": "1매"
         },
         "proof": {
           "counterLabel": "건의 인생이 스포됐어요",
@@ -377,7 +378,8 @@
         "skyAria": "{palace}의 밤하늘, 별 {stars}",
         "counterAria": "10년 구간 고르기",
         "meta": "<b>{palace} 대운</b>을 지나는 10년이에요. 이 시기의 별은 {stars}{copula}.",
-        "metaEmpty": "<b>{palace} 대운</b>을 지나는 10년이에요. 주성이 없어 맞은편 별을 빌려 읽어요."
+        "metaEmpty": "<b>{palace} 대운</b>을 지나는 10년이에요. 주성이 없어 맞은편 별을 빌려 읽어요.",
+        "addProfile": "다른 사람 인생 추가"
       },
       "timetable": {
         "title": "상영 시간표",
@@ -392,7 +394,8 @@
         "yearlySpoiler": "올해 한 해를 한 줄로 정리한 총평",
         "yearlyMonthly": "달마다 달라지는 흐름",
         "free": "예고편은 무료",
-        "cta": "예고편 보기"
+        "cta": "예고편 보기",
+        "admit": "1매"
       },
       "today": {
         "description": "매일 새로 상영되는 오늘의 장면이 기다려요",
@@ -549,7 +552,7 @@
           "errorRequired": "태어난 시간을 입력하거나 '시간 모름'을 선택해주세요.",
           "errorFormat": "시간 형식이 올바르지 않습니다. (예: 16:40)",
           "unknown": "시간 모름",
-          "hint": "정확한 운세 확인을 위해 시간을 꼭 입력해주세요."
+          "hint": "시간을 알면 장면이 더 정확해져요"
         },
         "calendar": {
           "label": "달력",
@@ -562,7 +565,9 @@
           "male": "남자"
         },
         "next": "다음",
-        "prefillNotice": "랜딩에서 그려본 생년월일시를 채워뒀어요. 이름만 넣고 맞는지 확인해 주세요."
+        "prefillNotice": "랜딩에서 그려본 생년월일시를 채워뒀어요. 이름만 넣고 맞는지 확인해 주세요.",
+        "title": "누구의 인생을 상영할까요?",
+        "subtitle": "태어난 날과 시간으로 그 사람의 하늘을 그려요. 나, 가족, 친구 누구든 괜찮아요."
       },
       "stepTwo": {
         "relationship": {
@@ -572,7 +577,8 @@
           "married": "결혼함",
           "divorced": "이혼 / 사별",
           "custom": "직접 입력",
-          "error": "연애 상태를 입력해주세요."
+          "error": "연애 상태를 입력해주세요.",
+          "customAriaLabel": "연애 상태 직접 입력"
         },
         "occupation": {
           "label": "직업 상태",
@@ -583,10 +589,30 @@
           "selfEmployed": "사업 / 프리랜서",
           "retired": "은퇴",
           "custom": "직접 입력",
-          "error": "직업 상태를 입력해주세요."
+          "error": "직업 상태를 입력해주세요.",
+          "customAriaLabel": "직업 상태 직접 입력"
         },
         "save": "저장하기",
-        "saving": "저장 중..."
+        "saving": "저장 중...",
+        "title": "{name}님은 지금 어떤 장면에 있나요?",
+        "subtitle": "지금 상황에 맞춰 줄거리를 더 가깝게 풀어 드려요.",
+        "back": "이전 단계",
+        "saveAndWatch": "저장하고 상영하기",
+        "customPlaceholder": "직접 입력해주세요",
+        "ticket": {
+          "kind": "주인공",
+          "count": "1매",
+          "birth": "생일",
+          "time": "시간",
+          "gender": "성별",
+          "edit": "고치기",
+          "editAriaLabel": "주인공 정보 고치기"
+        }
+      },
+      "scene": {
+        "one": "SCENE 1 / 2 · 주인공",
+        "two": "SCENE 2 / 2 · 지금 장면",
+        "progress": "{total}단계 중 {current}단계"
       }
     },
     "fortune": {
@@ -2087,7 +2113,8 @@
           "eventNote": "First payment discount applied.",
           "button": "Discover My Prime Years",
           "buttonAuthenticated": "View My Fortune Results",
-          "freePreviewNote": "See your chart and a free preview before you pay."
+          "freePreviewNote": "See your chart and a free preview before you pay.",
+          "admit": "Admit 1"
         },
         "proof": {
           "counterLabel": "lives spoiled so far",
@@ -2293,7 +2320,8 @@
         "skyAria": "Night sky of {palace}, stars: {stars}",
         "counterAria": "Choose a decade",
         "meta": "A decade in the <b>{palace} cycle</b>. Its stars are {stars}.",
-        "metaEmpty": "A decade in the <b>{palace} cycle</b>. With no major star, it borrows the stars across from it."
+        "metaEmpty": "A decade in the <b>{palace} cycle</b>. With no major star, it borrows the stars across from it.",
+        "addProfile": "Add someone else's life"
       },
       "timetable": {
         "title": "Showtimes",
@@ -2308,7 +2336,8 @@
         "yearlySpoiler": "A one-line summary of the whole year",
         "yearlyMonthly": "How each month shifts",
         "free": "Trailer is free",
-        "cta": "Watch the Trailer"
+        "cta": "Watch the Trailer",
+        "admit": "Admit 1"
       },
       "today": {
         "description": "A new scene of your day, screened every day",
@@ -2465,7 +2494,7 @@
           "errorRequired": "Please enter your birth time or select 'Time Unknown'.",
           "errorFormat": "Invalid time format. (e.g., 16:40)",
           "unknown": "Time Unknown",
-          "hint": "Please enter the exact time for accurate fortune reading."
+          "hint": "Knowing the time makes the scenes sharper"
         },
         "calendar": {
           "label": "Calendar",
@@ -2478,7 +2507,9 @@
           "male": "Male"
         },
         "next": "Next",
-        "prefillNotice": "We filled in the birth details from the chart you drew. Add your name and check that everything is right."
+        "prefillNotice": "We filled in the birth details from the chart you drew. Add your name and check that everything is right.",
+        "title": "Whose life are we screening?",
+        "subtitle": "We draw their sky from the date and time they were born. You, family or friends — anyone works."
       },
       "stepTwo": {
         "relationship": {
@@ -2488,7 +2519,8 @@
           "married": "Married",
           "divorced": "Divorced / Widowed",
           "custom": "Custom",
-          "error": "Please enter your relationship status."
+          "error": "Please enter your relationship status.",
+          "customAriaLabel": "Type relationship status"
         },
         "occupation": {
           "label": "Occupation Status",
@@ -2499,10 +2531,30 @@
           "selfEmployed": "Self-Employed / Freelancer",
           "retired": "Retired",
           "custom": "Custom",
-          "error": "Please enter your occupation status."
+          "error": "Please enter your occupation status.",
+          "customAriaLabel": "Type occupation"
         },
         "save": "Save",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "title": "What scene is {name} in right now?",
+        "subtitle": "We'll tell the story closer to where they are now.",
+        "back": "Previous step",
+        "saveAndWatch": "Save and watch",
+        "customPlaceholder": "Type your own",
+        "ticket": {
+          "kind": "LEAD",
+          "count": "Admit 1",
+          "birth": "Born",
+          "time": "Time",
+          "gender": "Gender",
+          "edit": "Edit",
+          "editAriaLabel": "Edit lead details"
+        }
+      },
+      "scene": {
+        "one": "SCENE 1 / 2 · LEAD",
+        "two": "SCENE 2 / 2 · NOW",
+        "progress": "Step {current} of {total}"
       }
     },
     "fortune": {
@@ -4011,7 +4063,8 @@
           "eventNote": "初回決済の割引が適用されます。",
           "button": "私の全盛期を確認する",
           "buttonAuthenticated": "私の運勢結果を見る",
-          "freePreviewNote": "決済の前に、命盤と予告編を無料で確認できます。"
+          "freePreviewNote": "決済の前に、命盤と予告編を無料で確認できます。",
+          "admit": "1枚"
         },
         "proof": {
           "counterLabel": "件の人生がネタバレされました",
@@ -4217,7 +4270,8 @@
         "skyAria": "{palace}の夜空、星: {stars}",
         "counterAria": "10年ごとの区間を選ぶ",
         "meta": "<b>{palace}の大運</b>を進む10年です。この時期の星は{stars}です。",
-        "metaEmpty": "<b>{palace}の大運</b>を進む10年です。主星がないため、向かいの星を借りて読みます。"
+        "metaEmpty": "<b>{palace}の大運</b>を進む10年です。主星がないため、向かいの星を借りて読みます。",
+        "addProfile": "ほかの人の人生を追加"
       },
       "timetable": {
         "title": "上映スケジュール",
@@ -4232,7 +4286,8 @@
         "yearlySpoiler": "今年一年をひと言でまとめた総評",
         "yearlyMonthly": "月ごとに変わる流れ",
         "free": "予告編は無料",
-        "cta": "予告編を見る"
+        "cta": "予告編を見る",
+        "admit": "1枚"
       },
       "today": {
         "description": "毎日新しく上映される今日のシーンが待っています",
@@ -4389,7 +4444,7 @@
           "errorRequired": "生まれた時間を入力するか、「時間不明」を選択してください。",
           "errorFormat": "時間形式が正しくありません。(例: 16:40)",
           "unknown": "時間不明",
-          "hint": "正確な運勢確認のため、時間を必ず入力してください。"
+          "hint": "時間がわかると場面がより正確になります"
         },
         "calendar": {
           "label": "暦",
@@ -4402,7 +4457,9 @@
           "male": "男性"
         },
         "next": "次へ",
-        "prefillNotice": "ランディングで描いた生年月日時を入力しておきました。名前を入れて、内容が合っているか確認してください。"
+        "prefillNotice": "ランディングで描いた生年月日時を入力しておきました。名前を入れて、内容が合っているか確認してください。",
+        "title": "誰の人生を上映しますか?",
+        "subtitle": "生まれた日と時間から、その人の空を描きます。自分、家族、友達、誰でも大丈夫です。"
       },
       "stepTwo": {
         "relationship": {
@@ -4412,7 +4469,8 @@
           "married": "既婚",
           "divorced": "離婚 / 死別",
           "custom": "直接入力",
-          "error": "恋愛状態を入力してください。"
+          "error": "恋愛状態を入力してください。",
+          "customAriaLabel": "恋愛状況を直接入力"
         },
         "occupation": {
           "label": "職業状態",
@@ -4423,10 +4481,30 @@
           "selfEmployed": "自営業 / フリーランス",
           "retired": "引退",
           "custom": "直接入力",
-          "error": "職業状態を入力してください。"
+          "error": "職業状態を入力してください。",
+          "customAriaLabel": "職業を直接入力"
         },
         "save": "保存する",
-        "saving": "保存中..."
+        "saving": "保存中...",
+        "title": "{name}さんは今どんな場面にいますか?",
+        "subtitle": "今の状況に合わせて、ストーリーをより身近に読み解きます。",
+        "back": "前のステップ",
+        "saveAndWatch": "保存して上映する",
+        "customPlaceholder": "直接入力してください",
+        "ticket": {
+          "kind": "主人公",
+          "count": "1枚",
+          "birth": "誕生日",
+          "time": "時間",
+          "gender": "性別",
+          "edit": "直す",
+          "editAriaLabel": "主人公の情報を直す"
+        }
+      },
+      "scene": {
+        "one": "SCENE 1 / 2 · 主人公",
+        "two": "SCENE 2 / 2 · 今の場面",
+        "progress": "{total}ステップ中{current}ステップ"
       }
     },
     "fortune": {
