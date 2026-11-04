@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>매표소 - 인생스포 (결제 시안 v3 · 첫 결제 이벤트)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+@font-face{font-family:"SB AggroOTF";src:url("SB-B.otf") format("opentype");font-display:swap}
+:root{--night:#0c1220;--haze:rgba(255,255,255,.72);--faint:rgba(255,255,255,.6);--line:rgba(255,255,255,.16);--spoiler:#ffccd9;--accent:#ff8fb1;--star:#ffe7a3;--ink:#23142d;--paper:#f9ecf0;--rose:#8a2f55;--field:#121a30;--display:"SB AggroOTF","Pretendard Variable",Pretendard,sans-serif}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{display:flex;flex-direction:column;width:375px;min-height:100vh;margin:0 auto;background:var(--night);color:#fff;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,h2,p,ul,dl,dd,fieldset{margin:0;padding:0}
+button,input{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hd{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 20px}
+.logo{font-family:var(--display);font-size:24px;line-height:1;color:var(--spoiler)}
+.hd div{display:flex}
+.ic{display:grid;place-items:center;width:44px;height:44px;border:0;background:none}
+.flow{display:flex;flex:1;flex-direction:column}
+main{flex:1;padding:12px 20px 32px}
+h1{font-family:var(--display);font-size:32px;line-height:1.2;font-weight:400}
+.lead{margin-top:8px;font-size:15px;line-height:1.55;color:var(--haze)}
+
+.counter{margin-top:28px}
+.slot{position:relative;z-index:2;height:12px;border-top:2px solid rgba(255,255,255,.4);border-radius:6px;background:#05080f}
+
+.tk{--stub:96px;position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) var(--stub);margin:-12px 12px 0;color:var(--ink)}
+.tk::after{content:"";position:absolute;right:calc(var(--stub) - 8px);bottom:-8px;width:16px;height:16px;border-radius:50%;background:var(--night)}
+.tk .bd{position:relative;min-width:0;padding:28px 14px 16px 22px;background:var(--paper);border-radius:0 0 0 10px}
+.tk .bd::before{content:"";position:absolute;top:60%;left:-7px;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--night)}
+.kd{font-family:var(--display);font-size:13px;line-height:1.35;color:var(--rose)}
+.tl{margin-top:4px;font-size:18px;font-weight:800;line-height:1.35;overflow-wrap:anywhere;text-wrap:balance}
+.meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(35,20,45,.16);font-size:13px;line-height:1.45}
+.meta dt{font-weight:700;color:rgba(35,20,45,.72)}
+.meta dd{font-weight:800}
+.tk .sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:24px 8px 14px;border-left:2px dashed rgba(35,20,45,.3);border-radius:0 0 10px 0;background:var(--paper);text-align:center;font-size:12px;font-weight:800;color:var(--rose)}
+.tk .sb strong{font-size:20px;font-weight:800;line-height:1.1;white-space:nowrap;color:var(--ink)}
+.tk .sb del{font-size:12px;font-weight:700;color:rgba(35,20,45,.62)}
+.bc{width:44px;height:22px;margin-top:6px;background-image:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 7px,var(--ink) 7px 10px,transparent 10px 11px,var(--ink) 11px 12px,transparent 12px 15px)}
+
+.pay{min-width:0;margin-top:40px;border:0}
+.pay legend{float:left;width:100%;margin:0 0 8px;padding:0;font-family:var(--display);font-size:22px;line-height:1.3}
+.list{clear:both;border-top:1px solid rgba(255,204,217,.3)}
+.r{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;border-bottom:1px solid rgba(255,204,217,.15);font-size:16px;font-weight:500;color:var(--haze);cursor:pointer}
+.r input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.r svg{flex:none;opacity:0}
+.r:has(input:checked){font-weight:800;color:#fff}
+.r:has(input:checked) svg{opacity:1}
+.r:has(input:focus-visible){outline:2px solid var(--star);outline-offset:-2px}
+
+.notice{margin:32px 0 0;padding:0;list-style:none;font-size:13px;line-height:1.6;color:var(--haze)}
+.notice li+li{margin-top:4px}
+.notice li:first-child{font-weight:700;color:#fff}
+
+.bar{position:sticky;bottom:0;z-index:10;display:flex;align-items:center;gap:8px;padding:10px 20px calc(10px + env(safe-area-inset-bottom)) 8px;border-top:1px solid rgba(255,204,217,.3);background:var(--night)}
+.back{flex:none;display:grid;place-items:center;width:48px;height:48px;border:0;background:none;cursor:pointer}
+.tot{flex:none;min-width:0;margin-right:4px}
+.tot span{display:block;font-size:12px;font-weight:600;line-height:1.3;color:var(--haze)}
+.tot p{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+.tot del{font-size:13px;color:var(--faint)}
+.tot strong{font-size:20px;font-weight:800;line-height:1.25}
+.btn{display:flex;flex:1;align-items:center;justify-content:center;min-width:0;min-height:52px;padding:6px 12px;border:0;border-radius:10px;background:var(--spoiler);color:var(--ink);font-family:inherit;font-size:16px;font-weight:800;line-height:1.25;text-align:center;text-wrap:balance;cursor:pointer}
+</style>
+</head>
+<body>
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div>
+    <button class="ic" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+    <button class="ic" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+</header>
+
+<form class="flow" onsubmit="return false">
+<main>
+  <h1>매표소</h1>
+  <p class="lead">지수님의 올해 운세 본편 관람권이에요</p>
+
+  <div class="counter">
+    <div class="slot" aria-hidden="true"></div>
+    <section class="tk" aria-label="주문 내용">
+      <div class="bd">
+        <p class="kd">관람권 · 본편</p>
+        <p class="tl">올해 운세 스포일러</p>
+        <dl class="meta">
+          <dt>관객</dt><dd>지수님</dd>
+          <dt>혜택</dt><dd>첫 결제 이벤트</dd>
+          <dt>열람 기간</dt><dd>결제일로부터 1년</dd>
+        </dl>
+      </div>
+      <div class="sb"><span>금액</span><del><span class="sr">정가 </span>990원</del><strong>100원</strong><i class="bc" aria-hidden="true"></i></div>
+    </section>
+  </div>
+
+  <fieldset class="pay">
+    <legend>결제 수단</legend>
+    <div class="list">
+      <label class="r"><input type="radio" name="method" value="KAKAOPAY" checked>카카오페이<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></label>
+      <label class="r"><input type="radio" name="method" value="TOSSPAY">토스페이<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></label>
+      <label class="r"><input type="radio" name="method" value="CARD">신용/체크카드<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></label>
+      <label class="r"><input type="radio" name="method" value="APPLEPAY">Apple Pay<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></label>
+      <label class="r"><input type="radio" name="method" value="PROMO">쿠폰 사용<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></label>
+    </div>
+  </fieldset>
+
+  <ul class="notice">
+    <li>디지털 콘텐츠 특성상 결제 후 결과 확인 시 환불이 불가능합니다.</li>
+    <li>본 상품의 열람 기간은 결제일로부터 1년입니다.</li>
+  </ul>
+</main>
+
+<div class="bar" role="group" aria-label="결제">
+  <button class="back" type="button" aria-label="이전으로"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+  <div class="tot"><span>결제 금액</span><p><del><span class="sr">정가 </span>990원</del><strong>100원</strong></p></div>
+  <button class="btn" type="submit">결제하기</button>
+</div>
+</form>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>결제 승인 실패 - 인생스포 (결제 시안 v3 · 승인 실패)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+@font-face{font-family:"SB AggroOTF";src:url("SB-B.otf") format("opentype");font-display:swap}
+:root{--night:#0c1220;--haze:rgba(255,255,255,.72);--faint:rgba(255,255,255,.6);--spoiler:#ffccd9;--accent:#ff8fb1;--star:#ffe7a3;--ink:#23142d;--rose:#8a2f55;--display:"SB AggroOTF","Pretendard Variable",Pretendard,sans-serif}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{display:flex;flex-direction:column;width:375px;min-height:100vh;margin:0 auto;background:var(--night);color:#fff;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,p,dl,dd{margin:0;padding:0}
+button,a{font:inherit;color:inherit}
+a{text-decoration:none}
+:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+.hd{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 20px}
+.logo{font-family:var(--display);font-size:24px;line-height:1;color:var(--spoiler)}
+.hd div{display:flex}
+.ic{display:grid;place-items:center;width:44px;height:44px;border:0;background:none}
+main{display:flex;flex:1;flex-direction:column;padding:12px 20px 32px}
+h1{font-family:var(--display);font-size:32px;line-height:1.2;font-weight:400;word-break:keep-all;overflow-wrap:anywhere;text-wrap:balance}
+.lead{margin-top:8px;font-size:15px;line-height:1.55;color:var(--haze);overflow-wrap:anywhere}
+
+/* 슬롯 아래에는 윤곽선만 남은 빈 관람권 */
+.counter{margin-top:28px}
+.slot{position:relative;z-index:2;height:12px;border-top:2px solid rgba(255,255,255,.4);border-radius:6px;background:#05080f}
+.ghost{display:grid;grid-template-columns:minmax(0,1fr) 96px;margin:-12px 12px 0;border:1.5px dashed rgba(255,255,255,.4);border-top:0;border-radius:0 0 10px 10px}
+.ghost .bd{min-width:0;padding:30px 16px 18px 22px}
+.ghost .kd{font-family:var(--display);font-size:13px;line-height:1.35;color:var(--faint)}
+.ghost .tl{margin-top:4px;font-size:18px;font-weight:800;line-height:1.35;overflow-wrap:anywhere;text-wrap:balance}
+.ghost .sub{margin-top:4px;font-size:14px;line-height:1.5;color:var(--haze)}
+.ghost .sb{display:grid;place-items:center;border-left:2px dashed rgba(255,255,255,.3)}
+
+.cta{display:grid;gap:8px;margin-top:auto;padding-top:48px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;padding:6px 16px;border:0;border-radius:10px;background:var(--spoiler);color:var(--ink);font-size:16px;font-weight:800;line-height:1.3;text-align:center;text-wrap:balance;cursor:pointer}
+</style>
+</head>
+<body>
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div>
+    <button class="ic" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+    <button class="ic" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <div role="alert">
+    <h1>결제 승인에 실패했어요</h1>
+    <!-- 실제로는 서버가 내려준 오류 문구가 들어간다. 기본값은 confirmError -->
+    <p class="lead">결제 승인 중 오류가 발생했습니다.</p>
+  </div>
+
+  <div class="counter">
+    <div class="slot" aria-hidden="true"></div>
+    <section class="ghost" aria-label="발권되지 않은 관람권">
+      <div class="bd">
+        <p class="kd">관람권 · 본편</p>
+        <p class="tl">관람권이 발권되지 않았어요</p>
+        <p class="sub">올해 운세 스포일러 · 지수님</p>
+      </div>
+      <div class="sb" aria-hidden="true"></div>
+    </section>
+  </div>
+
+  <div class="cta">
+    <button class="btn" type="button">프로필 목록으로</button>
+  </div>
+</main>
+</body>
+</html>
