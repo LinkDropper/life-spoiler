@@ -949,11 +949,54 @@
       "confirmError": "결제 승인 중 오류가 발생했습니다.",
       "missingPaymentInfo": "결제 정보가 누락되었습니다.",
       "failTitle": "결제에 실패했습니다",
-      "failDescription": "결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.",
+      "failDescription": "결제 처리 중 문제가 발생했습니다. 다시 시도해 주세요.",
       "errorCode": "에러 코드",
       "retry": "다시 결제하기",
       "goBack": "이전으로 돌아가기",
-      "paymentError": "결제 처리 중 오류가 발생했습니다."
+      "paymentError": "결제 처리 중 오류가 발생했습니다.",
+      "ticketTitle": "매표소",
+      "ticketKicker": "관람권 · 본편",
+      "ticketAudience": "관객",
+      "ticketBenefit": "혜택",
+      "ticketPeriod": "열람 기간",
+      "ticketPeriodValue": "결제일로부터 1년",
+      "ticketAmount": "금액",
+      "listPrice": "정가",
+      "barLabel": "결제",
+      "payAction": "결제하기",
+      "audienceName": "{name}님",
+      "audienceCouple": "{nameA} × {nameB}",
+      "benefitCoupon": "쿠폰 적용",
+      "benefitFirstPayment": "첫 결제 이벤트",
+      "checkoutLead": "{name}님의 {product} 본편 관람권이에요",
+      "checkoutLeadCompatibility": "{nameA}님과 {nameB}님의 궁합 본편 관람권이에요",
+      "checkoutLeadAnonymous": "{product} 본편 관람권이에요",
+      "shortProduct": {
+        "yearly": "올해 운세",
+        "yearly_2027": "내년 운세",
+        "lifetime": "인생 운세",
+        "past_life": "전생 운세",
+        "compatibility": "궁합"
+      },
+      "ownedCoupons": "보유 쿠폰",
+      "couponCodeLabel": "쿠폰 코드",
+      "couponFree": "무료 운세",
+      "couponDiscount": "{percent}% 할인",
+      "couponDiscountGeneric": "할인",
+      "issuedTitle": "관람권이 발권됐어요",
+      "issuedLead": "{name}님의 {product} 본편을 지금 볼 수 있어요",
+      "issuedLeadAnonymous": "{product} 본편을 지금 볼 수 있어요",
+      "issuedHint": "운세 확인하기를 누르면 상영관으로 이동해요",
+      "issuedTicketAria": "발권된 관람권",
+      "stubFeature": "본편",
+      "stubEnter": "입장",
+      "confirmFailedTitle": "결제 승인에 실패했어요",
+      "voidTicketAria": "발권되지 않은 관람권",
+      "voidTicketTitle": "관람권이 발권되지 않았어요",
+      "unpaidTitle": "결제를 마치지 못했어요",
+      "unpaidTicketAria": "발권 전 관람권",
+      "stubStatus": "상태",
+      "stubUnissued": "발권 전"
     },
     "policy": {
       "terms": {
@@ -1976,7 +2019,21 @@
       },
       "status": "{title} 상영관으로 이동하는 중이에요",
       "trailer": "{title} 예고편",
-      "feature": "{title} 본편"
+      "feature": "{title} 본편",
+      "payment": {
+        "checkoutTitle": "매표소",
+        "confirmTitle": "관람권 발권",
+        "preparing": "준비하고 있어요",
+        "waiting": {
+          "checkout1": "상영 정보를 불러오는 중이에요",
+          "checkout2": "결제 화면을 준비하는 중이에요",
+          "confirm1": "결제를 확인하고 있어요",
+          "confirm2": "관람권을 발권하는 중이에요",
+          "confirm3": "곧 상영관으로 안내해 드려요"
+        },
+        "long": "조금만 더 기다려 주세요",
+        "status": "{title} 화면을 준비하는 중이에요"
+      }
     }
   },
   "en": {
@@ -2933,7 +2990,50 @@
       "errorCode": "Error Code",
       "retry": "Try Again",
       "goBack": "Go Back",
-      "paymentError": "An error occurred during payment processing."
+      "paymentError": "An error occurred during payment processing.",
+      "ticketTitle": "Box Office",
+      "ticketKicker": "Ticket · Full Story",
+      "ticketAudience": "Audience",
+      "ticketBenefit": "Offer",
+      "ticketPeriod": "Viewing period",
+      "ticketPeriodValue": "1 year from purchase",
+      "ticketAmount": "Price",
+      "listPrice": "Regular price",
+      "barLabel": "Payment",
+      "payAction": "Pay",
+      "audienceName": "{name}",
+      "audienceCouple": "{nameA} × {nameB}",
+      "benefitCoupon": "Coupon applied",
+      "benefitFirstPayment": "First purchase offer",
+      "checkoutLead": "A full-story ticket for {name}'s {product}",
+      "checkoutLeadCompatibility": "A full-story ticket for the compatibility of {nameA} and {nameB}",
+      "checkoutLeadAnonymous": "A full-story ticket for {product}",
+      "shortProduct": {
+        "yearly": "Yearly Fortune",
+        "yearly_2027": "Next Year's Fortune",
+        "lifetime": "Lifetime Fortune",
+        "past_life": "Past Life Fortune",
+        "compatibility": "Compatibility"
+      },
+      "ownedCoupons": "Your coupons",
+      "couponCodeLabel": "Coupon code",
+      "couponFree": "Free fortune",
+      "couponDiscount": "{percent}% off",
+      "couponDiscountGeneric": "Discount",
+      "issuedTitle": "Your ticket is issued",
+      "issuedLead": "{name}'s {product} full story is ready to watch",
+      "issuedLeadAnonymous": "The {product} full story is ready to watch",
+      "issuedHint": "Tap View Fortune to head to the theater",
+      "issuedTicketAria": "Issued ticket",
+      "stubFeature": "Full Story",
+      "stubEnter": "Admit",
+      "confirmFailedTitle": "We couldn't confirm your payment",
+      "voidTicketAria": "Ticket not issued",
+      "voidTicketTitle": "Your ticket wasn't issued",
+      "unpaidTitle": "Your payment didn't go through",
+      "unpaidTicketAria": "Ticket before issue",
+      "stubStatus": "Status",
+      "stubUnissued": "Not issued"
     },
     "policy": {
       "terms": {
@@ -3964,7 +4064,21 @@
       },
       "status": "Heading to the screening of {title}",
       "trailer": "{title} Trailer",
-      "feature": "{title}: The Full Story"
+      "feature": "{title}: The Full Story",
+      "payment": {
+        "checkoutTitle": "Box Office",
+        "confirmTitle": "Issuing Your Ticket",
+        "preparing": "Getting ready",
+        "waiting": {
+          "checkout1": "Loading the showtime",
+          "checkout2": "Preparing checkout",
+          "confirm1": "Confirming your payment",
+          "confirm2": "Printing your ticket",
+          "confirm3": "Taking you to the theater shortly"
+        },
+        "long": "Just a moment more",
+        "status": "Preparing {title}"
+      }
     }
   },
   "ja": {
@@ -4921,7 +5035,50 @@
       "errorCode": "エラーコード",
       "retry": "もう一度決済する",
       "goBack": "戻る",
-      "paymentError": "決済処理中にエラーが発生しました。"
+      "paymentError": "決済処理中にエラーが発生しました。",
+      "ticketTitle": "チケット売り場",
+      "ticketKicker": "チケット · 本編",
+      "ticketAudience": "観客",
+      "ticketBenefit": "特典",
+      "ticketPeriod": "閲覧期間",
+      "ticketPeriodValue": "決済日から1年間",
+      "ticketAmount": "金額",
+      "listPrice": "通常価格",
+      "barLabel": "お支払い",
+      "payAction": "決済する",
+      "audienceName": "{name}さん",
+      "audienceCouple": "{nameA} × {nameB}",
+      "benefitCoupon": "クーポン適用",
+      "benefitFirstPayment": "初回決済イベント",
+      "checkoutLead": "{name}さんの{product}の本編チケットです",
+      "checkoutLeadCompatibility": "{nameA}さんと{nameB}さんの相性の本編チケットです",
+      "checkoutLeadAnonymous": "{product}の本編チケットです",
+      "shortProduct": {
+        "yearly": "今年の運勢",
+        "yearly_2027": "来年の運勢",
+        "lifetime": "人生運勢",
+        "past_life": "前世運勢",
+        "compatibility": "相性"
+      },
+      "ownedCoupons": "保有クーポン",
+      "couponCodeLabel": "クーポンコード",
+      "couponFree": "無料の運勢",
+      "couponDiscount": "{percent}%割引",
+      "couponDiscountGeneric": "割引",
+      "issuedTitle": "チケットを発券しました",
+      "issuedLead": "{name}さんの{product}の本編をご覧いただけます",
+      "issuedLeadAnonymous": "{product}の本編をご覧いただけます",
+      "issuedHint": "「運勢を確認する」を押すと上映室へ移動します",
+      "issuedTicketAria": "発券されたチケット",
+      "stubFeature": "本編",
+      "stubEnter": "入場",
+      "confirmFailedTitle": "決済の承認に失敗しました",
+      "voidTicketAria": "発券されなかったチケット",
+      "voidTicketTitle": "チケットが発券されませんでした",
+      "unpaidTitle": "決済を完了できませんでした",
+      "unpaidTicketAria": "発券前のチケット",
+      "stubStatus": "状態",
+      "stubUnissued": "発券前"
     },
     "policy": {
       "terms": {
@@ -5944,7 +6101,21 @@
       },
       "status": "{title}の上映館へ移動しています",
       "trailer": "{title} 予告編",
-      "feature": "{title} 本編"
+      "feature": "{title} 本編",
+      "payment": {
+        "checkoutTitle": "チケット売り場",
+        "confirmTitle": "チケット発券",
+        "preparing": "準備しています",
+        "waiting": {
+          "checkout1": "上映情報を読み込んでいます",
+          "checkout2": "お支払い画面を準備しています",
+          "confirm1": "お支払いを確認しています",
+          "confirm2": "チケットを発券しています",
+          "confirm3": "まもなく上映室へご案内します"
+        },
+        "long": "もう少々お待ちください",
+        "status": "{title}を準備しています"
+      }
     }
   }
 }

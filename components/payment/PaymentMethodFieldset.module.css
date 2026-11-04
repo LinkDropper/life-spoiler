@@ -1,0 +1,22 @@
+.pay {
+  min-width: 0;
+  margin: 40px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0;
+  font-family: var(--cinema-display, "SB AggroOTF", sans-serif);
+  font-size: 22px;
+  font-weight: var(--cinema-display-weight, 400);
+  line-height: 1.3;
+}
+
+.list {
+  clear: both;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+}

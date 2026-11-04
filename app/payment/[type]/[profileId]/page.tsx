@@ -3,11 +3,22 @@
 import { Suspense, useEffect, useState, useRef } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import Image from "next/image";
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 
 import { HeaderClient } from "@/components/landing";
-import { Loading } from "@/components/loading";
+import { PaymentCouponSection } from "@/components/payment/PaymentCouponSection";
+import { PaymentMethodFieldset } from "@/components/payment/PaymentMethodFieldset";
+import { PaymentResultScreen } from "@/components/payment/PaymentResultScreen";
+import { PaymentTicket } from "@/components/payment/PaymentTicket";
+import {
+  formatPaymentAmount,
+  getProductNameKey,
+  getShortProductKey,
+  isPaymentFortuneType,
+  resolveAmountDisplay,
+} from "@/components/payment/payment-view";
+import type { OwnedCoupon } from "@/components/payment/payment-view";
+import { PaymentScreeningLoading } from "@/components/screening";
 import {
   isYearlyEdition,
   resolveTargetYear,
@@ -19,6 +30,7 @@ import {
 } from "@/libs/stores/profile";
 import { useAuthStatus, useUser } from "@/libs/stores/user";
 import { FIRST_PAYMENT_AMOUNT_KRW } from "@/libs/services/payment/first-payment-event";
+import type { FortuneType } from "@/libs/supabase";
 import { useFirstPaymentEligibility } from "@/libs/hooks/payment";
 
 import styles from "./page.module.css";
@@ -31,13 +43,6 @@ const PAYPAL_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_PAYPAL_CLIENT_KEY ?? "";
 const PAYMENT_AMOUNT_KRW = 990;
 const PAYMENT_AMOUNT_USD = 0.99;
 
-type FortuneType =
-  | "yearly"
-  | "lifetime"
-  | "compatibility"
-  | "past_life"
-  | "yearly_2027";
-
 type PaymentMethod =
   | "CARD"
   | "TOSSPAY"
@@ -49,9 +54,6 @@ type PaymentMethod =
 interface PaymentMethodOption {
   id: PaymentMethod;
   labelKey: string;
-  logo?: string;
-  logoWidth?: number;
-  logoHeight?: number;
 }
 
 const generateOrderId = () => {
@@ -71,40 +73,17 @@ const PAYMENT_METHOD_PROMO: PaymentMethodOption = {
   labelKey: "methodPromo",
 };
 
+// 시안 순서: 간편결제(카카오페이, 토스페이) -> 카드 -> Apple Pay -> 쿠폰
 const PAYMENT_METHODS_KO: PaymentMethodOption[] = [
-  {
-    id: "KAKAOPAY",
-    labelKey: "methodKakaoPay",
-    logo: "/images/payment/kakaopay-logo.png",
-    logoWidth: 44,
-    logoHeight: 18,
-  },
-  {
-    id: "APPLEPAY",
-    labelKey: "methodApplePay",
-    logo: "/images/payment/applepay-logo.svg",
-    logoWidth: 50,
-    logoHeight: 20,
-  },
-  {
-    id: "TOSSPAY",
-    labelKey: "methodTossPay",
-  },
-  {
-    id: "CARD",
-    labelKey: "methodCard",
-  },
+  { id: "KAKAOPAY", labelKey: "methodKakaoPay" },
+  { id: "TOSSPAY", labelKey: "methodTossPay" },
+  { id: "CARD", labelKey: "methodCard" },
+  { id: "APPLEPAY", labelKey: "methodApplePay" },
   PAYMENT_METHOD_PROMO,
 ];
 
 const PAYMENT_METHODS_FOREIGN: PaymentMethodOption[] = [
-  {
-    id: "PAYPAL",
-    labelKey: "methodPayPal",
-    logo: "/images/payment/paypal-logo.svg",
-    logoWidth: 60,
-    logoHeight: 16,
-  },
+  { id: "PAYPAL", labelKey: "methodPayPal" },
   PAYMENT_METHOD_PROMO,
 ];
 
@@ -145,9 +124,6 @@ function PaymentPageContent() {
   const effectiveKrwAmount = firstPaymentApplied
     ? FIRST_PAYMENT_AMOUNT_KRW
     : PAYMENT_AMOUNT_KRW;
-  const paymentAmount = isForeignLocale
-    ? PAYMENT_AMOUNT_USD
-    : effectiveKrwAmount;
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -162,15 +138,6 @@ function PaymentPageContent() {
   const [promoErrorMessage, setPromoErrorMessage] = useState<string | null>(
     null
   );
-
-  interface OwnedCoupon {
-    id: string;
-    code: string;
-    benefitType: "free_fortune" | "discount";
-    fortuneType: string;
-    discountPercent: number | null;
-    status: "active" | "used" | "expired";
-  }
 
   const [ownedCoupons, setOwnedCoupons] = useState<OwnedCoupon[]>([]);
 
@@ -205,13 +172,7 @@ function PaymentPageContent() {
       return;
     }
 
-    if (
-      fortuneType !== "yearly" &&
-      fortuneType !== "lifetime" &&
-      fortuneType !== "compatibility" &&
-      fortuneType !== "past_life" &&
-      fortuneType !== "yearly_2027"
-    ) {
+    if (!isPaymentFortuneType(fortuneType)) {
       setError(tPayment("invalidFortuneType"));
       setIsLoading(false);
       return;
@@ -284,20 +245,6 @@ function PaymentPageContent() {
 
     fetchOwnedCoupons();
   }, [authStatus, fortuneType]);
-
-  const handleSelectOwnedCoupon = (code: string) => {
-    setPromoCode(code);
-  };
-
-  const formatCouponLabel = (coupon: OwnedCoupon): string => {
-    const benefit =
-      coupon.benefitType === "free_fortune"
-        ? "무료 운세"
-        : coupon.discountPercent
-          ? `${coupon.discountPercent}% 할인`
-          : "할인";
-    return `${coupon.code} · ${benefit}`;
-  };
 
   const handlePayment = async () => {
     if (isProcessing) return;
@@ -436,22 +383,6 @@ function PaymentPageContent() {
     }
   };
 
-  const getProductName = () => {
-    if (isCompatibility) {
-      return tPayment("productNameCompatibility");
-    }
-    if (fortuneType === "yearly") {
-      return tPayment("productNameYearly");
-    }
-    if (fortuneType === "yearly_2027") {
-      return tPayment("productNameYearly2027");
-    }
-    if (fortuneType === "past_life") {
-      return tPayment("productNamePastLife");
-    }
-    return tPayment("productNameLifetime");
-  };
-
   const showPromoError = (message: string) => {
     if (promoErrorTimerRef.current) {
       clearTimeout(promoErrorTimerRef.current);
@@ -506,26 +437,16 @@ function PaymentPageContent() {
   };
 
   if (authStatus === "loading" || isLoading || !isProfilesLoaded) {
-    return <Loading />;
+    return <PaymentScreeningLoading stage="checkout" />;
   }
 
   if (error) {
     return (
-      <div className={styles.page}>
-        <HeaderClient />
-        <main className={styles.main}>
-          <div className={styles.error}>
-            <p>{error}</p>
-            <button
-              type="button"
-              className={styles.backButton}
-              onClick={handleBack}
-            >
-              {tCommon("back")}
-            </button>
-          </div>
-        </main>
-      </div>
+      <PaymentResultScreen
+        tone="failure"
+        title={error}
+        primaryAction={{ label: tCommon("back"), onClick: handleBack }}
+      />
     );
   }
 
@@ -539,226 +460,211 @@ function PaymentPageContent() {
     }
   };
 
+  const amountDisplay = resolveAmountDisplay({
+    isForeign: isForeignLocale,
+    firstPaymentApplied,
+    couponApplied: promoApplied,
+  });
+  const formatAmount = (value: number): string =>
+    formatPaymentAmount(value, isForeignLocale, tPayment("currency"));
+  const currentAmountText = formatAmount(amountDisplay.amount);
+  const originalAmountText =
+    amountDisplay.originalAmount === null
+      ? undefined
+      : formatAmount(amountDisplay.originalAmount);
+
+  const profileName = cachedProfile?.name ?? "";
+  const hasCompatibilityNames = isCompatibility && nameA !== "" && nameB !== "";
+  const hasAudience = isCompatibility ? hasCompatibilityNames : true;
+  const audienceText = isCompatibility
+    ? tPayment("audienceCouple", { nameA, nameB })
+    : tPayment("audienceName", { name: profileName });
+  const shortProduct = tPayment(getShortProductKey(fortuneType));
+
+  const getLeadText = (): string => {
+    if (!hasAudience) {
+      return tPayment("checkoutLeadAnonymous", { product: shortProduct });
+    }
+    if (isCompatibility) {
+      return tPayment("checkoutLeadCompatibility", { nameA, nameB });
+    }
+    return tPayment("checkoutLead", {
+      name: profileName,
+      product: shortProduct,
+    });
+  };
+
+  const benefitText =
+    amountDisplay.benefit === "coupon"
+      ? tPayment("benefitCoupon")
+      : amountDisplay.benefit === "firstPayment"
+        ? tPayment("benefitFirstPayment")
+        : null;
+
+  const ticketRows = [
+    ...(hasAudience
+      ? [{ label: tPayment("ticketAudience"), value: audienceText }]
+      : []),
+    ...(benefitText
+      ? [{ label: tPayment("ticketBenefit"), value: benefitText }]
+      : []),
+    {
+      label: tPayment("ticketPeriod"),
+      value: tPayment("ticketPeriodValue"),
+    },
+  ];
+
+  const methods = paymentMethods.map((method) => ({
+    id: method.id,
+    label: tPayment(method.labelKey),
+  }));
+
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       {showPromoToast && (
-        <div className={styles.promoToast}>
+        <div className={styles.toast} role="status">
           <svg
             width="16"
             height="16"
-            viewBox="0 0 16 16"
+            viewBox="0 0 24 24"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            stroke="#fff"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
           >
-            <path
-              d="M6.00004 10.78L3.22004 8L2.27337 8.94L6.00004 12.6667L14 4.66667L13.06 3.72667L6.00004 10.78Z"
-              fill="white"
-            />
+            <path d="M20 6 9 17l-5-5" />
           </svg>
           <span>{tPayment("promoSuccess")}</span>
         </div>
       )}
 
       {promoErrorMessage && (
-        <div className={styles.promoToast}>
+        <div className={styles.toast} role="alert">
           <svg
             width="16"
             height="16"
-            viewBox="0 0 16 16"
+            viewBox="0 0 24 24"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            stroke="#fff"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+            aria-hidden="true"
           >
-            <path
-              d="M8 1.33334C4.32 1.33334 1.33334 4.32001 1.33334 8.00001C1.33334 11.68 4.32 14.6667 8 14.6667C11.68 14.6667 14.6667 11.68 14.6667 8.00001C14.6667 4.32001 11.68 1.33334 8 1.33334ZM8.66667 11.3333H7.33334V10H8.66667V11.3333ZM8.66667 8.66668H7.33334V4.66668H8.66667V8.66668Z"
-              fill="#FF6B6B"
-            />
+            <path d="M12 6v8M12 18h.01" />
           </svg>
           <span>{promoErrorMessage}</span>
         </div>
       )}
 
-      <main className={styles.main}>
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>{tPayment("orderTitle")}</h2>
-        </div>
+      <div className={styles.flow}>
+        <main className={styles.main}>
+          <h1 className={styles.title}>{tPayment("ticketTitle")}</h1>
+          <p className={styles.lead}>{getLeadText()}</p>
 
-        <div className={styles.productCard}>
-          <span className={styles.productName}>{getProductName()}</span>
-        </div>
+          <PaymentTicket
+            variant="pending"
+            ariaLabel={tPayment("orderTitle")}
+            kicker={tPayment("ticketKicker")}
+            title={tPayment(getProductNameKey(fortuneType))}
+            rows={ticketRows}
+            stub={{
+              label: tPayment("ticketAmount"),
+              originalValue: originalAmountText,
+              originalSrLabel: tPayment("listPrice"),
+              value: currentAmountText,
+            }}
+          />
 
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>{tPayment("paymentMethod")}</h3>
-        </div>
-
-        <div className={styles.methodList}>
-          {paymentMethods.map((method) => (
-            <button
-              key={method.id}
-              type="button"
-              className={styles.methodItem}
-              onClick={() => setSelectedMethod(method.id)}
-            >
-              <div className={styles.radioButton}>
-                <div
-                  className={`${styles.radioOuter} ${
-                    selectedMethod === method.id
-                      ? styles.radioOuterSelected
-                      : ""
-                  }`}
-                >
-                  {selectedMethod === method.id && (
-                    <div className={styles.radioInner} />
-                  )}
-                </div>
-                <span className={styles.methodLabel}>
-                  {tPayment(method.labelKey)}
-                </span>
-                {method.logo && (
-                  <Image
-                    src={method.logo}
-                    alt={tPayment(method.labelKey)}
-                    width={method.logoWidth || 44}
-                    height={method.logoHeight || 18}
-                    className={styles.methodLogo}
-                  />
-                )}
-              </div>
-            </button>
-          ))}
-
-          {selectedMethod === "PROMO" &&
-            !promoApplied &&
-            ownedCoupons.length > 0 && (
-              <div className={styles.ownedCouponsSection}>
-                <p className={styles.ownedCouponsTitle}>보유 쿠폰</p>
-                {ownedCoupons.map((coupon) => (
-                  <button
-                    key={coupon.id}
-                    type="button"
-                    className={styles.ownedCouponChip}
-                    onClick={() => handleSelectOwnedCoupon(coupon.code)}
-                  >
-                    <span className={styles.ownedCouponChipText}>
-                      {formatCouponLabel(coupon)}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-          {selectedMethod === "PROMO" && (
-            <div className={styles.promoInputContainer}>
-              <input
-                type="text"
-                className={`${styles.promoInput} ${promoApplied ? styles.promoInputApplied : ""}`}
-                placeholder={
-                  promoApplied
-                    ? tPayment("promoAppliedPlaceholder")
-                    : tPayment("promoPlaceholder")
-                }
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value)}
-                disabled={isPromoValidating || promoApplied}
-              />
-              {!promoApplied && (
-                <button
-                  type="button"
-                  className={styles.promoSubmitBtn}
-                  onClick={handlePromoSubmit}
-                  disabled={!promoCode.trim() || isPromoValidating}
-                >
-                  {tPayment("promoSubmit")}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className={styles.section}>
-          <h3 className={styles.sectionTitle}>{tPayment("totalAmount")}</h3>
-        </div>
-
-        <div className={styles.amountCard}>
-          <span className={styles.amountLabel}>{tPayment("finalAmount")}</span>
-          {promoApplied ? (
-            <div className={styles.amountWithDiscount}>
-              <span className={styles.originalAmount}>
-                {isForeignLocale
-                  ? `$${paymentAmount.toFixed(2)}`
-                  : `${paymentAmount.toLocaleString()}${tPayment("currency")}`}
-              </span>
-              <span className={styles.discountedAmount}>
-                {isForeignLocale ? "$0.00" : `0${tPayment("currency")}`}
-              </span>
-            </div>
-          ) : firstPaymentApplied && !isForeignLocale ? (
-            <div className={styles.amountWithDiscount}>
-              <span className={styles.originalAmount}>
-                {`${PAYMENT_AMOUNT_KRW.toLocaleString()}${tPayment("currency")}`}
-              </span>
-              <span className={styles.discountedAmount}>
-                {`${FIRST_PAYMENT_AMOUNT_KRW.toLocaleString()}${tPayment(
-                  "currency"
-                )}`}
-              </span>
-            </div>
-          ) : (
-            <span className={styles.amountValue}>
-              {isForeignLocale
-                ? `$${paymentAmount.toFixed(2)}`
-                : `${paymentAmount.toLocaleString()}${tPayment("currency")}`}
-            </span>
-          )}
-        </div>
-
-        <p className={styles.refundNotice}>{tPayment("refundPolicy")}</p>
-        <p className={styles.refundNotice}>{tPayment("viewPeriod")}</p>
-      </main>
-
-      <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.backBtn}
-          onClick={handleBack}
-          aria-label={tCommon("back")}
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <PaymentMethodFieldset
+            legend={tPayment("paymentMethod")}
+            methods={methods}
+            selected={selectedMethod}
+            onSelect={setSelectedMethod}
           >
-            <path
-              d="M15.41 7.41L14 6L8 12L14 18L15.41 16.59L10.83 12L15.41 7.41Z"
-              fill="#18181B"
-            />
-          </svg>
-        </button>
-        <button
-          type="button"
-          className={styles.paymentButton}
-          onClick={promoApplied ? handleViewFortune : handlePayment}
-          disabled={
-            isProcessing || (selectedMethod === "PROMO" && !promoApplied)
-          }
+            {selectedMethod === "PROMO" && (
+              <PaymentCouponSection
+                ownedCoupons={ownedCoupons}
+                promoCode={promoCode}
+                isApplied={promoApplied}
+                isValidating={isPromoValidating}
+                onCodeChange={setPromoCode}
+                onSubmit={handlePromoSubmit}
+              />
+            )}
+          </PaymentMethodFieldset>
+
+          <ul className={styles.notice}>
+            <li>{tPayment("refundPolicy")}</li>
+            <li>{tPayment("viewPeriod")}</li>
+          </ul>
+        </main>
+
+        <div
+          className={styles.bar}
+          role="group"
+          aria-label={tPayment("barLabel")}
         >
-          {isProcessing
-            ? tPayment("processing")
-            : promoApplied
-              ? tPayment("viewFortune")
-              : tPayment("payButtonSimple")}
-        </button>
-      </footer>
+          <button
+            type="button"
+            className={styles.back}
+            onClick={handleBack}
+            aria-label={tCommon("back")}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <div className={styles.total}>
+            <span className={styles.totalLabel}>{tPayment("totalAmount")}</span>
+            <p className={styles.totalValue}>
+              {originalAmountText && (
+                <del>
+                  <span className={styles.srOnly}>
+                    {tPayment("listPrice")}{" "}
+                  </span>
+                  {originalAmountText}
+                </del>
+              )}
+              <strong>{currentAmountText}</strong>
+            </p>
+          </div>
+          <button
+            type="button"
+            className={styles.submit}
+            onClick={promoApplied ? handleViewFortune : handlePayment}
+            disabled={
+              isProcessing || (selectedMethod === "PROMO" && !promoApplied)
+            }
+          >
+            {isProcessing
+              ? tPayment("processing")
+              : promoApplied
+                ? tPayment("viewFortune")
+                : tPayment("payAction")}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default function PaymentPage() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<PaymentScreeningLoading stage="checkout" />}>
       <PaymentPageContent />
     </Suspense>
   );

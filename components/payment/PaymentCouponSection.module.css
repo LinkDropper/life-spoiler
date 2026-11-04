@@ -1,0 +1,95 @@
+/* 쿠폰: 결제 수단과 같은 목록 문법으로 한 단계 들여 써서 이어 붙인다 */
+.coupon {
+  margin: 20px 0 0 16px;
+}
+
+.listLabel {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinema-haze, rgba(255, 255, 255, 0.72));
+}
+
+.list {
+  margin-top: 6px;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  border-bottom: 1px solid var(--cinema-line, rgba(255, 255, 255, 0.16));
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px;
+  color: #fff;
+}
+
+.input::placeholder {
+  color: var(--cinema-faint, rgba(255, 255, 255, 0.6));
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--cinema-star, #ffe7a3);
+  outline-offset: 2px;
+}
+
+.input:disabled {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  opacity: 1;
+}
+
+/* 확인 버튼: 채움은 연핑크 */
+.submit {
+  flex: none;
+  min-width: 56px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--cinema-spoiler, #ffccd9);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--cinema-ink, #23142d);
+  cursor: pointer;
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--cinema-star, #ffe7a3);
+  outline-offset: 2px;
+}
+
+.submit:disabled {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--cinema-faint, rgba(255, 255, 255, 0.6));
+  cursor: default;
+}
+
+.applied {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinema-haze, rgba(255, 255, 255, 0.72));
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

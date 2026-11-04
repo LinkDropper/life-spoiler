@@ -1,0 +1,147 @@
+/* 결제 완료(06)·승인 실패(07)·결제 실패·취소(08) 공통 면.
+   상영관 토큰은 페이지 루트에 로컬로 선언한다 (components/home/HomeScreen.module.css와 같은 값). */
+.page {
+  --cinema-night: #0c1220;
+  --cinema-haze: rgba(255, 255, 255, 0.72);
+  --cinema-faint: rgba(255, 255, 255, 0.6);
+  --cinema-line: rgba(255, 255, 255, 0.16);
+  --cinema-spoiler: var(--primitive-primary, #ffccd9);
+  --cinema-accent: var(--primitive-primary-strong, #ff8fb1);
+  --cinema-star: var(--primitive-gold, #ffe7a3);
+  --cinema-ink: #23142d;
+  --cinema-paper: #f9ecf0;
+  --cinema-rose: #8a2f55;
+  --cinema-display: var(--font-sb-aggro), var(--font-pretendard), sans-serif;
+  --cinema-display-weight: 400;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--cinema-night);
+  color: #fff;
+  font-family: var(--font-pretendard), sans-serif;
+  overflow-x: clip;
+  overflow-wrap: break-word;
+}
+
+.page:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.page:lang(ja) {
+  --cinema-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --cinema-display-weight: 800;
+}
+
+.page :focus-visible {
+  outline: 2px solid var(--cinema-star);
+  outline-offset: 2px;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 12px 20px 32px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--cinema-display);
+  font-size: 32px;
+  font-weight: var(--cinema-display-weight);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--cinema-haze);
+  overflow-wrap: anywhere;
+}
+
+.receipt {
+  margin: 40px 0 0;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+}
+
+.receiptRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 204, 217, 0.15);
+}
+
+.receiptRow dt {
+  flex: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cinema-faint);
+}
+
+.receiptRow dd {
+  min-width: 0;
+  margin: 0;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 40px;
+}
+
+.hint {
+  margin: 0 0 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--cinema-haze);
+}
+
+.primary,
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+  text-wrap: balance;
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--cinema-spoiler);
+  color: var(--cinema-ink);
+}
+
+.secondary {
+  background: none;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

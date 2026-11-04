@@ -1,0 +1,260 @@
+/* 결제 흐름 관람권 — docs/design/payment-flow 시안 v3.
+   색은 페이지 루트의 --cinema-* 토큰을 쓴다. 그림자·발광 없이 면과 선만 쓴다. */
+
+.counter {
+  margin-top: 28px;
+}
+
+/* 매표소 슬롯: 어두운 얇은 막대 */
+.slot {
+  position: relative;
+  z-index: 2;
+  height: 12px;
+  border-top: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  background: #05080f;
+}
+
+.ticket {
+  --stub: 96px;
+  --paper: var(--cinema-paper, #f9ecf0);
+
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--stub);
+  margin: -12px 12px 0;
+  color: var(--cinema-ink, #23142d);
+}
+
+/* 가운데 절취선 위아래를 파낸 반원 */
+.ticket::after {
+  content: "";
+  position: absolute;
+  right: calc(var(--stub) - 8px);
+  bottom: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cinema-night, #0c1220);
+}
+
+.body {
+  position: relative;
+  min-width: 0;
+  padding: 28px 14px 16px 22px;
+  background: var(--paper);
+  border-radius: 0 0 0 10px;
+}
+
+.body::before {
+  content: "";
+  position: absolute;
+  top: 60%;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--cinema-night, #0c1220);
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--cinema-display, "SB AggroOTF", sans-serif);
+  font-size: 13px;
+  font-weight: var(--cinema-display-weight, 400);
+  line-height: 1.35;
+  color: var(--cinema-rose, #8a2f55);
+}
+
+.title {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cinema-haze, rgba(255, 255, 255, 0.72));
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 10px;
+  margin: 10px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid rgba(35, 20, 45, 0.16);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.metaRow {
+  display: contents;
+}
+
+.metaRow dt {
+  font-weight: 700;
+  color: rgba(35, 20, 45, 0.72);
+}
+
+.metaRow dd {
+  margin: 0;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.stub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 24px 8px 14px;
+  border-left: 2px dashed rgba(35, 20, 45, 0.3);
+  border-radius: 0 0 10px 0;
+  background: var(--paper);
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--cinema-rose, #8a2f55);
+}
+
+.value {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--cinema-ink, #23142d);
+}
+
+.original {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(35, 20, 45, 0.62);
+}
+
+.barcode {
+  width: 44px;
+  height: 22px;
+  margin-top: 6px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--cinema-ink, #23142d) 0 2px,
+    transparent 2px 4px,
+    var(--cinema-ink, #23142d) 4px 5px,
+    transparent 5px 7px,
+    var(--cinema-ink, #23142d) 7px 10px,
+    transparent 10px 11px,
+    var(--cinema-ink, #23142d) 11px 12px,
+    transparent 12px 15px
+  );
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* 결제 실패·취소: 슬롯에 그대로 꽂혀 있고 종이만 한 톤 어둡다 */
+.unpaid {
+  --paper: #d9ced4;
+}
+
+.unpaid .stub {
+  border-left-color: rgba(35, 20, 45, 0.32);
+}
+
+.unpaid .value {
+  font-size: 16px;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+/* 발권 완료: 관람권이 슬롯 밖으로 나오고 꼬리표가 떨어져 있다 */
+.issued {
+  z-index: auto;
+  margin: 28px 8px 0;
+}
+
+.issued::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: -8px;
+  right: calc(var(--stub) - 8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cinema-night, #0c1220);
+}
+
+.issued::after {
+  z-index: 1;
+}
+
+.issued .body {
+  padding: 18px 14px 18px 22px;
+  border-radius: 10px 0 0 10px;
+}
+
+.issued .body::before {
+  top: 50%;
+}
+
+.issued .stub {
+  padding: 14px 8px;
+  border-radius: 0 10px 10px 0;
+  transform-origin: 0 0;
+  transform: translate(14px, 6px) rotate(5deg);
+}
+
+.issued .value {
+  font-family: var(--cinema-display, "SB AggroOTF", sans-serif);
+  font-size: 22px;
+  font-weight: var(--cinema-display-weight, 400);
+}
+
+/* 승인 실패: 윤곽선만 남은 빈 관람권 */
+.void {
+  display: grid;
+  border: 1.5px dashed rgba(255, 255, 255, 0.4);
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  color: inherit;
+}
+
+.void::after,
+.void .body::before {
+  content: none;
+}
+
+.void .body {
+  padding: 30px 16px 18px 22px;
+  background: none;
+  border-radius: 0;
+}
+
+.void .kicker {
+  color: var(--cinema-faint, rgba(255, 255, 255, 0.6));
+}
+
+.void .stub {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-left: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 0;
+  background: none;
+}
