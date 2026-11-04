@@ -2,6 +2,7 @@ import {
   LANDING_BIRTH_DRAFT_KEY,
   LANDING_BIRTH_DRAFT_TTL_MS,
   consumeLandingBirthDraft,
+  peekLandingBirthDraft,
   saveLandingBirthDraft,
 } from "../birth-draft";
 
@@ -60,5 +61,23 @@ describe("landing birth draft", () => {
   it("저장소를 쓸 수 없으면 아무것도 하지 않는다", () => {
     expect(() => saveLandingBirthDraft(DRAFT, null)).not.toThrow();
     expect(consumeLandingBirthDraft(null)).toBeNull();
+  });
+
+  it("peek은 지우지 않고 읽기만 한다", () => {
+    const storage = createMemoryStorage();
+    saveLandingBirthDraft(DRAFT, storage, 1000);
+
+    expect(peekLandingBirthDraft(storage, 2000)).toEqual(DRAFT);
+    expect(storage.map.has(LANDING_BIRTH_DRAFT_KEY)).toBe(true);
+    expect(consumeLandingBirthDraft(storage, 2000)).toEqual(DRAFT);
+  });
+
+  it("peek도 30분이 지난 값은 주지 않는다", () => {
+    const storage = createMemoryStorage();
+    saveLandingBirthDraft(DRAFT, storage, 0);
+
+    expect(
+      peekLandingBirthDraft(storage, LANDING_BIRTH_DRAFT_TTL_MS + 1)
+    ).toBeNull();
   });
 });
