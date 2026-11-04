@@ -405,7 +405,7 @@ const resolveSiteUrl = (): string =>
   process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
 
 /**
- * 친구 우주 궁합 생성 알림 전송.
+ * 친구 시사회(친구 우주) 생성 알림 전송.
  *
  * **개인정보 경계**: 이 기능은 생년월일시 비공개 원칙(B안)을 따른다.
  * 생년월일/생시/성별/내부 PK/IP 해시/owner 토큰은 절대 포함하지 않는다.
@@ -428,17 +428,17 @@ export const sendUniverseCreatedNotification = async (
   });
 
   const embed: DiscordEmbed = {
-    title: "🌌 새 우주 생성",
-    description: "친구 우주 궁합이 새로 생성되었습니다!",
+    title: "🎬 새 친구 시사회 생성",
+    description: "친구 시사회가 새로 열렸습니다.",
     color: DISCORD_EMBED_COLORS.INFO,
     fields: [
       {
-        name: "👤 owner",
+        name: "👤 주최자",
         value: ownerName ?? "익명",
         inline: true,
       },
       {
-        name: "🔗 공유 링크",
+        name: "🔗 초대 링크",
         value: `${resolveSiteUrl()}/universe/${publicId}`,
         inline: false,
       },
