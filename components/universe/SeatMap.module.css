@@ -1,0 +1,161 @@
+.map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+}
+
+/* 은은하게 빛나는 곡선 스크린 (로그인 SeatMap과 같은 문법) */
+.screen {
+  position: relative;
+  width: 88%;
+  height: 34px;
+  border-top: 3px solid rgba(255, 231, 200, 0.85);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  filter: drop-shadow(0 0 10px rgba(255, 220, 190, 0.55));
+}
+
+.screen::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: -10%;
+  right: -10%;
+  height: 150px;
+  background: radial-gradient(
+    ellipse 50% 100% at 50% 0,
+    rgba(255, 226, 200, 0.16),
+    transparent 75%
+  );
+  pointer-events: none;
+}
+
+.screenLabel {
+  position: relative;
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--cinema-faint);
+}
+
+/* 스크린 자막 = 주최자의 한줄평 */
+.caption {
+  position: relative;
+  max-width: 300px;
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 0 2px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.rowLabel {
+  width: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cinema-faint);
+  text-align: center;
+}
+
+.rowLink .rowLabel {
+  color: var(--cinema-accent);
+}
+
+.rowLink:active {
+  background: rgba(255, 204, 217, 0.08);
+}
+
+.rowLink:focus-visible {
+  outline: 2px solid var(--cinema-star);
+  outline-offset: 1px;
+}
+
+@media (hover: hover) {
+  .rowLink:hover {
+    background: rgba(255, 204, 217, 0.08);
+  }
+}
+
+.seat {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 26px;
+  border-radius: 7px 7px 3px 3px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cinema-text);
+}
+
+.seatTaken {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.seatMine {
+  background: var(--cinema-spoiler);
+  box-shadow:
+    0 0 0 2px var(--cinema-accent),
+    0 0 18px rgba(255, 143, 177, 0.55);
+  color: var(--cinema-ink);
+}
+
+.seatMore {
+  background: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  color: var(--cinema-haze);
+}
+
+.mine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinema-accent);
+}
+
+.mineSwatch {
+  width: 12px;
+  height: 10px;
+  border-radius: 4px 4px 2px 2px;
+  background: var(--cinema-spoiler);
+  box-shadow: 0 0 0 1.5px var(--cinema-accent);
+}
+
+/* 아주 좁은 화면(320px)에서도 한 줄 9석이 들어가게 */
+@media (max-width: 359px) {
+  .row {
+    gap: 4px;
+  }
+
+  .seat {
+    width: 24px;
+    height: 23px;
+    font-size: 11px;
+  }
+}

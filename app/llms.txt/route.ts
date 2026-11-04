@@ -39,7 +39,7 @@ const BODY = `# 인생스포 (Life Spoiler)
 - 올해 운세: 올해의 핵심 시나리오와 재물·커리어·인간관계·건강 점수를 보여줍니다.
 - 궁합: 두 사람의 소통 방식, 성장 시너지, 신뢰 지수, 위기 극복력 4가지 지표로 분석합니다.
 - 오늘의 운세(한국어): 내 명반과 오늘의 일진으로 매일 달라지는 운세를 무료로 보여줍니다. 한국 시간 자정에 바뀝니다.
-- 나만의 별자리 만들기: 로그인 없이 무료로 내 우주를 만들고, 링크로 친구를 초대해 별자리 궁합을 봅니다.
+- 친구 시사회: 로그인 없이 무료로 내 시사회를 열고, 링크로 친구를 초대해 궁합 점수를 봅니다.
 - 관상스포: 정면 사진 한 장으로 받는 AI 관상 리포트입니다. 부위별 관상과 동물상 예고편은 무료, 본편 리포트는 ${formatKrw(NORMAL_AMOUNT_KRW)}입니다. 업로드한 사진은 분석 직후 삭제되며 서버에 저장되지 않습니다.
 
 ## 자주 묻는 질문
@@ -55,7 +55,7 @@ const BODY = `# 인생스포 (Life Spoiler)
 - [자미두수란?](${buildLocalizedUrl("/ziwei-doushu", "ko")}): 자미두수의 뜻, 역사, 명반 구조, 사주와의 차이
 - [오늘의 운세](${buildLocalizedUrl("/daily", "ko")}): 무료 오늘의 운세 안내
 - [관상스포](${buildLocalizedUrl("/face-spoiler", "ko")}): AI 관상 리포트
-- [나만의 별자리 만들기](${buildLocalizedUrl("/universe/create", "ko")})
+- [친구 시사회 열기](${buildLocalizedUrl("/universe/create", "ko")})
 - [이용약관](${buildLocalizedUrl("/policy/terms", "ko")})
 - [개인정보 처리방침](${buildLocalizedUrl("/policy/privacy", "ko")})
 

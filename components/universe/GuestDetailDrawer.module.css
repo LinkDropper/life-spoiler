@@ -26,10 +26,10 @@
   /* factors가 3~8개까지 붙으면 내용이 길어질 수 있어 뷰포트 안에 담고 내부 스크롤한다 */
   max-height: 85vh;
   overflow-y: auto;
-  padding: 28px 20px 32px;
-  /* 캔버스(UniverseVisualization)와 같은 우주 톤 그라디언트로 이 기능 전용 룩을 유지한다 */
-  background: linear-gradient(180deg, #171029 0%, #2e1431 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 28px 20px calc(32px + env(safe-area-inset-bottom));
+  background: var(--cinema-night);
+  color: var(--cinema-text);
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
   border-radius: 20px 20px 0 0;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
   animation: slideUp 0.25s ease-out;
@@ -45,31 +45,38 @@
   }
 }
 
+/* 터치 타겟 44px */
 .closeButton {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 8px;
+  right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font-size: 20px;
+  background: none;
+  color: var(--cinema-text);
+  font-size: 26px;
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
 .closeButton:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 2px;
+  outline: 2px solid var(--cinema-star);
+  outline-offset: -4px;
 }
 
 /* 이름이 우측 상단 닫기 버튼과 겹치지 않도록 여유를 둔다 */
 .content {
   padding-right: 40px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .drawer {
+    animation: none;
+  }
 }

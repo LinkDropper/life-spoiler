@@ -1,26 +1,27 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import {
+  EndingCredits,
   GuestDetailDrawer,
   GuestEntryForm,
-  GuestScoreList,
   MyCompatibilitySummary,
   OtherFortunesPromo,
+  ScreeningHero,
   ShareLinkButton,
-  UniverseOwnerSummary,
   UniverseToast,
-  UniverseVisualization,
 } from "@/components/universe";
+import theme from "@/components/universe/ScreeningTheme.module.css";
 import {
   useGuestSubmit,
   useShareUniverseLink,
   useUniverse,
 } from "@/libs/hooks/universe";
+import { buildSeatMap } from "@/libs/universe/seat-map";
 
 import styles from "./page.module.css";
 
@@ -34,8 +35,9 @@ interface UniversePageProps {
 /**
  * `/universe/{publicId}` — 공유 페이지.
  *
- * 영역 순서는 CPO 확정 사항이므로 변경하지 않는다:
- * 1) owner 요약 → 2) 친구 입력 폼 → 3) 시각화 → 4) 순위 목록 → 5) 다른 운세 → 6) 공유
+ * 영역 순서(2026-11 친구 시사회 개편으로 1·3을 합쳤다):
+ * 1) 스크린 + 좌석 배치도 → 2) 초대장 폼 / 내 관람권 → 4) 엔딩 크레딧
+ * → 5) 내 시사회 열기 + 다른 운세 → 6) 초대장 보내기
  *
  * 로케일과 무관하게 항상 정상 동작해야 한다. EN/JA에서 막으면 바이럴 루프가 끊긴다.
  * UI 골격은 해당 언어로 나가고, 한줄평/등급 라벨만 KO 고정 + 안내 문구를 덧붙인다.
@@ -62,8 +64,19 @@ export default function UniversePage({ params }: UniversePageProps) {
   const [isDuplicateNotice, setIsDuplicateNotice] = useState(false);
   const [detailGuest, setDetailGuest] = useState<UniverseGuestDto | null>(null);
 
-  // 4번 영역(빈 상태 버튼)에서 클립보드 복사에 실패하면, fallback 안내/원문 URL이
-  // 있는 6번 영역으로 스크롤시켜 사용자가 수동 복사를 이어갈 수 있게 한다.
+  // 방금 이 세션에서 입장했으면 그 결과를, 아니면 참여 기록 쿠키로 서버가 내려준
+  // detail.selfGuest를 쓴다 — "방금 입장"과 "재방문" 두 경로 모두 이 값 하나로 커버된다.
+  const selfGuest = justSubmittedGuest ?? detail?.selfGuest ?? null;
+  const selfStarSeed = selfGuest?.starSeed ?? null;
+
+  // 좌석 배정은 점수 구간이 정한다 — 저장 좌표(posXRatio/posYRatio)는 이 화면에서 쓰지 않는다
+  const seatMap = useMemo(
+    () => buildSeatMap(detail?.guests ?? [], selfStarSeed),
+    [detail?.guests, selfStarSeed]
+  );
+
+  // 6번 영역(초대장 보내기)에서 클립보드 복사에 실패하면, fallback 안내/원문 URL이
+  // 보이는 자리로 스크롤시켜 사용자가 수동 복사를 이어갈 수 있게 한다.
   useEffect(() => {
     if (copyState === "fallback") {
       document
@@ -72,13 +85,15 @@ export default function UniversePage({ params }: UniversePageProps) {
     }
   }, [copyState]);
 
-  const scrollToListItem = useCallback((starSeed: string | null) => {
-    const target = starSeed
-      ? document.getElementById(`guest-${starSeed}`)
-      : document.getElementById("universe-ranking");
-
-    target?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, []);
+  // 입장 직후에는 폼 자리를 대신한 내 관람권으로 시선을 옮긴다 (렌더가 끝난 뒤여야 대상이 있다)
+  useEffect(() => {
+    if (!justSubmittedGuest) {
+      return;
+    }
+    document
+      .getElementById("screening-ticket")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [justSubmittedGuest]);
 
   const handleGuestSubmit = useCallback(
     async (values: GuestFormValues) => {
@@ -104,14 +119,13 @@ export default function UniversePage({ params }: UniversePageProps) {
       applyGuest(guestDto, result.isDuplicate);
       setJustSubmittedGuest(guestDto);
       setIsDuplicateNotice(result.isDuplicate);
-      scrollToListItem(result.starSeed);
     },
-    [applyGuest, scrollToListItem, submit]
+    [applyGuest, submit]
   );
 
   if (state === "loading") {
     return (
-      <div className={styles.page}>
+      <div className={`${theme.theme} ${styles.page}`}>
         <HeaderClient />
 
         <main className={styles.main}>
@@ -125,7 +139,7 @@ export default function UniversePage({ params }: UniversePageProps) {
 
   if (state === "notFound") {
     return (
-      <div className={styles.page}>
+      <div className={`${theme.theme} ${styles.page}`}>
         <HeaderClient />
 
         <main className={styles.main}>
@@ -145,7 +159,7 @@ export default function UniversePage({ params }: UniversePageProps) {
 
   if (state === "error" || !detail) {
     return (
-      <div className={styles.page}>
+      <div className={`${theme.theme} ${styles.page}`}>
         <HeaderClient />
 
         <main className={styles.main}>
@@ -165,77 +179,67 @@ export default function UniversePage({ params }: UniversePageProps) {
   }
 
   // owner가 시간 미상이면 모든 쌍이 estimated가 된다.
-  // 이 경우 고지는 섹션1 배너 + 섹션3 캡션에서 각 1회만 하고,
-  // 리스트 행과 별에는 반복하지 않는다 (30개에 같은 태그가 붙으면 벽지가 된다).
+  // 이 경우 고지는 1번 영역에서 우주 단위로 1회만 하고, 크레딧 행에는 반복하지 않는다.
   const isUniverseEstimated = detail.ownerSummary.confidence === "estimated";
-
-  // 방금 이 세션에서 등록했으면 그 결과를, 아니면 참여 기록 쿠키로 서버가 내려준
-  // detail.selfGuest를 쓴다 — "방금 등록"과 "재방문" 두 경로 모두 이 값 하나로 커버된다.
-  const selfGuest = justSubmittedGuest ?? detail.selfGuest;
-  const selfStarSeed = selfGuest?.starSeed ?? null;
+  const mySeat = selfStarSeed
+    ? (seatMap.seatsByStarSeed.get(selfStarSeed) ?? null)
+    : null;
+  const detailSeat = detailGuest
+    ? (seatMap.seatsByStarSeed.get(detailGuest.starSeed) ?? null)
+    : null;
 
   return (
-    <div className={styles.page}>
+    <div className={`${theme.theme} ${styles.page}`}>
       <HeaderClient />
 
       <main className={styles.main}>
-        {/* 1. owner 요약 */}
-        <UniverseOwnerSummary
+        {/* 1. 스크린 + 좌석 배치도 */}
+        <ScreeningHero
           ownerName={detail.ownerSummary.ownerName}
-          guestCount={detail.guestCount}
-          isUniverseEstimated={isUniverseEstimated}
           ownerOneLinerKo={detail.ownerSummary.oneLinerKo}
+          guestCount={detail.guestCount}
           guestCountRank={detail.ownerSummary.guestCountRank}
+          isUniverseEstimated={isUniverseEstimated}
+          seatMap={seatMap}
+          mySeat={mySeat}
         />
 
-        {/* 2. 친구 입력 폼 — 이미 참여한 방문자(쿠키로 판별)에게는 궁합 카드로 대체 */}
+        {/* 2. 초대장 폼 — 이미 입장한 방문자(쿠키로 판별)에게는 내 관람권으로 대체 */}
         {selfGuest ? (
           <MyCompatibilitySummary
             guest={selfGuest}
             ownerName={detail.ownerSummary.ownerName}
+            seat={mySeat}
+            showDuplicateNotice={isDuplicateNotice}
           />
         ) : (
-          <>
-            {isDuplicateNotice && (
-              <p className={styles.duplicateNotice} role="status">
-                {t("duplicateNotice")}
-              </p>
-            )}
-            <GuestEntryForm
-              isSubmitting={isSubmitting}
-              isFull={detail.isFull}
-              submitError={submitError}
-              onSubmit={handleGuestSubmit}
-            />
-          </>
+          <GuestEntryForm
+            ownerName={detail.ownerSummary.ownerName}
+            isSubmitting={isSubmitting}
+            isFull={detail.isFull}
+            submitError={submitError}
+            onSubmit={handleGuestSubmit}
+          />
         )}
 
-        {/* 3. 우주 시각화 */}
-        <UniverseVisualization
-          ownerName={detail.ownerSummary.ownerName}
+        {/* 4. 엔딩 크레딧 (좌석 배치도의 공식 접근성 대체 구조) */}
+        <EndingCredits
           guests={detail.guests}
           selfStarSeed={selfStarSeed}
-          isUniverseEstimated={isUniverseEstimated}
-          onSelectStar={scrollToListItem}
-        />
-
-        {/* 4. 궁합 점수·한줄평 리스트 (시각화의 공식 접근성 대체 구조) */}
-        <GuestScoreList
-          guests={detail.guests}
-          selfStarSeed={selfStarSeed}
+          seatMap={seatMap}
           isUniverseEstimated={isUniverseEstimated}
           showLocaleNotice={locale !== "ko"}
-          onShareClick={handleShare}
           onGuestClick={setDetailGuest}
         />
 
-        {/* 5. 다른 운세 홍보 */}
-        <OtherFortunesPromo />
+        {/* 5. 이번엔 내 시사회 열기 + 다른 운세 */}
+        <OtherFortunesPromo isPrimary={selfGuest !== null} />
 
-        {/* 6. 공유 링크 복사 */}
+        {/* 6. 초대장 보내기 */}
         <div id="universe-share">
           <ShareLinkButton
             shareUrl={shareUrl}
+            ownerName={detail.ownerSummary.ownerName}
             guestCount={detail.guestCount}
             copyState={copyState}
             onShare={handleShare}
@@ -245,6 +249,7 @@ export default function UniversePage({ params }: UniversePageProps) {
 
       <GuestDetailDrawer
         guest={detailGuest}
+        seat={detailSeat}
         onClose={() => setDetailGuest(null)}
       />
 
