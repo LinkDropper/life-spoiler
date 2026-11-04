@@ -4,8 +4,9 @@ import path from "path";
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 
-import { DailyOgImage, getColorSwatch } from "@/components/daily";
-import { formatDailyDate } from "@/components/daily/format-date";
+import { DailyOgImage } from "@/components/daily";
+import { formatDailyMonthDay } from "@/components/daily/format-date";
+import { formatCallSheetDate } from "@/libs/daily/call-sheet";
 import { isDailyError } from "@/libs/daily/errors";
 import { resolveKstDate } from "@/libs/daily/kst-date";
 import { getSharedDailyCard } from "@/libs/daily/service";
@@ -33,26 +34,31 @@ export const GET = async (request: Request): Promise<Response> => {
       path.join(process.cwd(), "public/fonts/SB-M.otf")
     );
 
-    const keywords = [
-      {
-        label: t("result.keywordColor"),
-        value: card.color,
-        swatch: getColorSwatch(card.colorSlug),
-      },
-      { label: t("result.keywordItem"), value: card.item },
-      { label: t("result.keywordNumber"), value: String(card.number) },
-      { label: t("result.keywordTime"), value: card.timeSlot },
-    ];
+    const stars =
+      "★".repeat(card.overallLevel) + "☆".repeat(5 - card.overallLevel);
 
     return new ImageResponse(
       <DailyOgImage
-        date={t("share.dateLabel", {
-          date: formatDailyDate(card.date, "ko"),
+        episode={t("share.episode", {
+          date: formatDailyMonthDay(card.date, "ko"),
         })}
-        eyebrow={t("share.eyebrow")}
+        headingLines={[t("share.ogHeadingLine1"), t("share.ogHeadingLine2")]}
+        brand={t("share.brandLogo")}
+        mark={t("result.callSheet.mark")}
+        sheetDate={formatCallSheetDate(card.date)}
         headline={card.headline}
-        keywords={keywords}
-        brand={t("share.brand")}
+        cells={[
+          {
+            label: t("result.callSheet.scene"),
+            value: t("result.callSheet.sceneValue", { number: card.number }),
+          },
+          {
+            label: t("category.overall"),
+            value: stars,
+            subValue: t(`grade.${card.overallLevel}`),
+          },
+          { label: t("result.callSheet.prop"), value: card.item },
+        ]}
       />,
       {
         ...SIZE,

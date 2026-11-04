@@ -32,3 +32,25 @@
   color: #ffffff;
   word-break: keep-all;
 }
+
+/* 별 한 줄, 등급명 한 줄 (콜시트 총운 칸) */
+.stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+/* 콜시트 분홍 종이 위: 금 별은 대비가 낮아 잉크 계열로 바꾼다 */
+.paper .starFilled {
+  fill: #8a2f55;
+  stroke: #8a2f55;
+}
+
+.paper .starEmpty {
+  stroke: rgba(35, 20, 45, 0.45);
+}
+
+.paper .grade {
+  color: #23142d;
+  font-weight: 800;
+}

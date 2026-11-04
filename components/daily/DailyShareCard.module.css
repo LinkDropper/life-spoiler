@@ -1,150 +1,214 @@
+/* 공유 카드: 밤색 바탕 + 무대 빛 + 분홍 종이 콜시트 (결과 화면 DailyFortuneScreen과 같은 재료) */
 .card {
+  --share-ink: #23142d;
+  --share-ink-faint: rgba(35, 20, 45, 0.6);
+  --share-rule: rgba(35, 20, 45, 0.22);
+  --share-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
   width: 100%;
   max-width: 420px;
   aspect-ratio: 1 / 1;
-  min-height: 320px;
-  padding: 24px;
+  margin: 0 auto;
+  padding: 28px 24px 20px;
   border-radius: 20px;
-  background: linear-gradient(145deg, #2b1b57 0%, #3f2170 55%, #2e1431 100%);
+  background: #0c1220;
   color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
   box-sizing: border-box;
   overflow: hidden;
+  overflow-wrap: break-word;
 }
 
-.date {
-  margin: 0;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 14px;
+.card:lang(ko) {
+  word-break: keep-all;
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 70% 55% at 50% 42%,
+    rgba(216, 166, 255, 0.24),
+    transparent 72%
+  );
+  pointer-events: none;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+}
+
+.clip {
+  position: absolute;
+  z-index: 1;
+  top: -11px;
+  left: 50%;
+  width: 70px;
+  height: 20px;
+  margin-left: -35px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #3a2a48 0%, var(--share-ink) 100%);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+.clip::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 32px;
+  height: 6px;
+  margin-left: -16px;
+  border-radius: 3px;
+  background: #0c1220;
+}
+
+.sheet {
+  padding: 20px 16px 14px;
+  border-radius: 4px;
+  background: #f9ecf0;
+  color: var(--share-ink);
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.45),
+    0 0 50px rgba(216, 166, 255, 0.18);
+  transform: rotate(-0.8deg);
+}
+
+.monoLabel {
+  font-family: var(--share-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--share-ink-faint);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--share-ink);
+  font-family: var(--share-mono);
+  font-size: 11px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
 }
 
-.body {
+.mark {
+  font-weight: 600;
+  letter-spacing: 0.24em;
+}
+
+.section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.eyebrow {
-  margin: 0;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: #ffe27a;
+  gap: 6px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--share-rule);
 }
 
 .headline {
   margin: 0;
-  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
-  font-size: 24px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 900;
   line-height: 1.4;
-  word-break: keep-all;
 }
 
-.keywords {
+.cells {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1.1fr);
+  margin: 0;
+  border-bottom: 1px solid var(--share-rule);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px;
+  border-right: 1px solid var(--share-rule);
+}
+
+.cell:first-child {
+  padding-left: 0;
+}
+
+.cell:last-child {
+  padding-right: 0;
+  border-right: none;
+}
+
+.cell dd {
+  margin: 0;
+}
+
+.sceneValue {
+  font-family: var(--share-mono);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.cellValue {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.props {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin: 0;
+  padding-top: 8px;
 }
 
-.keyword {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  min-width: 0;
+.props dd {
+  margin: 0;
 }
 
-.keywordLabel {
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.78);
+.propLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(35, 20, 45, 0.62);
 }
 
-.keywordValue {
+.propValue {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 0;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  word-break: keep-all;
-  overflow-wrap: anywhere;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .swatch {
   flex-shrink: 0;
-  width: 14px;
-  height: 14px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 1.5px rgba(35, 20, 45, 0.25);
 }
 
-/* 이미지 에셋 없이 CSS만으로 만든 은은한 별빛 (html-to-image 캡처에도 포함) */
-.glow {
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      circle at 35% 35%,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0) 10%
-    ),
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(150, 120, 255, 0.35) 0%,
-      rgba(150, 120, 255, 0) 62%
-    );
-  pointer-events: none;
-}
-
-.date,
-.body,
-.keywords,
 .brand {
   position: relative;
-}
-
-/* 브랜드 워터마크: 공유 이미지가 다른 곳에서 보여도 출처가 남도록 대비를 충분히 둔다 */
-.brand {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.72);
 }
 
-.brandMark {
-  width: 8px;
-  height: 8px;
-  background: #ffe27a;
-  clip-path: polygon(
-    50% 0%,
-    62% 38%,
-    100% 50%,
-    62% 62%,
-    50% 100%,
-    38% 62%,
-    0% 50%,
-    38% 38%
-  );
+.logo {
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  color: #ffccd9;
 }
