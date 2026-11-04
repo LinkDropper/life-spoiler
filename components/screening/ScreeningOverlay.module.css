@@ -1,0 +1,491 @@
+/* 상영관 입장 (docs/home-redesign-2026-11.md §8, designer 검토 2026-11-04).
+   시각은 libs/screening/screening-policy.ts가 CSS 변수로, 단계는 클래스(.revealing)로 넣는다.
+   transform·opacity만 움직인다. blur·blend 값은 애니메이션하지 않는다(모바일 인앱 브라우저).
+   색: 브랜드 네이비·골드. 스크린 속은 홈·랜딩 인생 필름과 같은 밤하늘(NightSkyArt).
+   벨벳 커튼은 CSS로 흉내 내면 싸 보여서 뺐다(2026-11-04 피드백). 3D 장면을 못 쓸 때의 대체 화면이다. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  animation: fadeIn var(--fade-in-ms) ease-out forwards;
+}
+
+/* ---------- 3D 장면 (theater-scene.ts) ---------- */
+.overlay3d {
+  background: #04060c;
+}
+
+.canvasHost {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+}
+
+.canvasReady {
+  opacity: 1;
+}
+
+/* ---------- 객석 ---------- */
+.room {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 38%, #111a2e, transparent 70%),
+    linear-gradient(180deg, #070b15, #04060c);
+}
+
+/* ---------- 스크린 (관객 시점, 화면 위쪽 44% 지점) ---------- */
+.stage {
+  position: absolute;
+  top: 44%;
+  left: 50%;
+  width: min(78vw, 520px);
+  transform: translate(-50%, -50%);
+}
+
+.screen {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 16 / 10.5;
+  background: #090c14;
+  border-radius: 3px;
+  box-shadow: 0 0 0 3px #000;
+  overflow: hidden;
+}
+
+/* 영사기 빛이 닿은 화면 */
+.picture {
+  position: absolute;
+  inset: 0;
+  container-type: size;
+  background: #0b1120;
+  opacity: 0;
+  animation: projectorOn 420ms var(--projector-at) steps(1, end) forwards;
+}
+
+/* 스크린 속 밤하늘: 타이틀이 읽히게 가운데를 어둡게 깔고, 천천히 다가온다 */
+.sky {
+  position: absolute;
+  inset: 0;
+  opacity: 0.75;
+  transform: scale(1.06);
+  animation: skyDrift 8s ease-out forwards;
+}
+
+.sky > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 48%,
+    rgba(11, 17, 32, 0.72),
+    rgba(11, 17, 32, 0.25) 75%
+  );
+}
+
+@keyframes skyDrift {
+  to {
+    transform: scale(1);
+  }
+}
+
+/* 필름 그레인 (정적 노이즈, opacity 고정) */
+.picture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.26;
+  pointer-events: none;
+}
+
+/* 영사기가 한 번만 깜박이며 켜진다 */
+@keyframes projectorOn {
+  0% {
+    opacity: 0;
+  }
+  28% {
+    opacity: 0.75;
+  }
+  46% {
+    opacity: 0.4;
+  }
+  64%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* 타이틀 카드: 금색 작품명 + 안내 한 줄 */
+.titleCard {
+  position: absolute;
+  inset: 0 0 12cqh;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5cqh;
+  padding: 0 8cqw;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(4px);
+  animation: titleIn 320ms var(--title-at) ease-out forwards;
+}
+
+.title {
+  font-family: var(--font-sb-aggro);
+  font-size: clamp(20px, 7.6cqw, 40px);
+  line-height: 1.25;
+  color: #ffe7a3;
+  text-wrap: balance;
+  text-shadow: 0 0 28px rgba(255, 231, 163, 0.28);
+}
+
+.caption {
+  font-size: max(11px, 6.4cqh);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.66);
+  animation: captionIn 360ms ease-out both;
+}
+
+@keyframes captionIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:global(html[lang="ja"]) .title {
+  font-family: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  font-weight: 800;
+}
+
+/* 필름이 감기고 있다는 표시: 스크린 아래 가장자리의 스프로킷 구멍이 흐른다 */
+.sprockets {
+  position: absolute;
+  left: 0;
+  bottom: 4cqh;
+  width: 200%;
+  height: 2.6cqh;
+  background: repeating-linear-gradient(
+      90deg,
+      rgba(255, 231, 163, 0.16) 0 3cqh,
+      transparent 3cqh 9cqh
+    )
+    0 0 / 9cqh 100%;
+  border-radius: 1px;
+  opacity: 0;
+  animation:
+    fadeIn 300ms var(--title-at) forwards,
+    sprocketRun 1.2s linear infinite;
+}
+
+@keyframes sprocketRun {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-18cqh);
+  }
+}
+
+/* ---------- 영사기 빛줄기 ----------
+   영사기는 관객 뒤 위쪽: 화면 위 바깥의 좁은 점에서 출발해 스크린 윗모서리로 퍼진다.
+   스크린보다 앞, 좌석보다 뒤. 가장자리는 폭이 다른 사다리꼴 세 겹으로 부드럽게 한다. */
+.beam {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  /* 광원이 화면 위 바로 바깥에 오도록: 스크린 윗변(약 44vh − 스크린 절반)보다 조금 높게 */
+  height: 46vh;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: projectorOn 420ms var(--projector-at) steps(1, end) forwards;
+}
+
+/* 중심 사다리꼴: 광원 쪽이 밝고 스크린 쪽이 옅다. 빛살은 아주 약하게 */
+.beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  background:
+    repeating-conic-gradient(
+      from 160deg at 50% 0%,
+      rgba(255, 244, 214, 0.022) 0deg 0.6deg,
+      transparent 0.6deg 2.4deg
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 244, 214, 0.18),
+      rgba(255, 238, 200, 0.06)
+    );
+}
+
+/* 바깥 번짐: 조금 더 넓고 옅은 사다리꼴 */
+.beam::after {
+  content: "";
+  position: absolute;
+  inset: 0 -10%;
+  clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 244, 214, 0.06),
+    rgba(255, 238, 200, 0.015)
+  );
+}
+
+/* 빛 속에서 천천히 흐르는 연기(정적 노이즈를 transform으로만 움직인다) */
+.haze {
+  position: absolute;
+  z-index: 1;
+  left: 10%;
+  right: 10%;
+  top: -30%;
+  height: 160%;
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.03' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0.9 -0.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")
+    0 0 / 220px 220px;
+  opacity: 0.16;
+  animation: haze 9s linear infinite alternate;
+}
+
+@keyframes haze {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 12%, 0);
+  }
+}
+
+.dust {
+  position: absolute;
+  z-index: 2;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255, 240, 205, 0.75);
+  opacity: 0;
+  animation-name: dust;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes dust {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(14px, -26px);
+  }
+}
+
+/* 스크린이 내는 빛: 테두리 바깥으로 번지고 객석 바닥까지 닿는다 */
+.glow {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  border-radius: 3px;
+  box-shadow: 0 0 70px 12px rgba(120, 110, 210, 0.2);
+  opacity: 0;
+  animation: fadeIn 600ms var(--projector-at) ease-out forwards;
+  pointer-events: none;
+}
+
+/* ---------- 앞줄 좌석 (아래쪽) ---------- */
+.seats {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: min(28%, 240px);
+  fill: #04060c;
+  transform: translateY(100%);
+  animation: seatsUp 500ms 80ms cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes seatsUp {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 등받이·머리 윗선: 영사기가 켜지면 스크린 빛이 비친다 */
+.rim {
+  fill: none;
+  stroke: rgba(190, 205, 255, 0.42);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.25;
+  animation: fadeIn 600ms var(--projector-at) ease-out forwards;
+}
+
+/* ---------- 비네트 ---------- */
+.vignette {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 85% 75% at 50% 42%,
+    transparent 55%,
+    rgba(0, 0, 0, 0.6)
+  );
+  pointer-events: none;
+}
+
+.hint {
+  position: absolute;
+  z-index: 8;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  opacity: 0;
+  animation: fadeIn 240ms var(--hint-at) ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes titleIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- 개막: 스크린 속으로 들어가며 결과 페이지와 이어진다 ---------- */
+.overlay.revealing {
+  opacity: 1;
+  animation: overlayOut var(--reveal-ms) linear forwards;
+}
+
+.revealing .stage {
+  animation: pushIn var(--reveal-ms) cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+
+/* 스크린 면이 결과 페이지 배경색으로 바뀌어 이음매가 보이지 않게 */
+.revealing .screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: #0c1220;
+  animation: fadeIn var(--reveal-ms) ease-in both;
+}
+
+.revealing .seats {
+  animation: seatsAway var(--reveal-ms) cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+
+.revealing .hint {
+  animation: fadeOut 120ms forwards;
+}
+
+@keyframes overlayOut {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pushIn {
+  from {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(5.2);
+  }
+}
+
+@keyframes seatsAway {
+  from {
+    transform: translateY(0) scale(1);
+  }
+  to {
+    transform: translateY(60%) scale(1.3);
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* 모션 줄이기는 정책에서 연출 자체를 건너뛰지만, 혹시 그려지면 움직임 없이 타이틀만 보인다 */
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .overlay * {
+    animation: none !important;
+  }
+
+  .overlay,
+  .picture,
+  .titleCard,
+  .beam,
+  .glow {
+    opacity: 1;
+  }
+
+  .sprockets,
+  .haze,
+  .dust {
+    display: none;
+  }
+
+  .seats,
+  .sky {
+    transform: none;
+  }
+}
