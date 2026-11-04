@@ -24,7 +24,7 @@ interface SitemapPage {
 const PUBLIC_PAGES: SitemapPage[] = [
   {
     path: "/",
-    lastModified: "2026-10-13",
+    lastModified: "2026-11-04",
     changeFrequency: "weekly",
     priority: 1,
   },
@@ -36,7 +36,7 @@ const PUBLIC_PAGES: SitemapPage[] = [
   },
   {
     path: "/face-spoiler",
-    lastModified: "2026-10-13",
+    lastModified: "2026-11-04",
     changeFrequency: "weekly",
     priority: 0.9,
   },
@@ -79,6 +79,23 @@ const PUBLIC_PAGES: SitemapPage[] = [
   },
 ];
 
+/**
+ * 페이지 head의 hreflang(`buildAlternates`)과 같은 구성을 낸다. 여러 언어로 제공되는
+ * 페이지는 x-default(기본 로케일 URL)를 함께 싣고, 단일 언어 페이지는 그 언어만 싣는다.
+ */
+const buildSitemapLanguages = (
+  path: string,
+  pageLocales: readonly Locale[]
+): Record<string, string> => {
+  const languages: Record<string, string> = Object.fromEntries(
+    pageLocales.map((locale) => [locale, buildLocalizedUrl(path, locale)])
+  );
+  if (pageLocales.length > 1) {
+    languages["x-default"] = buildLocalizedUrl(path, defaultLocale);
+  }
+  return languages;
+};
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return PUBLIC_PAGES.map(
     ({
@@ -93,9 +110,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency,
       priority,
       alternates: {
-        languages: Object.fromEntries(
-          pageLocales.map((locale) => [locale, buildLocalizedUrl(path, locale)])
-        ),
+        languages: buildSitemapLanguages(path, pageLocales),
       },
     })
   );
