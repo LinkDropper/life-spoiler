@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { DailyShareCard, DailySharedActions } from "@/components/daily";
+import { formatDailyMonthDay } from "@/components/daily/format-date";
 import { HeaderClient } from "@/components/landing";
 import { isDailyError } from "@/libs/daily/errors";
 import { resolveKstDate } from "@/libs/daily/kst-date";
@@ -105,15 +106,24 @@ export default async function DailySharePage({
     <div className={styles.page}>
       <HeaderClient />
       <main className={styles.main}>
+        <div className={styles.intro}>
+          <p className={styles.episode}>
+            <span className={styles.episodeDot} aria-hidden="true" />
+            {t("episode", { date: formatDailyMonthDay(card.date, locale) })}
+          </p>
+          <h1 className={styles.heading}>{t("pageHeading")}</h1>
+        </div>
         <DailyShareCard
           date={card.date}
           headline={card.headline}
+          overallLevel={card.overallLevel}
           color={card.color}
           colorSlug={card.colorSlug}
           item={card.item}
           number={card.number}
           timeSlot={card.timeSlot}
         />
+        <p className={styles.note}>{t("note")}</p>
         <DailySharedActions
           referrerUserId={ref && UUID_REGEX.test(ref) ? ref : null}
         />

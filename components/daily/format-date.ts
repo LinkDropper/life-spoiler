@@ -9,3 +9,11 @@ export const formatDailyDate = (date: string, locale: string): string =>
     weekday: "long",
     timeZone: "UTC",
   }).format(new Date(`${date}T00:00:00Z`));
+
+/** KST 날짜(YYYY-MM-DD)를 "11월 5일"처럼 월·일만 (회차 표시용) */
+export const formatDailyMonthDay = (date: string, locale: string): string =>
+  new Intl.DateTimeFormat(locale, {
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${date}T00:00:00Z`));

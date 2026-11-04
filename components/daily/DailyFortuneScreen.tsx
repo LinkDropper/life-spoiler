@@ -12,6 +12,11 @@ import {
   trackDailyEvent,
   type DailyShareChannel,
 } from "@/libs/analytics";
+import {
+  formatCallSheetDate,
+  formatCallSheetWeekday,
+  getTimeUntilNextCall,
+} from "@/libs/daily/call-sheet";
 import { toKstDateString } from "@/libs/daily/kst-date";
 import { encodeShareToken, toShareKeys } from "@/libs/daily/share-token";
 import type { DailyFortuneView } from "@/libs/daily/types";
@@ -19,11 +24,9 @@ import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao } from "@/libs/kakao";
 import { useUser } from "@/libs/stores/user";
 
-import { DailyCategoryRow } from "./DailyCategoryRow";
 import { DailyShareCard } from "./DailyShareCard";
 import { DailyStars } from "./DailyStars";
 import { getColorSwatch } from "./color-swatch";
-import { formatDailyDate } from "./format-date";
 import styles from "./DailyFortuneScreen.module.css";
 
 /**
@@ -209,13 +212,6 @@ export const DailyFortuneScreen = ({
     }
   }, [downloadShareImage, trackShare]);
 
-  const handleCategoryExpand = (category: string) =>
-    trackDailyEvent("daily_category_expand", {
-      date,
-      category,
-      overall_level: overallLevel,
-    });
-
   const handleCtaClick = (ctaProduct: string) =>
     trackDailyEvent("daily_cta_click", {
       date,
@@ -225,17 +221,111 @@ export const DailyFortuneScreen = ({
 
   const handleToggleDetails = () => setIsDetailsOpen((prev) => !prev);
 
+  // 다음 콜시트(KST 자정)까지 남은 시간. 서버 렌더와 어긋나지 않게 마운트 뒤에 계산하고 1분마다 갱신한다
+  const [timeUntilNextCall, setTimeUntilNextCall] = useState<{
+    hours: number;
+    minutes: number;
+  } | null>(null);
+  useEffect(() => {
+    const update = () => setTimeUntilNextCall(getTimeUntilNextCall(new Date()));
+    update();
+    const timer = window.setInterval(update, 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   const colorSwatch = getColorSwatch(view.keywords.color.slug);
-  const keywordItems: { label: string; value: string; swatch?: string }[] = [
-    {
-      label: t("result.keywordColor"),
-      value: view.keywords.color.label,
-      swatch: colorSwatch,
-    },
-    { label: t("result.keywordItem"), value: view.keywords.item.label },
-    { label: t("result.keywordNumber"), value: String(view.keywords.number) },
-    { label: t("result.keywordTime"), value: view.keywords.timeSlot.label },
-  ];
+  const callSheetDate = `${formatCallSheetDate(view.date)} ${formatCallSheetWeekday(view.date, locale)}`;
+
+  const renderCallSheet = () => (
+    <div className={styles.sheetStage}>
+      <span className={styles.sheetGlow} aria-hidden="true" />
+      <span className={styles.clip} aria-hidden="true" />
+      <article className={styles.sheet} aria-labelledby="daily-title">
+        <div className={styles.sheetHead}>
+          <span className={styles.sheetMark}>{t("result.callSheet.mark")}</span>
+          <span className={styles.sheetDate}>{callSheetDate}</span>
+        </div>
+
+        <div className={styles.titleBlock}>
+          <span className={styles.titleLabel}>
+            {t("result.callSheet.titleLabel")}
+          </span>
+          <h2 id="daily-title" className={styles.dayTitle}>
+            {view.stick.text}
+          </h2>
+          <span className={styles.lead}>
+            {t("result.callSheet.lead")} <b>{name}</b>
+          </span>
+        </div>
+
+        <dl className={styles.cells}>
+          <div className={styles.cell}>
+            <dt className={styles.monoLabel}>{t("result.callSheet.scene")}</dt>
+            <dd className={styles.sceneValue}>
+              {t("result.callSheet.sceneValue", {
+                number: view.keywords.number,
+              })}
+            </dd>
+          </div>
+          <div className={styles.cell}>
+            <dt className={styles.monoLabel}>
+              {t("result.callSheet.callTime")}
+            </dt>
+            <dd className={styles.cellValue}>{view.keywords.timeSlot.label}</dd>
+          </div>
+          <div className={styles.cell}>
+            <dt className={styles.monoLabel}>{t("category.overall")}</dt>
+            <dd className={styles.cellValue}>
+              <DailyStars
+                level={view.overall.level}
+                layout="stacked"
+                tone="paper"
+              />
+            </dd>
+          </div>
+        </dl>
+
+        <section className={styles.sheetSection}>
+          <h3 className={styles.monoLabel}>{t("result.callSheet.synopsis")}</h3>
+          <p className={styles.headline}>{view.headline.text}</p>
+          <p className={styles.synopsis}>{view.overall.text}</p>
+        </section>
+
+        <section className={styles.sheetSection}>
+          <h3 className={styles.monoLabel}>{t("result.callSheet.props")}</h3>
+          <dl className={styles.propGrid}>
+            <div className={styles.propBox}>
+              <dt className={styles.propLabel}>{t("result.callSheet.prop")}</dt>
+              <dd className={styles.propValue}>{view.keywords.item.label}</dd>
+            </div>
+            <div className={styles.propBox}>
+              <dt className={styles.propLabel}>
+                {t("result.callSheet.wardrobe")}
+              </dt>
+              <dd className={styles.propValue}>
+                {colorSwatch && (
+                  <span
+                    className={styles.swatch}
+                    style={{ backgroundColor: colorSwatch }}
+                    aria-hidden="true"
+                  />
+                )}
+                {view.keywords.color.label}
+              </dd>
+            </div>
+          </dl>
+          <p className={styles.propReason}>{view.keywords.reason.text}</p>
+        </section>
+
+        <div className={styles.sheetFoot}>
+          <span>{t("result.callSheet.nextCall")}</span>
+          {timeUntilNextCall && (
+            <span>{t("result.callSheet.remaining", timeUntilNextCall)}</span>
+          )}
+        </div>
+      </article>
+    </div>
+  );
 
   const renderBody = () => {
     if (status === "error") {
@@ -255,22 +345,6 @@ export const DailyFortuneScreen = ({
 
     return (
       <>
-        <section
-          className={styles.headlineCard}
-          aria-labelledby="daily-headline"
-        >
-          <p className={styles.greeting}>
-            {t("result.greeting", {
-              date: formatDailyDate(view.date, locale),
-              name,
-            })}
-          </p>
-          <h2 id="daily-headline" className={styles.headlineLabel}>
-            {t("result.headlineLabel")}
-          </h2>
-          <p className={styles.headline}>{view.headline.text}</p>
-        </section>
-
         {view.confidence === "estimated" && (
           <div className={styles.notice}>
             <p className={styles.noticeText}>{t("result.timeUnknownNotice")}</p>
@@ -288,108 +362,103 @@ export const DailyFortuneScreen = ({
           </div>
         )}
 
-        <section className={styles.card} aria-labelledby="daily-overall">
-          <div className={styles.overallHeader}>
-            <h2 id="daily-overall" className={styles.cardTitle}>
-              {t("category.overall")}
-            </h2>
-            <DailyStars level={view.overall.level} />
-          </div>
-          <p className={styles.bodyText}>{view.overall.text}</p>
-          {view.variable && (
-            <p className={styles.variableText}>
-              <span className={styles.variableLabel}>
-                {t("result.variableLabel")}
-              </span>
-              {view.variable.text}
-            </p>
-          )}
-        </section>
+        {renderCallSheet()}
 
-        <section
-          className={styles.card}
-          aria-label={t("result.categoryListLabel")}
-        >
-          <p className={styles.hint}>{t("result.categoryToggleHint")}</p>
-          <ul className={styles.categoryList}>
+        <section className={styles.panel} aria-labelledby="daily-cast">
+          <h2 id="daily-cast" className={styles.panelLabel}>
+            {t("result.callSheet.cast")}
+          </h2>
+          <ul className={styles.castList}>
             {view.categories.map((result) => (
-              <DailyCategoryRow
-                key={`${view.date}-${result.category}`}
-                result={result}
-                onExpand={handleCategoryExpand}
-              />
+              <li key={result.category} className={styles.castRow}>
+                <span className={styles.castName}>
+                  {t(`category.${result.category}`)}
+                </span>
+                <DailyStars level={result.level} />
+                <p className={styles.castText}>{result.text}</p>
+              </li>
             ))}
           </ul>
         </section>
 
-        <section className={styles.card} aria-labelledby="daily-keywords">
-          <h2 id="daily-keywords" className={styles.cardTitle}>
-            {t("result.keywordsTitle")}
+        <section className={styles.panel} aria-labelledby="daily-notes">
+          <h2 id="daily-notes" className={styles.panelLabel}>
+            {t("result.callSheet.notes")}
           </h2>
-          <dl className={styles.keywordGrid}>
-            {keywordItems.map(({ label, value, swatch }) => (
-              <div key={label} className={styles.keywordChip}>
-                <dt className={styles.keywordLabel}>{label}</dt>
-                <dd className={styles.keywordValue}>
-                  {swatch && (
-                    <span
-                      className={styles.swatch}
-                      style={{ backgroundColor: swatch }}
-                      aria-hidden="true"
-                    />
-                  )}
-                  <span>{value}</span>
-                </dd>
-              </div>
-            ))}
+          <dl className={styles.notes}>
+            {view.variable && (
+              <>
+                <dt className={styles.noteLabel}>
+                  {t("result.callSheet.noteVariable")}
+                </dt>
+                <dd className={styles.noteText}>{view.variable.text}</dd>
+              </>
+            )}
+            <dt className={`${styles.noteLabel} ${styles.noteCaution}`}>
+              {t("result.callSheet.noteCaution")}
+            </dt>
+            <dd className={styles.noteText}>{view.caution.text}</dd>
+            <dt className={styles.noteLabel}>
+              {t("result.callSheet.noteTip")}
+            </dt>
+            <dd className={`${styles.noteText} ${styles.noteTip}`}>
+              {view.tip.text}
+            </dd>
           </dl>
-          <p className={styles.bodyText}>{view.keywords.reason.text}</p>
         </section>
 
-        <section className={styles.card} aria-labelledby="daily-caution">
-          <h2 id="daily-caution" className={styles.cardTitle}>
-            {t("result.cautionTitle")}
-          </h2>
-          <p className={styles.bodyText}>{view.caution.text}</p>
-        </section>
+        <button
+          type="button"
+          className={styles.shareButton}
+          onClick={handleOpenShare}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {t("result.callSheet.share")}
+        </button>
 
-        <section className={styles.card} aria-labelledby="daily-tip">
-          <h2 id="daily-tip" className={styles.cardTitle}>
-            {t("result.tipTitle")}
-          </h2>
-          <p className={styles.bodyText}>{view.tip.text}</p>
-        </section>
-
-        <section className={styles.ctaCard}>
+        <section className={styles.next} aria-labelledby="daily-next">
           {view.cta.product === "lifetime" ? (
             <>
-              <h2 className={styles.ctaTitle}>
+              <h2 id="daily-next" className={styles.nextTitle}>
                 {t("result.ctaLifetimeTitle")}
               </h2>
-              <p className={styles.ctaBody}>{t("result.ctaLifetimeBody")}</p>
-              <Link
-                href={`/fortune/lifetime/preview/${profileId}`}
-                className={styles.ctaButton}
-                onClick={() => handleCtaClick("lifetime")}
-              >
-                {t("result.ctaLifetimeButton")}
-              </Link>
+              <p className={styles.nextBody}>{t("result.ctaLifetimeBody")}</p>
+              <div className={styles.nextButtons}>
+                <Link
+                  href={`/fortune/lifetime/preview/${profileId}`}
+                  className={styles.nextButton}
+                  onClick={() => handleCtaClick("lifetime")}
+                >
+                  {t("result.ctaLifetimeButton")}
+                </Link>
+              </div>
             </>
           ) : (
             <>
-              <h2 className={styles.ctaTitle}>{t("result.ctaPaidTitle")}</h2>
-              <p className={styles.ctaBody}>{t("result.ctaPaidBody")}</p>
-              <div className={styles.ctaButtons}>
+              <h2 id="daily-next" className={styles.nextTitle}>
+                {t("result.ctaPaidTitle")}
+              </h2>
+              <p className={styles.nextBody}>{t("result.ctaPaidBody")}</p>
+              <div className={styles.nextButtons}>
                 <Link
                   href="/profiles?type=yearly"
-                  className={styles.ctaButton}
+                  className={styles.nextButton}
                   onClick={() => handleCtaClick("yearly")}
                 >
                   {t("result.ctaYearlyButton")}
                 </Link>
                 <Link
                   href="/compatibility"
-                  className={styles.ctaButton}
+                  className={styles.nextButton}
                   onClick={() => handleCtaClick("compatibility")}
                 >
                   {t("result.ctaCompatibilityButton")}
@@ -398,14 +467,6 @@ export const DailyFortuneScreen = ({
             </>
           )}
         </section>
-
-        <button
-          type="button"
-          className={styles.shareButton}
-          onClick={handleOpenShare}
-        >
-          {t("result.share")}
-        </button>
 
         <footer className={styles.footer}>
           <p className={styles.disclaimer}>{t("result.disclaimer")}</p>
@@ -481,6 +542,7 @@ export const DailyFortuneScreen = ({
             ref={shareCardRef}
             date={view.date}
             headline={view.headline.text}
+            overallLevel={view.overall.level}
             color={view.keywords.color.label}
             colorSlug={view.keywords.color.slug}
             item={view.keywords.item.label}
