@@ -14,8 +14,7 @@ interface TodayCardProps {
 
 /**
  * 오늘의 운세 진입 (KO만 — 문구 사전이 KO뿐이라 호출부가 분기한다).
- * 결과 문장은 홈에서 미리 보여 주지 않는다. 오늘의 운세는 산통을 직접 뽑아야
- * 결과가 드러나는 구조라(specs/daily-fortune.md) 미리 보여 주면 그 경험을 망친다.
+ * 결과 문장은 홈에서 미리 보여 주지 않고, 오늘의 운세 화면에서 확인하게 한다.
  */
 export const TodayCard = ({ profile, onClick }: TodayCardProps) => {
   const t = useTranslations("home.today");
