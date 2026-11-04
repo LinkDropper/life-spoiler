@@ -1360,6 +1360,57 @@
           },
           "effectiveDate": "본 방침은 2026년 4월 9일부터 적용됩니다."
         }
+      },
+      "landing": {
+        "ariaLabel": "관상스포 안내",
+        "howTitle": "이렇게 진행돼요",
+        "steps": [
+          {
+            "title": "정면 사진 한 장 올리기",
+            "body": "로그인한 뒤 얼굴이 선명하게 나온 정면 사진을 올려요. 한 명만 나온 사진이어야 하고, 얼굴 각도가 많이 틀어져 있으면 다시 요청드려요."
+          },
+          {
+            "title": "무료 예고편 확인하기",
+            "body": "첫인상, 지금의 분위기, 부위별 관상, 닮은 동물상을 먼저 무료로 보여드려요."
+          },
+          {
+            "title": "990원으로 본편 열기",
+            "body": "재물운, 연애운, 잘 어울리는 직업, 화났을 때 특징, 종합 평가까지 담긴 5,000자 이상의 리포트와 나만의 관상 캐릭터 일러스트를 받아요."
+          }
+        ],
+        "contentsTitle": "본편 리포트에 담기는 것",
+        "contents": [
+          "첫인상과 사람들이 오해하기 쉬운 점",
+          "성향과 숨은 매력",
+          "재물운·연애운·잘 어울리는 직업",
+          "겉과 속의 차이, 반전 매력 활용법",
+          "잘 맞는 사람과 궁합 동물상",
+          "조심해야 할 관상과 대처법",
+          "이번 주에 해볼 작은 행동"
+        ],
+        "animalsTitle": "12가지 동물상 중 나는?",
+        "animalsBody": "강아지상, 고양이상, 여우상, 사슴상, 토끼상, 곰상, 호랑이상, 늑대상, 사자상, 판다상, 독수리상, 너구리상 가운데 가장 닮은 동물상을 찾아드려요. 본편에서는 왜 그 동물상인지 매칭 근거까지 알려드려요.",
+        "privacyTitle": "사진은 저장하지 않아요",
+        "privacyBody": "업로드한 사진은 분석 직후 즉시 삭제되며, 서버에 저장되지 않습니다. 본인 사진만 올릴 수 있어요.",
+        "faqTitle": "자주 묻는 질문",
+        "faq": [
+          {
+            "q": "사진은 어디에 저장되나요?",
+            "a": "업로드한 사진은 분석 직후 즉시 삭제되며, 서버에 저장되지 않아요."
+          },
+          {
+            "q": "얼마인가요?",
+            "a": "부위별 관상과 동물상을 담은 예고편은 무료예요. 재물운·연애운·직업까지 담긴 본편 리포트는 990원이에요."
+          },
+          {
+            "q": "어떤 사진을 올려야 하나요?",
+            "a": "얼굴이 선명하게 나온 정면 사진이 좋아요. 여러 명이 함께 나온 사진, 얼굴이 많이 기울어진 사진, 해상도가 낮은 사진은 분석할 수 없어요. 파일 크기는 10MB 이하여야 해요."
+          },
+          {
+            "q": "결과를 믿어도 되나요?",
+            "a": "관상스포 리포트는 얼굴 부위를 관찰한 AI 해석으로 만든 엔터테인먼트 콘텐츠예요. 재미로 참고하시고, 중요한 판단은 본인의 생각을 우선해 주세요."
+          }
+        ]
       }
     },
     "universe": {
@@ -3201,6 +3252,57 @@
           },
           "effectiveDate": "This policy is effective from April 9, 2026."
         }
+      },
+      "landing": {
+        "ariaLabel": "About Face Spoiler",
+        "howTitle": "How it works",
+        "steps": [
+          {
+            "title": "Upload one front-facing photo",
+            "body": "Sign in and upload a clear, front-facing photo of your face. Only one person should be in the photo, and we will ask for another one if your face is turned too far."
+          },
+          {
+            "title": "See the free preview",
+            "body": "Your first impression, current vibe, feature-by-feature reading and closest animal type are shown for free first."
+          },
+          {
+            "title": "Unlock the full report for $0.99",
+            "body": "Get a 5,000+ character report covering wealth, love, careers that suit you, how you act when angry and an overall evaluation, plus your own face-reading character illustration."
+          }
+        ],
+        "contentsTitle": "What the full report covers",
+        "contents": [
+          "Your first impression and how people tend to misread you",
+          "Your personality and hidden charms",
+          "Wealth, love and careers that suit you",
+          "The gap between your outer and inner self, and how to use it",
+          "People who suit you and your compatible animal type",
+          "Face types to watch out for and how to handle them",
+          "Small actions to try this week"
+        ],
+        "animalsTitle": "Which of the 12 animal types are you?",
+        "animalsBody": "We find the animal type you resemble most among dog, cat, fox, deer, rabbit, bear, tiger, wolf, lion, panda, eagle and raccoon. The full report also explains why you matched that type.",
+        "privacyTitle": "We don't store your photo",
+        "privacyBody": "Your photo is deleted right after analysis and is never stored on our servers. You can only upload a photo of yourself.",
+        "faqTitle": "Frequently asked questions",
+        "faq": [
+          {
+            "q": "Where is my photo stored?",
+            "a": "It isn't. Your photo is deleted right after analysis and is never stored on our servers."
+          },
+          {
+            "q": "How much does it cost?",
+            "a": "The preview with your feature-by-feature reading and animal type is free. The full report, including wealth, love and career, is $0.99."
+          },
+          {
+            "q": "What kind of photo should I upload?",
+            "a": "A clear, front-facing photo works best. Photos with several people, a strongly tilted face or low resolution can't be analyzed. The file must be 10MB or smaller."
+          },
+          {
+            "q": "Can I trust the results?",
+            "a": "Face Spoiler reports are entertainment content made from an AI reading of your facial features. Enjoy them for fun and rely on your own judgment for important decisions."
+          }
+        ]
       }
     },
     "universe": {
@@ -5050,6 +5152,57 @@
           },
           "effectiveDate": "本方針は2026年4月9日から適用されます。"
         }
+      },
+      "landing": {
+        "ariaLabel": "観相スポイラーのご案内",
+        "howTitle": "ご利用の流れ",
+        "steps": [
+          {
+            "title": "正面の写真を1枚アップロード",
+            "body": "ログイン後、顔がはっきり写った正面の写真をアップロードします。写っているのは1人だけにしてください。顔の角度が大きくずれている場合は、撮り直しをお願いすることがあります。"
+          },
+          {
+            "title": "無料の予告編を確認",
+            "body": "第一印象、今の雰囲気、パーツ別の観相、似ている動物タイプをまず無料でお見せします。"
+          },
+          {
+            "title": "$0.99で本編を開く",
+            "body": "金運、恋愛運、向いている仕事、怒ったときの特徴、総合評価まで含む5,000文字以上のレポートと、あなただけの観相キャラクターイラストが届きます。"
+          }
+        ],
+        "contentsTitle": "本編レポートの内容",
+        "contents": [
+          "第一印象と誤解されやすいポイント",
+          "性格と隠れた魅力",
+          "金運・恋愛運・向いている仕事",
+          "外見と内面のギャップと、その活かし方",
+          "相性の良い人と相性の良い動物タイプ",
+          "気をつけたい観相とその対処法",
+          "今週試したい小さな行動"
+        ],
+        "animalsTitle": "12の動物タイプのうち、あなたは？",
+        "animalsBody": "イヌ顔、ネコ顔、キツネ顔、シカ顔、ウサギ顔、クマ顔、トラ顔、オオカミ顔、ライオン顔、パンダ顔、ワシ顔、タヌキ顔の中から、いちばん似ている動物タイプを見つけます。本編では、その動物タイプになった根拠もお伝えします。",
+        "privacyTitle": "写真は保存しません",
+        "privacyBody": "アップロードした写真は分析後すぐに削除され、サーバーには保存されません。アップロードできるのはご本人の写真だけです。",
+        "faqTitle": "よくある質問",
+        "faq": [
+          {
+            "q": "写真はどこに保存されますか？",
+            "a": "アップロードした写真は分析後すぐに削除され、サーバーには保存されません。"
+          },
+          {
+            "q": "料金はいくらですか？",
+            "a": "パーツ別の観相と動物タイプがわかる予告編は無料です。金運・恋愛運・仕事まで含む本編レポートは$0.99です。"
+          },
+          {
+            "q": "どんな写真をアップロードすればいいですか？",
+            "a": "顔がはっきり写った正面の写真がおすすめです。複数人が写っている写真、顔が大きく傾いている写真、解像度の低い写真は分析できません。ファイルサイズは10MB以下にしてください。"
+          },
+          {
+            "q": "結果を信じてもいいですか？",
+            "a": "観相スポイラーのレポートは、顔のパーツをAIが読み解いて作るエンターテインメントコンテンツです。楽しみとして参考にしていただき、重要な判断はご自身の考えを優先してください。"
+          }
+        ]
       }
     },
     "universe": {
