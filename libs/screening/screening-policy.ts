@@ -2,34 +2,15 @@
  * "상영관 입장" 전환을 언제 보여 줄지 정한다.
  * 근거: designer·growth-strategist 검토(2026-11-04), docs/home-redesign-2026-11.md §8
  *
- * - 연출은 약식 한 가지뿐이다(2026-11-04 사용자 결정: 풀버전·카운트다운 없앰).
- *   결과가 이미 준비돼 있으면 일부러 붙잡지 않고, 입장이 끝나는 대로 스크린 속으로 들어간다.
- * - 관람권(다음 상영작)은 누를 때마다(찢김과 함께) 약식을 보여 준다.
- * - 본편 다시 보기·상영 시간표는 자주 누르므로(홈 방문자 73%가 재방문 소장자) 세션 첫 회만 약식, 이후 바로 이동.
- * - 운세 예고편·본편이 아닌 곳으로 가면 쓰지 않는다(isScreeningDestination).
+ * - 운세를 보러 가는 모든 이동(예고편·본편·오늘의 운세·궁합 결과)에 항상 같은 상영관 로딩을 쓴다
+ *   (2026-11-05 사용자 결정). 진입점·횟수에 따라 연출을 빼지 않는다 — 빼면 결과 페이지의 예전 로딩이 보였다.
+ * - 연출은 약식 한 가지뿐이다. 결과가 이미 준비돼 있으면 일부러 붙잡지 않는다.
+ * - 운세 결과가 아닌 곳(공유 페이지·궁합 입력·관상 목록·프로필·결제 등)에는 쓰지 않는다(isScreeningDestination).
  */
 
-export type ScreeningEntry = "ticket" | "hero" | "timetable";
-export type ScreeningVariant = "short" | "none";
-
-export interface ScreeningEnvironment {
-  /** 이 세션에서 상영 전환을 한 번이라도 봤는가 (sessionStorage) */
-  hasScreenedThisSession: boolean;
-  prefersReducedMotion: boolean;
-}
-
-export const decideScreeningVariant = (
-  entry: ScreeningEntry,
-  env: ScreeningEnvironment
-): ScreeningVariant => {
-  if (env.prefersReducedMotion) {
-    return "none";
-  }
-  if (entry === "ticket") {
-    return "short";
-  }
-  return env.hasScreenedThisSession ? "none" : "short";
-};
+/** ticket: 관람권(찢김 뒤) · link: 앱 안의 운세 링크 클릭 · arrival: 코드 이동·새로고침 등으로 도착한 뒤 로딩이 뜬 경우 */
+export type ScreeningEntry = "ticket" | "link" | "arrival";
+export type ScreeningVariant = "short";
 
 /**
  * 상영관 입장은 고정 타임라인이 아니라 단계(phase)로 진행한다. 이 전환은 결과 페이지 로딩을 대신하므로
@@ -92,21 +73,58 @@ export const WAITING_MESSAGE_INTERVAL_MS = 2800;
 export const LONG_WAIT_MESSAGE_AFTER_MS = 10000;
 
 /**
- * 상영관 입장은 운세 미리보기(예고편)·본문(본편)으로 갈 때만 쓴다(2026-11-04 사용자 결정).
- * 그 밖의 로딩(오늘의 운세, 공유 페이지, 궁합 입력, 관상 목록, 프로필, 결제 등)에는 쓰지 않는다.
+ * 상영관 입장은 운세를 보러 갈 때만 쓴다(2026-11-04·05 사용자 결정).
+ * 그 밖의 로딩(공유 페이지, 궁합 입력, 관상 목록, 프로필, 결제 등)에는 쓰지 않는다.
  *   /fortune/{lifetime|yearly|past-life|yearly_2027}/{id}          본편
  *   /fortune/{lifetime|yearly|past-life|yearly_2027}/preview/{id}  예고편
+ *   /fortune/daily/{id}                                             오늘의 운세
  *   /compatibility/{id}/fortune/{preview|result}                    궁합 예고편·본편
  */
-const SCREENING_DESTINATIONS = [
-  /^\/fortune\/(lifetime|yearly|past-life|yearly_2027)\/(preview\/)?[^/]+$/,
-  /^\/compatibility\/[^/]+\/fortune\/(preview|result)$/,
-];
+const FORTUNE_DESTINATION =
+  /^\/fortune\/(lifetime|yearly|past-life|yearly_2027|daily)\/(preview\/)?[^/]+$/;
+const COMPATIBILITY_DESTINATION =
+  /^\/compatibility\/[^/]+\/fortune\/(preview|result)$/;
 
-export const isScreeningDestination = (href: string): boolean => {
-  const pathname = toPathname(href);
-  return SCREENING_DESTINATIONS.some((pattern) => pattern.test(pathname));
+/** 스크린에 띄울 작품: 어떤 운세인지(home.{kind}.title, 오늘의 운세는 daily.home.title)와 예고편인지 */
+export type ScreeningFortuneKind =
+  | "lifetime"
+  | "yearly"
+  | "pastLife"
+  | "yearly2027"
+  | "daily"
+  | "compatibility";
+
+export interface ScreeningDestination {
+  kind: ScreeningFortuneKind;
+  isPreview: boolean;
+}
+
+const SEGMENT_KINDS: Record<string, ScreeningFortuneKind> = {
+  lifetime: "lifetime",
+  yearly: "yearly",
+  "past-life": "pastLife",
+  yearly_2027: "yearly2027",
+  daily: "daily",
 };
+
+/** 운세를 보러 가는 경로면 어떤 운세인지, 아니면 null */
+export const parseScreeningDestination = (
+  href: string
+): ScreeningDestination | null => {
+  const pathname = toPathname(href);
+  const fortune = pathname.match(FORTUNE_DESTINATION);
+  if (fortune) {
+    return { kind: SEGMENT_KINDS[fortune[1]], isPreview: !!fortune[2] };
+  }
+  const compatibility = pathname.match(COMPATIBILITY_DESTINATION);
+  if (compatibility) {
+    return { kind: "compatibility", isPreview: compatibility[1] === "preview" };
+  }
+  return null;
+};
+
+export const isScreeningDestination = (href: string): boolean =>
+  parseScreeningDestination(href) !== null;
 
 /** 경로 비교용: 쿼리·해시를 뗀 pathname */
 export const toPathname = (href: string): string =>
