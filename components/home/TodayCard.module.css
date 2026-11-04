@@ -36,7 +36,7 @@
   gap: 10px;
   font-size: 13px;
   font-weight: 700;
-  color: var(--cinema-spoiler);
+  color: var(--cinema-star);
   white-space: nowrap;
 }
 
@@ -47,7 +47,7 @@
 
 @media (hover: hover) {
   .card:hover {
-    border-color: var(--cinema-spoiler);
+    border-color: var(--cinema-accent);
   }
 }
 

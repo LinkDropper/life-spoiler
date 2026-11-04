@@ -66,7 +66,7 @@
 }
 
 .free {
-  color: var(--cinema-spoiler);
+  color: var(--cinema-star);
 }
 
 .chevron {
@@ -76,7 +76,7 @@
 
 @media (hover: hover) {
   .row:hover .name {
-    color: var(--cinema-spoiler);
+    color: var(--cinema-accent);
   }
 }
 

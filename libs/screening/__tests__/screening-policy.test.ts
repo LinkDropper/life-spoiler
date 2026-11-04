@@ -1,42 +1,11 @@
 import {
   SCREENING_TIMELINE,
-  decideScreeningVariant,
   getMinimumScreeningMs,
   isScreeningDestination,
+  parseScreeningDestination,
   isPlainLeftClick,
   toPathname,
 } from "../screening-policy";
-
-const env = (overrides = {}) => ({
-  hasScreenedThisSession: false,
-  prefersReducedMotion: false,
-  ...overrides,
-});
-
-describe("decideScreeningVariant", () => {
-  it("모션 줄이기면 어떤 진입이든 연출 없음", () => {
-    expect(
-      decideScreeningVariant("ticket", env({ prefersReducedMotion: true }))
-    ).toBe("none");
-    expect(
-      decideScreeningVariant("hero", env({ prefersReducedMotion: true }))
-    ).toBe("none");
-  });
-
-  it("관람권은 누를 때마다 약식", () => {
-    expect(decideScreeningVariant("ticket", env())).toBe("short");
-    expect(
-      decideScreeningVariant("ticket", env({ hasScreenedThisSession: true }))
-    ).toBe("short");
-  });
-
-  it("본편 다시 보기·시간표는 세션 첫 회만 약식, 이후 바로 이동", () => {
-    expect(decideScreeningVariant("hero", env())).toBe("short");
-    expect(
-      decideScreeningVariant("timetable", env({ hasScreenedThisSession: true }))
-    ).toBe("none");
-  });
-});
 
 describe("SCREENING_TIMELINE", () => {
   it("준비가 바로 끝나면 1.2초 안에 끝난다 (일부러 붙잡지 않는다)", () => {
@@ -102,7 +71,6 @@ describe("isScreeningDestination", () => {
   });
 
   it("그 밖의 로딩 화면에는 쓰지 않는다", () => {
-    expect(isScreeningDestination("/fortune/daily/abc")).toBe(false);
     expect(isScreeningDestination("/fortune/lifetime/share/abc")).toBe(false);
     expect(isScreeningDestination("/compatibility")).toBe(false);
     expect(isScreeningDestination("/compatibility/abc/fortune/share")).toBe(
@@ -111,5 +79,34 @@ describe("isScreeningDestination", () => {
     expect(isScreeningDestination("/face-spoiler/profiles")).toBe(false);
     expect(isScreeningDestination("/profile/setup")).toBe(false);
     expect(isScreeningDestination("/universe/create")).toBe(false);
+  });
+});
+
+describe("오늘의 운세·작품 판별", () => {
+  it("오늘의 운세도 운세를 보러 가는 이동이다", () => {
+    expect(isScreeningDestination("/fortune/daily/abc")).toBe(true);
+  });
+
+  it("경로에서 어떤 운세인지, 예고편인지 알아낸다", () => {
+    expect(parseScreeningDestination("/fortune/yearly/preview/abc")).toEqual({
+      kind: "yearly",
+      isPreview: true,
+    });
+    expect(parseScreeningDestination("/fortune/past-life/abc?tab=1")).toEqual({
+      kind: "pastLife",
+      isPreview: false,
+    });
+    expect(parseScreeningDestination("/fortune/yearly_2027/abc")).toEqual({
+      kind: "yearly2027",
+      isPreview: false,
+    });
+    expect(parseScreeningDestination("/fortune/daily/abc")).toEqual({
+      kind: "daily",
+      isPreview: false,
+    });
+    expect(
+      parseScreeningDestination("/compatibility/abc/fortune/preview")
+    ).toEqual({ kind: "compatibility", isPreview: true });
+    expect(parseScreeningDestination("/payment/lifetime/abc")).toBeNull();
   });
 });

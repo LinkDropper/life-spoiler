@@ -11,7 +11,7 @@ import {
 
 import { NightSkyArt } from "@/components/landing/cinema/NightSkyArt";
 
-import { getLoadedTheater } from "./theater-loader";
+import { getLoadedTheater, loadTheater } from "./theater-loader";
 
 import styles from "./ScreeningOverlay.module.css";
 
@@ -48,6 +48,9 @@ const SEATS = [
   [370, false],
 ] as const;
 const SEAT_WIDTH = 60;
+
+/** 3D 상영관을 아직 못 받았을 때 어두운 객석에서 기다리는 최대 시간 — 넘으면 CSS 장면 */
+const THEATER_LOAD_WAIT_MS = 1200;
 
 /** 기다림이 길어질 때 차례로 바꿔 보여 줄 안내 (screening.waiting.*) */
 const WAITING_MESSAGES = ["threading", "chart", "soon"] as const;
@@ -145,9 +148,36 @@ export const ScreeningOverlay = ({
     messageKey === "preparing" ? t("preparing") : t(`waiting.${messageKey}`);
 
   // 3D 장면은 전환이 시작될 때 이미 받아져 있을 때만 쓴다(도중에 바꿔 끼우지 않는다)
-  const [mode, setMode] = useState<"3d" | "css">(() =>
-    screening.allow3D && getLoadedTheater() ? "3d" : "css"
-  );
+  // 3D가 기본. 아직 못 받았으면 같은 어두운 객석(pending)에서 잠깐 기다렸다가 3D로 —
+  // 진입점·타이밍에 따라 CSS 장면과 3D가 번갈아 보이지 않게 한다. 저사양·모션 줄이기만 CSS.
+  const [mode, setMode] = useState<"3d" | "css" | "pending">(() => {
+    if (!screening.allow3D) {
+      return "css";
+    }
+    return getLoadedTheater() ? "3d" : "pending";
+  });
+
+  useEffect(() => {
+    if (mode !== "pending") {
+      return;
+    }
+    let isCancelled = false;
+    const fallback = setTimeout(() => {
+      if (!isCancelled) {
+        setMode("css");
+      }
+    }, THEATER_LOAD_WAIT_MS);
+    loadTheater().then((theater) => {
+      if (!isCancelled) {
+        clearTimeout(fallback);
+        setMode(theater ? "3d" : "css");
+      }
+    });
+    return () => {
+      isCancelled = true;
+      clearTimeout(fallback);
+    };
+  }, [mode]);
   const [isCanvasReady, setIsCanvasReady] = useState(false);
   const canvasHostRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<TheaterScene | null>(null);
@@ -210,7 +240,7 @@ export const ScreeningOverlay = ({
     "--hint-at": `${timeline.hintAt}ms`,
   } as CSSProperties;
 
-  if (mode === "3d") {
+  if (mode === "3d" || mode === "pending") {
     return createPortal(
       <div
         className={[styles.overlay, styles.overlay3d, styles[phase]]

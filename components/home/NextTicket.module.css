@@ -19,7 +19,7 @@
   font-weight: var(--cinema-display-weight);
   font-size: 32px;
   line-height: 1.1;
-  color: var(--cinema-spoiler);
+  color: var(--cinema-accent);
 }
 
 .proof {

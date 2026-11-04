@@ -56,5 +56,5 @@
 }
 
 .line:last-child {
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
 }

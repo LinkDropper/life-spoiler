@@ -46,7 +46,7 @@
   padding: 0 4px;
   font-size: 14px;
   font-weight: 500;
-  color: #ffccd9;
+  color: var(--color-text-accent, #ff8fb1);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -323,7 +323,7 @@
   padding: 0 4px;
   border: none;
   background: transparent;
-  color: #ffccd9;
+  color: var(--color-text-accent, #ff8fb1);
   font-family: var(--font-pretendard), sans-serif;
   font-size: 13px;
   text-decoration: underline;
@@ -364,4 +364,25 @@
   width: 360px;
   opacity: 0;
   pointer-events: none;
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+@media (hover: hover) {
+  .ctaCard:hover:not(:disabled) {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+}
+
+.ctaCard:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
+}
+
+@media (hover: hover) {
+  .primaryButton:hover:not(:disabled) {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+}
+
+.primaryButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

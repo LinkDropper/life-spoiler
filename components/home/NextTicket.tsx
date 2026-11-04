@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { preloadTheater, useScreening } from "@/components/screening";
+import {
+  SCREENING_MANUAL_ATTRIBUTE,
+  preloadTheater,
+  useScreening,
+} from "@/components/screening";
 import { isPlainLeftClick } from "@/libs/screening/screening-policy";
 
 import {
@@ -110,6 +114,8 @@ export const NextTicket = ({
 
       <Link
         href={href}
+        // 찢김을 보여 준 뒤 직접 상영을 시작하므로 전역 링크 가로채기에서 뺀다
+        {...{ [SCREENING_MANUAL_ATTRIBUTE]: "" }}
         className={[
           styles.ticket,
           tearState === "tearing" ? styles.tearing : "",

@@ -6,7 +6,6 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { DecadeCounter } from "@/components/landing/cinema/DecadeCounter";
 import { FilmFrameStill } from "@/components/landing/cinema/FilmFrameStill";
-import { useScreeningLink } from "@/components/screening";
 import {
   DEFAULT_TINT,
   PALACE_TINTS,
@@ -96,9 +95,6 @@ export const FilmHero = ({
 }: FilmHeroProps) => {
   const t = useTranslations("home.hero");
   const tFilm = useTranslations("landing.cinema.film");
-  const tHome = useTranslations("home");
-  const tScreening = useTranslations("screening");
-  const handleScreeningClick = useScreeningLink();
   const locale = useLocale();
   const trackRef = useRef<HTMLOListElement>(null);
 
@@ -299,22 +295,8 @@ export const FilmHero = ({
           <Link
             href={copy.href ?? getFortuneHref(profile, "lifetime")}
             className={styles.cta}
-            onClick={(event) => {
-              onCtaClick(copy.target);
-              // 운세(인생 운세 본편·예고편)로 가는 버튼만 상영관 입장 전환을 탄다
-              if (copy.target !== "lifetime" || !profile) {
-                return;
-              }
-              const lifetime = tHome("lifetime.title");
-              handleScreeningClick(event, {
-                href: getFortuneHref(profile, "lifetime"),
-                title:
-                  state?.kind === "fresh"
-                    ? tScreening("trailer", { title: lifetime })
-                    : tScreening("feature", { title: lifetime }),
-                entry: "hero",
-              });
-            }}
+            // 운세로 가는 링크는 ScreeningProvider가 상영관 입장과 함께 이동시킨다
+            onClick={() => onCtaClick(copy.target)}
           >
             {copy.cta}
           </Link>

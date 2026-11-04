@@ -245,7 +245,7 @@
 }
 
 .paymentButton:hover {
-  background: var(--primitive-primary-3, #ffdde6);
+  background: var(--color-button-primary-surface-hover, #ffa8c0);
 }
 
 .paymentButton:disabled {
@@ -307,7 +307,7 @@
 }
 
 .refreshButton:hover {
-  background: var(--primitive-primary-3, #ffdde6);
+  background: var(--color-button-primary-surface-hover, #ffa8c0);
 }
 
 .errorBackButton {
@@ -330,4 +330,13 @@
   .page {
     min-height: 100svh;
   }
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.paymentButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
+}
+
+.refreshButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

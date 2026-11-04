@@ -5,8 +5,12 @@
   --cinema-haze: rgba(255, 255, 255, 0.72);
   --cinema-faint: rgba(255, 255, 255, 0.5);
   --cinema-line: rgba(255, 255, 255, 0.14);
+  /* 채우면 연핑크(spoiler), 글자·선택이면 진한 핑크(accent), 상태·포커스면 금(star) — app/globals.css 색 역할 */
   --cinema-spoiler: var(--primitive-primary, #ffccd9);
-  --cinema-star: #ffe7a3;
+  --cinema-spoiler-hover: var(--primitive-primary-hover, #ffa8c0);
+  --cinema-spoiler-pressed: var(--primitive-primary-pressed, #f598b3);
+  --cinema-accent: var(--primitive-primary-strong, #ff8fb1);
+  --cinema-star: var(--primitive-gold, #ffe7a3);
   --cinema-ink: #23142d;
   --cinema-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
   --cinema-display-weight: 400;

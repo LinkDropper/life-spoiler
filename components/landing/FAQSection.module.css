@@ -86,7 +86,7 @@
   margin-top: 16px;
   font-size: 15px;
   font-weight: 500;
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
