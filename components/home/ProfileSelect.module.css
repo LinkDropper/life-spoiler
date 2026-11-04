@@ -1,0 +1,6 @@
+/* 히어로 첫 줄에 놓이므로 글자 길이만큼만 넓힌다 */
+.select {
+  display: inline-flex;
+  width: auto;
+  max-width: 100%;
+}

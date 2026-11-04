@@ -1,0 +1,53 @@
+/* 랜딩 시네마 토큰을 그대로 쓴다 (app/page.module.css와 같은 값). 랜딩 장치 CSS도 이 이름을 쓴다 */
+.screen {
+  --cinema-night: #0c1220;
+  --cinema-text: #ffffff;
+  --cinema-haze: rgba(255, 255, 255, 0.72);
+  --cinema-faint: rgba(255, 255, 255, 0.5);
+  --cinema-line: rgba(255, 255, 255, 0.14);
+  --cinema-spoiler: var(--primitive-primary, #ffccd9);
+  --cinema-star: #ffe7a3;
+  --cinema-ink: #23142d;
+  --cinema-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --cinema-display-weight: 400;
+
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-pretendard), sans-serif;
+  color: var(--cinema-text);
+  overflow-wrap: break-word;
+  background: var(--cinema-night);
+}
+
+/* 한국어는 어절 단위로 줄바꿈. 일본어에 keep-all을 걸면 줄이 넘쳐 ko에만 건다 */
+.screen:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.screen:lang(ja) {
+  --cinema-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --cinema-display-weight: 800;
+}
+
+/* 랜딩처럼 장면마다 넉넉한 여백. 첫 장면은 첫 화면 끝에 제목이 걸쳐 보이게 40px */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 72px;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 40px 16px calc(96px + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 860px) {
+  .body {
+    gap: 96px;
+    padding: 64px 32px 120px;
+  }
+
+  .body > section {
+    max-width: 640px;
+  }
+}
