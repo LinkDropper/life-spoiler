@@ -7,6 +7,10 @@ import { useTranslations } from "next-intl";
 import { trackLandingEvent } from "@/libs/analytics";
 import { consumeLandingBirthDraft } from "@/libs/landing/birth-draft";
 import {
+  HOME_REDIRECT,
+  getProfileSetupRedirect,
+} from "@/libs/profile/setup-redirect";
+import {
   useProfileActions,
   useProfileLoadStatus,
   useProfiles,
@@ -14,6 +18,7 @@ import {
 import { useAuthStatus } from "@/libs/stores/user";
 import { HeaderClient } from "@/components/landing";
 
+import { SceneHeader } from "./SceneHeader";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import styles from "./page.module.css";
@@ -178,13 +183,9 @@ export default function ProfileSetupPage() {
         profile_free_access: [],
       });
 
-      const redirectPath =
-        redirectParam && redirectParam.startsWith("/")
-          ? redirectParam
-          : typeParam
-            ? `/profiles?type=${typeParam}`
-            : "/profiles";
-      router.push(redirectPath);
+      router.push(
+        getProfileSetupRedirect(redirectParam, typeParam, result.profileId)
+      );
     } catch {
       alert(
         t("saveError", {
@@ -196,11 +197,24 @@ export default function ProfileSetupPage() {
     }
   };
 
+  const isFromHome = redirectParam === HOME_REDIRECT;
+
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       <main className={styles.main}>
+        <SceneHeader
+          step={currentStep}
+          title={
+            currentStep === 1
+              ? t("stepOne.title")
+              : t("stepTwo.title", { name: stepOneData.name })
+          }
+          description={
+            currentStep === 1 ? t("stepOne.subtitle") : t("stepTwo.subtitle")
+          }
+        />
         {currentStep === 1 ? (
           // 이어 쓰기 값이 들어오면 StepOne이 그 값으로 다시 시작하도록 key를 바꾼다
           <StepOne
@@ -216,6 +230,9 @@ export default function ProfileSetupPage() {
             onBack={handleStepTwoBack}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
+            saveLabel={
+              isFromHome ? t("stepTwo.saveAndWatch") : t("stepTwo.save")
+            }
           />
         )}
       </main>

@@ -1,3 +1,4 @@
+/* 랜딩·홈과 같은 밤색 바탕 (상영관 컨셉) */
 .page {
   display: flex;
   flex-direction: column;
@@ -5,30 +6,12 @@
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  background: #0c1220;
+  color: #ffffff;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid var(--primitive-primary, #ffccd9);
-}
-
-.title {
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-  margin: 0;
-}
-
-.stepIndicator {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+.page:lang(ko) {
+  word-break: keep-all;
 }
 
 .main {
