@@ -39,34 +39,87 @@
   color: var(--cinema-accent);
 }
 
-/* ---------- 3D 관람권 ---------- */
+/* ---------- 3D 관람권: 가로형 실물 티켓 ----------
+   본문 | 세로 점선 절취선 | 꼬리표(가격). 홈 다음 상영작·헤더 메뉴 관람권과 같은 모양이다.
+   홈은 장면 바탕(#1a1028)과 같은 색 원으로 종이를 파낸다. */
 
 .scene3d {
+  display: flex;
+  flex-direction: column;
   perspective: 1200px;
 }
 
 .ticket {
   --ticket-surface: #f9ecf0;
-  --ticket-notch: 9px;
+  --ticket-hole: #1a1028;
+  --ticket-stub: 116px;
 
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--ticket-stub);
   color: var(--cinema-ink);
   transform-style: preserve-3d;
   filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45));
 }
 
+/* 절취선 위아래 홈 */
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  right: calc(var(--ticket-stub) - 9px);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ticket-hole);
+}
+
+.ticket::before {
+  top: -9px;
+}
+
+.ticket::after {
+  bottom: -9px;
+}
+
 .body {
-  padding: 24px 24px 20px;
+  position: relative;
+  min-width: 0;
+  padding: 22px 20px 18px 24px;
   background: var(--ticket-surface);
-  border-radius: 18px 18px 0 0;
+  border-radius: 12px 0 0 12px;
+}
+
+/* 왼쪽 가장자리 홈 */
+.body::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--ticket-hole);
 }
 
 .ticketTitle {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
   font-family: var(--cinema-display);
   font-weight: var(--cinema-display-weight);
   font-size: 15px;
   color: #8a2f55;
+}
+
+.count {
+  flex-shrink: 0;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(35, 20, 45, 0.6);
 }
 
 .scenes {
@@ -96,70 +149,32 @@
   color: rgba(35, 20, 45, 0.72);
 }
 
-/* 절취선: 양 끝을 반원으로 실제로 파내고(mask) 가운데를 점선으로 잇는다 */
-.perforation {
-  position: relative;
-  height: calc(var(--ticket-notch) * 2);
-  background: var(--ticket-surface);
-  -webkit-mask:
-    radial-gradient(
-        circle at left center,
-        transparent var(--ticket-notch),
-        #000 calc(var(--ticket-notch) + 0.5px)
-      )
-      left / 51% 100% no-repeat,
-    radial-gradient(
-        circle at right center,
-        transparent var(--ticket-notch),
-        #000 calc(var(--ticket-notch) + 0.5px)
-      )
-      right / 51% 100% no-repeat;
-  mask:
-    radial-gradient(
-        circle at left center,
-        transparent var(--ticket-notch),
-        #000 calc(var(--ticket-notch) + 0.5px)
-      )
-      left / 51% 100% no-repeat,
-    radial-gradient(
-        circle at right center,
-        transparent var(--ticket-notch),
-        #000 calc(var(--ticket-notch) + 0.5px)
-      )
-      right / 51% 100% no-repeat;
+.anchor {
+  margin: 14px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid rgba(35, 20, 45, 0.16);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #8a2f55;
 }
 
-.perforation::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: calc(var(--ticket-notch) + 8px);
-  right: calc(var(--ticket-notch) + 8px);
-  height: 1.5px;
-  background: linear-gradient(
-      90deg,
-      rgba(35, 20, 45, 0.28) 50%,
-      transparent 50%
-    )
-    0 0 / 10px 100% repeat-x;
-}
-
+/* 꼬리표: 세로 절취선 오른쪽, 가격과 바코드 */
 .stub {
   display: flex;
   flex-direction: column;
-  padding: 18px 24px 22px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 8px;
   background: var(--ticket-surface);
-  border-radius: 0 0 18px 18px;
-}
-
-.priceRow {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
+  border-left: 2px dashed rgba(35, 20, 45, 0.3);
+  border-radius: 0 12px 12px 0;
+  text-align: center;
 }
 
 .originalPrice {
-  font-size: 16px;
+  font-size: 14px;
   color: rgba(35, 20, 45, 0.5);
   text-decoration: line-through;
 }
@@ -167,39 +182,52 @@
 .price {
   font-family: var(--cinema-display);
   font-weight: var(--cinema-display-weight);
-  font-size: 40px;
+  font-size: 28px;
   line-height: 1.1;
+  white-space: nowrap;
 }
 
-.anchor {
-  margin: 6px 0 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #8a2f55;
+.barcode {
+  width: 60px;
+  height: 28px;
+  margin-top: 10px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--cinema-ink) 0 2px,
+    transparent 2px 4px,
+    var(--cinema-ink) 4px 5px,
+    transparent 5px 7px,
+    var(--cinema-ink) 7px 10px,
+    transparent 10px 11px,
+    var(--cinema-ink) 11px 12px,
+    transparent 12px 15px
+  );
 }
 
+/* 관람권 아래 주 버튼 — 서비스 주 버튼과 같은 연핑크 */
 .button {
   min-height: 52px;
-  margin-top: 16px;
-  background: var(--cinema-ink);
+  margin-top: 22px;
+  background: var(--color-button-primary-surface, #ffccd9);
   border: none;
   border-radius: 12px;
   font-family: var(--font-pretendard), sans-serif;
   font-size: 17px;
   font-weight: 700;
-  color: var(--cinema-spoiler);
+  color: var(--cinema-ink);
   cursor: pointer;
 }
 
-.button:focus-visible {
-  outline: 2px solid var(--cinema-ink);
-  outline-offset: 3px;
+@media (hover: hover) {
+  .button:hover {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
 }
 
 .note {
   margin: 10px 0 0;
   font-size: 13px;
-  color: rgba(35, 20, 45, 0.72);
+  color: var(--cinema-haze);
   text-align: center;
 }
 
@@ -238,8 +266,12 @@
     font-size: 28px;
   }
 
+  .ticket {
+    --ticket-stub: 96px;
+  }
+
   .body {
-    padding: 16px 18px 14px;
+    padding: 14px 12px 12px 18px;
   }
 
   .scenes {
@@ -256,20 +288,31 @@
   }
 
   .stub {
-    padding: 14px 18px 16px;
+    padding: 12px 6px;
+  }
+
+  .originalPrice {
+    font-size: 12px;
   }
 
   .price {
-    font-size: 32px;
+    font-size: 24px;
+  }
+
+  .barcode {
+    width: 48px;
+    height: 22px;
   }
 
   .anchor {
-    font-size: 13px;
+    margin-top: 10px;
+    padding-top: 8px;
+    font-size: 12px;
   }
 
   .button {
     min-height: 48px;
-    margin-top: 12px;
+    margin-top: 16px;
     font-size: 16px;
   }
 

@@ -30,11 +30,11 @@ interface NextTicketProps {
 }
 
 /**
- * 다음 상영작 — 랜딩 "본편 관람권"과 같은 종이·절취선.
+ * 다음 상영작 — 랜딩 "본편 관람권"과 같은 가로형 실물 티켓(본문 + 세로 절취선 + 꼬리표).
  * 인생 운세 소장자에게만 보인다(paywalls: 가치를 경험한 뒤에 권한다).
  * 주 버튼은 히어로 하나만 두려고 관람권 버튼은 외곽선으로 낮춘다.
  *
- * 누르면 꼬리표가 랜딩 관람권 장면과 같은 움직임으로 절취선에서 벌어지고,
+ * 누르면 꼬리표가 랜딩 관람권 장면과 같은 움직임으로 세로 절취선에서 벌어지고,
  * 그 움직임이 끝난 뒤에 상영관 입장 전환으로 이어진다
  * (docs/home-redesign-2026-11.md §8). 기다리는 동안 목적지를 미리 받아 둔다.
  */
@@ -128,8 +128,9 @@ export const NextTicket = ({
         onClick={handleClick}
       >
         <span className={styles.body}>
-          <span className={styles.ticketTitle}>
+          <span className={styles.kind}>
             {t("next.ticketTitle", { title: t(`${fortuneKey}.title`) })}
+            <span className={styles.count}>{t("next.admit")}</span>
           </span>
           {isYearly ? (
             <span className={styles.scenes}>
@@ -150,13 +151,23 @@ export const NextTicket = ({
               </span>
             </span>
           )}
+          <span className={styles.free}>{t("next.free")}</span>
         </span>
-        {/* 찢겨 나가는 부분: 절취선 + 꼬리표 */}
+        {/* 찢겨 나가는 꼬리표: 세로 절취선 오른쪽 */}
         <span className={styles.tearOff}>
-          <span className={styles.perforation} aria-hidden="true" />
-          <span className={styles.stub}>
-            <span className={styles.free}>{t("next.free")}</span>
-            <span className={styles.button}>{t("next.cta")}</span>
+          <span className={styles.barcode} aria-hidden="true" />
+          <span className={styles.action}>
+            {t("next.cta")}
+            <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true">
+              <path
+                d="M6 3l5 5-5 5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </span>
         </span>
       </Link>
