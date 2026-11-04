@@ -1,142 +1,545 @@
-.overlay {
+/*
+ * 상영관형 메뉴 — 극장 로비: 상영 중 한 줄 · 상영 시간표 · 내 관람권 · 매표소 안내.
+ * 색은 랜딩·홈 시네마 토큰과 같은 값을 쓴다(밤 #0c1220, 상태 금 #ffe7a3, 글자 강조 진한 핑크).
+ */
+.root {
+  --menu-night: #0c1220;
+  --menu-haze: rgba(255, 255, 255, 0.72);
+  --menu-faint: rgba(255, 255, 255, 0.5);
+  --menu-star: #ffe7a3;
+  --menu-accent: var(--primitive-primary-strong, #ff8fb1);
+  --menu-ink: #23142d;
+  --menu-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --menu-display-weight: 400;
+
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: linear-gradient(180deg, rgba(12, 18, 32, 1) 0%, rgba(46, 20, 49, 1) 100%);
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  max-width: 480px;
-  margin: 0 auto;
+  font-family: var(--font-pretendard), sans-serif;
+  transition: visibility 0s linear 0.3s;
 }
 
-.overlayOpen {
-  opacity: 1;
+.root:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.root:lang(ja) {
+  --menu-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --menu-display-weight: 800;
+}
+
+.rootOpen {
   visibility: visible;
+  transition: visibility 0s linear 0s;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 16, 0.62);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rootOpen .backdrop {
+  opacity: 1;
+}
+
+/* 모바일은 화면 전체, 데스크톱은 오른쪽 400px 서랍 */
+.panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--menu-night);
+  color: #ffffff;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rootOpen .panel {
+  opacity: 1;
+}
+
+@media (min-width: 860px) {
+  .panel {
+    width: 400px;
+    box-shadow:
+      -1px 0 0 rgba(255, 255, 255, 0.08),
+      -24px 0 48px rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+
+  .rootOpen .panel {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .backdrop,
+  .panel {
+    transition: none;
+  }
 }
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
-  justify-content: space-between;
+  flex-shrink: 0;
   align-items: center;
-  padding: 10px 16px;
-  width: 100%;
+  justify-content: space-between;
   height: 60px;
-  border-bottom: 1px solid var(--primitive-primary, #ffccd9);
+  padding: 0 6px 0 16px;
+  background: var(--menu-night);
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 8px;
 }
 
 .closeButton {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
 }
 
 .content {
+  display: flex;
   flex: 1;
-  padding: 24px 16px;
-  display: flex;
   flex-direction: column;
+  gap: 32px;
+  padding: 4px 20px calc(28px + env(safe-area-inset-bottom));
 }
 
-.profileCard {
-  background: var(--color-surface-default, #18181b);
-  border: 2px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  padding: 20px;
+@media (min-width: 860px) {
+  .content {
+    padding: 4px 28px 28px;
+  }
+}
+
+.chevron {
+  flex: none;
+}
+
+/* 상영 중 한 줄 — 과하지 않게 텍스트 한 줄로만 */
+.nowShowing {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.loginInfo {
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-  margin: 0;
-}
-
-.email {
-  font-family: "Pretendard", sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.4;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  margin: 0;
-}
-
-.menuList {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0 0 0;
-}
-
-.menuItem {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
-  height: 60px;
-  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  cursor: pointer;
-  background: transparent;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  width: 100%;
-  text-align: left;
+  gap: 8px;
+  min-height: 48px;
+  margin-bottom: -12px;
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: none;
 }
 
-.menuItem:first-child {
-  border-top: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+.nowShowingDot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--menu-star);
 }
 
-.menuItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+.nowShowingText {
+  flex: 1;
+  min-width: 0;
+  color: var(--menu-haze);
 }
 
-.menuItemText {
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
+.nowShowingText b {
+  color: #ffffff;
+}
+
+.nowShowingStatus {
+  color: var(--menu-star);
+  font-weight: 700;
+}
+
+.nowShowingAction {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  color: var(--menu-haze);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--menu-display);
+  font-weight: var(--menu-display-weight);
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+/* 상영 시간표 — 홈 시간표와 같은 핑크 가는 줄 + 왼쪽 회차 칸 */
+.timetable {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr) auto auto;
+  align-items: center;
+  column-gap: 12px;
+  min-height: 64px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 204, 217, 0.15);
+  color: #ffffff;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.row .chevron {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.rowText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.rowTitle {
   font-size: 16px;
   line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
 }
 
-.footer {
-  padding: 20px 16px;
+.rowSubtitle {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.statusOwned,
+.statusFree {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.statusOwned {
+  color: var(--menu-star);
+}
+
+.statusFree {
+  color: var(--menu-accent);
+}
+
+@media (hover: hover) {
+  .row:hover .rowTitle {
+    color: var(--menu-accent);
+  }
+}
+
+/* 내 관람권 — 실물 영화표 */
+.tickets {
   display: flex;
-  justify-content: center;
-  margin-top: auto;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
 }
 
-.footerLinks {
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 1.625;
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
-}
+.ticket {
+  --ticket-paper: #f9ecf0;
+  --ticket-stub: 72px;
 
-.footerLink {
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--ticket-stub);
+  min-height: 92px;
+  border-radius: 8px;
+  background: var(--ticket-paper);
+  color: var(--menu-ink);
   text-decoration: none;
-  transition: color 0.2s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.32);
 }
 
-.footerLink:hover {
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+.ticketCoupon {
+  --ticket-paper: #fff4d6;
 }
 
-.divider {
-  margin: 0 12px;
+/* 절취선 위아래 홈과 왼쪽 가장자리 홈: 배경색 원으로 종이를 파낸다 */
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  right: calc(var(--ticket-stub) - 8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--menu-night);
+}
+
+.ticket::before {
+  top: -8px;
+}
+
+.ticket::after {
+  bottom: -8px;
+}
+
+.ticketBody {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 12px 10px 14px;
+}
+
+.ticketBody::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--menu-night);
+}
+
+.ticketKind {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #8a2f55;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.ticketCount {
+  color: rgba(35, 20, 45, 0.6);
+  letter-spacing: 0.04em;
+}
+
+.ticketTitle {
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.ticketFields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid rgba(35, 20, 45, 0.16);
+}
+
+.ticketField {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ticketFieldLabel {
+  color: rgba(35, 20, 45, 0.62);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.ticketFieldValue {
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ticketStub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 6px;
+  border-left: 2px dashed rgba(35, 20, 45, 0.3);
+}
+
+.barcode {
+  width: 44px;
+  height: 22px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--menu-ink) 0 2px,
+    transparent 2px 4px,
+    var(--menu-ink) 4px 5px,
+    transparent 5px 7px,
+    var(--menu-ink) 7px 10px,
+    transparent 10px 11px,
+    var(--menu-ink) 11px 12px,
+    transparent 12px 15px
+  );
+}
+
+.ticketAction {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.guestTickets {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 18px 16px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px rgba(255, 204, 217, 0.35);
+}
+
+.guestText {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.loginButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 12px;
+  background: var(--color-button-primary-surface, #ffccd9);
+  color: var(--menu-ink);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .loginButton:hover {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+}
+
+/* 매표소 안내 — 계정·언어·약관은 맨 아래에 작게 */
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.account {
+  margin: 0 0 2px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.footerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 18px;
+}
+
+.footerButton {
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--menu-haze);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.footerButtonFaint {
+  color: var(--menu-faint);
+}
+
+@media (hover: hover) {
+  .footerButton:hover {
+    color: #ffffff;
+  }
+}
+
+.policyLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+}
+
+.policyLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--menu-faint);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .policyLink:hover {
+    color: var(--menu-haze);
+  }
 }
 
 /* Modal styles */
@@ -244,21 +647,4 @@
 .modalConfirmButton:disabled {
   background: #6b7280;
   cursor: not-allowed;
-}
-
-.menuItemRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.freeBadge {
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: #ffe27a;
-  color: #2b1b57;
-  font-family: "Pretendard", sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
 }

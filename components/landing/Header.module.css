@@ -1,16 +1,35 @@
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 16px;
-  width: 100%;
-  height: 60px;
-  border-bottom: 1px solid var(--primitive-primary, #ffccd9);
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #0C1220;
   z-index: 100;
+  width: 100%;
+  height: 60px;
+  background-color: #0c1220;
+}
+
+/* 브랜드색 선 대신 아래로 16px 녹아드는 가장자리 — 본문이 헤더 밑으로 스며들듯 사라진다 */
+.header::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: linear-gradient(180deg, #0c1220 0%, rgba(12, 18, 32, 0) 100%);
+  pointer-events: none;
+}
+
+/* 데스크톱에서는 홈 본문(1040px)과 같은 폭으로 정렬한다 */
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1040px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 6px 0 16px;
 }
 
 .headerSpacer {
@@ -18,22 +37,42 @@
   flex-shrink: 0;
 }
 
-.logo {
-  cursor: pointer;
+.logoLink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 8px;
 }
 
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
-.menuButton {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+/* 아이콘 버튼은 터치 타겟 44px */
+.iconButton {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .iconButton:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (min-width: 860px) {
+  .inner {
+    padding: 0 22px 0 32px;
+  }
 }

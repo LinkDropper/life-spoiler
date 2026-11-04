@@ -4,10 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 
+import {
+  getFortuneHref,
+  isFortuneOwned,
+  pickOwnProfile,
+} from "@/libs/home/home-profile";
+import { buildMenuLineup, summarizeCoupons } from "@/libs/home/menu-lineup";
+import type { MenuCouponItem, MenuShow } from "@/libs/home/menu-lineup";
+import { useProfiles } from "@/libs/stores/profile";
 import { useUser, useUserActions } from "@/libs/stores/user";
 
+import { LanguageSelector } from "./LanguageSelector";
 import styles from "./Menu.module.css";
 
 interface MenuProps {
@@ -15,17 +25,126 @@ interface MenuProps {
   onClose: () => void;
 }
 
+type CouponState =
+  | { status: "loading" }
+  | { status: "loaded"; count: number; earliestExpiry: string | null }
+  | { status: "error" };
+
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+const Chevron = ({ size = 16 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 16 16"
+    aria-hidden="true"
+    className={styles.chevron}
+  >
+    <path
+      d="M6 3l5 5-5 5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const formatDate = (value: string): string => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}.${month}.${day}`;
+};
+
+interface TicketField {
+  label: string;
+  value: string;
+}
+
+interface TicketProps {
+  href: string;
+  kind: string;
+  count: string;
+  title: string;
+  fields: TicketField[];
+  action: string;
+  tone: "feature" | "coupon";
+  onNavigate: () => void;
+}
+
+/** 실물 영화표: 본문 + 점선으로 나뉜 꼬리표, 절취선 위아래와 왼쪽 가장자리의 홈 */
+const Ticket = ({
+  href,
+  kind,
+  count,
+  title,
+  fields,
+  action,
+  tone,
+  onNavigate,
+}: TicketProps) => (
+  <Link
+    href={href}
+    className={`${styles.ticket} ${tone === "coupon" ? styles.ticketCoupon : ""}`}
+    onClick={onNavigate}
+  >
+    <span className={styles.ticketBody}>
+      <span className={styles.ticketKind}>
+        {kind}
+        <span className={styles.ticketCount}>{count}</span>
+      </span>
+      <strong className={styles.ticketTitle}>{title}</strong>
+      <span className={styles.ticketFields}>
+        {fields.map((field) => (
+          <span key={field.label} className={styles.ticketField}>
+            <span className={styles.ticketFieldLabel}>{field.label}</span>
+            <span className={styles.ticketFieldValue}>{field.value}</span>
+          </span>
+        ))}
+      </span>
+    </span>
+    <span className={styles.ticketStub}>
+      <span className={styles.barcode} aria-hidden="true" />
+      <span className={styles.ticketAction}>
+        {action}
+        <Chevron size={12} />
+      </span>
+    </span>
+  </Link>
+);
+
 export const Menu = ({ isOpen, onClose }: MenuProps) => {
   const t = useTranslations("landing.menu");
-  const locale = useLocale();
+  const tHome = useTranslations("home");
+  const tUniverse = useTranslations("universe.home");
   const tFooter = useTranslations("landing.footer");
   const tCommon = useTranslations("common");
+  const locale = useLocale();
   const router = useRouter();
   const user = useUser();
+  const profiles = useProfiles();
   const { logout } = useUserActions();
 
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [coupons, setCoupons] = useState<CouponState>({ status: "loading" });
+
+  const isLoggedIn = Boolean(user);
+  const profile = isLoggedIn ? pickOwnProfile(profiles) : null;
+  const lineup = buildMenuLineup({
+    profile,
+    isLoggedIn,
+    showUniverse: locale === "ko",
+  });
+  const ownsLifetime = isFortuneOwned(profile, "lifetime");
 
   const getLoginProviderMessage = () => {
     if (!user) return "";
@@ -37,6 +156,59 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
 
     return providerMessages[user.provider] ?? t("loggedIn");
   };
+
+  const getShowTitle = (show: MenuShow) => {
+    if (show.key === "daily") return t("daily.title");
+    if (show.key === "universe") return tUniverse("title");
+    return tHome(`${show.key}.title`);
+  };
+
+  const getShowSubtitle = (show: MenuShow) => {
+    if (show.key === "daily") return t("daily.subtitle");
+    if (show.key === "universe") return tUniverse("subtitle");
+    return tHome(`${show.key}.subtitle`);
+  };
+
+  const getStatusLabel = (show: MenuShow) => {
+    if (show.status === "owned") return tHome("timetable.owned");
+    if (show.status === "free") return tHome("timetable.free");
+    if (show.status === "trailer") return t("trailerFree");
+    return null;
+  };
+
+  // 메뉴를 열 때마다 쿠폰 수를 새로 받는다(쿠폰함에서 쓰고 돌아올 수 있다)
+  useEffect(() => {
+    if (!isOpen || !isLoggedIn) {
+      return;
+    }
+
+    const controller = new AbortController();
+    setCoupons({ status: "loading" });
+
+    fetch("/api/coupon/list", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`쿠폰 목록 요청 실패: ${response.status}`);
+        }
+        const result = (await response.json()) as {
+          success?: boolean;
+          data?: MenuCouponItem[];
+        };
+        if (!result.success || !Array.isArray(result.data)) {
+          throw new Error("쿠폰 목록 응답 형식이 올바르지 않습니다.");
+        }
+        setCoupons({ status: "loaded", ...summarizeCoupons(result.data) });
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return;
+        }
+        console.error("[menu] 쿠폰 목록을 불러오지 못했습니다.", error);
+        setCoupons({ status: "error" });
+      });
+
+    return () => controller.abort();
+  }, [isOpen, isLoggedIn]);
 
   const handleLogout = useCallback(async () => {
     try {
@@ -79,237 +251,307 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
     }
   }, [logout, onClose, router, t]);
 
-  const handleNavigate = useCallback(
-    (path: string) => {
-      onClose();
-      router.push(path);
-    },
-    [onClose, router]
-  );
-
-  const handleFortuneNavigate = useCallback(
-    (fortuneType: "lifetime" | "yearly") => {
-      onClose();
-      if (!user) {
-        router.push("/login");
-        return;
-      }
-      router.push(`/profiles?type=${fortuneType}`);
-    },
-    [onClose, router, user]
-  );
-
-  // ESC 키로 메뉴 닫기
+  // ESC로 닫기, 열려 있는 동안 배경 스크롤 잠금, 열리면 닫기 버튼에 포커스
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !showWithdrawModal) {
         onClose();
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-    }
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, showWithdrawModal]);
+
+  // Tab 포커스를 메뉴 안에 가둔다
+  const handleDialogKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Tab" || !dialogRef.current) {
+      return;
+    }
+    const focusable = Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+    );
+    const [first] = focusable;
+    const last = focusable.at(-1);
+    if (!first || !last) {
+      return;
+    }
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  const renderCouponTicket = () => {
+    const count = coupons.status === "loaded" ? coupons.count : null;
+    // 불러오는 중이면 안내, 실패하면 값을 비우고(—), 받았으면 가장 빠른 기한
+    const getExpiryLabel = () => {
+      if (coupons.status === "loading") return t("ticket.couponLoading");
+      if (coupons.status === "error") return "—";
+      return coupons.earliestExpiry
+        ? formatDate(coupons.earliestExpiry)
+        : t("ticket.couponNoExpiry");
+    };
+
+    return (
+      <Ticket
+        href="/coupon"
+        tone="coupon"
+        kind={t("ticket.couponKind")}
+        count={t("ticket.count")}
+        title={
+          count === null
+            ? t("ticket.couponAction")
+            : t("ticket.couponTitle", { count })
+        }
+        fields={[
+          { label: t("ticket.couponUse"), value: t("ticket.couponUseValue") },
+          {
+            label: t("ticket.couponExpiry"),
+            value: getExpiryLabel(),
+          },
+        ]}
+        action={t("ticket.couponAction")}
+        onNavigate={onClose}
+      />
+    );
+  };
 
   return (
     <>
       <div
-        className={`${styles.overlay} ${isOpen ? styles.overlayOpen : ""}`}
+        className={`${styles.root} ${isOpen ? styles.rootOpen : ""}`}
         aria-hidden={!isOpen}
       >
-        {/* Header */}
-        <header className={styles.header}>
-          <Image
-            src="/images/landing/logo.png"
-            alt={t("logoAlt")}
-            width={87}
-            height={32}
-            priority
-            quality={100}
-          />
-          <button
-            type="button"
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label={tCommon("close")}
-          >
-            <Image
-              src="/images/landing/close-icon.svg"
-              alt=""
-              width={24}
-              height={24}
-            />
-          </button>
-        </header>
-
-        {/* Content */}
-        <div className={styles.content}>
-          {/* Profile Card */}
-          {user && (
-            <div className={styles.profileCard}>
-              <p className={styles.loginInfo}>{getLoginProviderMessage()}</p>
-              <p className={styles.email}>{user.email}</p>
-            </div>
-          )}
-
-          {/* Menu List */}
-          <ul className={styles.menuList}>
-            {/*
-              친구 우주 궁합은 로그인이 필요 없는 무료 기능이므로
-              `handleFortuneNavigate`(미로그인 시 /login)가 아니라 바로 이동시킨다.
-              KO 로케일 전용 노출은 홈 카드(`FriendUniverseCard`)와 동일 정책.
-            */}
-            {locale === "ko" && (
-              <li>
-                <button
-                  type="button"
-                  className={styles.menuItem}
-                  onClick={() => handleNavigate("/universe/create")}
-                >
-                  <span className={styles.menuItemText}>
-                    {t("friendUniverse")}
-                  </span>
-                  <span className={styles.menuItemRight}>
-                    <span className={styles.freeBadge}>{t("freeBadge")}</span>
-                    <Image
-                      src="/images/landing/chevron-right.svg"
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
-                  </span>
-                </button>
-              </li>
-            )}
-            <li>
-              <button
-                type="button"
-                className={styles.menuItem}
-                onClick={() => handleFortuneNavigate("lifetime")}
-              >
-                <span className={styles.menuItemText}>
-                  {t("lifetimeFortune")}
-                </span>
-                <Image
-                  src="/images/landing/chevron-right.svg"
-                  alt=""
-                  width={20}
-                  height={20}
-                />
-              </button>
-            </li>
-            <li>
-              <button
-                type="button"
-                className={styles.menuItem}
-                onClick={() => handleFortuneNavigate("yearly")}
-              >
-                <span className={styles.menuItemText}>
-                  {t("yearlyFortune")}
-                </span>
-                <Image
-                  src="/images/landing/chevron-right.svg"
-                  alt=""
-                  width={20}
-                  height={20}
-                />
-              </button>
-            </li>
-            {user ? (
-              <>
-                <li>
-                  <button
-                    type="button"
-                    className={styles.menuItem}
-                    onClick={() => handleNavigate("/coupon")}
-                  >
-                    <span className={styles.menuItemText}>쿠폰함</span>
-                    <Image
-                      src="/images/landing/chevron-right.svg"
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    className={styles.menuItem}
-                    onClick={handleLogout}
-                  >
-                    <span className={styles.menuItemText}>{t("logout")}</span>
-                    <Image
-                      src="/images/landing/chevron-right.svg"
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    className={styles.menuItem}
-                    onClick={() => setShowWithdrawModal(true)}
-                  >
-                    <span className={styles.menuItemText}>{t("withdraw")}</span>
-                    <Image
-                      src="/images/landing/chevron-right.svg"
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                </li>
-              </>
-            ) : (
-              <li>
-                <button
-                  type="button"
-                  className={styles.menuItem}
-                  onClick={() => handleNavigate("/login")}
-                >
-                  <span className={styles.menuItemText}>{t("login")}</span>
-                  <Image
-                    src="/images/landing/chevron-right.svg"
-                    alt=""
-                    width={20}
-                    height={20}
-                  />
-                </button>
-              </li>
-            )}
-          </ul>
-        </div>
-
-        {/* Footer */}
-        <footer className={styles.footer}>
-          <div className={styles.footerLinks}>
+        <div className={styles.backdrop} onClick={onClose} />
+        <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t("dialogLabel")}
+          className={styles.panel}
+          onKeyDown={handleDialogKeyDown}
+        >
+          <header className={styles.header}>
             <Link
-              href="/policy/terms"
-              className={styles.footerLink}
+              href={isLoggedIn ? "/home" : "/"}
+              className={styles.logoLink}
               onClick={onClose}
             >
-              {tFooter("terms")}
+              <Image
+                src="/images/landing/logo.png"
+                alt={t("logoAlt")}
+                width={87}
+                height={32}
+                quality={100}
+              />
             </Link>
-            <span className={styles.divider}>|</span>
-            <Link
-              href="/policy/privacy"
-              className={styles.footerLink}
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className={styles.closeButton}
               onClick={onClose}
+              aria-label={tCommon("close")}
             >
-              {tFooter("privacy")}
-            </Link>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 6l12 12M18 6L6 18"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </header>
+
+          <div className={styles.content}>
+            {profile && (
+              <Link
+                href="/home"
+                className={styles.nowShowing}
+                onClick={onClose}
+              >
+                <span className={styles.nowShowingDot} aria-hidden="true" />
+                <span className={styles.nowShowingText}>
+                  <b>{t("nowShowing", { name: profile.name })}</b>{" "}
+                  <span className={styles.nowShowingStatus}>
+                    {t("nowShowingStatus")}
+                  </span>
+                </span>
+                <span className={styles.nowShowingAction}>
+                  {t("toTheater")}
+                  <Chevron size={14} />
+                </span>
+              </Link>
+            )}
+
+            <section
+              className={styles.section}
+              aria-labelledby="menu-timetable-title"
+            >
+              <h2 id="menu-timetable-title" className={styles.sectionTitle}>
+                {t("timetableTitle")}
+              </h2>
+              <ul className={styles.timetable}>
+                {lineup.map((show) => {
+                  const statusLabel = getStatusLabel(show);
+                  return (
+                    <li key={show.key}>
+                      <Link
+                        href={show.href}
+                        className={styles.row}
+                        onClick={onClose}
+                      >
+                        <span className={styles.slot}>
+                          {t(`slot.${show.key}`, {
+                            year: new Date().getFullYear(),
+                          })}
+                        </span>
+                        <span className={styles.rowText}>
+                          <b className={styles.rowTitle}>
+                            {getShowTitle(show)}
+                          </b>
+                          <span className={styles.rowSubtitle}>
+                            {getShowSubtitle(show)}
+                          </span>
+                        </span>
+                        {statusLabel ? (
+                          <span
+                            className={
+                              show.status === "owned"
+                                ? styles.statusOwned
+                                : styles.statusFree
+                            }
+                          >
+                            {statusLabel}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
+                        <Chevron />
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+
+            <section
+              className={styles.section}
+              aria-labelledby="menu-tickets-title"
+            >
+              <h2 id="menu-tickets-title" className={styles.sectionTitle}>
+                {t("ticketsTitle")}
+              </h2>
+              {isLoggedIn ? (
+                <div className={styles.tickets}>
+                  {profile && ownsLifetime && (
+                    <Ticket
+                      href={getFortuneHref(profile, "lifetime")}
+                      tone="feature"
+                      kind={t("ticket.featureKind")}
+                      count={t("ticket.count")}
+                      title={tHome("lifetime.title")}
+                      fields={[
+                        {
+                          label: t("ticket.screening"),
+                          value: t("ticket.screeningValue"),
+                        },
+                        {
+                          label: t("ticket.viewer"),
+                          value: t("ticket.viewerValue", {
+                            name: profile.name,
+                          }),
+                        },
+                        {
+                          label: t("ticket.status"),
+                          value: t("ticket.statusOwned"),
+                        },
+                      ]}
+                      action={t("ticket.rewatch")}
+                      onNavigate={onClose}
+                    />
+                  )}
+                  {renderCouponTicket()}
+                </div>
+              ) : (
+                <div className={styles.guestTickets}>
+                  <p className={styles.guestText}>{t("guestTickets")}</p>
+                  <Link
+                    href="/login"
+                    className={styles.loginButton}
+                    onClick={onClose}
+                  >
+                    {t("login")}
+                  </Link>
+                </div>
+              )}
+            </section>
+
+            <footer className={styles.footer}>
+              {user && (
+                <p className={styles.account}>
+                  {getLoginProviderMessage()} · {user.email}
+                </p>
+              )}
+              <div className={styles.footerActions}>
+                <LanguageSelector variant="labeled" />
+                {user && (
+                  <>
+                    <button
+                      type="button"
+                      className={styles.footerButton}
+                      onClick={handleLogout}
+                    >
+                      {t("logout")}
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.footerButton} ${styles.footerButtonFaint}`}
+                      onClick={() => setShowWithdrawModal(true)}
+                    >
+                      {t("withdraw")}
+                    </button>
+                  </>
+                )}
+              </div>
+              <div className={styles.policyLinks}>
+                <Link
+                  href="/policy/terms"
+                  className={styles.policyLink}
+                  onClick={onClose}
+                >
+                  {tFooter("terms")}
+                </Link>
+                <Link
+                  href="/policy/privacy"
+                  className={styles.policyLink}
+                  onClick={onClose}
+                >
+                  {tFooter("privacy")}
+                </Link>
+              </div>
+            </footer>
           </div>
-        </footer>
+        </div>
       </div>
 
       {/* Withdraw Confirmation Modal */}
@@ -318,7 +560,13 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
           className={styles.modalOverlay}
           onClick={() => !isWithdrawing && setShowWithdrawModal(false)}
         >
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.modal}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="withdraw-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.modalContent}>
               <div className={styles.modalHeader}>
                 <div className={styles.modalTitleRow}>
@@ -328,7 +576,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
                     width={24}
                     height={24}
                   />
-                  <h2 className={styles.modalTitle}>
+                  <h2 id="withdraw-modal-title" className={styles.modalTitle}>
                     {t("withdrawModal.title")}
                   </h2>
                 </div>
