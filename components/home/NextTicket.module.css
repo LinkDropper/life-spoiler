@@ -29,14 +29,16 @@
   color: var(--cinema-haze);
 }
 
-/* ---------- 관람권 (랜딩 TicketScene과 같은 종이·절취선) ---------- */
+/* ---------- 관람권: 가로형 실물 티켓 (랜딩 TicketScene·헤더 메뉴 관람권과 같은 모양) ----------
+   본문 | 세로 점선 절취선 | 꼬리표. 절취선 위아래와 왼쪽 가장자리에 밤색 홈을 낸다. */
 
 .ticket {
   --surface: #f9ecf0;
-  --notch: 9px;
+  --stub: 96px;
 
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--stub);
   margin-top: 28px;
   color: var(--cinema-ink);
   text-decoration: none;
@@ -46,129 +48,134 @@
   touch-action: manipulation;
 }
 
-.body {
-  display: flex;
-  flex-direction: column;
-  padding: 22px 22px 18px;
-  background: var(--surface);
-  border-radius: 18px 18px 0 0;
+/* 절취선 위아래 홈 */
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  right: calc(var(--stub) - 8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cinema-night);
 }
 
-.ticketTitle {
+.ticket::before {
+  top: -8px;
+}
+
+.ticket::after {
+  bottom: -8px;
+}
+
+.body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px 16px 14px 20px;
+  background: var(--surface);
+  border-radius: 10px 0 0 10px;
+}
+
+/* 왼쪽 가장자리 홈 */
+.body::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--cinema-night);
+}
+
+.kind {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
   font-family: var(--cinema-display);
   font-weight: var(--cinema-display-weight);
-  font-size: 15px;
+  font-size: 13px;
+  line-height: 1.35;
   color: #8a2f55;
+}
+
+.count {
+  flex-shrink: 0;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(35, 20, 45, 0.6);
 }
 
 .scenes {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 14px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .scene b {
   display: block;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   line-height: 1.4;
 }
 
 .scene span {
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.45;
   color: rgba(35, 20, 45, 0.72);
 }
 
-/* 절취선: 양 끝을 반원으로 파내고(mask) 가운데를 점선으로 잇는다 */
-.perforation {
-  position: relative;
-  height: calc(var(--notch) * 2);
-  background: var(--surface);
-  -webkit-mask:
-    radial-gradient(
-        circle at left center,
-        transparent var(--notch),
-        #000 calc(var(--notch) + 0.5px)
-      )
-      left / 51% 100% no-repeat,
-    radial-gradient(
-        circle at right center,
-        transparent var(--notch),
-        #000 calc(var(--notch) + 0.5px)
-      )
-      right / 51% 100% no-repeat;
-  mask:
-    radial-gradient(
-        circle at left center,
-        transparent var(--notch),
-        #000 calc(var(--notch) + 0.5px)
-      )
-      left / 51% 100% no-repeat,
-    radial-gradient(
-        circle at right center,
-        transparent var(--notch),
-        #000 calc(var(--notch) + 0.5px)
-      )
-      right / 51% 100% no-repeat;
-}
-
-.perforation::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: calc(var(--notch) + 8px);
-  right: calc(var(--notch) + 8px);
-  height: 1.5px;
-  background: linear-gradient(
-      90deg,
-      rgba(35, 20, 45, 0.28) 50%,
-      transparent 50%
-    )
-    0 0 / 10px 100% repeat-x;
-}
-
-.stub {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 22px 18px;
-  background: var(--surface);
-  border-radius: 0 0 18px 18px;
-}
-
 .free {
-  font-size: 14px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(35, 20, 45, 0.16);
+  font-size: 13px;
   font-weight: 700;
   color: #8a2f55;
 }
 
-/* 주 버튼은 히어로 하나 — 관람권 버튼은 외곽선 */
-.button {
-  display: inline-flex;
+.barcode {
+  width: 52px;
+  height: 26px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--cinema-ink) 0 2px,
+    transparent 2px 4px,
+    var(--cinema-ink) 4px 5px,
+    transparent 5px 7px,
+    var(--cinema-ink) 7px 10px,
+    transparent 10px 11px,
+    var(--cinema-ink) 11px 12px,
+    transparent 12px 15px
+  );
+}
+
+.action {
+  display: flex;
   align-items: center;
-  min-height: 48px;
-  padding: 0 18px;
-  border: 1.5px solid var(--cinema-ink);
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--cinema-ink);
+  gap: 2px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
 }
 
 @media (hover: hover) {
-  .ticket:hover .button {
-    background: var(--cinema-ink);
-    color: var(--surface);
+  .ticket:hover .action {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }
 
 .ticket:focus-visible {
   outline: 2px solid var(--cinema-star);
   outline-offset: 4px;
-  border-radius: 18px;
+  border-radius: 10px;
 }
 
 @media (min-width: 860px) {
@@ -177,20 +184,26 @@
   }
 
   .ticket {
-    max-width: 420px;
+    max-width: 440px;
   }
 }
 
-/* ---------- 찢김: 랜딩 관람권 장면(TicketScene)과 같은 움직임 ----------
-   꼬리표가 절취선 오른쪽 끝을 축으로 26px 내려앉으며 3° 기운다(랜딩: y 26, rotateZ -3, origin 100% 0%).
-   랜딩은 스크롤로 진행되고, 홈은 누르면 --tear-ms(NextTicket.tsx TEAR_MS) 동안 같은 자리로 간 뒤
-   상영관 입장으로 이어진다. 꼬리표는 떨어지거나 사라지지 않고 그 자리에 남는다(2026-11-04: 과하다는 피드백). */
+/* ---------- 찢김: 세로 절취선을 따라 꼬리표가 떨어져 나간다 ----------
+   꼬리표가 절취선 위쪽 끝을 축으로 오른쪽으로 벌어지며 5° 기운다(랜딩 TicketScene과 같은 값).
+   홈은 누르면 --tear-ms(NextTicket.tsx TEAR_MS) 동안 그 자리로 간 뒤 상영관 입장으로 이어진다.
+   꼬리표는 떨어지거나 사라지지 않고 그 자리에 남는다(2026-11-04: 과하다는 피드백). */
 
 .tearOff {
-  position: relative;
   display: flex;
   flex-direction: column;
-  transform-origin: 100% 0%;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 8px;
+  background: var(--surface);
+  border-left: 2px dashed rgba(35, 20, 45, 0.3);
+  border-radius: 0 10px 10px 0;
+  transform-origin: 0% 0%;
 }
 
 .tearing .tearOff,
@@ -200,7 +213,7 @@
 
 @keyframes tearAway {
   to {
-    transform: translateY(26px) rotate(-3deg);
+    transform: translate(14px, 6px) rotate(5deg);
   }
 }
 

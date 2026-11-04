@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -12,6 +13,12 @@ export interface OptionSheetOption {
   label: string;
 }
 
+/** 목록 아래에 따로 두는 이동 항목 (예: 홈 프로필 셀렉트의 "프로필 추가") */
+export interface OptionSheetAction {
+  label: string;
+  href: string;
+}
+
 interface OptionSheetProps {
   isOpen: boolean;
   title: string;
@@ -19,6 +26,7 @@ interface OptionSheetProps {
   selectedValue: string;
   onSelect: (value: string) => void;
   onClose: () => void;
+  action?: OptionSheetAction;
 }
 
 /**
@@ -34,6 +42,7 @@ export const OptionSheet = ({
   selectedValue,
   onSelect,
   onClose,
+  action,
 }: OptionSheetProps) => {
   const titleId = useId();
   const [isMounted, setIsMounted] = useState(false);
@@ -147,6 +156,22 @@ export const OptionSheet = ({
             );
           })}
         </div>
+
+        {action && (
+          <>
+            <div className={styles.separator}>
+              <hr className={styles.separatorLine} />
+            </div>
+            <Link
+              href={action.href}
+              className={`${styles.menuItem} ${styles.actionItem}`}
+              onClick={onClose}
+            >
+              <PlusIcon />
+              <span className={styles.label}>{action.label}</span>
+            </Link>
+          </>
+        )}
       </div>
     </div>,
     document.body
@@ -168,6 +193,24 @@ const CheckIcon = () => (
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const PlusIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    aria-hidden="true"
+    className={styles.plusIcon}
+  >
+    <path
+      d="M9 3.5v11M3.5 9h11"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
     />
   </svg>
 );

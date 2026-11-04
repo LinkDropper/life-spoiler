@@ -1,5 +1,0 @@
-click-1.wav ~ click-10.wav
-원본: Freesound #345003 "chopsticks.wav" by DJSnowgoat — "Hitting chopsticks together at different time intervals."
-https://freesound.org/people/DJSnowgoat/sounds/345003/
-라이선스: Creative Commons Zero (CC0 1.0) — http://creativecommons.org/publicdomain/zero/1.0/
-가공: 원본에서 부딪히는 순간 10개를 124ms씩 잘라 앞뒤 10ms 페이드, 각 피크를 0.8로 맞춘 WAV 16-bit 44.1kHz 모노

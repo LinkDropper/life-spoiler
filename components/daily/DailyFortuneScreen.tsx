@@ -24,7 +24,6 @@ import { DailyShareCard } from "./DailyShareCard";
 import { DailyStars } from "./DailyStars";
 import { getColorSwatch } from "./color-swatch";
 import { formatDailyDate } from "./format-date";
-import { SantongReveal } from "./santong/SantongReveal";
 import styles from "./DailyFortuneScreen.module.css";
 
 /**
@@ -35,12 +34,6 @@ import styles from "./DailyFortuneScreen.module.css";
 const PROFILE_TIME_EDIT_PATH: string | null = null;
 
 const TOAST_DURATION_MS = 2000;
-/**
- * 산통 연출을 본 마지막 KST 날짜 — 프로필마다 하루 첫 열람에만 연출을 보여준다 (날짜만 저장).
- * 프로필별 키: 한 기기에서 여러 프로필을 보면 각자 그날의 막대를 뽑아야 한다.
- */
-const getSantongLastDateKey = (profileId: string) =>
-  `daily_santong_last_date:${profileId}`;
 const IMAGE_RENDER_WAIT_MS = 100;
 
 type ScreenStatus = "idle" | "refreshing" | "error";
@@ -96,32 +89,6 @@ export const DailyFortuneScreen = ({
 
   const { date, confidence } = view;
   const overallLevel = view.overall.level;
-
-  // 오늘 처음 열 때만 산통 연출 (동작 줄이기 설정이면 생략)
-  const [isSantongOpen, setIsSantongOpen] = useState(false);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    try {
-      if (
-        window.localStorage.getItem(getSantongLastDateKey(profileId)) !== date
-      ) {
-        setIsSantongOpen(true);
-      }
-    } catch {
-      // 저장소를 못 쓰는 환경(사생활 보호 모드 등)에서는 매번 연출 대신 결과를 바로 보여준다
-    }
-    // 첫 화면의 날짜 기준 — 자정 재조회로 날짜가 바뀌어도 연출을 다시 띄우지 않는다
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId]);
-
-  const handleSantongDone = useCallback(() => {
-    try {
-      window.localStorage.setItem(getSantongLastDateKey(profileId), date);
-    } catch {
-      // 저장 실패는 다음 열람 때 연출이 한 번 더 나오는 것뿐이다
-    }
-    setIsSantongOpen(false);
-  }, [profileId, date]);
 
   // 날짜별 1회 열람 계측
   useEffect(() => {
@@ -470,23 +437,9 @@ export const DailyFortuneScreen = ({
 
   return (
     <div className={styles.page}>
-      {isSantongOpen && (
-        <SantongReveal
-          date={date}
-          profileId={profileId}
-          greeting={t("result.greeting", {
-            date: formatDailyDate(view.date, locale),
-            name,
-          })}
-          level={view.overall.level}
-          stickText={view.stick.text}
-          headline={view.headline.text}
-          onDone={handleSantongDone}
-        />
-      )}
       <HeaderClient />
 
-      <main className={styles.main} aria-hidden={isSantongOpen || undefined}>
+      <main className={styles.main}>
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{t("result.pageTitle")}</h1>
           {canChangeProfile && (

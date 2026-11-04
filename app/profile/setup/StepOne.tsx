@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { Input, RadioGroup, Checkbox, Button } from "@/components/form";
+import { Input, Checkbox, Button } from "@/components/form";
 
+import { ChoiceGroup } from "./ChoiceGroup";
 import type { StepOneData } from "./page";
 import styles from "./StepOne.module.css";
 
@@ -26,14 +27,17 @@ export const StepOne = ({
     Partial<Record<keyof StepOneData, string>>
   >({});
 
-  const CALENDAR_OPTIONS = [
-    { value: "solar", label: t("calendar.solar", { default: "양력" }) },
-    { value: "lunar", label: t("calendar.lunar", { default: "음력" }) },
+  const CALENDAR_OPTIONS: {
+    value: StepOneData["calendarType"];
+    label: string;
+  }[] = [
+    { value: "solar", label: t("calendar.solar") },
+    { value: "lunar", label: t("calendar.lunar") },
   ];
 
-  const GENDER_OPTIONS = [
-    { value: "female", label: t("gender.female", { default: "여자" }) },
-    { value: "male", label: t("gender.male", { default: "남자" }) },
+  const GENDER_OPTIONS: { value: StepOneData["gender"]; label: string }[] = [
+    { value: "female", label: t("gender.female") },
+    { value: "male", label: t("gender.male") },
   ];
 
   const updateField = <K extends keyof StepOneData>(
@@ -145,34 +149,30 @@ export const StepOne = ({
             disabled={formData.birthTimeUnknown}
             maxLength={5}
           />
-          <Checkbox
-            label={t("birthTime.unknown", { default: "시간 모름" })}
-            checked={formData.birthTimeUnknown}
-            onChange={handleTimeUnknownChange}
-          />
-          <p className={styles.timeHint}>
-            {t("birthTime.hint", {
-              default: "정확한 운세 확인을 위해 시간을 꼭 입력해주세요.",
-            })}
-          </p>
+          <div className={styles.timeRow}>
+            <p className={styles.timeHint}>{t("birthTime.hint")}</p>
+            <Checkbox
+              label={t("birthTime.unknown", { default: "시간 모름" })}
+              checked={formData.birthTimeUnknown}
+              onChange={handleTimeUnknownChange}
+            />
+          </div>
         </div>
 
-        <RadioGroup
-          label={t("calendar.label", { default: "달력" })}
+        <ChoiceGroup
+          variant="segment"
+          label={t("calendar.label")}
           options={CALENDAR_OPTIONS}
           value={formData.calendarType}
-          onChange={(value) =>
-            updateField("calendarType", value as StepOneData["calendarType"])
-          }
+          onChange={(value) => updateField("calendarType", value)}
         />
 
-        <RadioGroup
-          label={t("gender.label", { default: "성별" })}
+        <ChoiceGroup
+          variant="segment"
+          label={t("gender.label")}
           options={GENDER_OPTIONS}
           value={formData.gender}
-          onChange={(value) =>
-            updateField("gender", value as StepOneData["gender"])
-          }
+          onChange={(value) => updateField("gender", value)}
         />
       </div>
 

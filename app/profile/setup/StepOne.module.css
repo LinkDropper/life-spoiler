@@ -8,37 +8,77 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 16px;
+  gap: 20px;
+  padding: 24px 20px;
+}
+
+/*
+ * 공용 Input을 이 페이지에서만 밤색 바탕에 맞춘다(시안: 진한 남색 칸, 포커스는 금).
+ * 공용 컴포넌트 전체를 바꾸지 않으려고 이 폼 안의 요소에만 덮어쓴다.
+ */
+.form label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.form input[type="text"] {
+  border-radius: 10px;
+  border-color: rgba(255, 255, 255, 0.14);
+  background: #121a30;
 }
 
 .timeSection {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
+}
+
+.timeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 12px;
+}
+
+/* 공용 Checkbox의 회색 칸을 걷어내고 오른쪽 끝의 작은 선택으로 둔다(시안) */
+.timeRow > button {
+  width: auto;
+  height: auto;
+  min-height: 44px;
+  padding: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.timeRow > button:hover {
+  background: transparent;
 }
 
 .timeHint {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
   margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 /* 랜딩에서 넣은 생년월일시로 채웠다는 안내 */
 .prefillNotice {
   margin: 0;
   padding: 12px 14px;
-  background: var(--primitive-primary-opacity-1, rgba(255, 204, 217, 0.08));
-  border: 1px solid var(--primitive-primary-opacity-3, rgba(255, 204, 217, 0.3));
+  background: rgba(255, 231, 163, 0.06);
+  border: 1px solid rgba(255, 231, 163, 0.4);
   border-radius: 12px;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--color-text-primary-secondary, #ffdde6);
+  color: #ffe7a3;
 }
 
+/* 하단 버튼 띠: 본문 위로 흐리게 녹아들며 화면 아래에 붙는다 */
 .footer {
-  padding: 16px;
-  border-top: 1px solid var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  position: sticky;
+  bottom: 0;
+  padding: 16px 20px calc(24px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(12, 18, 32, 0) 0%, #0c1220 30%);
 }

@@ -160,7 +160,7 @@ export const FilmHero = ({
     <section className={styles.hero} aria-labelledby="home-hero-title">
       <div className={styles.pad}>
         {copy?.label &&
-          (profiles.length > 1 && profile ? (
+          (profile ? (
             <ProfileSelect
               profiles={profiles}
               selectedId={profile.id}
