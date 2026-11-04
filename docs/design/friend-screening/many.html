@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>지수님의 시사회 - 관객 40명, 내가 D~E열 (시안 v2)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+@font-face{font-family:"SB AggroOTF";src:url("SB-B.otf") format("opentype");font-display:swap}
+:root{--night:#0c1220;--haze:rgba(255,255,255,.72);--faint:rgba(255,255,255,.5);--line:rgba(255,255,255,.14);--spoiler:#ffccd9;--accent:#ff8fb1;--star:#ffe7a3;--ink:#23142d;--paper:#f9ecf0;--rose:#8a2f55;--field:#121a30;--display:"SB AggroOTF","Pretendard Variable",Pretendard,sans-serif}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{width:375px;margin:0 auto;background:var(--night);color:#fff;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,p,ul,ol{margin:0;padding:0}
+button,input{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hd{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 20px}
+.logo{font-family:var(--display);font-size:24px;line-height:1;color:var(--spoiler)}
+.hd div{display:flex}
+.ic{display:grid;place-items:center;width:44px;height:44px;border:0;background:none}
+main{padding:12px 20px 56px;overflow-x:clip}
+main>section+section{margin-top:48px}
+h1{font-family:var(--display);font-size:32px;line-height:1.2;font-weight:400;word-break:keep-all;overflow-wrap:anywhere}
+h2{font-family:var(--display);font-size:24px;line-height:1.3;font-weight:400}
+.lead{margin-top:8px;font-size:15px;line-height:1.55;color:var(--haze)}
+.sub{margin-top:12px;padding-left:14px;border-left:3px solid var(--spoiler);font-size:17px;line-height:1.6}
+/* 1 스크린 + 좌석 배치도 */
+.map{display:flex;flex-direction:column;align-items:center;margin-top:16px}
+.scr{position:relative;width:88%;height:34px;border-top:3px solid rgba(255,231,200,.85);border-radius:50% 50% 0 0/100% 100% 0 0;filter:drop-shadow(0 0 10px rgba(255,220,190,.55))}
+.scr::after{content:"";position:absolute;top:4px;left:-10%;right:-10%;height:150px;background:radial-gradient(ellipse 50% 100% at 50% 0,rgba(255,226,200,.16),transparent 75%);pointer-events:none}
+.scl{position:relative;margin-top:8px;font-size:10px;font-weight:700;letter-spacing:.3em;color:var(--faint)}
+.cap{position:relative;max-width:300px;margin-top:12px;font-size:16px;line-height:1.6;text-align:center}
+.rows{display:flex;flex-direction:column;gap:0;margin-top:14px}
+.row{display:flex;align-items:center;gap:5px;min-height:44px;padding:0 2px;border-radius:10px;color:inherit;text-decoration:none}
+a.row .rl{color:var(--accent)}
+a.row:hover,a.row:active{background:rgba(255,204,217,.08)}
+a.row:focus-visible{outline:2px solid var(--star);outline-offset:1px}
+.cr li{scroll-margin-top:16px}
+.cr li.fold{display:none}
+.cr.open li.fold{display:block}
+.cr li.gap{margin-top:18px;border-top:1px dashed rgba(255,204,217,.3)}
+.cr.open li.gap{margin-top:0;border-top:0}
+.morebtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:48px;margin-top:12px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:none;font-family:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer}
+.morebtn:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+.morebtn[hidden]{display:none}
+
+.cr li:target>.rw{background:rgba(255,204,217,.08)}
+.rl{width:14px;font-size:11px;font-weight:700;color:var(--faint);text-align:center}
+.s{display:grid;place-items:center;width:30px;height:26px;border-radius:7px 7px 3px 3px;background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);font-size:12px;font-style:normal;font-weight:700;color:#fff}
+.s.on{background:rgba(255,255,255,.26)}
+.s.me{background:var(--spoiler);color:var(--ink);box-shadow:0 0 0 2px var(--accent),0 0 18px rgba(255,143,177,.55)}
+.s.more{background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);font-size:11px;color:var(--haze)}
+.mine{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:13px;font-weight:700;color:var(--accent)}
+.mine i{width:12px;height:10px;border-radius:4px 4px 2px 2px;background:var(--spoiler);box-shadow:0 0 0 1.5px var(--accent)}
+.leg{margin-top:10px;font-size:13px;text-align:center;color:var(--haze)}
+.jump{display:flex;align-items:center;justify-content:center;min-height:44px;font-size:14px;text-decoration:underline;text-underline-offset:3px;color:var(--haze)}
+.info{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;min-height:48px;margin-top:4px;padding:12px 0;border-top:1px solid rgba(255,204,217,.3);border-bottom:1px solid rgba(255,204,217,.15);font-size:14px;color:var(--haze)}
+.info b{font-size:15px;color:#fff}
+.info i{width:1px;height:14px;background:var(--line)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;padding:0 16px;border:0;border-radius:12px;background:var(--spoiler);color:var(--ink);font-family:inherit;font-size:17px;font-weight:800;line-height:1.3;cursor:pointer}
+.btn.ghost{border:1.5px solid var(--spoiler);background:transparent;color:#fff}
+.btn small{font-size:13px;font-weight:800;color:var(--ink)}
+/* 관람권 */
+.tk{--stub:88px;position:relative;display:grid;grid-template-columns:minmax(0,1fr) var(--stub);margin-top:20px;color:var(--ink);transform:rotate(-.6deg);filter:drop-shadow(0 16px 32px rgba(216,166,255,.2))}
+.tk.mini{--stub:72px;transform:none}
+.tk::before,.tk::after{content:"";position:absolute;z-index:1;right:calc(var(--stub) - 8px);width:16px;height:16px;border-radius:50%;background:var(--night)}
+.tk::before{top:-8px}
+.tk::after{bottom:-8px}
+.tk .bd{position:relative;min-width:0;padding:16px 16px 16px 22px;background:var(--paper);border-radius:10px 0 0 10px}
+.tk .bd::before{content:"";position:absolute;top:50%;left:-7px;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--night)}
+.tk .kd{font-family:var(--display);font-size:13px;line-height:1.35;color:var(--rose)}
+.tk .tl{margin-top:4px;font-size:18px;font-weight:800;line-height:1.35}
+.tk .sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px 8px;border-left:2px dashed rgba(35,20,45,.3);border-radius:0 10px 10px 0;background:var(--paper);font-size:12px;font-weight:800;color:var(--rose);transform-origin:0 0}
+.tk.torn .sb{transform:translate(14px,6px) rotate(5deg)}
+.tk .sb strong{font-family:var(--display);font-size:26px;font-weight:400;line-height:1}
+.tk .score{margin-top:10px;font-family:var(--display);font-size:56px;line-height:1;color:var(--rose)}
+.tk .score small{margin-left:2px;font-size:18px}
+.bc{width:52px;height:26px;background-image:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 7px,var(--ink) 7px 10px,transparent 10px 11px,var(--ink) 11px 12px,transparent 12px 15px)}
+.tk.mini .bc{width:44px}
+/* 근거 */
+.fx{margin-top:24px;border-top:1px solid rgba(255,204,217,.3)}
+.fx summary{display:flex;align-items:center;justify-content:space-between;min-height:48px;font-size:15px;font-weight:700;list-style:none;cursor:pointer}
+.fx summary::-webkit-details-marker{display:none}
+.fx ul{margin:0;padding:0;list-style:none}
+.fx li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:12px 0;border-top:1px solid rgba(255,204,217,.15)}
+.fx b{font-size:15px}
+.fx p{grid-column:1;font-size:14px;line-height:1.5;color:var(--haze)}
+.fx em{grid-column:2;grid-row:1;font-style:normal;font-size:15px;font-weight:800;color:var(--accent)}
+.fx em.neg{color:var(--haze)}
+/* 4 크레딧 */
+.grp{margin-top:28px;font-family:var(--display);font-size:18px;font-weight:400;line-height:1.3;color:#fff}
+.cr{margin:8px 0 0;padding:0;list-style:none;border-top:1px solid rgba(255,204,217,.3)}
+.cr li{border-bottom:1px solid rgba(255,204,217,.15)}
+.rw{display:grid;grid-template-columns:36px minmax(0,1fr) auto 20px;column-gap:8px;align-items:baseline;width:100%;min-height:64px;padding:14px 0;border:0;background:none;text-align:left;cursor:pointer}
+.rw::after{content:"";grid-column:4;grid-row:1/3;align-self:center;justify-self:end;width:8px;height:8px;margin-right:4px;border-top:2px solid rgba(255,255,255,.62);border-right:2px solid rgba(255,255,255,.62);transform:rotate(45deg)}
+.rk{font-size:14px;font-weight:700;color:var(--faint);font-variant-numeric:tabular-nums}
+.nm{min-width:0;font-size:16px;font-weight:700;overflow-wrap:anywhere}
+.pt{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.ln{grid-column:2/4;margin-top:4px;font-size:14px;line-height:1.5;color:var(--haze)}
+/* 베스트 관객: 1위 영사 빔 패널 + 2·3위 나란히(한 틀). 앵커 id는 각 버튼에 둔다 */
+.best{margin-top:12px;border:1px solid rgba(255,204,217,.32);border-radius:16px;overflow:hidden;background:rgba(255,204,217,.04)}
+.best [id]{scroll-margin-top:16px}
+.best :target{background:rgba(255,204,217,.1)}
+.chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:7px 7px 3px 3px;background:rgba(255,255,255,.16);font-size:12px;font-weight:800;color:#fff}
+.bh{position:relative;display:block;width:100%;padding:20px 44px 20px 20px;border:0;background:none;text-align:left;cursor:pointer;overflow:hidden}
+.bh::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,226,200,.24),rgba(255,226,200,0) 88%);clip-path:polygon(28% 0,72% 0,100% 100%,0 100%);pointer-events:none}
+.bh>*{position:relative}
+.bh::after,.bq::after{content:"";position:absolute;right:18px;top:50%;width:8px;height:8px;margin-top:-4px;border-top:2px solid rgba(255,255,255,.62);border-right:2px solid rgba(255,255,255,.62);transform:rotate(45deg)}
+.bk{display:flex;align-items:center;gap:8px}
+.bk b{font-family:var(--display);font-size:20px;font-weight:400;line-height:1.2;color:var(--accent)}
+.bn{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 12px;margin-top:10px}
+.bname{min-width:0;font-family:var(--display);font-size:30px;line-height:1.2;overflow-wrap:anywhere}
+.bsc{font-family:var(--display);font-size:40px;line-height:1;color:var(--spoiler)}
+.bsc small{margin-left:2px;font-family:"Pretendard Variable",Pretendard,sans-serif;font-size:16px;font-weight:800}
+.bln{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:12px;font-size:15px;line-height:1.55;color:var(--haze)}
+.bp{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(255,204,217,.22)}
+.bp.one{grid-template-columns:1fr}
+.bq{position:relative;min-width:0;min-height:92px;padding:14px 30px 14px 16px;border:0;background:none;text-align:left;cursor:pointer}
+.bq+.bq{border-left:1px solid rgba(255,204,217,.22)}
+.bq::after{right:14px}
+.bq .bk b{font-size:16px}
+.bqn{display:block;margin-top:8px;font-family:var(--display);font-size:20px;line-height:1.25;overflow-wrap:anywhere}
+.bqs{display:block;margin-top:2px;font-size:17px;font-weight:800;color:var(--spoiler)}
+.bq.me{background:rgba(255,204,217,.14);box-shadow:inset 0 3px 0 var(--accent)}
+.cr .me{background:rgba(255,204,217,.12);box-shadow:inset 3px 0 0 var(--accent)}
+.me .rw{padding-left:12px}
+.tag{margin-left:6px;padding:1px 6px;border-radius:4px;background:var(--spoiler);font-size:12px;font-style:normal;font-weight:800;color:var(--ink)}
+.sn{margin-left:8px;font-size:12px;font-weight:700;color:var(--faint)}
+.est{margin-left:6px;font-size:12px;font-weight:500;color:var(--faint)}
+/* 5 시간표 */
+.tb{margin:24px 0 0;padding:0;list-style:none;border-top:1px solid rgba(255,204,217,.3)}
+.tr{display:grid;grid-template-columns:minmax(0,1fr) auto 16px;align-items:center;gap:12px;min-height:56px;padding:8px 0;border-bottom:1px solid rgba(255,204,217,.15)}
+.tr b{font-size:16px}
+.tr span{font-size:14px;font-weight:700;color:var(--haze)}
+</style>
+</head>
+<body>
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div>
+    <button class="ic" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+    <button class="ic" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <!--
+    1 좌석 배정 (many, 나=Alexandra 46점). 열 = 점수 구간 A>=90 B78-89 C66-77 D54-65 E42-53 F<=41,
+    열 안에서 점수순(동점은 목록 순)으로 5→4→6→3→7→2→8→1→9.
+    A(3): 로운97=A5, 하준93=A4, 한결92=A6
+    B(9): 수아84=B5, 세아84=B4, 다인83=B6, 도현83=B3, 은우81=B7, 현우81=B2, 유나80=B8, 윤슬80=B1, 건우78=B9
+    C(9): 서연77=C5, 나연76=C4, 채원75=C6, 태린74=C3, 지안73=C7, 서진72=C2, 이안71=C8, 태오69=C1, 아린69=C9
+    D(10, 넘침): 가은65=D5, 준서63=D4, 도윤62=D6, 민지60=D3, 하은60=D7, 지호60=D2, 라온60=D8, 규리60=D1,
+                 소율57=9번째, 시우56=10번째 -> D9 자리를 "+2"로 대체(소율·시우는 열 단위로만 표기)
+    E(9): 주원53=E5, 온유53=E4, 서윤51=E6, 지우49=E3, 다온49=E7, 민호47=E2, Alexandra46=E8(나), 예준45=E1, 하린42=E9
+    F(0): 빈 열
+  -->
+  <section class="hero">
+    <h1>지수님의 시사회</h1>
+    <div class="map">
+      <div class="scr" aria-hidden="true"></div>
+      <span class="scl" aria-hidden="true">SCREEN</span>
+      <p class="cap">한 자리를 오래 다져왔어요. 큰 결정은 주로 다른 사람한테 맡기는 편이에요.</p>
+      <div class="rows" role="group" aria-label="좌석 배치도. A열 3명, B열 9명, C열 9명, D열 10명, E열 9명이 앉아 있어요. D열은 자리가 모자라 2명이 더 있어요. 내 자리는 E8이에요.">
+        <a class="row" href="#row-A" aria-label="A열 관객 3명, 엔딩 크레딧에서 보기"><span class="rl" aria-hidden="true">A</span><i aria-hidden="true" class="s"></i><i aria-hidden="true" class="s"></i><i aria-hidden="true" class="s"></i><i aria-hidden="true" class="s on">하</i><i aria-hidden="true" class="s on">로</i><i aria-hidden="true" class="s on">한</i><i aria-hidden="true" class="s"></i><i aria-hidden="true" class="s"></i><i aria-hidden="true" class="s"></i></a>
+        <a class="row" href="#row-B" aria-label="B열 관객 9명, 엔딩 크레딧에서 보기"><span class="rl" aria-hidden="true">B</span><i aria-hidden="true" class="s on">윤</i><i aria-hidden="true" class="s on">현</i><i aria-hidden="true" class="s on">도</i><i aria-hidden="true" class="s on">세</i><i aria-hidden="true" class="s on">수</i><i aria-hidden="true" class="s on">다</i><i aria-hidden="true" class="s on">은</i><i aria-hidden="true" class="s on">유</i><i aria-hidden="true" class="s on">건</i></a>
+        <a class="row" href="#row-C" aria-label="C열 관객 9명, 엔딩 크레딧에서 보기"><span class="rl" aria-hidden="true">C</span><i aria-hidden="true" class="s on">태</i><i aria-hidden="true" class="s on">서</i><i aria-hidden="true" class="s on">태</i><i aria-hidden="true" class="s on">나</i><i aria-hidden="true" class="s on">서</i><i aria-hidden="true" class="s on">채</i><i aria-hidden="true" class="s on">지</i><i aria-hidden="true" class="s on">이</i><i aria-hidden="true" class="s on">아</i></a>
+        <a class="row" href="#row-D" aria-label="D열 관객 10명, 엔딩 크레딧에서 보기"><span class="rl" aria-hidden="true">D</span><i aria-hidden="true" class="s on">규</i><i aria-hidden="true" class="s on">지</i><i aria-hidden="true" class="s on">민</i><i aria-hidden="true" class="s on">준</i><i aria-hidden="true" class="s on">가</i><i aria-hidden="true" class="s on">도</i><i aria-hidden="true" class="s on">하</i><i aria-hidden="true" class="s on">라</i><i aria-hidden="true" class="s more">+2</i></a>
+        <a class="row" href="#row-E" aria-label="E열 관객 9명, 엔딩 크레딧에서 보기"><span class="rl" aria-hidden="true">E</span><i aria-hidden="true" class="s on">예</i><i aria-hidden="true" class="s on">민</i><i aria-hidden="true" class="s on">지</i><i aria-hidden="true" class="s on">온</i><i aria-hidden="true" class="s on">주</i><i aria-hidden="true" class="s on">서</i><i aria-hidden="true" class="s on">다</i><i aria-hidden="true" class="s me">A</i><i aria-hidden="true" class="s on">하</i></a>
+        <div class="row"><span class="rl">F</span><i class="s"></i><i class="s"></i><i class="s"></i><i class="s"></i><i class="s"></i><i class="s"></i><i class="s"></i><i class="s"></i><i class="s"></i></div>
+      </div>
+      <p class="mine"><i aria-hidden="true"></i>내 자리 · E8</p>
+    </div>
+    <p class="leg">스크린에 가까울수록 궁합 점수가 높아요</p>
+    <p class="leg" style="margin-top:4px">열을 누르면 그 열 관객을 크레딧에서 보여 드려요</p>
+    <div class="info"><b>관객 40명</b><i aria-hidden="true"></i><span>전체 128번째로 붐비는 시사회</span></div>
+  </section>
+
+  <!-- 2 내 관람권 -->
+  <section>
+    <h2>지수님과 나의 궁합</h2>
+    <div class="tk torn">
+      <div class="bd"><div class="kd">내 관람권</div><div class="tl">Alexandra</div><div class="score">46<small>점</small></div></div>
+      <div class="sb"><span>좌석</span><strong>E8</strong><i class="bc"></i></div>
+    </div>
+    <p class="sub" style="margin-top:28px">겉으론 부딪힐 일이 없어 보여도 중요한 순간엔 뜻이 갈리는 관계예요. 큰 결정 앞에서는 서로의 의견을 존중해 주세요.</p>
+    <details class="fx" open>
+      <summary>궁합 근거<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.72)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></summary>
+      <ul>
+        <li><b>띠 관계</b><p>특별한 상성 없음 — 담백한 관계 (뱀-쥐)</p></li>
+        <li><b>오행 기운</b><em class="neg">−11</em><p>상극 — 한쪽이 다른 쪽을 조이는 조합 (목-토)</p></li>
+        <li><b>명궁 자리</b><em class="neg">−4</em><p>명궁 무관계 — 자리끼리 얽힘 없음</p></li>
+        <li><b>친구 자리</b><em>+1</em><p>서로를 친구로 편하게 받아들이는 자리</p></li>
+        <li><b>서로에게 주는 영향</b><em class="neg">−3</em><p>상대의 예민한 지점이 내 성향과 겹침</p></li>
+        <li><b>태어난 해 기운</b><em>+5</em><p>천간합 — 태어난 해의 기운이 서로 맞물림</p></li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- 4 엔딩 크레딧 (40줄 전부, 좌석 번호 병기) -->
+  <section id="credits">
+    <h2>엔딩 크레딧</h2>
+    <p class="grp">베스트 관객</p>
+    <!--
+      1위=영사 빔 패널(.bh), 2·3위=한 줄 두 칸(.bq). 한줄평은 1위만 노출:
+      이 데이터는 1~3위 한줄평이 같은 문장이라, 세 번 반복하지 않고 한 번만 보여 준다.
+      관객 1명이면 .bp 없이 .bh만, 2명이면 <div class="bp one">에 .bq 하나.
+      앵커: row-A=1위(.bh). 2·3위는 A열이 같아 열 링크 대상이 1위로 통일된다.
+    -->
+    <div class="best">
+      <button class="bh" id="row-A" type="button" aria-label="1위 로운 A5 97점, 자세히 보기"><span class="bk"><b>1위</b><span class="chip">A5</span></span><span class="bn"><span class="bname">로운</span><span class="bsc">97<small>점</small></span></span><span class="bln">만나면 시간 가는 줄 모르실 거예요. 각자 하려던 일도 같이 있으면 이상하게 더 술술 풀리거든요.</span></button>
+      <div class="bp">
+        <button class="bq" type="button" aria-label="2위 하준 A4 93점, 자세히 보기"><span class="bk"><b>2위</b><span class="chip">A4</span></span><span class="bqn">하준</span><span class="bqs">93점</span></button>
+        <button class="bq" type="button" aria-label="3위 한결 A6 92점, 자세히 보기"><span class="bk"><b>3위</b><span class="chip">A6</span></span><span class="bqn">한결</span><span class="bqs">92점</span></button>
+      </div>
+    </div>
+    <p class="grp">그 외 관객</p>
+    <ul class="cr" id="credits-list">
+      <li id="row-B"><button class="rw" type="button" aria-label="4위 수아 B5 84점, 자세히 보기"><span class="rk">4</span><span class="nm">수아<small class="sn">B5</small></span><span class="pt">84점</span><span class="ln">거울을 마주 본 것 같은 사이예요. 잘 통하는 만큼 약한 구석까지 똑같이 닮아 있더라고요.</span></button></li>
+      <li><button class="rw" type="button" aria-label="5위 세아 B4 84점, 자세히 보기"><span class="rk">5</span><span class="nm">세아<small class="sn">B4</small></span><span class="pt">84점</span><span class="ln">거울을 마주 본 것 같은 사이예요. 잘 통하는 만큼 약한 구석까지 똑같이 닮아 있더라고요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="6위 다인 B6 83점, 자세히 보기"><span class="rk">6</span><span class="nm">다인<small class="sn">B6</small></span><span class="pt">83점</span><span class="ln">붙어 있을 때 자연스러운 짝처럼 느껴져요. 편안함을 오래 유지하고 싶다면 가끔은 새로운 것도 같이 해보세요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="7위 도현 B3 83점, 자세히 보기"><span class="rk">7</span><span class="nm">도현<small class="sn">B3</small></span><span class="pt">83점</span><span class="ln">딱히 접점이 없어 보여도 지향하는 방향은 은근히 비슷한 관계예요. 그래서인지 같이 있으면 묘하게 시너지가 나더라고요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="8위 은우 B7 81점, 자세히 보기"><span class="rk">8</span><span class="nm">은우<small class="sn">B7</small></span><span class="pt">81점</span><span class="ln">딱히 접점이 없어 보여도 지향하는 방향은 은근히 비슷한 관계예요. 그래서인지 같이 있으면 묘하게 시너지가 나더라고요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="9위 현우 B2 81점, 자세히 보기"><span class="rk">9</span><span class="nm">현우<small class="sn">B2</small></span><span class="pt">81점</span><span class="ln">거울을 마주 본 것 같은 사이예요. 잘 통하는 만큼 약한 구석까지 똑같이 닮아 있더라고요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="10위 유나 B8 80점, 자세히 보기"><span class="rk">10</span><span class="nm">유나<small class="sn">B8</small></span><span class="pt">80점</span><span class="ln">옆에 있으면 그냥 편해요. 편하기만 한 것도 아니라서, 서로를 한 단계씩 올려주기도 하거든요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="11위 윤슬 B1 80점, 자세히 보기"><span class="rk">11</span><span class="nm">윤슬<small class="sn">B1</small></span><span class="pt">80점</span><span class="ln">옆에 있으면 그냥 편해요. 편하기만 한 것도 아니라서, 서로를 한 단계씩 올려주기도 하거든요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="12위 건우 B9 78점 예상치, 자세히 보기"><span class="rk">12</span><span class="nm">건우<small class="sn">B9</small><small class="est">예상치</small></span><span class="pt">78점</span><span class="ln">만나면 시간 가는 줄 모르실 거예요. 각자 하려던 일도 같이 있으면 이상하게 더 술술 풀리거든요.</span></button></li>
+      <li id="row-C" class="fold"><button class="rw" type="button" aria-label="13위 서연 C5 77점, 자세히 보기"><span class="rk">13</span><span class="nm">서연<small class="sn">C5</small></span><span class="pt">77점</span><span class="ln">옆에 있으면 그냥 편해요. 편하기만 한 것도 아니라서, 서로를 한 단계씩 올려주기도 하거든요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="14위 나연 C4 76점, 자세히 보기"><span class="rk">14</span><span class="nm">나연<small class="sn">C4</small></span><span class="pt">76점</span><span class="ln">만날 때마다 서로한테 뭔가 하나씩 바뀌는 사이예요. 안정보다는 변화가 어울리는 조합이랄까요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="15위 채원 C6 75점, 자세히 보기"><span class="rk">15</span><span class="nm">채원<small class="sn">C6</small></span><span class="pt">75점</span><span class="ln">결이 잘 맞아서 오래 볼수록 편해지는 조합이에요. 다만 새로운 자극은 다른 데서 채우는 편이 좋아요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="16위 태린 C3 74점 예상치, 자세히 보기"><span class="rk">16</span><span class="nm">태린<small class="sn">C3</small><small class="est">예상치</small></span><span class="pt">74점</span><span class="ln">만나면 시간 가는 줄 모르실 거예요. 각자 하려던 일도 같이 있으면 이상하게 더 술술 풀리거든요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="17위 지안 C7 73점, 자세히 보기"><span class="rk">17</span><span class="nm">지안<small class="sn">C7</small></span><span class="pt">73점</span><span class="ln">결이 잘 맞아서 오래 볼수록 편해지는 조합이에요. 다만 새로운 자극은 다른 데서 채우는 편이 좋아요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="18위 서진 C2 72점, 자세히 보기"><span class="rk">18</span><span class="nm">서진<small class="sn">C2</small></span><span class="pt">72점</span><span class="ln">옆에 있으면 그냥 편해요. 편하기만 한 것도 아니라서, 서로를 한 단계씩 올려주기도 하거든요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="19위 이안 C8 71점, 자세히 보기"><span class="rk">19</span><span class="nm">이안<small class="sn">C8</small></span><span class="pt">71점</span><span class="ln">결이 잘 맞아서 오래 볼수록 편해지는 조합이에요. 다만 새로운 자극은 다른 데서 채우는 편이 좋아요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="20위 태오 C1 69점, 자세히 보기"><span class="rk">20</span><span class="nm">태오<small class="sn">C1</small></span><span class="pt">69점</span><span class="ln">가는 방향은 같은데 속도가 서로 달라요. 한 명이 밀어붙이면 다른 한 명이 브레이크를 잡아주는 식이고요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="21위 아린 C9 69점 예상치, 자세히 보기"><span class="rk">21</span><span class="nm">아린<small class="sn">C9</small><small class="est">예상치</small></span><span class="pt">69점</span><span class="ln">겉으론 부딪힐 일이 없어 보여도 중요한 순간엔 뜻이 갈리는 관계예요. 큰 결정 앞에서는 서로의 의견을 존중해 주세요.</span></button></li>
+      <li id="row-D" class="fold"><button class="rw" type="button" aria-label="22위 가은 D5 65점, 자세히 보기"><span class="rk">22</span><span class="nm">가은<small class="sn">D5</small></span><span class="pt">65점</span><span class="ln">특별한 연결고리는 없어도 편하게 흘러가는 관계예요. 애쓰지 않아도 오래 볼수록 편안해지는 조합이에요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="23위 준서 D4 63점 예상치, 자세히 보기"><span class="rk">23</span><span class="nm">준서<small class="sn">D4</small><small class="est">예상치</small></span><span class="pt">63점</span><span class="ln">겹치는 부분은 딱히 없어도 필요할 때 꼭 곁에 있어 주는 관계예요. 오래 볼수록 진가를 알게 되는 조합이에요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="24위 도윤 D6 62점 예상치, 자세히 보기"><span class="rk">24</span><span class="nm">도윤<small class="sn">D6</small><small class="est">예상치</small></span><span class="pt">62점</span><span class="ln">겹치는 부분은 딱히 없어도 필요할 때 꼭 곁에 있어 주는 관계예요. 오래 볼수록 진가를 알게 되는 조합이에요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="25위 민지 D3 60점, 자세히 보기"><span class="rk">25</span><span class="nm">민지<small class="sn">D3</small></span><span class="pt">60점</span><span class="ln">자리는 닮았는데 기 싸움이 은근히 있는 사이예요. 취향은 비슷해도 방식에서 자꾸 부딪힐 겁니다.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="26위 하은 D7 60점, 자세히 보기"><span class="rk">26</span><span class="nm">하은<small class="sn">D7</small></span><span class="pt">60점</span><span class="ln">가는 방향은 같은데 속도가 서로 달라요. 한 명이 밀어붙이면 다른 한 명이 브레이크를 잡아주는 식이고요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="27위 지호 D2 60점, 자세히 보기"><span class="rk">27</span><span class="nm">지호<small class="sn">D2</small></span><span class="pt">60점</span><span class="ln">자리는 닮았는데 기 싸움이 은근히 있는 사이예요. 취향은 비슷해도 방식에서 자꾸 부딪힐 겁니다.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="28위 라온 D8 60점, 자세히 보기"><span class="rk">28</span><span class="nm">라온<small class="sn">D8</small></span><span class="pt">60점</span><span class="ln">만날 때마다 서로한테 뭔가 하나씩 바뀌는 사이예요. 안정보다는 변화가 어울리는 조합이랄까요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="29위 규리 D1 60점, 자세히 보기"><span class="rk">29</span><span class="nm">규리<small class="sn">D1</small></span><span class="pt">60점</span><span class="ln">자리는 닮았는데 기 싸움이 은근히 있는 사이예요. 취향은 비슷해도 방식에서 자꾸 부딪힐 겁니다.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="30위 소율 D열 57점 예상치, 자세히 보기"><span class="rk">30</span><span class="nm">소율<small class="sn">D열</small><small class="est">예상치</small></span><span class="pt">57점</span><span class="ln">사소한 부분에서 자꾸 어긋나요. 약속 시간이나 정산 같은 건 처음부터 딱 정해 두세요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="31위 시우 D열 56점 예상치, 자세히 보기"><span class="rk">31</span><span class="nm">시우<small class="sn">D열</small><small class="est">예상치</small></span><span class="pt">56점</span><span class="ln">같이 있으면 계획이 자꾸 틀어져요. 큰일을 함께 벌이기보다 가볍게 만나는 쪽이 잘 맞고요.</span></button></li>
+      <li id="row-E" class="fold"><button class="rw" type="button" aria-label="32위 주원 E5 53점, 자세히 보기"><span class="rk">32</span><span class="nm">주원<small class="sn">E5</small></span><span class="pt">53점</span><span class="ln">특별한 연결고리는 없어도 편하게 흘러가는 관계예요. 애쓰지 않아도 오래 볼수록 편안해지는 조합이에요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="33위 온유 E4 53점, 자세히 보기"><span class="rk">33</span><span class="nm">온유<small class="sn">E4</small></span><span class="pt">53점</span><span class="ln">특별한 연결고리는 없어도 편하게 흘러가는 관계예요. 애쓰지 않아도 오래 볼수록 편안해지는 조합이에요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="34위 서윤 E6 51점, 자세히 보기"><span class="rk">34</span><span class="nm">서윤<small class="sn">E6</small></span><span class="pt">51점</span><span class="ln">닮은 만큼 같은 지점에서 자꾸 걸리는 사이예요. 그럴 땐 한 번씩 거리를 둬 보세요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="35위 지우 E3 49점, 자세히 보기"><span class="rk">35</span><span class="nm">지우<small class="sn">E3</small></span><span class="pt">49점</span><span class="ln">닮은 만큼 같은 지점에서 자꾸 걸리는 사이예요. 그럴 땐 한 번씩 거리를 둬 보세요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="36위 다온 E7 49점 예상치, 자세히 보기"><span class="rk">36</span><span class="nm">다온<small class="sn">E7</small><small class="est">예상치</small></span><span class="pt">49점</span><span class="ln">가까워질수록 닮은 지점에서 자꾸 걸리는 사이예요. 안 맞아서가 아니라 비슷해서 생기는 마찰이라, 한번 넘기고 나면 서로 한 뼘씩 자라 있고요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="37위 민호 E2 47점, 자세히 보기"><span class="rk">37</span><span class="nm">민호<small class="sn">E2</small></span><span class="pt">47점</span><span class="ln">사소한 부분에서 자꾸 어긋나요. 약속 시간이나 정산 같은 건 처음부터 딱 정해 두세요.</span></button></li>
+      <li class="me gap"><button class="rw" type="button" aria-label="38위 Alexandra, 나, E8 46점, 자세히 보기"><span class="rk">38</span><span class="nm">Alexandra<em class="tag">나</em><small class="sn">E8</small></span><span class="pt">46점</span><span class="ln">겉으론 부딪힐 일이 없어 보여도 중요한 순간엔 뜻이 갈리는 관계예요. 큰 결정 앞에서는 서로의 의견을 존중해 주세요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="39위 예준 E1 45점, 자세히 보기"><span class="rk">39</span><span class="nm">예준<small class="sn">E1</small></span><span class="pt">45점</span><span class="ln">사소한 부분에서 자꾸 어긋나요. 약속 시간이나 정산 같은 건 처음부터 딱 정해 두세요.</span></button></li>
+      <li class="fold"><button class="rw" type="button" aria-label="40위 하린 E9 42점, 자세히 보기"><span class="rk">40</span><span class="nm">하린<small class="sn">E9</small></span><span class="pt">42점</span><span class="ln">닮은 만큼 같은 지점에서 자꾸 걸리는 사이예요. 그럴 땐 한 번씩 거리를 둬 보세요.</span></button></li>
+    </ul>
+    <button class="morebtn" id="credits-more" type="button" aria-controls="credits-list">관객 34명 더보기<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  </section>
+
+  <!-- 5 다른 운세 -->
+  <section>
+    <h2>다른 운세도 보러 가기</h2>
+    <a class="btn" href="#" style="margin-top:20px">이번엔 내 시사회 열기 <small>무료</small></a>
+    <ul class="tb">
+      <li><a class="tr" href="#"><b>인생 운세</b><span>990원</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a class="tr" href="#"><b>올해 운세</b><span>990원</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a class="tr" href="#"><b>내년 운세</b><span>990원</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a class="tr" href="#"><b>궁합 운세</b><span>990원</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+    </ul>
+  </section>
+
+  <!-- 6 공유 -->
+  <section>
+    <h2>초대장 보내기</h2>
+    <p class="lead">40명의 관객이 입장했어요</p>
+    <div class="tk mini" aria-hidden="true">
+      <div class="bd"><div class="kd">초대장</div><div class="tl">지수님의 시사회</div></div>
+      <div class="sb"><i class="bc"></i></div>
+    </div>
+    <button class="btn ghost" type="button" style="margin-top:20px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>초대장 보내기</button>
+  </section>
+</main>
+<script>
+(() => {
+  const list = document.querySelector('.cr:not(.top)');
+  const btn = document.getElementById('credits-more');
+  if (!list || !btn) return;
+  const open = () => { list.classList.add('open'); btn.hidden = true; };
+  btn.addEventListener('click', open);
+  const reveal = () => { const t = location.hash && document.querySelector(location.hash); if (t && t.classList.contains('fold')) { open(); t.scrollIntoView(); } };
+  window.addEventListener('hashchange', reveal); reveal();
+})();
+</script>
+</body>
+</html>
