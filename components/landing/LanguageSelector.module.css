@@ -1,9 +1,44 @@
-.button {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+/* 헤더 아이콘 버튼 — 터치 타겟 44px, 메뉴 버튼보다 한 단계 흐리게 */
+.iconButton {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .iconButton:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+  }
+}
+
+/* 메뉴 하단 매표소 안내 줄 */
+.labeledButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .labeledButton:hover {
+    color: #ffffff;
+  }
 }
