@@ -65,6 +65,25 @@ export const saveLandingBirthDraft = (
   }
 };
 
+const parseDraft = (
+  raw: string | null,
+  now: number
+): LandingBirthDraft | null => {
+  if (!raw) return null;
+
+  const parsed: unknown = JSON.parse(raw);
+  if (!isStoredDraft(parsed)) return null;
+  if (now - parsed.savedAt > LANDING_BIRTH_DRAFT_TTL_MS) return null;
+
+  return {
+    birthDate: parsed.birthDate,
+    birthTime: parsed.birthTime,
+    birthTimeUnknown: parsed.birthTimeUnknown,
+    calendarType: parsed.calendarType,
+    gender: parsed.gender,
+  };
+};
+
 /** 보관된 입력값을 꺼내고 지운다. 없거나 만료됐거나 형식이 깨졌으면 null */
 export const consumeLandingBirthDraft = (
   storage: DraftStorage | null = getStorage(),
@@ -74,19 +93,23 @@ export const consumeLandingBirthDraft = (
   try {
     const raw = storage.getItem(LANDING_BIRTH_DRAFT_KEY);
     storage.removeItem(LANDING_BIRTH_DRAFT_KEY);
-    if (!raw) return null;
+    return parseDraft(raw, now);
+  } catch {
+    return null;
+  }
+};
 
-    const parsed: unknown = JSON.parse(raw);
-    if (!isStoredDraft(parsed)) return null;
-    if (now - parsed.savedAt > LANDING_BIRTH_DRAFT_TTL_MS) return null;
-
-    return {
-      birthDate: parsed.birthDate,
-      birthTime: parsed.birthTime,
-      birthTimeUnknown: parsed.birthTimeUnknown,
-      calendarType: parsed.calendarType,
-      gender: parsed.gender,
-    };
+/**
+ * 보관된 입력값을 지우지 않고 읽기만 한다 (로그인 화면의 "방금 그린 명반" 안내용).
+ * 실제로 꺼내 쓰는 것은 로그인 뒤 첫 프로필 입력(consumeLandingBirthDraft)이다.
+ */
+export const peekLandingBirthDraft = (
+  storage: DraftStorage | null = getStorage(),
+  now: number = Date.now()
+): LandingBirthDraft | null => {
+  if (!storage) return null;
+  try {
+    return parseDraft(storage.getItem(LANDING_BIRTH_DRAFT_KEY), now);
   } catch {
     return null;
   }

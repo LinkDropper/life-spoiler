@@ -1,106 +1,191 @@
+/* 로그인 = 상영관에 내 자리 잡기. 랜딩·홈과 같은 밤색 바탕 */
 .page {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  height: 100vh;
   width: 100%;
   max-width: 480px;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 16px;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  background: #0c1220;
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  overflow-wrap: break-word;
 }
 
-.logoWrapper {
+.page:lang(ko) {
+  word-break: keep-all;
+}
+
+@supports (min-height: 100dvh) {
+  .page {
+    min-height: 100dvh;
+  }
+}
+
+.top {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 10px 0 20px;
+}
+
+.close {
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: #ffffff;
+}
+
+@media (hover: hover) {
+  .close:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.main {
+  display: flex;
   flex: 1;
-  gap: 12px;
-  min-height: 0;
+  flex-direction: column;
+  padding: 18px 20px calc(22px + env(safe-area-inset-bottom));
 }
 
-.buttonGroup {
+.copy {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  margin-top: 26px;
+  padding: 0 4px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.title:lang(ja) {
+  font-family: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  font-weight: 800;
+}
+
+.description {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* 랜딩 입력값 이어 보기 · 로그인 실패 안내 (상태 = 금) */
+.notice {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 231, 163, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.4);
+}
+
+.noticeTitle {
+  display: flex;
   align-items: center;
-  align-self: stretch;
-  gap: 20px;
-  width: 100%;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffe7a3;
 }
 
-.buttonList {
+.noticeDot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.draftSummary {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.noticeBody {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.actions {
   display: flex;
   flex-direction: column;
-  align-self: stretch;
-  gap: 12px;
-  width: 100%;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 24px;
 }
 
+/* 카카오·구글 버튼은 각 사의 표준 색·문구를 지킨다 */
 .kakaoButton,
 .googleButton {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  align-self: stretch;
+  justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 12.5px 26px;
+  min-height: 52px;
+  padding: 0 20px;
   border: none;
-  border-radius: 8px;
-  font-family: var(--font-pretendard), sans-serif;
+  border-radius: 12px;
+  font-family: inherit;
   font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #1c1917;
+  font-weight: 600;
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
 
-.kakaoButton:hover,
-.googleButton:hover {
-  opacity: 0.9;
+.kakaoButton {
+  background: #fee500;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.googleButton {
+  background: #ffffff;
+  color: #1f1f1f;
+}
+
+@media (hover: hover) {
+  .kakaoButton:hover,
+  .googleButton:hover {
+    opacity: 0.92;
+  }
 }
 
 .kakaoButton:active,
 .googleButton:active {
-  opacity: 0.8;
-}
-
-.kakaoButton {
-  background-color: #fae100;
-}
-
-.googleButton {
-  background-color: #eeeeee;
-}
-
-
-.buttonText {
-  flex: 1;
-  text-align: center;
+  opacity: 0.85;
 }
 
 .agreement {
+  margin: 6px 0 0;
   font-size: 12px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
   text-align: center;
 }
 
 .agreement a {
-  color: inherit;
-  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
   font-weight: 700;
-}
-
-.agreement a:hover {
   text-decoration: underline;
-}
-
-@supports (height: 100dvh) {
-  .page {
-    height: 100dvh;
-  }
+  text-underline-offset: 2px;
 }
