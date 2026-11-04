@@ -395,7 +395,7 @@
         "cta": "예고편 보기"
       },
       "today": {
-        "description": "매일 새로 뽑는 오늘의 산통이 기다려요",
+        "description": "매일 새로 상영되는 오늘의 장면이 기다려요",
         "meta": "{date} 무료 회차"
       }
     },
@@ -1899,18 +1899,6 @@
             "a": "재미로 보는 엔터테인먼트용 간이 규칙이에요. 流日(그날의 흐름) 해석은 유파마다 달라서 하나의 정답이 아니에요. 의료·투자·법률 판단의 근거로는 쓰지 말아 주세요."
           }
         ]
-      },
-      "santong": {
-        "title": "오늘의 산통",
-        "hint": "휴대폰을 흔들거나 화면을 아래로 당겨 보세요",
-        "hintPull": "화면을 아래로 당겼다가 놓아 보세요",
-        "releaseHint": "이제 놓으면 막대가 나와요",
-        "revealed": "오늘의 막대는 {stick}이에요",
-        "draw": "막대 뽑기",
-        "enableShake": "흔들어서 뽑기 켜기",
-        "skip": "건너뛰기",
-        "viewResult": "오늘 운세 자세히 보기",
-        "description": "산통을 흔들거나 화면을 당겼다 놓으면 오늘의 등급이 적힌 막대 하나가 나와요. 막대 뽑기 버튼으로도 같은 결과를 볼 수 있어요."
       }
     },
     "screening": {
@@ -2323,7 +2311,7 @@
         "cta": "Watch the Trailer"
       },
       "today": {
-        "description": "Today's fortune stick is waiting to be drawn",
+        "description": "A new scene of your day, screened every day",
         "meta": "Free showing, {date}"
       }
     },
@@ -3835,18 +3823,6 @@
             "a": "It is a simplified rule set for entertainment. Readings of the daily pillar differ between schools, so there is no single right answer. Please don't use it as a basis for medical, financial or legal decisions."
           }
         ]
-      },
-      "santong": {
-        "title": "Today's Fortune Sticks",
-        "hint": "Shake your phone or pull the screen down",
-        "hintPull": "Pull the screen down, then let go",
-        "releaseHint": "Let go to draw a stick",
-        "revealed": "Today's stick: {stick}",
-        "draw": "Draw a stick",
-        "enableShake": "Turn on shake to draw",
-        "skip": "Skip",
-        "viewResult": "See today's fortune",
-        "description": "Shake the fortune cylinder or pull the screen down and let go to draw a stick showing today's grade. The Draw a stick button gives the same result."
       }
     },
     "screening": {
@@ -4259,7 +4235,7 @@
         "cta": "予告編を見る"
       },
       "today": {
-        "description": "今日のおみくじが引かれるのを待っています",
+        "description": "毎日新しく上映される今日のシーンが待っています",
         "meta": "{date}の無料上映"
       }
     },
@@ -5763,18 +5739,6 @@
             "a": "楽しみのためのエンターテインメント用の簡易ルールです。流日（その日の流れ）の解釈は流派によって異なり、唯一の正解はありません。医療・投資・法律判断の根拠にはしないでください。"
           }
         ]
-      },
-      "santong": {
-        "title": "今日のおみくじ筒",
-        "hint": "スマホを振るか、画面を下に引いてみてください",
-        "hintPull": "画面を下に引いてから離してみてください",
-        "releaseHint": "離すとみくじ棒が出てきます",
-        "revealed": "今日の棒は「{stick}」です",
-        "draw": "棒を引く",
-        "enableShake": "振って引くをオンにする",
-        "skip": "スキップ",
-        "viewResult": "今日の運勢を詳しく見る",
-        "description": "おみくじ筒を振るか画面を引いて離すと、今日の等級が書かれた棒が一本出てきます。「棒を引く」ボタンでも同じ結果が見られます。"
       }
     },
     "screening": {
