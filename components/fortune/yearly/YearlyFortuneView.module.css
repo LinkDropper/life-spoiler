@@ -28,7 +28,8 @@
   width: 100%;
   padding: 0 0 12px 0;
   margin: 24px 016px;
-  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-bottom: 1px solid
+    var(--color-border-default, rgba(255, 255, 255, 0.16));
   background: transparent;
   border-left: none;
   border-right: none;
@@ -48,7 +49,8 @@
   width: 100%;
   padding: 0 0 12px 0;
   margin-bottom: 16px;
-  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-bottom: 1px solid
+    var(--color-border-default, rgba(255, 255, 255, 0.16));
 }
 
 .chevron {
@@ -167,7 +169,7 @@
 }
 
 .coreHeadline {
-  color: var(--color-text-default, #FFF);
+  color: var(--color-text-default, #fff);
   font-size: 20px;
   font-weight: 700;
   line-height: 140%;
@@ -471,7 +473,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--color-text-default, #FFF);
+  color: var(--color-text-default, #fff);
   text-align: center;
   font-family: var(--Type-Brand, Pretendard);
   font-size: 18px;
@@ -513,4 +515,13 @@
 .spacer {
   width: 100%;
   height: 16px;
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.backButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
+}
+
+.shareButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

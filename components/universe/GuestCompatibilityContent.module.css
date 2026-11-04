@@ -106,7 +106,7 @@
 
 /* 양수는 브랜드 accent로 강조하고, 음수는 자극적이지 않게 옅은 흰색으로만 낮춘다(빨강 미사용) */
 .factorDeltaPositive {
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
 }
 
 .factorDeltaNegative {

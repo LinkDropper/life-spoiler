@@ -45,7 +45,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
   text-decoration: underline;
   text-underline-offset: 2px;
 }

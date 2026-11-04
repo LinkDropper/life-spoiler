@@ -30,3 +30,8 @@
 .backButton:hover {
   opacity: 0.9;
 }
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.backButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
+}

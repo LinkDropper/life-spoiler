@@ -40,7 +40,7 @@
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -146,7 +146,7 @@
 
 .table thead th {
   background: rgba(255, 204, 217, 0.08);
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
 }
 
 .table tbody th {
@@ -255,4 +255,15 @@
   .page {
     min-height: 100svh;
   }
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+@media (hover: hover) {
+  .ctaButton:hover:not(:disabled) {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+}
+
+.ctaButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

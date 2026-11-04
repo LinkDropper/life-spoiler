@@ -111,7 +111,7 @@
 
 .radioOuterSelected {
   background: var(--color-button-primary-surface, #ffccd9);
-  border-color: var(--primitive-primary, #ffccd9);
+  border-color: var(--color-border-selected, #ff8fb1);
 }
 
 .radioInner {
@@ -183,7 +183,7 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-status, #ffe7a3);
 }
 
 /* 쿠폰 입력 영역 */
@@ -295,7 +295,7 @@
 }
 
 .promoSubmitBtn:hover:not(:disabled) {
-  background: var(--primitive-primary-3, #ffdde6);
+  background: var(--color-button-primary-surface-hover, #ffa8c0);
 }
 
 .promoSubmitBtn:disabled {
@@ -442,7 +442,7 @@
 }
 
 .paymentButton:hover:not(:disabled) {
-  background: var(--primitive-primary-3, #ffdde6);
+  background: var(--color-button-primary-surface-hover, #ffa8c0);
 }
 
 .paymentButton:disabled {
@@ -495,4 +495,13 @@
   .page {
     min-height: 100svh;
   }
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.promoSubmitBtn:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
+}
+
+.paymentButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

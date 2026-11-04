@@ -129,7 +129,7 @@
 }
 
 .focusActive {
-  border-left-color: var(--cinema-spoiler);
+  border-left-color: var(--cinema-accent);
   opacity: 1;
 }
 
@@ -137,7 +137,7 @@
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: var(--cinema-spoiler);
+  color: var(--cinema-accent);
 }
 
 .focusMeaning {

@@ -36,3 +36,8 @@
 .icon {
   color: #2d1b4e;
 }
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.button:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
+}

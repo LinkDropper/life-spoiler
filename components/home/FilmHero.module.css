@@ -33,7 +33,7 @@
   margin: 0;
   font-size: 15px;
   font-weight: 700;
-  color: var(--cinema-spoiler);
+  color: var(--cinema-accent);
 }
 
 .headline {
@@ -176,7 +176,7 @@
 
 @media (hover: hover) {
   .cta:hover {
-    background: #ffe0e8;
+    background: var(--cinema-spoiler-hover);
   }
 }
 
@@ -268,4 +268,9 @@
   .frame {
     transition: none;
   }
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.cta:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

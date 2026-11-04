@@ -320,7 +320,7 @@
 }
 
 .input:focus {
-  border-color: var(--primitive-primary, #ffccd9);
+  border-color: var(--color-focus-ring, #ffe7a3);
 }
 
 .input:disabled {
@@ -405,4 +405,9 @@
   color: rgba(255, 255, 255, 0.5);
   margin: 0;
   white-space: pre-line;
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.sendButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }
