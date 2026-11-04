@@ -36,7 +36,7 @@
 }
 
 .headlineLine + .headlineLine {
-  color: var(--cinema-spoiler);
+  color: var(--cinema-accent);
 }
 
 /* ---------- 3D 관람권 ---------- */

@@ -262,7 +262,7 @@
 }
 
 .modalProfileCard.modalProfileSelected {
-  border-color: var(--primitive-primary, #ffccd9);
+  border-color: var(--color-border-selected, #ff8fb1);
 }
 
 /* Modal new profile card */
@@ -421,4 +421,9 @@
   .page {
     min-height: 100svh;
   }
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.modalConfirmButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

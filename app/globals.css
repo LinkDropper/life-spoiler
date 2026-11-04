@@ -46,6 +46,14 @@
   --primitive-primary-3: #ffdde6;
   --primitive-primary-4: #ffd5df;
 
+  /* --- Color / Primary Role (어두운 바탕용, 2026-11 색 역할 정리) ---
+     연핑크 #FFCCD9는 흰 글자(1.41:1)·금색(1.16:1)과 밝기가 거의 같아 버튼 외 용도에서 구분이 약하다.
+     채우면 연핑크, 글자·선택이면 진한 핑크, 상태면 금. 대비는 남색 #0C1220 기준. */
+  --primitive-primary-strong: #ff8fb1; /* 강조 글자·링크·선택: 바탕 8.7:1, 흰 본문과 2.14:1 */
+  --primitive-primary-hover: #ffa8c0; /* 버튼 오버: 기본과 1.28:1, 버튼 글자 9.6:1 */
+  --primitive-primary-pressed: #f598b3; /* 버튼 누름: 기본과 1.49:1, 버튼 글자 8.3:1 */
+  --primitive-gold: #ffe7a3; /* 상태(지금 상영 중·소장·무료)·포커스: 바탕 15.3:1 */
+
   /* --- Color / Primary Opacity --- */
   --primitive-primary-opacity-0: rgba(255, 204, 217, 0.04);
   --primitive-primary-opacity-1: rgba(255, 204, 217, 0.08);
@@ -253,10 +261,19 @@
 
   /* --- Surface --- */
   --color-surface-default: var(--primitive-black, #18181b);
-  --color-surface-secondary: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-surface-secondary: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
   --color-surface-primary: var(--primitive-white, #ffffff);
-  --color-surface-primary-0: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
-  --color-surface-primary-1: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-surface-primary-0: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
+  --color-surface-primary-1: var(
+    --primitive-white-1,
+    rgba(255, 255, 255, 0.16)
+  );
   --color-surface-primary-2: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
   --color-surface-primary-3: var(--primitive-white-3, rgba(255, 255, 255, 0.5));
   --color-surface-primary-4: var(--primitive-white-4, rgba(255, 255, 255, 0.7));
@@ -278,7 +295,10 @@
   --color-icon-tertiary: var(--primitive-white-3, rgba(255, 255, 255, 0.5));
   --color-icon-primary: var(--primitive-white, #ffffff);
   --color-icon-primary-secondary: var(--primitive-primary-3, #ffdde6);
-  --color-icon-primary-opacity: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-icon-primary-opacity: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
   --color-icon-white: var(--primitive-white, #ffffff);
   --color-icon-gray: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
   --color-icon-invert: var(--primitive-black, #18181b);
@@ -289,63 +309,138 @@
   --color-text-secondary: var(--primitive-white-4, rgba(255, 255, 255, 0.7));
   --color-text-tertiary: var(--primitive-white-3, rgba(255, 255, 255, 0.5));
   --color-text-primary: var(--primitive-white, #ffffff);
-  --color-text-primary-secondary: var(--primitive-primary-3, #ffdde6);
+  /* 강조 글자: 연한 #FFDDE6은 흰 본문과 구분되지 않아 진한 핑크로 (밝은 테마는 아래에서 그대로) */
+  --color-text-primary-secondary: var(--primitive-primary-strong, #ff8fb1);
+  --color-text-accent: var(--primitive-primary-strong, #ff8fb1);
+  --color-text-status: var(--primitive-gold, #ffe7a3);
   --color-text-white: var(--primitive-white, #ffffff);
   --color-text-invert: var(--primitive-black, #18181b);
   --color-text-error: var(--primitive-red-6, #fa5252);
   --color-text-drag: var(--primitive-blue-2, #a5d8ff);
 
+  /* --- Selection / Focus --- */
+  --color-border-selected: var(--primitive-primary-strong, #ff8fb1);
+  --color-focus-ring: var(--primitive-gold, #ffe7a3);
+
   /* --- Button --- */
   --color-button-default-surface: var(--primitive-black, #18181b);
-  --color-button-default-action-surface: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-button-default-action-surface: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
   --color-button-primary-surface: var(--primitive-primary, #ffccd9);
+  --color-button-primary-surface-hover: var(--primitive-primary-hover, #ffa8c0);
+  --color-button-primary-surface-pressed: var(
+    --primitive-primary-pressed,
+    #f598b3
+  );
   --color-button-invert-surface: var(--primitive-white, #ffffff);
-  --color-button-disabled-surface: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-button-disabled-surface: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
   --color-button-error-surface: var(--primitive-red-6, #fa5252);
-  --color-button-action-surface: var(--primitive-effect-button-action, rgba(0, 0, 0, 0.12));
+  --color-button-action-surface: var(
+    --primitive-effect-button-action,
+    rgba(0, 0, 0, 0.12)
+  );
 
   /* --- Input --- */
-  --color-input-default-border: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-input-default-border: var(
+    --primitive-white-1,
+    rgba(255, 255, 255, 0.16)
+  );
   --color-input-action-border: var(--primitive-white, #ffffff);
   --color-input-error-border: var(--primitive-red-6, #fa5252);
   --color-input-default-surface: var(--primitive-black, #18181b);
-  --color-input-disabled-surface: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-input-disabled-surface: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
 
   /* --- Checkbox --- */
-  --color-checkbox-default-border: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-checkbox-default-border: var(
+    --primitive-white-1,
+    rgba(255, 255, 255, 0.16)
+  );
   --color-checkbox-default-surface: var(--primitive-black, #18181b);
-  --color-checkbox-disabled-surface: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
+  --color-checkbox-disabled-surface: var(
+    --primitive-white-2,
+    rgba(255, 255, 255, 0.3)
+  );
   --color-checkbox-action-surface: var(--primitive-primary, #ffccd9);
-  --color-checkbox-default-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
-  --color-checkbox-action-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-checkbox-default-background: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
+  --color-checkbox-action-background: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
 
   /* --- Radio Button --- */
-  --color-radio-default-border: var(--primitive-white-1, rgba(255, 255, 255, 0.16));
+  --color-radio-default-border: var(
+    --primitive-white-1,
+    rgba(255, 255, 255, 0.16)
+  );
   --color-radio-default-circle: var(--primitive-white, #ffffff);
-  --color-radio-disabled-circle: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-radio-disabled-circle: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
   --color-radio-default-surface: var(--primitive-black, #18181b);
-  --color-radio-disabled-surface: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
+  --color-radio-disabled-surface: var(
+    --primitive-white-2,
+    rgba(255, 255, 255, 0.3)
+  );
   --color-radio-action-surface: var(--primitive-primary, #ffccd9);
-  --color-radio-default-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
-  --color-radio-action-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-radio-default-background: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
+  --color-radio-action-background: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
 
   /* --- Toggle --- */
   --color-toggle-default-circle: var(--primitive-white, #ffffff);
-  --color-toggle-disabled-circle: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
-  --color-toggle-default-surface: var(--primitive-white-2, rgba(255, 255, 255, 0.3));
+  --color-toggle-disabled-circle: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
+  --color-toggle-default-surface: var(
+    --primitive-white-2,
+    rgba(255, 255, 255, 0.3)
+  );
   --color-toggle-action-surface: var(--primitive-primary, #ffccd9);
-  --color-toggle-default-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
-  --color-toggle-action-background: var(--primitive-white-0, rgba(255, 255, 255, 0.08));
+  --color-toggle-default-background: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
+  --color-toggle-action-background: var(
+    --primitive-white-0,
+    rgba(255, 255, 255, 0.08)
+  );
   --color-toggle-default-checked-2: var(--primitive-white, #ffffff);
 
   /* --- Dropdown --- */
-  --color-dropdown-shadow: var(--primitive-effect-dropdown-shadow-black, rgba(0, 0, 0, 0.7));
+  --color-dropdown-shadow: var(
+    --primitive-effect-dropdown-shadow-black,
+    rgba(0, 0, 0, 0.7)
+  );
 
   /* --- Modal --- */
-  --color-modal-shadow: var(--primitive-effect-modal-shadow, rgba(0, 0, 0, 0.12));
+  --color-modal-shadow: var(
+    --primitive-effect-modal-shadow,
+    rgba(0, 0, 0, 0.12)
+  );
 
   /* --- Overlay --- */
-  --color-overlay-dimmed: var(--primitive-effect-dimmed-black, rgba(17, 17, 28, 0.6));
+  --color-overlay-dimmed: var(
+    --primitive-effect-dimmed-black,
+    rgba(17, 17, 28, 0.6)
+  );
 
   /* --- Avatars --- */
   --color-avatar-red: var(--primitive-avatar-red, #c75f5f);
@@ -366,11 +461,26 @@
   --color-surface-default: var(--primitive-white, #ffffff);
   --color-surface-secondary: var(--primitive-gray-f2, #fafafa);
   --color-surface-primary: var(--primitive-primary, #ffccd9);
-  --color-surface-primary-0: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
-  --color-surface-primary-1: var(--primitive-primary-opacity-1, rgba(255, 204, 217, 0.08));
-  --color-surface-primary-2: var(--primitive-primary-opacity-2, rgba(255, 204, 217, 0.16));
-  --color-surface-primary-3: var(--primitive-primary-opacity-3, rgba(255, 204, 217, 0.3));
-  --color-surface-primary-4: var(--primitive-primary-opacity-4, rgba(255, 204, 217, 0.5));
+  --color-surface-primary-0: var(
+    --primitive-primary-opacity-0,
+    rgba(255, 204, 217, 0.04)
+  );
+  --color-surface-primary-1: var(
+    --primitive-primary-opacity-1,
+    rgba(255, 204, 217, 0.08)
+  );
+  --color-surface-primary-2: var(
+    --primitive-primary-opacity-2,
+    rgba(255, 204, 217, 0.16)
+  );
+  --color-surface-primary-3: var(
+    --primitive-primary-opacity-3,
+    rgba(255, 204, 217, 0.3)
+  );
+  --color-surface-primary-4: var(
+    --primitive-primary-opacity-4,
+    rgba(255, 204, 217, 0.5)
+  );
   --color-surface-error: var(--primitive-red-0, #fff5f5);
   --color-surface-link-1: var(--primitive-primary-1, #ffeef2);
   --color-surface-link-3: var(--primitive-primary-3, #ffdde6);
@@ -389,7 +499,10 @@
   --color-icon-tertiary: var(--primitive-gray-a, #a1a1aa);
   --color-icon-primary: var(--primitive-primary, #ffccd9);
   --color-icon-primary-secondary: var(--primitive-primary-3, #ffdde6);
-  --color-icon-primary-opacity: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-icon-primary-opacity: var(
+    --primitive-primary-opacity-0,
+    rgba(255, 204, 217, 0.04)
+  );
   --color-icon-white: var(--primitive-white, #ffffff);
   --color-icon-gray: var(--primitive-gray-f2, #fafafa);
   --color-icon-invert: var(--primitive-white, #ffffff);
@@ -408,12 +521,18 @@
 
   /* --- Button --- */
   --color-button-default-surface: var(--primitive-white, #ffffff);
-  --color-button-default-action-surface: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-button-default-action-surface: var(
+    --primitive-primary-opacity-0,
+    rgba(255, 204, 217, 0.04)
+  );
   --color-button-primary-surface: var(--primitive-primary, #ffccd9);
   --color-button-invert-surface: var(--primitive-black, #18181b);
   --color-button-disabled-surface: var(--primitive-gray-f2, #fafafa);
   --color-button-error-surface: var(--primitive-red-6, #fa5252);
-  --color-button-action-surface: var(--primitive-effect-button-action, rgba(0, 0, 0, 0.12));
+  --color-button-action-surface: var(
+    --primitive-effect-button-action,
+    rgba(0, 0, 0, 0.12)
+  );
 
   /* --- Input --- */
   --color-input-default-border: var(--primitive-gray-e, #f4f4f5);
@@ -428,7 +547,10 @@
   --color-checkbox-disabled-surface: var(--primitive-gray-d, #e4e4e7);
   --color-checkbox-action-surface: var(--primitive-primary, #ffccd9);
   --color-checkbox-default-background: var(--primitive-gray-f2, #fafafa);
-  --color-checkbox-action-background: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-checkbox-action-background: var(
+    --primitive-primary-opacity-0,
+    rgba(255, 204, 217, 0.04)
+  );
 
   /* --- Radio Button --- */
   --color-radio-default-border: var(--primitive-gray-e, #f4f4f5);
@@ -438,7 +560,10 @@
   --color-radio-disabled-surface: var(--primitive-gray-d, #e4e4e7);
   --color-radio-action-surface: var(--primitive-primary, #ffccd9);
   --color-radio-default-background: var(--primitive-gray-f2, #fafafa);
-  --color-radio-action-background: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-radio-action-background: var(
+    --primitive-primary-opacity-0,
+    rgba(255, 204, 217, 0.04)
+  );
 
   /* --- Toggle --- */
   --color-toggle-default-circle: var(--primitive-white, #ffffff);
@@ -446,17 +571,29 @@
   --color-toggle-default-surface: var(--primitive-gray-d, #e4e4e7);
   --color-toggle-action-surface: var(--primitive-primary, #ffccd9);
   --color-toggle-default-background: var(--primitive-gray-f2, #fafafa);
-  --color-toggle-action-background: var(--primitive-primary-opacity-0, rgba(255, 204, 217, 0.04));
+  --color-toggle-action-background: var(
+    --primitive-primary-opacity-0,
+    rgba(255, 204, 217, 0.04)
+  );
   --color-toggle-default-checked-2: var(--primitive-white, #ffffff);
 
   /* --- Dropdown --- */
-  --color-dropdown-shadow: var(--primitive-effect-dropdown-shadow-white, rgba(0, 0, 0, 0.24));
+  --color-dropdown-shadow: var(
+    --primitive-effect-dropdown-shadow-white,
+    rgba(0, 0, 0, 0.24)
+  );
 
   /* --- Modal --- */
-  --color-modal-shadow: var(--primitive-effect-modal-shadow, rgba(0, 0, 0, 0.12));
+  --color-modal-shadow: var(
+    --primitive-effect-modal-shadow,
+    rgba(0, 0, 0, 0.12)
+  );
 
   /* --- Overlay --- */
-  --color-overlay-dimmed: var(--primitive-effect-dimmed-white, rgba(255, 255, 255, 0.5));
+  --color-overlay-dimmed: var(
+    --primitive-effect-dimmed-white,
+    rgba(255, 255, 255, 0.5)
+  );
 }
 
 /* ==========================================================================
@@ -464,6 +601,12 @@
    ========================================================================== */
 
 html,
+/* 키보드 포커스 기본값: 금 2px 테두리 (색 역할 정리). :where()라 각 컴포넌트가 정한 포커스가 우선한다 */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-focus-ring, #ffe7a3);
+  outline-offset: 3px;
+}
+
 body {
   max-width: 100vw;
   overflow-x: hidden;

@@ -1,6 +1,10 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(180deg, rgba(12, 18, 32, 1) 0%, rgba(46, 20, 49, 1) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(12, 18, 32, 1) 0%,
+    rgba(46, 20, 49, 1) 100%
+  );
   display: flex;
   flex-direction: column;
   max-width: 480px;
@@ -35,7 +39,8 @@
   line-height: 1.2;
   color: var(--color-text-default, #ffffff);
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
+  border-bottom: 1px solid
+    var(--color-border-default, rgba(255, 255, 255, 0.16));
   margin-bottom: 24px;
 }
 
@@ -100,4 +105,9 @@
   .container {
     min-height: 100svh;
   }
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+.closeButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

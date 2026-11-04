@@ -48,7 +48,7 @@
 
 /* 무료인 "내 우주 만들러 가기" 옆에서 유료 상품이 묻히지 않도록 가격을 함께 보여준다 */
 .priceTag {
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
   font-size: 12px;
   font-weight: 700;
 }

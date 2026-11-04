@@ -40,7 +40,7 @@
 
 .checked {
   background: var(--color-button-primary-surface, #ffccd9);
-  border-color: var(--primitive-primary, #ffccd9);
+  border-color: var(--color-border-selected, #ff8fb1);
 }
 
 .label {

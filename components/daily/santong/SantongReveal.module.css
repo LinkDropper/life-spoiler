@@ -76,7 +76,7 @@
   font-size: 24px;
   font-weight: 900;
   line-height: 1.4;
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-accent, #ff8fb1);
 }
 
 .greeting {
@@ -126,7 +126,7 @@
 .statusRevealed {
   font-size: 17px;
   font-weight: 700;
-  color: var(--primitive-primary, #ffccd9);
+  color: var(--color-text-status, #ffe7a3);
 }
 
 .actions {
@@ -221,7 +221,7 @@
 .primaryButton:focus-visible,
 .textButton:focus-visible,
 .skip:focus-visible {
-  outline: 2px solid #ffccd9;
+  outline: 2px solid var(--color-focus-ring, #ffe7a3);
   outline-offset: 3px;
 }
 
@@ -270,4 +270,15 @@
   .result {
     animation: none;
   }
+}
+
+/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
+@media (hover: hover) {
+  .primaryButton:hover:not(:disabled) {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+}
+
+.primaryButton:active:not(:disabled) {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
 }
