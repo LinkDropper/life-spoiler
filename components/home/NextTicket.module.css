@@ -1,0 +1,212 @@
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 랜딩 장면 제목과 같은 디스플레이 서체 */
+.heading {
+  margin: 0;
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: 28px;
+  line-height: 1.25;
+  color: var(--cinema-text);
+}
+
+.stat {
+  margin-top: 16px;
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: 32px;
+  line-height: 1.1;
+  color: var(--cinema-spoiler);
+}
+
+.proof {
+  margin: 6px 0 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--cinema-haze);
+}
+
+/* ---------- 관람권 (랜딩 TicketScene과 같은 종이·절취선) ---------- */
+
+.ticket {
+  --surface: #f9ecf0;
+  --notch: 9px;
+
+  display: flex;
+  flex-direction: column;
+  margin-top: 28px;
+  color: var(--cinema-ink);
+  text-decoration: none;
+  transform: rotate(-0.6deg);
+  filter: drop-shadow(0 18px 36px rgba(216, 166, 255, 0.22));
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 18px;
+  background: var(--surface);
+  border-radius: 18px 18px 0 0;
+}
+
+.ticketTitle {
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: 15px;
+  color: #8a2f55;
+}
+
+.scenes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.scene b {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.scene span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(35, 20, 45, 0.72);
+}
+
+/* 절취선: 양 끝을 반원으로 파내고(mask) 가운데를 점선으로 잇는다 */
+.perforation {
+  position: relative;
+  height: calc(var(--notch) * 2);
+  background: var(--surface);
+  -webkit-mask:
+    radial-gradient(
+        circle at left center,
+        transparent var(--notch),
+        #000 calc(var(--notch) + 0.5px)
+      )
+      left / 51% 100% no-repeat,
+    radial-gradient(
+        circle at right center,
+        transparent var(--notch),
+        #000 calc(var(--notch) + 0.5px)
+      )
+      right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(
+        circle at left center,
+        transparent var(--notch),
+        #000 calc(var(--notch) + 0.5px)
+      )
+      left / 51% 100% no-repeat,
+    radial-gradient(
+        circle at right center,
+        transparent var(--notch),
+        #000 calc(var(--notch) + 0.5px)
+      )
+      right / 51% 100% no-repeat;
+}
+
+.perforation::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(var(--notch) + 8px);
+  right: calc(var(--notch) + 8px);
+  height: 1.5px;
+  background: linear-gradient(
+      90deg,
+      rgba(35, 20, 45, 0.28) 50%,
+      transparent 50%
+    )
+    0 0 / 10px 100% repeat-x;
+}
+
+.stub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 22px 18px;
+  background: var(--surface);
+  border-radius: 0 0 18px 18px;
+}
+
+.free {
+  font-size: 14px;
+  font-weight: 700;
+  color: #8a2f55;
+}
+
+/* 주 버튼은 히어로 하나 — 관람권 버튼은 외곽선 */
+.button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1.5px solid var(--cinema-ink);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cinema-ink);
+}
+
+@media (hover: hover) {
+  .ticket:hover .button {
+    background: var(--cinema-ink);
+    color: var(--surface);
+  }
+}
+
+.ticket:focus-visible {
+  outline: 2px solid var(--cinema-star);
+  outline-offset: 4px;
+  border-radius: 18px;
+}
+
+@media (min-width: 860px) {
+  .heading {
+    font-size: 36px;
+  }
+
+  .ticket {
+    max-width: 420px;
+  }
+}
+
+/* ---------- 찢김: 랜딩 관람권 장면(TicketScene)과 같은 움직임 ----------
+   꼬리표가 절취선 오른쪽 끝을 축으로 26px 내려앉으며 3° 기운다(랜딩: y 26, rotateZ -3, origin 100% 0%).
+   랜딩은 스크롤로 진행되고, 홈은 누르면 --tear-ms(NextTicket.tsx TEAR_MS) 동안 같은 자리로 간 뒤
+   상영관 입장으로 이어진다. 꼬리표는 떨어지거나 사라지지 않고 그 자리에 남는다(2026-11-04: 과하다는 피드백). */
+
+.tearOff {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transform-origin: 100% 0%;
+}
+
+.tearing .tearOff,
+.torn .tearOff {
+  animation: tearAway var(--tear-ms) cubic-bezier(0.3, 0, 0.2, 1) forwards;
+}
+
+@keyframes tearAway {
+  to {
+    transform: translateY(26px) rotate(-3deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tearing .tearOff,
+  .torn .tearOff {
+    animation: none;
+  }
+}

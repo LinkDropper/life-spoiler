@@ -1,0 +1,96 @@
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 랜딩 장면 제목과 같은 디스플레이 서체 */
+.heading {
+  margin: 0;
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: 28px;
+  line-height: 1.25;
+  color: var(--cinema-text);
+}
+
+/* 랜딩 DawnScene 상영 안내와 같은 핑크 가는 줄 */
+.list {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 76px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 204, 217, 0.15);
+  color: var(--cinema-text);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--cinema-haze);
+}
+
+.owned,
+.free {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.owned {
+  color: var(--cinema-star);
+}
+
+.free {
+  color: var(--cinema-spoiler);
+}
+
+.chevron {
+  flex: none;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+@media (hover: hover) {
+  .row:hover .name {
+    color: var(--cinema-spoiler);
+  }
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--cinema-star);
+  outline-offset: 2px;
+}
+
+@media (min-width: 860px) {
+  .heading {
+    font-size: 36px;
+  }
+
+  .section {
+    max-width: 640px;
+  }
+}
