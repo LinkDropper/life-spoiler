@@ -4,15 +4,21 @@ import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { HeaderClient } from "@/components/landing";
-import { Loading } from "@/components/loading";
+import { PaymentResultScreen } from "@/components/payment/PaymentResultScreen";
+import { PaymentTicket } from "@/components/payment/PaymentTicket";
+import {
+  formatPaymentAmount,
+  getProductNameKey,
+  getShortProductKey,
+  isPaymentFortuneType,
+} from "@/components/payment/payment-view";
+import { PaymentScreeningLoading } from "@/components/screening";
 import { trackPurchase } from "@/libs/analytics";
 import {
   isYearlyEdition,
   resolveTargetYear,
 } from "@/libs/fortune/yearly-editions";
-
-import styles from "./page.module.css";
+import { useProfileById } from "@/libs/stores/profile";
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
@@ -37,6 +43,11 @@ function PaymentSuccessContent() {
   const currency = (searchParams.get("currency") as "KRW" | "USD") || "KRW";
 
   const hasConfirmedRef = useRef(false);
+
+  // 승인 후 전체 새로고침으로 들어오므로 스토어가 늦게 채워질 수 있다. 궁합은 쌍 ID라 이름을 읽지 않는다
+  const profile = useProfileById(
+    fortuneType === "compatibility" ? null : profileId
+  );
 
   useEffect(() => {
     if (hasConfirmedRef.current) return;
@@ -130,126 +141,118 @@ function PaymentSuccessContent() {
   };
 
   if (isConfirming) {
-    return <Loading />;
+    return <PaymentScreeningLoading stage="confirm" />;
   }
 
+  const validFortuneType = isPaymentFortuneType(fortuneType)
+    ? fortuneType
+    : null;
+  const audienceText = profile
+    ? tPayment("audienceName", { name: profile.name })
+    : null;
+  const productName = validFortuneType
+    ? tPayment(getProductNameKey(validFortuneType))
+    : null;
+
   if (error) {
+    // 서버가 내려준 문구는 한국어뿐이라 로케일별 기본 문구(confirmError)를 쓴다
     return (
-      <div className={styles.page}>
-        <HeaderClient />
-        <main className={styles.main}>
-          <div className={styles.resultCard}>
-            <div className={styles.iconError}>
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 48 48"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="24"
-                  fill="#FF6B6B"
-                  fillOpacity="0.1"
-                />
-                <path
-                  d="M24 16V26"
-                  stroke="#FF6B6B"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <circle cx="24" cy="32" r="1.5" fill="#FF6B6B" />
-              </svg>
-            </div>
-            <h2 className={styles.title}>{tPayment("confirmFailed")}</h2>
-            <p className={styles.description}>{error}</p>
-            <button
-              type="button"
-              className={styles.primaryButton}
-              onClick={handleGoHome}
-            >
-              {tPayment("goToProfiles")}
-            </button>
-          </div>
-        </main>
-      </div>
+      <PaymentResultScreen
+        tone="failure"
+        title={tPayment("confirmFailedTitle")}
+        lead={error}
+        ticket={
+          productName && (
+            <PaymentTicket
+              variant="void"
+              ariaLabel={tPayment("voidTicketAria")}
+              kicker={tPayment("ticketKicker")}
+              title={tPayment("voidTicketTitle")}
+              subtitle={
+                audienceText ? `${productName} · ${audienceText}` : productName
+              }
+            />
+          )
+        }
+        primaryAction={{
+          label: tPayment("goToProfiles"),
+          onClick: handleGoHome,
+        }}
+      />
     );
   }
 
+  const getLeadText = (): string => {
+    if (!validFortuneType) {
+      return tPayment("successDescription");
+    }
+    const product = tPayment(getShortProductKey(validFortuneType));
+    return profile
+      ? tPayment("issuedLead", { name: profile.name, product })
+      : tPayment("issuedLeadAnonymous", { product });
+  };
+
+  const isForeign = currency === "USD";
+
   return (
-    <div className={styles.page}>
-      <HeaderClient />
-      <main className={styles.main}>
-        <div className={styles.resultCard}>
-          <div className={styles.iconSuccess}>
-            <svg
-              width="48"
-              height="48"
-              viewBox="0 0 48 48"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="24" cy="24" r="24" fill="#4ADE80" fillOpacity="0.1" />
-              <path
-                d="M16 24L22 30L32 18"
-                stroke="#4ADE80"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <h2 className={styles.title}>{tPayment("successTitle")}</h2>
-          <p className={styles.description}>{tPayment("successDescription")}</p>
-
-          {isConfirmed && (
-            <div className={styles.orderSummary}>
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>
-                  {tPayment("orderNumber")}
-                </span>
-                <span className={styles.summaryValue}>{orderId}</span>
-              </div>
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>
-                  {tPayment("paidAmount")}
-                </span>
-                <span className={styles.summaryValue}>
-                  {currency === "USD"
-                    ? `$${Number(amount).toFixed(2)}`
-                    : `${Number(amount).toLocaleString()}${tPayment("currency")}`}
-                </span>
-              </div>
-            </div>
-          )}
-
-          <div className={styles.buttonGroup}>
-            <button
-              type="button"
-              className={styles.primaryButton}
-              onClick={handleViewFortune}
-            >
-              {tPayment("viewFortune")}
-            </button>
-            <button
-              type="button"
-              className={styles.secondaryButton}
-              onClick={handleGoHome}
-            >
-              {tPayment("goToProfiles")}
-            </button>
-          </div>
-        </div>
-      </main>
-    </div>
+    <PaymentResultScreen
+      tone="success"
+      title={tPayment("issuedTitle")}
+      lead={getLeadText()}
+      ticket={
+        productName && (
+          <PaymentTicket
+            variant="issued"
+            ariaLabel={tPayment("issuedTicketAria")}
+            kicker={tPayment("ticketKicker")}
+            title={productName}
+            rows={[
+              ...(audienceText
+                ? [{ label: tPayment("ticketAudience"), value: audienceText }]
+                : []),
+              {
+                label: tPayment("ticketPeriod"),
+                value: tPayment("ticketPeriodValue"),
+              },
+            ]}
+            stub={{
+              label: tPayment("stubFeature"),
+              value: tPayment("stubEnter"),
+            }}
+          />
+        )
+      }
+      receipt={
+        isConfirmed
+          ? [
+              { label: tPayment("orderNumber"), value: orderId ?? "" },
+              {
+                label: tPayment("paidAmount"),
+                value: formatPaymentAmount(
+                  Number(amount),
+                  isForeign,
+                  tPayment("currency")
+                ),
+              },
+            ]
+          : undefined
+      }
+      hint={tPayment("issuedHint")}
+      primaryAction={{
+        label: tPayment("viewFortune"),
+        onClick: handleViewFortune,
+      }}
+      secondaryAction={{
+        label: tPayment("goToProfiles"),
+        onClick: handleGoHome,
+      }}
+    />
   );
 }
 
 export default function PaymentSuccessPage() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<PaymentScreeningLoading stage="confirm" />}>
       <PaymentSuccessContent />
     </Suspense>
   );

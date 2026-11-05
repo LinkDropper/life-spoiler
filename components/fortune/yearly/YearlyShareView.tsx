@@ -1,58 +1,48 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useMemo } from "react";
 
-import { useReferral } from "@/libs/hooks/useReferral";
-
+import { ErrorState } from "@/components/fortune";
+import { YearlyCharacterPoster } from "@/components/fortune/YearlyCharacterPoster";
+import { EndCredits } from "@/components/fortune/screen/EndCredits";
+import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import type { FortuneSceneId } from "@/libs/analytics/fortune";
 import {
-  ProfileInfo,
-  ZiweiChartGrid,
-  SectionHeader,
-  CategoryItem,
-  ScenarioItem,
-  ScenarioList,
-  MarkdownContent,
-  SubSectionList,
-  OneLinerAlert,
-  ErrorState,
-  type CategoryKey,
-} from "@/components/fortune";
-import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
-import YealryProfileCard from "@/components/fortune/YealryProfileCard";
+  buildMonthLens,
+  formatYearGanji,
+  getYearFlow,
+} from "@/libs/fortune/yearly-screen";
 import type { YearlyEdition } from "@/libs/fortune/yearly-editions";
 import { useYearlyShare } from "@/libs/hooks/fortune";
+import { useReferral } from "@/libs/hooks/useReferral";
+import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
+import type { Locale } from "@/i18n/config";
 
-import styles from "./YearlyFortuneView.module.css";
+import { YearlyFeatureBody } from "./YearlyFeatureBody";
+import styles from "./YearlyShareView.module.css";
 
-const CATEGORY_KEYS: CategoryKey[] = [
-  "wealth",
-  "career",
-  "relationship",
-  "health",
-];
-
-const DEFAULT_LABELS: Record<CategoryKey, string> = {
-  wealth: "재물운",
-  career: "직업운",
-  relationship: "인연운",
-  health: "건강운",
-};
+const EXTRA_SCENE_IDS: FortuneSceneId[] = ["end"];
 
 interface YearlyShareViewProps {
   edition: YearlyEdition;
 }
 
+/**
+ * 친구가 받은 올해·내년 운세 본편 (기획서 §10).
+ * 본편과 같은 막 구성, 다음 상영작 없음, 하단 고정 "내 올해 예고편 무료로 보기" 하나.
+ * 본편 스타일 파일을 빌려 쓰지 않는다(인생 공유 페이지가 깨졌던 원인).
+ */
 export const YearlyShareView = ({ edition }: YearlyShareViewProps) => {
   const searchParams = useSearchParams();
   const { saveReferrer } = useReferral();
+  const locale = useLocale() as Locale;
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
-  const tPreview = useTranslations("fortune.preview");
-  const tStory = useTranslations("fortune.instagramStory");
+  const tY = useTranslations("fortune.screen.yearly");
 
   // ref 파라미터 캡처
   useEffect(() => {
@@ -81,11 +71,18 @@ export const YearlyShareView = ({ edition }: YearlyShareViewProps) => {
       }),
   });
 
-  const [chartExpanded, setChartExpanded] = useState(true);
-  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
-  const [coreExpanded, setCoreExpanded] = useState(true);
-  const [detailExpanded, setDetailExpanded] = useState(true);
-  const [monthlyExpanded, setMonthlyExpanded] = useState(true);
+  const flow = useMemo(
+    () => (result ? getYearFlow(result.rawChart, currentYear) : null),
+    [result, currentYear]
+  );
+  const insights = useMemo(
+    () =>
+      result
+        ? calculateYearlyInsights(result.rawChart, currentYear, locale)
+        : null,
+    [result, currentYear, locale]
+  );
+  const lens = useMemo(() => buildMonthLens(currentYear), [currentYear]);
 
   if (isLoading) {
     return <Loading />;
@@ -98,9 +95,7 @@ export const YearlyShareView = ({ edition }: YearlyShareViewProps) => {
         <main className={styles.main}>
           <ErrorState
             message={error}
-            buttonText={tCommon("checkMyFortune", {
-              default: "내 운세도 확인해보기",
-            })}
+            buttonText={tY("share.cta")}
             onButtonClick={handleCheckMyFortune}
           />
         </main>
@@ -108,224 +103,82 @@ export const YearlyShareView = ({ edition }: YearlyShareViewProps) => {
     );
   }
 
-  if (!result || !profile) {
+  if (!result || !profile || !flow) {
     return null;
   }
 
   const { interpretation, rawChart, yearlySihua } = result;
-  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
-
-  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
-  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
-  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
-
-  // 프로필 카드용 점수
-  const storyScores = {
-    wealth: interpretation.categories.wealth.score ?? 0,
-    career: interpretation.categories.career.score ?? 0,
-    relationship: interpretation.categories.relationship.score ?? 0,
-    health: interpretation.categories.health.score ?? 0,
-  };
-
-  // 프로필 카드용 레이블
-  const storyLabels: InstagramStoryCardLabels = {
-    mainStar: tStory("mainStar"),
-    categories: {
-      wealth: tStory("categories.wealth"),
-      career: tStory("categories.career"),
-      relationship: tStory("categories.relationship"),
-      health: tStory("categories.health"),
-    },
-  };
+  const ganji = formatYearGanji(currentYear, locale);
+  const [bestMonth] = flow.bestMonths;
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={styles.main}>
-        {/* 프로필 정보 */}
-        <ProfileInfo
+      <main className={`${screen.root} ${styles.main}`}>
+        <YearlyFeatureBody
           name={profile.name}
+          year={currentYear}
+          interpretation={interpretation}
+          rawChart={rawChart}
+          wuxingJu={result.chart.wuxingJu}
+          yearlySihua={yearlySihua}
+          flow={flow}
+          lens={lens}
+          insights={insights}
           fortuneType={edition}
-          year={currentYear}
-          birthDate={profile.birth_date}
-          birthTime={profile.birth_time}
-          birthTimeUnknown={profile.birth_time_unknown}
-          calendarType={profile.calendar_type}
-          gender={profile.gender}
-        />
-
-        <div className={styles.spacer} />
-
-        <YealryProfileCard
-          year={currentYear}
-          mainStars={mainStarNames}
-          headline={interpretation.overview.headline}
-          tags={interpretation.overview.tags}
-          description={interpretation.overview.description}
-          scores={storyScores}
-          labels={storyLabels}
-          isImage={false}
-          shouldShowShareButton={false}
-        />
-
-        {/* 자미두수 명반 섹션 */}
-        <SectionHeader
-          title={tPreview("chartTitle", { default: "자미두수 명반" })}
-          expanded={chartExpanded}
-          onToggle={() => setChartExpanded(!chartExpanded)}
-        />
-
-        {chartExpanded && rawChart && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={rawChart}
-              profileName={profile.name}
-              wuxingJu={result.chart.wuxingJu}
-              yearlySihua={yearlySihua}
-              interactive={false}
+          surface="shared"
+          badge={tY("share.badge")}
+          interactiveChart={false}
+          extraSceneIds={EXTRA_SCENE_IDS}
+          cast={
+            <YearlyCharacterPoster
+              name={profile.name}
+              year={currentYear}
+              ganji={ganji}
+              headline={interpretation.overview.headline}
+              tags={interpretation.overview.tags}
+              scores={{
+                wealth: interpretation.categories.wealth.score ?? 0,
+                career: interpretation.categories.career.score ?? 0,
+                relationship: interpretation.categories.relationship.score ?? 0,
+                health: interpretation.categories.health.score ?? 0,
+              }}
+              categoryLabels={{
+                wealth: t("categories.wealth"),
+                career: t("categories.career"),
+                relationship: t("categories.relationship"),
+                health: t("categories.health"),
+              }}
+              isImage={false}
+              shouldShowShareButton={false}
             />
-          </section>
-        )}
-
-        {/* 올해 스포일러 섹션 */}
-        <SectionHeader
-          title={tPreview("yearlySpoilerTitle", { default: "올해 스포일러" })}
-          expanded={spoilerExpanded}
-          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
+          }
         />
 
-        {spoilerExpanded && (
-          <section className={styles.overviewSection}>
-            <h2 className={styles.overviewHeadline}>
-              {interpretation.overview.headline}
-            </h2>
-            {interpretation.overview.subSections &&
-            interpretation.overview.subSections.length > 0 ? (
-              <>
-                <SubSectionList items={interpretation.overview.subSections} />
-                {interpretation.overview.oneLiner && (
-                  <OneLinerAlert
-                    text={interpretation.overview.oneLiner}
-                    label={oneLinerLabel}
-                  />
-                )}
-              </>
-            ) : (
-              interpretation.overview.summary && (
-                <MarkdownContent className={styles.overviewSummary}>
-                  {interpretation.overview.summary}
-                </MarkdownContent>
-              )
-            )}
-          </section>
-        )}
-
-        {/* 핵심 시나리오 섹션 */}
-        <SectionHeader
-          title={t("coreScenario.title", { default: "핵심 시나리오" })}
-          expanded={coreExpanded}
-          onToggle={() => setCoreExpanded(!coreExpanded)}
-        />
-
-        {coreExpanded &&
-          (interpretation.coreScenario.subSections?.length ||
-            interpretation.coreScenario.content) && (
-            <section className={styles.section}>
-              <div className={styles.coreScenario}>
-                {interpretation.coreScenario.headline && (
-                  <h3 className={styles.coreHeadline}>
-                    {interpretation.coreScenario.headline}
-                  </h3>
-                )}
-                {interpretation.coreScenario.subSections &&
-                interpretation.coreScenario.subSections.length > 0 ? (
-                  <>
-                    <SubSectionList
-                      items={interpretation.coreScenario.subSections}
-                    />
-                    {interpretation.coreScenario.oneLiner && (
-                      <OneLinerAlert
-                        text={interpretation.coreScenario.oneLiner}
-                        label={oneLinerLabel}
-                      />
-                    )}
-                  </>
-                ) : (
-                  interpretation.coreScenario.content && (
-                    <MarkdownContent>
-                      {interpretation.coreScenario.content}
-                    </MarkdownContent>
-                  )
-                )}
-              </div>
-            </section>
-          )}
-
-        {/* 상세 시나리오 섹션 */}
-        <SectionHeader
-          title={t("detailScenario.title", { default: "상세 시나리오" })}
-          expanded={detailExpanded}
-          onToggle={() => setDetailExpanded(!detailExpanded)}
-        />
-
-        {detailExpanded && (
-          <section className={styles.section}>
-            <div className={styles.categoriesContainer}>
-              {CATEGORY_KEYS.map((key) => (
-                <CategoryItem
-                  key={key}
-                  categoryKey={key}
-                  label={t(`categories.${key}`, {
-                    default: DEFAULT_LABELS[key],
-                  })}
-                  headline={interpretation.categories[key].headline}
-                  content={interpretation.categories[key].content}
-                  subSections={interpretation.categories[key].subSections}
-                  oneLiner={interpretation.categories[key].oneLiner}
-                  oneLinerLabel={oneLinerLabel}
-                  tags={interpretation.categories[key].tags}
-                  showHashtag={true}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* 월별 시나리오 섹션 */}
-        <SectionHeader
-          title={t("monthly.detailTitle", { default: "월별 시나리오" })}
-          expanded={monthlyExpanded}
-          onToggle={() => setMonthlyExpanded(!monthlyExpanded)}
-        />
-
-        {monthlyExpanded && (
-          <section className={styles.section}>
-            <ScenarioList>
-              {interpretation.monthlyFortunes.map((fortune) => (
-                <ScenarioItem
-                  key={fortune.month}
-                  label={`${fortune.month}${t("monthly.monthUnit", { default: "월" })}`}
-                  headline={fortune.headline}
-                  content={fortune.content}
-                  bullets={fortune.bullets}
-                  oneLiner={fortune.oneLiner}
-                  oneLinerLabel={oneLinerLabel}
-                />
-              ))}
-            </ScenarioList>
-          </section>
-        )}
+        <EndCredits
+          name={profile.name}
+          endLabel={`THE END · ${currentYear}`}
+          rows={[
+            { label: "YEAR", value: ganji },
+            {
+              label: "BEST MONTH",
+              value: tY("credits.bestMonth", { month: bestMonth }),
+            },
+          ]}
+        >
+          <p className={screen.sectionDesc}>{tY("share.endNote")}</p>
+        </EndCredits>
       </main>
 
-      {/* 하단 CTA 버튼 */}
+      {/* 내 예고편 CTA는 하단 고정 하나로 (크레딧에서 중복하지 않음) */}
       <footer className={styles.footer}>
         <button
           type="button"
-          className={styles.shareButton}
+          className={styles.ctaButton}
           onClick={handleCheckMyFortune}
         >
-          {tCommon("checkMyFortune", { default: "내 운세도 확인해보기" })}
+          {tY("share.cta")}
         </button>
       </footer>
     </div>

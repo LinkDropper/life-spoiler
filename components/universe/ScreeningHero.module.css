@@ -1,0 +1,61 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--cinema-display);
+  font-size: 32px;
+  font-weight: var(--cinema-display-weight);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.legend,
+.hint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--cinema-haze);
+}
+
+.hint {
+  margin-top: 4px;
+}
+
+.info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  min-height: 48px;
+  margin-top: 4px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+  border-bottom: 1px solid rgba(255, 204, 217, 0.15);
+  font-size: 14px;
+  color: var(--cinema-haze);
+}
+
+.count {
+  font-size: 15px;
+  color: var(--cinema-text);
+}
+
+.divider {
+  width: 1px;
+  height: 14px;
+  background: var(--cinema-line);
+}
+
+.notice {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--cinema-line);
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cinema-haze);
+}

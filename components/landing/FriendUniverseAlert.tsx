@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import styles from "./FriendUniverseAlert.module.css";
 
 /**
- * 랜딩 최상단 — 친구 우주 궁합(나만의 별자리 만들기) 알림 바.
+ * 랜딩 최상단 — 친구 시사회(친구 우주 궁합) 알림 바.
  *
  * 이 기능은 로그인 없이 쓸 수 있는데도 진입점이 `/home`(로그인 필수)과 이미 우주
  * 링크를 받아 들어온 사람이 보는 홍보 영역뿐이라, 비로그인 신규 방문자가 도달할

@@ -7,11 +7,11 @@
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: linear-gradient(180deg, #171029 0%, #2e1431 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--cinema-field);
+  border: 1px solid var(--cinema-line);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  color: #ffffff;
+  color: var(--cinema-text);
   font-family: var(--font-pretendard), sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -37,5 +37,11 @@
   100% {
     opacity: 0;
     transform: translateX(-50%) translateY(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
   }
 }

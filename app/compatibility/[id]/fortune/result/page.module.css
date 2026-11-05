@@ -1,365 +1,55 @@
 .page {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
   width: 100%;
   max-width: 480px;
+  min-height: 100dvh;
   margin: 0 auto;
-  position: relative;
+  background: #0a0f1c;
 }
 
+/* 막 사이 간격은 레터박스 자막 화면이 만든다 */
 .main {
+  display: flex;
   flex: 1;
-  padding: 24px 16px;
-  max-width: 600px;
-  margin: 0 auto;
-  width: 100%;
-  padding-bottom: 100px;
-  display: flex;
   flex-direction: column;
-  gap: 24px;
-}
-
-/* ============================================================
-   프로필 요약 카드
-   ============================================================ */
-
-.profileSummary {
-  background: var(--color-surface-default, #18181b);
-  border: 2px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.profileNames {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-text-default, #ffffff);
-  margin: 0;
-}
-
-.profileScore {
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  margin: 0;
-}
-
-.relationshipTag {
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  border-radius: 4px;
-  padding: 2px 6px;
-  align-self: flex-start;
-}
-
-/* ============================================================
-   명반 섹션
-   ============================================================ */
-
-.chartSection {
-  margin-top: 0;
-}
-
-/* ============================================================
-   인사이트 섹션
-   ============================================================ */
-
-.insightsContainer {
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  border-radius: 8px;
-  padding: 24px 16px;
-}
-
-.insightsList {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.insightItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.insightIcon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.insightLabel {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  white-space: nowrap;
-}
-
-.insightDivider {
-  flex: 1;
-  border: none;
-  border-top: 2px dashed var(--color-border-default, rgba(255, 255, 255, 0.16));
-  margin: 0;
-  min-width: 16px;
-}
-
-.insightValue {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-text-default, #ffffff);
-  white-space: nowrap;
-}
-
-/* ============================================================
-   궁합 스포일러 섹션
-   ============================================================ */
-
-.spoilerContent {
-  padding: 0;
-}
-
-.spoilerHeadline {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text-default, #ffffff);
-  margin: 0 0 16px 0;
-  line-height: 1.4;
-}
-
-.spoilerText {
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  margin: 0;
-  white-space: pre-line;
-  letter-spacing: 0.5px;
-}
-
-/* ============================================================
-   핵심 시나리오 섹션
-   ============================================================ */
-
-.section {
+  gap: 40px;
   width: 100%;
-  margin-bottom: 0;
+  padding: 0 16px;
 }
 
-.coreScenario {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+/* 맨 위 공동 주연 포스터: 위쪽 여백만 */
+.posterTop {
+  padding-top: 16px;
 }
 
-.coreScenario p {
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  margin: 0;
-  white-space: pre-wrap;
-  letter-spacing: 0.5px;
-}
-
-.coreHeadline {
-  color: var(--color-text-default, #ffffff);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 140%;
-  letter-spacing: 0.5px;
-}
-
-/* ============================================================
-   상세 시나리오 섹션
-   ============================================================ */
-
-.categoriesContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  width: 100%;
-}
-
-/* ============================================================
-   종합 조언 섹션
-   ============================================================ */
-
-.adviceContent {
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  margin: 0;
-  white-space: pre-line;
-  letter-spacing: 0.5px;
-}
-
-/* ============================================================
-   하단 Footer (공유하기 버튼)
-   ============================================================ */
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: stretch;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 16px;
-  width: 100%;
-  max-width: 480px;
-  background: linear-gradient(180deg, transparent 0%, #2e1431 20%);
-  padding-top: 32px;
-  z-index: 100;
-}
-
-.reviewButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 20px;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-text-default, #ffffff);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
-  cursor: pointer;
-  height: 52px;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-
-.reviewButton:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.shareButtonWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  flex: 1;
-}
-
-.shareButton {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 20px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #2d1b4e;
-  background: var(--color-button-primary-surface, #ffccd9);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  height: 52px;
-  transition: opacity 0.2s;
-}
-
-.shareButton:hover {
-  opacity: 0.9;
-}
-
-/* ============================================================
-   에러 상태
-   ============================================================ */
-
+/* 오류 */
 .error {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
-  min-height: 400px;
+  gap: 12px;
+  padding: 120px 8px 0;
   text-align: center;
-  padding: 24px;
-}
-
-.errorIcon {
-  font-size: 48px;
-  margin-bottom: 8px;
 }
 
 .errorTitle {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--color-text-default, #ffffff);
   margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 .errorDescription {
-  font-size: 16px;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+  margin: 0 0 12px;
+  font-size: 15px;
   line-height: 1.6;
-  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .errorButtons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  max-width: 280px;
-  margin-top: 8px;
-}
-
-.refreshButton {
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #2d1b4e;
-  background: var(--color-button-primary-surface, #ffccd9);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.refreshButton:hover {
-  background: var(--color-button-primary-surface-hover, #ffa8c0);
-}
-
-.errorBackButton {
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--color-text-default, #ffffff);
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.errorBackButton:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-@supports (min-height: 100svh) {
-  .page {
-    min-height: 100svh;
-  }
-}
-
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-.shareButton:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
-}
-
-.refreshButton:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

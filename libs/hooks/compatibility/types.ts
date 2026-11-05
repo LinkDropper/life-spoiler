@@ -110,6 +110,9 @@ export interface CompatibilityInterpretation {
   headline: string;
   /** 3. 종합 태그 */
   tags: string[];
+  /** 배역 소개 한 줄 (A·B). 2026-11 이전 결과에는 없음 */
+  profileASummary?: string;
+  profileBSummary?: string;
   /** 6. 궁합 인사이트 (8개 항목) */
   insights: CompatibilityInsights;
   /** 7. 궁합 스포일러 — 레거시 텍스트 (en/ja, 기존 캐시) */

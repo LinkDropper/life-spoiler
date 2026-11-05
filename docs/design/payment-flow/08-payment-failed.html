@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>결제를 마치지 못했어요 - 인생스포 (결제 시안 v3 · 실패·취소)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+@font-face{font-family:"SB AggroOTF";src:url("SB-B.otf") format("opentype");font-display:swap}
+:root{--night:#0c1220;--haze:rgba(255,255,255,.72);--faint:rgba(255,255,255,.6);--spoiler:#ffccd9;--accent:#ff8fb1;--star:#ffe7a3;--ink:#23142d;--rose:#8a2f55;--display:"SB AggroOTF","Pretendard Variable",Pretendard,sans-serif}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{display:flex;flex-direction:column;width:375px;min-height:100vh;margin:0 auto;background:var(--night);color:#fff;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,p,dl,dd{margin:0;padding:0}
+button,a{font:inherit;color:inherit}
+a{text-decoration:none}
+:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+.hd{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 20px}
+.logo{font-family:var(--display);font-size:24px;line-height:1;color:var(--spoiler)}
+.hd div{display:flex}
+.ic{display:grid;place-items:center;width:44px;height:44px;border:0;background:none}
+main{display:flex;flex:1;flex-direction:column;padding:12px 20px 32px}
+h1{font-family:var(--display);font-size:32px;line-height:1.2;font-weight:400;word-break:keep-all;overflow-wrap:anywhere;text-wrap:balance}
+.lead{margin-top:8px;font-size:15px;line-height:1.55;color:var(--haze)}
+
+/* 관람권은 슬롯에 그대로 꽂혀 있고, 아직 받아 가지 않았다는 뜻으로 종이만 한 톤 어둡다 */
+.counter{margin-top:28px}
+.slot{position:relative;z-index:2;height:12px;border-top:2px solid rgba(255,255,255,.4);border-radius:6px;background:#05080f}
+.tk{--paper:#d9ced4;--stub:96px;position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) var(--stub);margin:-12px 12px 0;color:var(--ink)}
+.tk::after{content:"";position:absolute;right:calc(var(--stub) - 8px);bottom:-8px;width:16px;height:16px;border-radius:50%;background:var(--night)}
+.tk .bd{position:relative;min-width:0;padding:28px 14px 16px 22px;background:var(--paper);border-radius:0 0 0 10px}
+.tk .bd::before{content:"";position:absolute;top:60%;left:-7px;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--night)}
+.kd{font-family:var(--display);font-size:13px;line-height:1.35;color:var(--rose)}
+.tl{margin-top:4px;font-size:18px;font-weight:800;line-height:1.35;overflow-wrap:anywhere;text-wrap:balance}
+.meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(35,20,45,.2);font-size:13px;line-height:1.45}
+.meta dt{font-weight:700;color:rgba(35,20,45,.76)}
+.meta dd{font-weight:800}
+.tk .sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:24px 8px 14px;border-left:2px dashed rgba(35,20,45,.32);border-radius:0 0 10px 0;background:var(--paper);text-align:center;font-size:12px;font-weight:800;color:var(--rose)}
+.tk .sb strong{font-size:16px;font-weight:800;line-height:1.2;color:var(--ink)}
+
+/* 에러 코드: 박스 없이 목록 행 */
+.code{margin-top:32px;border-top:1px solid rgba(255,204,217,.3);border-bottom:1px solid rgba(255,204,217,.15)}
+.code div{display:flex;align-items:baseline;justify-content:space-between;gap:16px;min-height:52px;padding:14px 0}
+.code dt{flex:none;font-size:14px;font-weight:600;color:var(--faint)}
+.code dd{min-width:0;text-align:right;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.cta{display:grid;gap:8px;margin-top:auto;padding-top:40px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;padding:6px 16px;border:0;border-radius:10px;background:var(--spoiler);color:var(--ink);font-size:16px;font-weight:800;line-height:1.3;text-align:center;text-wrap:balance;cursor:pointer}
+.btn.ghost{background:none;color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+</style>
+</head>
+<body>
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div>
+    <button class="ic" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+    <button class="ic" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <div role="alert">
+    <h1>결제를 마치지 못했어요</h1>
+    <p class="lead">결제 처리 중 문제가 발생했습니다. 다시 시도해 주세요.</p>
+  </div>
+
+  <div class="counter">
+    <div class="slot" aria-hidden="true"></div>
+    <section class="tk" aria-label="발권 전 관람권">
+      <div class="bd">
+        <p class="kd">관람권 · 본편</p>
+        <p class="tl">올해 운세 스포일러</p>
+        <dl class="meta">
+          <dt>관객</dt><dd>지수님</dd>
+        </dl>
+      </div>
+      <div class="sb"><span>상태</span><strong>발권 전</strong></div>
+    </section>
+  </div>
+
+  <dl class="code">
+    <div><dt>에러 코드</dt><dd>[에러 코드]</dd></div>
+  </dl>
+
+  <div class="cta">
+    <button class="btn" type="button">다시 결제하기</button>
+    <button class="btn ghost" type="button">이전으로 돌아가기</button>
+  </div>
+</main>
+</body>
+</html>

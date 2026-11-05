@@ -1,67 +1,115 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useId, useRef } from "react";
 import { useTranslations } from "next-intl";
 
 import { GuestCompatibilityContent } from "./GuestCompatibilityContent";
 import styles from "./GuestDetailDrawer.module.css";
 
+import type { KeyboardEvent, MouseEvent } from "react";
+import type { GuestSeat } from "@/libs/universe/seat-map";
 import type { UniverseGuestDto } from "@/libs/universe/types";
 
 interface GuestDetailDrawerProps {
   /** null이면 닫힌 상태 (렌더하지 않는다) */
   guest: UniverseGuestDto | null;
+  seat: GuestSeat | null;
   onClose: () => void;
 }
 
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 /**
- * 궁합 순위 목록 항목 클릭 시 뜨는 바텀시트.
- *
- * `components/fortune/ShareDrawer.tsx`와 같은 배경 dim + 하단 슬라이드업 패턴을
- * 따르되, 색은 앱 전역 다크 서피스 토큰 대신 이 기능의 우주 테마(남색/보라
- * 그라디언트, `UniverseVisualization.module.css`의 `.canvas`와 동일 톤)를 쓴다.
+ * 엔딩 크레딧 항목을 눌렀을 때 뜨는 바텀시트.
  *
  * 여기서 보여주는 데이터는 이미 `GET /api/universe/{publicId}` 응답에 전부
  * 들어있는 UniverseGuestDto다 — 이 드로어를 위해 새로 fetch하지 않는다.
  *
- * factor 근거 breakdown(축 이름 + 판정 문장 + 기여도)도 함께 보여준다.
- * "정보가 너무 적다"는 피드백에 대응하되, 경쟁사 예시(캐릭터 일러스트,
- * "내가 아끼는 내 사람" 같은 관계 유형 라벨)를 그대로 베끼지 않고 이미
- * 엔진이 실제로 산출하는 결정론적 데이터(factors)로 채운다 — 없는 걸
- * 지어내지 않는다는 브랜드 원칙(근거 기반 콘텐츠)과도 맞다.
+ * 키보드: 열리면 닫기 버튼으로 포커스가 들어오고, Tab은 시트 안에서만 돌며,
+ * ESC로 닫으면 포커스가 누른 항목으로 돌아간다.
  */
 export const GuestDetailDrawer = ({
   guest,
+  seat,
   onClose,
 }: GuestDetailDrawerProps) => {
   const t = useTranslations("universe.detail");
+  const titleId = useId();
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const isOpen = guest !== null;
 
   useEffect(() => {
-    if (guest) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+    if (!isOpen) {
+      return;
     }
+
+    const previouslyFocused = document.activeElement;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
 
     return () => {
       document.body.style.overflow = "";
+      if (previouslyFocused instanceof HTMLElement) {
+        previouslyFocused.focus();
+      }
     };
-  }, [guest]);
+  }, [isOpen]);
 
   if (!guest) {
     return null;
   }
 
-  const handleBackdropClick = (event: React.MouseEvent) => {
+  const handleBackdropClick = (event: MouseEvent) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   };
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      event.stopPropagation();
+      onClose();
+      return;
+    }
+
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const focusables =
+      drawerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    const first = focusables?.[0];
+    const last = focusables?.[focusables.length - 1];
+
+    if (!first || !last) {
+      return;
+    }
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   return (
-    <div className={styles.backdrop} onClick={handleBackdropClick}>
-      <div className={styles.drawer} role="dialog" aria-modal="true">
+    <div
+      className={styles.backdrop}
+      onClick={handleBackdropClick}
+      onKeyDown={handleKeyDown}
+    >
+      <div
+        ref={drawerRef}
+        className={styles.drawer}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
         <button
+          ref={closeButtonRef}
           type="button"
           className={styles.closeButton}
           onClick={onClose}
@@ -70,7 +118,12 @@ export const GuestDetailDrawer = ({
           ×
         </button>
 
-        <GuestCompatibilityContent guest={guest} className={styles.content} />
+        <GuestCompatibilityContent
+          guest={guest}
+          seat={seat}
+          titleId={titleId}
+          className={styles.content}
+        />
       </div>
     </div>
   );

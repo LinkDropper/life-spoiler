@@ -1,20 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { ChevronLeft } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 
+import { MarkdownContent } from "@/components/fortune";
+import { getRelationshipLabel } from "@/components/compatibility/utils";
+import {
+  CastIntro,
+  CastingNotes,
+  ChartPair,
+  CoStarPoster,
+} from "@/components/fortune/screen/CompatibilitySections";
+import { FeatureLocks } from "@/components/fortune/screen/FeatureLocks";
+import { RatingBoard } from "@/components/fortune/screen/RatingBoard";
+import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
+import { TrailerTimeline } from "@/components/fortune/screen/TrailerTimeline";
+import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import { trackFortuneEvent } from "@/libs/analytics/fortune";
 import {
-  ZiweiChartGrid,
-  SectionHeader,
-  MarkdownContent,
-  SubSectionList,
-  OneLinerAlert,
-} from "@/components/fortune";
-import { CompatibilityCard } from "@/components/compatibility";
+  COMPATIBILITY_STORY_KEYS,
+  toCompatibilityGenre,
+} from "@/libs/fortune/compatibility-screen";
+import { useCompatibilityLeads } from "@/libs/fortune/use-compatibility-leads";
 import { useCompatibilityFortune } from "@/libs/hooks/compatibility";
 import {
   useFirstPaymentEligibility,
@@ -23,42 +34,19 @@ import {
 
 import styles from "./page.module.css";
 
-// ============================================================
-// 인사이트 아이콘 매핑
-// ============================================================
+const LOCKED_SCENES = ["act2", "act3", "act4", "bonus"] as const;
 
-const INSIGHT_ITEMS = [
-  { key: "overall", icon: "/images/compatibility/stars-filled.svg" },
-  { key: "zodiac", icon: "/images/compatibility/paw-filled.svg" },
-  { key: "fiveElement", icon: "/images/compatibility/pentagon-filled.svg" },
-  { key: "chemistry", icon: "/images/compatibility/puzzle-filled.svg" },
-  {
-    key: "communication",
-    icon: "/images/compatibility/message-circle-filled.svg",
-  },
-  {
-    key: "growthSynergy",
-    icon: "/images/compatibility/arrow-big-up-filled.svg",
-  },
-  { key: "trustIndex", icon: "/images/compatibility/heart-filled.svg" },
-  { key: "crisisResilience", icon: "/images/compatibility/shield-filled.svg" },
-] as const;
-
-const PREVIEW_PLACEHOLDER = "???";
-
-const KEYWORD_INSIGHT_KEYS: ReadonlySet<string> = new Set([
-  "zodiac",
-  "fiveElement",
-  "chemistry",
-]);
-
-// ============================================================
-// 페이지 컴포넌트
-// ============================================================
-
-export default function CompatibilityFortunePage() {
+/**
+ * 궁합 운세 예고편 = 공동 주연 포스터 (기획서 §13).
+ * 포스터(케미 점수·장르) → 배역 소개 → 캐스팅 노트 → 두 사람의 명반 → 예고편 3장면
+ * → 네 갈래 평점(잠금) → 본편에서 상영돼요 → 결제 바
+ */
+export default function CompatibilityPreviewPage() {
   const tFortune = useTranslations("compatibility.fortune");
+  const tCard = useTranslations("compatibility.card");
   const tCommon = useTranslations("fortune.common");
+  const t = useTranslations("fortune.screen");
+  const tC = useTranslations("fortune.screen.compatibility");
 
   const {
     isLoading,
@@ -69,11 +57,7 @@ export default function CompatibilityFortunePage() {
     handlePayment,
     handleBack,
   } = useCompatibilityFortune();
-
-  const [chartAExpanded, setChartAExpanded] = useState(true);
-  const [chartBExpanded, setChartBExpanded] = useState(true);
-  const [insightsExpanded, setInsightsExpanded] = useState(true);
-  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const { leadA, leadB } = useCompatibilityLeads(result);
 
   // 첫 결제 100원 자격 시 CTA 금액 표기를 100원으로 (궁합은 pairId 기준)
   const params = useParams();
@@ -83,21 +67,27 @@ export default function CompatibilityFortunePage() {
     "compatibility"
   );
 
+  const hasTrackedViewRef = useRef(false);
+  useEffect(() => {
+    if (!result || hasTrackedViewRef.current) {
+      return;
+    }
+    hasTrackedViewRef.current = true;
+    trackFortuneEvent("fortune_preview_view", {
+      fortune_type: "compatibility",
+    });
+  }, [result]);
+
   if (isLoading) {
     return <Loading />;
   }
 
   if (error) {
-    const handleRefresh = () => {
-      window.location.reload();
-    };
-
     return (
       <div className={styles.page}>
         <HeaderClient />
-        <main className={styles.main}>
-          <div className={styles.error}>
-            <div className={styles.errorIcon}>❌</div>
+        <main className={`${screen.root} ${styles.main}`}>
+          <div className={styles.error} role="alert">
             <h2 className={styles.errorTitle}>{tFortune("errorTitle")}</h2>
             <p className={styles.errorDescription}>
               {tFortune("errorDescription")}
@@ -105,14 +95,14 @@ export default function CompatibilityFortunePage() {
             <div className={styles.errorButtons}>
               <button
                 type="button"
-                className={styles.refreshButton}
-                onClick={handleRefresh}
+                className={screen.primaryButton}
+                onClick={() => window.location.reload()}
               >
                 {tFortune("refresh")}
               </button>
               <button
                 type="button"
-                className={styles.errorBackButton}
+                className={screen.ghostButton}
                 onClick={handleBack}
               >
                 {tFortune("back")}
@@ -128,164 +118,111 @@ export default function CompatibilityFortunePage() {
     return null;
   }
 
-  const { interpretation, charts } = result;
-  const nameA = charts.profileA.name;
-  const nameB = charts.profileB.name;
+  const { interpretation, score } = result;
+  const subSections = interpretation.overviewSubSections ?? [];
+  const genre = toCompatibilityGenre(relationshipType);
+
+  const handlePayClick = () => {
+    trackFortuneEvent("fortune_preview_cta_click", {
+      fortune_type: "compatibility",
+      first_payment: firstPaymentEligible,
+    });
+    handlePayment();
+  };
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={styles.main}>
-        {/* 섹션 1: 프로필 요약 카드 */}
-        <CompatibilityCard
-          nameA={nameA}
-          nameB={nameB}
-          score={result.score}
-          relationshipType={relationshipType ?? undefined}
+      <main className={`${screen.root} ${styles.main}`}>
+        <div className={styles.bleed}>
+          <CoStarPoster
+            leadA={leadA}
+            leadB={leadB}
+            genre={genre}
+            relationLabel={
+              relationshipType
+                ? getRelationshipLabel(relationshipType, tCard)
+                : null
+            }
+            score={score}
+            headline={interpretation.headline}
+            tagline={interpretation.overviewOneLiner}
+          />
+        </div>
+
+        <CastIntro leadA={leadA} leadB={leadB} />
+        <CastingNotes
+          zodiac={interpretation.insights.zodiac}
+          fiveElement={interpretation.insights.fiveElement}
+          chemistry={interpretation.insights.chemistry}
+        />
+        <ChartPair
+          leadA={leadA}
+          leadB={leadB}
+          desc={tC("chart.previewDesc")}
+          interactive={false}
         />
 
-        {/* 섹션 2: A의 자미두수 명반 */}
-        <SectionHeader
-          title={tFortune("chartTitle", { name: nameA })}
-          expanded={chartAExpanded}
-          onToggle={() => setChartAExpanded(!chartAExpanded)}
-        />
-        {chartAExpanded && charts.profileA.rawChart && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={charts.profileA.rawChart}
-              profileName={nameA}
-              wuxingJu={charts.profileA.chart.wuxingJu}
-              interactive={false}
-            />
-          </section>
+        {subSections.length > 0 ? (
+          <TrailerTimeline items={subSections} />
+        ) : (
+          interpretation.spoiler && (
+            <section className={screen.section}>
+              <p className={screen.eyebrow}>TRAILER</p>
+              <MarkdownContent className={screen.prose}>
+                {interpretation.spoiler}
+              </MarkdownContent>
+            </section>
+          )
+        )}
+        {interpretation.overviewOneLiner && (
+          <SubtitleStill
+            label={tCommon("oneLinerLabel")}
+            text={interpretation.overviewOneLiner}
+          />
         )}
 
-        {/* 섹션 3: B의 자미두수 명반 */}
-        <SectionHeader
-          title={tFortune("chartTitle", { name: nameB })}
-          expanded={chartBExpanded}
-          onToggle={() => setChartBExpanded(!chartBExpanded)}
+        {/* 네 갈래 점수는 본편에서: 점수와 한 줄 평은 화면에 넣지 않는다 */}
+        <RatingBoard
+          items={COMPATIBILITY_STORY_KEYS.map((key) => ({
+            key,
+            label: tC(`stories.${key}`),
+            score: 0,
+            review: tC("rating.lockedReview"),
+          }))}
+          lockedHint={tC("rating.lockedHint")}
         />
-        {chartBExpanded && charts.profileB.rawChart && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={charts.profileB.rawChart}
-              profileName={nameB}
-              wuxingJu={charts.profileB.chart.wuxingJu}
-              interactive={false}
-            />
-          </section>
-        )}
 
-        {/* 섹션 4: 궁합 인사이트 */}
-        <SectionHeader
-          title={tFortune("insightsTitle")}
-          expanded={insightsExpanded}
-          onToggle={() => setInsightsExpanded(!insightsExpanded)}
+        <FeatureLocks
+          scenes={LOCKED_SCENES.map((scene) => ({
+            act: tC(`feature.${scene}.act`),
+            title: tC(`feature.${scene}.title`),
+            desc: tC(`feature.${scene}.desc`),
+          }))}
+          spoilerTitle={tC("feature.spoilerTitle")}
+          spoilerHint={tC("feature.spoilerHint")}
         />
-        {insightsExpanded && (
-          <section className={styles.blurredSection}>
-            <div className={styles.insightsContainer}>
-              <div className={styles.insightsList}>
-                {INSIGHT_ITEMS.map((item, index) => {
-                  const insight = interpretation.insights[item.key];
-                  const isMasked = index >= 4;
-                  const insightLabel = tFortune(`insights.${item.key}`);
-                  const value = isMasked
-                    ? PREVIEW_PLACEHOLDER
-                    : KEYWORD_INSIGHT_KEYS.has(item.key)
-                      ? insight.label || "???"
-                      : tFortune("scoreUnit", { score: insight.score });
-                  return (
-                    <div key={item.key} className={styles.insightItem}>
-                      <Image
-                        src={item.icon}
-                        alt={insightLabel}
-                        width={20}
-                        height={20}
-                        className={styles.insightIcon}
-                      />
-                      <span className={styles.insightLabel}>
-                        {insightLabel}
-                      </span>
-                      <hr className={styles.insightDivider} />
-                      <span className={styles.insightValue}>{value}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* 섹션 5: 궁합 스포일러 */}
-        <SectionHeader
-          title={tFortune("spoilerTitle")}
-          expanded={spoilerExpanded}
-          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
-        />
-        {spoilerExpanded && (
-          <section className={styles.spoilerContent}>
-            <h2 className={styles.spoilerHeadline}>
-              {interpretation.headline}
-            </h2>
-            {interpretation.overviewSubSections &&
-            interpretation.overviewSubSections.length > 0 ? (
-              <>
-                <SubSectionList items={interpretation.overviewSubSections} />
-                {interpretation.overviewOneLiner && (
-                  <OneLinerAlert
-                    text={interpretation.overviewOneLiner}
-                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
-                  />
-                )}
-              </>
-            ) : (
-              interpretation.spoiler && (
-                <MarkdownContent className={styles.spoilerText}>
-                  {interpretation.spoiler}
-                </MarkdownContent>
-              )
-            )}
-            <p className={styles.spoilerTeaser}>{tFortune("teaser")}</p>
-          </section>
-        )}
       </main>
 
-      {/* 하단 Footer */}
       <footer className={styles.footer}>
         <button
           type="button"
           className={styles.backButton}
           onClick={handleBack}
-          aria-label={tFortune("back")}
+          aria-label={t("pay.back")}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M15.5303 5.46967C15.8232 5.76256 15.8232 6.23744 15.5303 6.53033L10.0607 12L15.5303 17.4697C15.8232 17.7626 15.8232 18.2374 15.5303 18.5303C15.2374 18.8232 14.7626 18.8232 14.4697 18.5303L8.46967 12.5303C8.17678 12.2374 8.17678 11.7626 8.46967 11.4697L14.4697 5.46967C14.7626 5.17678 15.2374 5.17678 15.5303 5.46967Z"
-              fill="#18181B"
-            />
-          </svg>
+          <ChevronLeft size={24} aria-hidden="true" />
         </button>
         <button
           type="button"
-          className={styles.ctaButton}
-          onClick={handlePayment}
-          disabled={!!error || !isAIGenerated}
+          className={styles.paymentButton}
+          onClick={handlePayClick}
+          disabled={!isAIGenerated}
         >
           {firstPaymentEligible
-            ? toEventPriceText(tFortune("ctaButton"))
-            : tFortune("ctaButton")}
+            ? toEventPriceText(t("pay.button"))
+            : t("pay.button")}
         </button>
       </footer>
     </div>

@@ -1,507 +1,236 @@
+/* 매표소 — docs/design/payment-flow 01~03 시안.
+   상영관 토큰은 페이지 루트에 로컬로 선언한다 (components/home/HomeScreen.module.css와 같은 값). */
 .page {
-  min-height: 100vh;
+  --cinema-night: #0c1220;
+  --cinema-haze: rgba(255, 255, 255, 0.72);
+  --cinema-faint: rgba(255, 255, 255, 0.6);
+  --cinema-line: rgba(255, 255, 255, 0.16);
+  --cinema-spoiler: var(--primitive-primary, #ffccd9);
+  --cinema-accent: var(--primitive-primary-strong, #ff8fb1);
+  --cinema-star: var(--primitive-gold, #ffe7a3);
+  --cinema-ink: #23142d;
+  --cinema-paper: #f9ecf0;
+  --cinema-rose: #8a2f55;
+  --cinema-display: var(--font-sb-aggro), var(--font-pretendard), sans-serif;
+  --cinema-display-weight: 400;
+
+  position: relative;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(
-    180deg,
-    rgba(12, 18, 32, 1) 0%,
-    rgba(46, 20, 49, 1) 100%
-  );
   width: 100%;
   max-width: 480px;
+  min-height: 100vh;
   margin: 0 auto;
-  position: relative;
+  background: var(--cinema-night);
+  color: #fff;
+  font-family: var(--font-pretendard), sans-serif;
+  overflow-x: clip;
+  overflow-wrap: break-word;
+}
+
+.page:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.page:lang(ja) {
+  --cinema-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --cinema-display-weight: 800;
+}
+
+.page :focus-visible {
+  outline: 2px solid var(--cinema-star);
+  outline-offset: 2px;
+}
+
+.flow {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .main {
   flex: 1;
-  padding: 24px 16px;
-  padding-bottom: 100px;
+  padding: 12px 20px 32px;
 }
 
-/* 섹션 타이틀 */
-.section {
-  padding-bottom: 12px;
-  border-bottom: 1px solid
-    var(--color-border-default, rgba(255, 255, 255, 0.16));
-  margin-bottom: 24px;
-}
-
-.sectionTitle {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 18px;
-  font-weight: 700;
+.title {
+  margin: 0;
+  font-family: var(--cinema-display);
+  font-size: 32px;
+  font-weight: var(--cinema-display-weight);
   line-height: 1.2;
-  color: var(--color-text-default, #ffffff);
-  margin: 0;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
-/* 주문 상품 카드 */
-.productCard {
+.lead {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--cinema-haze);
+  overflow-wrap: anywhere;
+}
+
+/* 환불·열람 기간 안내 */
+.notice {
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--cinema-haze);
+}
+
+.notice li + li {
+  margin-top: 4px;
+}
+
+.notice li:first-child {
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 토스트: 테두리·그림자 없이 면 하나. 성공은 role="status", 오류는 role="alert" */
+.toast {
+  position: fixed;
+  top: 68px;
+  left: 50%;
+  z-index: 110;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  background: var(--color-surface-default, #18181b);
-  border: 2px solid var(--primitive-primary, #ffccd9);
-  border-radius: 8px;
-  padding: 20px;
-  height: 52px;
-  box-sizing: border-box;
-  margin-bottom: 24px;
-}
-
-.productName {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
+  gap: 8px;
+  width: min(440px, calc(100% - 40px));
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #1d2845;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.4;
-  color: var(--color-text-primary-secondary, #ffdde6);
-}
-
-/* 결제 수단 목록 */
-.methodList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-.methodItem {
-  display: flex;
-  align-items: center;
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  border: none;
-  border-radius: 8px;
-  padding: 8px 20px;
-  height: 52px;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.methodItem:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.radioButton {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.radioOuter {
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 10px;
-  background: var(--color-surface-default, #18181b);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 0 1px;
-  box-sizing: border-box;
-}
-
-.radioOuterSelected {
-  background: var(--color-button-primary-surface, #ffccd9);
-  border-color: var(--color-border-selected, #ff8fb1);
-}
-
-.radioInner {
-  width: 8px;
-  height: 8px;
-  background: var(--primitive-white, #ffffff);
-  border-radius: 4px;
-}
-
-.methodLabel {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-}
-
-.methodLogo {
-  flex-shrink: 0;
-}
-
-/* 보유 쿠폰 섹션 */
-.ownedCouponsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.ownedCouponsTitle {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  margin: 0;
-}
-
-.ownedCouponChip {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 10px 16px;
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  cursor: pointer;
-  transition:
-    background-color 0.2s,
-    border-color 0.2s;
-}
-
-.ownedCouponChip:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
-.ownedCouponChipText {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-status, #ffe7a3);
-}
-
-/* 쿠폰 입력 영역 */
-.promoInputContainer {
-  display: flex;
-  gap: 8px;
-  width: 100%;
-  min-width: 0;
-}
-
-.promoInput {
-  flex: 1 1 0;
-  min-width: 0;
-  height: 44px;
-  padding: 0 16px;
-  background: var(--color-surface-default, #18181b);
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-  outline: none;
-  box-sizing: border-box;
-}
-
-.promoInput::placeholder {
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
-}
-
-.promoInput:focus {
-  border-color: rgba(255, 255, 255, 0.32);
-}
-
-.promoInputApplied {
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
-}
-
-/* 쿠폰 적용 성공 토스트 */
-.promoToast {
-  position: fixed;
-  top: 84px;
-  left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--color-surface-default, #18181b);
-  border-radius: 8px;
-  box-shadow: 0px 4px 24px -5px var(--color-dropdown-shadow, rgba(0, 0, 0, 0.7));
-  z-index: 100;
-  animation: fadeInOut 3s ease-in-out;
-  white-space: nowrap;
+  animation: toastInOut 3s ease-in-out forwards;
 }
 
-.promoToast span {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
+.toast svg {
+  flex: none;
 }
 
-@keyframes fadeInOut {
+@keyframes toastInOut {
   0% {
     opacity: 0;
     transform: translateX(-50%) translateY(-10px);
   }
-  10% {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+
+  10%,
   90% {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+
   100% {
     opacity: 0;
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateX(-50%) translateY(0);
   }
 }
 
-.promoSubmitBtn {
-  height: 44px;
-  padding: 12px 16px;
-  background: var(--color-button-primary-surface, #ffccd9);
-  border: none;
-  border-radius: 8px;
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #2d1b4e;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background-color 0.2s;
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
 }
 
-.promoSubmitBtn:hover:not(:disabled) {
-  background: var(--color-button-primary-surface-hover, #ffa8c0);
-}
-
-.promoSubmitBtn:disabled {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
-  cursor: not-allowed;
-}
-
-/* 결제 금액 카드 */
-.amountCard {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--color-surface-default, #18181b);
-  border: 2px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  padding: 20px;
-  height: 52px;
-  box-sizing: border-box;
-  margin-bottom: 8px;
-}
-
-.amountLabel {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-}
-
-.amountValue {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--color-text-primary-secondary, #ffdde6);
-}
-
-.amountWithDiscount {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.originalAmount {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
-  text-decoration: line-through;
-}
-
-.discountedAmount {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--color-text-primary-secondary, #ffdde6);
-}
-
-/* 환불 정책 안내 */
-.refundNotice {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.4;
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
-  text-align: center;
-  margin: 0;
-}
-
-/* 하단 버튼 영역 */
-.footer {
-  position: fixed;
+/* 하단 바: 금액은 20px 굵은 본문 서체, 디스플레이 서체는 제목에만 쓴다 */
+.bar {
+  position: sticky;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 16px;
-  background: linear-gradient(
-    180deg,
-    rgba(46, 20, 49, 0) 0%,
-    rgba(46, 20, 49, 1) 30%
-  );
-  box-sizing: border-box;
+  padding: 10px 20px calc(10px + env(safe-area-inset-bottom)) 8px;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+  background: var(--cinema-night);
 }
 
-.backBtn {
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--primitive-white, #ffffff);
-  border: none;
-  border-radius: 8px;
+.back {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
   cursor: pointer;
-  flex-shrink: 0;
 }
 
-.backBtn:hover {
-  background: #f0f0f0;
+.total {
+  flex: none;
+  min-width: 0;
+  margin-right: 4px;
 }
 
-.paymentButton {
+.totalLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--cinema-haze);
+}
+
+.totalValue {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.totalValue del {
+  font-size: 13px;
+  color: var(--cinema-faint);
+}
+
+.totalValue strong {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.submit {
+  display: flex;
   flex: 1;
-  height: 52px;
-  display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-button-primary-surface, #ffccd9);
-  border: none;
-  border-radius: 8px;
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
+  min-width: 0;
+  min-height: 52px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--cinema-spoiler);
+  color: var(--cinema-ink);
+  font: inherit;
   font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #2d1b4e;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.paymentButton:hover:not(:disabled) {
-  background: var(--color-button-primary-surface-hover, #ffa8c0);
-}
-
-.paymentButton:disabled {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--color-text-tertiary, rgba(255, 255, 255, 0.5));
-  cursor: not-allowed;
-}
-
-/* 에러 상태 */
-.error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  min-height: 300px;
+  font-weight: 800;
+  line-height: 1.25;
   text-align: center;
-}
-
-.error p {
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 16px;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-}
-
-.backButton {
-  padding: 12px 24px;
-  font-family:
-    "Pretendard",
-    -apple-system,
-    sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-default, #ffffff);
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
+  text-wrap: balance;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.backButton:hover {
+.submit:disabled {
   background: rgba(255, 255, 255, 0.12);
-}
-
-@supports (min-height: 100svh) {
-  .page {
-    min-height: 100svh;
-  }
-}
-
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-.promoSubmitBtn:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
-}
-
-.paymentButton:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
+  color: var(--cinema-faint);
+  cursor: default;
 }

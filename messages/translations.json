@@ -206,8 +206,8 @@
       },
       "friendUniverse": {
         "alert": {
-          "ariaLabel": "로그인 없이 무료로 나만의 별자리 만들기",
-          "chip": "무료 · 로그인 없이 친구들과 별자리 궁합"
+          "ariaLabel": "로그인 없이 무료로 친구 시사회 열기",
+          "chip": "무료 · 로그인 없이 친구 시사회 열기"
         }
       },
       "cta": {
@@ -685,8 +685,8 @@
         "profileShareTitle": "프로필 이미지 공유하기",
         "share": {
           "title": "{name}님의 인생 운세",
-          "ogTitle": "114개 별이 스포하는 {name}님의 인생 시나리오",
-          "ogTitleWithHeadline": "{name}님의 인생 사주: {headline}",
+          "ogTitle": "{name}님의 인생 시나리오",
+          "ogTitleWithHeadline": "{name}님 주연 인생 영화: {headline}",
           "ogDescription": "자미두수로 분석한 {name}님의 인생 시나리오입니다.",
           "ogDescriptionWithScores": "{name}님의 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
         },
@@ -778,8 +778,8 @@
         "luckyKeywordsTitle": "행운 키워드",
         "share": {
           "title": "{name}님의 {year}년 운세",
-          "ogTitle": "114개 별이 스포하는 {name}님의 올해 시나리오",
-          "ogTitleWithHeadline": "{name}님의 {year}년 운세: {headline}",
+          "ogTitle": "{name}님의 {year}년 시나리오",
+          "ogTitleWithHeadline": "{name}님 주연 {year}년 편: {headline}",
           "ogDescription": "자미두수로 분석한 {name}님의 {year}년 운세입니다.",
           "ogDescriptionWithScores": "{name}님의 {year}년 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
         },
@@ -872,6 +872,633 @@
         "shareLine": "라인 공유하기",
         "downloadImage": "프로필 이미지 다운로드",
         "downloading": "다운로드 중..."
+      },
+      "screen": {
+        "poster": {
+          "presents": "A LIFE SPOILER FILM",
+          "badgeTrailer": "예고편 무료 상영 중",
+          "badgeFeature": "본편 상영 중",
+          "runtime": "RUNTIME 99Y",
+          "starring": "{name} 주연",
+          "leadStar": "명궁 {star}",
+          "noStar": "명궁 주성 없음",
+          "badgeShared": "친구가 보낸 본편"
+        },
+        "runtime": {
+          "age": "<b>{age}세</b> / {max}세",
+          "trailerNote": "예고편은 <b>첫 장면</b>까지예요. 지금 계신 {age}세 장면부터 99세까지는 본편에서 상영돼요."
+        },
+        "chart": {
+          "title": "원작 · 내 명반",
+          "desc": "포스터의 별자리는 여기서 나왔어요. 명궁과 함께 움직이는 세 궁을 이었어요.",
+          "featureDesc": "칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 선은 명궁과 함께 움직이는 세 궁이에요.",
+          "legendTriangle": "명궁과 삼합 두 궁",
+          "legendOpposite": "마주 보는 궁",
+          "shareDesc": "포스터의 별자리는 이 명반에서 나왔어요. 명궁과 함께 움직이는 세 궁을 이었어요."
+        },
+        "trailer": {
+          "title": "예고편 {count}컷"
+        },
+        "feature": {
+          "title": "본편에서 상영돼요",
+          "spoilerHint": "ACT 2 · 핵심 시나리오의 첫 문장은 본편에서 열려요.",
+          "act2": {
+            "act": "ACT 2",
+            "title": "핵심 시나리오",
+            "desc": "인생 전체를 관통하는 큰 줄거리"
+          },
+          "act3": {
+            "act": "ACT 3",
+            "title": "네 갈래 이야기",
+            "desc": "재물·직업·인연·건강과 관람 평점"
+          },
+          "act4": {
+            "act": "ACT 4",
+            "title": "나이대별 장면",
+            "desc": "10년마다 바뀌는 무대, 99세까지"
+          },
+          "bonus": {
+            "act": "BONUS",
+            "title": "내 캐릭터 카드",
+            "desc": "친구에게 보낼 수 있는 성향 카드"
+          },
+          "keywords": "가장 큰 키워드 {count}개는 본편에서 열려요.",
+          "lockedKeyword": "본편공개"
+        },
+        "pay": {
+          "button": "본편 상영 시작 (990원)",
+          "back": "이전으로"
+        },
+        "error": {
+          "title": "일시적으로 접속이 원활하지 않아요",
+          "desc": "이용하시는 분이 많아 운세를 만들지 못했어요. 잠시 후 다시 시도해 주세요.",
+          "refresh": "새로고침"
+        },
+        "player": {
+          "label": "본편 장면 이동",
+          "now": "지금 {age}세",
+          "openMenu": "장면 목록 열기",
+          "closeMenu": "장면 목록 닫기",
+          "kicker": {
+            "opening": "OPENING",
+            "next": "COMING NEXT",
+            "end": "THE END"
+          },
+          "scene": {
+            "opening": "오프닝 · 캐릭터와 명반",
+            "next": "다음 상영작",
+            "end": "엔딩 크레딧"
+          },
+          "state": {
+            "current": "보는 중",
+            "done": "봤어요"
+          }
+        },
+        "acts": {
+          "act1": {
+            "title": "인생 스포일러",
+            "sub": "이 영화의 첫 장면"
+          },
+          "act2": {
+            "title": "핵심 시나리오",
+            "sub": "인생 전체를 관통하는 줄거리"
+          },
+          "act3": {
+            "title": "네 갈래 이야기",
+            "sub": "재물 · 직업 · 인연 · 건강"
+          },
+          "act4": {
+            "title": "나이대별 시나리오",
+            "sub": "가까운 장면일수록 크게, 지금부터 펼쳐요"
+          }
+        },
+        "character": {
+          "title": "내 캐릭터 포스터"
+        },
+        "rating": {
+          "title": "네 갈래 관람 평점",
+          "desc": "이야기마다 받은 점수를 10점 만점 평점으로 보여 드려요. 한 줄 평은 각 이야기의 제목이에요.",
+          "starsAria": "별 5개 중 {count}개",
+          "scoreAria": "10점 만점에 {score}점",
+          "topCallout": "<b>최고 평점 · {label} {score}</b> 네 갈래 중 가장 높은 점수를 받은 이야기예요."
+        },
+        "age": {
+          "summaryNow": "지금",
+          "summaryNearest": "가장 가까운 장면",
+          "summaryNowSub": "{age}세 · 이 장면의 {percent}%",
+          "ageNow": "지금 {age}세",
+          "summaryNext": "다음 장면까지",
+          "years": "{count}년",
+          "fromAge": "{age}세부터 · 새 10년",
+          "ageLabel": "{age}세",
+          "tagNow": "지금",
+          "tagNext": "다음 장면",
+          "birthTimeNote": "출생 시간을 몰라 정오를 기준으로 계산했어요. 시기 구분은 참고용으로 봐 주세요.",
+          "expandAll": "전체 펼쳐 읽기",
+          "collapseAll": "지금 장면만 보기"
+        },
+        "next": {
+          "title": "다음 상영작",
+          "name": "올해 운세",
+          "body": "인생 운세 다음에 운세를 더 본 100명 중 {count}명이 고른 다음 편이에요. {year}년을 12개월로 나눠 보여 드려요.",
+          "button": "올해 운세 보기"
+        },
+        "credits": {
+          "presentedBy": "인생스포",
+          "share": "본편 공유하기",
+          "review": "관람평 남기기"
+        },
+        "followUp": {
+          "name": "인생 운세",
+          "prompts": [
+            "제 직업운은 어떤가요?",
+            "결혼하기 좋은 시기는 언제인가요?",
+            "재물운이 궁금해요"
+          ]
+        },
+        "share": {
+          "cta": "내 인생 예고편 무료로 보기",
+          "endNote": "내 명반으로는 어떤 영화가 나올까요? 예고편은 무료로 상영돼요.",
+          "badge": "친구가 보낸 본편"
+        },
+        "yearly": {
+          "flow": {
+            "title": "{when, select, upcoming {{year}년의} other {올해의}} 흐름",
+            "desc": "명반으로 계산한 달마다의 기운을 막대로 보여 드려요. 높을수록 움직이기 좋은 달이에요.",
+            "legendBest": "올해 가장 좋은 달",
+            "legendCaution": "조심할 달",
+            "legendNow": "이번 달",
+            "best": "가장 좋은 달",
+            "caution": "조심할 달",
+            "monthScore": "{month}월 · 점수 {score}",
+            "bestSubYear": "올해 점수가 가장 높은 달",
+            "bestSubNow": "바로 이번 달이에요",
+            "bestSubAhead": "{count}달 뒤에 와요",
+            "bestSubPassed": "이미 지나간 달이에요",
+            "cautionPlaceholder": "○월 · 점수 ○○",
+            "cautionLocked": "본편에서 열려요",
+            "cautionSub": "올해 점수가 가장 낮은 달"
+          },
+          "now": {
+            "kicker": {
+              "current": "NOW SHOWING",
+              "upcoming": "COMING SOON",
+              "past": "LAST SHOWING"
+            },
+            "cast": "{name} 주연 · {year}",
+            "monthUnit": "월",
+            "rankBest": "올해 최고의 달",
+            "rankTop": "올해 좋은 달 {rank}위",
+            "rankCaution": "조심할 달",
+            "rank": "12달 중 {rank}위",
+            "scoreToday": "점수 {score} · 오늘 {month}/{day}",
+            "score": {
+              "upcoming": "점수 {score} · {year}년 1월부터 상영",
+              "past": "점수 {score} · {year}년의 마지막 장면"
+            },
+            "jump": {
+              "current": "이번 달 장면 보기",
+              "upcoming": "{month}월 장면부터 보기",
+              "past": "{month}월 장면 보기"
+            }
+          },
+          "poster": {
+            "ganji": "{ganji} · 12 MONTHS",
+            "starring": "{name} 주연 · {year}년 편",
+            "genre": "올해의 장르",
+            "brand": "인생스포",
+            "leadGenre": "LEAD GENRE · {category}",
+            "castLine": "{name} 주연 · {year} {ganji}",
+            "share": "캐릭터 포스터 공유하기"
+          },
+          "trailer": {
+            "title": "예고편 · {count}장면",
+            "free": "{count} SCENES · 무료"
+          },
+          "months": {
+            "unit": "월",
+            "score": "점수 {score}",
+            "tagNow": "이번 달",
+            "tagNext": "다음 달",
+            "markBest": "올해 가장 좋은 달",
+            "markCaution": "조심할 달",
+            "regionLabel": "{month}월 장면",
+            "progress": "오늘 {month}/{day} · 이 달의 {percent}%",
+            "dayLabel": "{month}/{day}",
+            "collapseAll": "이번 달만 보기",
+            "expandAll": "12개월 전체 펼쳐 읽기",
+            "summary": {
+              "current": "이번 달",
+              "upcoming": "첫 장면",
+              "past": "마지막 장면"
+            },
+            "summaryBest": "{month}월 · 올해 최고의 달",
+            "summaryMonth": "{month}월",
+            "summaryScore": "점수 {score}",
+            "left": "올해 남은 달",
+            "leftValue": "{count}달",
+            "leftLast": "올해의 마지막 달이에요",
+            "leftSub": "다음은 {month}월",
+            "runtime": "상영 기간",
+            "runtimeValue": "{year}년 12개월",
+            "runtimeSub": {
+              "upcoming": "아직 시작 전이에요",
+              "past": "상영이 끝난 해예요"
+            }
+          },
+          "memo": {
+            "title": "{when, select, upcoming {{year}년의} other {올해의}} 메모",
+            "desc": "명반으로 계산한 올해의 포인트예요. 행운의 색·장소처럼 근거가 약한 항목은 뺐어요.",
+            "nobleAnimal": "{animal}띠",
+            "wealth": {
+              "label": "재물 공략",
+              "source": "올해 재백궁"
+            },
+            "romance": {
+              "label": "연애 모드",
+              "source": "도화성 흐름"
+            },
+            "noble": {
+              "label": "나의 귀인",
+              "source": "삼합"
+            },
+            "health": {
+              "label": "건강 주의",
+              "source": "올해 질액궁"
+            }
+          },
+          "runtime": {
+            "month": "<b>{month}월</b> / 12월",
+            "note": {
+              "current": "예고편은 <b>올해의 줄거리</b>까지예요. 지금 상영 중인 {month}월 장면과 12개월 전체는 본편에서 상영돼요.",
+              "upcoming": "예고편은 <b>{year}년의 줄거리</b>까지예요. 1월부터 12월까지 달마다의 장면은 본편에서 상영돼요.",
+              "past": "예고편은 <b>{year}년의 줄거리</b>까지예요. 12개월 전체 장면은 본편에서 상영돼요."
+            }
+          },
+          "chart": {
+            "previewDesc": "포스터 아래 흐름은 이 명반에서 나왔어요. 올해 들어온 사화(화록·화권·화과·화기)도 함께 표시돼요.",
+            "featureDesc": "칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 올해 들어온 사화도 함께 표시돼요.",
+            "shareDesc": "선은 명궁과 함께 움직이는 세 궁이에요. 올해 들어온 사화도 함께 표시돼요."
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "올해 핵심 시나리오",
+              "desc": "한 해 전체를 관통하는 줄거리"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "네 갈래 이야기",
+              "desc": "재물·직업·인연·건강과 관람 평점"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "월별 시나리오",
+              "desc": "이번 달부터 12월까지, 달마다 한 장면"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "올해의 메모 · 캐릭터 포스터",
+              "desc": "재물 공략·귀인·건강 주의와 공유 포스터"
+            },
+            "spoilerTitle": "{month}월 장면 · 본편에서 공개",
+            "spoilerHint": "이번 달 장면과 조심할 달은 본편에서 열려요."
+          },
+          "acts": {
+            "act1": {
+              "title": "{when, select, upcoming {{year}년} other {올해}} 스포일러",
+              "sub": "{year}년의 첫 장면"
+            },
+            "act2": {
+              "title": "{when, select, upcoming {{year}년} other {올해}} 핵심 시나리오",
+              "sub": "한 해 전체를 관통하는 줄거리"
+            },
+            "act3": {
+              "title": "네 갈래 이야기",
+              "sub": "재물 · 직업 · 인연 · 건강"
+            },
+            "act4": {
+              "title": "월별 시나리오",
+              "sub": "이번 달부터 크게, 12개월"
+            }
+          },
+          "player": {
+            "now": {
+              "current": "지금 {month}월",
+              "upcoming": "{month}월부터",
+              "past": "{month}월"
+            }
+          },
+          "cast": {
+            "title": "{when, select, upcoming {{year}년} other {올해}} 캐릭터 포스터",
+            "imageError": "이미지를 만들지 못했어요. 다시 시도해 주세요.",
+            "shareError": "공유하지 못했어요. 다시 시도해 주세요."
+          },
+          "next": {
+            "kicker": {
+              "lifetime": "TRAILER · RUNTIME 99Y",
+              "yearly": "TRAILER · 12 MONTHS",
+              "yearly2027": "TRAILER · {year}",
+              "compatibility": "TRAILER · TWO STARS",
+              "pastLife": "TRAILER · PREQUEL",
+              "faceReading": "TRAILER · CLOSE-UP"
+            },
+            "body": {
+              "lifetime": "올해는 99세 영화의 한 장면이에요. 이 장면이 들어 있는 인생 전체 줄거리를 예고편부터 무료로 볼 수 있어요.",
+              "yearly": "올해 12개월을 달마다 한 장면으로 보여 드려요. 예고편은 무료로 상영돼요.",
+              "yearly2027": "{year}년이 끝나면 이어질 다음 해의 12개월이에요. 예고편은 무료로 상영돼요.",
+              "compatibility": "나와 함께 출연하는 사람과의 이야기예요. 두 사람의 명반을 나란히 놓고 봐요.",
+              "pastLife": "이번 생보다 먼저 찍힌 전편이에요. 전생의 나는 어떤 사람이었을까요.",
+              "faceReading": "얼굴에 담긴 성향을 클로즈업으로 읽어 드려요."
+            },
+            "button": "예고편 보기"
+          },
+          "credits": {
+            "bestMonth": "{month}월"
+          },
+          "followUp": {
+            "prompts": [
+              "이직하기 좋은 시기는 언제인가요?",
+              "올해 조심해야 할 것은 무엇인가요?",
+              "올해 연애운은 어떤가요?"
+            ]
+          },
+          "share": {
+            "badge": "친구가 보낸 본편",
+            "cta": "내 올해 예고편 무료로 보기",
+            "endNote": "내 명반으로는 올해가 어떤 장면일까요? 예고편은 무료로 상영돼요."
+          }
+        },
+        "lifetime": {
+          "now": {
+            "kickerNearest": "NEAREST SCENE",
+            "cast": "{name} 주연 · RUNTIME 99Y",
+            "ageUnit": "세",
+            "scene": "{index}번째 장면 · {period}",
+            "progressNext": "이 장면의 {percent}% · 다음 장면까지 {years}년",
+            "progress": "이 장면의 {percent}%",
+            "nearest": "가장 가까운 장면을 보여 드려요",
+            "jump": "지금 장면 보기"
+          },
+          "poster": {
+            "leadStar": "LEAD STAR · 명궁 {star}",
+            "castLine": "{name} 주연 · RUNTIME 99Y",
+            "introducing": "introducing a character who is",
+            "brand": "인생스포",
+            "share": "캐릭터 포스터 공유하기"
+          }
+        },
+        "pastLife": {
+          "poster": {
+            "badgeTrailer": "전편 예고편 무료 상영 중",
+            "starring": "{name} 주연 · 전생 편",
+            "imageLocked": "결제 후 키 아트가 공개돼요",
+            "title": "TITLE · {title}",
+            "castLine": "{name} 주연 · {era} {location}",
+            "introducing": "in a past life, a character who was",
+            "brand": "인생스포",
+            "share": "캐릭터 포스터 공유하기",
+            "imageError": "이미지를 만들지 못했어요. 다시 시도해 주세요.",
+            "shareError": "공유하지 못했어요. 다시 시도해 주세요."
+          },
+          "world": {
+            "title": "세계관 · 로케이션",
+            "desc": "전편이 찍힌 시대와 장소, 그 안에서 맡은 배역이에요."
+          },
+          "note": {
+            "title": "배역 노트 · {title}",
+            "desc": "감독이 적어 둔 이 배역의 강점이에요. 숫자가 클수록 그 배역이 잘 해낸 일이에요."
+          },
+          "end": {
+            "lastWords": "LAST WORDS · 마지막 대사"
+          },
+          "contrast": {
+            "title": "전편 vs 본편",
+            "desc": "왼쪽은 전생, 오른쪽은 지금의 나예요. 같은 장면이 이번 생에서 어떻게 바뀌었는지 나란히 봐요.",
+            "past": "PREQUEL · 전생",
+            "present": "FEATURE · 지금"
+          },
+          "traces": {
+            "title": "본편에 남은 복선",
+            "desc": "지금의 습관과 끌림 중에 전편에서 이어진 것들이에요.",
+            "label": "복선 {index} · {category}",
+            "origin": "전편의 장면:"
+          },
+          "epilogue": {
+            "title": "전편이 남긴 교훈"
+          },
+          "chart": {
+            "previewDesc": "포스터의 전생은 이 명반에서 나왔어요. 선은 명궁과 함께 움직이는 세 궁이에요.",
+            "shareDesc": "선은 명궁과 함께 움직이는 세 궁이에요."
+          },
+          "feature": {
+            "act1": {
+              "act": "ACT 1",
+              "title": "탄생",
+              "desc": "어디서 어떻게 태어났는지"
+            },
+            "act2": {
+              "act": "ACT 2",
+              "title": "여정 · 연대기",
+              "desc": "시기별로 이어지는 전생의 사건"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "마지막 장면",
+              "desc": "죽음과 카르마, 마지막 대사"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "인연",
+              "desc": "이번 생까지 이어진 사람들"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "본편에 남은 복선 · 캐릭터 포스터",
+              "desc": "지금의 습관에 남은 흔적과 공유 포스터"
+            },
+            "spoilerTitle": "LAST WORDS · 마지막 대사",
+            "spoilerHint": "전생의 마지막 대사는 본편 ACT 3에서 공개돼요."
+          },
+          "acts": {
+            "act1": {
+              "title": "탄생",
+              "sub": "전편의 첫 장면"
+            },
+            "act2": {
+              "title": "여정",
+              "sub": "시기별로 이어지는 전생"
+            },
+            "act3": {
+              "title": "마지막 장면",
+              "sub": "죽음과 카르마"
+            },
+            "act4": {
+              "title": "인연",
+              "sub": "이번 생까지 이어진 사람들"
+            }
+          },
+          "player": {
+            "lastWords": "마지막 대사"
+          },
+          "next": {
+            "body": {
+              "lifetime": "전편이 끝난 자리에서 본편이 시작돼요. 이번 생 99세의 줄거리를 예고편부터 무료로 볼 수 있어요.",
+              "yearly": "전편의 흔적이 올해 12개월에 어떻게 이어지는지 달마다 보여 드려요.",
+              "yearly2027": "다음 해 12개월을 달마다 한 장면으로 보여 드려요.",
+              "compatibility": "이번 생에 함께 출연하는 사람과의 이야기예요. 두 사람의 명반을 나란히 놓고 봐요.",
+              "faceReading": "얼굴에 담긴 성향을 클로즈업으로 읽어 드려요."
+            }
+          },
+          "followUp": {
+            "name": "전생",
+            "prompts": [
+              "왜 이런 성향을 갖게 됐나요?",
+              "전생과 지금은 어떻게 이어져 있나요?",
+              "전생이 남긴 교훈은 무엇인가요?"
+            ]
+          },
+          "share": {
+            "badge": "친구가 보낸 본편",
+            "cta": "내 전생 예고편 무료로 보기",
+            "endNote": "내 명반으로는 전생에 누구였을까요? 예고편은 무료로 상영돼요.",
+            "ogTitle": "{name}님의 전생 시나리오",
+            "ogTitleWithHeadline": "{name}님 주연 전편: {headline}",
+            "ogDescription": "자미두수로 다시 그린 {name}님의 전생 이야기예요."
+          }
+        },
+        "compatibility": {
+          "genre": {
+            "romance": "로맨스",
+            "romcom": "로맨틱 코미디",
+            "buddy": "버디 무비",
+            "office": "오피스 드라마",
+            "family": "가족 드라마",
+            "reunion": "다시 쓰는 드라마",
+            "pet": "반려 드라마",
+            "drama": "두 사람의 드라마"
+          },
+          "genreEn": {
+            "romance": "ROMANCE PICTURE",
+            "romcom": "ROMANTIC COMEDY",
+            "buddy": "BUDDY PICTURE",
+            "office": "OFFICE DRAMA",
+            "family": "FAMILY DRAMA",
+            "reunion": "SECOND-CHANCE DRAMA",
+            "pet": "COMPANION DRAMA",
+            "drama": "TWO-HANDER DRAMA"
+          },
+          "poster": {
+            "badgeTrailer": "궁합 예고편 무료 상영 중",
+            "kicker": "GENRE · {genre} · CHEMISTRY {score}",
+            "castLine": "{a} · {b} 공동 주연",
+            "scoreAria": "케미 점수 {score}점",
+            "scoreUnit": "{score}점",
+            "brand": "인생스포",
+            "share": "공동 주연 포스터 공유하기",
+            "shareTitle": "공동 주연 포스터 공유하기",
+            "imageError": "이미지를 만들지 못했어요. 다시 시도해 주세요.",
+            "shareError": "공유하지 못했어요. 다시 시도해 주세요."
+          },
+          "cast": {
+            "title": "배역 소개",
+            "desc": "두 사람의 명반에서 읽은 배역이에요. 왼쪽은 {a}, 오른쪽은 {b}의 배역이에요."
+          },
+          "notes": {
+            "title": "캐스팅 노트",
+            "desc": "두 사람을 한 화면에 세운 이유예요. 띠·오행·케미를 한 단어로 정리했어요.",
+            "labels": {
+              "zodiac": "띠 궁합",
+              "fiveElement": "오행 궁합",
+              "chemistry": "케미"
+            }
+          },
+          "chart": {
+            "title": "원작 · 두 사람의 명반",
+            "tab": "{name}의 원작",
+            "tabsAria": "누구의 명반을 볼지 고르기",
+            "previewDesc": "포스터의 두 별은 여기서 나왔어요. 탭으로 두 사람의 명반을 번갈아 봐요.",
+            "featureDesc": "칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 탭으로 두 사람의 명반을 번갈아 봐요.",
+            "shareDesc": "선은 명궁과 함께 움직이는 세 궁이에요. 탭으로 두 사람의 명반을 번갈아 봐요."
+          },
+          "stories": {
+            "communication": "소통",
+            "growth": "성장",
+            "emotion": "감정·신뢰",
+            "crisis": "위기"
+          },
+          "acts": {
+            "act1": {
+              "title": "첫 만남",
+              "sub": "두 사람의 이야기가 시작돼요"
+            },
+            "act2": {
+              "title": "두 사람의 장면",
+              "sub": "실제로 일어날 순간들"
+            },
+            "act3": {
+              "title": "네 갈래 이야기",
+              "sub": "소통 · 성장 · 감정 · 위기"
+            },
+            "act4": {
+              "title": "두 사람에게",
+              "sub": "오래 가기 위해 챙길 것"
+            }
+          },
+          "player": {
+            "rating": "총평 {score}"
+          },
+          "rating": {
+            "lockedHint": "네 갈래 점수와 이야기는 본편 ACT 3에서 공개돼요.",
+            "lockedReview": "두 사람의 이야기"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "두 사람의 장면",
+              "desc": "두 사람 사이에 실제로 일어날 장면 2~4개"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "네 갈래 이야기",
+              "desc": "소통 · 성장 · 감정과 신뢰 · 위기"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "두 사람에게",
+              "desc": "오래 가기 위해 챙길 것"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "공동 주연 포스터",
+              "desc": "두 사람의 주성 그림과 평점이 담긴 공유 이미지"
+            },
+            "spoilerTitle": "ACT 2 · 두 사람의 장면",
+            "spoilerHint": "두 사람 사이에 실제로 일어날 장면은 본편에서 공개돼요."
+          },
+          "next": {
+            "body": {
+              "lifetime": "공동 주연 다음은 단독 주연이에요. {name}님의 99세 줄거리를 예고편부터 무료로 볼 수 있어요.",
+              "yearly": "{name}님의 올해 12개월을 달마다 한 장면으로 보여 드려요.",
+              "pastLife": "이번 생보다 먼저 찍힌 {name}님의 전편을 보여 드려요.",
+              "yearly2027": "{name}님의 다음 해 12개월을 달마다 한 장면으로 보여 드려요.",
+              "faceReading": "얼굴에 담긴 성향을 클로즈업으로 읽어 드려요."
+            }
+          },
+          "followUp": {
+            "name": "궁합",
+            "prompts": [
+              "어떻게 갈등을 풀면 좋을까요?",
+              "장기적으로 잘 맞을까요?",
+              "서로 조심할 점은 무엇인가요?"
+            ]
+          },
+          "share": {
+            "badge": "친구가 보낸 본편",
+            "cta": "우리 궁합 예고편 무료로 보기",
+            "endNote": "나와 그 사람은 어떤 장르일까요? 궁합 예고편은 무료로 상영돼요."
+          }
+        }
       }
     },
     "common": {
@@ -949,11 +1576,54 @@
       "confirmError": "결제 승인 중 오류가 발생했습니다.",
       "missingPaymentInfo": "결제 정보가 누락되었습니다.",
       "failTitle": "결제에 실패했습니다",
-      "failDescription": "결제 처리 중 문제가 발생했습니다. 다시 시도해주세요.",
+      "failDescription": "결제 처리 중 문제가 발생했습니다. 다시 시도해 주세요.",
       "errorCode": "에러 코드",
       "retry": "다시 결제하기",
       "goBack": "이전으로 돌아가기",
-      "paymentError": "결제 처리 중 오류가 발생했습니다."
+      "paymentError": "결제 처리 중 오류가 발생했습니다.",
+      "ticketTitle": "매표소",
+      "ticketKicker": "관람권 · 본편",
+      "ticketAudience": "관객",
+      "ticketBenefit": "혜택",
+      "ticketPeriod": "열람 기간",
+      "ticketPeriodValue": "결제일로부터 1년",
+      "ticketAmount": "금액",
+      "listPrice": "정가",
+      "barLabel": "결제",
+      "payAction": "결제하기",
+      "audienceName": "{name}님",
+      "audienceCouple": "{nameA} × {nameB}",
+      "benefitCoupon": "쿠폰 적용",
+      "benefitFirstPayment": "첫 결제 이벤트",
+      "checkoutLead": "{name}님의 {product} 본편 관람권이에요",
+      "checkoutLeadCompatibility": "{nameA}님과 {nameB}님의 궁합 본편 관람권이에요",
+      "checkoutLeadAnonymous": "{product} 본편 관람권이에요",
+      "shortProduct": {
+        "yearly": "올해 운세",
+        "yearly_2027": "내년 운세",
+        "lifetime": "인생 운세",
+        "past_life": "전생 운세",
+        "compatibility": "궁합"
+      },
+      "ownedCoupons": "보유 쿠폰",
+      "couponCodeLabel": "쿠폰 코드",
+      "couponFree": "무료 운세",
+      "couponDiscount": "{percent}% 할인",
+      "couponDiscountGeneric": "할인",
+      "issuedTitle": "관람권이 발권됐어요",
+      "issuedLead": "{name}님의 {product} 본편을 지금 볼 수 있어요",
+      "issuedLeadAnonymous": "{product} 본편을 지금 볼 수 있어요",
+      "issuedHint": "운세 확인하기를 누르면 상영관으로 이동해요",
+      "issuedTicketAria": "발권된 관람권",
+      "stubFeature": "본편",
+      "stubEnter": "입장",
+      "confirmFailedTitle": "결제 승인에 실패했어요",
+      "voidTicketAria": "발권되지 않은 관람권",
+      "voidTicketTitle": "관람권이 발권되지 않았어요",
+      "unpaidTitle": "결제를 마치지 못했어요",
+      "unpaidTicketAria": "발권 전 관람권",
+      "stubStatus": "상태",
+      "stubUnissued": "발권 전"
     },
     "policy": {
       "terms": {
@@ -1488,13 +2158,14 @@
     },
     "universe": {
       "home": {
-        "title": "나만의 별자리 만들기",
-        "subtitle": "링크 하나로 친구들과 궁합 보기",
-        "button": "무료로 시작하기"
+        "title": "친구 시사회 열기",
+        "subtitle": "친구를 초대하면 궁합 점수를 바로 보여 드려요"
       },
       "create": {
-        "title": "나만의 별자리 만들기",
-        "description": "생년월일시를 넣으면 나만의 우주가 만들어져요. 링크를 공유하면 친구들이 별로 들어옵니다.",
+        "title": "내 인생 영화 시사회를 열어요",
+        "description": "친구를 초대하면 궁합 점수를 바로 보여 드려요",
+        "emptySeatsAria": "빈 좌석 배치도. 친구가 입장하면 점수에 따라 이 자리에 앉아요.",
+        "seatsLegend": "친구를 초대하면 이 자리에 앉아요. 궁합 점수가 높을수록 스크린 가까이 앉아요.",
         "ownerNameLabel": "표시 이름 (선택)",
         "ownerNamePlaceholder": "친구들에게 보여줄 이름",
         "birthDateLabel": "생년월일",
@@ -1513,70 +2184,85 @@
         "privacyConsentLabel": "개인정보 수집·이용 동의 (필수)",
         "privacyConsentLink": "개인정보처리방침 보기",
         "privacyConsentError": "개인정보 수집·이용에 동의해야 진행할 수 있어요.",
-        "submit": "우주 만들기",
-        "submitting": "우주를 만드는 중...",
+        "submit": "시사회 열기",
+        "submitting": "시사회를 여는 중...",
         "linkWarning": "이 링크는 다시 찾을 수 없어요. 만든 뒤 꼭 저장하거나 공유해두세요."
       },
       "detail": {
-        "ogTitleWithName": "{name}님의 우주에 초대합니다",
-        "ogTitle": "친구 우주 궁합에 초대합니다",
-        "ogDescription": "지금까지 {count}명의 친구가 별로 참여했어요. 생년월일시만 입력하면 궁합을 바로 확인할 수 있어요.",
-        "ownerTitle": "{name}님의 우주",
-        "ownerTitleFallback": "누군가의 우주",
-        "guestCount": "친구 별 {count}개",
-        "guestCountRankWithName": "{name}님의 우주는 전체에서 {rank}번째로 많은 별을 가진 우주예요",
-        "guestCountRank": "이 우주는 전체에서 {rank}번째로 많은 별을 가진 우주예요",
-        "ownerEmptyOneLiner": "우주가 열렸어요. 이제 친구들을 초대해 별을 채워보세요.",
-        "ownerOneLiner": "{count}명의 친구가 이 우주에 별로 떠 있어요.",
+        "ogTitleWithName": "{name}님이 시사회에 초대했어요",
+        "ogTitle": "친구 시사회에 초대했어요",
+        "ogDescription": "생년월일시만 넣으면 내 자리와 궁합 점수를 바로 확인해요. 재미로 보는 궁합이에요.",
+        "ogCta": "내 자리 확인하기",
+        "ownerTitle": "{name}님의 시사회",
+        "ownerTitleFallback": "누군가의 시사회",
+        "screen": "SCREEN",
+        "seatMapAria": "좌석 배치도. {rows}이 앉아 있어요.",
+        "seatMapAriaEmpty": "좌석 배치도. 아직 앉은 관객이 없어요.",
+        "seatMapRowSummary": "{row}열 {count}명",
+        "seatMapOverflowAria": "{row}열은 자리가 모자라 {count}명이 더 있어요.",
+        "seatMapMineAria": "내 자리: {seat}.",
+        "rowLinkAria": "{row}열 관객 {count}명, 엔딩 크레딧에서 보기",
+        "rowOnly": "{row}열",
+        "mySeat": "내 자리 · {seat}",
+        "seatLegend": "스크린에 가까울수록 궁합 점수가 높아요",
+        "seatHint": "열을 누르면 그 열 관객을 크레딧에서 보여 드려요",
+        "audienceCount": "관객 {count}명",
+        "audienceRank": "전체 {rank}번째로 붐비는 시사회",
+        "estimatedUniverseBanner": "이 시사회는 태어난 시간 대신, 가능한 모든 시간대를 평균 내어 계산됐어요.",
         "myCompatibilityTitle": "{name}님과 나의 궁합",
         "myCompatibilityTitleFallback": "나의 궁합",
-        "formTitle": "우주에 내 별 추가하기",
+        "ticketKind": "내 관람권",
+        "ticketSeat": "좌석",
+        "inviteKind": "초대장",
+        "inviteAdmit": "입장",
+        "formTitle": "초대장을 받으셨네요",
+        "formDescription": "생년월일시만 넣으면 {name}님과의 궁합 점수를 바로 보여 드려요",
+        "formDescriptionFallback": "생년월일시만 넣으면 궁합 점수를 바로 보여 드려요",
         "nameLabel": "이름",
         "namePlaceholder": "이름을 입력해주세요",
         "privacyConsentLabel": "개인정보 수집·이용 동의 (필수)",
         "privacyConsentLink": "개인정보처리방침 보기",
         "privacyConsentError": "개인정보 수집·이용에 동의해야 진행할 수 있어요.",
-        "submit": "우주에 내 별 추가",
+        "submit": "내 자리 확인하기",
         "submitting": "궁합을 계산하는 중...",
-        "duplicateNotice": "이미 참여한 별이에요!",
-        "localeNotice": "궁합 한줄평과 등급은 한국어로 제공됩니다.",
-        "fullNotice": "이 우주는 참여 인원이 가득 찼어요.",
-        "visualizationLabel": "친구 별 우주 시각화",
-        "visualizationLegend": "별이 크고 밝을수록 나에게 중요한 별이에요",
-        "overflowBadge": "외 {count}명",
-        "overflowBadgeLabel": "나머지 {count}명 보기, 궁합 순위 목록으로 이동",
-        "meLabel": "(나)",
+        "duplicateNotice": "이미 입장하셨어요. 지난번 자리를 보여 드릴게요",
+        "localeNotice": "궁합 한줄평은 한국어로 제공됩니다.",
+        "fullNotice": "객석이 가득 찼어요",
         "drawerClose": "닫기",
         "drawerFactorsTitle": "궁합 근거",
-        "starLabel": "{name}, 궁합 점수 {score}점, {tier}, 전체 {total}명 중 {rank}위",
-        "listTitle": "궁합 순위",
-        "listItemMeta": "{rank}위 · {name} · {tier}",
         "scoreTag": "{score}점",
-        "emptyTitle": "아직 참여한 친구가 없어요.",
-        "emptyDescription": "링크를 공유해서 첫 번째 별을 초대해보세요.",
+        "scoreUnit": "점",
+        "creditsTitle": "엔딩 크레딧",
+        "bestTitle": "베스트 관객",
+        "othersTitle": "그 외 관객",
+        "rankLabel": "{rank}위",
+        "creditAria": "{rank}위 {name}, {details}, 자세히 보기",
+        "meTag": "나",
+        "creditsMore": "관객 {count}명 더보기",
+        "emptyTitle": "아직 입장한 관객이 없어요",
+        "emptyDescription": "관객이 입장하면 점수 순서대로 이름과 자리가 올라가요.",
+        "estimatedTag": "예상치",
+        "estimatedNote": "예상치 (태어난 시간 미상)",
         "promoTitle": "다른 운세도 보러 가기",
-        "promoMyUniverse": "나만의 별자리 만들러 가기",
+        "promoMyUniverse": "이번엔 내 시사회 열기",
         "promoFree": "무료",
         "promoPrice": "990원",
         "promoLifetime": "인생 운세",
         "promoYearly": "올해 운세",
         "promoNextYear": "내년 운세",
         "promoCompatibility": "궁합 운세",
-        "shareTitle": "친구들에게 우주 공유하기",
-        "shareButton": "공유 링크 복사",
+        "shareTitle": "초대장 보내기",
+        "shareLead": "{count}명의 관객이 입장했어요",
+        "shareLeadEmpty": "친구에게 초대장을 보내 첫 관객을 불러 보세요",
+        "shareButton": "초대장 보내기",
         "shareCopied": "링크가 복사되었어요!",
         "shareFallback": "링크를 길게 눌러 복사해주세요.",
-        "shareText": "내 우주에 별로 들어와줘!",
-        "notFoundTitle": "존재하지 않는 우주예요.",
+        "shareText": "제 시사회에 초대할게요. 우리 궁합은 몇 점일까요?",
+        "notFoundTitle": "존재하지 않는 시사회예요.",
         "notFoundDescription": "링크가 정확한지 다시 확인해주세요.",
         "goHome": "홈으로 가기",
-        "loading": "우주를 불러오는 중...",
-        "retry": "다시 시도",
-        "estimatedUniverseBanner": "이 우주는 태어난 시간 대신, 가능한 모든 시간대를 평균 내어 계산됐어요.",
-        "estimatedUniverseCaption": "평균 계산이라 별들이 차분하게 빛나요.",
-        "estimatedUniverseAria": "{title}. 태어난 시간이 확인되지 않아 이 우주의 궁합 결과는 평균값으로 계산됩니다.",
-        "estimatedTag": "예상치",
-        "estimatedStarAria": "태어난 시간 미상으로 평균 계산됨"
+        "loading": "시사회를 불러오는 중...",
+        "retry": "다시 시도"
       },
       "errors": {
         "network": "네트워크 연결을 확인해주세요.",
@@ -1960,7 +2646,21 @@
       },
       "status": "{title} 상영관으로 이동하는 중이에요",
       "trailer": "{title} 예고편",
-      "feature": "{title} 본편"
+      "feature": "{title} 본편",
+      "payment": {
+        "checkoutTitle": "매표소",
+        "confirmTitle": "관람권 발권",
+        "preparing": "준비하고 있어요",
+        "waiting": {
+          "checkout1": "상영 정보를 불러오는 중이에요",
+          "checkout2": "결제 화면을 준비하는 중이에요",
+          "confirm1": "결제를 확인하고 있어요",
+          "confirm2": "관람권을 발권하는 중이에요",
+          "confirm3": "곧 상영관으로 안내해 드려요"
+        },
+        "long": "조금만 더 기다려 주세요",
+        "status": "{title} 화면을 준비하는 중이에요"
+      }
     }
   },
   "en": {
@@ -2170,8 +2870,8 @@
       },
       "friendUniverse": {
         "alert": {
-          "ariaLabel": "Create my universe for free, no login needed",
-          "chip": "FREE · Star compatibility with friends, no login"
+          "ariaLabel": "Open a Friends' Screening for free, no login needed",
+          "chip": "FREE · Open a Friends' Screening, no login"
         }
       },
       "cta": {
@@ -2649,8 +3349,8 @@
         "profileShareTitle": "Share Profile Image",
         "share": {
           "title": "{name}'s Lifetime Fortune",
-          "ogTitle": "What 114 stars reveal about {name}'s life",
-          "ogTitleWithHeadline": "{name}'s Life Fortune: {headline}",
+          "ogTitle": "{name}'s life scenario",
+          "ogTitleWithHeadline": "A life film starring {name}: {headline}",
           "ogDescription": "{name}'s life scenario analyzed by ancient Eastern astrology.",
           "ogDescriptionWithScores": "{name}'s fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
@@ -2742,8 +3442,8 @@
         "luckyKeywordsTitle": "Lucky Keywords",
         "share": {
           "title": "{name}'s {year} Fortune",
-          "ogTitle": "What the stars predict for {name} in {year}",
-          "ogTitleWithHeadline": "{name}'s {year} Fortune: {headline}",
+          "ogTitle": "{name}'s {year} scenario",
+          "ogTitleWithHeadline": "{name} stars in {year}: {headline}",
           "ogDescription": "{name}'s {year} fortune analyzed by ancient Eastern astrology.",
           "ogDescriptionWithScores": "{name}'s {year} fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
@@ -2836,6 +3536,633 @@
         "shareLine": "Share to LINE",
         "downloadImage": "Download Profile Image",
         "downloading": "Downloading..."
+      },
+      "screen": {
+        "poster": {
+          "presents": "A LIFE SPOILER FILM",
+          "badgeTrailer": "Free trailer now showing",
+          "badgeFeature": "Now showing",
+          "runtime": "RUNTIME 99Y",
+          "starring": "Starring {name}",
+          "leadStar": "Life palace: {star}",
+          "noStar": "No main star in Life palace",
+          "badgeShared": "Shared by a friend"
+        },
+        "runtime": {
+          "age": "<b>Age {age}</b> / {max}",
+          "trailerNote": "The trailer covers <b>the opening scene</b>. Everything from your current age {age} to 99 plays in the full feature."
+        },
+        "chart": {
+          "title": "The original · My chart",
+          "desc": "The constellation on the poster comes from here. It links your Life palace with the three palaces that move with it.",
+          "featureDesc": "Tap a cell to see what that palace covers. The lines link your Life palace with the three palaces that move with it.",
+          "legendTriangle": "Life palace and its two trine palaces",
+          "legendOpposite": "Opposite palace",
+          "shareDesc": "The poster constellation comes from this chart. It links the Life palace with the three palaces that move with it."
+        },
+        "trailer": {
+          "title": "{count} trailer cuts"
+        },
+        "feature": {
+          "title": "Playing in the full feature",
+          "spoilerHint": "ACT 2 · The first line of your core scenario opens in the full feature.",
+          "act2": {
+            "act": "ACT 2",
+            "title": "Core scenario",
+            "desc": "The main plot running through your whole life"
+          },
+          "act3": {
+            "act": "ACT 3",
+            "title": "Four storylines",
+            "desc": "Wealth, career, relationships, health, with ratings"
+          },
+          "act4": {
+            "act": "ACT 4",
+            "title": "Scenes by age",
+            "desc": "A new stage every ten years, up to 99"
+          },
+          "bonus": {
+            "act": "BONUS",
+            "title": "My character card",
+            "desc": "A personality card you can send to friends"
+          },
+          "keywords": "Your {count} strongest keywords open in the full feature.",
+          "lockedKeyword": "Hidden"
+        },
+        "pay": {
+          "button": "Start the feature ($0.99)",
+          "back": "Back"
+        },
+        "error": {
+          "title": "We're having trouble connecting",
+          "desc": "Too many people are using the service right now, so we couldn't create your reading. Please try again shortly.",
+          "refresh": "Refresh"
+        },
+        "player": {
+          "label": "Jump to a scene",
+          "now": "Now · {age}",
+          "openMenu": "Open scene list",
+          "closeMenu": "Close scene list",
+          "kicker": {
+            "opening": "OPENING",
+            "next": "COMING NEXT",
+            "end": "THE END"
+          },
+          "scene": {
+            "opening": "Opening · Character and chart",
+            "next": "Coming next",
+            "end": "End credits"
+          },
+          "state": {
+            "current": "Watching",
+            "done": "Watched"
+          }
+        },
+        "acts": {
+          "act1": {
+            "title": "Life spoiler",
+            "sub": "The opening scene of this film"
+          },
+          "act2": {
+            "title": "Core scenario",
+            "sub": "The plot running through your whole life"
+          },
+          "act3": {
+            "title": "Four storylines",
+            "sub": "Wealth · Career · Relationships · Health"
+          },
+          "act4": {
+            "title": "Scenarios by age",
+            "sub": "The nearer the scene, the bigger it plays"
+          }
+        },
+        "character": {
+          "title": "My character poster"
+        },
+        "rating": {
+          "title": "Ratings for four storylines",
+          "desc": "Each storyline's score shown as a rating out of 10. The one-line review is that storyline's title.",
+          "starsAria": "{count} out of 5 stars",
+          "scoreAria": "{score} out of 10",
+          "topCallout": "<b>Top rating · {label} {score}</b> The highest-scoring of your four storylines."
+        },
+        "age": {
+          "summaryNow": "Now",
+          "summaryNearest": "Nearest scene",
+          "summaryNowSub": "Age {age} · {percent}% into this scene",
+          "ageNow": "Now age {age}",
+          "summaryNext": "Next scene in",
+          "years": "{count, plural, one {# year} other {# years}}",
+          "fromAge": "From age {age} · a new decade",
+          "ageLabel": "Age {age}",
+          "tagNow": "Now",
+          "tagNext": "Next scene",
+          "birthTimeNote": "Your birth time is unknown, so we calculated from noon. Treat the period boundaries as a guide.",
+          "expandAll": "Expand all",
+          "collapseAll": "Show the current scene only"
+        },
+        "next": {
+          "title": "Coming next",
+          "name": "This year's fortune",
+          "body": "Of every 100 people who read more after their lifetime fortune, {count} chose this next. It shows {year} month by month.",
+          "button": "See this year's fortune"
+        },
+        "credits": {
+          "presentedBy": "Life Spoiler",
+          "share": "Share the feature",
+          "review": "Leave a review"
+        },
+        "followUp": {
+          "name": "Lifetime fortune",
+          "prompts": [
+            "How does my career look?",
+            "When is a good time to marry?",
+            "Tell me about my wealth"
+          ]
+        },
+        "share": {
+          "cta": "Watch my life trailer for free",
+          "endNote": "What film would your chart make? The trailer plays for free.",
+          "badge": "Shared by a friend"
+        },
+        "yearly": {
+          "flow": {
+            "title": "{when, select, upcoming {The flow of {year}} other {The year's flow}}",
+            "desc": "Each month's energy, calculated from your chart. The taller the bar, the better the month for moving.",
+            "legendBest": "Best months",
+            "legendCaution": "Months to watch",
+            "legendNow": "This month",
+            "best": "Best month",
+            "caution": "Month to watch",
+            "monthScore": "Month {month} · score {score}",
+            "bestSubYear": "Highest score of the year",
+            "bestSubNow": "It's this month",
+            "bestSubAhead": "{count, plural, one {# month} other {# months}} away",
+            "bestSubPassed": "Already passed",
+            "cautionPlaceholder": "Month ○ · score ○○",
+            "cautionLocked": "Opens in the full feature",
+            "cautionSub": "Lowest score of the year"
+          },
+          "now": {
+            "kicker": {
+              "current": "NOW SHOWING",
+              "upcoming": "COMING SOON",
+              "past": "LAST SHOWING"
+            },
+            "cast": "Starring {name} · {year}",
+            "monthUnit": "",
+            "rankBest": "Best month of the year",
+            "rankTop": "#{rank} month of the year",
+            "rankCaution": "Month to watch",
+            "rank": "#{rank} of 12",
+            "scoreToday": "Score {score} · today {month}/{day}",
+            "score": {
+              "upcoming": "Score {score} · showing from January {year}",
+              "past": "Score {score} · the last scene of {year}"
+            },
+            "jump": {
+              "current": "See this month's scene",
+              "upcoming": "Start from month {month}",
+              "past": "See month {month}"
+            }
+          },
+          "poster": {
+            "ganji": "{ganji} · 12 MONTHS",
+            "starring": "Starring {name} · {year} edition",
+            "genre": "Genres of the year",
+            "brand": "Life Spoiler",
+            "leadGenre": "LEAD GENRE · {category}",
+            "castLine": "Starring {name} · {year} {ganji}",
+            "share": "Share the character poster"
+          },
+          "trailer": {
+            "title": "Trailer · {count} scenes",
+            "free": "{count} SCENES · FREE"
+          },
+          "months": {
+            "unit": "",
+            "score": "Score {score}",
+            "tagNow": "This month",
+            "tagNext": "Next month",
+            "markBest": "Best month",
+            "markCaution": "Month to watch",
+            "regionLabel": "Month {month}",
+            "progress": "Today {month}/{day} · {percent}% through",
+            "dayLabel": "{month}/{day}",
+            "collapseAll": "Show this month only",
+            "expandAll": "Expand all 12 months",
+            "summary": {
+              "current": "This month",
+              "upcoming": "Opening scene",
+              "past": "Last scene"
+            },
+            "summaryBest": "Month {month} · best of the year",
+            "summaryMonth": "Month {month}",
+            "summaryScore": "Score {score}",
+            "left": "Months left",
+            "leftValue": "{count, plural, one {# month} other {# months}}",
+            "leftLast": "The last month of the year",
+            "leftSub": "Next: month {month}",
+            "runtime": "Showing",
+            "runtimeValue": "12 months of {year}",
+            "runtimeSub": {
+              "upcoming": "Hasn't started yet",
+              "past": "This year has ended"
+            }
+          },
+          "memo": {
+            "title": "{when, select, upcoming {Notes for {year}} other {Notes for the year}}",
+            "desc": "This year's points, calculated from your chart. We left out weakly grounded items like lucky colors and places.",
+            "nobleAnimal": "{animal}",
+            "wealth": {
+              "label": "Wealth plan",
+              "source": "Wealth palace"
+            },
+            "romance": {
+              "label": "Romance mode",
+              "source": "Peach blossom stars"
+            },
+            "noble": {
+              "label": "Helpful people",
+              "source": "Trine"
+            },
+            "health": {
+              "label": "Health watch",
+              "source": "Health palace"
+            }
+          },
+          "runtime": {
+            "month": "<b>Month {month}</b> / 12",
+            "note": {
+              "current": "The trailer covers <b>the year's plot</b>. Month {month}, now showing, and all 12 months play in the full feature.",
+              "upcoming": "The trailer covers <b>the plot of {year}</b>. Each month from January to December plays in the full feature.",
+              "past": "The trailer covers <b>the plot of {year}</b>. All 12 months play in the full feature."
+            }
+          },
+          "chart": {
+            "previewDesc": "The flow under the poster comes from this chart. This year's transformation stars are marked too.",
+            "featureDesc": "Tap a cell to see what that palace covers. This year's transformation stars are marked too.",
+            "shareDesc": "The lines link the Life palace with the three palaces that move with it. This year's transformation stars are marked too."
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "Core scenario of the year",
+              "desc": "The plot running through the whole year"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "Four storylines",
+              "desc": "Wealth, career, relationships, health, with ratings"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "Month by month",
+              "desc": "One scene per month, from now to December"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "Notes · character poster",
+              "desc": "Wealth plan, helpful people, health watch and a poster to share"
+            },
+            "spoilerTitle": "Month {month} · revealed in the full feature",
+            "spoilerHint": "This month's scene and the months to watch open in the full feature."
+          },
+          "acts": {
+            "act1": {
+              "title": "{when, select, upcoming {Spoiler of {year}} other {Spoiler of the year}}",
+              "sub": "The opening scene of {year}"
+            },
+            "act2": {
+              "title": "{when, select, upcoming {Core scenario of {year}} other {Core scenario of the year}}",
+              "sub": "The plot running through the whole year"
+            },
+            "act3": {
+              "title": "Four storylines",
+              "sub": "Wealth · Career · Relationships · Health"
+            },
+            "act4": {
+              "title": "Month by month",
+              "sub": "The nearer the month, the bigger it plays"
+            }
+          },
+          "player": {
+            "now": {
+              "current": "Now · month {month}",
+              "upcoming": "From month {month}",
+              "past": "Month {month}"
+            }
+          },
+          "cast": {
+            "title": "{when, select, upcoming {{year}} other {This year's}} character poster",
+            "imageError": "We couldn't create the image. Please try again.",
+            "shareError": "We couldn't share it. Please try again."
+          },
+          "next": {
+            "kicker": {
+              "lifetime": "TRAILER · RUNTIME 99Y",
+              "yearly": "TRAILER · 12 MONTHS",
+              "yearly2027": "TRAILER · {year}",
+              "compatibility": "TRAILER · TWO STARS",
+              "pastLife": "TRAILER · PREQUEL",
+              "faceReading": "TRAILER · CLOSE-UP"
+            },
+            "body": {
+              "lifetime": "This year is one scene of a 99-year film. Watch the trailer of the whole life plot for free.",
+              "yearly": "This year's 12 months, one scene each. The trailer plays for free.",
+              "yearly2027": "The 12 months of the year after {year}. The trailer plays for free.",
+              "compatibility": "The story with the person who shares your screen, both charts side by side.",
+              "pastLife": "The prequel shot before this life. Who were you back then?",
+              "faceReading": "A close-up reading of the traits in your face."
+            },
+            "button": "Watch the trailer"
+          },
+          "credits": {
+            "bestMonth": "Month {month}"
+          },
+          "followUp": {
+            "prompts": [
+              "When is a good time to change jobs?",
+              "What should I watch out for this year?",
+              "How does my love life look this year?"
+            ]
+          },
+          "share": {
+            "badge": "Shared by a friend",
+            "cta": "Watch my year's trailer for free",
+            "endNote": "What scene would this year be for your chart? The trailer plays for free."
+          }
+        },
+        "lifetime": {
+          "now": {
+            "kickerNearest": "NEAREST SCENE",
+            "cast": "Starring {name} · RUNTIME 99Y",
+            "ageUnit": "",
+            "scene": "Scene {index} · {period}",
+            "progressNext": "{percent}% into this scene · next in {years, plural, one {# year} other {# years}}",
+            "progress": "{percent}% into this scene",
+            "nearest": "Showing the nearest scene",
+            "jump": "See the current scene"
+          },
+          "poster": {
+            "leadStar": "LEAD STAR · {star}",
+            "castLine": "Starring {name} · RUNTIME 99Y",
+            "introducing": "introducing a character who is",
+            "brand": "Life Spoiler",
+            "share": "Share the character poster"
+          }
+        },
+        "pastLife": {
+          "poster": {
+            "badgeTrailer": "Free prequel trailer now showing",
+            "starring": "Starring {name} · past life",
+            "imageLocked": "The key art opens after purchase",
+            "title": "TITLE · {title}",
+            "castLine": "Starring {name} · {era} {location}",
+            "introducing": "in a past life, a character who was",
+            "brand": "Life Spoiler",
+            "share": "Share the character poster",
+            "imageError": "We couldn't create the image. Please try again.",
+            "shareError": "We couldn't share it. Please try again."
+          },
+          "world": {
+            "title": "World · location",
+            "desc": "The era and place where the prequel was shot, and the role you played."
+          },
+          "note": {
+            "title": "Character note · {title}",
+            "desc": "The director's notes on this role's strengths. The higher the number, the better the role did it."
+          },
+          "end": {
+            "lastWords": "LAST WORDS"
+          },
+          "contrast": {
+            "title": "Prequel vs feature",
+            "desc": "Left is your past life, right is you now. See how the same scene changed in this life.",
+            "past": "PREQUEL · past",
+            "present": "FEATURE · now"
+          },
+          "traces": {
+            "title": "Foreshadowing in the feature",
+            "desc": "Habits and pulls in your life now that carried over from the prequel.",
+            "label": "Clue {index} · {category}",
+            "origin": "Prequel scene:"
+          },
+          "epilogue": {
+            "title": "What the prequel left behind"
+          },
+          "chart": {
+            "previewDesc": "The past life on the poster comes from this chart. The lines link the Life palace with the three palaces that move with it.",
+            "shareDesc": "The lines link the Life palace with the three palaces that move with it."
+          },
+          "feature": {
+            "act1": {
+              "act": "ACT 1",
+              "title": "Birth",
+              "desc": "Where and how you were born"
+            },
+            "act2": {
+              "act": "ACT 2",
+              "title": "Journey · chronicle",
+              "desc": "Events of the past life, period by period"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "The last scene",
+              "desc": "Death, karma and last words"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "Connections",
+              "desc": "People who carried over into this life"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "Foreshadowing · character poster",
+              "desc": "Traces in your habits now and a poster to share"
+            },
+            "spoilerTitle": "LAST WORDS",
+            "spoilerHint": "Your past life's last words are revealed in ACT 3 of the feature."
+          },
+          "acts": {
+            "act1": {
+              "title": "Birth",
+              "sub": "The opening scene of the prequel"
+            },
+            "act2": {
+              "title": "Journey",
+              "sub": "The past life, period by period"
+            },
+            "act3": {
+              "title": "The last scene",
+              "sub": "Death and karma"
+            },
+            "act4": {
+              "title": "Connections",
+              "sub": "People who carried over into this life"
+            }
+          },
+          "player": {
+            "lastWords": "Last words"
+          },
+          "next": {
+            "body": {
+              "lifetime": "The feature starts where the prequel ends. Watch the trailer of this life's 99-year plot for free.",
+              "yearly": "How the prequel's traces play out across this year's 12 months.",
+              "yearly2027": "Next year's 12 months, one scene each.",
+              "compatibility": "The story with the person who shares your screen in this life, both charts side by side.",
+              "faceReading": "A close-up reading of the traits in your face."
+            }
+          },
+          "followUp": {
+            "name": "Past life",
+            "prompts": [
+              "Why do I have these traits?",
+              "How is my past life connected to now?",
+              "What lesson did my past life leave?"
+            ]
+          },
+          "share": {
+            "badge": "Shared by a friend",
+            "cta": "Watch my past-life trailer for free",
+            "endNote": "Who would your chart have been in a past life? The trailer plays for free.",
+            "ogTitle": "{name}'s past-life scenario",
+            "ogTitleWithHeadline": "A prequel starring {name}: {headline}",
+            "ogDescription": "{name}'s past life, retold through Zi Wei Dou Shu."
+          }
+        },
+        "compatibility": {
+          "genre": {
+            "romance": "Romance",
+            "romcom": "Romantic comedy",
+            "buddy": "Buddy movie",
+            "office": "Office drama",
+            "family": "Family drama",
+            "reunion": "Second-chance drama",
+            "pet": "Companion drama",
+            "drama": "Two-hander drama"
+          },
+          "genreEn": {
+            "romance": "ROMANCE PICTURE",
+            "romcom": "ROMANTIC COMEDY",
+            "buddy": "BUDDY PICTURE",
+            "office": "OFFICE DRAMA",
+            "family": "FAMILY DRAMA",
+            "reunion": "SECOND-CHANCE DRAMA",
+            "pet": "COMPANION DRAMA",
+            "drama": "TWO-HANDER DRAMA"
+          },
+          "poster": {
+            "badgeTrailer": "Compatibility trailer, free",
+            "kicker": "GENRE · {genre} · CHEMISTRY {score}",
+            "castLine": "Co-starring {a} and {b}",
+            "scoreAria": "Chemistry score {score}",
+            "scoreUnit": "{score}",
+            "brand": "Life Spoiler",
+            "share": "Share the co-star poster",
+            "shareTitle": "Share the co-star poster",
+            "imageError": "We couldn't create the image. Please try again.",
+            "shareError": "We couldn't share it. Please try again."
+          },
+          "cast": {
+            "title": "The cast",
+            "desc": "Roles read from each chart. Left: {a}. Right: {b}."
+          },
+          "notes": {
+            "title": "Casting notes",
+            "desc": "Why these two share the screen: zodiac, elements and chemistry in a word each.",
+            "labels": {
+              "zodiac": "Zodiac",
+              "fiveElement": "Elements",
+              "chemistry": "Chemistry"
+            }
+          },
+          "chart": {
+            "title": "Original · Two charts",
+            "tab": "{name}'s chart",
+            "tabsAria": "Choose whose chart to view",
+            "previewDesc": "The two stars on the poster come from here. Switch tabs to see each chart.",
+            "featureDesc": "Tap a palace to see what it covers. Switch tabs to see each chart.",
+            "shareDesc": "The lines join the life palace and the three palaces that move with it. Switch tabs to see each chart."
+          },
+          "stories": {
+            "communication": "Talk",
+            "growth": "Growth",
+            "emotion": "Trust",
+            "crisis": "Crisis"
+          },
+          "acts": {
+            "act1": {
+              "title": "First meeting",
+              "sub": "Where their story begins"
+            },
+            "act2": {
+              "title": "Their scenes",
+              "sub": "Moments that will happen"
+            },
+            "act3": {
+              "title": "Four storylines",
+              "sub": "Talk · Growth · Trust · Crisis"
+            },
+            "act4": {
+              "title": "For the two",
+              "sub": "What keeps it going"
+            }
+          },
+          "player": {
+            "rating": "Overall {score}"
+          },
+          "rating": {
+            "lockedHint": "The four scores and stories open in ACT 3 of the feature.",
+            "lockedReview": "Their story"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "Their scenes",
+              "desc": "Two to four scenes that will happen between them"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "Four storylines",
+              "desc": "Talk · Growth · Trust · Crisis"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "For the two",
+              "desc": "What keeps it going"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "Co-star poster",
+              "desc": "A shareable image with both lead stars and the ratings"
+            },
+            "spoilerTitle": "ACT 2 · Their scenes",
+            "spoilerHint": "The scenes between them open in the feature."
+          },
+          "next": {
+            "body": {
+              "lifetime": "After the co-star film comes the solo lead. Watch the trailer of {name}'s 99-year story for free.",
+              "yearly": "{name}'s year, one scene per month.",
+              "pastLife": "The prequel filmed before {name}'s current life.",
+              "yearly2027": "{name}'s next year, one scene per month.",
+              "faceReading": "A close-up reading of the traits in a face."
+            }
+          },
+          "followUp": {
+            "name": "Compatibility",
+            "prompts": [
+              "How should we resolve conflicts?",
+              "Will we get along in the long run?",
+              "What should we each be careful about?"
+            ]
+          },
+          "share": {
+            "badge": "Shared with you",
+            "cta": "Watch our compatibility trailer free",
+            "endNote": "What genre would you two be? The compatibility trailer is free."
+          }
+        }
       }
     },
     "common": {
@@ -2917,7 +4244,50 @@
       "errorCode": "Error Code",
       "retry": "Try Again",
       "goBack": "Go Back",
-      "paymentError": "An error occurred during payment processing."
+      "paymentError": "An error occurred during payment processing.",
+      "ticketTitle": "Box Office",
+      "ticketKicker": "Ticket · Full Story",
+      "ticketAudience": "Audience",
+      "ticketBenefit": "Offer",
+      "ticketPeriod": "Viewing period",
+      "ticketPeriodValue": "1 year from purchase",
+      "ticketAmount": "Price",
+      "listPrice": "Regular price",
+      "barLabel": "Payment",
+      "payAction": "Pay",
+      "audienceName": "{name}",
+      "audienceCouple": "{nameA} × {nameB}",
+      "benefitCoupon": "Coupon applied",
+      "benefitFirstPayment": "First purchase offer",
+      "checkoutLead": "A full-story ticket for {name}'s {product}",
+      "checkoutLeadCompatibility": "A full-story ticket for the compatibility of {nameA} and {nameB}",
+      "checkoutLeadAnonymous": "A full-story ticket for {product}",
+      "shortProduct": {
+        "yearly": "Yearly Fortune",
+        "yearly_2027": "Next Year's Fortune",
+        "lifetime": "Lifetime Fortune",
+        "past_life": "Past Life Fortune",
+        "compatibility": "Compatibility"
+      },
+      "ownedCoupons": "Your coupons",
+      "couponCodeLabel": "Coupon code",
+      "couponFree": "Free fortune",
+      "couponDiscount": "{percent}% off",
+      "couponDiscountGeneric": "Discount",
+      "issuedTitle": "Your ticket is issued",
+      "issuedLead": "{name}'s {product} full story is ready to watch",
+      "issuedLeadAnonymous": "The {product} full story is ready to watch",
+      "issuedHint": "Tap View Fortune to head to the theater",
+      "issuedTicketAria": "Issued ticket",
+      "stubFeature": "Full Story",
+      "stubEnter": "Admit",
+      "confirmFailedTitle": "We couldn't confirm your payment",
+      "voidTicketAria": "Ticket not issued",
+      "voidTicketTitle": "Your ticket wasn't issued",
+      "unpaidTitle": "Your payment didn't go through",
+      "unpaidTicketAria": "Ticket before issue",
+      "stubStatus": "Status",
+      "stubUnissued": "Not issued"
     },
     "policy": {
       "terms": {
@@ -3452,13 +4822,14 @@
     },
     "universe": {
       "home": {
-        "title": "Create my universe",
-        "subtitle": "Check compatibility with friends via one link",
-        "button": "Start for free"
+        "title": "Open a Friends' Screening",
+        "subtitle": "Invite friends and see your compatibility scores right away"
       },
       "create": {
-        "title": "Create my universe",
-        "description": "Enter your birth details to open your own universe. Share the link and friends will join as stars.",
+        "title": "Open a screening of your life story",
+        "description": "Invite friends and see your compatibility scores right away",
+        "emptySeatsAria": "Empty seating chart. When friends join, they take these seats by score.",
+        "seatsLegend": "Friends take these seats when they join. The higher the compatibility score, the closer to the screen.",
         "ownerNameLabel": "Display name (optional)",
         "ownerNamePlaceholder": "Name shown to your friends",
         "birthDateLabel": "Date of birth",
@@ -3477,70 +4848,85 @@
         "privacyConsentLabel": "Agree to data collection & use (required)",
         "privacyConsentLink": "View Privacy Policy",
         "privacyConsentError": "You must agree to the collection and use of personal data to continue.",
-        "submit": "Create universe",
-        "submitting": "Creating your universe...",
+        "submit": "Open my screening",
+        "submitting": "Opening your screening...",
         "linkWarning": "This link cannot be recovered. Be sure to save or share it once created."
       },
       "detail": {
-        "ogTitleWithName": "You're invited to {name}'s universe",
-        "ogTitle": "You're invited to a friend universe",
-        "ogDescription": "{count} friends have already joined as stars. Enter your birth details to see your compatibility.",
-        "ownerTitle": "{name}'s universe",
-        "ownerTitleFallback": "Someone's universe",
-        "guestCount": "{count} friend stars",
-        "guestCountRankWithName": "{name}'s universe ranks #{rank} for most stars",
-        "guestCountRank": "This universe ranks #{rank} for most stars",
-        "ownerEmptyOneLiner": "Your universe is open. Invite friends to fill it with stars.",
-        "ownerOneLiner": "{count} friends are shining in this universe.",
+        "ogTitleWithName": "{name} invited you to a screening",
+        "ogTitle": "You're invited to a Friends' Screening",
+        "ogDescription": "Enter your birth details to see your seat and compatibility score right away. Just for fun.",
+        "ogCta": "Find my seat",
+        "ownerTitle": "{name}'s Screening",
+        "ownerTitleFallback": "Someone's Screening",
+        "screen": "SCREEN",
+        "seatMapAria": "Seating chart. Seated: {rows}.",
+        "seatMapAriaEmpty": "Seating chart. No guests are seated yet.",
+        "seatMapRowSummary": "Row {row}, {count}",
+        "seatMapOverflowAria": "Row {row} is full, with {count} more guests.",
+        "seatMapMineAria": "My seat: {seat}.",
+        "rowLinkAria": "Row {row}, {count} guests. View in the end credits",
+        "rowOnly": "Row {row}",
+        "mySeat": "My seat · {seat}",
+        "seatLegend": "The closer to the screen, the higher the compatibility score",
+        "seatHint": "Tap a row to see its guests in the credits",
+        "audienceCount": "{count} guests",
+        "audienceRank": "#{rank} most crowded screening overall",
+        "estimatedUniverseBanner": "This screening is calculated using an average across all possible birth times.",
         "myCompatibilityTitle": "Your compatibility with {name}",
         "myCompatibilityTitleFallback": "Your compatibility",
-        "formTitle": "Add my star to this universe",
+        "ticketKind": "My ticket",
+        "ticketSeat": "Seat",
+        "inviteKind": "Invitation",
+        "inviteAdmit": "Admit",
+        "formTitle": "You've got an invitation",
+        "formDescription": "Enter your birth details and we'll show your compatibility score with {name} right away",
+        "formDescriptionFallback": "Enter your birth details and we'll show your compatibility score right away",
         "nameLabel": "Name",
         "namePlaceholder": "Enter your name",
         "privacyConsentLabel": "Agree to data collection & use (required)",
         "privacyConsentLink": "View Privacy Policy",
         "privacyConsentError": "You must agree to the collection and use of personal data to continue.",
-        "submit": "Add my star",
+        "submit": "Check my seat",
         "submitting": "Calculating compatibility...",
-        "duplicateNotice": "You have already joined this universe.",
-        "localeNotice": "Compatibility one-liners and tiers are provided in Korean.",
-        "fullNotice": "This universe is full.",
-        "visualizationLabel": "Friend star universe visualization",
-        "visualizationLegend": "The bigger and brighter the star, the more it means to me",
-        "overflowBadge": "+{count} more",
-        "overflowBadgeLabel": "View the other {count} friends in the ranking list",
-        "meLabel": "(me)",
+        "duplicateNotice": "You're already in. Here's the seat you took last time.",
+        "localeNotice": "Compatibility one-liners are provided in Korean.",
+        "fullNotice": "The theater is full",
         "drawerClose": "Close",
         "drawerFactorsTitle": "Compatibility factors",
-        "starLabel": "{name}, compatibility score {score}, {tier}, rank {rank} of {total}",
-        "listTitle": "Compatibility ranking",
-        "listItemMeta": "#{rank} · {name} · {tier}",
         "scoreTag": "{score} pts",
-        "emptyTitle": "No friends have joined yet.",
-        "emptyDescription": "Share your link to invite the first star.",
+        "scoreUnit": "pts",
+        "creditsTitle": "End credits",
+        "bestTitle": "Best guests",
+        "othersTitle": "Other guests",
+        "rankLabel": "#{rank}",
+        "creditAria": "#{rank} {name}, {details}, view details",
+        "meTag": "Me",
+        "creditsMore": "Show {count} more guests",
+        "emptyTitle": "No guests have arrived yet",
+        "emptyDescription": "Once guests arrive, their names and seats appear here in score order.",
+        "estimatedTag": "Estimated",
+        "estimatedNote": "Estimated (birth time unknown)",
         "promoTitle": "Explore other readings",
-        "promoMyUniverse": "Create my universe",
+        "promoMyUniverse": "Open my own screening",
         "promoFree": "Free",
         "promoPrice": "$0.99",
         "promoLifetime": "Life reading",
         "promoYearly": "This year",
         "promoNextYear": "Next year",
         "promoCompatibility": "Compatibility",
-        "shareTitle": "Share this universe",
-        "shareButton": "Copy share link",
+        "shareTitle": "Send invitations",
+        "shareLead": "{count} guests have taken their seats",
+        "shareLeadEmpty": "Send an invitation to bring in your first guest",
+        "shareButton": "Send invitation",
         "shareCopied": "Link copied!",
         "shareFallback": "Press and hold the link to copy it.",
-        "shareText": "Come join my universe as a star!",
-        "notFoundTitle": "This universe does not exist.",
+        "shareText": "I'm inviting you to my screening. What do you think our compatibility score is?",
+        "notFoundTitle": "This screening does not exist.",
         "notFoundDescription": "Please check that the link is correct.",
         "goHome": "Go home",
-        "loading": "Loading the universe...",
-        "retry": "Try again",
-        "estimatedUniverseBanner": "This universe is calculated using an average across all possible birth times.",
-        "estimatedUniverseCaption": "Stars glow softly here — calculated as an average.",
-        "estimatedUniverseAria": "{title}. The birth time was not provided, so compatibility results in this universe are calculated as averages.",
-        "estimatedTag": "Estimated",
-        "estimatedStarAria": "Calculated as an average because the birth time is unknown"
+        "loading": "Loading the screening...",
+        "retry": "Try again"
       },
       "errors": {
         "network": "Please check your network connection.",
@@ -3932,7 +5318,21 @@
       },
       "status": "Heading to the screening of {title}",
       "trailer": "{title} Trailer",
-      "feature": "{title}: The Full Story"
+      "feature": "{title}: The Full Story",
+      "payment": {
+        "checkoutTitle": "Box Office",
+        "confirmTitle": "Issuing Your Ticket",
+        "preparing": "Getting ready",
+        "waiting": {
+          "checkout1": "Loading the showtime",
+          "checkout2": "Preparing checkout",
+          "confirm1": "Confirming your payment",
+          "confirm2": "Printing your ticket",
+          "confirm3": "Taking you to the theater shortly"
+        },
+        "long": "Just a moment more",
+        "status": "Preparing {title}"
+      }
     }
   },
   "ja": {
@@ -4142,8 +5542,8 @@
       },
       "friendUniverse": {
         "alert": {
-          "ariaLabel": "ログインなしで無料で自分のユニバースを作る",
-          "chip": "無料 · ログインなしで友達と星座相性"
+          "ariaLabel": "ログインなしで無料で友だち試写会を開く",
+          "chip": "無料 · ログインなしで友だち試写会を開く"
         }
       },
       "cta": {
@@ -4621,8 +6021,8 @@
         "profileShareTitle": "プロフィール画像をシェアする",
         "share": {
           "title": "{name}さんの人生運勢",
-          "ogTitle": "114個の星がネタバレする{name}さんの人生シナリオ",
-          "ogTitleWithHeadline": "{name}さんの人生運勢: {headline}",
+          "ogTitle": "{name}さんの人生シナリオ",
+          "ogTitleWithHeadline": "{name}さん主演の人生映画: {headline}",
           "ogDescription": "紫微斗数で分析した{name}さんの人生シナリオです。",
           "ogDescriptionWithScores": "{name}さんの運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
         },
@@ -4714,8 +6114,8 @@
         "luckyKeywordsTitle": "幸運キーワード",
         "share": {
           "title": "{name}さんの{year}年運勢",
-          "ogTitle": "114個の星がネタバレする{name}さんの今年のシナリオ",
-          "ogTitleWithHeadline": "{name}さんの{year}年運勢: {headline}",
+          "ogTitle": "{name}さんの{year}年シナリオ",
+          "ogTitleWithHeadline": "{name}さん主演 {year}年編: {headline}",
           "ogDescription": "紫微斗数で分析した{name}さんの{year}年運勢です。",
           "ogDescriptionWithScores": "{name}さんの{year}年運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
         },
@@ -4808,6 +6208,633 @@
         "shareLine": "LINEでシェア",
         "downloadImage": "プロフィール画像をダウンロード",
         "downloading": "ダウンロード中..."
+      },
+      "screen": {
+        "poster": {
+          "presents": "A LIFE SPOILER FILM",
+          "badgeTrailer": "予告編 無料上映中",
+          "badgeFeature": "本編上映中",
+          "runtime": "RUNTIME 99Y",
+          "starring": "主演 {name}",
+          "leadStar": "命宮 {star}",
+          "noStar": "命宮に主星なし",
+          "badgeShared": "友だちから届いた本編"
+        },
+        "runtime": {
+          "age": "<b>{age}歳</b> / {max}歳",
+          "trailerNote": "予告編は<b>最初の場面</b>までです。今の{age}歳の場面から99歳までは本編で上映します。"
+        },
+        "chart": {
+          "title": "原作 · わたしの命盤",
+          "desc": "ポスターの星座はここから生まれました。命宮と一緒に動く三つの宮を結んでいます。",
+          "featureDesc": "マスを押すと、その宮が何を表すかをお伝えします。線は命宮と一緒に動く三つの宮です。",
+          "legendTriangle": "命宮と三合の二宮",
+          "legendOpposite": "向かい合う宮",
+          "shareDesc": "ポスターの星座はこの命盤から生まれました。命宮と一緒に動く三つの宮を結んでいます。"
+        },
+        "trailer": {
+          "title": "予告編 {count}カット"
+        },
+        "feature": {
+          "title": "本編で上映します",
+          "spoilerHint": "ACT 2 · 核心シナリオの最初の一文は本編で公開されます。",
+          "act2": {
+            "act": "ACT 2",
+            "title": "核心シナリオ",
+            "desc": "人生全体を貫く大きな筋書き"
+          },
+          "act3": {
+            "act": "ACT 3",
+            "title": "四つの物語",
+            "desc": "財運・仕事・縁・健康と評価"
+          },
+          "act4": {
+            "act": "ACT 4",
+            "title": "年代別の場面",
+            "desc": "10年ごとに変わる舞台、99歳まで"
+          },
+          "bonus": {
+            "act": "BONUS",
+            "title": "わたしのキャラクターカード",
+            "desc": "友だちに送れる性格カード"
+          },
+          "keywords": "いちばん強いキーワード{count}個は本編で公開されます。",
+          "lockedKeyword": "本編で公開"
+        },
+        "pay": {
+          "button": "本編の上映を始める ($0.99)",
+          "back": "戻る"
+        },
+        "error": {
+          "title": "一時的につながりにくくなっています",
+          "desc": "ご利用が集中しているため、運勢を作成できませんでした。しばらくしてからもう一度お試しください。",
+          "refresh": "再読み込み"
+        },
+        "player": {
+          "label": "本編の場面へ移動",
+          "now": "いま {age}歳",
+          "openMenu": "場面リストを開く",
+          "closeMenu": "場面リストを閉じる",
+          "kicker": {
+            "opening": "OPENING",
+            "next": "COMING NEXT",
+            "end": "THE END"
+          },
+          "scene": {
+            "opening": "オープニング · キャラクターと命盤",
+            "next": "次回上映作",
+            "end": "エンドクレジット"
+          },
+          "state": {
+            "current": "上映中",
+            "done": "視聴済み"
+          }
+        },
+        "acts": {
+          "act1": {
+            "title": "人生ネタバレ",
+            "sub": "この映画の最初の場面"
+          },
+          "act2": {
+            "title": "核心シナリオ",
+            "sub": "人生全体を貫く筋書き"
+          },
+          "act3": {
+            "title": "四つの物語",
+            "sub": "財運 · 仕事 · 縁 · 健康"
+          },
+          "act4": {
+            "title": "年代別シナリオ",
+            "sub": "近い場面ほど大きく、いまから広げます"
+          }
+        },
+        "character": {
+          "title": "わたしのキャラクターポスター"
+        },
+        "rating": {
+          "title": "四つの物語の評価",
+          "desc": "物語ごとのスコアを10点満点の評価でお見せします。ひとこと評は各物語のタイトルです。",
+          "starsAria": "5つ星中{count}つ",
+          "scoreAria": "10点満点中{score}点",
+          "topCallout": "<b>最高評価 · {label} {score}</b> 四つの物語の中でいちばん高いスコアの物語です。"
+        },
+        "age": {
+          "summaryNow": "いま",
+          "summaryNearest": "いちばん近い場面",
+          "summaryNowSub": "{age}歳 · この場面の{percent}%",
+          "ageNow": "いま {age}歳",
+          "summaryNext": "次の場面まで",
+          "years": "{count}年",
+          "fromAge": "{age}歳から · 新しい10年",
+          "ageLabel": "{age}歳",
+          "tagNow": "いま",
+          "tagNext": "次の場面",
+          "birthTimeNote": "出生時刻が不明なため、正午を基準に計算しました。時期の区切りは参考としてご覧ください。",
+          "expandAll": "すべて広げて読む",
+          "collapseAll": "いまの場面だけ見る"
+        },
+        "next": {
+          "title": "次回上映作",
+          "name": "今年の運勢",
+          "body": "人生の運勢のあとに運勢をもっと見た100人中{count}人が選んだ次の作品です。{year}年を12か月に分けてお見せします。",
+          "button": "今年の運勢を見る"
+        },
+        "credits": {
+          "presentedBy": "ライフスポイラー",
+          "share": "本編をシェア",
+          "review": "レビューを書く"
+        },
+        "followUp": {
+          "name": "人生の運勢",
+          "prompts": [
+            "わたしの仕事運はどうですか？",
+            "結婚に良い時期はいつですか？",
+            "財運が気になります"
+          ]
+        },
+        "share": {
+          "cta": "わたしの人生予告編を無料で見る",
+          "endNote": "わたしの命盤からはどんな映画が生まれるでしょう。予告編は無料で上映しています。",
+          "badge": "友だちから届いた本編"
+        },
+        "yearly": {
+          "flow": {
+            "title": "{when, select, upcoming {{year}年} other {今年}}の流れ",
+            "desc": "命盤から計算した月ごとの運気を棒で表しています。高いほど動きやすい月です。",
+            "legendBest": "今年いちばん良い月",
+            "legendCaution": "気をつける月",
+            "legendNow": "今月",
+            "best": "いちばん良い月",
+            "caution": "気をつける月",
+            "monthScore": "{month}月 · スコア {score}",
+            "bestSubYear": "今年スコアがいちばん高い月",
+            "bestSubNow": "まさに今月です",
+            "bestSubAhead": "{count}か月後に来ます",
+            "bestSubPassed": "すでに過ぎた月です",
+            "cautionPlaceholder": "○月 · スコア ○○",
+            "cautionLocked": "本編で公開されます",
+            "cautionSub": "今年スコアがいちばん低い月"
+          },
+          "now": {
+            "kicker": {
+              "current": "NOW SHOWING",
+              "upcoming": "COMING SOON",
+              "past": "LAST SHOWING"
+            },
+            "cast": "主演 {name} · {year}",
+            "monthUnit": "月",
+            "rankBest": "今年最高の月",
+            "rankTop": "今年良い月 {rank}位",
+            "rankCaution": "気をつける月",
+            "rank": "12か月中 {rank}位",
+            "scoreToday": "スコア {score} · 今日 {month}/{day}",
+            "score": {
+              "upcoming": "スコア {score} · {year}年1月から上映",
+              "past": "スコア {score} · {year}年の最後の場面"
+            },
+            "jump": {
+              "current": "今月の場面を見る",
+              "upcoming": "{month}月の場面から見る",
+              "past": "{month}月の場面を見る"
+            }
+          },
+          "poster": {
+            "ganji": "{ganji} · 12 MONTHS",
+            "starring": "主演 {name} · {year}年編",
+            "genre": "今年のジャンル",
+            "brand": "ライフスポイラー",
+            "leadGenre": "LEAD GENRE · {category}",
+            "castLine": "主演 {name} · {year} {ganji}",
+            "share": "キャラクターポスターをシェア"
+          },
+          "trailer": {
+            "title": "予告編 · {count}場面",
+            "free": "{count} SCENES · 無料"
+          },
+          "months": {
+            "unit": "月",
+            "score": "スコア {score}",
+            "tagNow": "今月",
+            "tagNext": "来月",
+            "markBest": "今年いちばん良い月",
+            "markCaution": "気をつける月",
+            "regionLabel": "{month}月の場面",
+            "progress": "今日 {month}/{day} · この月の{percent}%",
+            "dayLabel": "{month}/{day}",
+            "collapseAll": "今月だけ見る",
+            "expandAll": "12か月すべて広げて読む",
+            "summary": {
+              "current": "今月",
+              "upcoming": "最初の場面",
+              "past": "最後の場面"
+            },
+            "summaryBest": "{month}月 · 今年最高の月",
+            "summaryMonth": "{month}月",
+            "summaryScore": "スコア {score}",
+            "left": "今年の残り",
+            "leftValue": "{count}か月",
+            "leftLast": "今年最後の月です",
+            "leftSub": "次は{month}月",
+            "runtime": "上映期間",
+            "runtimeValue": "{year}年の12か月",
+            "runtimeSub": {
+              "upcoming": "まだ始まっていません",
+              "past": "上映が終わった年です"
+            }
+          },
+          "memo": {
+            "title": "{when, select, upcoming {{year}年} other {今年}}のメモ",
+            "desc": "命盤から計算した今年のポイントです。ラッキーカラーや場所のように根拠の弱い項目は外しました。",
+            "nobleAnimal": "{animal}年",
+            "wealth": {
+              "label": "財運の攻略",
+              "source": "今年の財帛宮"
+            },
+            "romance": {
+              "label": "恋愛モード",
+              "source": "桃花星の流れ"
+            },
+            "noble": {
+              "label": "わたしの貴人",
+              "source": "三合"
+            },
+            "health": {
+              "label": "健康の注意",
+              "source": "今年の疾厄宮"
+            }
+          },
+          "runtime": {
+            "month": "<b>{month}月</b> / 12月",
+            "note": {
+              "current": "予告編は<b>今年のあらすじ</b>までです。上映中の{month}月の場面と12か月すべては本編で上映します。",
+              "upcoming": "予告編は<b>{year}年のあらすじ</b>までです。1月から12月までの月ごとの場面は本編で上映します。",
+              "past": "予告編は<b>{year}年のあらすじ</b>までです。12か月すべての場面は本編で上映します。"
+            }
+          },
+          "chart": {
+            "previewDesc": "ポスター下の流れはこの命盤から生まれました。今年入った四化(化禄·化権·化科·化忌)も表示しています。",
+            "featureDesc": "マスを押すと、その宮が何を表すかをお伝えします。今年入った四化も表示しています。",
+            "shareDesc": "線は命宮と一緒に動く三つの宮です。今年入った四化も表示しています。"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "今年の核心シナリオ",
+              "desc": "一年を貫く筋書き"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "四つの物語",
+              "desc": "財運·仕事·縁·健康と評価"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "月別シナリオ",
+              "desc": "今月から12月まで、月ごとに一場面"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "今年のメモ · キャラクターポスター",
+              "desc": "財運の攻略·貴人·健康の注意とシェア用ポスター"
+            },
+            "spoilerTitle": "{month}月の場面 · 本編で公開",
+            "spoilerHint": "今月の場面と気をつける月は本編で公開されます。"
+          },
+          "acts": {
+            "act1": {
+              "title": "{when, select, upcoming {{year}年} other {今年}}のネタバレ",
+              "sub": "{year}年の最初の場面"
+            },
+            "act2": {
+              "title": "{when, select, upcoming {{year}年} other {今年}}の核心シナリオ",
+              "sub": "一年を貫く筋書き"
+            },
+            "act3": {
+              "title": "四つの物語",
+              "sub": "財運 · 仕事 · 縁 · 健康"
+            },
+            "act4": {
+              "title": "月別シナリオ",
+              "sub": "近い月ほど大きく、12か月"
+            }
+          },
+          "player": {
+            "now": {
+              "current": "いま {month}月",
+              "upcoming": "{month}月から",
+              "past": "{month}月"
+            }
+          },
+          "cast": {
+            "title": "{when, select, upcoming {{year}年} other {今年}}のキャラクターポスター",
+            "imageError": "画像を作成できませんでした。もう一度お試しください。",
+            "shareError": "シェアできませんでした。もう一度お試しください。"
+          },
+          "next": {
+            "kicker": {
+              "lifetime": "TRAILER · RUNTIME 99Y",
+              "yearly": "TRAILER · 12 MONTHS",
+              "yearly2027": "TRAILER · {year}",
+              "compatibility": "TRAILER · TWO STARS",
+              "pastLife": "TRAILER · PREQUEL",
+              "faceReading": "TRAILER · CLOSE-UP"
+            },
+            "body": {
+              "lifetime": "今年は99歳の映画の一場面です。この場面を含む人生全体のあらすじを予告編から無料で見られます。",
+              "yearly": "今年の12か月を月ごとに一場面でお見せします。予告編は無料で上映しています。",
+              "yearly2027": "{year}年に続く翌年の12か月です。予告編は無料で上映しています。",
+              "compatibility": "一緒に出演する人との物語です。二人の命盤を並べて見ます。",
+              "pastLife": "今世より先に撮られた前編です。前世のわたしはどんな人だったのでしょう。",
+              "faceReading": "顔に表れた性格をクローズアップで読み解きます。"
+            },
+            "button": "予告編を見る"
+          },
+          "credits": {
+            "bestMonth": "{month}月"
+          },
+          "followUp": {
+            "prompts": [
+              "転職に良い時期はいつですか？",
+              "今年気をつけることは何ですか？",
+              "今年の恋愛運はどうですか？"
+            ]
+          },
+          "share": {
+            "badge": "友だちから届いた本編",
+            "cta": "わたしの今年の予告編を無料で見る",
+            "endNote": "わたしの命盤では今年はどんな場面でしょう。予告編は無料で上映しています。"
+          }
+        },
+        "lifetime": {
+          "now": {
+            "kickerNearest": "NEAREST SCENE",
+            "cast": "主演 {name} · RUNTIME 99Y",
+            "ageUnit": "歳",
+            "scene": "{index}番目の場面 · {period}",
+            "progressNext": "この場面の{percent}% · 次の場面まで{years}年",
+            "progress": "この場面の{percent}%",
+            "nearest": "いちばん近い場面をお見せします",
+            "jump": "いまの場面を見る"
+          },
+          "poster": {
+            "leadStar": "LEAD STAR · 命宮 {star}",
+            "castLine": "主演 {name} · RUNTIME 99Y",
+            "introducing": "introducing a character who is",
+            "brand": "ライフスポイラー",
+            "share": "キャラクターポスターをシェア"
+          }
+        },
+        "pastLife": {
+          "poster": {
+            "badgeTrailer": "前編の予告編 無料上映中",
+            "starring": "主演 {name} · 前世編",
+            "imageLocked": "購入後にキーアートが公開されます",
+            "title": "TITLE · {title}",
+            "castLine": "主演 {name} · {era} {location}",
+            "introducing": "in a past life, a character who was",
+            "brand": "ライフスポイラー",
+            "share": "キャラクターポスターをシェア",
+            "imageError": "画像を作成できませんでした。もう一度お試しください。",
+            "shareError": "シェアできませんでした。もう一度お試しください。"
+          },
+          "world": {
+            "title": "世界観 · ロケーション",
+            "desc": "前編が撮られた時代と場所、その中で演じた役です。"
+          },
+          "note": {
+            "title": "役のノート · {title}",
+            "desc": "監督が書き留めたこの役の強みです。数字が大きいほど、その役が得意だったことです。"
+          },
+          "end": {
+            "lastWords": "LAST WORDS · 最後のせりふ"
+          },
+          "contrast": {
+            "title": "前編 vs 本編",
+            "desc": "左は前世、右はいまのわたしです。同じ場面が今世でどう変わったかを並べて見ます。",
+            "past": "PREQUEL · 前世",
+            "present": "FEATURE · いま"
+          },
+          "traces": {
+            "title": "本編に残った伏線",
+            "desc": "いまの習慣や惹かれるものの中で、前編から続いているものです。",
+            "label": "伏線 {index} · {category}",
+            "origin": "前編の場面:"
+          },
+          "epilogue": {
+            "title": "前編が残した教訓"
+          },
+          "chart": {
+            "previewDesc": "ポスターの前世はこの命盤から生まれました。線は命宮と一緒に動く三つの宮です。",
+            "shareDesc": "線は命宮と一緒に動く三つの宮です。"
+          },
+          "feature": {
+            "act1": {
+              "act": "ACT 1",
+              "title": "誕生",
+              "desc": "どこでどのように生まれたか"
+            },
+            "act2": {
+              "act": "ACT 2",
+              "title": "旅路 · 年代記",
+              "desc": "時期ごとに続く前世の出来事"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "最後の場面",
+              "desc": "死とカルマ、最後のせりふ"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "縁",
+              "desc": "今世まで続いた人たち"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "本編に残った伏線 · キャラクターポスター",
+              "desc": "いまの習慣に残る痕跡とシェア用ポスター"
+            },
+            "spoilerTitle": "LAST WORDS · 最後のせりふ",
+            "spoilerHint": "前世の最後のせりふは本編のACT 3で公開されます。"
+          },
+          "acts": {
+            "act1": {
+              "title": "誕生",
+              "sub": "前編の最初の場面"
+            },
+            "act2": {
+              "title": "旅路",
+              "sub": "時期ごとに続く前世"
+            },
+            "act3": {
+              "title": "最後の場面",
+              "sub": "死とカルマ"
+            },
+            "act4": {
+              "title": "縁",
+              "sub": "今世まで続いた人たち"
+            }
+          },
+          "player": {
+            "lastWords": "最後のせりふ"
+          },
+          "next": {
+            "body": {
+              "lifetime": "前編が終わったところから本編が始まります。今世99歳のあらすじを予告編から無料で見られます。",
+              "yearly": "前編の痕跡が今年の12か月にどうつながるかを月ごとにお見せします。",
+              "yearly2027": "翌年の12か月を月ごとに一場面でお見せします。",
+              "compatibility": "今世で一緒に出演する人との物語です。二人の命盤を並べて見ます。",
+              "faceReading": "顔に表れた性格をクローズアップで読み解きます。"
+            }
+          },
+          "followUp": {
+            "name": "前世",
+            "prompts": [
+              "なぜこんな性格になったのですか？",
+              "前世といまはどうつながっていますか？",
+              "前世が残した教訓は何ですか？"
+            ]
+          },
+          "share": {
+            "badge": "友だちから届いた本編",
+            "cta": "わたしの前世の予告編を無料で見る",
+            "endNote": "わたしの命盤では前世は誰だったでしょう。予告編は無料で上映しています。",
+            "ogTitle": "{name}さんの前世シナリオ",
+            "ogTitleWithHeadline": "{name}さん主演の前編: {headline}",
+            "ogDescription": "紫微斗数で描き直した{name}さんの前世の物語です。"
+          }
+        },
+        "compatibility": {
+          "genre": {
+            "romance": "ロマンス",
+            "romcom": "ラブコメディ",
+            "buddy": "バディムービー",
+            "office": "オフィスドラマ",
+            "family": "ファミリードラマ",
+            "reunion": "やり直しのドラマ",
+            "pet": "相棒ドラマ",
+            "drama": "二人のドラマ"
+          },
+          "genreEn": {
+            "romance": "ROMANCE PICTURE",
+            "romcom": "ROMANTIC COMEDY",
+            "buddy": "BUDDY PICTURE",
+            "office": "OFFICE DRAMA",
+            "family": "FAMILY DRAMA",
+            "reunion": "SECOND-CHANCE DRAMA",
+            "pet": "COMPANION DRAMA",
+            "drama": "TWO-HANDER DRAMA"
+          },
+          "poster": {
+            "badgeTrailer": "相性予告編 無料上映中",
+            "kicker": "GENRE · {genre} · CHEMISTRY {score}",
+            "castLine": "{a} · {b} 共演",
+            "scoreAria": "相性スコア {score}点",
+            "scoreUnit": "{score}点",
+            "brand": "人生スポ",
+            "share": "共演ポスターをシェア",
+            "shareTitle": "共演ポスターをシェア",
+            "imageError": "画像を作成できませんでした。もう一度お試しください。",
+            "shareError": "シェアできませんでした。もう一度お試しください。"
+          },
+          "cast": {
+            "title": "キャスト紹介",
+            "desc": "二人の命盤から読んだ役どころです。左が{a}、右が{b}の役です。"
+          },
+          "notes": {
+            "title": "キャスティングノート",
+            "desc": "二人を同じ画面に立たせた理由です。干支・五行・ケミを一言でまとめました。",
+            "labels": {
+              "zodiac": "干支の相性",
+              "fiveElement": "五行の相性",
+              "chemistry": "ケミ"
+            }
+          },
+          "chart": {
+            "title": "原作 · 二人の命盤",
+            "tab": "{name}の原作",
+            "tabsAria": "どちらの命盤を見るか選ぶ",
+            "previewDesc": "ポスターの二つの星はここから生まれました。タブで二人の命盤を切り替えて見られます。",
+            "featureDesc": "マスを押すと、その宮が何を表すか分かります。タブで二人の命盤を切り替えて見られます。",
+            "shareDesc": "線は命宮と一緒に動く三つの宮です。タブで二人の命盤を切り替えて見られます。"
+          },
+          "stories": {
+            "communication": "対話",
+            "growth": "成長",
+            "emotion": "感情・信頼",
+            "crisis": "危機"
+          },
+          "acts": {
+            "act1": {
+              "title": "出会い",
+              "sub": "二人の物語が始まります"
+            },
+            "act2": {
+              "title": "二人の場面",
+              "sub": "実際に起こる瞬間"
+            },
+            "act3": {
+              "title": "四つの物語",
+              "sub": "対話 · 成長 · 感情 · 危機"
+            },
+            "act4": {
+              "title": "二人へ",
+              "sub": "長く続けるために"
+            }
+          },
+          "player": {
+            "rating": "総評 {score}"
+          },
+          "rating": {
+            "lockedHint": "四つのスコアと物語は本編ACT 3で公開されます。",
+            "lockedReview": "二人の物語"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "二人の場面",
+              "desc": "二人の間に実際に起こる場面2〜4つ"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "四つの物語",
+              "desc": "対話 · 成長 · 感情と信頼 · 危機"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "二人へ",
+              "desc": "長く続けるために"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "共演ポスター",
+              "desc": "二人の主星の絵と評点が入ったシェア画像"
+            },
+            "spoilerTitle": "ACT 2 · 二人の場面",
+            "spoilerHint": "二人の間に起こる場面は本編で公開されます。"
+          },
+          "next": {
+            "body": {
+              "lifetime": "共演の次は単独主演です。{name}さんの99年のあらすじを予告編から無料で見られます。",
+              "yearly": "{name}さんの今年の12か月を、月ごとに一場面で見せます。",
+              "pastLife": "今世より先に撮られた{name}さんの前編を見せます。",
+              "yearly2027": "{name}さんの来年の12か月を、月ごとに一場面で見せます。",
+              "faceReading": "顔に表れた性格をクローズアップで読み解きます。"
+            }
+          },
+          "followUp": {
+            "name": "相性",
+            "prompts": [
+              "どうやって衝突を解決すればいいですか?",
+              "長い目で見て相性はいいですか?",
+              "お互い気をつけることは何ですか?"
+            ]
+          },
+          "share": {
+            "badge": "友だちから届いた本編",
+            "cta": "私たちの相性予告編を無料で見る",
+            "endNote": "あなたとあの人はどんなジャンルでしょう? 相性予告編は無料で上映中です。"
+          }
+        }
       }
     },
     "common": {
@@ -4889,7 +6916,50 @@
       "errorCode": "エラーコード",
       "retry": "もう一度決済する",
       "goBack": "戻る",
-      "paymentError": "決済処理中にエラーが発生しました。"
+      "paymentError": "決済処理中にエラーが発生しました。",
+      "ticketTitle": "チケット売り場",
+      "ticketKicker": "チケット · 本編",
+      "ticketAudience": "観客",
+      "ticketBenefit": "特典",
+      "ticketPeriod": "閲覧期間",
+      "ticketPeriodValue": "決済日から1年間",
+      "ticketAmount": "金額",
+      "listPrice": "通常価格",
+      "barLabel": "お支払い",
+      "payAction": "決済する",
+      "audienceName": "{name}さん",
+      "audienceCouple": "{nameA} × {nameB}",
+      "benefitCoupon": "クーポン適用",
+      "benefitFirstPayment": "初回決済イベント",
+      "checkoutLead": "{name}さんの{product}の本編チケットです",
+      "checkoutLeadCompatibility": "{nameA}さんと{nameB}さんの相性の本編チケットです",
+      "checkoutLeadAnonymous": "{product}の本編チケットです",
+      "shortProduct": {
+        "yearly": "今年の運勢",
+        "yearly_2027": "来年の運勢",
+        "lifetime": "人生運勢",
+        "past_life": "前世運勢",
+        "compatibility": "相性"
+      },
+      "ownedCoupons": "保有クーポン",
+      "couponCodeLabel": "クーポンコード",
+      "couponFree": "無料の運勢",
+      "couponDiscount": "{percent}%割引",
+      "couponDiscountGeneric": "割引",
+      "issuedTitle": "チケットを発券しました",
+      "issuedLead": "{name}さんの{product}の本編をご覧いただけます",
+      "issuedLeadAnonymous": "{product}の本編をご覧いただけます",
+      "issuedHint": "「運勢を確認する」を押すと上映室へ移動します",
+      "issuedTicketAria": "発券されたチケット",
+      "stubFeature": "本編",
+      "stubEnter": "入場",
+      "confirmFailedTitle": "決済の承認に失敗しました",
+      "voidTicketAria": "発券されなかったチケット",
+      "voidTicketTitle": "チケットが発券されませんでした",
+      "unpaidTitle": "決済を完了できませんでした",
+      "unpaidTicketAria": "発券前のチケット",
+      "stubStatus": "状態",
+      "stubUnissued": "発券前"
     },
     "policy": {
       "terms": {
@@ -5424,13 +7494,14 @@
     },
     "universe": {
       "home": {
-        "title": "自分のユニバースを作る",
-        "subtitle": "リンク1つで友達との相性をチェック",
-        "button": "無料で始める"
+        "title": "友だち試写会を開く",
+        "subtitle": "友だちを招待すると、相性スコアがすぐわかります"
       },
       "create": {
-        "title": "自分のユニバースを作る",
-        "description": "生年月日時を入力すると自分だけのユニバースができます。リンクを共有すると友達が星として参加します。",
+        "title": "私の人生映画の試写会を開こう",
+        "description": "友だちを招待すると、相性スコアがすぐわかります",
+        "emptySeatsAria": "空の座席表。友だちが入場すると、スコアに応じてこの席に座ります。",
+        "seatsLegend": "友だちを招待すると、この席に座ります。相性スコアが高いほどスクリーンの近くに座ります。",
         "ownerNameLabel": "表示名（任意）",
         "ownerNamePlaceholder": "友達に表示される名前",
         "birthDateLabel": "生年月日",
@@ -5449,70 +7520,85 @@
         "privacyConsentLabel": "個人情報の収集・利用に同意（必須）",
         "privacyConsentLink": "プライバシーポリシーを見る",
         "privacyConsentError": "個人情報の収集・利用に同意する必要があります。",
-        "submit": "ユニバースを作る",
-        "submitting": "ユニバースを作成中...",
+        "submit": "試写会を開く",
+        "submitting": "試写会を準備中...",
         "linkWarning": "このリンクは再発行できません。作成後は必ず保存または共有してください。"
       },
       "detail": {
-        "ogTitleWithName": "{name}さんのユニバースにご招待します",
-        "ogTitle": "友達ユニバースにご招待します",
-        "ogDescription": "これまでに{count}人の友達が星として参加しました。生年月日時を入力すると相性がすぐわかります。",
-        "ownerTitle": "{name}さんのユニバース",
-        "ownerTitleFallback": "誰かのユニバース",
-        "guestCount": "友達の星 {count}個",
-        "guestCountRankWithName": "{name}さんのユニバースは全体で{rank}番目に星が多いユニバースです",
-        "guestCountRank": "このユニバースは全体で{rank}番目に星が多いユニバースです",
-        "ownerEmptyOneLiner": "ユニバースが開きました。友達を招待して星を増やしましょう。",
-        "ownerOneLiner": "{count}人の友達がこのユニバースで輝いています。",
+        "ogTitleWithName": "{name}さんが試写会に招待しました",
+        "ogTitle": "友だち試写会にご招待します",
+        "ogDescription": "生年月日時を入れると、自分の席と相性スコアがすぐわかります。楽しむための相性占いです。",
+        "ogCta": "自分の席を見る",
+        "ownerTitle": "{name}さんの試写会",
+        "ownerTitleFallback": "誰かの試写会",
+        "screen": "SCREEN",
+        "seatMapAria": "座席表。{rows}が座っています。",
+        "seatMapAriaEmpty": "座席表。まだ座っている観客はいません。",
+        "seatMapRowSummary": "{row}列 {count}人",
+        "seatMapOverflowAria": "{row}列は席が足りず、さらに{count}人います。",
+        "seatMapMineAria": "私の席：{seat}。",
+        "rowLinkAria": "{row}列 観客{count}人、エンドクレジットで見る",
+        "rowOnly": "{row}列",
+        "mySeat": "私の席 · {seat}",
+        "seatLegend": "スクリーンに近いほど相性スコアが高いです",
+        "seatHint": "列をタップすると、その列の観客をクレジットで表示します",
+        "audienceCount": "観客 {count}人",
+        "audienceRank": "全体で{rank}番目に賑わう試写会",
+        "estimatedUniverseBanner": "この試写会は、生まれた時間の代わりに考えられるすべての時間帯を平均して計算されています。",
         "myCompatibilityTitle": "{name}さんとの相性",
         "myCompatibilityTitleFallback": "私の相性",
-        "formTitle": "ユニバースに自分の星を追加",
+        "ticketKind": "私の観賞券",
+        "ticketSeat": "座席",
+        "inviteKind": "招待状",
+        "inviteAdmit": "入場",
+        "formTitle": "招待状が届いています",
+        "formDescription": "生年月日時を入れるだけで、{name}さんとの相性スコアがすぐわかります",
+        "formDescriptionFallback": "生年月日時を入れるだけで、相性スコアがすぐわかります",
         "nameLabel": "名前",
         "namePlaceholder": "名前を入力してください",
         "privacyConsentLabel": "個人情報の収集・利用に同意（必須）",
         "privacyConsentLink": "プライバシーポリシーを見る",
         "privacyConsentError": "個人情報の収集・利用に同意する必要があります。",
-        "submit": "自分の星を追加",
+        "submit": "私の席を確認する",
         "submitting": "相性を計算中...",
-        "duplicateNotice": "すでに参加している星です。",
-        "localeNotice": "相性の一言とランクは韓国語で提供されます。",
-        "fullNotice": "このユニバースは参加人数が上限に達しました。",
-        "visualizationLabel": "友達の星ユニバースの可視化",
-        "visualizationLegend": "星が大きく明るいほど、私にとって大切な星です",
-        "overflowBadge": "他 {count}人",
-        "overflowBadgeLabel": "残り{count}人をランキングで見る",
-        "meLabel": "（私）",
+        "duplicateNotice": "すでに入場しています。前回の席をお見せします",
+        "localeNotice": "相性の一言は韓国語で提供されます。",
+        "fullNotice": "客席が満席です",
         "drawerClose": "閉じる",
         "drawerFactorsTitle": "相性の根拠",
-        "starLabel": "{name}、相性スコア{score}点、{tier}、全{total}人中{rank}位",
-        "listTitle": "相性ランキング",
-        "listItemMeta": "{rank}位 · {name} · {tier}",
         "scoreTag": "{score}点",
-        "emptyTitle": "まだ参加した友達がいません。",
-        "emptyDescription": "リンクを共有して最初の星を招待しましょう。",
+        "scoreUnit": "点",
+        "creditsTitle": "エンドクレジット",
+        "bestTitle": "ベスト観客",
+        "othersTitle": "その他の観客",
+        "rankLabel": "{rank}位",
+        "creditAria": "{rank}位 {name}、{details}、詳しく見る",
+        "meTag": "私",
+        "creditsMore": "観客{count}人をもっと見る",
+        "emptyTitle": "まだ入場した観客はいません",
+        "emptyDescription": "観客が入場すると、スコア順に名前と席が表示されます。",
+        "estimatedTag": "推定値",
+        "estimatedNote": "推定値（生まれた時間が不明）",
         "promoTitle": "他の占いも見る",
-        "promoMyUniverse": "自分のユニバースを作る",
+        "promoMyUniverse": "今度は自分の試写会を開く",
         "promoFree": "無料",
         "promoPrice": "$0.99",
         "promoLifetime": "人生占い",
         "promoYearly": "今年の運勢",
         "promoNextYear": "来年の運勢",
         "promoCompatibility": "相性占い",
-        "shareTitle": "ユニバースを共有する",
-        "shareButton": "共有リンクをコピー",
+        "shareTitle": "招待状を送る",
+        "shareLead": "{count}人の観客が入場しました",
+        "shareLeadEmpty": "友だちに招待状を送って、最初の観客を呼びましょう",
+        "shareButton": "招待状を送る",
         "shareCopied": "リンクをコピーしました！",
         "shareFallback": "リンクを長押ししてコピーしてください。",
-        "shareText": "私のユニバースに星として参加してね！",
-        "notFoundTitle": "存在しないユニバースです。",
+        "shareText": "私の試写会に招待します。私たちの相性は何点でしょう？",
+        "notFoundTitle": "存在しない試写会です。",
         "notFoundDescription": "リンクが正しいかもう一度ご確認ください。",
         "goHome": "ホームへ",
-        "loading": "ユニバースを読み込み中...",
-        "retry": "再試行",
-        "estimatedUniverseBanner": "この宇宙は、生まれた時間の代わりに考えられるすべての時間帯を平均して計算されています。",
-        "estimatedUniverseCaption": "平均計算のため、星がやわらかく光っています。",
-        "estimatedUniverseAria": "{title}。生まれた時間が確認できないため、この宇宙の相性結果は平均値で計算されます。",
-        "estimatedTag": "推定値",
-        "estimatedStarAria": "生まれた時間が不明なため平均で計算されています"
+        "loading": "試写会を読み込み中...",
+        "retry": "再試行"
       },
       "errors": {
         "network": "ネットワーク接続をご確認ください。",
@@ -5896,7 +7982,21 @@
       },
       "status": "{title}の上映館へ移動しています",
       "trailer": "{title} 予告編",
-      "feature": "{title} 本編"
+      "feature": "{title} 本編",
+      "payment": {
+        "checkoutTitle": "チケット売り場",
+        "confirmTitle": "チケット発券",
+        "preparing": "準備しています",
+        "waiting": {
+          "checkout1": "上映情報を読み込んでいます",
+          "checkout2": "お支払い画面を準備しています",
+          "confirm1": "お支払いを確認しています",
+          "confirm2": "チケットを発券しています",
+          "confirm3": "まもなく上映室へご案内します"
+        },
+        "long": "もう少々お待ちください",
+        "status": "{title}を準備しています"
+      }
     }
   }
 }
