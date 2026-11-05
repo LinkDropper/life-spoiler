@@ -1,90 +1,45 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { CopyToast, ShareDrawer } from "@/components/fortune";
+import { CompatibilityCharacterPoster } from "@/components/fortune/CompatibilityCharacterPoster";
+import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
+import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
+import { CompatibilityFeatureBody } from "@/components/fortune/compatibility/CompatibilityFeatureBody";
+import { EndCredits } from "@/components/fortune/screen/EndCredits";
+import { NextShow } from "@/components/fortune/screen/NextShow";
+import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import type { FortuneSceneId } from "@/libs/analytics/fortune";
 import {
-  ZiweiChartGrid,
-  SectionHeader,
-  CopyToast,
-  ShareDrawer,
-  ScenarioItem,
-  ScenarioList,
-  MarkdownContent,
-  SubSectionList,
-  OneLinerAlert,
-  ChevronIcon,
-  EventBadge,
-} from "@/components/fortune";
-import { CompatibilityProfileCard } from "@/components/fortune/CompatibilityProfileCard";
-import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
-import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
-import { CompatibilityCard } from "@/components/compatibility";
+  pickNextAfterCompatibility,
+  toCompatibilityGenre,
+} from "@/libs/fortune/compatibility-screen";
+import { useCompatibilityLeads } from "@/libs/fortune/use-compatibility-leads";
+import { getFortuneHref } from "@/libs/home/home-profile";
 import { useCompatibilityResult } from "@/libs/hooks/compatibility";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
+import { useProfileById } from "@/libs/stores/profile/provider";
 import { useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
 
-// ============================================================
-// 인사이트 아이콘 매핑
-// ============================================================
+const EXTRA_SCENE_IDS: FortuneSceneId[] = ["next", "end"];
 
-const INSIGHT_ITEMS = [
-  { key: "overall", icon: "/images/compatibility/stars-filled.svg" },
-  { key: "zodiac", icon: "/images/compatibility/paw-filled.svg" },
-  { key: "fiveElement", icon: "/images/compatibility/pentagon-filled.svg" },
-  { key: "chemistry", icon: "/images/compatibility/puzzle-filled.svg" },
-  {
-    key: "communication",
-    icon: "/images/compatibility/message-circle-filled.svg",
-  },
-  {
-    key: "growthSynergy",
-    icon: "/images/compatibility/arrow-big-up-filled.svg",
-  },
-  { key: "trustIndex", icon: "/images/compatibility/heart-filled.svg" },
-  {
-    key: "crisisResilience",
-    icon: "/images/compatibility/shield-filled.svg",
-  },
-] as const;
-
-const KEYWORD_INSIGHT_KEYS: ReadonlySet<string> = new Set([
-  "zodiac",
-  "fiveElement",
-  "chemistry",
-]);
-
-type CompatibilityCategoryKey =
-  | "communication"
-  | "growth"
-  | "emotion"
-  | "crisis";
-
-const CATEGORY_KEYS: CompatibilityCategoryKey[] = [
-  "communication",
-  "growth",
-  "emotion",
-  "crisis",
-];
-
-// ============================================================
-// 페이지 컴포넌트
-// ============================================================
-
+/** 궁합 운세 본편 = 공동 주연 영화 (기획서 §13) */
 export default function CompatibilityResultPage() {
   const router = useRouter();
   const user = useUser();
-  const tCard = useTranslations("compatibility.card");
   const tFortune = useTranslations("compatibility.fortune");
-  const tResult = useTranslations("compatibility.fortune.result");
   const tCommon = useTranslations("fortune.common");
+  const tScreen = useTranslations("fortune.screen");
+  const tC = useTranslations("fortune.screen.compatibility");
+  const tHome = useTranslations("home");
 
   const {
     isLoading,
@@ -98,27 +53,27 @@ export default function CompatibilityResultPage() {
     handleOpenShareDrawer,
     handleCloseShareDrawer,
   } = useCompatibilityResult();
+  const { leadA, leadB } = useCompatibilityLeads(result);
+  const storedProfile = useProfileById(
+    result?.charts.profileA.profileId ?? null
+  );
 
-  // 후기 드로어 상태
   const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
-  // 프로필 이미지 공유 드로어 상태
-  const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
-    useState(false);
-  const [showProfileCard, setShowProfileCard] = useState(false);
+  const [isPosterShareDrawerOpen, setIsPosterShareDrawerOpen] = useState(false);
+  const [showPosterImage, setShowPosterImage] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 프로필 카드 이미지 훅
+  // 공동 주연 포스터 이미지 훅
   const {
-    ref: profileCardRef,
-    download: downloadProfileImage,
-    toBlob: profileCardToBlob,
+    ref: posterRef,
+    download: downloadPosterImage,
+    toBlob: posterToBlob,
     isDownloading,
   } = useImageDownload({
     filename: "life_spoiler_compatibility",
     pixelRatio: 2,
   });
 
-  // cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -127,33 +82,64 @@ export default function CompatibilityResultPage() {
     };
   }, []);
 
-  const [chartAExpanded, setChartAExpanded] = useState(true);
-  const [chartBExpanded, setChartBExpanded] = useState(true);
-  const [insightsExpanded, setInsightsExpanded] = useState(true);
-  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
-  const [coreExpanded, setCoreExpanded] = useState(true);
-  const [detailExpanded, setDetailExpanded] = useState(true);
-  const [adviceExpanded, setAdviceExpanded] = useState(true);
+  const getShareUrl = useCallback(
+    () =>
+      `${window.location.origin}/compatibility/${pairId}/fortune/share?ref=${user?.id ?? ""}`,
+    [pairId, user]
+  );
+
+  const closePosterImageLater = () => {
+    timeoutRef.current = setTimeout(() => {
+      setShowPosterImage(false);
+      setIsPosterShareDrawerOpen(false);
+    }, 500);
+  };
+
+  const handlePosterDownload = async () => {
+    setShowPosterImage(true);
+    // React 렌더링이 완료될 시간을 확보
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    try {
+      await downloadPosterImage();
+    } finally {
+      closePosterImageLater();
+    }
+  };
+
+  const handlePosterShareKakao = async () => {
+    if (!result) return;
+
+    setShowPosterImage(true);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    try {
+      const blob = await posterToBlob();
+      if (!blob) {
+        alert(tC("poster.imageError"));
+        return;
+      }
+      await shareToKakaoWithImage({
+        imageBlob: blob,
+        name: `${leadA.name} × ${leadB.name}`,
+        webDomain: getShareUrl(),
+      });
+    } catch (shareError) {
+      console.error("Failed to share to Kakao with image:", shareError);
+      alert(tC("poster.shareError"));
+    } finally {
+      closePosterImageLater();
+    }
+  };
 
   if (isLoading) {
     return <Loading />;
   }
 
   if (error) {
-    const handleRefresh = () => {
-      window.location.reload();
-    };
-
-    const handleBack = () => {
-      router.push("/compatibility");
-    };
-
     return (
       <div className={styles.page}>
         <HeaderClient />
-        <main className={styles.main}>
-          <div className={styles.error}>
-            <div className={styles.errorIcon}>❌</div>
+        <main className={`${screen.root} ${styles.main}`}>
+          <div className={styles.error} role="alert">
             <h2 className={styles.errorTitle}>{tFortune("errorTitle")}</h2>
             <p className={styles.errorDescription}>
               {tFortune("errorDescription")}
@@ -161,15 +147,15 @@ export default function CompatibilityResultPage() {
             <div className={styles.errorButtons}>
               <button
                 type="button"
-                className={styles.refreshButton}
-                onClick={handleRefresh}
+                className={screen.primaryButton}
+                onClick={() => window.location.reload()}
               >
                 {tFortune("refresh")}
               </button>
               <button
                 type="button"
-                className={styles.errorBackButton}
-                onClick={handleBack}
+                className={screen.ghostButton}
+                onClick={() => router.push("/compatibility")}
               >
                 {tFortune("back")}
               </button>
@@ -184,20 +170,9 @@ export default function CompatibilityResultPage() {
     return null;
   }
 
-  const { interpretation, charts, subScores } = result;
-  const nameA = charts.profileA.name;
-  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
-  const nameB = charts.profileB.name;
-
-  const scoreBadgeText = `${tFortune("score")} ${result.score}${tCard("scoreUnit")}`;
-  const profileCardLabels = {
-    communication: tFortune("insights.communication"),
-    growthSynergy: tFortune("insights.growthSynergy"),
-    trustIndex: tFortune("insights.trustIndex"),
-    crisisResilience: tFortune("insights.crisisResilience"),
-  };
-
-  const shareUrl = `${window.location.origin}/compatibility/${pairId}/fortune/share?ref=${user?.id ?? ""}`;
+  const { interpretation, charts, subScores, score } = result;
+  const genre = toCompatibilityGenre(relationshipType);
+  const nextKey = pickNextAfterCompatibility(storedProfile ?? null);
 
   // 카카오톡 공유용 짧은 설명 (신구조 oneLiner 우선, 레거시 spoiler 폴백)
   const overviewBlurb =
@@ -206,300 +181,111 @@ export default function CompatibilityResultPage() {
     interpretation.spoiler ||
     "";
 
-  // 카카오톡 공유 핸들러
   const handleShareKakao = () => {
     shareToKakao({
       title: interpretation.headline,
       description: overviewBlurb,
-      name: `${nameA} × ${nameB}`,
-      webDomain: shareUrl,
+      name: `${leadA.name} × ${leadB.name}`,
+      webDomain: getShareUrl(),
     });
     handleCloseShareDrawer();
   };
 
-  // 프로필 이미지 다운로드 핸들러
-  const handleProfileDownloadImage = async () => {
-    setShowProfileCard(true);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    try {
-      await downloadProfileImage();
-    } finally {
-      timeoutRef.current = setTimeout(() => {
-        setShowProfileCard(false);
-        setIsProfileShareDrawerOpen(false);
-      }, 500);
-    }
-  };
-
-  // 프로필 이미지 카카오톡 공유 핸들러
-  const handleProfileShareKakao = async () => {
-    setShowProfileCard(true);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    try {
-      const blob = await profileCardToBlob();
-      if (!blob) {
-        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
-        return;
-      }
-
-      await shareToKakaoWithImage({
-        imageBlob: blob,
-        name: `${nameA} × ${nameB}`,
-        webDomain: shareUrl,
-      });
-    } catch (err) {
-      console.error("Failed to share to Kakao with image:", err);
-      alert("공유에 실패했습니다. 다시 시도해주세요.");
-    } finally {
-      timeoutRef.current = setTimeout(() => {
-        setShowProfileCard(false);
-        setIsProfileShareDrawerOpen(false);
-      }, 500);
-    }
-  };
+  const renderPoster = (isImage: boolean) => (
+    <CompatibilityCharacterPoster
+      ref={isImage ? posterRef : undefined}
+      leadA={{
+        name: leadA.name,
+        starKey: leadA.starKey,
+        starLabel: leadA.leadStar,
+      }}
+      leadB={{
+        name: leadB.name,
+        starKey: leadB.starKey,
+        starLabel: leadB.leadStar,
+      }}
+      genre={genre}
+      score={score}
+      headline={interpretation.headline}
+      tags={interpretation.tags}
+      subScores={subScores}
+      isImage={isImage}
+      onShareClick={() => setIsPosterShareDrawerOpen(true)}
+    />
+  );
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={styles.main}>
-        {/* 섹션 1: 프로필 요약 카드 */}
-        <CompatibilityCard
-          nameA={nameA}
-          nameB={nameB}
-          score={result.score}
-          relationshipType={relationshipType ?? undefined}
-        />
-
-        {/* 섹션 2: 메인 결과 카드 */}
-        <CompatibilityProfileCard
-          score={result.score}
-          scoreBadgeText={scoreBadgeText}
-          headline={interpretation.headline}
-          tags={interpretation.tags}
+      <main className={`${screen.root} ${styles.main}`}>
+        <CompatibilityFeatureBody
+          leadA={leadA}
+          leadB={leadB}
+          score={score}
           subScores={subScores}
-          labels={profileCardLabels}
-          isImage={false}
-          onShareClick={() => setIsProfileShareDrawerOpen(true)}
+          interpretation={interpretation}
+          surface="owner"
+          extraSceneIds={EXTRA_SCENE_IDS}
+          poster={<div className={styles.posterTop}>{renderPoster(false)}</div>}
         />
 
-        {/* 섹션 3: A의 자미두수 명반 */}
-        <SectionHeader
-          title={tFortune("chartTitle", { name: nameA })}
-          expanded={chartAExpanded}
-          onToggle={() => setChartAExpanded(!chartAExpanded)}
-        />
-        {chartAExpanded && charts.profileA.rawChart && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={charts.profileA.rawChart}
-              profileName={nameA}
-              wuxingJu={charts.profileA.chart.wuxingJu}
-            />
-          </section>
+        {nextKey && (
+          <NextShow
+            href={getFortuneHref(storedProfile ?? null, nextKey)}
+            kicker={tScreen(`yearly.next.kicker.${nextKey}`, {
+              year: new Date().getFullYear() + 1,
+            })}
+            name={tHome(`${nextKey}.title`)}
+            body={tC(`next.body.${nextKey}`, { name: leadA.name })}
+            button={tScreen("yearly.next.button")}
+            fortuneType="compatibility"
+            nextType={nextKey}
+          />
         )}
 
-        {/* 섹션 4: B의 자미두수 명반 */}
-        <SectionHeader
-          title={tFortune("chartTitle", { name: nameB })}
-          expanded={chartBExpanded}
-          onToggle={() => setChartBExpanded(!chartBExpanded)}
-        />
-        {chartBExpanded && charts.profileB.rawChart && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={charts.profileB.rawChart}
-              profileName={nameB}
-              wuxingJu={charts.profileB.chart.wuxingJu}
-            />
-          </section>
-        )}
-
-        {/* 섹션 5: 궁합 인사이트 (8개 전체 노출) */}
-        <SectionHeader
-          title={tFortune("insightsTitle")}
-          expanded={insightsExpanded}
-          onToggle={() => setInsightsExpanded(!insightsExpanded)}
-        />
-        {insightsExpanded && (
-          <section className={styles.insightsContainer}>
-            <div className={styles.insightsList}>
-              {INSIGHT_ITEMS.map((item) => {
-                const insight = interpretation.insights[item.key];
-                const insightLabel = tFortune(`insights.${item.key}`);
-                const value = KEYWORD_INSIGHT_KEYS.has(item.key)
-                  ? insight.label || "???"
-                  : tFortune("scoreUnit", { score: insight.score });
-                return (
-                  <div key={item.key} className={styles.insightItem}>
-                    <Image
-                      src={item.icon}
-                      alt={insightLabel}
-                      width={20}
-                      height={20}
-                      className={styles.insightIcon}
-                    />
-                    <span className={styles.insightLabel}>{insightLabel}</span>
-                    <hr className={styles.insightDivider} />
-                    <span className={styles.insightValue}>{value}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* 섹션 6: 궁합 스포일러 */}
-        <SectionHeader
-          title={tFortune("spoilerTitle")}
-          expanded={spoilerExpanded}
-          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
-        />
-        {spoilerExpanded && (
-          <section className={styles.spoilerContent}>
-            <h2 className={styles.spoilerHeadline}>
-              {interpretation.headline}
-            </h2>
-            {interpretation.overviewSubSections &&
-            interpretation.overviewSubSections.length > 0 ? (
-              <>
-                <SubSectionList items={interpretation.overviewSubSections} />
-                {interpretation.overviewOneLiner && (
-                  <OneLinerAlert
-                    text={interpretation.overviewOneLiner}
-                    label={oneLinerLabel}
-                  />
-                )}
-              </>
-            ) : (
-              interpretation.spoiler && (
-                <MarkdownContent className={styles.spoilerText}>
-                  {interpretation.spoiler}
-                </MarkdownContent>
-              )
-            )}
-          </section>
-        )}
-
-        {/* 섹션 7: 핵심 시나리오 */}
-        <SectionHeader
-          title={tResult("coreScenarioTitle")}
-          expanded={coreExpanded}
-          onToggle={() => setCoreExpanded(!coreExpanded)}
-        />
-        {coreExpanded && interpretation.coreScenarios.length > 0 && (
-          <section className={styles.section}>
-            <ScenarioList>
-              {interpretation.coreScenarios.map((scenario, idx) => (
-                <ScenarioItem
-                  key={idx}
-                  label={`${idx + 1}`}
-                  headline={scenario.title}
-                  content={scenario.content}
-                  subSections={scenario.subSections}
-                  oneLiner={scenario.oneLiner}
-                  oneLinerLabel={oneLinerLabel}
-                />
-              ))}
-            </ScenarioList>
-          </section>
-        )}
-
-        {/* 섹션 8: 상세 시나리오 */}
-        <SectionHeader
-          title={tResult("detailScenarioTitle")}
-          expanded={detailExpanded}
-          onToggle={() => setDetailExpanded(!detailExpanded)}
-        />
-        {detailExpanded && (
-          <section className={styles.section}>
-            <div className={styles.categoriesContainer}>
-              {CATEGORY_KEYS.map((key) => {
-                const category = interpretation.categories[key];
-                return (
-                  <CompatibilityCategoryItem
-                    key={key}
-                    label={tResult(`categories.${key}`)}
-                    headline={category.headline}
-                    content={category.content}
-                    subSections={category.subSections}
-                    oneLiner={category.oneLiner}
-                    oneLinerLabel={oneLinerLabel}
-                    tags={category.tags}
-                  />
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* 섹션 9: 종합 조언 */}
-        <SectionHeader
-          title={tResult("adviceTitle")}
-          expanded={adviceExpanded}
-          onToggle={() => setAdviceExpanded(!adviceExpanded)}
-        />
-        {adviceExpanded && (
-          <section className={styles.section}>
-            {interpretation.adviceSubSections &&
-            interpretation.adviceSubSections.length > 0 ? (
-              <>
-                <SubSectionList items={interpretation.adviceSubSections} />
-                {interpretation.adviceOneLiner && (
-                  <OneLinerAlert
-                    text={interpretation.adviceOneLiner}
-                    label={oneLinerLabel}
-                  />
-                )}
-              </>
-            ) : (
-              interpretation.advice && (
-                <MarkdownContent className={styles.adviceContent}>
-                  {interpretation.advice}
-                </MarkdownContent>
-              )
-            )}
-          </section>
-        )}
-      </main>
-
-      {/* 하단 버튼 */}
-      <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.reviewButton}
-          onClick={() => setIsReviewDrawerOpen(true)}
+        <EndCredits
+          name={`${leadA.name} · ${leadB.name}`}
+          rows={[
+            { label: "GENRE", value: tC(`genre.${genre}`) },
+            { label: "CHEMISTRY", value: String(score) },
+            {
+              label: "ORIGINAL",
+              value: `${charts.profileA.chart.wuxingJu} · ${charts.profileB.chart.wuxingJu}`,
+            },
+          ]}
         >
-          {tResult("reviewButton", { default: "후기 남기기" })}
-        </button>
-        <div className={styles.shareButtonWrapper}>
-          <EventBadge />
+          {interpretation.overviewOneLiner && (
+            <p className={screen.sectionDesc}>
+              “{interpretation.overviewOneLiner}”
+            </p>
+          )}
           <button
             type="button"
-            className={styles.shareButton}
+            className={screen.primaryButton}
             onClick={handleOpenShareDrawer}
           >
-            {tResult("shareButton")}
+            {tScreen("credits.share")}
           </button>
-        </div>
-      </footer>
+          <button
+            type="button"
+            className={screen.ghostButton}
+            onClick={() => setIsReviewDrawerOpen(true)}
+          >
+            {tScreen("credits.review")}
+          </button>
+        </EndCredits>
+      </main>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
       <FollowUpEntry
         profileId={charts.profileA.profileId}
         pairId={pairId}
         fortuneType="compatibility"
-        fortuneName="궁합"
-        examplePrompts={[
-          "어떻게 갈등을 풀어야 할까?",
-          "장기적으로 잘 맞을까?",
-          "서로 조심할 점은?",
-        ]}
+        fortuneName={tC("followUp.name")}
+        examplePrompts={tC.raw("followUp.prompts") as string[]}
       />
 
-      {/* 후기 드로어 */}
       <ReviewDrawer
         isOpen={isReviewDrawerOpen}
         onClose={() => setIsReviewDrawerOpen(false)}
@@ -507,7 +293,6 @@ export default function CompatibilityResultPage() {
         fortuneType="compatibility"
       />
 
-      {/* 공유 드로어 */}
       <ShareDrawer
         isOpen={isShareDrawerOpen}
         onClose={handleCloseShareDrawer}
@@ -519,20 +304,19 @@ export default function CompatibilityResultPage() {
         isDownloading={isDownloading}
       />
 
-      {/* 프로필 이미지 공유 드로어 */}
       <ShareDrawer
-        isOpen={isProfileShareDrawerOpen}
-        onClose={() => setIsProfileShareDrawerOpen(false)}
-        title={tResult("profileShareTitle")}
+        isOpen={isPosterShareDrawerOpen}
+        onClose={() => setIsPosterShareDrawerOpen(false)}
+        title={tC("poster.shareTitle")}
         showCopyLink={false}
         showLine={false}
-        onShareKakao={handleProfileShareKakao}
-        onDownloadImage={handleProfileDownloadImage}
+        onShareKakao={handlePosterShareKakao}
+        onDownloadImage={handlePosterDownload}
         isDownloading={isDownloading}
       />
 
-      {/* 이미지 생성용 숨겨진 프로필 카드 */}
-      {showProfileCard && (
+      {/* 이미지 생성용 숨겨진 공동 주연 포스터 (375×667) */}
+      {showPosterImage && (
         <div
           style={{
             position: "fixed",
@@ -542,152 +326,11 @@ export default function CompatibilityResultPage() {
             pointerEvents: "none",
           }}
         >
-          <CompatibilityProfileCard
-            ref={profileCardRef}
-            isImage={true}
-            score={result.score}
-            scoreBadgeText={scoreBadgeText}
-            headline={interpretation.headline}
-            tags={interpretation.tags}
-            subScores={subScores}
-            labels={profileCardLabels}
-          />
+          {renderPoster(true)}
         </div>
       )}
 
-      {/* 복사 완료 토스트 */}
       {showCopyToast && <CopyToast message={tCommon("copySuccess")} />}
     </div>
   );
 }
-
-// ============================================================
-// 궁합 카테고리 아이템 (인라인 컴포넌트)
-// ============================================================
-
-interface CompatibilityCategoryItemProps {
-  label: string;
-  headline: string;
-  content?: string;
-  subSections?: { heading: string; body: string }[];
-  oneLiner?: string;
-  oneLinerLabel?: string;
-  tags: string[];
-}
-
-const CompatibilityCategoryItem = ({
-  label,
-  headline,
-  content,
-  subSections,
-  oneLiner,
-  oneLinerLabel,
-  tags,
-}: CompatibilityCategoryItemProps) => {
-  const [expanded, setExpanded] = useState(true);
-  const hasStructured = !!subSections && subSections.length > 0;
-
-  return (
-    <div>
-      <button
-        type="button"
-        onClick={() => setExpanded(!expanded)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          padding: 0,
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          textAlign: "left",
-        }}
-      >
-        <span
-          style={{
-            fontSize: 18,
-            fontWeight: 700,
-            color: "#ffffff",
-            letterSpacing: 0.5,
-          }}
-        >
-          {label}
-        </span>
-        <ChevronIcon expanded={expanded} size="small" />
-      </button>
-      {expanded && (
-        <>
-          {headline && (
-            <h4
-              style={{
-                fontSize: 18,
-                fontWeight: 600,
-                color: "#ffffff",
-                margin: "16px 0 0 0",
-                lineHeight: 1.4,
-                letterSpacing: 0.5,
-              }}
-            >
-              {headline}
-            </h4>
-          )}
-          {hasStructured ? (
-            <div style={{ marginTop: 16 }}>
-              <SubSectionList items={subSections!} />
-            </div>
-          ) : (
-            content && (
-              <MarkdownContent
-                style={{
-                  fontSize: 18,
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  color: "rgba(255, 255, 255, 0.7)",
-                  margin: "16px 0 0 0",
-                  letterSpacing: 0.5,
-                }}
-              >
-                {content}
-              </MarkdownContent>
-            )
-          )}
-          {oneLiner && (
-            <div style={{ marginTop: 16 }}>
-              <OneLinerAlert text={oneLiner} label={oneLinerLabel} />
-            </div>
-          )}
-          {tags.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 8,
-                marginTop: 16,
-              }}
-            >
-              {tags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "2px 6px",
-                    background: "rgba(255, 255, 255, 0.08)",
-                    borderRadius: 4,
-                    fontSize: 16,
-                    fontWeight: 400,
-                    color: "rgba(255, 255, 255, 0.7)",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-};

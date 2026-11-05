@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import type { Locale } from "@/i18n/config";
+import { SITE_NAME, SITE_URL } from "@/libs/seo/site";
 import { createServerClient } from "@/libs/supabase/client";
 import type {
   Database,
@@ -13,8 +15,6 @@ import { removeEmoji } from "@/libs/utils/text";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 type SupabaseDB = SupabaseClient<Database>;
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://life-spoiler.com";
 
 export async function generateMetadata({
   params,
@@ -120,7 +120,7 @@ export async function generateMetadata({
       type: "website",
       locale: locale === "ko" ? "ko_KR" : locale === "ja" ? "ja_JP" : "en_US",
       url: pageUrl,
-      siteName: "인생스포",
+      siteName: SITE_NAME[locale as Locale] ?? SITE_NAME.ko,
       title: ogTitle,
       description: ogDescription,
       images: [
