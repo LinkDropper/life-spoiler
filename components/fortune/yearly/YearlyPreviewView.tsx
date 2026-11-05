@@ -1,26 +1,32 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { ChevronLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef } from "react";
 
+import { MarkdownContent } from "@/components/fortune";
+import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
+import { FeatureLocks } from "@/components/fortune/screen/FeatureLocks";
+import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
+import { TrailerTimeline } from "@/components/fortune/screen/TrailerTimeline";
+import { YearFlowSection } from "@/components/fortune/screen/YearFlowSection";
+import { YearPoster } from "@/components/fortune/screen/YearPoster";
+import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
+import { trackFortuneEvent } from "@/libs/analytics/fortune";
+import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import {
-  ProfileInfo,
-  ZiweiChartGrid,
-  SectionHeader,
-  YearlyInsightsCard,
-  MarkdownContent,
-  SubSectionList,
-  OneLinerAlert,
-} from "@/components/fortune";
+  buildMonthLens,
+  formatYearGanji,
+  getYearFlow,
+} from "@/libs/fortune/yearly-screen";
 import type { YearlyEdition } from "@/libs/fortune/yearly-editions";
 import { useYearlyPreview } from "@/libs/hooks/fortune";
 import {
   useFirstPaymentEligibility,
   toEventPriceText,
 } from "@/libs/hooks/payment";
-import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
 
 import styles from "./YearlyPreviewView.module.css";
@@ -29,11 +35,19 @@ interface YearlyPreviewViewProps {
   edition: YearlyEdition;
 }
 
+/** 본편에서 열리는 장면 (올해·내년 공통) */
+const LOCKED_SCENES = ["act2", "act3", "act4", "bonus"] as const;
+
+/**
+ * 올해·내년 운세 예고편 (기획서 §10).
+ * 연도 포스터 → 러닝타임(12개월) → 올해의 흐름(조심할 달 가림) → 명반 → 예고편 타임라인 → 본편에서 상영돼요 → 결제 바
+ */
 export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
   const locale = useLocale() as Locale;
   const tCommon = useTranslations("fortune.common");
-  const tPreview = useTranslations("fortune.preview");
   const tYearly = useTranslations("fortune.yearly");
+  const t = useTranslations("fortune.screen");
+  const tY = useTranslations("fortune.screen.yearly");
 
   const {
     isLoading,
@@ -53,19 +67,23 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
   });
 
   const firstPaymentEligible = useFirstPaymentEligibility(profile?.id, edition);
+  const cast = useScreenCast(result?.rawChart ?? null);
 
-  const [chartExpanded, setChartExpanded] = useState(true);
-  const [insightsExpanded, setInsightsExpanded] = useState(true);
-  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
-
-  // 행운 키워드 인사이트 (12개월치 계산이 무거우므로 result 변경 시에만 재계산)
-  const insights = useMemo(
-    () =>
-      result
-        ? calculateYearlyInsights(result.rawChart, currentYear, locale)
-        : null,
-    [result, currentYear, locale]
+  // 12개월 계산이 무거우므로 명반·연도가 바뀔 때만
+  const flow = useMemo(
+    () => (result ? getYearFlow(result.rawChart, currentYear) : null),
+    [result, currentYear]
   );
+  const lens = useMemo(() => buildMonthLens(currentYear), [currentYear]);
+
+  const hasTrackedViewRef = useRef(false);
+  useEffect(() => {
+    if (!result || hasTrackedViewRef.current) {
+      return;
+    }
+    hasTrackedViewRef.current = true;
+    trackFortuneEvent("fortune_preview_view", { fortune_type: edition });
+  }, [result, edition]);
 
   if (isLoading) {
     return <Loading />;
@@ -79,28 +97,21 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
     return (
       <div className={styles.page}>
         <HeaderClient />
-        <main className={styles.main}>
-          <div className={styles.error}>
-            <div className={styles.errorIcon}>⏳</div>
-            <h2 className={styles.errorTitle}>
-              일시적으로 접속이 원활하지 않아요
-            </h2>
-            <p className={styles.errorDescription}>
-              현재 이용자가 많아 운세 생성에 실패했어요.
-              <br />
-              잠시 후 다시 시도해 주세요.
-            </p>
+        <main className={`${screen.root} ${styles.main}`}>
+          <div className={styles.error} role="alert">
+            <h2 className={styles.errorTitle}>{t("error.title")}</h2>
+            <p className={styles.errorDescription}>{t("error.desc")}</p>
             <div className={styles.errorButtons}>
               <button
                 type="button"
-                className={styles.refreshButton}
+                className={screen.primaryButton}
                 onClick={handleRefresh}
               >
-                새로고침
+                {t("error.refresh")}
               </button>
               <button
                 type="button"
-                className={styles.backButton}
+                className={screen.ghostButton}
                 onClick={handleBack}
               >
                 {tCommon("backToProfiles")}
@@ -112,130 +123,138 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
     );
   }
 
-  if (!result || !profile) {
+  if (!result || !profile || !flow) {
     return null;
   }
 
   const { interpretation, rawChart, yearlySihua } = result;
+  const { overview } = interpretation;
+  const subSections = overview.subSections ?? [];
+  const ganji = formatYearGanji(currentYear, locale);
+  const nowMonth = lens.mode === "current" ? lens.focusMonth : null;
+  const runtimeMonth = nowMonth ?? (lens.mode === "past" ? 12 : 0);
+
+  const handlePayClick = () => {
+    trackFortuneEvent("fortune_preview_cta_click", {
+      fortune_type: edition,
+      first_payment: firstPaymentEligible,
+    });
+    handlePayment();
+  };
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={styles.main}>
-        {/* 프로필 정보 */}
-        <ProfileInfo
-          name={profile.name}
-          fortuneType={edition}
-          year={currentYear}
-          birthDate={profile.birth_date}
-          birthTime={profile.birth_time}
-          birthTimeUnknown={profile.birth_time_unknown}
-          calendarType={profile.calendar_type}
-          gender={profile.gender}
-        />
+      <main className={`${screen.root} ${styles.main}`}>
+        <div className={styles.bleed}>
+          <YearPoster
+            name={profile.name}
+            year={currentYear}
+            ganji={ganji}
+            title={overview.headline}
+            tagline={overview.oneLiner}
+            tags={(overview.keywords ?? []).slice(0, 3)}
+            leadStar={cast.leadStar}
+            flow={flow}
+            nowMonth={nowMonth}
+          />
+        </div>
 
-        {/* 자미두수 명반 섹션 헤더 */}
-        <SectionHeader
-          title={tPreview("chartTitle")}
-          expanded={chartExpanded}
-          onToggle={() => setChartExpanded(!chartExpanded)}
-        />
-
-        {/* 명반 그리드 */}
-        {chartExpanded && rawChart && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={rawChart}
-              profileName={profile.name}
-              wuxingJu={result.chart.wuxingJu}
-              yearlySihua={yearlySihua}
-              interactive={false}
+        <section className={screen.runtime}>
+          <div className={screen.runtimeHead}>
+            <span className={screen.runtimeLabel}>RUNNING TIME</span>
+            <span className={screen.runtimeAge}>
+              {t.rich("yearly.runtime.month", {
+                month: runtimeMonth,
+                b: (chunks) => <b>{chunks}</b>,
+              })}
+            </span>
+          </div>
+          <div className={screen.track} aria-hidden="true">
+            <span className={screen.trackRail} />
+            <span
+              className={screen.trackFill}
+              style={{ width: `${(runtimeMonth / 12) * 100}%` }}
             />
-          </section>
+            <span
+              className={screen.trackHead}
+              style={{ left: `${(runtimeMonth / 12) * 100}%` }}
+            />
+          </div>
+          <p className={screen.runtimeNote}>
+            {t.rich(`yearly.runtime.note.${lens.mode}`, {
+              month: lens.focusMonth,
+              year: currentYear,
+              b: (chunks) => <b>{chunks}</b>,
+            })}
+          </p>
+        </section>
+
+        <YearFlowSection flow={flow} lens={lens} year={currentYear} isPreview />
+
+        <section className={screen.section}>
+          <p className={screen.eyebrow}>ORIGINAL</p>
+          <h2 className={screen.sectionTitle}>{t("chart.title")}</h2>
+          <p className={screen.sectionDesc}>{tY("chart.previewDesc")}</p>
+          <ChartConstellation
+            chart={rawChart}
+            profileName={profile.name}
+            wuxingJu={result.chart.wuxingJu}
+            stars={cast.stars}
+            yearlySihua={yearlySihua}
+            interactive={false}
+          />
+        </section>
+
+        {subSections.length > 0 ? (
+          <TrailerTimeline items={subSections} />
+        ) : (
+          overview.summary && (
+            <section className={screen.section}>
+              <p className={screen.eyebrow}>TRAILER</p>
+              <MarkdownContent className={screen.prose}>
+                {overview.summary}
+              </MarkdownContent>
+            </section>
+          )
+        )}
+        {overview.oneLiner && (
+          <SubtitleStill
+            label={tCommon("oneLinerLabel")}
+            text={overview.oneLiner}
+          />
         )}
 
-        {/* 행운 키워드 섹션 */}
-        <SectionHeader
-          title={tYearly("luckyKeywordsTitle")}
-          expanded={insightsExpanded}
-          onToggle={() => setInsightsExpanded(!insightsExpanded)}
+        <FeatureLocks
+          scenes={LOCKED_SCENES.map((scene) => ({
+            act: tY(`feature.${scene}.act`),
+            title: tY(`feature.${scene}.title`),
+            desc: tY(`feature.${scene}.desc`),
+          }))}
+          spoilerTitle={tY("feature.spoilerTitle", { month: lens.focusMonth })}
+          spoilerHint={tY("feature.spoilerHint")}
         />
-
-        {insights && insightsExpanded && (
-          <section className={styles.blurredSection}>
-            <YearlyInsightsCard insights={insights} preview />
-          </section>
-        )}
-
-        {/* 올해 스포일러 섹션 헤더 */}
-        <SectionHeader
-          title={tPreview("yearlySpoilerTitle")}
-          expanded={spoilerExpanded}
-          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
-        />
-
-        {/* 미리보기 텍스트 */}
-        {spoilerExpanded && (
-          <section className={styles.previewContent}>
-            <h2 className={styles.previewHeadline}>
-              {interpretation.overview.headline}
-            </h2>
-            {interpretation.overview.subSections &&
-            interpretation.overview.subSections.length > 0 ? (
-              <>
-                <SubSectionList items={interpretation.overview.subSections} />
-                {interpretation.overview.oneLiner && (
-                  <OneLinerAlert
-                    text={interpretation.overview.oneLiner}
-                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
-                  />
-                )}
-              </>
-            ) : (
-              interpretation.overview.summary && (
-                <MarkdownContent className={styles.previewDescription}>
-                  {interpretation.overview.summary}
-                </MarkdownContent>
-              )
-            )}
-            <p className={styles.previewTeaser}>{tPreview("yearlyTeaser")}</p>
-          </section>
-        )}
       </main>
 
-      {/* 하단 CTA */}
       <footer className={styles.footer}>
         <button
           type="button"
-          className={styles.shareButton}
+          className={styles.backButton}
           onClick={handleBack}
-          aria-label={tCommon("back")}
+          aria-label={t("pay.back")}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M15.5303 5.46967C15.8232 5.76256 15.8232 6.23744 15.5303 6.53033L10.0607 12L15.5303 17.4697C15.8232 17.7626 15.8232 18.2374 15.5303 18.5303C15.2374 18.8232 14.7626 18.8232 14.4697 18.5303L8.46967 12.5303C8.17678 12.2374 8.17678 11.7626 8.46967 11.4697L14.4697 5.46967C14.7626 5.17678 15.2374 5.17678 15.5303 5.46967Z"
-              fill="#18181B"
-            />
-          </svg>
+          <ChevronLeft size={24} aria-hidden="true" />
         </button>
         <button
           type="button"
           className={styles.paymentButton}
-          onClick={handlePayment}
-          disabled={!!error || !isAIGenerated}
+          onClick={handlePayClick}
+          disabled={!isAIGenerated}
         >
           {firstPaymentEligible
-            ? toEventPriceText(tPreview("ctaButton"))
-            : tPreview("ctaButton")}
+            ? toEventPriceText(t("pay.button"))
+            : t("pay.button")}
         </button>
       </footer>
     </div>
