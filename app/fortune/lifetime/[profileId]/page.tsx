@@ -7,20 +7,10 @@ import { useTranslations, useLocale } from "next-intl";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import {
-  ProfileInfo,
-  ZiweiChartGrid,
-  SectionHeader,
-  CategoryItem,
-  ScenarioItem,
-  ScenarioList,
   MarkdownContent,
-  SubSectionList,
-  OneLinerAlert,
   CopyToast,
   ErrorState,
   ShareDrawer,
-  KeywordGrid,
-  EventBadge,
   type CategoryKey,
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
@@ -28,7 +18,24 @@ import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
 import NewProfileCard from "@/components/fortune/NewProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
-import EventSection from "@/components/landing/EventSection";
+import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
+import { AgeLens, toAgeSceneId } from "@/components/fortune/screen/AgeLens";
+import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
+import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
+import { EndCredits } from "@/components/fortune/screen/EndCredits";
+import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
+import { NextShow } from "@/components/fortune/screen/NextShow";
+import { NumberedSections } from "@/components/fortune/screen/NumberedSections";
+import { RatingBoard } from "@/components/fortune/screen/RatingBoard";
+import type { RatingItem } from "@/components/fortune/screen/RatingBoard";
+import { ScreenPlayer } from "@/components/fortune/screen/ScreenPlayer";
+import type { PlayerScene } from "@/components/fortune/screen/ScreenPlayer";
+import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
+import screen from "@/components/fortune/screen/screen.module.css";
+import type { FortuneSceneId } from "@/libs/analytics/fortune";
+import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
+import { useScreenCast } from "@/libs/fortune/use-screen-cast";
+import { getFilmAge } from "@/libs/home/home-film";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import type {
   FortuneInterpretation,
@@ -37,10 +44,7 @@ import type {
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
 import { useUser } from "@/libs/stores/user";
-import {
-  extractKeywordsFromChart,
-  extractOneLinerFromChart,
-} from "@/libs/zi-wei-dou-shu/calculators";
+import { extractKeywordsFromChart } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
 
 import styles from "./page.module.css";
@@ -52,12 +56,9 @@ const CATEGORY_KEYS: CategoryKey[] = [
   "health",
 ];
 
-const DEFAULT_LABELS: Record<CategoryKey, string> = {
-  wealth: "재물운",
-  career: "직업운",
-  relationship: "인연운",
-  health: "건강운",
-};
+const ACT_IDS = ["act1", "act2", "act3", "act4"] as const;
+
+const EXTRA_SCENE_IDS: FortuneSceneId[] = ["next", "end"];
 
 /**
  * profileTraits 존재 여부 타입 가드
@@ -76,7 +77,7 @@ export default function LifetimeFortunePage() {
   const user = useUser();
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
-  const tPreview = useTranslations("fortune.preview");
+  const tScreen = useTranslations("fortune.screen");
   const tStory = useTranslations("fortune.instagramStory");
 
   const {
@@ -97,12 +98,6 @@ export default function LifetimeFortunePage() {
         default: "알 수 없는 오류가 발생했습니다.",
       }),
   });
-
-  const [chartExpanded, setChartExpanded] = useState(true);
-  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
-  const [coreExpanded, setCoreExpanded] = useState(true);
-  const [detailExpanded, setDetailExpanded] = useState(true);
-  const [ageExpanded, setAgeExpanded] = useState(true);
 
   // 후기 드로어 상태
   const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
@@ -140,11 +135,12 @@ export default function LifetimeFortunePage() {
     return extractKeywordsFromChart(result.rawChart, locale);
   }, [result?.rawChart, locale]);
 
-  // 한줄 표현 추출 (명궁 대표 주성 기반)
-  const oneLiner = useMemo(() => {
-    if (!result?.rawChart) return null;
-    return extractOneLinerFromChart(result.rawChart, locale);
-  }, [result?.rawChart, locale]);
+  const cast = useScreenCast(result?.rawChart ?? null);
+
+  const scenes = useMemo<PlayerScene[]>(
+    () => ACT_IDS.map((id) => ({ id, label: tScreen(`acts.${id}.chip`) })),
+    [tScreen]
+  );
 
   // 프로필 이미지 다운로드 핸들러
   const handleProfileDownloadImage = useCallback(async () => {
@@ -241,6 +237,16 @@ export default function LifetimeFortunePage() {
   }
 
   const { interpretation, rawChart } = result;
+  const { lifeSpoiler, coreScenario, categories, ageScenarios } =
+    interpretation;
+  const age = getFilmAge(profile.birth_date);
+  const ageLens =
+    ageScenarios.length > 0
+      ? buildAgeLens(
+          ageScenarios.map((scenario) => scenario.period),
+          age
+        )
+      : null;
 
   // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
   const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
@@ -248,10 +254,10 @@ export default function LifetimeFortunePage() {
 
   // 인스타 스토리용 점수
   const storyScores = {
-    wealth: interpretation.categories.wealth.score ?? 0,
-    career: interpretation.categories.career.score ?? 0,
-    relationship: interpretation.categories.relationship.score ?? 0,
-    health: interpretation.categories.health.score ?? 0,
+    wealth: categories.wealth.score ?? 0,
+    career: categories.career.score ?? 0,
+    relationship: categories.relationship.score ?? 0,
+    health: categories.health.score ?? 0,
   };
 
   // 인스타 스토리용 레이블
@@ -265,240 +271,174 @@ export default function LifetimeFortunePage() {
     },
   };
 
-  // 한 줄 정리 alert 라벨 (i18n)
+  const ratingItems: RatingItem[] = CATEGORY_KEYS.map((key) => ({
+    key,
+    label: t(`categories.${key}`),
+    score: storyScores[key],
+    review: categories[key].headline,
+  }));
+
+  // 한 줄 정리 라벨 (i18n)
   const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
+
+  const renderActIntertitle = (id: (typeof ACT_IDS)[number]) => (
+    <ActIntertitle
+      id={id}
+      act={`ACT ${ACT_IDS.indexOf(id) + 1}`}
+      title={tScreen(`acts.${id}.title`)}
+      sub={tScreen(`acts.${id}.sub`)}
+    />
+  );
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={styles.main}>
-        {/* 프로필 정보 */}
-        <ProfileInfo
-          name={profile.name}
-          fortuneType="lifetime"
-          birthDate={profile.birth_date}
-          birthTime={profile.birth_time}
-          birthTimeUnknown={profile.birth_time_unknown}
-          calendarType={profile.calendar_type}
-          gender={profile.gender}
-        />
-
-        <div style={{ width: "100%", height: 16 }} />
-
-        {hasProfileTraits(interpretation) ? (
-          <NewProfileCard
-            mainStars={mainStarNames}
-            headline={interpretation.lifeSpoiler.headline}
-            profileTraits={interpretation.profileTraits}
-            isImage={false}
-            onShareClick={() => setIsProfileShareDrawerOpen(true)}
+      <main className={`${screen.root} ${styles.main}`}>
+        <div className={styles.bleed}>
+          <FilmPoster
+            variant="feature"
+            title={lifeSpoiler.headline}
+            tagline={lifeSpoiler.oneLiner}
+            name={profile.name}
+            leadStar={cast.leadStar}
+            wuxingJu={result.chart.wuxingJu}
+            stars={cast.stars}
+            starLabels={cast.starLabels}
           />
-        ) : (
-          <LifetimeProfileCard
-            mainStars={mainStarNames}
-            headline={interpretation.lifeSpoiler.headline}
-            description={interpretation.lifeSpoiler.description}
-            scores={storyScores}
-            labels={storyLabels}
-            isImage={false}
-            onShareClick={() => setIsProfileShareDrawerOpen(true)}
-          />
-        )}
-
-        {/* 자미두수 명반 섹션 */}
-        <SectionHeader
-          title={tPreview("chartTitle", { default: "자미두수 명반" })}
-          expanded={chartExpanded}
-          onToggle={() => setChartExpanded(!chartExpanded)}
-        />
-
-        {chartExpanded && rawChart && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={rawChart}
-              profileName={profile.name}
-              wuxingJu={result.chart.wuxingJu}
-            />
-          </section>
-        )}
-
-        {/* 키워드 그리드 섹션 (명궁이 空宮이면 oneLiner 없이 키워드만 노출) */}
-        {keywords.length > 0 && (
-          <section className={styles.keywordGridSection}>
-            <KeywordGrid
-              keywords={keywords}
-              oneLiner={oneLiner}
-              name={profile.name}
-            />
-          </section>
-        )}
-
-        {/* 인생 스포일러 섹션 */}
-        <SectionHeader
-          title={tPreview("spoilerTitle", { default: "인생 스포일러" })}
-          expanded={spoilerExpanded}
-          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
-        />
-
-        {spoilerExpanded && (
-          <section className={styles.overviewSection}>
-            <h2 className={styles.overviewHeadline}>
-              {interpretation.lifeSpoiler.headline}
-            </h2>
-            {interpretation.lifeSpoiler.subSections &&
-            interpretation.lifeSpoiler.subSections.length > 0 ? (
-              <>
-                <SubSectionList
-                  items={interpretation.lifeSpoiler.subSections}
-                />
-                {interpretation.lifeSpoiler.oneLiner && (
-                  <OneLinerAlert
-                    text={interpretation.lifeSpoiler.oneLiner}
-                    label={oneLinerLabel}
-                  />
-                )}
-              </>
-            ) : (
-              interpretation.lifeSpoiler.summary && (
-                <MarkdownContent className={styles.overviewSummary}>
-                  {interpretation.lifeSpoiler.summary}
-                </MarkdownContent>
-              )
-            )}
-          </section>
-        )}
-
-        {/* 핵심 시나리오 섹션 */}
-        <SectionHeader
-          title={t("coreScenario.title", { default: "핵심 시나리오" })}
-          expanded={coreExpanded}
-          onToggle={() => setCoreExpanded(!coreExpanded)}
-        />
-
-        {coreExpanded &&
-          (interpretation.coreScenario.subSections?.length ||
-            interpretation.coreScenario.content) && (
-            <section className={styles.section}>
-              <div className={styles.coreScenario}>
-                {interpretation.coreScenario.headline && (
-                  <h3 className={styles.coreHeadline}>
-                    {interpretation.coreScenario.headline}
-                  </h3>
-                )}
-                {interpretation.coreScenario.subSections &&
-                interpretation.coreScenario.subSections.length > 0 ? (
-                  <>
-                    <SubSectionList
-                      items={interpretation.coreScenario.subSections}
-                    />
-                    {interpretation.coreScenario.oneLiner && (
-                      <OneLinerAlert
-                        text={interpretation.coreScenario.oneLiner}
-                        label={oneLinerLabel}
-                      />
-                    )}
-                  </>
-                ) : (
-                  interpretation.coreScenario.content && (
-                    <MarkdownContent>
-                      {interpretation.coreScenario.content}
-                    </MarkdownContent>
-                  )
-                )}
-              </div>
-            </section>
-          )}
-
-        {/* 상세 시나리오 섹션 */}
-        <SectionHeader
-          title={t("detailScenario.title", { default: "상세 시나리오" })}
-          expanded={detailExpanded}
-          onToggle={() => setDetailExpanded(!detailExpanded)}
-        />
-
-        {detailExpanded && (
-          <section className={styles.section}>
-            <div className={styles.categoriesContainer}>
-              {CATEGORY_KEYS.map((key) => (
-                <CategoryItem
-                  key={key}
-                  categoryKey={key}
-                  label={t(`categories.${key}`, {
-                    default: DEFAULT_LABELS[key],
-                  })}
-                  headline={interpretation.categories[key].headline}
-                  content={interpretation.categories[key].content}
-                  subSections={interpretation.categories[key].subSections}
-                  oneLiner={interpretation.categories[key].oneLiner}
-                  oneLinerLabel={oneLinerLabel}
-                  tags={interpretation.categories[key].tags}
-                  showHashtag={false}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* 나이대별 시나리오 섹션 */}
-        <SectionHeader
-          title={t("ageScenario.title", { default: "나이대별 시나리오" })}
-          expanded={ageExpanded}
-          onToggle={() => setAgeExpanded(!ageExpanded)}
-        />
-
-        {ageExpanded && interpretation.ageScenarios.length > 0 && (
-          <section className={styles.section}>
-            <ScenarioList>
-              {interpretation.ageScenarios.map((scenario, idx) => (
-                <ScenarioItem
-                  key={idx}
-                  label={scenario.period}
-                  headline={scenario.headline}
-                  content={scenario.content}
-                  bullets={scenario.bullets}
-                  oneLiner={scenario.oneLiner}
-                  oneLinerLabel={oneLinerLabel}
-                />
-              ))}
-            </ScenarioList>
-          </section>
-        )}
-
-        <EventSection isResultPage />
-      </main>
-
-      {/* 하단 버튼 */}
-      <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.reviewButton}
-          onClick={() => setIsReviewDrawerOpen(true)}
-        >
-          {t("reviewButton", { default: "후기 남기기" })}
-        </button>
-        <div className={styles.shareButtonWrapper}>
-          <EventBadge />
-          <button
-            type="button"
-            className={styles.shareButton}
-            onClick={() => setIsShareDrawerOpen(true)}
-          >
-            {t("shareButton", { default: "공유하기" })}
-          </button>
         </div>
-      </footer>
+
+        <ScreenPlayer
+          scenes={scenes}
+          age={age}
+          nowTargetId={ageLens ? toAgeSceneId(ageLens.nowIndex) : undefined}
+          extraSceneIds={EXTRA_SCENE_IDS}
+        />
+
+        <section className={screen.section}>
+          <p className={screen.eyebrow}>CAST</p>
+          <h2 className={screen.sectionTitle}>{tScreen("character.title")}</h2>
+          {hasProfileTraits(interpretation) ? (
+            <NewProfileCard
+              mainStars={mainStarNames}
+              headline={lifeSpoiler.headline}
+              profileTraits={interpretation.profileTraits}
+              isImage={false}
+              onShareClick={() => setIsProfileShareDrawerOpen(true)}
+            />
+          ) : (
+            <LifetimeProfileCard
+              mainStars={mainStarNames}
+              headline={lifeSpoiler.headline}
+              description={lifeSpoiler.description}
+              scores={storyScores}
+              labels={storyLabels}
+              isImage={false}
+              onShareClick={() => setIsProfileShareDrawerOpen(true)}
+            />
+          )}
+        </section>
+
+        <section className={screen.section}>
+          <p className={screen.eyebrow}>ORIGINAL</p>
+          <h2 className={screen.sectionTitle}>{tScreen("chart.title")}</h2>
+          <p className={screen.sectionDesc}>{tScreen("chart.featureDesc")}</p>
+          <ChartConstellation
+            chart={rawChart}
+            profileName={profile.name}
+            wuxingJu={result.chart.wuxingJu}
+            stars={cast.stars}
+          />
+          {keywords.length > 0 && (
+            <ul className={screen.keywords}>
+              {keywords.map((keyword, index) => (
+                <li key={`${keyword}-${index}`} className={screen.keyword}>
+                  #{keyword}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {renderActIntertitle("act1")}
+        <section className={screen.section}>
+          <p className={screen.lead}>{lifeSpoiler.headline}</p>
+          {lifeSpoiler.subSections && lifeSpoiler.subSections.length > 0 ? (
+            <NumberedSections items={lifeSpoiler.subSections} />
+          ) : (
+            lifeSpoiler.summary && (
+              <MarkdownContent className={screen.prose}>
+                {lifeSpoiler.summary}
+              </MarkdownContent>
+            )
+          )}
+          {lifeSpoiler.oneLiner && (
+            <SubtitleStill label={oneLinerLabel} text={lifeSpoiler.oneLiner} />
+          )}
+        </section>
+
+        {renderActIntertitle("act2")}
+        <section className={screen.section}>
+          {coreScenario.headline && (
+            <p className={screen.lead}>{coreScenario.headline}</p>
+          )}
+          {coreScenario.subSections && coreScenario.subSections.length > 0 ? (
+            <NumberedSections items={coreScenario.subSections} />
+          ) : (
+            coreScenario.content && (
+              <MarkdownContent className={screen.prose}>
+                {coreScenario.content}
+              </MarkdownContent>
+            )
+          )}
+          {coreScenario.oneLiner && (
+            <SubtitleStill label={oneLinerLabel} text={coreScenario.oneLiner} />
+          )}
+        </section>
+
+        {renderActIntertitle("act3")}
+        <RatingBoard items={ratingItems} />
+        {CATEGORY_KEYS.map((key) => (
+          <CategoryStory
+            key={key}
+            label={t(`categories.${key}`)}
+            score={storyScores[key]}
+            headline={categories[key].headline}
+            content={categories[key].content}
+            subSections={categories[key].subSections}
+            oneLiner={categories[key].oneLiner}
+            tags={categories[key].tags}
+          />
+        ))}
+
+        {ageScenarios.length > 0 && (
+          <>
+            {renderActIntertitle("act4")}
+            <AgeLens
+              scenarios={ageScenarios}
+              age={age}
+              birthTimeUnknown={profile.birth_time_unknown}
+            />
+          </>
+        )}
+
+        <NextShow profileId={profileId} year={new Date().getFullYear()} />
+
+        <EndCredits
+          name={profile.name}
+          leadStar={cast.leadStar}
+          wuxingJu={result.chart.wuxingJu}
+          onShare={() => setIsShareDrawerOpen(true)}
+          onReview={() => setIsReviewDrawerOpen(true)}
+        />
+      </main>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
       <FollowUpEntry
         profileId={profileId}
         fortuneType="lifetime"
-        fortuneName="평생운세"
-        examplePrompts={[
-          "내 직업운은 어때?",
-          "결혼 적령기는 언제야?",
-          "재물운이 궁금해",
-        ]}
+        fortuneName={tScreen("followUp.name")}
+        examplePrompts={tScreen.raw("followUp.prompts") as string[]}
       />
 
       {/* 후기 드로어 */}

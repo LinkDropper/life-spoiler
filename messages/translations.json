@@ -872,6 +872,137 @@
         "shareLine": "라인 공유하기",
         "downloadImage": "프로필 이미지 다운로드",
         "downloading": "다운로드 중..."
+      },
+      "screen": {
+        "poster": {
+          "presents": "A LIFE SPOILER FILM",
+          "badgeTrailer": "예고편 무료 상영 중",
+          "badgeFeature": "본편 상영 중",
+          "runtime": "RUNTIME 99Y",
+          "starring": "{name} 주연",
+          "leadStar": "명궁 {star}",
+          "noStar": "명궁 주성 없음"
+        },
+        "runtime": {
+          "age": "<b>{age}세</b> / {max}세",
+          "trailerNote": "예고편은 <b>첫 장면</b>까지예요. 지금 계신 {age}세 장면부터 99세까지는 본편에서 상영돼요."
+        },
+        "chart": {
+          "title": "원작 · 내 명반",
+          "desc": "포스터의 별자리는 여기서 나왔어요. 명궁과 함께 움직이는 세 궁을 이었어요.",
+          "featureDesc": "칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 선은 명궁과 함께 움직이는 세 궁이에요.",
+          "legendTriangle": "명궁과 삼합 두 궁",
+          "legendOpposite": "마주 보는 궁"
+        },
+        "trailer": {
+          "title": "예고편 {count}컷"
+        },
+        "feature": {
+          "title": "본편에서 상영돼요",
+          "spoilerHint": "ACT 2 · 핵심 시나리오의 첫 문장은 본편에서 열려요.",
+          "act2": {
+            "act": "ACT 2",
+            "title": "핵심 시나리오",
+            "desc": "인생 전체를 관통하는 큰 줄거리"
+          },
+          "act3": {
+            "act": "ACT 3",
+            "title": "네 갈래 이야기",
+            "desc": "재물·직업·인연·건강과 관람 평점"
+          },
+          "act4": {
+            "act": "ACT 4",
+            "title": "나이대별 장면",
+            "desc": "10년마다 바뀌는 무대, 99세까지"
+          },
+          "bonus": {
+            "act": "BONUS",
+            "title": "내 캐릭터 카드",
+            "desc": "친구에게 보낼 수 있는 성향 카드"
+          },
+          "keywords": "가장 큰 키워드 {count}개는 본편에서 열려요.",
+          "lockedKeyword": "본편공개"
+        },
+        "pay": {
+          "button": "본편 상영 시작 (990원)",
+          "back": "이전으로"
+        },
+        "error": {
+          "title": "일시적으로 접속이 원활하지 않아요",
+          "desc": "이용하시는 분이 많아 운세를 만들지 못했어요. 잠시 후 다시 시도해 주세요.",
+          "refresh": "새로고침"
+        },
+        "player": {
+          "label": "본편 장면 이동",
+          "age": "<b>{age}세</b> / {max}세",
+          "now": "지금 {age}세"
+        },
+        "acts": {
+          "act1": {
+            "chip": "스포일러",
+            "title": "인생 스포일러",
+            "sub": "이 영화의 첫 장면"
+          },
+          "act2": {
+            "chip": "핵심",
+            "title": "핵심 시나리오",
+            "sub": "인생 전체를 관통하는 줄거리"
+          },
+          "act3": {
+            "chip": "네 갈래",
+            "title": "네 갈래 이야기",
+            "sub": "재물 · 직업 · 인연 · 건강"
+          },
+          "act4": {
+            "chip": "나이대별",
+            "title": "나이대별 시나리오",
+            "sub": "가까운 장면일수록 크게, 지금부터 펼쳐요"
+          }
+        },
+        "character": {
+          "title": "내 캐릭터 카드"
+        },
+        "rating": {
+          "title": "네 갈래 관람 평점",
+          "desc": "이야기마다 받은 점수를 10점 만점 평점으로 보여 드려요. 한 줄 평은 각 이야기의 제목이에요.",
+          "starsAria": "별 5개 중 {count}개",
+          "scoreAria": "10점 만점에 {score}점",
+          "topCallout": "<b>최고 평점 · {label} {score}</b> 네 갈래 중 가장 높은 점수를 받은 이야기예요."
+        },
+        "age": {
+          "summaryNow": "지금",
+          "summaryNearest": "가장 가까운 장면",
+          "summaryNowSub": "{age}세 · 이 장면의 {percent}%",
+          "ageNow": "지금 {age}세",
+          "summaryNext": "다음 장면까지",
+          "years": "{count}년",
+          "fromAge": "{age}세부터 · 새 10년",
+          "ageLabel": "{age}세",
+          "tagNow": "지금",
+          "tagNext": "다음 장면",
+          "birthTimeNote": "출생 시간을 몰라 정오를 기준으로 계산했어요. 시기 구분은 참고용으로 봐 주세요.",
+          "expandAll": "전체 펼쳐 읽기",
+          "collapseAll": "지금 장면만 보기"
+        },
+        "next": {
+          "title": "다음 상영작",
+          "name": "올해 운세",
+          "body": "인생 운세 다음에 운세를 더 본 100명 중 {count}명이 고른 다음 편이에요. {year}년을 12개월로 나눠 보여 드려요.",
+          "button": "올해 운세 보기"
+        },
+        "credits": {
+          "presentedBy": "인생스포",
+          "share": "본편 공유하기",
+          "review": "관람평 남기기"
+        },
+        "followUp": {
+          "name": "인생 운세",
+          "prompts": [
+            "제 직업운은 어떤가요?",
+            "결혼하기 좋은 시기는 언제인가요?",
+            "재물운이 궁금해요"
+          ]
+        }
       }
     },
     "common": {
@@ -2909,6 +3040,137 @@
         "shareLine": "Share to LINE",
         "downloadImage": "Download Profile Image",
         "downloading": "Downloading..."
+      },
+      "screen": {
+        "poster": {
+          "presents": "A LIFE SPOILER FILM",
+          "badgeTrailer": "Free trailer now showing",
+          "badgeFeature": "Now showing",
+          "runtime": "RUNTIME 99Y",
+          "starring": "Starring {name}",
+          "leadStar": "Life palace: {star}",
+          "noStar": "No main star in Life palace"
+        },
+        "runtime": {
+          "age": "<b>Age {age}</b> / {max}",
+          "trailerNote": "The trailer covers <b>the opening scene</b>. Everything from your current age {age} to 99 plays in the full feature."
+        },
+        "chart": {
+          "title": "The original · My chart",
+          "desc": "The constellation on the poster comes from here. It links your Life palace with the three palaces that move with it.",
+          "featureDesc": "Tap a cell to see what that palace covers. The lines link your Life palace with the three palaces that move with it.",
+          "legendTriangle": "Life palace and its two trine palaces",
+          "legendOpposite": "Opposite palace"
+        },
+        "trailer": {
+          "title": "{count} trailer cuts"
+        },
+        "feature": {
+          "title": "Playing in the full feature",
+          "spoilerHint": "ACT 2 · The first line of your core scenario opens in the full feature.",
+          "act2": {
+            "act": "ACT 2",
+            "title": "Core scenario",
+            "desc": "The main plot running through your whole life"
+          },
+          "act3": {
+            "act": "ACT 3",
+            "title": "Four storylines",
+            "desc": "Wealth, career, relationships, health, with ratings"
+          },
+          "act4": {
+            "act": "ACT 4",
+            "title": "Scenes by age",
+            "desc": "A new stage every ten years, up to 99"
+          },
+          "bonus": {
+            "act": "BONUS",
+            "title": "My character card",
+            "desc": "A personality card you can send to friends"
+          },
+          "keywords": "Your {count} strongest keywords open in the full feature.",
+          "lockedKeyword": "Hidden"
+        },
+        "pay": {
+          "button": "Start the feature ($0.99)",
+          "back": "Back"
+        },
+        "error": {
+          "title": "We're having trouble connecting",
+          "desc": "Too many people are using the service right now, so we couldn't create your reading. Please try again shortly.",
+          "refresh": "Refresh"
+        },
+        "player": {
+          "label": "Jump to a scene",
+          "age": "<b>Age {age}</b> / {max}",
+          "now": "Now · {age}"
+        },
+        "acts": {
+          "act1": {
+            "chip": "Spoiler",
+            "title": "Life spoiler",
+            "sub": "The opening scene of this film"
+          },
+          "act2": {
+            "chip": "Core",
+            "title": "Core scenario",
+            "sub": "The plot running through your whole life"
+          },
+          "act3": {
+            "chip": "Storylines",
+            "title": "Four storylines",
+            "sub": "Wealth · Career · Relationships · Health"
+          },
+          "act4": {
+            "chip": "By age",
+            "title": "Scenarios by age",
+            "sub": "The nearer the scene, the bigger it plays"
+          }
+        },
+        "character": {
+          "title": "My character card"
+        },
+        "rating": {
+          "title": "Ratings for four storylines",
+          "desc": "Each storyline's score shown as a rating out of 10. The one-line review is that storyline's title.",
+          "starsAria": "{count} out of 5 stars",
+          "scoreAria": "{score} out of 10",
+          "topCallout": "<b>Top rating · {label} {score}</b> The highest-scoring of your four storylines."
+        },
+        "age": {
+          "summaryNow": "Now",
+          "summaryNearest": "Nearest scene",
+          "summaryNowSub": "Age {age} · {percent}% into this scene",
+          "ageNow": "Now age {age}",
+          "summaryNext": "Next scene in",
+          "years": "{count, plural, one {# year} other {# years}}",
+          "fromAge": "From age {age} · a new decade",
+          "ageLabel": "Age {age}",
+          "tagNow": "Now",
+          "tagNext": "Next scene",
+          "birthTimeNote": "Your birth time is unknown, so we calculated from noon. Treat the period boundaries as a guide.",
+          "expandAll": "Expand all",
+          "collapseAll": "Show the current scene only"
+        },
+        "next": {
+          "title": "Coming next",
+          "name": "This year's fortune",
+          "body": "Of every 100 people who read more after their lifetime fortune, {count} chose this next. It shows {year} month by month.",
+          "button": "See this year's fortune"
+        },
+        "credits": {
+          "presentedBy": "Life Spoiler",
+          "share": "Share the feature",
+          "review": "Leave a review"
+        },
+        "followUp": {
+          "name": "Lifetime fortune",
+          "prompts": [
+            "How does my career look?",
+            "When is a good time to marry?",
+            "Tell me about my wealth"
+          ]
+        }
       }
     },
     "common": {
@@ -4954,6 +5216,137 @@
         "shareLine": "LINEでシェア",
         "downloadImage": "プロフィール画像をダウンロード",
         "downloading": "ダウンロード中..."
+      },
+      "screen": {
+        "poster": {
+          "presents": "A LIFE SPOILER FILM",
+          "badgeTrailer": "予告編 無料上映中",
+          "badgeFeature": "本編上映中",
+          "runtime": "RUNTIME 99Y",
+          "starring": "主演 {name}",
+          "leadStar": "命宮 {star}",
+          "noStar": "命宮に主星なし"
+        },
+        "runtime": {
+          "age": "<b>{age}歳</b> / {max}歳",
+          "trailerNote": "予告編は<b>最初の場面</b>までです。今の{age}歳の場面から99歳までは本編で上映します。"
+        },
+        "chart": {
+          "title": "原作 · わたしの命盤",
+          "desc": "ポスターの星座はここから生まれました。命宮と一緒に動く三つの宮を結んでいます。",
+          "featureDesc": "マスを押すと、その宮が何を表すかをお伝えします。線は命宮と一緒に動く三つの宮です。",
+          "legendTriangle": "命宮と三合の二宮",
+          "legendOpposite": "向かい合う宮"
+        },
+        "trailer": {
+          "title": "予告編 {count}カット"
+        },
+        "feature": {
+          "title": "本編で上映します",
+          "spoilerHint": "ACT 2 · 核心シナリオの最初の一文は本編で公開されます。",
+          "act2": {
+            "act": "ACT 2",
+            "title": "核心シナリオ",
+            "desc": "人生全体を貫く大きな筋書き"
+          },
+          "act3": {
+            "act": "ACT 3",
+            "title": "四つの物語",
+            "desc": "財運・仕事・縁・健康と評価"
+          },
+          "act4": {
+            "act": "ACT 4",
+            "title": "年代別の場面",
+            "desc": "10年ごとに変わる舞台、99歳まで"
+          },
+          "bonus": {
+            "act": "BONUS",
+            "title": "わたしのキャラクターカード",
+            "desc": "友だちに送れる性格カード"
+          },
+          "keywords": "いちばん強いキーワード{count}個は本編で公開されます。",
+          "lockedKeyword": "本編で公開"
+        },
+        "pay": {
+          "button": "本編の上映を始める ($0.99)",
+          "back": "戻る"
+        },
+        "error": {
+          "title": "一時的につながりにくくなっています",
+          "desc": "ご利用が集中しているため、運勢を作成できませんでした。しばらくしてからもう一度お試しください。",
+          "refresh": "再読み込み"
+        },
+        "player": {
+          "label": "本編の場面へ移動",
+          "age": "<b>{age}歳</b> / {max}歳",
+          "now": "いま {age}歳"
+        },
+        "acts": {
+          "act1": {
+            "chip": "ネタバレ",
+            "title": "人生ネタバレ",
+            "sub": "この映画の最初の場面"
+          },
+          "act2": {
+            "chip": "核心",
+            "title": "核心シナリオ",
+            "sub": "人生全体を貫く筋書き"
+          },
+          "act3": {
+            "chip": "四つの物語",
+            "title": "四つの物語",
+            "sub": "財運 · 仕事 · 縁 · 健康"
+          },
+          "act4": {
+            "chip": "年代別",
+            "title": "年代別シナリオ",
+            "sub": "近い場面ほど大きく、いまから広げます"
+          }
+        },
+        "character": {
+          "title": "わたしのキャラクターカード"
+        },
+        "rating": {
+          "title": "四つの物語の評価",
+          "desc": "物語ごとのスコアを10点満点の評価でお見せします。ひとこと評は各物語のタイトルです。",
+          "starsAria": "5つ星中{count}つ",
+          "scoreAria": "10点満点中{score}点",
+          "topCallout": "<b>最高評価 · {label} {score}</b> 四つの物語の中でいちばん高いスコアの物語です。"
+        },
+        "age": {
+          "summaryNow": "いま",
+          "summaryNearest": "いちばん近い場面",
+          "summaryNowSub": "{age}歳 · この場面の{percent}%",
+          "ageNow": "いま {age}歳",
+          "summaryNext": "次の場面まで",
+          "years": "{count}年",
+          "fromAge": "{age}歳から · 新しい10年",
+          "ageLabel": "{age}歳",
+          "tagNow": "いま",
+          "tagNext": "次の場面",
+          "birthTimeNote": "出生時刻が不明なため、正午を基準に計算しました。時期の区切りは参考としてご覧ください。",
+          "expandAll": "すべて広げて読む",
+          "collapseAll": "いまの場面だけ見る"
+        },
+        "next": {
+          "title": "次回上映作",
+          "name": "今年の運勢",
+          "body": "人生の運勢のあとに運勢をもっと見た100人中{count}人が選んだ次の作品です。{year}年を12か月に分けてお見せします。",
+          "button": "今年の運勢を見る"
+        },
+        "credits": {
+          "presentedBy": "ライフスポイラー",
+          "share": "本編をシェア",
+          "review": "レビューを書く"
+        },
+        "followUp": {
+          "name": "人生の運勢",
+          "prompts": [
+            "わたしの仕事運はどうですか？",
+            "結婚に良い時期はいつですか？",
+            "財運が気になります"
+          ]
+        }
       }
     },
     "common": {
