@@ -11,7 +11,6 @@ import {
   CopyToast,
   ErrorState,
   ShareDrawer,
-  type CategoryKey,
 } from "@/components/fortune";
 import { LifetimeCharacterPoster } from "@/components/fortune/LifetimeCharacterPoster";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
@@ -31,6 +30,7 @@ import { ScreenPlayer } from "@/components/fortune/screen/ScreenPlayer";
 import type { PlayerScene } from "@/components/fortune/screen/ScreenPlayer";
 import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
 import screen from "@/components/fortune/screen/screen.module.css";
+import type { CategoryKey } from "@/libs/fortune/lifetime-screen";
 import type { FortuneSceneId } from "@/libs/analytics/fortune";
 import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
