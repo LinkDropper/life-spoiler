@@ -1,0 +1,1524 @@
+/*
+ * 운세 예고편·본편 공용 화면 부품 (docs/fortune-screen-redesign-2026-11.md).
+ * 인생 = 99세 러닝타임의 영화: 포스터 · 러닝타임 · 막 자막 · 스틸 자막 · 관람 평점 · 엔딩 크레딧.
+ */
+.root {
+  --fs-night: #0a0f1c;
+  --fs-deep: #05070f;
+  --fs-panel: #0f1628;
+  --fs-text: #ffffff;
+  --fs-haze: rgba(255, 255, 255, 0.82);
+  --fs-faint: rgba(255, 255, 255, 0.55);
+  --fs-line: rgba(255, 255, 255, 0.08);
+  --fs-accent: var(--color-text-accent, #ff8fb1);
+  --fs-star: #ffe7a3;
+  --fs-ink: #23142d;
+  --fs-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --fs-display-weight: 400;
+  --fs-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fs-stars:
+    radial-gradient(1px 1px at 12% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 34% 62%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 58% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 78% 44%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 90% 76%, #fff, transparent),
+    radial-gradient(1px 1px at 22% 84%, #fff, transparent),
+    radial-gradient(1px 1px at 66% 88%, #fff, transparent);
+
+  color: var(--fs-text);
+  font-family: var(--font-pretendard), sans-serif;
+  overflow-wrap: break-word;
+}
+
+.root:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.root:lang(ja) {
+  --fs-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --fs-display-weight: 800;
+}
+
+.display {
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+}
+
+.mono {
+  font-family: var(--fs-mono);
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--fs-accent);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.sectionDesc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pillStatus {
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.6);
+  color: var(--fs-star);
+}
+
+.pillStatus::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pillMuted {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--fs-mono);
+}
+
+/* ---------- 포스터 ---------- */
+
+.poster {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 85% 55% at 50% 30%,
+      rgba(216, 166, 255, 0.32),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 80% 78%,
+      rgba(36, 64, 122, 0.6),
+      transparent 70%
+    ),
+    var(--fs-deep);
+}
+
+.posterPreview {
+  padding-bottom: 4px;
+}
+
+.posterFeature {
+  min-height: 0;
+  padding: 36px 24px 26px;
+}
+
+.posterStars {
+  position: absolute;
+  inset: 0;
+  background-image: var(--fs-stars);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.posterConstellation {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 300px;
+  margin-top: 4px;
+  pointer-events: none;
+}
+
+.posterFade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 48%;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 7, 15, 0) 0%,
+    rgba(5, 7, 15, 0.88) 38%,
+    var(--fs-night) 100%
+  );
+  pointer-events: none;
+}
+
+.posterPresents {
+  position: relative;
+  margin: 0;
+  padding-top: 24px;
+  text-align: center;
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.posterBody {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px 26px;
+  text-align: center;
+}
+
+.posterPreview .posterBody {
+  margin-top: -18px;
+}
+
+.posterFeature .posterBody {
+  padding: 14px 0 0;
+}
+
+.posterBadges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.posterStarring {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.posterTitle {
+  margin: 0;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-shadow: 0 0 40px rgba(255, 204, 217, 0.35);
+}
+
+.posterFeature .posterTitle {
+  font-size: 38px;
+}
+
+.posterTagline {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.billing {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  margin: 6px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.billing dt {
+  font-family: var(--fs-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.billing dd {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- 러닝타임 ---------- */
+
+.runtime {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.runtimeHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.runtimeLabel {
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--fs-faint);
+}
+
+.runtimeAge {
+  font-family: var(--fs-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.runtimeAge b {
+  color: var(--fs-star);
+}
+
+.track {
+  position: relative;
+  height: 24px;
+}
+
+.trackRail,
+.trackFill {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.trackRail {
+  right: 0;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.trackFill {
+  background: var(--fs-accent);
+}
+
+.trackTick {
+  position: absolute;
+  top: 6px;
+  width: 2px;
+  height: 12px;
+  margin-left: -1px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.trackHead {
+  position: absolute;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: var(--fs-star);
+  box-shadow: 0 0 12px rgba(255, 231, 163, 0.7);
+}
+
+.runtimeNote {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.runtimeNote b {
+  color: var(--fs-accent);
+}
+
+/* 본편: 위에 붙어 따라오는 플레이어 */
+.player {
+  position: sticky;
+  top: 60px;
+  /* 헤더(100) 아래 16px 녹는 가장자리를 덮는다. 메뉴·드로어(1000)보다는 아래 */
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 -16px;
+  padding: 10px 16px 12px;
+  background: rgba(5, 7, 15, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.playerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.playerRow .track {
+  flex: 1;
+}
+
+.playerChips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.playerChips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.chip {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.chip[aria-current="true"] {
+  box-shadow: inset 0 0 0 1px rgba(255, 143, 177, 0.6);
+  color: var(--fs-accent);
+}
+
+.chipNow {
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.6);
+  background: rgba(255, 231, 163, 0.08);
+  color: var(--fs-star);
+}
+
+/* ---------- 명반 + 별자리 선 ---------- */
+
+.chartWrap {
+  position: relative;
+}
+
+.chartOverlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.chartLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.legendLine,
+.legendDash {
+  display: inline-block;
+  width: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.legendLine {
+  height: 2px;
+  background: var(--fs-accent);
+}
+
+.legendDash {
+  border-top: 2px dashed var(--fs-star);
+}
+
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.keyword {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.keywordPositive {
+  background: rgba(255, 143, 177, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 143, 177, 0.45);
+  color: var(--fs-accent);
+}
+
+.keywordSource {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.keywordLocked {
+  filter: blur(4px);
+  user-select: none;
+}
+
+/* ---------- 막 자막 화면 ---------- */
+
+.intertitle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0 -16px;
+  height: 230px;
+  background: #000;
+  scroll-margin-top: 150px;
+}
+
+.intertitle::before,
+.intertitle::after {
+  content: "";
+  height: 22px;
+  background: #000;
+}
+
+.intertitleInner {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(
+      ellipse 70% 90% at 50% 50%,
+      rgba(216, 166, 255, 0.22),
+      transparent 70%
+    ),
+    var(--fs-deep);
+}
+
+.intertitleInner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fs-stars);
+  opacity: 0.55;
+}
+
+.intertitleAct {
+  position: relative;
+  font-family: var(--fs-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  color: var(--fs-accent);
+}
+
+.intertitleTitle {
+  position: relative;
+  margin: 0;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+.intertitleSub {
+  position: relative;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- 본문 ---------- */
+
+.lead {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.numbered {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.numberedItem {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 10px;
+}
+
+.numberedNo {
+  padding-top: 4px;
+  font-family: var(--fs-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fs-accent);
+}
+
+.numberedBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.numberedHeading {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.prose {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--fs-haze);
+}
+
+/* 스틸 위 자막 */
+.still {
+  position: relative;
+  height: 170px;
+  margin: 6px 0 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 60% 80% at 70% 30%,
+      rgba(36, 64, 122, 0.7),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 70% at 20% 80%,
+      rgba(216, 166, 255, 0.28),
+      transparent 70%
+    ),
+    var(--fs-deep);
+}
+
+.still::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fs-stars);
+  opacity: 0.5;
+}
+
+.still::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top: 14px solid #000;
+  border-bottom: 14px solid #000;
+  pointer-events: none;
+}
+
+.stillCaption {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.stillLabel {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.stillText {
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-shadow: 0 1px 2px #000;
+}
+
+/* ---------- 예고 컷 ---------- */
+
+.cut {
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--fs-panel);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.cutStill {
+  position: relative;
+  height: 128px;
+}
+
+.cutStill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fs-stars);
+  opacity: 0.5;
+}
+
+.cutStill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top: 12px solid #000;
+  border-bottom: 12px solid #000;
+}
+
+.cutNo {
+  position: absolute;
+  left: 14px;
+  top: 22px;
+  z-index: 1;
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.cutHeading {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 24px;
+  z-index: 1;
+  margin: 0;
+  text-align: center;
+}
+
+.cutHeading span {
+  padding: 3px 8px;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px #000;
+}
+
+.cutBody {
+  padding: 14px 16px 16px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--fs-haze);
+}
+
+.still0 {
+  background:
+    radial-gradient(
+      ellipse 60% 90% at 25% 30%,
+      rgba(216, 166, 255, 0.42),
+      transparent 70%
+    ),
+    var(--fs-deep);
+}
+
+.still1 {
+  background:
+    radial-gradient(
+      ellipse 70% 80% at 75% 40%,
+      rgba(255, 231, 163, 0.24),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 60% at 20% 80%,
+      rgba(36, 64, 122, 0.6),
+      transparent 70%
+    ),
+    var(--fs-deep);
+}
+
+.still2 {
+  background:
+    radial-gradient(
+      ellipse 60% 80% at 50% 50%,
+      rgba(255, 143, 177, 0.32),
+      transparent 70%
+    ),
+    var(--fs-deep);
+}
+
+/* ---------- 본편에서 상영돼요 ---------- */
+
+.spoilerBox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 16px;
+  border-radius: 4px;
+  background: var(--fs-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.spoilerStamp {
+  align-self: flex-start;
+  padding: 3px 9px;
+  border: 1.5px solid var(--fs-accent);
+  color: var(--fs-accent);
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  transform: rotate(-4deg);
+}
+
+.redacted {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.redacted span {
+  height: 18px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.lockList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lockItem {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  column-gap: 12px;
+  align-items: center;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--fs-line);
+}
+
+.lockAct {
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--fs-faint);
+}
+
+.lockText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lockText b {
+  font-size: 16px;
+}
+
+.lockText span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.lockCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fs-star);
+}
+
+/* ---------- 관람 평점 ---------- */
+
+.ratings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px;
+  border-radius: 6px;
+  background: var(--fs-panel);
+  box-shadow: inset 0 0 0 1px var(--fs-line);
+}
+
+.ratingTop {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 231, 163, 0.6);
+}
+
+.ratingHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ratingRank {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ratingScore {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.ratingScore b {
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 38px;
+  line-height: 1;
+}
+
+.ratingTop .ratingScore b {
+  color: var(--fs-star);
+}
+
+.ratingOutOf {
+  font-family: var(--fs-mono);
+  font-size: 12px;
+  color: var(--fs-faint);
+}
+
+.ratingStars {
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--fs-star);
+}
+
+.ratingReview {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.callout {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 4px;
+  background: rgba(255, 231, 163, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.35);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.callout b {
+  color: var(--fs-star);
+}
+
+/* 분야 카드 */
+.category {
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--fs-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.categoryHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 16px 16px 14px;
+  background: linear-gradient(180deg, rgba(255, 231, 163, 0.08), transparent);
+}
+
+.categoryName {
+  margin: 4px 0 0;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 26px;
+}
+
+.categoryBar {
+  display: block;
+  height: 3px;
+  margin: 0 16px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.categoryBar span {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--fs-star);
+}
+
+.categoryBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+.categoryTags {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fs-accent);
+}
+
+.categoryHeadline {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.categoryLine {
+  margin: 2px 0 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--fs-star);
+  background: rgba(255, 231, 163, 0.05);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* ---------- 나이대별: 가까울수록 크게 ---------- */
+
+.ageSummary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--fs-line);
+}
+
+.ageSummary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  background: var(--fs-night);
+}
+
+.ageSummaryLabel {
+  font-size: 12px;
+  color: var(--fs-faint);
+}
+
+.ageSummaryValue {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.ageSummaryNow {
+  color: var(--fs-star);
+}
+
+.ageSummarySub {
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ageList {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0 0 0 22px;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.ageItem {
+  position: relative;
+  scroll-margin-top: 150px;
+}
+
+.ageDot {
+  position: absolute;
+  left: -27px;
+  top: 18px;
+  width: 7px;
+  height: 7px;
+  margin-left: 0;
+  border-radius: 50%;
+  background: var(--fs-night);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.4);
+}
+
+.agePast .ageDot {
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: none;
+}
+
+.ageNow .ageDot {
+  left: -29px;
+  width: 11px;
+  height: 11px;
+  background: var(--fs-star);
+  box-shadow: 0 0 0 4px rgba(255, 231, 163, 0.2);
+}
+
+.ageOpen .ageDot {
+  top: 26px;
+}
+
+.ageButton {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ageOpen .ageButton {
+  grid-template-columns: 76px minmax(0, 1fr);
+  padding: 18px 16px 6px 14px;
+  border-radius: 8px 8px 0 0;
+}
+
+.ageNumber {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ageStart {
+  white-space: nowrap;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 20px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.agePast .ageStart {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.ageNext .ageStart {
+  font-size: 28px;
+  color: #ffffff;
+}
+
+.ageOpen .ageStart {
+  font-size: 44px;
+  color: #ffffff;
+}
+
+.ageNow .ageStart {
+  color: var(--fs-star);
+}
+
+.ageRange {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ageMain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ageTag {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 143, 177, 0.14);
+  color: var(--fs-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ageNow .ageTag {
+  background: var(--fs-star);
+  color: var(--fs-ink);
+}
+
+.ageHeadRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ageHeadline {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.agePast .ageHeadline {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ageNext .ageHeadline {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.ageOpen .ageHeadline {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.ageChevron {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.ageOpen .ageChevron {
+  transform: rotate(180deg);
+}
+
+.agePeek {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+/* 접힘 ↔ 펼침 높이 전환 200ms (기획서 §9) */
+.agePanelWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.ageOpen .agePanelWrap {
+  grid-template-rows: 1fr;
+}
+
+.ageCollapse {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.agePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 16px 18px;
+  border-radius: 0 0 8px 8px;
+}
+
+@media (min-width: 420px) {
+  .agePanel {
+    padding-left: 104px;
+  }
+}
+
+.ageOpen {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.ageOpen.ageNow {
+  background: rgba(255, 231, 163, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.4);
+}
+
+.ageBullets {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.ageLine {
+  margin: 0;
+  padding: 2px 0 2px 12px;
+  border-left: 2px solid var(--fs-accent);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.ageNow .ageLine {
+  border-left-color: var(--fs-star);
+}
+
+.ageProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.ageProgressTrack {
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ageProgressTrack span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  background: var(--fs-star);
+}
+
+.ageProgressLabels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  color: var(--fs-faint);
+}
+
+.ageProgressLabels b {
+  color: var(--fs-star);
+  font-weight: 500;
+}
+
+.expandAll {
+  align-self: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- 다음 상영작 ---------- */
+
+.nextShow {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  min-height: 260px;
+  padding: 22px 20px 20px;
+  border-radius: 6px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 80% 70% at 80% 10%,
+      rgba(255, 231, 163, 0.24),
+      transparent 70%
+    ),
+    var(--fs-deep);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.3);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.nextShow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fs-stars);
+  opacity: 0.6;
+}
+
+.nextShow > * {
+  position: relative;
+}
+
+.nextKicker {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.nextTitle {
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.nextBody {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.nextButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  margin-top: 6px;
+  border-radius: 12px;
+  background: var(--color-button-primary-surface, #ffccd9);
+  color: var(--fs-ink);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* ---------- 엔딩 크레딧 ---------- */
+
+.credits {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  margin: 0 -16px;
+  /* 아래 여백: 떠 있는 질문 버튼이 공유 버튼을 가리지 않게 */
+  padding: 48px 24px calc(104px + env(safe-area-inset-bottom));
+  background: #000;
+  text-align: center;
+}
+
+.creditsEnd {
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--fs-faint);
+}
+
+.creditsList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  row-gap: 10px;
+  margin: 0;
+  text-align: left;
+  font-size: 13px;
+}
+
+.creditsList dt {
+  padding-top: 2px;
+  text-align: right;
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.creditsList dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.creditsActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.primaryButton,
+.ghostButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 52px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.primaryButton {
+  background: var(--color-button-primary-surface, #ffccd9);
+  color: var(--fs-ink);
+}
+
+.ghostButton {
+  min-height: 48px;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .primaryButton:hover,
+  .nextShow:hover .nextButton {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+
+  .ghostButton:hover,
+  .ageButton:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.buttonRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ageChevron,
+  .agePanelWrap {
+    transition: none;
+  }
+}
