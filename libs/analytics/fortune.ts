@@ -8,7 +8,8 @@ export type FortuneScreenType =
   | "lifetime"
   | "yearly"
   | "yearly_2027"
-  | "past_life";
+  | "past_life"
+  | "compatibility";
 
 /** owner = 본인 본편, shared = 친구가 받은 공유 페이지 */
 export type FortuneSurface = "owner" | "shared";
