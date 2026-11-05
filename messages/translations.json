@@ -645,28 +645,50 @@
         "fortuneNotFound": "운세 데이터를 찾을 수 없습니다.",
         "oneLinerLabel": "한 줄 정리",
         "review": {
-          "title": "후기 남기기",
-          "subtitle": "이 결과가 마음에 드셨나요?",
-          "placeholder": "더 해주고 싶은 말이 있다면 적어주세요 (선택)",
-          "reasonPromptLow": "어떤 점이 아쉬웠나요? (선택, 복수 선택 가능)",
-          "reasonPromptHigh": "더 자세히 알려주시면 도움이 돼요 (선택)",
-          "reasonsGroupAriaLabel": "아쉬운 점 선택",
+          "title": "관람평 남기기",
+          "subtitle": "이 본편, 어떠셨어요?",
+          "placeholder": "한 줄 관람평을 남겨 주세요 (선택)",
+          "reasonPromptLow": "어떤 점이 아쉬웠나요? (선택, 여러 개 가능)",
+          "reasonPromptHigh": "어떤 점이 좋았나요? (선택, 여러 개 가능)",
           "reasons": {
             "generic": "내용이 뻔해요",
             "cantTrust": "좋은 말만 있어서 못 믿겠어요",
             "notMatching": "제 상황과 안 맞아요",
             "shallow": "너무 짧고 얕아요",
-            "notSpecific": "구체적인 답이 없어요"
+            "notSpecific": "구체적인 답이 없어요",
+            "relatable": "내 이야기 같아요",
+            "specific": "구체적이라 좋았어요",
+            "clearChart": "명반 풀이가 이해돼요",
+            "actionable": "앞으로 할 일이 보여요",
+            "shareable": "친구에게 보여 주고 싶어요"
           },
-          "submit": "후기 남기기",
-          "submitting": "제출 중...",
+          "submit": "관람평 남기기",
+          "submitting": "남기는 중…",
           "loading": "불러오는 중...",
-          "completedMessage": "소중한 후기 감사합니다!",
-          "completedSub": "더 좋은 서비스로 보답할게요",
+          "completedMessage": "관람평이 남겨졌어요",
+          "completedSub": "남겨 주신 평은 다음 상영을 다듬는 데 써요.",
           "errorSave": "후기 저장에 실패했습니다.",
           "errorNetwork": "네트워크 오류가 발생했습니다. 다시 시도해주세요.",
           "starAriaLabel": "{star}점",
-          "charCountLabel": "{count}/{max}자"
+          "charCountLabel": "{count}/{max}자",
+          "reasonsGroupLow": "아쉬운 점 고르기",
+          "reasonsGroupHigh": "좋았던 점 고르기",
+          "close": "닫기",
+          "ratingWord": "{rating} / 5 · {word}",
+          "ratingWords": {
+            "1": "아쉬웠어요",
+            "2": "조금 아쉬웠어요",
+            "3": "보통이었어요",
+            "4": "좋았어요",
+            "5": "최고였어요"
+          },
+          "stub": {
+            "lifetime": "인생 운세 · 본편",
+            "yearly": "올해 운세 · 본편",
+            "yearly_2027": "내년 운세 · 본편",
+            "past_life": "전생 운세 · 본편",
+            "compatibility": "궁합 운세 · 본편"
+          }
         }
       },
       "preview": {
@@ -932,7 +954,8 @@
         "error": {
           "title": "일시적으로 접속이 원활하지 않아요",
           "desc": "이용하시는 분이 많아 운세를 만들지 못했어요. 잠시 후 다시 시도해 주세요.",
-          "refresh": "새로고침"
+          "refresh": "새로고침",
+          "intermission": "상영이 잠시 멈췄어요"
         },
         "player": {
           "label": "본편 장면 이동",
@@ -1498,6 +1521,47 @@
             "cta": "우리 궁합 예고편 무료로 보기",
             "endNote": "나와 그 사람은 어떤 장르일까요? 궁합 예고편은 무료로 상영돼요."
           }
+        },
+        "shareSheet": {
+          "linkTitle": "본편 공유하기",
+          "posterTitle": "캐릭터 포스터 공유하기",
+          "posterLabel": "CHARACTER POSTER · 9:16",
+          "posterDesc": "인스타그램 스토리에 그대로 올라가는 세로 이미지예요.",
+          "kakao": "카카오톡으로 보내기",
+          "system": "다른 앱으로 공유",
+          "systemSub": "인스타그램 · 메시지 · 메일",
+          "systemPoster": "스토리·다른 앱으로 공유",
+          "systemPosterSub": "인스타그램 · 메시지",
+          "copyLink": "링크 복사",
+          "saveImage": "이미지로 저장",
+          "saving": "저장하는 중…",
+          "inviteTitle": "친구 초대 관람권",
+          "inviteBody": "이 링크로 친구가 가입하면 무료 운세 쿠폰을 쿠폰함에 넣어 드려요.",
+          "imageError": "이미지를 만들지 못했어요. 다시 시도해 주세요.",
+          "shareError": "공유하지 못했어요. 다시 시도해 주세요."
+        },
+        "ask": {
+          "title": "전문가에게 물어보기",
+          "remaining": "{remaining} / {limit} 남음",
+          "loading": "불러오는 중…",
+          "emptyTitle": "본편을 보고 궁금한 점을\n전문가에게 물어보세요",
+          "emptySub": "{name} 본편과 내 명반을 바탕으로 답해 드려요",
+          "myQuestion": "나의 질문",
+          "expertAnswer": "전문가 답변",
+          "typing": "전문가가 답변을 준비하는 중이에요",
+          "rejectHint": "이 질문은 횟수에 포함되지 않아요",
+          "exhaustedTitle": "무료 질문 {limit}회를 모두 썼어요",
+          "exhaustedSub": "더 물어볼 수 있는 방법을 준비하고 있어요.",
+          "placeholder": "궁금한 점을 적어 주세요 ({min}~{max}자)",
+          "inputLabel": "질문 입력",
+          "send": "질문 보내기",
+          "rateLimited": "{seconds}초 뒤에 다시 질문할 수 있어요",
+          "minLength": "{min}글자 이상 적어 주세요",
+          "errorHistory": "대화 기록을 불러오지 못했어요.",
+          "errorAnswer": "답변을 가져오지 못했어요.",
+          "errorNetwork": "네트워크 오류가 났어요. 다시 시도해 주세요.",
+          "fab": "전문가에게 묻기",
+          "fabAria": "전문가에게 묻기, 남은 질문 {remaining}개"
         }
       }
     },
@@ -2660,6 +2724,9 @@
         },
         "long": "조금만 더 기다려 주세요",
         "status": "{title} 화면을 준비하는 중이에요"
+      },
+      "shared": {
+        "title": "친구가 보낸 본편"
       }
     }
   },
@@ -3309,28 +3376,50 @@
         "fortuneNotFound": "Fortune data not found.",
         "oneLinerLabel": "In one line",
         "review": {
-          "title": "Write a Review",
-          "subtitle": "Did you like this result?",
-          "placeholder": "Anything else you'd like to share? (optional)",
-          "reasonPromptLow": "What felt off? (optional, select all that apply)",
-          "reasonPromptHigh": "Tell us more — it really helps (optional)",
-          "reasonsGroupAriaLabel": "Select what felt off",
+          "title": "Leave a review",
+          "subtitle": "How was this feature?",
+          "placeholder": "Leave a one-line review (optional)",
+          "reasonPromptLow": "What fell short? (optional, choose any)",
+          "reasonPromptHigh": "What did you like? (optional, choose any)",
           "reasons": {
             "generic": "Felt generic",
             "cantTrust": "Too positive to trust",
             "notMatching": "Didn't match my situation",
             "shallow": "Too short and shallow",
-            "notSpecific": "No specific answers"
+            "notSpecific": "No specific answers",
+            "relatable": "Felt like my story",
+            "specific": "Specific and useful",
+            "clearChart": "The chart made sense",
+            "actionable": "I know what to do next",
+            "shareable": "Want to show a friend"
           },
-          "submit": "Submit Review",
-          "submitting": "Submitting...",
+          "submit": "Leave a review",
+          "submitting": "Sending…",
           "loading": "Loading...",
-          "completedMessage": "Thank you for your review!",
-          "completedSub": "We'll keep improving our service",
+          "completedMessage": "Your review is in",
+          "completedSub": "We use your review to polish the next screening.",
           "errorSave": "Failed to save your review.",
           "errorNetwork": "A network error occurred. Please try again.",
           "starAriaLabel": "{star} stars",
-          "charCountLabel": "{count}/{max}"
+          "charCountLabel": "{count}/{max}",
+          "reasonsGroupLow": "Choose what fell short",
+          "reasonsGroupHigh": "Choose what you liked",
+          "close": "Close",
+          "ratingWord": "{rating} / 5 · {word}",
+          "ratingWords": {
+            "1": "Disappointing",
+            "2": "A bit short",
+            "3": "Okay",
+            "4": "Good",
+            "5": "Loved it"
+          },
+          "stub": {
+            "lifetime": "Life Fortune · Feature",
+            "yearly": "This Year · Feature",
+            "yearly_2027": "Next Year · Feature",
+            "past_life": "Past Life · Feature",
+            "compatibility": "Compatibility · Feature"
+          }
         }
       },
       "preview": {
@@ -3596,7 +3685,8 @@
         "error": {
           "title": "We're having trouble connecting",
           "desc": "Too many people are using the service right now, so we couldn't create your reading. Please try again shortly.",
-          "refresh": "Refresh"
+          "refresh": "Refresh",
+          "intermission": "The screening has paused"
         },
         "player": {
           "label": "Jump to a scene",
@@ -4162,6 +4252,47 @@
             "cta": "Watch our compatibility trailer free",
             "endNote": "What genre would you two be? The compatibility trailer is free."
           }
+        },
+        "shareSheet": {
+          "linkTitle": "Share the feature",
+          "posterTitle": "Share the character poster",
+          "posterLabel": "CHARACTER POSTER · 9:16",
+          "posterDesc": "A vertical image that fits an Instagram story as is.",
+          "kakao": "Send on KakaoTalk",
+          "system": "Share to another app",
+          "systemSub": "Instagram · Messages · Mail",
+          "systemPoster": "Share to a story or app",
+          "systemPosterSub": "Instagram · Messages",
+          "copyLink": "Copy link",
+          "saveImage": "Save image",
+          "saving": "Saving…",
+          "inviteTitle": "Friend invite pass",
+          "inviteBody": "When a friend signs up through this link, we'll add a free fortune coupon to your coupon box.",
+          "imageError": "We couldn't create the image. Please try again.",
+          "shareError": "We couldn't share it. Please try again."
+        },
+        "ask": {
+          "title": "Ask the expert",
+          "remaining": "{remaining} / {limit} left",
+          "loading": "Loading…",
+          "emptyTitle": "Curious about something in the feature?\nAsk the expert",
+          "emptySub": "Answers are based on your {name} feature and your chart",
+          "myQuestion": "My question",
+          "expertAnswer": "Expert's answer",
+          "typing": "The expert is preparing an answer",
+          "rejectHint": "This question doesn't count toward your limit",
+          "exhaustedTitle": "You've used all {limit} free questions",
+          "exhaustedSub": "We're working on a way to ask more.",
+          "placeholder": "Type your question ({min}–{max} characters)",
+          "inputLabel": "Question",
+          "send": "Send question",
+          "rateLimited": "You can ask again in {seconds} seconds",
+          "minLength": "Please type at least {min} characters",
+          "errorHistory": "We couldn't load the conversation.",
+          "errorAnswer": "We couldn't get an answer.",
+          "errorNetwork": "A network error occurred. Please try again.",
+          "fab": "Ask the expert",
+          "fabAria": "Ask the expert, {remaining} questions left"
         }
       }
     },
@@ -5332,6 +5463,9 @@
         },
         "long": "Just a moment more",
         "status": "Preparing {title}"
+      },
+      "shared": {
+        "title": "A feature from a friend"
       }
     }
   },
@@ -5982,27 +6116,49 @@
         "oneLinerLabel": "ひとことで",
         "review": {
           "title": "レビューを書く",
-          "subtitle": "この結果は満足できましたか？",
-          "placeholder": "他に伝えたいことがあれば書いてください（任意）",
+          "subtitle": "この本編はいかがでしたか？",
+          "placeholder": "ひとことレビューを書いてください（任意）",
           "reasonPromptLow": "どこが物足りなかったですか？（任意・複数選択可）",
-          "reasonPromptHigh": "もう少し詳しく教えてください（任意）",
-          "reasonsGroupAriaLabel": "物足りなかった点を選択",
+          "reasonPromptHigh": "どこがよかったですか？（任意・複数選択可）",
           "reasons": {
             "generic": "内容がありきたり",
             "cantTrust": "良いことばかりで信じられない",
             "notMatching": "自分の状況と合わない",
             "shallow": "内容が短くて浅い",
-            "notSpecific": "具体的な答えがない"
+            "notSpecific": "具体的な答えがない",
+            "relatable": "自分の話みたい",
+            "specific": "具体的でよかった",
+            "clearChart": "命盤の解説がわかりやすい",
+            "actionable": "これからすることが見えた",
+            "shareable": "友だちに見せたい"
           },
-          "submit": "レビューを送る",
-          "submitting": "送信中...",
+          "submit": "レビューを書く",
+          "submitting": "送信中…",
           "loading": "読み込み中...",
-          "completedMessage": "大切なレビューをありがとうございます！",
-          "completedSub": "より良いサービスでお応えします",
+          "completedMessage": "レビューを受け付けました",
+          "completedSub": "いただいたレビューは次の上映をよりよくするために使います。",
           "errorSave": "レビューの保存に失敗しました。",
           "errorNetwork": "ネットワークエラーが発生しました。もう一度お試しください。",
           "starAriaLabel": "{star}点",
-          "charCountLabel": "{count}/{max}文字"
+          "charCountLabel": "{count}/{max}文字",
+          "reasonsGroupLow": "物足りなかった点を選ぶ",
+          "reasonsGroupHigh": "よかった点を選ぶ",
+          "close": "閉じる",
+          "ratingWord": "{rating} / 5 · {word}",
+          "ratingWords": {
+            "1": "物足りなかった",
+            "2": "少し物足りなかった",
+            "3": "ふつう",
+            "4": "よかった",
+            "5": "最高だった"
+          },
+          "stub": {
+            "lifetime": "人生運勢 · 本編",
+            "yearly": "今年の運勢 · 本編",
+            "yearly_2027": "来年の運勢 · 本編",
+            "past_life": "前世運勢 · 本編",
+            "compatibility": "相性運勢 · 本編"
+          }
         }
       },
       "preview": {
@@ -6268,7 +6424,8 @@
         "error": {
           "title": "一時的につながりにくくなっています",
           "desc": "ご利用が集中しているため、運勢を作成できませんでした。しばらくしてからもう一度お試しください。",
-          "refresh": "再読み込み"
+          "refresh": "再読み込み",
+          "intermission": "上映が一時止まっています"
         },
         "player": {
           "label": "本編の場面へ移動",
@@ -6834,6 +6991,47 @@
             "cta": "私たちの相性予告編を無料で見る",
             "endNote": "あなたとあの人はどんなジャンルでしょう? 相性予告編は無料で上映中です。"
           }
+        },
+        "shareSheet": {
+          "linkTitle": "本編をシェア",
+          "posterTitle": "キャラクターポスターをシェア",
+          "posterLabel": "CHARACTER POSTER · 9:16",
+          "posterDesc": "Instagramのストーリーにそのまま載せられる縦長の画像です。",
+          "kakao": "カカオトークで送る",
+          "system": "ほかのアプリでシェア",
+          "systemSub": "Instagram · メッセージ · メール",
+          "systemPoster": "ストーリー・ほかのアプリでシェア",
+          "systemPosterSub": "Instagram · メッセージ",
+          "copyLink": "リンクをコピー",
+          "saveImage": "画像を保存",
+          "saving": "保存中…",
+          "inviteTitle": "友だち招待チケット",
+          "inviteBody": "このリンクから友だちが登録すると、無料の運勢クーポンをクーポンボックスにお届けします。",
+          "imageError": "画像を作成できませんでした。もう一度お試しください。",
+          "shareError": "シェアできませんでした。もう一度お試しください。"
+        },
+        "ask": {
+          "title": "専門家に聞く",
+          "remaining": "残り {remaining} / {limit}",
+          "loading": "読み込み中…",
+          "emptyTitle": "本編を見て気になったことを\n専門家に聞いてみましょう",
+          "emptySub": "{name}の本編とあなたの命盤をもとにお答えします",
+          "myQuestion": "わたしの質問",
+          "expertAnswer": "専門家の回答",
+          "typing": "専門家が回答を準備しています",
+          "rejectHint": "この質問は回数に含まれません",
+          "exhaustedTitle": "無料の質問{limit}回をすべて使いました",
+          "exhaustedSub": "もっと質問できる方法を準備しています。",
+          "placeholder": "気になることを入力してください（{min}〜{max}文字）",
+          "inputLabel": "質問の入力",
+          "send": "質問を送る",
+          "rateLimited": "{seconds}秒後にまた質問できます",
+          "minLength": "{min}文字以上入力してください",
+          "errorHistory": "会話の履歴を読み込めませんでした。",
+          "errorAnswer": "回答を取得できませんでした。",
+          "errorNetwork": "ネットワークエラーが発生しました。もう一度お試しください。",
+          "fab": "専門家に聞く",
+          "fabAria": "専門家に聞く、残りの質問 {remaining}件"
         }
       }
     },
@@ -7996,6 +8194,9 @@
         },
         "long": "もう少々お待ちください",
         "status": "{title}を準備しています"
+      },
+      "shared": {
+        "title": "友だちから届いた本編"
       }
     }
   }
