@@ -1,290 +1,256 @@
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+/* 관람평 시트. 시트 틀은 screen/ScreenSheet, 색·글꼴은 screen.module.css .root 토큰 */
+
+/* 관람권 꼬리표: 어떤 상영의 평인지 */
+.stub {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: var(--color-overlay-dimmed, rgba(17, 17, 28, 0.6));
-  z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
+  align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.drawer {
-  width: 100%;
-  max-width: 480px;
-  padding: 8px;
-  background: var(--color-surface-default, #18181b);
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0px 4px 20px var(--color-modal-shadow, rgba(0, 0, 0, 0.12));
-  animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-.header {
+.stubMain {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px 0 16px;
-  height: 44px;
-}
-
-.title {
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-}
-
-.closeButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.separator {
-  padding: 4px 0;
-}
-
-.separatorLine {
-  height: 0;
-  border: none;
-  border-top: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  margin: 0;
-}
-
-.body {
-  display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 20px;
-  padding: 16px;
+  justify-content: center;
+  gap: 2px;
+  padding: 10px 14px;
+  font-size: 15px;
+}
+
+.stubLabel {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--fs-faint);
+}
+
+.stubEdge {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-left: 1.5px dashed rgba(255, 255, 255, 0.22);
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--fs-star);
 }
 
 /* 별점 */
-
-.ratingSection {
+.rating {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  padding: 6px 0;
 }
 
-.ratingLabel {
-  font-size: 15px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
+.ratingQuestion {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .stars {
   display: flex;
+  gap: 2px;
+}
+
+.star {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.22);
+  font-size: 38px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.starOn {
+  color: var(--fs-star);
+  text-shadow: 0 0 14px rgba(255, 231, 163, 0.6);
+}
+
+.ratingWord {
+  font-family: var(--fs-mono);
+  font-size: 12px;
+  color: var(--fs-star);
+}
+
+/* 좋았던 점 · 아쉬운 점 칩 */
+.reasons {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.starButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 6px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  -webkit-tap-highlight-color: transparent;
+.reasonPrompt {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
 }
 
-.starButton:active {
-  transform: scale(1.2);
-}
-
-/* 불만 유형 칩 */
-
-.reasonSection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.reasonLabel {
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.reasonChips {
+.chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
-.reasonChip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 22px;
-  font-family: var(--font-pretendard), sans-serif;
+.chip {
+  min-height: 40px;
+  padding: 0 13px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  color: var(--fs-text);
+  font: inherit;
   font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
-  -webkit-tap-highlight-color: transparent;
 }
 
-.reasonChipSelected {
-  background: rgba(255, 204, 217, 0.16);
-  border-color: var(--color-border-selected, #ff8fb1);
-  color: var(--color-text-default, #ffffff);
-  font-weight: 600;
+.chipHigh {
+  background: rgba(255, 231, 163, 0.12);
+  box-shadow: inset 0 0 0 1.5px var(--fs-star);
+  color: var(--fs-star);
 }
 
-/* 텍스트 입력 */
+.chipLow {
+  background: rgba(255, 143, 177, 0.14);
+  box-shadow: inset 0 0 0 1.5px var(--fs-accent);
+  color: #ffd1de;
+}
 
-.textSection {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* 한 줄 관람평 */
+.textField {
+  position: relative;
+  display: block;
 }
 
 .textarea {
   width: 100%;
-  min-height: 100px;
-  padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  min-height: 84px;
+  padding: 12px 14px 26px;
+  border: none;
   border-radius: 12px;
-  font-family: var(--font-pretendard), sans-serif;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: var(--fs-text);
+  font: inherit;
   font-size: 15px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--color-text-default, #ffffff);
+  line-height: 1.5;
   resize: none;
-  outline: none;
-  transition: border-color 0.2s ease;
 }
 
 .textarea::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.textarea:focus {
-  border-color: var(--color-focus-ring, #ffe7a3);
-}
-
-.textMeta {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 4px;
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .charCount {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  color: var(--fs-faint);
+}
+
+.error {
+  margin: 0;
   font-size: 13px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.4);
+  color: #ff8f8f;
 }
 
-.charCountOver {
-  color: #ff6b6b;
-}
-
-/* 제출 버튼 */
-
-.submitButton {
+.submit,
+.ghostButton {
   width: 100%;
-  height: 48px;
-  background: var(--color-button-primary-surface, #ffccd9);
-  color: #2d1b4e;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 17px;
-  font-weight: 700;
+  min-height: 52px;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
   cursor: pointer;
-  transition: opacity 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
 }
 
-.submitButton:hover {
-  opacity: 0.9;
+.submit {
+  background: var(--color-button-primary-surface, #ffccd9);
+  color: var(--fs-ink);
 }
 
-.submitButton:disabled {
-  opacity: 0.4;
+.submit:disabled {
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
-/* 완료 상태 */
+.ghostButton {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.28);
+  color: var(--fs-text);
+  font-size: 14px;
+}
 
-.completedBody {
+/* 완료 */
+.done {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 32px 16px;
+  gap: 14px;
+  padding: 18px 0 4px;
+  text-align: center;
 }
 
-.completedMessage {
-  font-size: 17px;
+.doneStamp {
+  padding: 6px 14px;
+  border: 2px solid var(--fs-star);
+  border-radius: 6px;
+  font-family: var(--fs-mono);
+  font-size: 13px;
   font-weight: 600;
-  color: var(--color-text-default, #ffffff);
-  text-align: center;
-  margin: 0;
+  letter-spacing: 0.3em;
+  color: var(--fs-star);
+  transform: rotate(-6deg);
 }
 
-.completedSub {
+.doneTitle {
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 22px;
+}
+
+.doneSub {
   font-size: 14px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-  margin: 0;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
 }
 
-/* 에러 */
-
-.errorMessage {
+.status {
+  margin: 0;
+  padding: 32px 0;
+  text-align: center;
   font-size: 14px;
-  font-weight: 400;
-  color: #ff6b6b;
-  text-align: center;
-  margin: 0;
+  color: var(--fs-faint);
 }
 
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-.submitButton:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
+.star:focus-visible,
+.chip:focus-visible,
+.submit:focus-visible,
+.ghostButton:focus-visible,
+.textarea:focus-visible {
+  outline: 2px solid var(--fs-star);
+  outline-offset: 2px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

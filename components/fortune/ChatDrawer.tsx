@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MessageCircle, Send } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import type { FollowUpFortuneType } from "@/libs/supabase/types";
 
@@ -11,6 +12,7 @@ import {
   MIN_QUESTION_LENGTH,
   RATE_LIMIT_SECONDS,
 } from "./chat-drawer.constants";
+import { ScreenSheet } from "./screen/ScreenSheet";
 import styles from "./ChatDrawer.module.css";
 
 interface ChatMessage {
@@ -31,6 +33,7 @@ interface ChatDrawerProps {
   onRemainingChange?: (remaining: number) => void;
 }
 
+/** 본편을 보고 전문가에게 묻는 상영관 시트 (질문 버튼 FollowUpEntry가 연다) */
 export const ChatDrawer = ({
   isOpen,
   onClose,
@@ -41,6 +44,7 @@ export const ChatDrawer = ({
   examplePrompts,
   onRemainingChange,
 }: ChatDrawerProps) => {
+  const t = useTranslations("fortune.screen.ask");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [remaining, setRemainingInternal] = useState(FREE_QUESTION_LIMIT);
 
@@ -66,7 +70,6 @@ export const ChatDrawer = ({
   // 초기 이력 로드
   useEffect(() => {
     if (!isOpen) {
-      document.body.style.overflow = "";
       setMessages([]);
       setInput("");
       setError(null);
@@ -74,7 +77,6 @@ export const ChatDrawer = ({
       return;
     }
 
-    document.body.style.overflow = "hidden";
     setIsInitializing(true);
     setError(null);
 
@@ -90,7 +92,7 @@ export const ChatDrawer = ({
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {
-          throw new Error(data.error ?? "대화 이력을 불러오지 못했어요.");
+          throw new Error(data.error ?? t("errorHistory"));
         }
         return data as {
           history: {
@@ -126,10 +128,6 @@ export const ChatDrawer = ({
       .finally(() => {
         setIsInitializing(false);
       });
-
-    return () => {
-      document.body.style.overflow = "";
-    };
     // setRemaining은 매 렌더마다 동일 ref를 갖는 stable callback이 아니지만,
     // 초기 로드 시점에만 한번 호출되면 되므로 의도적으로 의존성에서 제외한다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -166,27 +164,6 @@ export const ChatDrawer = ({
     textarea.style.height = "auto";
     textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
   }, [input]);
-
-  // Esc 키로 닫기
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !isSending) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, isSending, onClose]);
-
-  const handleBackdropClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget && !isSending) {
-        onClose();
-      }
-    },
-    [isSending, onClose]
-  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -250,7 +227,7 @@ export const ChatDrawer = ({
           setRateLimitUntil(Date.now() + retryAfter * 1000);
           setMessages((prev) => prev.slice(0, -1)); // 유저 메시지 롤백
           setInput(question);
-          setError(`${retryAfter}초 후 다시 질문할 수 있어요.`);
+          setError(t("rateLimited", { seconds: retryAfter }));
           return;
         }
 
@@ -263,7 +240,7 @@ export const ChatDrawer = ({
 
         setMessages((prev) => prev.slice(0, -1));
         setInput(question);
-        setError(data.error ?? "답변을 가져오지 못했어요.");
+        setError(data.error ?? t("errorAnswer"));
         return;
       }
 
@@ -285,7 +262,7 @@ export const ChatDrawer = ({
     } catch {
       setMessages((prev) => prev.slice(0, -1));
       setInput(question);
-      setError("네트워크 오류가 발생했어요. 다시 시도해주세요.");
+      setError(t("errorNetwork"));
     } finally {
       setIsSending(false);
     }
@@ -298,8 +275,6 @@ export const ChatDrawer = ({
     }
   };
 
-  if (!isOpen) return null;
-
   const hasMessages = messages.length > 0;
   const showContentHint =
     input.length > 0 &&
@@ -307,45 +282,20 @@ export const ChatDrawer = ({
     trimmedLength < MIN_QUESTION_LENGTH;
 
   return (
-    <div
-      className={styles.backdrop}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="chat-drawer-title"
+    <ScreenSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      eyebrow="ASK THE EXPERT"
+      title={t("title")}
+      isBusy={isSending}
+      tall
+      headerExtra={
+        <span className={styles.remaining} aria-live="polite">
+          {t("remaining", { remaining, limit: FREE_QUESTION_LIMIT })}
+        </span>
+      }
     >
-      <div className={styles.drawer}>
-        <div className={styles.header}>
-          <div className={styles.headerLeft}>
-            <MessageCircle
-              size={18}
-              strokeWidth={1.8}
-              className={styles.headerIcon}
-            />
-            <span id="chat-drawer-title" className={styles.title}>
-              전문가에게 물어보기
-            </span>
-          </div>
-          <div className={styles.headerRight}>
-            <span className={styles.remainingLabel} aria-live="polite">
-              {remaining}/{FREE_QUESTION_LIMIT} 남음
-            </span>
-            <button
-              type="button"
-              className={styles.closeButton}
-              onClick={onClose}
-              disabled={isSending}
-              aria-label="닫기"
-            >
-              <CloseIcon />
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.separator}>
-          <hr className={styles.separatorLine} />
-        </div>
-
+      <div className={styles.chat}>
         <div
           ref={messageListRef}
           className={styles.messageList}
@@ -355,20 +305,16 @@ export const ChatDrawer = ({
         >
           {isInitializing ? (
             <div className={styles.emptyState}>
-              <p className={styles.emptySub}>불러오는 중...</p>
+              <p className={styles.emptySub}>{t("loading")}</p>
             </div>
           ) : !hasMessages ? (
             <div className={styles.emptyState}>
-              <MessageCircle
-                size={40}
-                strokeWidth={1.5}
-                className={styles.emptyIcon}
-              />
-              <p className={styles.emptyTitle}>
-                {"운세 결과에 대해 궁금한 점을\n전문가에게 물어보세요"}
-              </p>
+              <span className={styles.emptyKicker}>
+                Q&amp;A · AFTER THE SHOW
+              </span>
+              <p className={styles.emptyTitle}>{t("emptyTitle")}</p>
               <p className={styles.emptySub}>
-                {fortuneName} 결과를 바탕으로 답변드려요
+                {t("emptySub", { name: fortuneName })}
               </p>
               <div className={styles.exampleChips}>
                 {examplePrompts.map((example) => (
@@ -391,7 +337,7 @@ export const ChatDrawer = ({
                   <div
                     key={msg.id}
                     className={styles.userBubble}
-                    aria-label="나의 질문"
+                    aria-label={t("myQuestion")}
                   >
                     {msg.content}
                   </div>
@@ -399,21 +345,15 @@ export const ChatDrawer = ({
               }
 
               const isReject = msg.isRelevant === false;
-              const bubbleClass = isReject
-                ? `${styles.aiBubble} ${styles.rejectBubble}`
-                : styles.aiBubble;
-
               return (
                 <div
                   key={msg.id}
-                  className={bubbleClass}
-                  aria-label="전문가 답변"
+                  className={`${styles.aiBubble} ${isReject ? styles.rejectBubble : ""}`}
+                  aria-label={t("expertAnswer")}
                 >
                   {msg.content}
                   {isReject && (
-                    <span className={styles.rejectHint}>
-                      ⓘ 이 질문은 횟수에 포함되지 않아요
-                    </span>
+                    <span className={styles.rejectHint}>{t("rejectHint")}</span>
                   )}
                 </div>
               );
@@ -423,7 +363,8 @@ export const ChatDrawer = ({
           {isSending && (
             <div
               className={styles.typingBubble}
-              aria-label="전문가가 답변을 준비하는 중"
+              role="status"
+              aria-label={t("typing")}
             >
               <span className={styles.typingDot} />
               <span className={styles.typingDot} />
@@ -435,11 +376,9 @@ export const ChatDrawer = ({
         {isExhausted ? (
           <div className={styles.exhaustedCard}>
             <p className={styles.exhaustedTitle}>
-              🔒 무료 질문 {FREE_QUESTION_LIMIT}회를 모두 사용했어요
+              {t("exhaustedTitle", { limit: FREE_QUESTION_LIMIT })}
             </p>
-            <p className={styles.exhaustedSub}>
-              {"추후 유료로 더 질문할 수 있도록\n준비 중이에요"}
-            </p>
+            <p className={styles.exhaustedSub}>{t("exhaustedSub")}</p>
           </div>
         ) : (
           <div className={styles.inputSection}>
@@ -447,34 +386,39 @@ export const ChatDrawer = ({
               <textarea
                 ref={inputRef}
                 className={styles.input}
-                placeholder={`궁금한 점을 물어보세요 (${MIN_QUESTION_LENGTH}~${MAX_QUESTION_LENGTH}자)`}
+                placeholder={t("placeholder", {
+                  min: MIN_QUESTION_LENGTH,
+                  max: MAX_QUESTION_LENGTH,
+                })}
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 disabled={isSending || rateLimitRemainingSec > 0}
                 maxLength={MAX_QUESTION_LENGTH}
-                rows={2}
-                aria-label="질문 입력"
+                rows={1}
+                aria-label={t("inputLabel")}
               />
               <button
                 type="button"
                 className={styles.sendButton}
                 onClick={handleSend}
                 disabled={!canSend}
-                aria-label="질문 전송"
+                aria-label={t("send")}
               >
-                <Send size={18} strokeWidth={2} />
+                <ArrowRight size={20} strokeWidth={2} aria-hidden="true" />
               </button>
             </div>
             <div className={styles.inputMeta}>
               {error ? (
-                <span className={styles.inputMetaError}>{error}</span>
+                <span className={styles.inputMetaError} role="alert">
+                  {error}
+                </span>
               ) : rateLimitRemainingSec > 0 ? (
                 <span>
-                  ⏱ {rateLimitRemainingSec}초 후 다시 질문할 수 있어요
+                  {t("rateLimited", { seconds: rateLimitRemainingSec })}
                 </span>
               ) : showContentHint ? (
-                <span>{MIN_QUESTION_LENGTH}글자 이상 입력해주세요</span>
+                <span>{t("minLength", { min: MIN_QUESTION_LENGTH })}</span>
               ) : (
                 <span />
               )}
@@ -491,26 +435,8 @@ export const ChatDrawer = ({
           </div>
         )}
       </div>
-    </div>
+    </ScreenSheet>
   );
 };
-
-const CloseIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M15 5L5 15M5 5L15 15"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
 
 export default ChatDrawer;

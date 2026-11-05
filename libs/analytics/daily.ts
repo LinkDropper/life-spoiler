@@ -8,7 +8,7 @@ import { trackEvent } from "./google-analytics";
  */
 
 export type DailyEntrySource = "home" | "landing" | "share";
-export type DailyShareChannel = "copy_link" | "kakao" | "image";
+export type DailyShareChannel = "copy_link" | "kakao" | "image" | "system";
 export type DailyConfidenceParam = "time_known" | "time_unknown";
 
 interface DailyEventParamMap {
