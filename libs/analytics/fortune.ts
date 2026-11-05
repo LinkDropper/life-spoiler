@@ -4,7 +4,11 @@ import { trackEvent } from "./google-analytics";
  * 운세 예고편·본편 화면 GA 이벤트 (docs/fortune-screen-redesign-2026-11.md §3, §9).
  * 개인 정보(이름·생년)는 보내지 않는다.
  */
-export type FortuneScreenType = "lifetime" | "yearly" | "yearly_2027";
+export type FortuneScreenType =
+  | "lifetime"
+  | "yearly"
+  | "yearly_2027"
+  | "past_life";
 
 /** owner = 본인 본편, shared = 친구가 받은 공유 페이지 */
 export type FortuneSurface = "owner" | "shared";
