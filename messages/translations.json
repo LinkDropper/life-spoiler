@@ -685,8 +685,8 @@
         "profileShareTitle": "프로필 이미지 공유하기",
         "share": {
           "title": "{name}님의 인생 운세",
-          "ogTitle": "114개 별이 스포하는 {name}님의 인생 시나리오",
-          "ogTitleWithHeadline": "{name}님의 인생 사주: {headline}",
+          "ogTitle": "{name}님의 인생 시나리오",
+          "ogTitleWithHeadline": "{name}님 주연 인생 영화: {headline}",
           "ogDescription": "자미두수로 분석한 {name}님의 인생 시나리오입니다.",
           "ogDescriptionWithScores": "{name}님의 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
         },
@@ -881,7 +881,8 @@
           "runtime": "RUNTIME 99Y",
           "starring": "{name} 주연",
           "leadStar": "명궁 {star}",
-          "noStar": "명궁 주성 없음"
+          "noStar": "명궁 주성 없음",
+          "badgeShared": "친구가 보낸 본편"
         },
         "runtime": {
           "age": "<b>{age}세</b> / {max}세",
@@ -892,7 +893,8 @@
           "desc": "포스터의 별자리는 여기서 나왔어요. 명궁과 함께 움직이는 세 궁을 이었어요.",
           "featureDesc": "칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 선은 명궁과 함께 움직이는 세 궁이에요.",
           "legendTriangle": "명궁과 삼합 두 궁",
-          "legendOpposite": "마주 보는 궁"
+          "legendOpposite": "마주 보는 궁",
+          "shareDesc": "포스터의 별자리는 이 명반에서 나왔어요. 명궁과 함께 움직이는 세 궁을 이었어요."
         },
         "trailer": {
           "title": "예고편 {count}컷"
@@ -934,27 +936,38 @@
         },
         "player": {
           "label": "본편 장면 이동",
-          "age": "<b>{age}세</b> / {max}세",
-          "now": "지금 {age}세"
+          "now": "지금 {age}세",
+          "openMenu": "장면 목록 열기",
+          "closeMenu": "장면 목록 닫기",
+          "kicker": {
+            "opening": "OPENING",
+            "next": "COMING NEXT",
+            "end": "THE END"
+          },
+          "scene": {
+            "opening": "오프닝 · 캐릭터와 명반",
+            "next": "다음 상영작",
+            "end": "엔딩 크레딧"
+          },
+          "state": {
+            "current": "보는 중",
+            "done": "봤어요"
+          }
         },
         "acts": {
           "act1": {
-            "chip": "스포일러",
             "title": "인생 스포일러",
             "sub": "이 영화의 첫 장면"
           },
           "act2": {
-            "chip": "핵심",
             "title": "핵심 시나리오",
             "sub": "인생 전체를 관통하는 줄거리"
           },
           "act3": {
-            "chip": "네 갈래",
             "title": "네 갈래 이야기",
             "sub": "재물 · 직업 · 인연 · 건강"
           },
           "act4": {
-            "chip": "나이대별",
             "title": "나이대별 시나리오",
             "sub": "가까운 장면일수록 크게, 지금부터 펼쳐요"
           }
@@ -1002,6 +1015,10 @@
             "결혼하기 좋은 시기는 언제인가요?",
             "재물운이 궁금해요"
           ]
+        },
+        "share": {
+          "cta": "내 인생 예고편 무료로 보기",
+          "endNote": "내 명반으로는 어떤 영화가 나올까요? 예고편은 무료로 상영돼요."
         }
       }
     },
@@ -2853,8 +2870,8 @@
         "profileShareTitle": "Share Profile Image",
         "share": {
           "title": "{name}'s Lifetime Fortune",
-          "ogTitle": "What 114 stars reveal about {name}'s life",
-          "ogTitleWithHeadline": "{name}'s Life Fortune: {headline}",
+          "ogTitle": "{name}'s life scenario",
+          "ogTitleWithHeadline": "A life film starring {name}: {headline}",
           "ogDescription": "{name}'s life scenario analyzed by ancient Eastern astrology.",
           "ogDescriptionWithScores": "{name}'s fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
@@ -3049,7 +3066,8 @@
           "runtime": "RUNTIME 99Y",
           "starring": "Starring {name}",
           "leadStar": "Life palace: {star}",
-          "noStar": "No main star in Life palace"
+          "noStar": "No main star in Life palace",
+          "badgeShared": "Shared by a friend"
         },
         "runtime": {
           "age": "<b>Age {age}</b> / {max}",
@@ -3060,7 +3078,8 @@
           "desc": "The constellation on the poster comes from here. It links your Life palace with the three palaces that move with it.",
           "featureDesc": "Tap a cell to see what that palace covers. The lines link your Life palace with the three palaces that move with it.",
           "legendTriangle": "Life palace and its two trine palaces",
-          "legendOpposite": "Opposite palace"
+          "legendOpposite": "Opposite palace",
+          "shareDesc": "The poster constellation comes from this chart. It links the Life palace with the three palaces that move with it."
         },
         "trailer": {
           "title": "{count} trailer cuts"
@@ -3102,27 +3121,38 @@
         },
         "player": {
           "label": "Jump to a scene",
-          "age": "<b>Age {age}</b> / {max}",
-          "now": "Now · {age}"
+          "now": "Now · {age}",
+          "openMenu": "Open scene list",
+          "closeMenu": "Close scene list",
+          "kicker": {
+            "opening": "OPENING",
+            "next": "COMING NEXT",
+            "end": "THE END"
+          },
+          "scene": {
+            "opening": "Opening · Character and chart",
+            "next": "Coming next",
+            "end": "End credits"
+          },
+          "state": {
+            "current": "Watching",
+            "done": "Watched"
+          }
         },
         "acts": {
           "act1": {
-            "chip": "Spoiler",
             "title": "Life spoiler",
             "sub": "The opening scene of this film"
           },
           "act2": {
-            "chip": "Core",
             "title": "Core scenario",
             "sub": "The plot running through your whole life"
           },
           "act3": {
-            "chip": "Storylines",
             "title": "Four storylines",
             "sub": "Wealth · Career · Relationships · Health"
           },
           "act4": {
-            "chip": "By age",
             "title": "Scenarios by age",
             "sub": "The nearer the scene, the bigger it plays"
           }
@@ -3170,6 +3200,10 @@
             "When is a good time to marry?",
             "Tell me about my wealth"
           ]
+        },
+        "share": {
+          "cta": "Watch my life trailer for free",
+          "endNote": "What film would your chart make? The trailer plays for free."
         }
       }
     },
@@ -5029,8 +5063,8 @@
         "profileShareTitle": "プロフィール画像をシェアする",
         "share": {
           "title": "{name}さんの人生運勢",
-          "ogTitle": "114個の星がネタバレする{name}さんの人生シナリオ",
-          "ogTitleWithHeadline": "{name}さんの人生運勢: {headline}",
+          "ogTitle": "{name}さんの人生シナリオ",
+          "ogTitleWithHeadline": "{name}さん主演の人生映画: {headline}",
           "ogDescription": "紫微斗数で分析した{name}さんの人生シナリオです。",
           "ogDescriptionWithScores": "{name}さんの運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
         },
@@ -5225,7 +5259,8 @@
           "runtime": "RUNTIME 99Y",
           "starring": "主演 {name}",
           "leadStar": "命宮 {star}",
-          "noStar": "命宮に主星なし"
+          "noStar": "命宮に主星なし",
+          "badgeShared": "友だちから届いた本編"
         },
         "runtime": {
           "age": "<b>{age}歳</b> / {max}歳",
@@ -5236,7 +5271,8 @@
           "desc": "ポスターの星座はここから生まれました。命宮と一緒に動く三つの宮を結んでいます。",
           "featureDesc": "マスを押すと、その宮が何を表すかをお伝えします。線は命宮と一緒に動く三つの宮です。",
           "legendTriangle": "命宮と三合の二宮",
-          "legendOpposite": "向かい合う宮"
+          "legendOpposite": "向かい合う宮",
+          "shareDesc": "ポスターの星座はこの命盤から生まれました。命宮と一緒に動く三つの宮を結んでいます。"
         },
         "trailer": {
           "title": "予告編 {count}カット"
@@ -5278,27 +5314,38 @@
         },
         "player": {
           "label": "本編の場面へ移動",
-          "age": "<b>{age}歳</b> / {max}歳",
-          "now": "いま {age}歳"
+          "now": "いま {age}歳",
+          "openMenu": "場面リストを開く",
+          "closeMenu": "場面リストを閉じる",
+          "kicker": {
+            "opening": "OPENING",
+            "next": "COMING NEXT",
+            "end": "THE END"
+          },
+          "scene": {
+            "opening": "オープニング · キャラクターと命盤",
+            "next": "次回上映作",
+            "end": "エンドクレジット"
+          },
+          "state": {
+            "current": "上映中",
+            "done": "視聴済み"
+          }
         },
         "acts": {
           "act1": {
-            "chip": "ネタバレ",
             "title": "人生ネタバレ",
             "sub": "この映画の最初の場面"
           },
           "act2": {
-            "chip": "核心",
             "title": "核心シナリオ",
             "sub": "人生全体を貫く筋書き"
           },
           "act3": {
-            "chip": "四つの物語",
             "title": "四つの物語",
             "sub": "財運 · 仕事 · 縁 · 健康"
           },
           "act4": {
-            "chip": "年代別",
             "title": "年代別シナリオ",
             "sub": "近い場面ほど大きく、いまから広げます"
           }
@@ -5346,6 +5393,10 @@
             "結婚に良い時期はいつですか？",
             "財運が気になります"
           ]
+        },
+        "share": {
+          "cta": "わたしの人生予告編を無料で見る",
+          "endNote": "わたしの命盤からはどんな映画が生まれるでしょう。予告編は無料で上映しています。"
         }
       }
     },

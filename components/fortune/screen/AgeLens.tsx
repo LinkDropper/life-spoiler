@@ -6,6 +6,7 @@ import { useId, useMemo, useRef, useState } from "react";
 
 import { MarkdownContent } from "@/components/fortune";
 import { trackFortuneEvent } from "@/libs/analytics/fortune";
+import type { FortuneSurface } from "@/libs/analytics/fortune";
 import { buildAgeLens, parseAgePeriod } from "@/libs/fortune/lifetime-screen";
 import type { FortuneInterpretation } from "@/libs/services/ai/types";
 
@@ -17,11 +18,13 @@ interface AgeLensProps {
   scenarios: AgeScenario[];
   age: number;
   birthTimeUnknown: boolean;
+  surface: FortuneSurface;
 }
 
 /** 높이 전환이 끝나지 않을 때(동작 줄이기 등) 기다리는 최대 시간 */
 const SCROLL_FALLBACK_MS = 700;
-const STICKY_OFFSET_PX = 150;
+/** 헤더 + 상영 컨트롤 바 높이 (screen.module.css의 scroll-margin-top과 같은 값) */
+const STICKY_OFFSET_PX = 128;
 
 /** 러닝타임 바의 "지금 n세" 칩이 데려갈 시기 요소 id */
 export const toAgeSceneId = (index: number): string => `age-scene-${index}`;
@@ -30,7 +33,12 @@ export const toAgeSceneId = (index: number): string => `age-scene-${index}`;
  * ACT 4 나이대별 시나리오 — 가까울수록 크게 (기획서 §9).
  * 지금 시기는 펼침, 다음 시기는 반쯤(한 줄 정리), 나머지는 한 줄. 한 번에 하나만 펼친다.
  */
-export const AgeLens = ({ scenarios, age, birthTimeUnknown }: AgeLensProps) => {
+export const AgeLens = ({
+  scenarios,
+  age,
+  birthTimeUnknown,
+  surface,
+}: AgeLensProps) => {
   const t = useTranslations("fortune.screen.age");
   const baseId = useId();
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -97,6 +105,7 @@ export const AgeLens = ({ scenarios, age, birthTimeUnknown }: AgeLensProps) => {
     keepInView(index, focusIndex);
     trackFortuneEvent("fortune_age_focus", {
       fortune_type: "lifetime",
+      surface,
       index,
       distance: index - lens.nowIndex,
       expand_all: false,
@@ -113,6 +122,7 @@ export const AgeLens = ({ scenarios, age, birthTimeUnknown }: AgeLensProps) => {
     setIsAllOpen(true);
     trackFortuneEvent("fortune_age_focus", {
       fortune_type: "lifetime",
+      surface,
       index: -1,
       distance: 0,
       expand_all: true,

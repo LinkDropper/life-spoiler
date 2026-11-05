@@ -138,7 +138,13 @@ export default function LifetimeFortunePage() {
   const cast = useScreenCast(result?.rawChart ?? null);
 
   const scenes = useMemo<PlayerScene[]>(
-    () => ACT_IDS.map((id) => ({ id, label: tScreen(`acts.${id}.chip`) })),
+    () =>
+      ACT_IDS.map((id, index) => ({
+        id,
+        act: `ACT ${index + 1}`,
+        title: tScreen(`acts.${id}.title`),
+        sub: tScreen(`acts.${id}.sub`),
+      })),
     [tScreen]
   );
 
@@ -313,6 +319,7 @@ export default function LifetimeFortunePage() {
           age={age}
           nowTargetId={ageLens ? toAgeSceneId(ageLens.nowIndex) : undefined}
           extraSceneIds={EXTRA_SCENE_IDS}
+          surface="owner"
         />
 
         <section className={screen.section}>
@@ -418,6 +425,7 @@ export default function LifetimeFortunePage() {
               scenarios={ageScenarios}
               age={age}
               birthTimeUnknown={profile.birth_time_unknown}
+              surface="owner"
             />
           </>
         )}
@@ -428,9 +436,22 @@ export default function LifetimeFortunePage() {
           name={profile.name}
           leadStar={cast.leadStar}
           wuxingJu={result.chart.wuxingJu}
-          onShare={() => setIsShareDrawerOpen(true)}
-          onReview={() => setIsReviewDrawerOpen(true)}
-        />
+        >
+          <button
+            type="button"
+            className={screen.primaryButton}
+            onClick={() => setIsShareDrawerOpen(true)}
+          >
+            {tScreen("credits.share")}
+          </button>
+          <button
+            type="button"
+            className={screen.ghostButton}
+            onClick={() => setIsReviewDrawerOpen(true)}
+          >
+            {tScreen("credits.review")}
+          </button>
+        </EndCredits>
       </main>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
