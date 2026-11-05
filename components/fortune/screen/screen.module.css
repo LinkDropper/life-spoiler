@@ -2462,3 +2462,358 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* ============================================================
+   궁합 운세 = 공동 주연 영화 (기획서 §13).
+   두 사람의 색: A = 핑크(accent), B = 하늘색. 둘이 함께 받은 점수 = 별빛 금색
+   ============================================================ */
+
+.root {
+  --fs-sky: #9ec5ff;
+}
+
+.duoA {
+  --fs-duo: var(--fs-accent);
+}
+
+.duoB {
+  --fs-duo: var(--fs-sky);
+}
+
+/* ---------- 예고편 공동 주연 포스터 ---------- */
+
+.coPoster {
+  position: relative;
+  overflow: hidden;
+  background: var(--fs-deep);
+}
+
+.coPoster::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fs-stars);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.coPresents {
+  position: relative;
+  margin: 0;
+  padding-top: 22px;
+  text-align: center;
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.coLeads {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: 220px;
+}
+
+.coLead {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 44px 8px 0;
+  text-align: center;
+}
+
+.coLead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--fs-duo) 33%, transparent),
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.duoA.coLead::before {
+  left: -30px;
+}
+
+.duoB.coLead::before {
+  right: -30px;
+}
+
+.coLeadArt {
+  position: relative;
+  width: 150px;
+  max-width: 100%;
+  height: 82px;
+  object-fit: contain;
+}
+
+.coLeadStar {
+  position: relative;
+  font-family: var(--fs-mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: var(--fs-duo);
+}
+
+.coLeadName {
+  position: relative;
+  max-width: 100%;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+.coTimes {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  font-family: var(--fs-display);
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.6);
+  transform: translateX(-50%);
+}
+
+.coBody {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 22px 26px;
+  text-align: center;
+}
+
+.coScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+.coScore span {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--fs-star);
+}
+
+.coScore b {
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 64px;
+  line-height: 1;
+  color: var(--fs-star);
+  text-shadow: 0 0 30px rgba(255, 231, 163, 0.5);
+}
+
+.coTitle {
+  margin: 0;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 34px;
+  line-height: 1.15;
+}
+
+/* ---------- 배역 소개 ---------- */
+
+.castGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.castCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px;
+  border-radius: 8px;
+  background: var(--fs-panel);
+  box-shadow:
+    inset 0 3px 0 var(--fs-duo),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.castArt {
+  align-self: center;
+  width: 120px;
+  max-width: 100%;
+  height: 66px;
+  object-fit: contain;
+}
+
+.castStar {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--fs-duo);
+}
+
+.castName {
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.castSummary {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--fs-haze);
+}
+
+/* ---------- 캐스팅 노트 ---------- */
+
+.castingNotes {
+  margin: 0;
+}
+
+.castingNotes div {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  column-gap: 12px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--fs-line);
+}
+
+.castingNotes dt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 2px;
+  font-size: 12px;
+  color: var(--fs-faint);
+}
+
+.castingNotes dt span {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--fs-star);
+}
+
+.castingNotes dd {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.castingNotes dd b {
+  font-size: 17px;
+  color: var(--fs-text);
+}
+
+/* ---------- 두 사람의 명반 탭 ---------- */
+
+.chartTabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--fs-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.chartTab {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.chartTab[aria-selected="true"] {
+  background: var(--fs-duo);
+  color: var(--fs-ink);
+}
+
+.chartTab:focus-visible {
+  outline: 2px solid var(--fs-star);
+  outline-offset: 2px;
+}
+
+/* ---------- ACT 2 두 사람의 장면 ---------- */
+
+.duoScene {
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--fs-panel);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.duoSceneStill {
+  position: relative;
+  height: 128px;
+  background:
+    radial-gradient(
+      ellipse 60% 90% at 20% 40%,
+      rgba(255, 143, 177, 0.4),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 90% at 80% 60%,
+      rgba(158, 197, 255, 0.35),
+      transparent 70%
+    ),
+    var(--fs-deep);
+}
+
+.duoSceneStill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--fs-stars);
+  opacity: 0.5;
+}
+
+.duoSceneStill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top: 12px solid #000;
+  border-bottom: 12px solid #000;
+}
+
+.duoSceneBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* ---------- 네 갈래 평점 (컨트롤 바 "총평" 앵커 · 예고편 잠금) ---------- */
+
+.ratingAnchor {
+  scroll-margin-top: 128px;
+}
+
+.ratingLocked {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.ratingReviewLocked {
+  filter: blur(5px);
+  user-select: none;
+}

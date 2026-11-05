@@ -24,8 +24,11 @@ export interface CharacterPosterProps {
   /**
    * emblem = 배경 타이포 + 가운데 그림(올해·인생)
    * keyart = 위쪽을 그림으로 가득 채우고 아래로 녹임(전생 AI 키 아트). 배경 타이포는 쓰지 않는다
+   * duo = 배경 타이포 + 두 사람의 그림을 좌우로(궁합 공동 주연)
    */
-  heroLayout?: "emblem" | "keyart";
+  heroLayout?: "emblem" | "keyart" | "duo";
+  /** duo: 오른쪽 사람의 그림 */
+  secondHero?: { src: string; alt: string };
   /** 제목 아래 한 줄 인용 (전생: 묘비명) */
   quote?: string;
   /** 오른쪽 위 작은 라벨 (기본 CHARACTER POSTER) */
@@ -69,6 +72,20 @@ export const POSTER_DISPLAY_FONT = DISPLAY_FONT;
 export const POSTER_MONO_FONT = MONO_FONT;
 export const POSTER_STAR = STAR;
 
+/** 궁합 두 사람의 색: 왼쪽 = 핑크, 오른쪽 = 하늘색 */
+const DUO_LEFT = "#ff8fb1";
+const DUO_RIGHT = "#9ec5ff";
+export const POSTER_DUO_COLORS = { left: DUO_LEFT, right: DUO_RIGHT };
+
+/** 글자 폭 어림(em): 한글·한자·가나는 1, 그 밖은 0.62 */
+const toTextWidthEm = (text: string): number =>
+  Array.from(text).reduce(
+    (width, char) =>
+      width +
+      (/[\u1100-\u11ff\u3000-\u9fff\uac00-\ud7af]/.test(char) ? 1 : 0.62),
+    0
+  );
+
 const absolute = (style: CSSProperties): CSSProperties => ({
   position: "absolute",
   ...style,
@@ -90,6 +107,7 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
       headline,
       tags = [],
       heroLayout = "emblem",
+      secondHero,
       quote,
       cornerLabel = "CHARACTER POSTER",
       bottom,
@@ -102,10 +120,10 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
     },
     ref
   ) => {
-    /** 배경 타이포가 길면(영문 주성 이름) 줄여서 폭 안에 */
+    /** 배경 타이포가 길면(영문 주성 이름, 궁합 두 이름) 줄여서 폭 안에 */
     const backdropSize = Math.min(
       120,
-      Math.floor(340 / Math.max(backdropText.length * 0.62, 1))
+      Math.floor(340 / Math.max(toTextWidthEm(backdropText), 1))
     );
     const wrapRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
@@ -135,7 +153,9 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
           fontFamily: "var(--font-pretendard), Pretendard, sans-serif",
           wordBreak: "keep-all",
           background:
-            "radial-gradient(ellipse 90% 60% at 50% 30%, rgba(216,166,255,0.32), transparent 70%), radial-gradient(ellipse 70% 40% at 80% 85%, rgba(36,64,122,0.6), transparent 70%), #05070f",
+            heroLayout === "duo"
+              ? `radial-gradient(ellipse 60% 45% at 18% 32%, ${DUO_LEFT}52, transparent 70%), radial-gradient(ellipse 60% 45% at 82% 32%, ${DUO_RIGHT}4d, transparent 70%), #05070f`
+              : "radial-gradient(ellipse 90% 60% at 50% 30%, rgba(216,166,255,0.32), transparent 70%), radial-gradient(ellipse 70% 40% at 80% 85%, rgba(36,64,122,0.6), transparent 70%), #05070f",
           ...(isImage
             ? {}
             : {
@@ -208,6 +228,44 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
               })}
             />
           </>
+        ) : heroLayout === "duo" ? (
+          <>
+            <span
+              aria-hidden="true"
+              style={absolute({
+                left: 0,
+                right: 0,
+                top: 70,
+                textAlign: "center",
+                whiteSpace: "nowrap",
+                fontFamily: DISPLAY_FONT,
+                fontSize: backdropSize,
+                lineHeight: 1,
+                color: "transparent",
+                WebkitTextStroke: "1.5px rgba(255,204,217,0.5)",
+              })}
+            >
+              {backdropText}
+            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element -- html-to-image 호환 */}
+            <img
+              src={heroSrc}
+              alt={heroAlt}
+              width={190}
+              height={104}
+              style={absolute({ left: 6, top: 176, objectFit: "contain" })}
+            />
+            {secondHero && (
+              // eslint-disable-next-line @next/next/no-img-element -- html-to-image 호환
+              <img
+                src={secondHero.src}
+                alt={secondHero.alt}
+                width={190}
+                height={104}
+                style={absolute({ right: 6, top: 176, objectFit: "contain" })}
+              />
+            )}
+          </>
         ) : (
           <>
             <span
@@ -257,7 +315,7 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
           style={absolute({
             left: 22,
             right: 22,
-            top: heroLayout === "keyart" ? 296 : 318,
+            top: heroLayout === "emblem" ? 318 : 296,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

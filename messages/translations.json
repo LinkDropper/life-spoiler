@@ -1366,6 +1366,138 @@
             "ogTitleWithHeadline": "{name}님 주연 전편: {headline}",
             "ogDescription": "자미두수로 다시 그린 {name}님의 전생 이야기예요."
           }
+        },
+        "compatibility": {
+          "genre": {
+            "romance": "로맨스",
+            "romcom": "로맨틱 코미디",
+            "buddy": "버디 무비",
+            "office": "오피스 드라마",
+            "family": "가족 드라마",
+            "reunion": "다시 쓰는 드라마",
+            "pet": "반려 드라마",
+            "drama": "두 사람의 드라마"
+          },
+          "genreEn": {
+            "romance": "ROMANCE PICTURE",
+            "romcom": "ROMANTIC COMEDY",
+            "buddy": "BUDDY PICTURE",
+            "office": "OFFICE DRAMA",
+            "family": "FAMILY DRAMA",
+            "reunion": "SECOND-CHANCE DRAMA",
+            "pet": "COMPANION DRAMA",
+            "drama": "TWO-HANDER DRAMA"
+          },
+          "poster": {
+            "badgeTrailer": "궁합 예고편 무료 상영 중",
+            "kicker": "GENRE · {genre} · CHEMISTRY {score}",
+            "castLine": "{a} · {b} 공동 주연",
+            "scoreAria": "케미 점수 {score}점",
+            "scoreUnit": "{score}점",
+            "brand": "인생스포",
+            "share": "공동 주연 포스터 공유하기",
+            "shareTitle": "공동 주연 포스터 공유하기",
+            "imageError": "이미지를 만들지 못했어요. 다시 시도해 주세요.",
+            "shareError": "공유하지 못했어요. 다시 시도해 주세요."
+          },
+          "cast": {
+            "title": "배역 소개",
+            "desc": "두 사람의 명반에서 읽은 배역이에요. 왼쪽은 {a}, 오른쪽은 {b}의 배역이에요."
+          },
+          "notes": {
+            "title": "캐스팅 노트",
+            "desc": "두 사람을 한 화면에 세운 이유예요. 띠·오행·케미를 한 단어로 정리했어요.",
+            "labels": {
+              "zodiac": "띠 궁합",
+              "fiveElement": "오행 궁합",
+              "chemistry": "케미"
+            }
+          },
+          "chart": {
+            "title": "원작 · 두 사람의 명반",
+            "tab": "{name}의 원작",
+            "tabsAria": "누구의 명반을 볼지 고르기",
+            "previewDesc": "포스터의 두 별은 여기서 나왔어요. 탭으로 두 사람의 명반을 번갈아 봐요.",
+            "featureDesc": "칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 탭으로 두 사람의 명반을 번갈아 봐요.",
+            "shareDesc": "선은 명궁과 함께 움직이는 세 궁이에요. 탭으로 두 사람의 명반을 번갈아 봐요."
+          },
+          "stories": {
+            "communication": "소통",
+            "growth": "성장",
+            "emotion": "감정·신뢰",
+            "crisis": "위기"
+          },
+          "acts": {
+            "act1": {
+              "title": "첫 만남",
+              "sub": "두 사람의 이야기가 시작돼요"
+            },
+            "act2": {
+              "title": "두 사람의 장면",
+              "sub": "실제로 일어날 순간들"
+            },
+            "act3": {
+              "title": "네 갈래 이야기",
+              "sub": "소통 · 성장 · 감정 · 위기"
+            },
+            "act4": {
+              "title": "두 사람에게",
+              "sub": "오래 가기 위해 챙길 것"
+            }
+          },
+          "player": {
+            "rating": "총평 {score}"
+          },
+          "rating": {
+            "lockedHint": "네 갈래 점수와 이야기는 본편 ACT 3에서 공개돼요.",
+            "lockedReview": "두 사람의 이야기"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "두 사람의 장면",
+              "desc": "두 사람 사이에 실제로 일어날 장면 2~4개"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "네 갈래 이야기",
+              "desc": "소통 · 성장 · 감정과 신뢰 · 위기"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "두 사람에게",
+              "desc": "오래 가기 위해 챙길 것"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "공동 주연 포스터",
+              "desc": "두 사람의 주성 그림과 평점이 담긴 공유 이미지"
+            },
+            "spoilerTitle": "ACT 2 · 두 사람의 장면",
+            "spoilerHint": "두 사람 사이에 실제로 일어날 장면은 본편에서 공개돼요."
+          },
+          "next": {
+            "body": {
+              "lifetime": "공동 주연 다음은 단독 주연이에요. {name}님의 99세 줄거리를 예고편부터 무료로 볼 수 있어요.",
+              "yearly": "{name}님의 올해 12개월을 달마다 한 장면으로 보여 드려요.",
+              "pastLife": "이번 생보다 먼저 찍힌 {name}님의 전편을 보여 드려요.",
+              "yearly2027": "{name}님의 다음 해 12개월을 달마다 한 장면으로 보여 드려요.",
+              "faceReading": "얼굴에 담긴 성향을 클로즈업으로 읽어 드려요."
+            }
+          },
+          "followUp": {
+            "name": "궁합",
+            "prompts": [
+              "어떻게 갈등을 풀면 좋을까요?",
+              "장기적으로 잘 맞을까요?",
+              "서로 조심할 점은 무엇인가요?"
+            ]
+          },
+          "share": {
+            "badge": "친구가 보낸 본편",
+            "cta": "우리 궁합 예고편 무료로 보기",
+            "endNote": "나와 그 사람은 어떤 장르일까요? 궁합 예고편은 무료로 상영돼요."
+          }
         }
       }
     },
@@ -3897,6 +4029,138 @@
             "ogTitle": "{name}'s past-life scenario",
             "ogTitleWithHeadline": "A prequel starring {name}: {headline}",
             "ogDescription": "{name}'s past life, retold through Zi Wei Dou Shu."
+          }
+        },
+        "compatibility": {
+          "genre": {
+            "romance": "Romance",
+            "romcom": "Romantic comedy",
+            "buddy": "Buddy movie",
+            "office": "Office drama",
+            "family": "Family drama",
+            "reunion": "Second-chance drama",
+            "pet": "Companion drama",
+            "drama": "Two-hander drama"
+          },
+          "genreEn": {
+            "romance": "ROMANCE PICTURE",
+            "romcom": "ROMANTIC COMEDY",
+            "buddy": "BUDDY PICTURE",
+            "office": "OFFICE DRAMA",
+            "family": "FAMILY DRAMA",
+            "reunion": "SECOND-CHANCE DRAMA",
+            "pet": "COMPANION DRAMA",
+            "drama": "TWO-HANDER DRAMA"
+          },
+          "poster": {
+            "badgeTrailer": "Compatibility trailer, free",
+            "kicker": "GENRE · {genre} · CHEMISTRY {score}",
+            "castLine": "Co-starring {a} and {b}",
+            "scoreAria": "Chemistry score {score}",
+            "scoreUnit": "{score}",
+            "brand": "Life Spoiler",
+            "share": "Share the co-star poster",
+            "shareTitle": "Share the co-star poster",
+            "imageError": "We couldn't create the image. Please try again.",
+            "shareError": "We couldn't share it. Please try again."
+          },
+          "cast": {
+            "title": "The cast",
+            "desc": "Roles read from each chart. Left: {a}. Right: {b}."
+          },
+          "notes": {
+            "title": "Casting notes",
+            "desc": "Why these two share the screen: zodiac, elements and chemistry in a word each.",
+            "labels": {
+              "zodiac": "Zodiac",
+              "fiveElement": "Elements",
+              "chemistry": "Chemistry"
+            }
+          },
+          "chart": {
+            "title": "Original · Two charts",
+            "tab": "{name}'s chart",
+            "tabsAria": "Choose whose chart to view",
+            "previewDesc": "The two stars on the poster come from here. Switch tabs to see each chart.",
+            "featureDesc": "Tap a palace to see what it covers. Switch tabs to see each chart.",
+            "shareDesc": "The lines join the life palace and the three palaces that move with it. Switch tabs to see each chart."
+          },
+          "stories": {
+            "communication": "Talk",
+            "growth": "Growth",
+            "emotion": "Trust",
+            "crisis": "Crisis"
+          },
+          "acts": {
+            "act1": {
+              "title": "First meeting",
+              "sub": "Where their story begins"
+            },
+            "act2": {
+              "title": "Their scenes",
+              "sub": "Moments that will happen"
+            },
+            "act3": {
+              "title": "Four storylines",
+              "sub": "Talk · Growth · Trust · Crisis"
+            },
+            "act4": {
+              "title": "For the two",
+              "sub": "What keeps it going"
+            }
+          },
+          "player": {
+            "rating": "Overall {score}"
+          },
+          "rating": {
+            "lockedHint": "The four scores and stories open in ACT 3 of the feature.",
+            "lockedReview": "Their story"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "Their scenes",
+              "desc": "Two to four scenes that will happen between them"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "Four storylines",
+              "desc": "Talk · Growth · Trust · Crisis"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "For the two",
+              "desc": "What keeps it going"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "Co-star poster",
+              "desc": "A shareable image with both lead stars and the ratings"
+            },
+            "spoilerTitle": "ACT 2 · Their scenes",
+            "spoilerHint": "The scenes between them open in the feature."
+          },
+          "next": {
+            "body": {
+              "lifetime": "After the co-star film comes the solo lead. Watch the trailer of {name}'s 99-year story for free.",
+              "yearly": "{name}'s year, one scene per month.",
+              "pastLife": "The prequel filmed before {name}'s current life.",
+              "yearly2027": "{name}'s next year, one scene per month.",
+              "faceReading": "A close-up reading of the traits in a face."
+            }
+          },
+          "followUp": {
+            "name": "Compatibility",
+            "prompts": [
+              "How should we resolve conflicts?",
+              "Will we get along in the long run?",
+              "What should we each be careful about?"
+            ]
+          },
+          "share": {
+            "badge": "Shared with you",
+            "cta": "Watch our compatibility trailer free",
+            "endNote": "What genre would you two be? The compatibility trailer is free."
           }
         }
       }
@@ -6437,6 +6701,138 @@
             "ogTitle": "{name}さんの前世シナリオ",
             "ogTitleWithHeadline": "{name}さん主演の前編: {headline}",
             "ogDescription": "紫微斗数で描き直した{name}さんの前世の物語です。"
+          }
+        },
+        "compatibility": {
+          "genre": {
+            "romance": "ロマンス",
+            "romcom": "ラブコメディ",
+            "buddy": "バディムービー",
+            "office": "オフィスドラマ",
+            "family": "ファミリードラマ",
+            "reunion": "やり直しのドラマ",
+            "pet": "相棒ドラマ",
+            "drama": "二人のドラマ"
+          },
+          "genreEn": {
+            "romance": "ROMANCE PICTURE",
+            "romcom": "ROMANTIC COMEDY",
+            "buddy": "BUDDY PICTURE",
+            "office": "OFFICE DRAMA",
+            "family": "FAMILY DRAMA",
+            "reunion": "SECOND-CHANCE DRAMA",
+            "pet": "COMPANION DRAMA",
+            "drama": "TWO-HANDER DRAMA"
+          },
+          "poster": {
+            "badgeTrailer": "相性予告編 無料上映中",
+            "kicker": "GENRE · {genre} · CHEMISTRY {score}",
+            "castLine": "{a} · {b} 共演",
+            "scoreAria": "相性スコア {score}点",
+            "scoreUnit": "{score}点",
+            "brand": "人生スポ",
+            "share": "共演ポスターをシェア",
+            "shareTitle": "共演ポスターをシェア",
+            "imageError": "画像を作成できませんでした。もう一度お試しください。",
+            "shareError": "シェアできませんでした。もう一度お試しください。"
+          },
+          "cast": {
+            "title": "キャスト紹介",
+            "desc": "二人の命盤から読んだ役どころです。左が{a}、右が{b}の役です。"
+          },
+          "notes": {
+            "title": "キャスティングノート",
+            "desc": "二人を同じ画面に立たせた理由です。干支・五行・ケミを一言でまとめました。",
+            "labels": {
+              "zodiac": "干支の相性",
+              "fiveElement": "五行の相性",
+              "chemistry": "ケミ"
+            }
+          },
+          "chart": {
+            "title": "原作 · 二人の命盤",
+            "tab": "{name}の原作",
+            "tabsAria": "どちらの命盤を見るか選ぶ",
+            "previewDesc": "ポスターの二つの星はここから生まれました。タブで二人の命盤を切り替えて見られます。",
+            "featureDesc": "マスを押すと、その宮が何を表すか分かります。タブで二人の命盤を切り替えて見られます。",
+            "shareDesc": "線は命宮と一緒に動く三つの宮です。タブで二人の命盤を切り替えて見られます。"
+          },
+          "stories": {
+            "communication": "対話",
+            "growth": "成長",
+            "emotion": "感情・信頼",
+            "crisis": "危機"
+          },
+          "acts": {
+            "act1": {
+              "title": "出会い",
+              "sub": "二人の物語が始まります"
+            },
+            "act2": {
+              "title": "二人の場面",
+              "sub": "実際に起こる瞬間"
+            },
+            "act3": {
+              "title": "四つの物語",
+              "sub": "対話 · 成長 · 感情 · 危機"
+            },
+            "act4": {
+              "title": "二人へ",
+              "sub": "長く続けるために"
+            }
+          },
+          "player": {
+            "rating": "総評 {score}"
+          },
+          "rating": {
+            "lockedHint": "四つのスコアと物語は本編ACT 3で公開されます。",
+            "lockedReview": "二人の物語"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "二人の場面",
+              "desc": "二人の間に実際に起こる場面2〜4つ"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "四つの物語",
+              "desc": "対話 · 成長 · 感情と信頼 · 危機"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "二人へ",
+              "desc": "長く続けるために"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "共演ポスター",
+              "desc": "二人の主星の絵と評点が入ったシェア画像"
+            },
+            "spoilerTitle": "ACT 2 · 二人の場面",
+            "spoilerHint": "二人の間に起こる場面は本編で公開されます。"
+          },
+          "next": {
+            "body": {
+              "lifetime": "共演の次は単独主演です。{name}さんの99年のあらすじを予告編から無料で見られます。",
+              "yearly": "{name}さんの今年の12か月を、月ごとに一場面で見せます。",
+              "pastLife": "今世より先に撮られた{name}さんの前編を見せます。",
+              "yearly2027": "{name}さんの来年の12か月を、月ごとに一場面で見せます。",
+              "faceReading": "顔に表れた性格をクローズアップで読み解きます。"
+            }
+          },
+          "followUp": {
+            "name": "相性",
+            "prompts": [
+              "どうやって衝突を解決すればいいですか?",
+              "長い目で見て相性はいいですか?",
+              "お互い気をつけることは何ですか?"
+            ]
+          },
+          "share": {
+            "badge": "友だちから届いた本編",
+            "cta": "私たちの相性予告編を無料で見る",
+            "endNote": "あなたとあの人はどんなジャンルでしょう? 相性予告編は無料で上映中です。"
           }
         }
       }
