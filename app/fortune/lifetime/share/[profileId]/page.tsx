@@ -6,15 +6,14 @@ import { useEffect, useMemo } from "react";
 
 import { ErrorState, MarkdownContent } from "@/components/fortune";
 import type { CategoryKey } from "@/components/fortune";
-import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
-import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
-import NewProfileCard from "@/components/fortune/NewProfileCard";
+import { LifetimeCharacterPoster } from "@/components/fortune/LifetimeCharacterPoster";
 import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
 import { AgeLens, toAgeSceneId } from "@/components/fortune/screen/AgeLens";
 import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
 import { EndCredits } from "@/components/fortune/screen/EndCredits";
 import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
+import { LifetimeNowShowing } from "@/components/fortune/screen/LifetimeNowShowing";
 import { NumberedSections } from "@/components/fortune/screen/NumberedSections";
 import { RatingBoard } from "@/components/fortune/screen/RatingBoard";
 import type { RatingItem } from "@/components/fortune/screen/RatingBoard";
@@ -30,23 +29,8 @@ import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import { getFilmAge } from "@/libs/home/home-film";
 import { useLifetimeShare } from "@/libs/hooks/fortune";
 import { useReferral } from "@/libs/hooks/useReferral";
-import type {
-  FortuneInterpretation,
-  ProfileTraitsResponse,
-} from "@/libs/services/ai/types";
 
 import styles from "./page.module.css";
-
-/**
- * profileTraits 존재 여부 타입 가드
- */
-const hasProfileTraits = (
-  interpretation: FortuneInterpretation
-): interpretation is FortuneInterpretation & {
-  profileTraits: ProfileTraitsResponse;
-} => {
-  return !!interpretation.profileTraits?.spectrums;
-};
 
 const CATEGORY_KEYS: CategoryKey[] = [
   "wealth",
@@ -69,7 +53,6 @@ export default function LifetimeFortuneSharePage() {
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tScreen = useTranslations("fortune.screen");
-  const tStory = useTranslations("fortune.instagramStory");
 
   // ref 파라미터 캡처
   useEffect(() => {
@@ -139,27 +122,12 @@ export default function LifetimeFortuneSharePage() {
         )
       : null;
 
-  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
-  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
-  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
-
   // 프로필 카드용 점수
   const storyScores = {
     wealth: categories.wealth.score ?? 0,
     career: categories.career.score ?? 0,
     relationship: categories.relationship.score ?? 0,
     health: categories.health.score ?? 0,
-  };
-
-  // 프로필 카드용 레이블
-  const storyLabels: InstagramStoryCardLabels = {
-    mainStar: tStory("mainStar"),
-    categories: {
-      wealth: tStory("categories.wealth"),
-      career: tStory("categories.career"),
-      relationship: tStory("categories.relationship"),
-      health: tStory("categories.health"),
-    },
   };
 
   const ratingItems: RatingItem[] = CATEGORY_KEYS.map((key) => ({
@@ -181,22 +149,53 @@ export default function LifetimeFortuneSharePage() {
     />
   );
 
+  const renderPoster = (isImage: boolean) => (
+    <LifetimeCharacterPoster
+      ref={undefined}
+      name={profile.name}
+      leadStarKey={cast.stars[0]?.starName ?? null}
+      leadStarLabel={cast.starLabels[0] ?? ""}
+      headline={lifeSpoiler.headline}
+      profileTraits={interpretation.profileTraits}
+      scores={storyScores}
+      categoryLabels={{
+        wealth: t("categories.wealth"),
+        career: t("categories.career"),
+        relationship: t("categories.relationship"),
+        health: t("categories.health"),
+      }}
+      isImage={isImage}
+      shouldShowShareButton={false}
+    />
+  );
+
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       <main className={`${screen.root} ${styles.main}`}>
         <div className={styles.bleed}>
-          <FilmPoster
-            variant="share"
-            title={lifeSpoiler.headline}
-            tagline={lifeSpoiler.oneLiner}
-            name={profile.name}
-            leadStar={cast.leadStar}
-            wuxingJu={result.chart.wuxingJu}
-            stars={cast.stars}
-            starLabels={cast.starLabels}
-          />
+          {ageLens ? (
+            <LifetimeNowShowing
+              name={profile.name}
+              age={age}
+              scenarios={ageScenarios}
+              badge={tScreen("share.badge")}
+              targetId={toAgeSceneId(ageLens.nowIndex)}
+              surface="shared"
+            />
+          ) : (
+            <FilmPoster
+              variant="share"
+              title={lifeSpoiler.headline}
+              tagline={lifeSpoiler.oneLiner}
+              name={profile.name}
+              leadStar={cast.leadStar}
+              wuxingJu={result.chart.wuxingJu}
+              stars={cast.stars}
+              starLabels={cast.starLabels}
+            />
+          )}
         </div>
 
         <ScreenPlayer
@@ -210,25 +209,7 @@ export default function LifetimeFortuneSharePage() {
         <section className={screen.section}>
           <p className={screen.eyebrow}>CAST</p>
           <h2 className={screen.sectionTitle}>{tScreen("character.title")}</h2>
-          {hasProfileTraits(interpretation) ? (
-            <NewProfileCard
-              mainStars={mainStarNames}
-              headline={lifeSpoiler.headline}
-              profileTraits={interpretation.profileTraits}
-              isImage={false}
-              shouldShowShareButton={false}
-            />
-          ) : (
-            <LifetimeProfileCard
-              mainStars={mainStarNames}
-              headline={lifeSpoiler.headline}
-              description={lifeSpoiler.description}
-              scores={storyScores}
-              labels={storyLabels}
-              isImage={false}
-              shouldShowShareButton={false}
-            />
-          )}
+          {renderPoster(false)}
         </section>
 
         <section className={screen.section}>
