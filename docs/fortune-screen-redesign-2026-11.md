@@ -204,3 +204,36 @@
 | ACT 3         | 마지막 장면: 마지막 대사를 스틸 자막으로               | `end.lastWords`                                 |
 | 본편          | 전편 vs 본편 (나란히) · 본편에 남은 복선               | `contrast` · `traces`                           |
 | 에필로그      | 전편이 남긴 교훈                                       | `lessons`                                       |
+
+## 13. 궁합 운세 세트 (2026-11-05 기획)
+
+예고편·본편·공유 페이지를 한 세트로. 궁합은 주인공이 둘인 **공동 주연 영화**다. 관계 유형이 장르가 되고(연인 = 로맨스, 친구 = 버디 무비 …), 두 사람의 색을 나눠 쓴다(A = 핑크, B = 하늘색, 두 사람이 겹치는 곳 = 별빛 금색).
+
+### 바로 고칠 것
+
+- **공유 페이지가 본편 CSS를 빌려 쓴다**: `share/page.tsx`가 `../result/page.module.css`를 import. 본편을 바꾸면 공유가 깨지므로 공유 페이지에 자기 CSS를 준다.
+- **명반 두 장이 세로로 길게 쌓인다**: 통일된 명반(`ChartConstellation`) 하나에 두 사람 탭을 둔다.
+
+### 데이터 (바꾸지 않음)
+
+`score` · `subScores`(소통·성장·신뢰·위기) · `charts.profileA/B`(이름·명반·오행국) · `relationshipType` · `interpretation.headline`·`tags`·`overviewSubSections`·`overviewOneLiner`·`profileASummary`·`profileBSummary` · `insights` 8개(띠·오행·케미는 키워드, 나머지는 점수) · `coreScenarios` · `categories` 4개 · `advice*`
+
+### 장치
+
+| 위치          | 장치                                                                          | 데이터                                           |
+| ------------- | ----------------------------------------------------------------------------- | ------------------------------------------------ |
+| 예고편 포스터 | 공동 주연 포스터: 두 사람 이름을 나란히, 가운데 케미 점수, 관계 유형 = 장르   | `score` · 이름 · `relationshipType` · `headline` |
+| 본편 맨 위    | 공동 주연 캐릭터 포스터(저장 이미지): 두 사람의 명궁 주성 그림 + 네 갈래 평점 | 명궁 주성 · `subScores` · `headline` · `tags`    |
+| 오프닝        | 배역 소개: 두 사람을 나란히 (명궁 주성 · 오행국 · 한 줄 소개)                 | `profileASummary/B` · 명반                       |
+| 오프닝        | 캐스팅 노트: 띠 · 오행 · 케미 키워드                                          | `insights.zodiac·fiveElement·chemistry`          |
+| 오프닝        | 원작 · 두 사람의 명반 (탭 전환, 같은 명반 스타일)                             | `charts.*.rawChart`                              |
+| ACT 1         | 첫 만남: 궁합 스포일러                                                        | `overview*`                                      |
+| ACT 2         | 두 사람의 장면                                                                | `coreScenarios`                                  |
+| ACT 3         | 네 갈래 관람 평점 + 갈래별 이야기 (소통·성장·감정·위기)                       | `subScores` · `insights.*` · `categories`        |
+| ACT 4         | 두 사람에게: 종합 조언                                                        | `advice*`                                        |
+
+예고편은 지금처럼 오버뷰·키워드·종합 점수까지 공개하고, 네 갈래 점수와 ACT 2~4는 잠근다.
+
+### 공유 페이지
+
+"친구가 보낸 본편" 배지 + 본편과 같은 구성. 다음 상영작은 빼고, 하단 고정 "우리 궁합 예고편 무료로 보기" 하나로 모은다.
