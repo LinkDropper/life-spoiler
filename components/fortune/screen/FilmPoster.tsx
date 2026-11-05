@@ -6,7 +6,8 @@ import { ConstellationArt } from "./ConstellationArt";
 import styles from "./screen.module.css";
 
 interface FilmPosterProps {
-  variant: "preview" | "feature";
+  /** share = 친구가 받은 본편: 예고편처럼 별자리 포스터로 시작 */
+  variant: "preview" | "feature" | "share";
   title: string;
   tagline?: string | null;
   name: string;
@@ -28,7 +29,12 @@ export const FilmPoster = ({
   starLabels,
 }: FilmPosterProps) => {
   const t = useTranslations("fortune.screen.poster");
-  const isPreview = variant === "preview";
+  const isPreview = variant !== "feature";
+  const badgeKey = {
+    preview: "badgeTrailer",
+    feature: "badgeFeature",
+    share: "badgeShared",
+  }[variant];
 
   return (
     <header
@@ -51,7 +57,7 @@ export const FilmPoster = ({
       <div className={styles.posterBody}>
         <div className={styles.posterBadges}>
           <span className={`${styles.pill} ${styles.pillStatus}`}>
-            {isPreview ? t("badgeTrailer") : t("badgeFeature")}
+            {t(badgeKey)}
           </span>
           <span className={`${styles.pill} ${styles.pillMuted}`}>
             {t("runtime")}
