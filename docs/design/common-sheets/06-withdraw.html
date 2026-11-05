@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>회원탈퇴 확인 - 인생스포 (공용 시트 시안 · 탈퇴 모달 1/3)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="sheets.css">
+</head>
+<body class="ov">
+<!-- 뒤 화면: 햄버거 메뉴 -->
+<div class="bg" aria-hidden="true">
+  <header class="hd">
+    <a class="logo" href="#">인생스포</a>
+    <div><button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  </header>
+  <div class="pg">
+    <p style="font-size:13px;font-weight:700;color:var(--faint)">로그인되어 있어요</p>
+    <p style="margin-top:4px;font-size:18px;font-weight:800">지수님의 인생 · 상영 중</p>
+    <div style="margin-top:20px;border-top:1px solid var(--line)">
+      <div class="pl"><span>상영 시간표</span></div>
+      <div class="pl"><span>내 관람권</span></div>
+      <div class="pl"><span>프로필</span></div>
+      <div class="pl"><span>로그아웃</span></div>
+      <div class="pl"><span>회원탈퇴</span></div>
+    </div>
+  </div>
+</div>
+<div class="dim"></div>
+
+<!-- 삭제 확인 시트와 같은 틀. 탈퇴는 대상 줄 없이 문구 두 문장으로 범위를 밝힌다 -->
+<div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="t" aria-describedby="d">
+  <span class="handle" aria-hidden="true"></span>
+  <div class="sh-head">
+    <div>
+      <p class="eyebrow" aria-hidden="true">WITHDRAW</p>
+      <h2 class="sh-title" id="t">정말 탈퇴하시겠어요?</h2>
+    </div>
+  </div>
+  <p class="desc" id="d">탈퇴 후에는 복구가 불가능합니다. 계정의 모든 프로필의 운세 기록도 모두 삭제됩니다.</p>
+  <div class="btns">
+    <button class="btn" type="button" autofocus>취소</button>
+    <button class="btn ghost" type="button">탈퇴하기</button>
+  </div>
+</div>
+</body>
+</html>

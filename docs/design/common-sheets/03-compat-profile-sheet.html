@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>궁합 프로필 선택 시트 - 인생스포 (공용 시트 시안 · OptionSheet 3/3)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="sheets.css">
+</head>
+<body class="ov">
+<!-- 뒤 화면: 새 궁합 만들기 -->
+<div class="bg" aria-hidden="true">
+  <header class="hd">
+    <a class="logo" href="#">인생스포</a>
+    <div>
+      <button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+      <button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+  </header>
+  <div class="pg">
+    <h1 style="font-size:28px">새 궁합 만들기</h1>
+    <p style="margin-top:28px;font-size:18px;font-weight:800">프로필 선택</p>
+    <div class="ph" style="height:56px;margin-top:12px"></div>
+    <p style="margin-top:28px;font-size:18px;font-weight:800">관계 선택</p>
+    <div class="ph" style="height:96px;margin-top:12px"></div>
+  </div>
+</div>
+<div class="dim"></div>
+
+<!-- 두 명을 고르는 복수 선택. 체크 문법은 그대로, role만 aria-multiselectable -->
+<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t">
+  <span class="handle" aria-hidden="true"></span>
+  <div class="sh-head">
+    <div>
+      <p class="eyebrow" aria-hidden="true">COMPATIBILITY</p>
+      <h2 class="sh-title" id="t">프로필 2개를 선택해 주세요</h2>
+    </div>
+    <button class="x" type="button" aria-label="닫기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+
+  <div class="list" role="listbox" aria-multiselectable="true" aria-labelledby="t">
+    <button class="row two" type="button" role="option" aria-selected="true"><span class="lbl">지수<span class="mt">1994.03.12 · 14 : 30 · 양력 · 여성</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+    <button class="row two" type="button" role="option" aria-selected="true"><span class="lbl">민준<span class="mt">1992.11.03 · 시간 모름 · 음력 · 남성</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+    <!-- 이미 2명이 찼으면 나머지는 비활성 -->
+    <button class="row two" type="button" role="option" aria-selected="false" aria-disabled="true"><span class="lbl">서연<span class="mt">1996.07.21 · 09 : 10 · 양력 · 여성</span></span></button>
+    <button class="row two" type="button" role="option" aria-selected="false" aria-disabled="true"><span class="lbl">하준<span class="mt">1990.01.30 · 22 : 00 · 양력 · 남성</span></span></button>
+  </div>
+
+  <div class="list gap">
+    <button class="row act" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">새 프로필 만들기</span></button>
+  </div>
+
+  <div class="btns row2">
+    <button class="btn ghost" type="button">취소</button>
+    <button class="btn" type="button">확인</button>
+  </div>
+</div>
+</body>
+</html>
