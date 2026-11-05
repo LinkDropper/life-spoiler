@@ -424,10 +424,11 @@
       "newProfile": "새 프로필 만들기",
       "deleteModal": {
         "title": "정말 삭제하시겠어요?",
-        "description": "삭제 후에는 복구가 불가능 합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
+        "description": "삭제 후에는 복구가 불가능합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
         "cancel": "취소",
         "delete": "삭제하기",
-        "deleting": "삭제 중..."
+        "deleting": "삭제 중...",
+        "target": "삭제할 프로필"
       },
       "card": {
         "timeUnknown": "시간 모름",
@@ -470,7 +471,11 @@
       },
       "deleteModal": {
         "title": "정말 삭제하시겠어요?",
-        "description": "삭제 후에는 복구가 불가능 합니다. 선택한 궁합의 운세 기록도 모두 삭제됩니다."
+        "description": "삭제 후에는 복구가 불가능합니다. 선택한 궁합의 운세 기록도 모두 삭제됩니다.",
+        "target": "삭제할 궁합",
+        "cancel": "취소",
+        "delete": "삭제하기",
+        "deleting": "삭제 중..."
       },
       "setup": {
         "loading": "로딩 중...",
@@ -627,6 +632,11 @@
       }
     },
     "fortune": {
+      "palaceDetail": {
+        "close": "설명 닫기",
+        "starsLabel": "별",
+        "cautionLabel": "주의"
+      },
       "common": {
         "profileNotFound": "프로필을 찾을 수 없습니다.",
         "unknownError": "알 수 없는 오류가 발생했습니다.",
@@ -1575,7 +1585,11 @@
       "delete": "삭제",
       "next": "다음",
       "back": "이전",
-      "close": "닫기"
+      "close": "닫기",
+      "toast": {
+        "close": "알림 닫기",
+        "copyFailed": "링크 복사에 실패했습니다. 다음 주소를 직접 복사해주세요: {url}"
+      }
     },
     "browserRedirect": {
       "redirecting": "외부 브라우저로 이동 중...",
@@ -3158,7 +3172,8 @@
         "description": "This cannot be undone. All fortune records for this profile will also be deleted.",
         "cancel": "Cancel",
         "delete": "Delete",
-        "deleting": "Deleting..."
+        "deleting": "Deleting...",
+        "target": "Profile to delete"
       },
       "card": {
         "timeUnknown": "Time Unknown",
@@ -3201,7 +3216,11 @@
       },
       "deleteModal": {
         "title": "Are you sure you want to delete?",
-        "description": "This cannot be undone. All fortune records for this compatibility pair will also be deleted."
+        "description": "This cannot be undone. All fortune records for this compatibility pair will also be deleted.",
+        "target": "Compatibility to delete",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleting": "Deleting..."
       },
       "setup": {
         "loading": "Loading...",
@@ -3358,6 +3377,11 @@
       }
     },
     "fortune": {
+      "palaceDetail": {
+        "close": "Close explanation",
+        "starsLabel": "Stars",
+        "cautionLabel": "Watch out"
+      },
       "common": {
         "profileNotFound": "Profile not found.",
         "unknownError": "An unknown error occurred.",
@@ -4306,7 +4330,11 @@
       "delete": "Delete",
       "next": "Next",
       "back": "Back",
-      "close": "Close"
+      "close": "Close",
+      "toast": {
+        "close": "Close notification",
+        "copyFailed": "Could not copy the link. Please copy this address yourself: {url}"
+      }
     },
     "browserRedirect": {
       "redirecting": "Redirecting to external browser...",
@@ -5897,7 +5925,8 @@
         "description": "削除後は復元できません。選択したプロフィールの運勢記録もすべて削除されます。",
         "cancel": "キャンセル",
         "delete": "削除する",
-        "deleting": "削除中..."
+        "deleting": "削除中...",
+        "target": "削除するプロフィール"
       },
       "card": {
         "timeUnknown": "時間不明",
@@ -5940,7 +5969,11 @@
       },
       "deleteModal": {
         "title": "本当に削除しますか？",
-        "description": "削除後は復元できません。選択した相性の占い記録もすべて削除されます。"
+        "description": "削除後は復元できません。選択した相性の占い記録もすべて削除されます。",
+        "target": "削除する相性",
+        "cancel": "キャンセル",
+        "delete": "削除する",
+        "deleting": "削除中..."
       },
       "setup": {
         "loading": "読み込み中...",
@@ -6097,6 +6130,11 @@
       }
     },
     "fortune": {
+      "palaceDetail": {
+        "close": "説明を閉じる",
+        "starsLabel": "星",
+        "cautionLabel": "注意"
+      },
       "common": {
         "profileNotFound": "プロフィールが見つかりません。",
         "unknownError": "不明なエラーが発生しました。",
@@ -7045,7 +7083,11 @@
       "delete": "削除",
       "next": "次へ",
       "back": "戻る",
-      "close": "閉じる"
+      "close": "閉じる",
+      "toast": {
+        "close": "通知を閉じる",
+        "copyFailed": "リンクのコピーに失敗しました。次のアドレスを直接コピーしてください: {url}"
+      }
     },
     "browserRedirect": {
       "redirecting": "外部ブラウザに移動中...",
