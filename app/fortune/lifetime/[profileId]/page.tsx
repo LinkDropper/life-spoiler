@@ -36,6 +36,7 @@ import type { FortuneSceneId } from "@/libs/analytics/fortune";
 import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import { getFilmAge } from "@/libs/home/home-film";
+import { YEARLY_AFTER_LIFETIME_PER_100 } from "@/libs/home/home-profile";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import type {
   FortuneInterpretation,
@@ -246,6 +247,7 @@ export default function LifetimeFortunePage() {
   const { lifeSpoiler, coreScenario, categories, ageScenarios } =
     interpretation;
   const age = getFilmAge(profile.birth_date);
+  const currentYear = new Date().getFullYear();
   const ageLens =
     ageScenarios.length > 0
       ? buildAgeLens(
@@ -430,12 +432,25 @@ export default function LifetimeFortunePage() {
           </>
         )}
 
-        <NextShow profileId={profileId} year={new Date().getFullYear()} />
+        <NextShow
+          href={`/fortune/yearly/${profileId}`}
+          kicker={`TRAILER · ${currentYear}`}
+          name={tScreen("next.name")}
+          body={tScreen("next.body", {
+            count: YEARLY_AFTER_LIFETIME_PER_100,
+            year: currentYear,
+          })}
+          button={tScreen("next.button")}
+          fortuneType="lifetime"
+          nextType="yearly"
+        />
 
         <EndCredits
           name={profile.name}
-          leadStar={cast.leadStar}
-          wuxingJu={result.chart.wuxingJu}
+          rows={[
+            { label: "LEAD STAR", value: cast.leadStar },
+            { label: "ORIGINAL", value: result.chart.wuxingJu },
+          ]}
         >
           <button
             type="button"

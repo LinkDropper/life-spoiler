@@ -5,7 +5,11 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { trackFortuneEvent } from "@/libs/analytics/fortune";
-import type { FortuneSceneId, FortuneSurface } from "@/libs/analytics/fortune";
+import type {
+  FortuneSceneId,
+  FortuneScreenType,
+  FortuneSurface,
+} from "@/libs/analytics/fortune";
 
 import styles from "./screen.module.css";
 
@@ -26,6 +30,9 @@ interface ScreenPlayerProps {
   /** 마디 없이 도달만 기록할 장면 (다음 상영작·엔딩) */
   extraSceneIds?: FortuneSceneId[];
   surface: FortuneSurface;
+  fortuneType?: FortuneScreenType;
+  /** "지금 n세" 대신 쓸 버튼 문구 (올해 운세: "지금 n월") */
+  nowLabel?: string;
 }
 
 /**
@@ -62,6 +69,8 @@ export const ScreenPlayer = ({
   nowTargetId,
   extraSceneIds,
   surface,
+  fortuneType = "lifetime",
+  nowLabel,
 }: ScreenPlayerProps) => {
   const t = useTranslations("fortune.screen.player");
   const panelId = useId();
@@ -115,7 +124,7 @@ export const ScreenPlayer = ({
       }
       reachedRef.current.add(mark.id);
       trackFortuneEvent("fortune_result_scene_reach", {
-        fortune_type: "lifetime",
+        fortune_type: fortuneType,
         surface,
         scene: mark.id,
       });
@@ -128,7 +137,7 @@ export const ScreenPlayer = ({
       ),
       weights: spans.map((span) => (span.end - span.start) / (total || 1)),
     });
-  }, [scenes, extraSceneIds, surface]);
+  }, [scenes, extraSceneIds, surface, fortuneType]);
 
   useEffect(() => {
     let frame = 0;
@@ -176,7 +185,7 @@ export const ScreenPlayer = ({
       .getElementById(elementId)
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
     trackFortuneEvent("fortune_result_jump", {
-      fortune_type: "lifetime",
+      fortune_type: fortuneType,
       surface,
       target,
     });
@@ -204,7 +213,7 @@ export const ScreenPlayer = ({
             onClick={() => handleJump("now", nowTargetId)}
           >
             <span className={styles.playerAgeDot} aria-hidden="true" />
-            {t("now", { age })}
+            {nowLabel ?? t("now", { age })}
           </button>
         )}
         <button

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ZiweiChartGrid } from "@/components/fortune";
 import type { ConstellationStar } from "@/libs/fortune/lifetime-screen";
+import type { YearlySihua } from "@/libs/zi-wei-dou-shu/calculators";
 import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 
 import styles from "./screen.module.css";
@@ -15,6 +16,8 @@ interface ChartConstellationProps {
   wuxingJu: string;
   stars: ConstellationStar[];
   interactive?: boolean;
+  /** 올해·내년 운세: 연간 사화 표시 (명반 모양은 그대로) */
+  yearlySihua?: YearlySihua;
 }
 
 interface Point {
@@ -61,6 +64,7 @@ export const ChartConstellation = ({
   wuxingJu,
   stars,
   interactive = true,
+  yearlySihua,
 }: ChartConstellationProps) => {
   const t = useTranslations("fortune.screen.chart");
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -88,6 +92,7 @@ export const ChartConstellation = ({
           profileName={profileName}
           wuxingJu={wuxingJu}
           interactive={interactive}
+          yearlySihua={yearlySihua}
         />
         {overlay && self && triangle1 && triangle2 && opposite && (
           <svg
