@@ -21,6 +21,15 @@ export interface CharacterPosterProps {
   castLine: string;
   headline: string;
   tags?: string[];
+  /**
+   * emblem = 배경 타이포 + 가운데 그림(올해·인생)
+   * keyart = 위쪽을 그림으로 가득 채우고 아래로 녹임(전생 AI 키 아트). 배경 타이포는 쓰지 않는다
+   */
+  heroLayout?: "emblem" | "keyart";
+  /** 제목 아래 한 줄 인용 (전생: 묘비명) */
+  quote?: string;
+  /** 오른쪽 위 작은 라벨 (기본 CHARACTER POSTER) */
+  cornerLabel?: string;
   /** 하단 블록 (PosterRatings · PosterTraitsIntro). 인라인 스타일만 쓴다 */
   bottom: ReactNode;
   /** 빌링 블록 두 줄 */
@@ -80,6 +89,9 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
       castLine,
       headline,
       tags = [],
+      heroLayout = "emblem",
+      quote,
+      cornerLabel = "CHARACTER POSTER",
       bottom,
       billing,
       brandLabel,
@@ -145,6 +157,7 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
             left: 18,
             right: 18,
             top: 16,
+            zIndex: 1,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -163,55 +176,88 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
               color: "rgba(255,255,255,0.55)",
             }}
           >
-            CHARACTER POSTER
+            {cornerLabel}
           </span>
         </div>
-        <span
-          aria-hidden="true"
-          style={absolute({
-            left: 0,
-            right: 0,
-            top: 70,
-            textAlign: "center",
-            fontFamily: DISPLAY_FONT,
-            fontSize: backdropSize,
-            lineHeight: 1,
-            color: "transparent",
-            WebkitTextStroke: "1.5px rgba(255,204,217,0.55)",
-          })}
-        >
-          {backdropText}
-        </span>
-        <span
-          aria-hidden="true"
-          style={absolute({
-            left: "50%",
-            top: 150,
-            width: 300,
-            height: 170,
-            marginLeft: -150,
-            background:
-              "radial-gradient(ellipse at center, rgba(255,231,163,0.35), transparent 65%)",
-          })}
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element -- html-to-image 호환 */}
-        <img
-          src={heroSrc}
-          alt={heroAlt}
-          width={240}
-          height={131}
-          style={absolute({
-            left: "50%",
-            top: 168,
-            marginLeft: -120,
-            objectFit: "contain",
-          })}
-        />
+        {heroLayout === "keyart" ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element -- html-to-image 호환 */}
+            <img
+              src={heroSrc}
+              alt={heroAlt}
+              width={POSTER_WIDTH}
+              height={360}
+              style={absolute({
+                left: 0,
+                top: 0,
+                width: POSTER_WIDTH,
+                height: 360,
+                objectFit: "cover",
+                filter: "sepia(0.2) saturate(1.05)",
+              })}
+            />
+            <span
+              aria-hidden="true"
+              style={absolute({
+                left: 0,
+                right: 0,
+                top: 200,
+                height: 170,
+                background:
+                  "linear-gradient(180deg, rgba(5,7,15,0) 0%, #05070f 100%)",
+              })}
+            />
+          </>
+        ) : (
+          <>
+            <span
+              aria-hidden="true"
+              style={absolute({
+                left: 0,
+                right: 0,
+                top: 70,
+                textAlign: "center",
+                fontFamily: DISPLAY_FONT,
+                fontSize: backdropSize,
+                lineHeight: 1,
+                color: "transparent",
+                WebkitTextStroke: "1.5px rgba(255,204,217,0.55)",
+              })}
+            >
+              {backdropText}
+            </span>
+            <span
+              aria-hidden="true"
+              style={absolute({
+                left: "50%",
+                top: 150,
+                width: 300,
+                height: 170,
+                marginLeft: -150,
+                background:
+                  "radial-gradient(ellipse at center, rgba(255,231,163,0.35), transparent 65%)",
+              })}
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element -- html-to-image 호환 */}
+            <img
+              src={heroSrc}
+              alt={heroAlt}
+              width={240}
+              height={131}
+              style={absolute({
+                left: "50%",
+                top: 168,
+                marginLeft: -120,
+                objectFit: "contain",
+              })}
+            />
+          </>
+        )}
         <div
           style={absolute({
             left: 22,
             right: 22,
-            top: 318,
+            top: heroLayout === "keyart" ? 296 : 318,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -243,6 +289,17 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
           >
             {stripEmoji(headline)}
           </b>
+          {quote && (
+            <span
+              style={{
+                fontSize: 13,
+                fontStyle: "italic",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              “{stripEmoji(quote)}”
+            </span>
+          )}
           {tags.length > 0 && (
             <div
               style={{

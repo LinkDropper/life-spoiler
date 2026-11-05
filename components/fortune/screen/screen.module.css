@@ -2099,3 +2099,366 @@
 .lifeTicks .lifeTickNow {
   color: var(--fs-star);
 }
+
+/* ============================================================
+   전생 운세 = 전편 (기획서 §12). 보조 색: 호박색
+   ============================================================ */
+
+.root {
+  --fs-amber: #e8c28a;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.keyArt {
+  position: relative;
+  overflow: hidden;
+  background: var(--fs-deep);
+}
+
+.keyArtImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.2) saturate(1.05);
+}
+
+.keyArtVignette {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.75);
+  pointer-events: none;
+}
+
+.pastPoster {
+  position: relative;
+  background: var(--fs-deep);
+}
+
+.pastPoster .keyArt {
+  height: 380px;
+}
+
+.pastPresents {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 4px #000;
+}
+
+.pastPosterBody {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: -90px;
+  padding: 0 22px 26px;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 7, 15, 0) 0%,
+    var(--fs-deep) 70px
+  );
+}
+
+.pastEra {
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--fs-amber);
+}
+
+.pastWorld {
+  margin: 0;
+}
+
+.pastWorld div {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  column-gap: 12px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--fs-line);
+}
+
+.pastWorld dt {
+  padding-top: 3px;
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--fs-amber);
+}
+
+.pastWorld dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.pastStats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 16px 6px;
+  border-radius: 8px;
+  background: var(--fs-panel);
+}
+
+.pastStats div {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 4px;
+}
+
+.pastStats dt {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.pastStats dd {
+  margin: 0;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.pastStats .pastStatTop {
+  color: var(--fs-star);
+}
+
+.chronicle {
+  padding: 18px 16px;
+  border-radius: 8px;
+  background: var(--fs-panel);
+  box-shadow: inset 0 0 0 1px rgba(232, 194, 138, 0.2);
+}
+
+.chronicleLabel {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--fs-amber);
+}
+
+.chronicleList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chronicleItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  column-gap: 14px;
+  padding-bottom: 20px;
+}
+
+.chronicleItem:last-child {
+  padding-bottom: 0;
+}
+
+.chronicleItem:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 74px;
+  top: 28px;
+  bottom: 4px;
+  width: 1px;
+  background: rgba(232, 194, 138, 0.3);
+}
+
+.chroniclePeriod {
+  text-align: right;
+  font-family: var(--fs-display);
+  font-weight: var(--fs-display-weight);
+  font-size: 17px;
+  line-height: 1.3;
+  color: var(--fs-amber);
+}
+
+.chronicleEvent {
+  padding-top: 1px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.lastWords {
+  position: relative;
+  height: 200px;
+  margin: 6px 0 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.lastWordsArt {
+  position: absolute;
+  inset: 0;
+  filter: brightness(0.6) sepia(0.3);
+}
+
+.lastWords::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top: 16px solid #000;
+  border-bottom: 16px solid #000;
+  pointer-events: none;
+}
+
+.lastWords .stillCaption {
+  z-index: 1;
+  bottom: 32px;
+}
+
+.contrastHead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  font-family: var(--fs-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+}
+
+.contrastHead span:first-child {
+  color: var(--fs-amber);
+}
+
+.contrastHead span:last-child {
+  padding-left: 12px;
+  color: var(--fs-accent);
+}
+
+.contrastList {
+  margin: 0;
+}
+
+.contrastRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  border-top: 1px solid var(--fs-line);
+}
+
+.contrastRow dt {
+  grid-column: 1 / -1;
+  padding: 10px 0 4px;
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.contrastRow dd {
+  margin: 0;
+  padding-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.contrastPast {
+  padding-right: 12px;
+  border-right: 1px solid var(--fs-line);
+  color: var(--fs-amber);
+}
+
+.contrastPresent {
+  padding-left: 12px;
+}
+
+.trace {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--fs-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.traceLabel {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--fs-accent);
+}
+
+.traceText {
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.traceOrigin {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.traceOrigin span {
+  color: var(--fs-amber);
+}
+
+.epilogueList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.epilogueItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--fs-line);
+}
+
+.epilogueItem > b {
+  font-size: 18px;
+}
+
+.lastWordsAnchor {
+  scroll-margin-top: 128px;
+}
+
+.keyArtLocked {
+  filter: blur(18px) sepia(0.3);
+  transform: scale(1.1);
+}
+
+.keyArtLockText {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+.pastDisclaimer {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.5);
+}

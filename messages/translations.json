@@ -1247,6 +1247,125 @@
             "brand": "인생스포",
             "share": "캐릭터 포스터 공유하기"
           }
+        },
+        "pastLife": {
+          "poster": {
+            "badgeTrailer": "전편 예고편 무료 상영 중",
+            "starring": "{name} 주연 · 전생 편",
+            "imageLocked": "결제 후 키 아트가 공개돼요",
+            "title": "TITLE · {title}",
+            "castLine": "{name} 주연 · {era} {location}",
+            "introducing": "in a past life, a character who was",
+            "brand": "인생스포",
+            "share": "캐릭터 포스터 공유하기",
+            "imageError": "이미지를 만들지 못했어요. 다시 시도해 주세요.",
+            "shareError": "공유하지 못했어요. 다시 시도해 주세요."
+          },
+          "world": {
+            "title": "세계관 · 로케이션",
+            "desc": "전편이 찍힌 시대와 장소, 그 안에서 맡은 배역이에요."
+          },
+          "note": {
+            "title": "배역 노트 · {title}",
+            "desc": "감독이 적어 둔 이 배역의 강점이에요. 숫자가 클수록 그 배역이 잘 해낸 일이에요."
+          },
+          "end": {
+            "lastWords": "LAST WORDS · 마지막 대사"
+          },
+          "contrast": {
+            "title": "전편 vs 본편",
+            "desc": "왼쪽은 전생, 오른쪽은 지금의 나예요. 같은 장면이 이번 생에서 어떻게 바뀌었는지 나란히 봐요.",
+            "past": "PREQUEL · 전생",
+            "present": "FEATURE · 지금"
+          },
+          "traces": {
+            "title": "본편에 남은 복선",
+            "desc": "지금의 습관과 끌림 중에 전편에서 이어진 것들이에요.",
+            "label": "복선 {index} · {category}",
+            "origin": "전편의 장면:"
+          },
+          "epilogue": {
+            "title": "전편이 남긴 교훈"
+          },
+          "chart": {
+            "previewDesc": "포스터의 전생은 이 명반에서 나왔어요. 선은 명궁과 함께 움직이는 세 궁이에요.",
+            "shareDesc": "선은 명궁과 함께 움직이는 세 궁이에요."
+          },
+          "feature": {
+            "act1": {
+              "act": "ACT 1",
+              "title": "탄생",
+              "desc": "어디서 어떻게 태어났는지"
+            },
+            "act2": {
+              "act": "ACT 2",
+              "title": "여정 · 연대기",
+              "desc": "시기별로 이어지는 전생의 사건"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "마지막 장면",
+              "desc": "죽음과 카르마, 마지막 대사"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "인연",
+              "desc": "이번 생까지 이어진 사람들"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "본편에 남은 복선 · 캐릭터 포스터",
+              "desc": "지금의 습관에 남은 흔적과 공유 포스터"
+            },
+            "spoilerTitle": "LAST WORDS · 마지막 대사",
+            "spoilerHint": "전생의 마지막 대사는 본편 ACT 3에서 공개돼요."
+          },
+          "acts": {
+            "act1": {
+              "title": "탄생",
+              "sub": "전편의 첫 장면"
+            },
+            "act2": {
+              "title": "여정",
+              "sub": "시기별로 이어지는 전생"
+            },
+            "act3": {
+              "title": "마지막 장면",
+              "sub": "죽음과 카르마"
+            },
+            "act4": {
+              "title": "인연",
+              "sub": "이번 생까지 이어진 사람들"
+            }
+          },
+          "player": {
+            "lastWords": "마지막 대사"
+          },
+          "next": {
+            "body": {
+              "lifetime": "전편이 끝난 자리에서 본편이 시작돼요. 이번 생 99세의 줄거리를 예고편부터 무료로 볼 수 있어요.",
+              "yearly": "전편의 흔적이 올해 12개월에 어떻게 이어지는지 달마다 보여 드려요.",
+              "yearly2027": "다음 해 12개월을 달마다 한 장면으로 보여 드려요.",
+              "compatibility": "이번 생에 함께 출연하는 사람과의 이야기예요. 두 사람의 명반을 나란히 놓고 봐요.",
+              "faceReading": "얼굴에 담긴 성향을 클로즈업으로 읽어 드려요."
+            }
+          },
+          "followUp": {
+            "name": "전생",
+            "prompts": [
+              "왜 이런 성향을 갖게 됐나요?",
+              "전생과 지금은 어떻게 이어져 있나요?",
+              "전생이 남긴 교훈은 무엇인가요?"
+            ]
+          },
+          "share": {
+            "badge": "친구가 보낸 본편",
+            "cta": "내 전생 예고편 무료로 보기",
+            "endNote": "내 명반으로는 전생에 누구였을까요? 예고편은 무료로 상영돼요.",
+            "ogTitle": "{name}님의 전생 시나리오",
+            "ogTitleWithHeadline": "{name}님 주연 전편: {headline}",
+            "ogDescription": "자미두수로 다시 그린 {name}님의 전생 이야기예요."
+          }
         }
       }
     },
@@ -3659,6 +3778,125 @@
             "introducing": "introducing a character who is",
             "brand": "Life Spoiler",
             "share": "Share the character poster"
+          }
+        },
+        "pastLife": {
+          "poster": {
+            "badgeTrailer": "Free prequel trailer now showing",
+            "starring": "Starring {name} · past life",
+            "imageLocked": "The key art opens after purchase",
+            "title": "TITLE · {title}",
+            "castLine": "Starring {name} · {era} {location}",
+            "introducing": "in a past life, a character who was",
+            "brand": "Life Spoiler",
+            "share": "Share the character poster",
+            "imageError": "We couldn't create the image. Please try again.",
+            "shareError": "We couldn't share it. Please try again."
+          },
+          "world": {
+            "title": "World · location",
+            "desc": "The era and place where the prequel was shot, and the role you played."
+          },
+          "note": {
+            "title": "Character note · {title}",
+            "desc": "The director's notes on this role's strengths. The higher the number, the better the role did it."
+          },
+          "end": {
+            "lastWords": "LAST WORDS"
+          },
+          "contrast": {
+            "title": "Prequel vs feature",
+            "desc": "Left is your past life, right is you now. See how the same scene changed in this life.",
+            "past": "PREQUEL · past",
+            "present": "FEATURE · now"
+          },
+          "traces": {
+            "title": "Foreshadowing in the feature",
+            "desc": "Habits and pulls in your life now that carried over from the prequel.",
+            "label": "Clue {index} · {category}",
+            "origin": "Prequel scene:"
+          },
+          "epilogue": {
+            "title": "What the prequel left behind"
+          },
+          "chart": {
+            "previewDesc": "The past life on the poster comes from this chart. The lines link the Life palace with the three palaces that move with it.",
+            "shareDesc": "The lines link the Life palace with the three palaces that move with it."
+          },
+          "feature": {
+            "act1": {
+              "act": "ACT 1",
+              "title": "Birth",
+              "desc": "Where and how you were born"
+            },
+            "act2": {
+              "act": "ACT 2",
+              "title": "Journey · chronicle",
+              "desc": "Events of the past life, period by period"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "The last scene",
+              "desc": "Death, karma and last words"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "Connections",
+              "desc": "People who carried over into this life"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "Foreshadowing · character poster",
+              "desc": "Traces in your habits now and a poster to share"
+            },
+            "spoilerTitle": "LAST WORDS",
+            "spoilerHint": "Your past life's last words are revealed in ACT 3 of the feature."
+          },
+          "acts": {
+            "act1": {
+              "title": "Birth",
+              "sub": "The opening scene of the prequel"
+            },
+            "act2": {
+              "title": "Journey",
+              "sub": "The past life, period by period"
+            },
+            "act3": {
+              "title": "The last scene",
+              "sub": "Death and karma"
+            },
+            "act4": {
+              "title": "Connections",
+              "sub": "People who carried over into this life"
+            }
+          },
+          "player": {
+            "lastWords": "Last words"
+          },
+          "next": {
+            "body": {
+              "lifetime": "The feature starts where the prequel ends. Watch the trailer of this life's 99-year plot for free.",
+              "yearly": "How the prequel's traces play out across this year's 12 months.",
+              "yearly2027": "Next year's 12 months, one scene each.",
+              "compatibility": "The story with the person who shares your screen in this life, both charts side by side.",
+              "faceReading": "A close-up reading of the traits in your face."
+            }
+          },
+          "followUp": {
+            "name": "Past life",
+            "prompts": [
+              "Why do I have these traits?",
+              "How is my past life connected to now?",
+              "What lesson did my past life leave?"
+            ]
+          },
+          "share": {
+            "badge": "Shared by a friend",
+            "cta": "Watch my past-life trailer for free",
+            "endNote": "Who would your chart have been in a past life? The trailer plays for free.",
+            "ogTitle": "{name}'s past-life scenario",
+            "ogTitleWithHeadline": "A prequel starring {name}: {headline}",
+            "ogDescription": "{name}'s past life, retold through Zi Wei Dou Shu."
           }
         }
       }
@@ -6080,6 +6318,125 @@
             "introducing": "introducing a character who is",
             "brand": "ライフスポイラー",
             "share": "キャラクターポスターをシェア"
+          }
+        },
+        "pastLife": {
+          "poster": {
+            "badgeTrailer": "前編の予告編 無料上映中",
+            "starring": "主演 {name} · 前世編",
+            "imageLocked": "購入後にキーアートが公開されます",
+            "title": "TITLE · {title}",
+            "castLine": "主演 {name} · {era} {location}",
+            "introducing": "in a past life, a character who was",
+            "brand": "ライフスポイラー",
+            "share": "キャラクターポスターをシェア",
+            "imageError": "画像を作成できませんでした。もう一度お試しください。",
+            "shareError": "シェアできませんでした。もう一度お試しください。"
+          },
+          "world": {
+            "title": "世界観 · ロケーション",
+            "desc": "前編が撮られた時代と場所、その中で演じた役です。"
+          },
+          "note": {
+            "title": "役のノート · {title}",
+            "desc": "監督が書き留めたこの役の強みです。数字が大きいほど、その役が得意だったことです。"
+          },
+          "end": {
+            "lastWords": "LAST WORDS · 最後のせりふ"
+          },
+          "contrast": {
+            "title": "前編 vs 本編",
+            "desc": "左は前世、右はいまのわたしです。同じ場面が今世でどう変わったかを並べて見ます。",
+            "past": "PREQUEL · 前世",
+            "present": "FEATURE · いま"
+          },
+          "traces": {
+            "title": "本編に残った伏線",
+            "desc": "いまの習慣や惹かれるものの中で、前編から続いているものです。",
+            "label": "伏線 {index} · {category}",
+            "origin": "前編の場面:"
+          },
+          "epilogue": {
+            "title": "前編が残した教訓"
+          },
+          "chart": {
+            "previewDesc": "ポスターの前世はこの命盤から生まれました。線は命宮と一緒に動く三つの宮です。",
+            "shareDesc": "線は命宮と一緒に動く三つの宮です。"
+          },
+          "feature": {
+            "act1": {
+              "act": "ACT 1",
+              "title": "誕生",
+              "desc": "どこでどのように生まれたか"
+            },
+            "act2": {
+              "act": "ACT 2",
+              "title": "旅路 · 年代記",
+              "desc": "時期ごとに続く前世の出来事"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "最後の場面",
+              "desc": "死とカルマ、最後のせりふ"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "縁",
+              "desc": "今世まで続いた人たち"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "本編に残った伏線 · キャラクターポスター",
+              "desc": "いまの習慣に残る痕跡とシェア用ポスター"
+            },
+            "spoilerTitle": "LAST WORDS · 最後のせりふ",
+            "spoilerHint": "前世の最後のせりふは本編のACT 3で公開されます。"
+          },
+          "acts": {
+            "act1": {
+              "title": "誕生",
+              "sub": "前編の最初の場面"
+            },
+            "act2": {
+              "title": "旅路",
+              "sub": "時期ごとに続く前世"
+            },
+            "act3": {
+              "title": "最後の場面",
+              "sub": "死とカルマ"
+            },
+            "act4": {
+              "title": "縁",
+              "sub": "今世まで続いた人たち"
+            }
+          },
+          "player": {
+            "lastWords": "最後のせりふ"
+          },
+          "next": {
+            "body": {
+              "lifetime": "前編が終わったところから本編が始まります。今世99歳のあらすじを予告編から無料で見られます。",
+              "yearly": "前編の痕跡が今年の12か月にどうつながるかを月ごとにお見せします。",
+              "yearly2027": "翌年の12か月を月ごとに一場面でお見せします。",
+              "compatibility": "今世で一緒に出演する人との物語です。二人の命盤を並べて見ます。",
+              "faceReading": "顔に表れた性格をクローズアップで読み解きます。"
+            }
+          },
+          "followUp": {
+            "name": "前世",
+            "prompts": [
+              "なぜこんな性格になったのですか？",
+              "前世といまはどうつながっていますか？",
+              "前世が残した教訓は何ですか？"
+            ]
+          },
+          "share": {
+            "badge": "友だちから届いた本編",
+            "cta": "わたしの前世の予告編を無料で見る",
+            "endNote": "わたしの命盤では前世は誰だったでしょう。予告編は無料で上映しています。",
+            "ogTitle": "{name}さんの前世シナリオ",
+            "ogTitleWithHeadline": "{name}さん主演の前編: {headline}",
+            "ogDescription": "紫微斗数で描き直した{name}さんの前世の物語です。"
           }
         }
       }
