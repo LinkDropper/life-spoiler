@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 import { CopyToast } from "@/components/fortune/common";
-import { ShareDrawer } from "@/components/fortune/ShareDrawer";
+import { FortuneShareSheet } from "@/components/fortune/screen/FortuneShareSheet";
 import { HeaderClient } from "@/components/landing";
 import {
   consumeIsReturnDay,
@@ -18,6 +18,7 @@ import {
   getTimeUntilNextCall,
 } from "@/libs/daily/call-sheet";
 import { toKstDateString } from "@/libs/daily/kst-date";
+import { shareLinkWithSystem } from "@/libs/share/system-share";
 import { encodeShareToken, toShareKeys } from "@/libs/daily/share-token";
 import type { DailyFortuneView } from "@/libs/daily/types";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
@@ -197,6 +198,24 @@ export const DailyFortuneScreen = ({
     });
     setIsShareOpen(false);
   }, [buildShareUrl, trackShare, t, view.headline.text]);
+
+  // 기기 공유 시트(인스타그램 등). 지원하지 않으면 링크 복사로 대신한다
+  const handleShareSystem = useCallback(async () => {
+    trackShare("system");
+    try {
+      const shared = await shareLinkWithSystem({
+        title: t("result.shareTitle"),
+        text: t("result.shareText", { headline: view.headline.text }),
+        url: buildShareUrl(),
+      });
+      if (shared === "unsupported") {
+        await handleCopyLink();
+      }
+    } catch (shareError) {
+      console.error("Failed to share with system sheet:", shareError);
+    }
+    setIsShareOpen(false);
+  }, [buildShareUrl, handleCopyLink, trackShare, t, view.headline.text]);
 
   const handleDownloadImage = useCallback(async () => {
     trackShare("image");
@@ -524,16 +543,17 @@ export const DailyFortuneScreen = ({
         {renderBody()}
       </main>
 
-      <ShareDrawer
+      <FortuneShareSheet
         isOpen={isShareOpen}
         onClose={handleCloseShare}
+        eyebrow="SHARE"
         title={t("result.share")}
-        onCopyLink={handleCopyLink}
         onShareKakao={handleShareKakao}
+        onShareSystem={handleShareSystem}
+        onCopyLink={handleCopyLink}
         onDownloadImage={handleDownloadImage}
-        isDownloading={isDownloading}
-        showLine={false}
-        downloadImageLabel={t("result.saveImage")}
+        downloadLabel={t("result.saveImage")}
+        isBusy={isDownloading}
       />
 
       {showShareCard && (

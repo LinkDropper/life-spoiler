@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { CopyToast, ShareDrawer } from "@/components/fortune";
+import { CopyToast } from "@/components/fortune";
 import { CompatibilityCharacterPoster } from "@/components/fortune/CompatibilityCharacterPoster";
 import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { CompatibilityFeatureBody } from "@/components/fortune/compatibility/CompatibilityFeatureBody";
 import { EndCredits } from "@/components/fortune/screen/EndCredits";
+import { FortuneShareSheet } from "@/components/fortune/screen/FortuneShareSheet";
 import { NextShow } from "@/components/fortune/screen/NextShow";
 import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
@@ -25,6 +26,10 @@ import { useCompatibilityResult } from "@/libs/hooks/compatibility";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
 import { useProfileById } from "@/libs/stores/profile/provider";
+import {
+  shareImageWithSystem,
+  shareLinkWithSystem,
+} from "@/libs/share/system-share";
 import { useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
@@ -130,6 +135,50 @@ export default function CompatibilityResultPage() {
     }
   };
 
+  // 기기 공유 시트(인스타그램 등). 지원하지 않는 브라우저면 링크 복사로 대신한다
+  const handleShareSystem = async () => {
+    if (!result) return;
+    try {
+      const shared = await shareLinkWithSystem({
+        title: result.interpretation.headline,
+        url: getShareUrl(),
+      });
+      if (shared === "unsupported") {
+        handleShare();
+      }
+    } catch (shareError) {
+      console.error("Failed to share with system sheet:", shareError);
+    }
+    handleCloseShareDrawer();
+  };
+
+  // 포스터 이미지를 기기 공유 시트로(인스타그램 스토리). 파일 공유를 못 하면 저장으로 대신한다
+  const handlePosterShareSystem = async () => {
+    if (!result) return;
+    setShowPosterImage(true);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    try {
+      const blob = await posterToBlob();
+      if (!blob) {
+        alert(tScreen("shareSheet.imageError"));
+        return;
+      }
+      const shared = await shareImageWithSystem({
+        blob,
+        filename: "life_spoiler_compatibility_poster.png",
+        title: result.interpretation.headline,
+      });
+      if (shared === "unsupported") {
+        await downloadPosterImage();
+      }
+    } catch (shareError) {
+      console.error("Failed to share poster with system sheet:", shareError);
+      alert(tScreen("shareSheet.shareError"));
+    } finally {
+      closePosterImageLater();
+    }
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -191,7 +240,7 @@ export default function CompatibilityResultPage() {
     handleCloseShareDrawer();
   };
 
-  const renderPoster = (isImage: boolean) => (
+  const renderPoster = (isImage: boolean, showShare = true) => (
     <CompatibilityCharacterPoster
       ref={isImage ? posterRef : undefined}
       leadA={{
@@ -210,6 +259,7 @@ export default function CompatibilityResultPage() {
       tags={interpretation.tags}
       subScores={subScores}
       isImage={isImage}
+      shouldShowShareButton={showShare}
       onShareClick={() => setIsPosterShareDrawerOpen(true)}
     />
   );
@@ -293,26 +343,33 @@ export default function CompatibilityResultPage() {
         fortuneType="compatibility"
       />
 
-      <ShareDrawer
+      <FortuneShareSheet
         isOpen={isShareDrawerOpen}
         onClose={handleCloseShareDrawer}
-        onCopyLink={handleShare}
+        eyebrow="SHARE"
+        title={tScreen("shareSheet.linkTitle")}
+        showInvite
         onShareKakao={handleShareKakao}
-        showLine={false}
-        showDownloadImage={false}
-        showEventBanner={true}
-        isDownloading={isDownloading}
+        onShareSystem={handleShareSystem}
+        onCopyLink={handleShare}
       />
 
-      <ShareDrawer
+      <FortuneShareSheet
         isOpen={isPosterShareDrawerOpen}
         onClose={() => setIsPosterShareDrawerOpen(false)}
+        eyebrow="POSTER"
         title={tC("poster.shareTitle")}
-        showCopyLink={false}
-        showLine={false}
+        primary="system"
+        preview={{
+          art: renderPoster(false, false),
+          label: tScreen("shareSheet.posterLabel"),
+          title: interpretation.headline,
+          desc: tScreen("shareSheet.posterDesc"),
+        }}
+        onShareSystem={handlePosterShareSystem}
         onShareKakao={handlePosterShareKakao}
         onDownloadImage={handlePosterDownload}
-        isDownloading={isDownloading}
+        isBusy={isDownloading}
       />
 
       {/* 이미지 생성용 숨겨진 공동 주연 포스터 (375×667) */}
