@@ -10,6 +10,7 @@ import { getOpenGraphImage } from "@/libs/utils/og";
 import BrowserRedirect from "@/components/BrowserRedirect";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { KakaoScript } from "@/components/common/KakaoScript";
+import { ToastViewport } from "@/components/common/toast";
 import { ScreeningProvider } from "@/components/screening";
 import { NavigationEvents } from "@/libs/analytics";
 import {
@@ -135,6 +136,7 @@ export default async function RootLayout({
         </Suspense>
         <NextIntlClientProvider messages={messages}>
           <BrowserRedirect />
+          <ToastViewport />
           <UserProvider>
             <ProfileProvider>
               <ScreeningProvider>{children}</ScreeningProvider>

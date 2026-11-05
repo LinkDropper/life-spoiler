@@ -1,0 +1,106 @@
+/* 앱 안 알림: 밤색 면 + 얇은 금색 선 + mono 꼬리표. 글로우·그림자·원 배지 없음 */
+.viewport {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  z-index: 10100;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 32px);
+  max-width: 448px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* live 영역은 display: contents로 두면 일부 스크린리더가 놓치므로 블록으로 두고, 간격은 카드 마진으로 */
+.slot {
+  display: block;
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 12px 4px 12px 16px;
+  border-radius: 14px;
+  background: rgba(10, 15, 28, 0.98);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.4);
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  overflow-wrap: break-word;
+  pointer-events: auto;
+  animation: toastIn 0.2s ease-out;
+}
+
+.toast:lang(ko) {
+  word-break: keep-all;
+}
+
+.toastNotice {
+  align-items: center;
+  padding-right: 16px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.toastNotice .text {
+  padding-top: 0;
+}
+
+.tag {
+  color: var(--cs-star);
+  font-family: var(--cs-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+}
+
+.message {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -8px 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--cs-star);
+  outline-offset: -2px;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
