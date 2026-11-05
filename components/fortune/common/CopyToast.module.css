@@ -1,28 +1,49 @@
+/* 상영관 톤 완료 알림: 밤색 알약 + 금색 체크 */
 .copyToast {
   position: fixed;
-  align-items: center;
-  top: 80px;
+  top: 72px;
   left: 50%;
+  z-index: 1100;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 32px);
+  padding: 11px 16px 11px 12px;
+  border-radius: 999px;
+  background: rgba(10, 15, 28, 0.96);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 231, 163, 0.4),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
   transform: translateX(-50%);
-  padding: 12px 24px;
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 8px;
-  z-index: 200;
-  animation: fadeInOut 2s ease-in-out;
+  animation: fadeInOut 2s ease-in-out forwards;
 }
 
-.copyToastContent {
+.check {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: 8px;
-  color: var(--color-text-default, #fff);
-  text-align: center;
-  font-family: var(--Type-Brand, Pretendard);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 140%;
-  letter-spacing: 0;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffe7a3;
+  color: #23142d;
+}
+
+.message {
   white-space: nowrap;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 @keyframes fadeInOut {
@@ -30,10 +51,7 @@
     opacity: 0;
     transform: translateX(-50%) translateY(-10px);
   }
-  15% {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  15%,
   85% {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -41,5 +59,11 @@
   100% {
     opacity: 0;
     transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copyToast {
+    animation: none;
   }
 }
