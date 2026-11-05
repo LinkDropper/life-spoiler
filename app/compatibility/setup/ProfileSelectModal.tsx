@@ -2,6 +2,14 @@
 
 import { useTranslations } from "next-intl";
 
+import {
+  Sheet,
+  SheetActionRow,
+  SheetButton,
+  SheetList,
+  SheetOption,
+} from "@/components/common/sheet";
+
 import { formatBirthDate, formatBirthTime } from "./utils";
 import styles from "./page.module.css";
 
@@ -18,6 +26,7 @@ interface ProfileSelectModalProps {
   onClose: () => void;
 }
 
+/** 궁합 프로필 2개를 고르는 공용 시트. 다 차면 나머지는 비활성, 목록만 스크롤된다 */
 export const ProfileSelectModal = ({
   profiles,
   tempSelectedIds,
@@ -45,120 +54,66 @@ export const ProfileSelectModal = ({
       : tProfile("female", { default: "여성" });
   };
 
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  const getDescription = (profile: ProfileRow) =>
+    [
+      formatBirthDate(profile.birth_date),
+      formatBirthTime(
+        profile.birth_time,
+        profile.birth_time_unknown,
+        timeUnknownLabel
+      ),
+      getCalendarLabel(profile.calendar_type),
+      getGenderLabel(profile.gender),
+    ].join(" · ");
 
+  const title = t("modalTitle", { default: "프로필 2개를 선택해 주세요" });
   const isFull = tempSelectedIds.length >= MAX_SELECTED;
+  const initialFocusId =
+    profiles.find((profile) => tempSelectedIds.includes(profile.id))?.id ??
+    profiles[0]?.id;
 
   return (
-    <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
-      <div className={styles.modal}>
-        <div className={styles.modalContent}>
-          <span className={styles.modalTitle}>
-            {t("modalTitle", {
-              default: "프로필 2개를 선택해 주세요",
-            })}
-          </span>
-
-          <button
-            type="button"
-            className={styles.modalNewProfileCard}
+    <Sheet
+      isOpen
+      onClose={onClose}
+      eyebrow="COMPATIBILITY"
+      title={title}
+      footer={
+        <>
+          <SheetActionRow
+            label={t("newProfile", { default: "새 프로필 만들기" })}
             onClick={onNewProfile}
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          />
+          <div className={styles.modalButtons}>
+            <SheetButton variant="ghost" onClick={onClose}>
+              {t("cancel", { default: "취소" })}
+            </SheetButton>
+            <SheetButton
+              onClick={onConfirm}
+              disabled={tempSelectedIds.length !== MAX_SELECTED}
             >
-              <path
-                d="M9 3.75V14.25"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M3.75 9H14.25"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className={styles.modalNewProfileLabel}>
-              {t("newProfile", {
-                default: "새 프로필 만들기",
-              })}
-            </span>
-          </button>
-
-          {profiles.map((profile) => {
-            const isSelected = tempSelectedIds.includes(profile.id);
-
-            return (
-              <button
-                key={profile.id}
-                type="button"
-                className={[
-                  styles.modalProfileCard,
-                  isSelected ? styles.modalProfileSelected : "",
-                ].join(" ")}
-                onClick={() => onToggleProfile(profile.id)}
-                disabled={!isSelected && isFull}
-              >
-                <div className={styles.profileCardNameRow}>
-                  <span className={styles.profileCardName}>{profile.name}</span>
-                </div>
-                <div className={styles.profileCardInfoRow}>
-                  <div className={styles.profileCardDateTime}>
-                    <span className={styles.profileCardInfoText}>
-                      {formatBirthDate(profile.birth_date)}
-                    </span>
-                    <span className={styles.profileCardInfoText}>
-                      {formatBirthTime(
-                        profile.birth_time,
-                        profile.birth_time_unknown,
-                        timeUnknownLabel
-                      )}
-                    </span>
-                  </div>
-                  <div className={styles.profileCardTags}>
-                    <span className={styles.profileCardTag}>
-                      {getCalendarLabel(profile.calendar_type)}
-                    </span>
-                    <span className={styles.profileCardTag}>
-                      {getGenderLabel(profile.gender)}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className={styles.modalButtons}>
-          <button
-            type="button"
-            className={styles.modalCancelButton}
-            onClick={onClose}
-          >
-            {t("cancel", { default: "취소" })}
-          </button>
-          <button
-            type="button"
-            className={styles.modalConfirmButton}
-            onClick={onConfirm}
-            disabled={tempSelectedIds.length !== MAX_SELECTED}
-          >
-            {t("confirm", { default: "확인" })}
-          </button>
-        </div>
-      </div>
-    </div>
+              {t("confirm", { default: "확인" })}
+            </SheetButton>
+          </div>
+        </>
+      }
+    >
+      <SheetList label={title} isMultiple>
+        {profiles.map((profile) => {
+          const isSelected = tempSelectedIds.includes(profile.id);
+          return (
+            <SheetOption
+              key={profile.id}
+              label={profile.name}
+              description={getDescription(profile)}
+              isSelected={isSelected}
+              isDisabled={!isSelected && isFull}
+              isInitialFocus={profile.id === initialFocusId}
+              onSelect={() => onToggleProfile(profile.id)}
+            />
+          );
+        })}
+      </SheetList>
+    </Sheet>
   );
 };
