@@ -34,6 +34,7 @@ import {
 import { useUser } from "@/libs/stores/user";
 import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
+import { showToast } from "@/libs/toast";
 
 import { YearlyFeatureBody } from "./YearlyFeatureBody";
 import styles from "./YearlyFortuneView.module.css";
@@ -144,7 +145,7 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     try {
       const blob = await profileCardToBlob();
       if (!blob) {
-        alert(tY("cast.imageError"));
+        showToast({ kind: "error", message: tY("cast.imageError") });
         return;
       }
 
@@ -157,7 +158,7 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
       });
     } catch (shareError) {
       console.error("Failed to share to Kakao with image:", shareError);
-      alert(tY("cast.shareError"));
+      showToast({ kind: "error", message: tY("cast.shareError") });
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
@@ -191,7 +192,7 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     try {
       const blob = await profileCardToBlob();
       if (!blob) {
-        alert(tScreen("shareSheet.imageError"));
+        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
         return;
       }
       const shared = await shareImageWithSystem({
@@ -204,7 +205,7 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
       }
     } catch (shareError) {
       console.error("Failed to share poster with system sheet:", shareError);
-      alert(tScreen("shareSheet.shareError"));
+      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);

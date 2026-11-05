@@ -29,6 +29,7 @@ import type {
   RelationshipStatus,
   OccupationStatus,
 } from "@/libs/stores/user";
+import { showToast } from "@/libs/toast";
 
 export interface StepOneData {
   name: string;
@@ -187,11 +188,12 @@ export default function ProfileSetupPage() {
         getProfileSetupRedirect(redirectParam, typeParam, result.profileId)
       );
     } catch {
-      alert(
-        t("saveError", {
+      showToast({
+        kind: "error",
+        message: t("saveError", {
           default: "프로필 저장에 실패했습니다. 다시 시도해주세요.",
-        })
-      );
+        }),
+      });
     } finally {
       setIsSubmitting(false);
     }
