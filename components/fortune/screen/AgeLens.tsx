@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useId, useMemo, useRef, useState } from "react";
+import { useId, useMemo, useState } from "react";
 
 import { MarkdownContent } from "@/components/fortune";
 import { trackFortuneEvent } from "@/libs/analytics/fortune";
@@ -11,6 +11,7 @@ import { buildAgeLens, parseAgePeriod } from "@/libs/fortune/lifetime-screen";
 import type { FortuneInterpretation } from "@/libs/services/ai/types";
 
 import styles from "./screen.module.css";
+import { useKeepInView } from "./use-keep-in-view";
 
 type AgeScenario = FortuneInterpretation["ageScenarios"][number];
 
@@ -20,11 +21,6 @@ interface AgeLensProps {
   birthTimeUnknown: boolean;
   surface: FortuneSurface;
 }
-
-/** 높이 전환이 끝나지 않을 때(동작 줄이기 등) 기다리는 최대 시간 */
-const SCROLL_FALLBACK_MS = 700;
-/** 헤더 + 상영 컨트롤 바 높이 (screen.module.css의 scroll-margin-top과 같은 값) */
-const STICKY_OFFSET_PX = 128;
 
 /** 러닝타임 바의 "지금 n세" 칩이 데려갈 시기 요소 id */
 export const toAgeSceneId = (index: number): string => `age-scene-${index}`;
@@ -41,7 +37,7 @@ export const AgeLens = ({
 }: AgeLensProps) => {
   const t = useTranslations("fortune.screen.age");
   const baseId = useId();
-  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const { itemRefs, keepInView } = useKeepInView(`.${styles.agePanelWrap}`);
   const lens = useMemo(
     () =>
       buildAgeLens(
@@ -52,47 +48,6 @@ export const AgeLens = ({
   );
   const [focusIndex, setFocusIndex] = useState(lens.nowIndex);
   const [isAllOpen, setIsAllOpen] = useState(false);
-
-  /**
-   * 위쪽 시기가 접히면 누른 시기가 화면 밖으로 밀려난다.
-   * 접히는 시기와 펼치는 시기의 높이 전환이 모두 끝난 뒤(도중에 스크롤을 걸면 끊긴다)
-   * 제자리로 데려온다.
-   */
-  const keepInView = (index: number, closingIndex: number) => {
-    const item = itemRefs.current[index];
-    if (!item) {
-      return;
-    }
-    const panels = [index, closingIndex]
-      .map((target) =>
-        itemRefs.current[target]?.querySelector(`.${styles.agePanelWrap}`)
-      )
-      .filter((panel): panel is Element => Boolean(panel));
-    const pending = new Set(panels);
-    let timer = 0;
-
-    const settle = () => {
-      window.clearTimeout(timer);
-      panels.forEach((panel) =>
-        panel.removeEventListener("transitionend", handleEnd)
-      );
-      const { top } = item.getBoundingClientRect();
-      if (top < STICKY_OFFSET_PX || top > window.innerHeight * 0.7) {
-        item.scrollIntoView({ block: "start", behavior: "smooth" });
-      }
-    };
-    const handleEnd = (event: Event) => {
-      pending.delete(event.currentTarget as Element);
-      if (pending.size === 0) {
-        settle();
-      }
-    };
-
-    timer = window.setTimeout(settle, SCROLL_FALLBACK_MS);
-    panels.forEach((panel) =>
-      panel.addEventListener("transitionend", handleEnd)
-    );
-  };
 
   const handleToggle = (index: number) => {
     const isOpen = isAllOpen || focusIndex === index;

@@ -778,8 +778,8 @@
         "luckyKeywordsTitle": "행운 키워드",
         "share": {
           "title": "{name}님의 {year}년 운세",
-          "ogTitle": "114개 별이 스포하는 {name}님의 올해 시나리오",
-          "ogTitleWithHeadline": "{name}님의 {year}년 운세: {headline}",
+          "ogTitle": "{name}님의 {year}년 시나리오",
+          "ogTitleWithHeadline": "{name}님 주연 {year}년 편: {headline}",
           "ogDescription": "자미두수로 분석한 {name}님의 {year}년 운세입니다.",
           "ogDescriptionWithScores": "{name}님의 {year}년 운세 점수 - 재물: {wealth}점 | 커리어: {career}점 | 인간관계: {relationship}점 | 건강: {health}점"
         },
@@ -1019,6 +1019,214 @@
         "share": {
           "cta": "내 인생 예고편 무료로 보기",
           "endNote": "내 명반으로는 어떤 영화가 나올까요? 예고편은 무료로 상영돼요."
+        },
+        "yearly": {
+          "flow": {
+            "title": "{when, select, upcoming {{year}년의} other {올해의}} 흐름",
+            "desc": "명반으로 계산한 달마다의 기운을 막대로 보여 드려요. 높을수록 움직이기 좋은 달이에요.",
+            "legendBest": "올해 가장 좋은 달",
+            "legendCaution": "조심할 달",
+            "legendNow": "이번 달",
+            "best": "가장 좋은 달",
+            "caution": "조심할 달",
+            "monthScore": "{month}월 · 점수 {score}",
+            "bestSubYear": "올해 점수가 가장 높은 달",
+            "bestSubNow": "바로 이번 달이에요",
+            "bestSubAhead": "{count}달 뒤에 와요",
+            "bestSubPassed": "이미 지나간 달이에요",
+            "cautionPlaceholder": "○월 · 점수 ○○",
+            "cautionLocked": "본편에서 열려요",
+            "cautionSub": "올해 점수가 가장 낮은 달"
+          },
+          "now": {
+            "kicker": {
+              "current": "NOW SHOWING",
+              "upcoming": "COMING SOON",
+              "past": "LAST SHOWING"
+            },
+            "cast": "{name} 주연 · {year}",
+            "monthUnit": "월",
+            "rankBest": "올해 최고의 달",
+            "rankTop": "올해 좋은 달 {rank}위",
+            "rankCaution": "조심할 달",
+            "rank": "12달 중 {rank}위",
+            "scoreToday": "점수 {score} · 오늘 {month}/{day}",
+            "score": {
+              "upcoming": "점수 {score} · {year}년 1월부터 상영",
+              "past": "점수 {score} · {year}년의 마지막 장면"
+            },
+            "jump": {
+              "current": "이번 달 장면 보기",
+              "upcoming": "{month}월 장면부터 보기",
+              "past": "{month}월 장면 보기"
+            }
+          },
+          "poster": {
+            "ganji": "{ganji} · 12 MONTHS",
+            "starring": "{name} 주연 · {year}년 편",
+            "genre": "올해의 장르",
+            "brand": "인생스포",
+            "leadGenre": "LEAD GENRE · {category}",
+            "castLine": "{name} 주연 · {year} {ganji}",
+            "share": "캐릭터 포스터 공유하기"
+          },
+          "trailer": {
+            "title": "예고편 · {count}장면",
+            "free": "{count} SCENES · 무료"
+          },
+          "months": {
+            "unit": "월",
+            "score": "점수 {score}",
+            "tagNow": "이번 달",
+            "tagNext": "다음 달",
+            "markBest": "올해 가장 좋은 달",
+            "markCaution": "조심할 달",
+            "regionLabel": "{month}월 장면",
+            "progress": "오늘 {month}/{day} · 이 달의 {percent}%",
+            "dayLabel": "{month}/{day}",
+            "collapseAll": "이번 달만 보기",
+            "expandAll": "12개월 전체 펼쳐 읽기",
+            "summary": {
+              "current": "이번 달",
+              "upcoming": "첫 장면",
+              "past": "마지막 장면"
+            },
+            "summaryBest": "{month}월 · 올해 최고의 달",
+            "summaryMonth": "{month}월",
+            "summaryScore": "점수 {score}",
+            "left": "올해 남은 달",
+            "leftValue": "{count}달",
+            "leftLast": "올해의 마지막 달이에요",
+            "leftSub": "다음은 {month}월",
+            "runtime": "상영 기간",
+            "runtimeValue": "{year}년 12개월",
+            "runtimeSub": {
+              "upcoming": "아직 시작 전이에요",
+              "past": "상영이 끝난 해예요"
+            }
+          },
+          "memo": {
+            "title": "{when, select, upcoming {{year}년의} other {올해의}} 메모",
+            "desc": "명반으로 계산한 올해의 포인트예요. 행운의 색·장소처럼 근거가 약한 항목은 뺐어요.",
+            "nobleAnimal": "{animal}띠",
+            "wealth": {
+              "label": "재물 공략",
+              "source": "올해 재백궁"
+            },
+            "romance": {
+              "label": "연애 모드",
+              "source": "도화성 흐름"
+            },
+            "noble": {
+              "label": "나의 귀인",
+              "source": "삼합"
+            },
+            "health": {
+              "label": "건강 주의",
+              "source": "올해 질액궁"
+            }
+          },
+          "runtime": {
+            "month": "<b>{month}월</b> / 12월",
+            "note": {
+              "current": "예고편은 <b>올해의 줄거리</b>까지예요. 지금 상영 중인 {month}월 장면과 12개월 전체는 본편에서 상영돼요.",
+              "upcoming": "예고편은 <b>{year}년의 줄거리</b>까지예요. 1월부터 12월까지 달마다의 장면은 본편에서 상영돼요.",
+              "past": "예고편은 <b>{year}년의 줄거리</b>까지예요. 12개월 전체 장면은 본편에서 상영돼요."
+            }
+          },
+          "chart": {
+            "previewDesc": "포스터 아래 흐름은 이 명반에서 나왔어요. 올해 들어온 사화(화록·화권·화과·화기)도 함께 표시돼요.",
+            "featureDesc": "칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 올해 들어온 사화도 함께 표시돼요.",
+            "shareDesc": "선은 명궁과 함께 움직이는 세 궁이에요. 올해 들어온 사화도 함께 표시돼요."
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "올해 핵심 시나리오",
+              "desc": "한 해 전체를 관통하는 줄거리"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "네 갈래 이야기",
+              "desc": "재물·직업·인연·건강과 관람 평점"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "월별 시나리오",
+              "desc": "이번 달부터 12월까지, 달마다 한 장면"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "올해의 메모 · 캐릭터 포스터",
+              "desc": "재물 공략·귀인·건강 주의와 공유 포스터"
+            },
+            "spoilerTitle": "{month}월 장면 · 본편에서 공개",
+            "spoilerHint": "이번 달 장면과 조심할 달은 본편에서 열려요."
+          },
+          "acts": {
+            "act1": {
+              "title": "{when, select, upcoming {{year}년} other {올해}} 스포일러",
+              "sub": "{year}년의 첫 장면"
+            },
+            "act2": {
+              "title": "{when, select, upcoming {{year}년} other {올해}} 핵심 시나리오",
+              "sub": "한 해 전체를 관통하는 줄거리"
+            },
+            "act3": {
+              "title": "네 갈래 이야기",
+              "sub": "재물 · 직업 · 인연 · 건강"
+            },
+            "act4": {
+              "title": "월별 시나리오",
+              "sub": "이번 달부터 크게, 12개월"
+            }
+          },
+          "player": {
+            "now": {
+              "current": "지금 {month}월",
+              "upcoming": "{month}월부터",
+              "past": "{month}월"
+            }
+          },
+          "cast": {
+            "title": "{when, select, upcoming {{year}년} other {올해}} 캐릭터 포스터",
+            "imageError": "이미지를 만들지 못했어요. 다시 시도해 주세요.",
+            "shareError": "공유하지 못했어요. 다시 시도해 주세요."
+          },
+          "next": {
+            "kicker": {
+              "lifetime": "TRAILER · RUNTIME 99Y",
+              "yearly": "TRAILER · 12 MONTHS",
+              "yearly2027": "TRAILER · {year}",
+              "compatibility": "TRAILER · TWO STARS",
+              "pastLife": "TRAILER · PREQUEL",
+              "faceReading": "TRAILER · CLOSE-UP"
+            },
+            "body": {
+              "lifetime": "올해는 99세 영화의 한 장면이에요. 이 장면이 들어 있는 인생 전체 줄거리를 예고편부터 무료로 볼 수 있어요.",
+              "yearly": "올해 12개월을 달마다 한 장면으로 보여 드려요. 예고편은 무료로 상영돼요.",
+              "yearly2027": "{year}년이 끝나면 이어질 다음 해의 12개월이에요. 예고편은 무료로 상영돼요.",
+              "compatibility": "나와 함께 출연하는 사람과의 이야기예요. 두 사람의 명반을 나란히 놓고 봐요.",
+              "pastLife": "이번 생보다 먼저 찍힌 전편이에요. 전생의 나는 어떤 사람이었을까요.",
+              "faceReading": "얼굴에 담긴 성향을 클로즈업으로 읽어 드려요."
+            },
+            "button": "예고편 보기"
+          },
+          "credits": {
+            "bestMonth": "{month}월"
+          },
+          "followUp": {
+            "prompts": [
+              "이직하기 좋은 시기는 언제인가요?",
+              "올해 조심해야 할 것은 무엇인가요?",
+              "올해 연애운은 어떤가요?"
+            ]
+          },
+          "share": {
+            "badge": "친구가 보낸 본편",
+            "cta": "내 올해 예고편 무료로 보기",
+            "endNote": "내 명반으로는 올해가 어떤 장면일까요? 예고편은 무료로 상영돼요."
+          }
         }
       }
     },
@@ -2963,8 +3171,8 @@
         "luckyKeywordsTitle": "Lucky Keywords",
         "share": {
           "title": "{name}'s {year} Fortune",
-          "ogTitle": "What the stars predict for {name} in {year}",
-          "ogTitleWithHeadline": "{name}'s {year} Fortune: {headline}",
+          "ogTitle": "{name}'s {year} scenario",
+          "ogTitleWithHeadline": "{name} stars in {year}: {headline}",
           "ogDescription": "{name}'s {year} fortune analyzed by ancient Eastern astrology.",
           "ogDescriptionWithScores": "{name}'s {year} fortune scores - Wealth: {wealth} | Career: {career} | Relationship: {relationship} | Health: {health}"
         },
@@ -3204,6 +3412,214 @@
         "share": {
           "cta": "Watch my life trailer for free",
           "endNote": "What film would your chart make? The trailer plays for free."
+        },
+        "yearly": {
+          "flow": {
+            "title": "{when, select, upcoming {The flow of {year}} other {The year's flow}}",
+            "desc": "Each month's energy, calculated from your chart. The taller the bar, the better the month for moving.",
+            "legendBest": "Best months",
+            "legendCaution": "Months to watch",
+            "legendNow": "This month",
+            "best": "Best month",
+            "caution": "Month to watch",
+            "monthScore": "Month {month} · score {score}",
+            "bestSubYear": "Highest score of the year",
+            "bestSubNow": "It's this month",
+            "bestSubAhead": "{count, plural, one {# month} other {# months}} away",
+            "bestSubPassed": "Already passed",
+            "cautionPlaceholder": "Month ○ · score ○○",
+            "cautionLocked": "Opens in the full feature",
+            "cautionSub": "Lowest score of the year"
+          },
+          "now": {
+            "kicker": {
+              "current": "NOW SHOWING",
+              "upcoming": "COMING SOON",
+              "past": "LAST SHOWING"
+            },
+            "cast": "Starring {name} · {year}",
+            "monthUnit": "",
+            "rankBest": "Best month of the year",
+            "rankTop": "#{rank} month of the year",
+            "rankCaution": "Month to watch",
+            "rank": "#{rank} of 12",
+            "scoreToday": "Score {score} · today {month}/{day}",
+            "score": {
+              "upcoming": "Score {score} · showing from January {year}",
+              "past": "Score {score} · the last scene of {year}"
+            },
+            "jump": {
+              "current": "See this month's scene",
+              "upcoming": "Start from month {month}",
+              "past": "See month {month}"
+            }
+          },
+          "poster": {
+            "ganji": "{ganji} · 12 MONTHS",
+            "starring": "Starring {name} · {year} edition",
+            "genre": "Genres of the year",
+            "brand": "Life Spoiler",
+            "leadGenre": "LEAD GENRE · {category}",
+            "castLine": "Starring {name} · {year} {ganji}",
+            "share": "Share the character poster"
+          },
+          "trailer": {
+            "title": "Trailer · {count} scenes",
+            "free": "{count} SCENES · FREE"
+          },
+          "months": {
+            "unit": "",
+            "score": "Score {score}",
+            "tagNow": "This month",
+            "tagNext": "Next month",
+            "markBest": "Best month",
+            "markCaution": "Month to watch",
+            "regionLabel": "Month {month}",
+            "progress": "Today {month}/{day} · {percent}% through",
+            "dayLabel": "{month}/{day}",
+            "collapseAll": "Show this month only",
+            "expandAll": "Expand all 12 months",
+            "summary": {
+              "current": "This month",
+              "upcoming": "Opening scene",
+              "past": "Last scene"
+            },
+            "summaryBest": "Month {month} · best of the year",
+            "summaryMonth": "Month {month}",
+            "summaryScore": "Score {score}",
+            "left": "Months left",
+            "leftValue": "{count, plural, one {# month} other {# months}}",
+            "leftLast": "The last month of the year",
+            "leftSub": "Next: month {month}",
+            "runtime": "Showing",
+            "runtimeValue": "12 months of {year}",
+            "runtimeSub": {
+              "upcoming": "Hasn't started yet",
+              "past": "This year has ended"
+            }
+          },
+          "memo": {
+            "title": "{when, select, upcoming {Notes for {year}} other {Notes for the year}}",
+            "desc": "This year's points, calculated from your chart. We left out weakly grounded items like lucky colors and places.",
+            "nobleAnimal": "{animal}",
+            "wealth": {
+              "label": "Wealth plan",
+              "source": "Wealth palace"
+            },
+            "romance": {
+              "label": "Romance mode",
+              "source": "Peach blossom stars"
+            },
+            "noble": {
+              "label": "Helpful people",
+              "source": "Trine"
+            },
+            "health": {
+              "label": "Health watch",
+              "source": "Health palace"
+            }
+          },
+          "runtime": {
+            "month": "<b>Month {month}</b> / 12",
+            "note": {
+              "current": "The trailer covers <b>the year's plot</b>. Month {month}, now showing, and all 12 months play in the full feature.",
+              "upcoming": "The trailer covers <b>the plot of {year}</b>. Each month from January to December plays in the full feature.",
+              "past": "The trailer covers <b>the plot of {year}</b>. All 12 months play in the full feature."
+            }
+          },
+          "chart": {
+            "previewDesc": "The flow under the poster comes from this chart. This year's transformation stars are marked too.",
+            "featureDesc": "Tap a cell to see what that palace covers. This year's transformation stars are marked too.",
+            "shareDesc": "The lines link the Life palace with the three palaces that move with it. This year's transformation stars are marked too."
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "Core scenario of the year",
+              "desc": "The plot running through the whole year"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "Four storylines",
+              "desc": "Wealth, career, relationships, health, with ratings"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "Month by month",
+              "desc": "One scene per month, from now to December"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "Notes · character poster",
+              "desc": "Wealth plan, helpful people, health watch and a poster to share"
+            },
+            "spoilerTitle": "Month {month} · revealed in the full feature",
+            "spoilerHint": "This month's scene and the months to watch open in the full feature."
+          },
+          "acts": {
+            "act1": {
+              "title": "{when, select, upcoming {Spoiler of {year}} other {Spoiler of the year}}",
+              "sub": "The opening scene of {year}"
+            },
+            "act2": {
+              "title": "{when, select, upcoming {Core scenario of {year}} other {Core scenario of the year}}",
+              "sub": "The plot running through the whole year"
+            },
+            "act3": {
+              "title": "Four storylines",
+              "sub": "Wealth · Career · Relationships · Health"
+            },
+            "act4": {
+              "title": "Month by month",
+              "sub": "The nearer the month, the bigger it plays"
+            }
+          },
+          "player": {
+            "now": {
+              "current": "Now · month {month}",
+              "upcoming": "From month {month}",
+              "past": "Month {month}"
+            }
+          },
+          "cast": {
+            "title": "{when, select, upcoming {{year}} other {This year's}} character poster",
+            "imageError": "We couldn't create the image. Please try again.",
+            "shareError": "We couldn't share it. Please try again."
+          },
+          "next": {
+            "kicker": {
+              "lifetime": "TRAILER · RUNTIME 99Y",
+              "yearly": "TRAILER · 12 MONTHS",
+              "yearly2027": "TRAILER · {year}",
+              "compatibility": "TRAILER · TWO STARS",
+              "pastLife": "TRAILER · PREQUEL",
+              "faceReading": "TRAILER · CLOSE-UP"
+            },
+            "body": {
+              "lifetime": "This year is one scene of a 99-year film. Watch the trailer of the whole life plot for free.",
+              "yearly": "This year's 12 months, one scene each. The trailer plays for free.",
+              "yearly2027": "The 12 months of the year after {year}. The trailer plays for free.",
+              "compatibility": "The story with the person who shares your screen, both charts side by side.",
+              "pastLife": "The prequel shot before this life. Who were you back then?",
+              "faceReading": "A close-up reading of the traits in your face."
+            },
+            "button": "Watch the trailer"
+          },
+          "credits": {
+            "bestMonth": "Month {month}"
+          },
+          "followUp": {
+            "prompts": [
+              "When is a good time to change jobs?",
+              "What should I watch out for this year?",
+              "How does my love life look this year?"
+            ]
+          },
+          "share": {
+            "badge": "Shared by a friend",
+            "cta": "Watch my year's trailer for free",
+            "endNote": "What scene would this year be for your chart? The trailer plays for free."
+          }
         }
       }
     },
@@ -5156,8 +5572,8 @@
         "luckyKeywordsTitle": "幸運キーワード",
         "share": {
           "title": "{name}さんの{year}年運勢",
-          "ogTitle": "114個の星がネタバレする{name}さんの今年のシナリオ",
-          "ogTitleWithHeadline": "{name}さんの{year}年運勢: {headline}",
+          "ogTitle": "{name}さんの{year}年シナリオ",
+          "ogTitleWithHeadline": "{name}さん主演 {year}年編: {headline}",
           "ogDescription": "紫微斗数で分析した{name}さんの{year}年運勢です。",
           "ogDescriptionWithScores": "{name}さんの{year}年運勢スコア - 財運: {wealth}点 | キャリア: {career}点 | 人間関係: {relationship}点 | 健康: {health}点"
         },
@@ -5397,6 +5813,214 @@
         "share": {
           "cta": "わたしの人生予告編を無料で見る",
           "endNote": "わたしの命盤からはどんな映画が生まれるでしょう。予告編は無料で上映しています。"
+        },
+        "yearly": {
+          "flow": {
+            "title": "{when, select, upcoming {{year}年} other {今年}}の流れ",
+            "desc": "命盤から計算した月ごとの運気を棒で表しています。高いほど動きやすい月です。",
+            "legendBest": "今年いちばん良い月",
+            "legendCaution": "気をつける月",
+            "legendNow": "今月",
+            "best": "いちばん良い月",
+            "caution": "気をつける月",
+            "monthScore": "{month}月 · スコア {score}",
+            "bestSubYear": "今年スコアがいちばん高い月",
+            "bestSubNow": "まさに今月です",
+            "bestSubAhead": "{count}か月後に来ます",
+            "bestSubPassed": "すでに過ぎた月です",
+            "cautionPlaceholder": "○月 · スコア ○○",
+            "cautionLocked": "本編で公開されます",
+            "cautionSub": "今年スコアがいちばん低い月"
+          },
+          "now": {
+            "kicker": {
+              "current": "NOW SHOWING",
+              "upcoming": "COMING SOON",
+              "past": "LAST SHOWING"
+            },
+            "cast": "主演 {name} · {year}",
+            "monthUnit": "月",
+            "rankBest": "今年最高の月",
+            "rankTop": "今年良い月 {rank}位",
+            "rankCaution": "気をつける月",
+            "rank": "12か月中 {rank}位",
+            "scoreToday": "スコア {score} · 今日 {month}/{day}",
+            "score": {
+              "upcoming": "スコア {score} · {year}年1月から上映",
+              "past": "スコア {score} · {year}年の最後の場面"
+            },
+            "jump": {
+              "current": "今月の場面を見る",
+              "upcoming": "{month}月の場面から見る",
+              "past": "{month}月の場面を見る"
+            }
+          },
+          "poster": {
+            "ganji": "{ganji} · 12 MONTHS",
+            "starring": "主演 {name} · {year}年編",
+            "genre": "今年のジャンル",
+            "brand": "ライフスポイラー",
+            "leadGenre": "LEAD GENRE · {category}",
+            "castLine": "主演 {name} · {year} {ganji}",
+            "share": "キャラクターポスターをシェア"
+          },
+          "trailer": {
+            "title": "予告編 · {count}場面",
+            "free": "{count} SCENES · 無料"
+          },
+          "months": {
+            "unit": "月",
+            "score": "スコア {score}",
+            "tagNow": "今月",
+            "tagNext": "来月",
+            "markBest": "今年いちばん良い月",
+            "markCaution": "気をつける月",
+            "regionLabel": "{month}月の場面",
+            "progress": "今日 {month}/{day} · この月の{percent}%",
+            "dayLabel": "{month}/{day}",
+            "collapseAll": "今月だけ見る",
+            "expandAll": "12か月すべて広げて読む",
+            "summary": {
+              "current": "今月",
+              "upcoming": "最初の場面",
+              "past": "最後の場面"
+            },
+            "summaryBest": "{month}月 · 今年最高の月",
+            "summaryMonth": "{month}月",
+            "summaryScore": "スコア {score}",
+            "left": "今年の残り",
+            "leftValue": "{count}か月",
+            "leftLast": "今年最後の月です",
+            "leftSub": "次は{month}月",
+            "runtime": "上映期間",
+            "runtimeValue": "{year}年の12か月",
+            "runtimeSub": {
+              "upcoming": "まだ始まっていません",
+              "past": "上映が終わった年です"
+            }
+          },
+          "memo": {
+            "title": "{when, select, upcoming {{year}年} other {今年}}のメモ",
+            "desc": "命盤から計算した今年のポイントです。ラッキーカラーや場所のように根拠の弱い項目は外しました。",
+            "nobleAnimal": "{animal}年",
+            "wealth": {
+              "label": "財運の攻略",
+              "source": "今年の財帛宮"
+            },
+            "romance": {
+              "label": "恋愛モード",
+              "source": "桃花星の流れ"
+            },
+            "noble": {
+              "label": "わたしの貴人",
+              "source": "三合"
+            },
+            "health": {
+              "label": "健康の注意",
+              "source": "今年の疾厄宮"
+            }
+          },
+          "runtime": {
+            "month": "<b>{month}月</b> / 12月",
+            "note": {
+              "current": "予告編は<b>今年のあらすじ</b>までです。上映中の{month}月の場面と12か月すべては本編で上映します。",
+              "upcoming": "予告編は<b>{year}年のあらすじ</b>までです。1月から12月までの月ごとの場面は本編で上映します。",
+              "past": "予告編は<b>{year}年のあらすじ</b>までです。12か月すべての場面は本編で上映します。"
+            }
+          },
+          "chart": {
+            "previewDesc": "ポスター下の流れはこの命盤から生まれました。今年入った四化(化禄·化権·化科·化忌)も表示しています。",
+            "featureDesc": "マスを押すと、その宮が何を表すかをお伝えします。今年入った四化も表示しています。",
+            "shareDesc": "線は命宮と一緒に動く三つの宮です。今年入った四化も表示しています。"
+          },
+          "feature": {
+            "act2": {
+              "act": "ACT 2",
+              "title": "今年の核心シナリオ",
+              "desc": "一年を貫く筋書き"
+            },
+            "act3": {
+              "act": "ACT 3",
+              "title": "四つの物語",
+              "desc": "財運·仕事·縁·健康と評価"
+            },
+            "act4": {
+              "act": "ACT 4",
+              "title": "月別シナリオ",
+              "desc": "今月から12月まで、月ごとに一場面"
+            },
+            "bonus": {
+              "act": "BONUS",
+              "title": "今年のメモ · キャラクターポスター",
+              "desc": "財運の攻略·貴人·健康の注意とシェア用ポスター"
+            },
+            "spoilerTitle": "{month}月の場面 · 本編で公開",
+            "spoilerHint": "今月の場面と気をつける月は本編で公開されます。"
+          },
+          "acts": {
+            "act1": {
+              "title": "{when, select, upcoming {{year}年} other {今年}}のネタバレ",
+              "sub": "{year}年の最初の場面"
+            },
+            "act2": {
+              "title": "{when, select, upcoming {{year}年} other {今年}}の核心シナリオ",
+              "sub": "一年を貫く筋書き"
+            },
+            "act3": {
+              "title": "四つの物語",
+              "sub": "財運 · 仕事 · 縁 · 健康"
+            },
+            "act4": {
+              "title": "月別シナリオ",
+              "sub": "近い月ほど大きく、12か月"
+            }
+          },
+          "player": {
+            "now": {
+              "current": "いま {month}月",
+              "upcoming": "{month}月から",
+              "past": "{month}月"
+            }
+          },
+          "cast": {
+            "title": "{when, select, upcoming {{year}年} other {今年}}のキャラクターポスター",
+            "imageError": "画像を作成できませんでした。もう一度お試しください。",
+            "shareError": "シェアできませんでした。もう一度お試しください。"
+          },
+          "next": {
+            "kicker": {
+              "lifetime": "TRAILER · RUNTIME 99Y",
+              "yearly": "TRAILER · 12 MONTHS",
+              "yearly2027": "TRAILER · {year}",
+              "compatibility": "TRAILER · TWO STARS",
+              "pastLife": "TRAILER · PREQUEL",
+              "faceReading": "TRAILER · CLOSE-UP"
+            },
+            "body": {
+              "lifetime": "今年は99歳の映画の一場面です。この場面を含む人生全体のあらすじを予告編から無料で見られます。",
+              "yearly": "今年の12か月を月ごとに一場面でお見せします。予告編は無料で上映しています。",
+              "yearly2027": "{year}年に続く翌年の12か月です。予告編は無料で上映しています。",
+              "compatibility": "一緒に出演する人との物語です。二人の命盤を並べて見ます。",
+              "pastLife": "今世より先に撮られた前編です。前世のわたしはどんな人だったのでしょう。",
+              "faceReading": "顔に表れた性格をクローズアップで読み解きます。"
+            },
+            "button": "予告編を見る"
+          },
+          "credits": {
+            "bestMonth": "{month}月"
+          },
+          "followUp": {
+            "prompts": [
+              "転職に良い時期はいつですか？",
+              "今年気をつけることは何ですか？",
+              "今年の恋愛運はどうですか？"
+            ]
+          },
+          "share": {
+            "badge": "友だちから届いた本編",
+            "cta": "わたしの今年の予告編を無料で見る",
+            "endNote": "わたしの命盤では今年はどんな場面でしょう。予告編は無料で上映しています。"
+          }
         }
       }
     },

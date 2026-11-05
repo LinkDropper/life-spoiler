@@ -309,8 +309,10 @@ export default function LifetimeFortuneSharePage() {
 
         <EndCredits
           name={profile.name}
-          leadStar={cast.leadStar}
-          wuxingJu={result.chart.wuxingJu}
+          rows={[
+            { label: "LEAD STAR", value: cast.leadStar },
+            { label: "ORIGINAL", value: result.chart.wuxingJu },
+          ]}
         >
           <p className={screen.sectionDesc}>{tScreen("share.endNote")}</p>
         </EndCredits>
