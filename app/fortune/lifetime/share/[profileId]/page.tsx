@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 
 import { ErrorState, MarkdownContent } from "@/components/fortune";
-import type { CategoryKey } from "@/components/fortune";
 import { LifetimeCharacterPoster } from "@/components/fortune/LifetimeCharacterPoster";
 import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
 import { AgeLens, toAgeSceneId } from "@/components/fortune/screen/AgeLens";
@@ -25,6 +24,7 @@ import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import type { FortuneSceneId } from "@/libs/analytics/fortune";
 import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
+import type { CategoryKey } from "@/libs/fortune/lifetime-screen";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import { getFilmAge } from "@/libs/home/home-film";
 import { useLifetimeShare } from "@/libs/hooks/fortune";
