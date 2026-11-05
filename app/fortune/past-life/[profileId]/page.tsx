@@ -1,38 +1,41 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { CopyToast, ErrorState, ShareDrawer } from "@/components/fortune";
+import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
+import { PastLifeCharacterPoster } from "@/components/fortune/PastLifeCharacterPoster";
+import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
+import { PastLifeFeatureBody } from "@/components/fortune/past-life/PastLifeFeatureBody";
+import { EndCredits } from "@/components/fortune/screen/EndCredits";
+import { NextShow } from "@/components/fortune/screen/NextShow";
+import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
-import {
-  ProfileInfo,
-  ZiweiChartGrid,
-  SectionHeader,
-  MarkdownContent,
-  SubSectionList,
-  OneLinerAlert,
-  CopyToast,
-  ErrorState,
-  ShareDrawer,
-  EventBadge,
-} from "@/components/fortune";
-import PastLifeProfileCard from "@/components/fortune/PastLifeProfileCard";
-import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
-import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
+import type { FortuneSceneId } from "@/libs/analytics/fortune";
+import { pickNextAfterPastLife } from "@/libs/fortune/past-life-screen";
+import { getFortuneHref } from "@/libs/home/home-profile";
 import { usePastLifeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
+import { useProfileById } from "@/libs/stores/profile/provider";
 import { useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
 
+const EXTRA_SCENE_IDS: FortuneSceneId[] = ["next", "end"];
+
+/** 전생 운세 본편 = 전편(PREQUEL) (기획서 §12) */
 export default function PastLifeFortunePage() {
   const router = useRouter();
   const user = useUser();
   const t = useTranslations("fortune.pastLife");
   const tCommon = useTranslations("fortune.common");
+  const tScreen = useTranslations("fortune.screen");
+  const tP = useTranslations("fortune.screen.pastLife");
+  const tHome = useTranslations("home");
 
   const {
     isLoading,
@@ -47,20 +50,8 @@ export default function PastLifeFortunePage() {
     onFetchError: () => t("interpretError"),
     onUnknownError: () => tCommon("unknownError"),
   });
+  const storedProfile = useProfileById(profileId);
 
-  const [statsExpanded, setStatsExpanded] = useState(true);
-  const [chartExpanded, setChartExpanded] = useState(true);
-  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
-  const [worldExpanded, setWorldExpanded] = useState(true);
-  const [birthExpanded, setBirthExpanded] = useState(true);
-  const [journeyExpanded, setJourneyExpanded] = useState(true);
-  const [endExpanded, setEndExpanded] = useState(true);
-  const [contrastExpanded, setContrastExpanded] = useState(true);
-  const [connectionsExpanded, setConnectionsExpanded] = useState(true);
-  const [tracesExpanded, setTracesExpanded] = useState(true);
-  const [lessonsExpanded, setLessonsExpanded] = useState(true);
-
-  // 공유 드로어 상태
   const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
@@ -68,7 +59,7 @@ export default function PastLifeFortunePage() {
   const [showProfileCard, setShowProfileCard] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 프로필 카드 이미지 훅
+  // 캐릭터 포스터 이미지 훅
   const {
     ref: profileCardRef,
     download: downloadProfileImage,
@@ -87,9 +78,9 @@ export default function PastLifeFortunePage() {
     };
   }, []);
 
-  // 프로필 이미지 다운로드 핸들러
   const handleProfileDownloadImage = useCallback(async () => {
     setShowProfileCard(true);
+    // React 렌더링이 완료될 시간을 확보
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
@@ -102,7 +93,6 @@ export default function PastLifeFortunePage() {
     }
   }, [downloadProfileImage]);
 
-  // 카카오톡 공유 핸들러
   const handleShareKakao = useCallback(() => {
     if (!result || !profile) return;
 
@@ -119,7 +109,6 @@ export default function PastLifeFortunePage() {
     setIsShareDrawerOpen(false);
   }, [result, profile, profileId, user]);
 
-  // 프로필 이미지 공유 - 카카오톡 핸들러
   const handleProfileShareKakao = useCallback(async () => {
     if (!result || !profile) return;
 
@@ -129,7 +118,7 @@ export default function PastLifeFortunePage() {
     try {
       const blob = await profileCardToBlob();
       if (!blob) {
-        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
+        alert(tP("poster.imageError"));
         return;
       }
 
@@ -140,16 +129,16 @@ export default function PastLifeFortunePage() {
         name: profile.name,
         webDomain: shareUrl,
       });
-    } catch (err) {
-      console.error("Failed to share to Kakao with image:", err);
-      alert("공유에 실패했습니다. 다시 시도해주세요.");
+    } catch (shareError) {
+      console.error("Failed to share to Kakao with image:", shareError);
+      alert(tP("poster.shareError"));
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
         setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [result, profile, profileId, profileCardToBlob, user]);
+  }, [result, profile, profileId, profileCardToBlob, user, tP]);
 
   if (isLoading) {
     return <Loading />;
@@ -174,521 +163,93 @@ export default function PastLifeFortunePage() {
     return null;
   }
 
-  const { interpretation } = result;
-  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
+  const { interpretation, rawChart } = result;
+  const { world } = interpretation;
+  const nextKey = pickNextAfterPastLife(storedProfile ?? null);
+
+  const renderPoster = (isImage: boolean) => (
+    <PastLifeCharacterPoster
+      ref={isImage ? profileCardRef : undefined}
+      name={profile.name}
+      imageUrl={interpretation.imageUrl}
+      headline={interpretation.spoiler.headline}
+      title={interpretation.stats?.title ?? ""}
+      era={world.era}
+      location={world.location}
+      profileCard={interpretation.profileCard}
+      isImage={isImage}
+      onShareClick={() => setIsProfileShareDrawerOpen(true)}
+    />
+  );
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={styles.main}>
-        {/* 프로필 정보 */}
-        <ProfileInfo
+      <main className={`${screen.root} ${styles.main}`}>
+        <PastLifeFeatureBody
           name={profile.name}
-          fortuneType="past_life"
-          birthDate={profile.birth_date}
-          birthTime={profile.birth_time}
-          birthTimeUnknown={profile.birth_time_unknown}
-          calendarType={profile.calendar_type}
-          gender={profile.gender}
+          interpretation={interpretation}
+          rawChart={rawChart}
+          wuxingJu={result.chart.wuxingJu}
+          surface="owner"
+          extraSceneIds={EXTRA_SCENE_IDS}
+          poster={<div className={styles.posterTop}>{renderPoster(false)}</div>}
         />
 
-        <div style={{ width: "100%", height: 16 }} />
-
-        {/* 프로필 카드 (페이지 내 표시용) */}
-        <PastLifeProfileCard
-          headline={interpretation.spoiler.headline}
-          description={interpretation.spoiler.description}
-          imageUrl={interpretation.imageUrl}
-          profileCard={interpretation.profileCard}
-          isImage={false}
-          onShareClick={() => setIsProfileShareDrawerOpen(true)}
-        />
-
-        {/* 능력치 그래프 섹션 */}
-        {interpretation.stats && interpretation.stats.stats.length > 0 && (
-          <>
-            <SectionHeader
-              title={t("statsTitle")}
-              expanded={statsExpanded}
-              onToggle={() => setStatsExpanded(!statsExpanded)}
-            />
-
-            {statsExpanded && (
-              <section className={styles.section}>
-                <div className={styles.statsList}>
-                  {interpretation.stats.stats.map((stat, idx) => (
-                    <div key={idx} className={styles.statItem}>
-                      <div className={styles.statHeader}>
-                        <span className={styles.statLabel}>{stat.label}</span>
-                        <span className={styles.statPercent}>
-                          {stat.score}%
-                        </span>
-                      </div>
-                      <div className={styles.statBarOuter}>
-                        <div
-                          className={styles.statBarFill}
-                          style={{ width: `${stat.score}%` }}
-                        />
-                        {[25, 50, 75].map((pos) => (
-                          <div
-                            key={pos}
-                            className={styles.statBarDivider}
-                            style={{ left: `${pos}%` }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-          </>
+        {nextKey && (
+          <NextShow
+            href={getFortuneHref(storedProfile ?? null, nextKey)}
+            kicker={tScreen(`yearly.next.kicker.${nextKey}`, {
+              year: new Date().getFullYear() + 1,
+            })}
+            name={tHome(`${nextKey}.title`)}
+            body={tP(`next.body.${nextKey}`)}
+            button={tScreen("yearly.next.button")}
+            fortuneType="past_life"
+            nextType={nextKey}
+          />
         )}
 
-        {/* 자미두수 명반 섹션 */}
-        <SectionHeader
-          title={t("chartTitle")}
-          expanded={chartExpanded}
-          onToggle={() => setChartExpanded(!chartExpanded)}
-        />
-
-        {chartExpanded && (
-          <section className={styles.chartSection}>
-            <ZiweiChartGrid
-              chart={result.rawChart}
-              profileName={profile.name}
-              wuxingJu={result.chart.wuxingJu}
-            />
-          </section>
-        )}
-
-        {/* 전생 스포일러 */}
-        <SectionHeader
-          title={t("spoilerTitle")}
-          expanded={spoilerExpanded}
-          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
-        />
-
-        {spoilerExpanded && (
-          <section className={styles.overviewSection}>
-            <h2 className={styles.overviewHeadline}>
-              {interpretation.spoiler.headline}
-            </h2>
-            {interpretation.spoiler.subSections &&
-            interpretation.spoiler.subSections.length > 0 ? (
-              <>
-                <SubSectionList items={interpretation.spoiler.subSections} />
-                {interpretation.spoiler.oneLiner && (
-                  <OneLinerAlert
-                    text={interpretation.spoiler.oneLiner}
-                    label={oneLinerLabel}
-                  />
-                )}
-              </>
-            ) : (
-              interpretation.spoiler.summary && (
-                <MarkdownContent className={styles.overviewSummary}>
-                  {interpretation.spoiler.summary}
-                </MarkdownContent>
-              )
-            )}
-          </section>
-        )}
-
-        {/* 섹션 2: 전생의 세계 */}
-        {interpretation.world && interpretation.world.era && (
-          <>
-            <SectionHeader
-              title={t("worldTitle")}
-              expanded={worldExpanded}
-              onToggle={() => setWorldExpanded(!worldExpanded)}
-            />
-
-            {worldExpanded && (
-              <section className={styles.section}>
-                <div className={styles.sectionContent}>
-                  <div className={styles.worldMeta}>
-                    <span className={styles.worldEra}>
-                      {interpretation.world.era}
-                    </span>
-                    <span className={styles.worldLocation}>
-                      {interpretation.world.location}
-                    </span>
-                    <span className={styles.worldRole}>
-                      {interpretation.world.socialRole}
-                    </span>
-                  </div>
-                  <MarkdownContent className={styles.sectionText}>
-                    {interpretation.world.atmosphere}
-                  </MarkdownContent>
-                  {interpretation.world.description && (
-                    <MarkdownContent className={styles.sectionText}>
-                      {interpretation.world.description}
-                    </MarkdownContent>
-                  )}
-                </div>
-              </section>
-            )}
-          </>
-        )}
-
-        {/* 섹션 3: 탄생 스토리 */}
-        <SectionHeader
-          title={t("birthTitle")}
-          expanded={birthExpanded}
-          onToggle={() => setBirthExpanded(!birthExpanded)}
-        />
-
-        {birthExpanded &&
-          (interpretation.birth.subSections?.length ||
-            interpretation.birth.content) && (
-            <section className={styles.section}>
-              <div className={styles.sectionContent}>
-                {interpretation.birth.headline && (
-                  <h3 className={styles.sectionHeadline}>
-                    {interpretation.birth.headline}
-                  </h3>
-                )}
-                {interpretation.birth.subSections &&
-                interpretation.birth.subSections.length > 0 ? (
-                  <>
-                    <SubSectionList items={interpretation.birth.subSections} />
-                    {interpretation.birth.oneLiner && (
-                      <OneLinerAlert
-                        text={interpretation.birth.oneLiner}
-                        label={oneLinerLabel}
-                      />
-                    )}
-                  </>
-                ) : (
-                  interpretation.birth.content && (
-                    <MarkdownContent className={styles.sectionText}>
-                      {interpretation.birth.content}
-                    </MarkdownContent>
-                  )
-                )}
-              </div>
-            </section>
-          )}
-
-        {/* 섹션 4: 삶의 여정 */}
-        <SectionHeader
-          title={t("journeyTitle")}
-          expanded={journeyExpanded}
-          onToggle={() => setJourneyExpanded(!journeyExpanded)}
-        />
-
-        {journeyExpanded &&
-          (interpretation.journey.subSections?.length ||
-            interpretation.journey.content ||
-            interpretation.journey.events.length > 0) && (
-            <section className={styles.section}>
-              <div className={styles.sectionContent}>
-                {interpretation.journey.headline && (
-                  <h3 className={styles.sectionHeadline}>
-                    {interpretation.journey.headline}
-                  </h3>
-                )}
-
-                {interpretation.journey.events.length > 0 && (
-                  <div className={styles.scenarioList}>
-                    {interpretation.journey.events.map((event, idx) => (
-                      <div key={idx} className={styles.scenarioItem}>
-                        <div className={styles.scenarioHeader}>
-                          <span className={styles.scenarioPeriod}>
-                            {event.period}
-                          </span>
-                        </div>
-                        <p className={styles.scenarioContent}>{event.event}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {interpretation.journey.subSections &&
-                interpretation.journey.subSections.length > 0 ? (
-                  <>
-                    <SubSectionList
-                      items={interpretation.journey.subSections}
-                    />
-                    {interpretation.journey.oneLiner && (
-                      <OneLinerAlert
-                        text={interpretation.journey.oneLiner}
-                        label={oneLinerLabel}
-                      />
-                    )}
-                  </>
-                ) : (
-                  interpretation.journey.content && (
-                    <MarkdownContent className={styles.sectionText}>
-                      {interpretation.journey.content}
-                    </MarkdownContent>
-                  )
-                )}
-              </div>
-            </section>
-          )}
-
-        {/* 섹션 5: 죽음과 카르마 */}
-        <SectionHeader
-          title={t("endTitle")}
-          expanded={endExpanded}
-          onToggle={() => setEndExpanded(!endExpanded)}
-        />
-
-        {endExpanded &&
-          (interpretation.end.subSections?.length ||
-            interpretation.end.content ||
-            interpretation.end.lastWords) && (
-            <section className={styles.section}>
-              <div className={styles.sectionContent}>
-                {interpretation.end.headline && (
-                  <h3 className={styles.sectionHeadline}>
-                    {interpretation.end.headline}
-                  </h3>
-                )}
-                {interpretation.end.subSections &&
-                interpretation.end.subSections.length > 0 ? (
-                  <>
-                    <SubSectionList items={interpretation.end.subSections} />
-                    {interpretation.end.oneLiner && (
-                      <OneLinerAlert
-                        text={interpretation.end.oneLiner}
-                        label={oneLinerLabel}
-                      />
-                    )}
-                  </>
-                ) : (
-                  interpretation.end.content && (
-                    <MarkdownContent className={styles.sectionText}>
-                      {interpretation.end.content}
-                    </MarkdownContent>
-                  )
-                )}
-
-                {interpretation.end.lastWords && (
-                  <div className={styles.lastWordsContainer}>
-                    <p className={styles.lastWordsText}>
-                      &ldquo;{interpretation.end.lastWords}&rdquo;
-                    </p>
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
-
-        {/* 섹션 6: 전생 vs 현생 */}
-        {interpretation.contrast &&
-          interpretation.contrast.contrasts.length > 0 && (
-            <>
-              <SectionHeader
-                title={t("contrastTitle")}
-                expanded={contrastExpanded}
-                onToggle={() => setContrastExpanded(!contrastExpanded)}
-              />
-
-              {contrastExpanded && (
-                <section className={styles.section}>
-                  <div className={styles.contrastList}>
-                    {interpretation.contrast.contrasts.map((item, idx) => (
-                      <div key={idx} className={styles.contrastItem}>
-                        <span className={styles.contrastAspect}>
-                          {item.aspect}
-                        </span>
-                        <div className={styles.contrastPair}>
-                          <div className={styles.contrastSide}>
-                            <span className={styles.contrastLabel}>
-                              {t("contrastPastLife")}
-                            </span>
-                            <p className={styles.contrastValue}>
-                              {item.pastLife}
-                            </p>
-                          </div>
-                          <div className={styles.contrastArrow}>
-                            <svg
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                            >
-                              <path
-                                d="M5 12H19M19 12L13 6M19 12L13 18"
-                                stroke="rgba(255,204,217,0.6)"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </div>
-                          <div className={styles.contrastSide}>
-                            <span className={styles.contrastLabel}>
-                              {t("contrastPresentLife")}
-                            </span>
-                            <p className={styles.contrastValue}>
-                              {item.presentLife}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
-            </>
-          )}
-
-        {/* 섹션 7: 전생 인연 */}
-        <SectionHeader
-          title={t("connectionsTitle")}
-          expanded={connectionsExpanded}
-          onToggle={() => setConnectionsExpanded(!connectionsExpanded)}
-        />
-
-        {connectionsExpanded &&
-          (interpretation.connections.subSections?.length ||
-            interpretation.connections.content) && (
-            <section className={styles.section}>
-              <div className={styles.sectionContent}>
-                {interpretation.connections.headline && (
-                  <h3 className={styles.sectionHeadline}>
-                    {interpretation.connections.headline}
-                  </h3>
-                )}
-                {interpretation.connections.subSections &&
-                interpretation.connections.subSections.length > 0 ? (
-                  <>
-                    <SubSectionList
-                      items={interpretation.connections.subSections}
-                    />
-                    {interpretation.connections.oneLiner && (
-                      <OneLinerAlert
-                        text={interpretation.connections.oneLiner}
-                        label={oneLinerLabel}
-                      />
-                    )}
-                  </>
-                ) : (
-                  interpretation.connections.content && (
-                    <MarkdownContent className={styles.sectionText}>
-                      {interpretation.connections.content}
-                    </MarkdownContent>
-                  )
-                )}
-              </div>
-            </section>
-          )}
-
-        {/* 섹션 8: 전생의 흔적 */}
-        {interpretation.traces && interpretation.traces.traces.length > 0 && (
-          <>
-            <SectionHeader
-              title={t("tracesTitle")}
-              expanded={tracesExpanded}
-              onToggle={() => setTracesExpanded(!tracesExpanded)}
-            />
-
-            {tracesExpanded && (
-              <section className={styles.section}>
-                <div className={styles.tracesList}>
-                  {interpretation.traces.traces.map((trace, idx) => (
-                    <div key={idx} className={styles.traceCard}>
-                      <span className={styles.traceCategory}>
-                        {trace.category}
-                      </span>
-                      <p className={styles.traceText}>{trace.trace}</p>
-                      <p className={styles.traceOrigin}>{trace.origin}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-          </>
-        )}
-
-        {/* 섹션 9: 전생 교훈 */}
-        {interpretation.lessons &&
-          interpretation.lessons.lessons.length > 0 && (
-            <>
-              <SectionHeader
-                title={t("lessonsTitle")}
-                expanded={lessonsExpanded}
-                onToggle={() => setLessonsExpanded(!lessonsExpanded)}
-              />
-
-              {lessonsExpanded && (
-                <section className={styles.section}>
-                  <div className={styles.lessonsList}>
-                    {interpretation.lessons.lessons.map((lesson, idx) => (
-                      <div key={idx} className={styles.lessonCard}>
-                        <h4 className={styles.lessonHeadline}>
-                          {lesson.headline}
-                        </h4>
-                        {lesson.bullets && lesson.bullets.length > 0 ? (
-                          <ul className={styles.lessonBullets}>
-                            {lesson.bullets.map((b, i) => (
-                              <li key={i}>{b}</li>
-                            ))}
-                          </ul>
-                        ) : (
-                          lesson.content && (
-                            <MarkdownContent className={styles.lessonContent}>
-                              {lesson.content}
-                            </MarkdownContent>
-                          )
-                        )}
-                        {lesson.oneLiner && (
-                          <OneLinerAlert
-                            text={lesson.oneLiner}
-                            label={oneLinerLabel}
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              )}
-            </>
-          )}
-
-        {/* 면책 문구 */}
-        <p className={styles.disclaimer}>{t("disclaimer")}</p>
-      </main>
-
-      {/* 하단 버튼 */}
-      <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.reviewButton}
-          onClick={() => setIsReviewDrawerOpen(true)}
+        <EndCredits
+          name={profile.name}
+          endLabel="THE END · PREQUEL"
+          rows={[
+            { label: "ROLE", value: world.socialRole },
+            { label: "ERA", value: world.era },
+            { label: "LOCATION", value: world.location },
+          ]}
         >
-          {t("reviewButton", { default: "후기 남기기" })}
-        </button>
-        <div className={styles.shareButtonWrapper}>
-          <EventBadge />
+          {interpretation.profileCard?.epitaph && (
+            <p className={screen.sectionDesc}>
+              “{interpretation.profileCard.epitaph}”
+            </p>
+          )}
           <button
             type="button"
-            className={styles.shareButton}
+            className={screen.primaryButton}
             onClick={() => setIsShareDrawerOpen(true)}
           >
-            {t("shareButton")}
+            {tScreen("credits.share")}
           </button>
-        </div>
-      </footer>
+          <button
+            type="button"
+            className={screen.ghostButton}
+            onClick={() => setIsReviewDrawerOpen(true)}
+          >
+            {tScreen("credits.review")}
+          </button>
+          <p className={screen.pastDisclaimer}>{t("disclaimer")}</p>
+        </EndCredits>
+      </main>
 
-      {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
       <FollowUpEntry
         profileId={profileId}
         fortuneType="past_life"
-        fortuneName="전생"
-        examplePrompts={[
-          "왜 이런 성향을 갖게 됐어?",
-          "전생과 지금의 연결은?",
-          "전생의 교훈이 뭐야?",
-        ]}
+        fortuneName={tP("followUp.name")}
+        examplePrompts={tP.raw("followUp.prompts") as string[]}
       />
 
-      {/* 후기 드로어 */}
       <ReviewDrawer
         isOpen={isReviewDrawerOpen}
         onClose={() => setIsReviewDrawerOpen(false)}
@@ -696,7 +257,6 @@ export default function PastLifeFortunePage() {
         fortuneType="past_life"
       />
 
-      {/* 공유 드로어 */}
       <ShareDrawer
         isOpen={isShareDrawerOpen}
         onClose={() => setIsShareDrawerOpen(false)}
@@ -708,7 +268,6 @@ export default function PastLifeFortunePage() {
         isDownloading={isDownloading}
       />
 
-      {/* 프로필 이미지 공유 드로어 */}
       <ShareDrawer
         isOpen={isProfileShareDrawerOpen}
         onClose={() => setIsProfileShareDrawerOpen(false)}
@@ -720,7 +279,7 @@ export default function PastLifeFortunePage() {
         isDownloading={isDownloading}
       />
 
-      {/* 이미지 생성용 숨겨진 프로필 카드 */}
+      {/* 이미지 생성용 숨겨진 캐릭터 포스터 (375×667) */}
       {showProfileCard && (
         <div
           style={{
@@ -731,18 +290,10 @@ export default function PastLifeFortunePage() {
             pointerEvents: "none",
           }}
         >
-          <PastLifeProfileCard
-            ref={profileCardRef}
-            headline={interpretation.spoiler.headline}
-            description={interpretation.spoiler.description}
-            imageUrl={interpretation.imageUrl}
-            profileCard={interpretation.profileCard}
-            isImage={true}
-          />
+          {renderPoster(true)}
         </div>
       )}
 
-      {/* 복사 완료 토스트 */}
       {showCopyToast && <CopyToast message={tCommon("copySuccess")} />}
     </div>
   );
