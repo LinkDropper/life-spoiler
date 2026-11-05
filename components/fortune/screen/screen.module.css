@@ -2047,3 +2047,55 @@
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.4);
 }
+
+/* ---------- 인생 · 지금 상영 중 (0~99세 장면 막대) ---------- */
+
+.lifeSegments {
+  display: flex;
+  gap: 3px;
+  padding-top: 6px;
+}
+
+.lifeSegment {
+  position: relative;
+  flex-basis: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 143, 177, 0.4);
+}
+
+.lifeSegmentPast {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.lifeSegmentNow {
+  background: var(--fs-star);
+}
+
+.lifeSegmentHead {
+  position: absolute;
+  top: -5px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 50%;
+  background: var(--fs-star);
+  box-shadow: 0 0 10px rgba(255, 231, 163, 0.9);
+}
+
+.lifeTicks {
+  display: flex;
+  gap: 3px;
+  margin-top: 8px;
+}
+
+.lifeTicks span {
+  flex-basis: 0;
+  font-family: var(--fs-mono);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.lifeTicks .lifeTickNow {
+  color: var(--fs-star);
+}

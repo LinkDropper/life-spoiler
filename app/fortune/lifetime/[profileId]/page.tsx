@@ -13,9 +13,7 @@ import {
   ShareDrawer,
   type CategoryKey,
 } from "@/components/fortune";
-import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
-import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
-import NewProfileCard from "@/components/fortune/NewProfileCard";
+import { LifetimeCharacterPoster } from "@/components/fortune/LifetimeCharacterPoster";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
@@ -24,6 +22,7 @@ import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
 import { EndCredits } from "@/components/fortune/screen/EndCredits";
 import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
+import { LifetimeNowShowing } from "@/components/fortune/screen/LifetimeNowShowing";
 import { NextShow } from "@/components/fortune/screen/NextShow";
 import { NumberedSections } from "@/components/fortune/screen/NumberedSections";
 import { RatingBoard } from "@/components/fortune/screen/RatingBoard";
@@ -38,10 +37,6 @@ import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import { getFilmAge } from "@/libs/home/home-film";
 import { YEARLY_AFTER_LIFETIME_PER_100 } from "@/libs/home/home-profile";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
-import type {
-  FortuneInterpretation,
-  ProfileTraitsResponse,
-} from "@/libs/services/ai/types";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
 import { useUser } from "@/libs/stores/user";
@@ -61,17 +56,6 @@ const ACT_IDS = ["act1", "act2", "act3", "act4"] as const;
 
 const EXTRA_SCENE_IDS: FortuneSceneId[] = ["next", "end"];
 
-/**
- * profileTraits 존재 여부 타입 가드
- */
-const hasProfileTraits = (
-  interpretation: FortuneInterpretation
-): interpretation is FortuneInterpretation & {
-  profileTraits: ProfileTraitsResponse;
-} => {
-  return !!interpretation.profileTraits?.spectrums;
-};
-
 export default function LifetimeFortunePage() {
   const router = useRouter();
   const locale = useLocale() as Locale;
@@ -79,7 +63,6 @@ export default function LifetimeFortunePage() {
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
   const tScreen = useTranslations("fortune.screen");
-  const tStory = useTranslations("fortune.instagramStory");
 
   const {
     isLoading,
@@ -256,27 +239,12 @@ export default function LifetimeFortunePage() {
         )
       : null;
 
-  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
-  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
-  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
-
   // 인스타 스토리용 점수
   const storyScores = {
     wealth: categories.wealth.score ?? 0,
     career: categories.career.score ?? 0,
     relationship: categories.relationship.score ?? 0,
     health: categories.health.score ?? 0,
-  };
-
-  // 인스타 스토리용 레이블
-  const storyLabels: InstagramStoryCardLabels = {
-    mainStar: tStory("mainStar"),
-    categories: {
-      wealth: tStory("categories.wealth"),
-      career: tStory("categories.career"),
-      relationship: tStory("categories.relationship"),
-      health: tStory("categories.health"),
-    },
   };
 
   const ratingItems: RatingItem[] = CATEGORY_KEYS.map((key) => ({
@@ -298,22 +266,52 @@ export default function LifetimeFortunePage() {
     />
   );
 
+  const renderPoster = (isImage: boolean) => (
+    <LifetimeCharacterPoster
+      ref={isImage ? profileCardRef : undefined}
+      name={profile.name}
+      leadStarKey={cast.stars[0]?.starName ?? null}
+      leadStarLabel={cast.starLabels[0] ?? ""}
+      headline={lifeSpoiler.headline}
+      profileTraits={interpretation.profileTraits}
+      scores={storyScores}
+      categoryLabels={{
+        wealth: t("categories.wealth"),
+        career: t("categories.career"),
+        relationship: t("categories.relationship"),
+        health: t("categories.health"),
+      }}
+      isImage={isImage}
+      onShareClick={() => setIsProfileShareDrawerOpen(true)}
+    />
+  );
+
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       <main className={`${screen.root} ${styles.main}`}>
         <div className={styles.bleed}>
-          <FilmPoster
-            variant="feature"
-            title={lifeSpoiler.headline}
-            tagline={lifeSpoiler.oneLiner}
-            name={profile.name}
-            leadStar={cast.leadStar}
-            wuxingJu={result.chart.wuxingJu}
-            stars={cast.stars}
-            starLabels={cast.starLabels}
-          />
+          {ageLens ? (
+            <LifetimeNowShowing
+              name={profile.name}
+              age={age}
+              scenarios={ageScenarios}
+              targetId={toAgeSceneId(ageLens.nowIndex)}
+              surface="owner"
+            />
+          ) : (
+            <FilmPoster
+              variant="feature"
+              title={lifeSpoiler.headline}
+              tagline={lifeSpoiler.oneLiner}
+              name={profile.name}
+              leadStar={cast.leadStar}
+              wuxingJu={result.chart.wuxingJu}
+              stars={cast.stars}
+              starLabels={cast.starLabels}
+            />
+          )}
         </div>
 
         <ScreenPlayer
@@ -327,25 +325,7 @@ export default function LifetimeFortunePage() {
         <section className={screen.section}>
           <p className={screen.eyebrow}>CAST</p>
           <h2 className={screen.sectionTitle}>{tScreen("character.title")}</h2>
-          {hasProfileTraits(interpretation) ? (
-            <NewProfileCard
-              mainStars={mainStarNames}
-              headline={lifeSpoiler.headline}
-              profileTraits={interpretation.profileTraits}
-              isImage={false}
-              onShareClick={() => setIsProfileShareDrawerOpen(true)}
-            />
-          ) : (
-            <LifetimeProfileCard
-              mainStars={mainStarNames}
-              headline={lifeSpoiler.headline}
-              description={lifeSpoiler.description}
-              scores={storyScores}
-              labels={storyLabels}
-              isImage={false}
-              onShareClick={() => setIsProfileShareDrawerOpen(true)}
-            />
-          )}
+          {renderPoster(false)}
         </section>
 
         <section className={screen.section}>
@@ -520,25 +500,7 @@ export default function LifetimeFortunePage() {
             pointerEvents: "none",
           }}
         >
-          {hasProfileTraits(interpretation) ? (
-            <NewProfileCard
-              ref={profileCardRef}
-              mainStars={mainStarNames}
-              headline={interpretation.lifeSpoiler.headline}
-              profileTraits={interpretation.profileTraits}
-              isImage={true}
-            />
-          ) : (
-            <LifetimeProfileCard
-              ref={profileCardRef}
-              mainStars={mainStarNames}
-              headline={interpretation.lifeSpoiler.headline}
-              description={interpretation.lifeSpoiler.description}
-              scores={storyScores}
-              labels={storyLabels}
-              isImage={true}
-            />
-          )}
+          {renderPoster(true)}
         </div>
       )}
 

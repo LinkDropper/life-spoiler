@@ -973,7 +973,7 @@
           }
         },
         "character": {
-          "title": "내 캐릭터 카드"
+          "title": "내 캐릭터 포스터"
         },
         "rating": {
           "title": "네 갈래 관람 평점",
@@ -1018,7 +1018,8 @@
         },
         "share": {
           "cta": "내 인생 예고편 무료로 보기",
-          "endNote": "내 명반으로는 어떤 영화가 나올까요? 예고편은 무료로 상영돼요."
+          "endNote": "내 명반으로는 어떤 영화가 나올까요? 예고편은 무료로 상영돼요.",
+          "badge": "친구가 보낸 본편"
         },
         "yearly": {
           "flow": {
@@ -1226,6 +1227,25 @@
             "badge": "친구가 보낸 본편",
             "cta": "내 올해 예고편 무료로 보기",
             "endNote": "내 명반으로는 올해가 어떤 장면일까요? 예고편은 무료로 상영돼요."
+          }
+        },
+        "lifetime": {
+          "now": {
+            "kickerNearest": "NEAREST SCENE",
+            "cast": "{name} 주연 · RUNTIME 99Y",
+            "ageUnit": "세",
+            "scene": "{index}번째 장면 · {period}",
+            "progressNext": "이 장면의 {percent}% · 다음 장면까지 {years}년",
+            "progress": "이 장면의 {percent}%",
+            "nearest": "가장 가까운 장면을 보여 드려요",
+            "jump": "지금 장면 보기"
+          },
+          "poster": {
+            "leadStar": "LEAD STAR · 명궁 {star}",
+            "castLine": "{name} 주연 · RUNTIME 99Y",
+            "introducing": "introducing a character who is",
+            "brand": "인생스포",
+            "share": "캐릭터 포스터 공유하기"
           }
         }
       }
@@ -3366,7 +3386,7 @@
           }
         },
         "character": {
-          "title": "My character card"
+          "title": "My character poster"
         },
         "rating": {
           "title": "Ratings for four storylines",
@@ -3411,7 +3431,8 @@
         },
         "share": {
           "cta": "Watch my life trailer for free",
-          "endNote": "What film would your chart make? The trailer plays for free."
+          "endNote": "What film would your chart make? The trailer plays for free.",
+          "badge": "Shared by a friend"
         },
         "yearly": {
           "flow": {
@@ -3619,6 +3640,25 @@
             "badge": "Shared by a friend",
             "cta": "Watch my year's trailer for free",
             "endNote": "What scene would this year be for your chart? The trailer plays for free."
+          }
+        },
+        "lifetime": {
+          "now": {
+            "kickerNearest": "NEAREST SCENE",
+            "cast": "Starring {name} · RUNTIME 99Y",
+            "ageUnit": "",
+            "scene": "Scene {index} · {period}",
+            "progressNext": "{percent}% into this scene · next in {years, plural, one {# year} other {# years}}",
+            "progress": "{percent}% into this scene",
+            "nearest": "Showing the nearest scene",
+            "jump": "See the current scene"
+          },
+          "poster": {
+            "leadStar": "LEAD STAR · {star}",
+            "castLine": "Starring {name} · RUNTIME 99Y",
+            "introducing": "introducing a character who is",
+            "brand": "Life Spoiler",
+            "share": "Share the character poster"
           }
         }
       }
@@ -5767,7 +5807,7 @@
           }
         },
         "character": {
-          "title": "わたしのキャラクターカード"
+          "title": "わたしのキャラクターポスター"
         },
         "rating": {
           "title": "四つの物語の評価",
@@ -5812,7 +5852,8 @@
         },
         "share": {
           "cta": "わたしの人生予告編を無料で見る",
-          "endNote": "わたしの命盤からはどんな映画が生まれるでしょう。予告編は無料で上映しています。"
+          "endNote": "わたしの命盤からはどんな映画が生まれるでしょう。予告編は無料で上映しています。",
+          "badge": "友だちから届いた本編"
         },
         "yearly": {
           "flow": {
@@ -6020,6 +6061,25 @@
             "badge": "友だちから届いた本編",
             "cta": "わたしの今年の予告編を無料で見る",
             "endNote": "わたしの命盤では今年はどんな場面でしょう。予告編は無料で上映しています。"
+          }
+        },
+        "lifetime": {
+          "now": {
+            "kickerNearest": "NEAREST SCENE",
+            "cast": "主演 {name} · RUNTIME 99Y",
+            "ageUnit": "歳",
+            "scene": "{index}番目の場面 · {period}",
+            "progressNext": "この場面の{percent}% · 次の場面まで{years}年",
+            "progress": "この場面の{percent}%",
+            "nearest": "いちばん近い場面をお見せします",
+            "jump": "いまの場面を見る"
+          },
+          "poster": {
+            "leadStar": "LEAD STAR · 命宮 {star}",
+            "castLine": "主演 {name} · RUNTIME 99Y",
+            "introducing": "introducing a character who is",
+            "brand": "ライフスポイラー",
+            "share": "キャラクターポスターをシェア"
           }
         }
       }
