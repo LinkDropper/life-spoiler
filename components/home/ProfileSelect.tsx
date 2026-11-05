@@ -46,6 +46,7 @@ export const ProfileSelect = ({
         // 저장하면 홈으로 돌아와 새 프로필을 상영한다(profile/setup이 처리)
         href: `/profile/setup?redirect=${encodeURIComponent(HOME_REDIRECT)}`,
       }}
+      sheetEyebrow="NOW SHOWING"
       className={styles.select}
     />
   );
