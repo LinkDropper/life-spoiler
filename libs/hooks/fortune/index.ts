@@ -5,6 +5,7 @@ export { useLifetimePreview } from "./useLifetimePreview";
 export { useYearlyPreview } from "./useYearlyPreview";
 export { usePastLifePreview } from "./usePastLifePreview";
 export { useLifetimeShare } from "./useLifetimeShare";
+export { usePastLifeShare } from "./usePastLifeShare";
 export { useYearlyShare } from "./useYearlyShare";
 
 export type {
