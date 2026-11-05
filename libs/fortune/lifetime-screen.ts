@@ -166,3 +166,6 @@ export const rankByScore = <K extends string>(
     {} as Record<K, number>
   );
 };
+
+/** 인생·올해 운세의 네 갈래 (재물·직업·인연·건강) */
+export type CategoryKey = "wealth" | "career" | "relationship" | "health";

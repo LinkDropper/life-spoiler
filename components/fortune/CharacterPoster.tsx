@@ -3,6 +3,7 @@
 import {
   forwardRef,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -86,6 +87,11 @@ const toTextWidthEm = (text: string): number =>
     0
   );
 
+/** 제목 글자 크기: 기본 29px, 하단 블록(506~520px)을 덮으면 줄인다 */
+const HEADLINE_MAX_SIZE = 29;
+const HEADLINE_MIN_SIZE = 20;
+const TITLE_BLOCK_LIMIT = 500;
+
 const absolute = (style: CSSProperties): CSSProperties => ({
   position: "absolute",
   ...style,
@@ -126,6 +132,28 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
       Math.floor(340 / Math.max(toTextWidthEm(backdropText), 1))
     );
     const wrapRef = useRef<HTMLDivElement>(null);
+    const titleBlockRef = useRef<HTMLDivElement>(null);
+    const [headlineSize, setHeadlineSize] = useState(HEADLINE_MAX_SIZE);
+    const tagKey = tags.join("|");
+
+    // 제목이 길어(영어·일본어, 두 줄 이상) 가운데 블록이 하단 블록을 덮으면 제목 글자를 줄인다.
+    // 저장 이미지도 렌더 뒤에 찍으므로 같은 결과가 된다
+    useLayoutEffect(() => {
+      const block = titleBlockRef.current;
+      if (!block) {
+        return;
+      }
+      let size = HEADLINE_MAX_SIZE;
+      block.style.setProperty("--poster-headline-size", `${size}px`);
+      while (
+        size > HEADLINE_MIN_SIZE &&
+        block.offsetTop + block.offsetHeight > TITLE_BLOCK_LIMIT
+      ) {
+        size -= 1;
+        block.style.setProperty("--poster-headline-size", `${size}px`);
+      }
+      setHeadlineSize(size);
+    }, [headline, quote, tagKey, kicker, castLine, heroLayout]);
     const [scale, setScale] = useState(1);
 
     // 본편 안에서는 375×667 원본을 폭에 맞춰 그대로 줄인다(저장 이미지와 같은 모습)
@@ -312,6 +340,7 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
           </>
         )}
         <div
+          ref={titleBlockRef}
           style={absolute({
             left: 22,
             right: 22,
@@ -340,7 +369,7 @@ export const CharacterPoster = forwardRef<HTMLDivElement, CharacterPosterProps>(
             style={{
               fontFamily: DISPLAY_FONT,
               fontWeight: 400,
-              fontSize: 29,
+              fontSize: `var(--poster-headline-size, ${headlineSize}px)`,
               lineHeight: 1.2,
               textShadow: "0 0 30px rgba(255,204,217,0.4)",
             }}

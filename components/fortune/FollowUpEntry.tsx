@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import type { FollowUpFortuneType } from "@/libs/supabase/types";
 
@@ -17,8 +17,8 @@ interface FollowUpEntryProps {
 }
 
 /**
- * 결과 페이지 우하단에 플로팅되는 "전문가에게 물어보기" 진입 버튼.
- * 클릭 시 ChatDrawer 오픈. 남은 횟수는 드로어 헤더에서만 확인.
+ * 본편 오른쪽 아래에 떠 있는 "전문가에게 묻기" 버튼. 누르면 질문 시트(ChatDrawer)가 열린다.
+ * 남은 횟수는 시트를 한 번 연 뒤부터 버튼에도 보인다(열기 전에는 따로 조회하지 않는다).
  */
 export const FollowUpEntry = ({
   profileId,
@@ -27,7 +27,9 @@ export const FollowUpEntry = ({
   fortuneName,
   examplePrompts,
 }: FollowUpEntryProps) => {
+  const t = useTranslations("fortune.screen.ask");
   const [isOpen, setIsOpen] = useState(false);
+  const [remaining, setRemaining] = useState<number | null>(null);
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
@@ -39,18 +41,30 @@ export const FollowUpEntry = ({
 
   return (
     <>
+      {/* 떠 있는 버튼이 페이지 맨 아래(엔딩 크레딧 버튼)를 가리지 않게 같은 높이만큼 비운다 */}
+      <span className={styles.spacer} aria-hidden="true" />
       <button
         type="button"
         className={styles.button}
         onClick={handleOpen}
-        aria-label="전문가에게 물어보기"
+        aria-haspopup="dialog"
+        aria-label={remaining === null ? t("fab") : t("fabAria", { remaining })}
       >
-        <MessageCircle
-          size={24}
-          strokeWidth={0}
-          fill="#2d1b4e"
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
           className={styles.icon}
-        />
+        >
+          <path d="M4 5h16v11H9l-5 4z" fill="currentColor" />
+        </svg>
+        <span>{t("fab")}</span>
+        {remaining !== null && (
+          <span className={styles.count} aria-hidden="true">
+            {remaining}
+          </span>
+        )}
       </button>
 
       <ChatDrawer
@@ -61,6 +75,7 @@ export const FollowUpEntry = ({
         pairId={pairId}
         fortuneName={fortuneName}
         examplePrompts={examplePrompts}
+        onRemainingChange={setRemaining}
       />
     </>
   );

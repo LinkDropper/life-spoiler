@@ -73,7 +73,8 @@ export const CompatibilityCharacterPoster = forwardRef<
         />
       }
       billing={[
-        `LIFE SPOILER PRESENTS A ${t(`genreEn.${genre}`)} · STARRING ${leadA.name} AND ${leadB.name}`,
+        // 두 이름은 출연진 줄에 있으니 빌링은 장르만 (길어도 한 줄)
+        `LIFE SPOILER PRESENTS A ${t(`genreEn.${genre}`)} · CO-STARRING TWO`,
         "BASED ON TWO ORIGINAL ZI WEI CHARTS · LIFE-SPOILER.COM",
       ]}
       brandLabel={t("poster.brand")}

@@ -1,0 +1,85 @@
+.kakao {
+  border-radius: 6px;
+}
+
+/* 친구 초대 관람권 (예전 🎁 배너) */
+.invite {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 204, 217, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 204, 217, 0.3);
+}
+
+.inviteStub {
+  flex-shrink: 0;
+  padding-right: 10px;
+  border-right: 1.5px dashed rgba(255, 204, 217, 0.45);
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #ffccd9;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.inviteText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--fs-haze);
+}
+
+.inviteText b {
+  font-size: 14px;
+  color: #ffccd9;
+}
+
+/* 보낼 포스터 미리보기 */
+.preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.previewArt {
+  flex-shrink: 0;
+  width: 96px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 10px 24px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.previewText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.previewText b {
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--fs-text);
+}
+
+.previewLabel {
+  font-family: var(--fs-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--fs-star);
+}

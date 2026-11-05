@@ -1,43 +1,58 @@
+/* 본편 오른쪽 아래 "전문가에게 묻기" 알약 버튼.
+   예전 하단 고정 바(88px)를 피하던 자리에서, 바가 없어진 본편에 맞게 아래 24px로 내렸다 */
 .button {
   position: fixed;
-  /* 480px 중앙 정렬 컨테이너의 우측 16px 기준. 좁은 화면에서는 viewport 우측 16px */
+  /* 480px 가운데 정렬 화면의 오른쪽 16px. 좁은 화면에서는 화면 오른쪽 16px */
   right: max(16px, calc((100vw - 480px) / 2 + 16px));
-  bottom: 88px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-button-primary-surface, #ffccd9);
-  border: none;
-  cursor: pointer;
+  bottom: calc(24px + env(safe-area-inset-bottom));
   z-index: 101;
-  transition:
-    transform 0.15s ease,
-    opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-button-primary-surface, #ffccd9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  color: #23142d;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.button:hover {
-  transform: translateY(-1px);
-  opacity: 0.92;
-}
-
-.button:active {
-  transform: translateY(0);
-}
-
-.button:disabled {
-  opacity: 0.5;
-  cursor: pointer;
-}
-
 .icon {
-  color: #2d1b4e;
+  flex-shrink: 0;
+}
+
+.count {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(35, 20, 45, 0.12);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-focus-ring, #ffe7a3);
+  outline-offset: 3px;
 }
 
 /* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-.button:active:not(:disabled) {
+@media (hover: hover) {
+  .button:hover {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+}
+
+.button:active {
   background: var(--color-button-primary-surface-pressed, #f598b3);
+}
+
+.spacer {
+  display: block;
+  flex-shrink: 0;
+  height: calc(88px + env(safe-area-inset-bottom));
 }

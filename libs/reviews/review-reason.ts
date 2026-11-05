@@ -1,5 +1,5 @@
 /**
- * 후기(Review) 불만 유형 칩 인코딩/디코딩
+ * 후기(Review) 칩(좋았던 점·아쉬운 점) 인코딩/디코딩
  *
  * @description
  * `reviews` 테이블에는 칩(불만 유형) 전용 컬럼이 없다. 마이그레이션 없이도
@@ -23,8 +23,8 @@
  *   → ""
  */
 
-/** 후기 불만 유형 코드 (content 인코딩에 쓰이는 값, 언어와 무관하게 고정) */
-export const REVIEW_REASON_CODES = [
+/** 아쉬운 점 칩 (별점 1~3점일 때) */
+export const REVIEW_DISLIKE_CODES = [
   "generic",
   "cant_trust",
   "not_matching",
@@ -32,7 +32,47 @@ export const REVIEW_REASON_CODES = [
   "not_specific",
 ] as const;
 
+/** 좋았던 점 칩 (별점 4~5점일 때, 2026-11 추가) */
+export const REVIEW_LIKE_CODES = [
+  "relatable",
+  "specific",
+  "clear_chart",
+  "actionable",
+  "shareable",
+] as const;
+
+/** 후기 칩 코드 전체 (content 인코딩에 쓰이는 값, 언어와 무관하게 고정) */
+export const REVIEW_REASON_CODES = [
+  ...REVIEW_DISLIKE_CODES,
+  ...REVIEW_LIKE_CODES,
+] as const;
+
 export type ReviewReasonCode = (typeof REVIEW_REASON_CODES)[number];
+
+/** 이 별점 이하면 아쉬운 점 칩, 넘으면 좋았던 점 칩을 보여 준다 */
+export const LOW_RATING_THRESHOLD = 3;
+
+export const getReviewReasonCodes = (
+  rating: number
+): readonly ReviewReasonCode[] =>
+  rating > LOW_RATING_THRESHOLD ? REVIEW_LIKE_CODES : REVIEW_DISLIKE_CODES;
+
+/**
+ * 칩 코드 → 번역 키 (messages `fortune.common.review.reasons.*`).
+ * 코드는 DB에 저장되는 값이라 snake_case 그대로 두고, 화면 문구만 camelCase 키로 찾는다.
+ */
+export const REVIEW_REASON_MESSAGE_KEYS: Record<ReviewReasonCode, string> = {
+  generic: "generic",
+  cant_trust: "cantTrust",
+  not_matching: "notMatching",
+  shallow: "shallow",
+  not_specific: "notSpecific",
+  relatable: "relatable",
+  specific: "specific",
+  clear_chart: "clearChart",
+  actionable: "actionable",
+  shareable: "shareable",
+};
 
 const isReviewReasonCode = (value: string): value is ReviewReasonCode =>
   (REVIEW_REASON_CODES as readonly string[]).includes(value);

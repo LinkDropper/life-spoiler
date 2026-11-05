@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { useMemo, type ReactNode } from "react";
 
 import { MarkdownContent } from "@/components/fortune";
-import type { CategoryKey } from "@/components/fortune";
 import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
 import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
@@ -27,6 +26,7 @@ import type {
   FortuneScreenType,
   FortuneSurface,
 } from "@/libs/analytics/fortune";
+import type { CategoryKey } from "@/libs/fortune/lifetime-screen";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import type {
   MonthLens as MonthLensState,

@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { CopyToast, ErrorState, ShareDrawer } from "@/components/fortune";
+import { CopyToast, ErrorState } from "@/components/fortune";
 import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { PastLifeCharacterPoster } from "@/components/fortune/PastLifeCharacterPoster";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { PastLifeFeatureBody } from "@/components/fortune/past-life/PastLifeFeatureBody";
 import { EndCredits } from "@/components/fortune/screen/EndCredits";
+import { FortuneShareSheet } from "@/components/fortune/screen/FortuneShareSheet";
 import { NextShow } from "@/components/fortune/screen/NextShow";
 import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
@@ -21,6 +22,10 @@ import { usePastLifeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
 import { useProfileById } from "@/libs/stores/profile/provider";
+import {
+  shareImageWithSystem,
+  shareLinkWithSystem,
+} from "@/libs/share/system-share";
 import { useUser } from "@/libs/stores/user";
 
 import styles from "./page.module.css";
@@ -140,6 +145,53 @@ export default function PastLifeFortunePage() {
     }
   }, [result, profile, profileId, profileCardToBlob, user, tP]);
 
+  // 기기 공유 시트(인스타그램 등). 지원하지 않는 브라우저면 링크 복사로 대신한다
+  const handleShareSystem = useCallback(async () => {
+    if (!result) return;
+    try {
+      const shared = await shareLinkWithSystem({
+        title: result.interpretation.spoiler.headline,
+        url: `${window.location.origin}/fortune/past-life/share/${profileId}?ref=${user?.id ?? ""}`,
+      });
+      if (shared === "unsupported") {
+        handleShare();
+      }
+    } catch (shareError) {
+      console.error("Failed to share with system sheet:", shareError);
+    }
+    setIsShareDrawerOpen(false);
+  }, [result, profileId, user, handleShare]);
+
+  // 포스터 이미지를 기기 공유 시트로(인스타그램 스토리). 파일 공유를 못 하면 저장으로 대신한다
+  const handlePosterShareSystem = useCallback(async () => {
+    if (!result) return;
+    setShowProfileCard(true);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    try {
+      const blob = await profileCardToBlob();
+      if (!blob) {
+        alert(tScreen("shareSheet.imageError"));
+        return;
+      }
+      const shared = await shareImageWithSystem({
+        blob,
+        filename: "life_spoiler_past_life_poster.png",
+        title: result.interpretation.spoiler.headline,
+      });
+      if (shared === "unsupported") {
+        await downloadProfileImage();
+      }
+    } catch (shareError) {
+      console.error("Failed to share poster with system sheet:", shareError);
+      alert(tScreen("shareSheet.shareError"));
+    } finally {
+      timeoutRef.current = setTimeout(() => {
+        setShowProfileCard(false);
+        setIsProfileShareDrawerOpen(false);
+      }, 500);
+    }
+  }, [result, profileCardToBlob, downloadProfileImage, tScreen]);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -167,7 +219,7 @@ export default function PastLifeFortunePage() {
   const { world } = interpretation;
   const nextKey = pickNextAfterPastLife(storedProfile ?? null);
 
-  const renderPoster = (isImage: boolean) => (
+  const renderPoster = (isImage: boolean, showShare = true) => (
     <PastLifeCharacterPoster
       ref={isImage ? profileCardRef : undefined}
       name={profile.name}
@@ -178,6 +230,7 @@ export default function PastLifeFortunePage() {
       location={world.location}
       profileCard={interpretation.profileCard}
       isImage={isImage}
+      shouldShowShareButton={showShare}
       onShareClick={() => setIsProfileShareDrawerOpen(true)}
     />
   );
@@ -257,26 +310,33 @@ export default function PastLifeFortunePage() {
         fortuneType="past_life"
       />
 
-      <ShareDrawer
+      <FortuneShareSheet
         isOpen={isShareDrawerOpen}
         onClose={() => setIsShareDrawerOpen(false)}
-        onCopyLink={handleShare}
+        eyebrow="SHARE"
+        title={tScreen("shareSheet.linkTitle")}
+        showInvite
         onShareKakao={handleShareKakao}
-        showLine={false}
-        showDownloadImage={false}
-        showEventBanner={true}
-        isDownloading={isDownloading}
+        onShareSystem={handleShareSystem}
+        onCopyLink={handleShare}
       />
 
-      <ShareDrawer
+      <FortuneShareSheet
         isOpen={isProfileShareDrawerOpen}
         onClose={() => setIsProfileShareDrawerOpen(false)}
-        title={t("profileShareTitle")}
-        showCopyLink={false}
-        showLine={false}
+        eyebrow="POSTER"
+        title={tScreen("shareSheet.posterTitle")}
+        primary="system"
+        preview={{
+          art: renderPoster(false, false),
+          label: tScreen("shareSheet.posterLabel"),
+          title: interpretation.spoiler.headline,
+          desc: tScreen("shareSheet.posterDesc"),
+        }}
+        onShareSystem={handlePosterShareSystem}
         onShareKakao={handleProfileShareKakao}
         onDownloadImage={handleProfileDownloadImage}
-        isDownloading={isDownloading}
+        isBusy={isDownloading}
       />
 
       {/* 이미지 생성용 숨겨진 캐릭터 포스터 (375×667) */}

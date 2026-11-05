@@ -6,17 +6,12 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
-import {
-  MarkdownContent,
-  CopyToast,
-  ErrorState,
-  ShareDrawer,
-  type CategoryKey,
-} from "@/components/fortune";
+import { MarkdownContent, CopyToast, ErrorState } from "@/components/fortune";
 import { LifetimeCharacterPoster } from "@/components/fortune/LifetimeCharacterPoster";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
+import { FortuneShareSheet } from "@/components/fortune/screen/FortuneShareSheet";
 import { AgeLens, toAgeSceneId } from "@/components/fortune/screen/AgeLens";
 import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
@@ -31,6 +26,7 @@ import { ScreenPlayer } from "@/components/fortune/screen/ScreenPlayer";
 import type { PlayerScene } from "@/components/fortune/screen/ScreenPlayer";
 import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
 import screen from "@/components/fortune/screen/screen.module.css";
+import type { CategoryKey } from "@/libs/fortune/lifetime-screen";
 import type { FortuneSceneId } from "@/libs/analytics/fortune";
 import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
@@ -39,6 +35,10 @@ import { YEARLY_AFTER_LIFETIME_PER_100 } from "@/libs/home/home-profile";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
+import {
+  shareImageWithSystem,
+  shareLinkWithSystem,
+} from "@/libs/share/system-share";
 import { useUser } from "@/libs/stores/user";
 import { extractKeywordsFromChart } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
@@ -201,6 +201,53 @@ export default function LifetimeFortunePage() {
     }
   }, [result, profile, profileId, profileCardToBlob, user]);
 
+  // 기기 공유 시트(인스타그램 등). 지원하지 않는 브라우저면 링크 복사로 대신한다
+  const handleShareSystem = useCallback(async () => {
+    if (!result) return;
+    try {
+      const shared = await shareLinkWithSystem({
+        title: result.interpretation.lifeSpoiler.headline,
+        url: `${window.location.origin}/fortune/lifetime/share/${profileId}?ref=${user?.id ?? ""}`,
+      });
+      if (shared === "unsupported") {
+        handleShare();
+      }
+    } catch (shareError) {
+      console.error("Failed to share with system sheet:", shareError);
+    }
+    setIsShareDrawerOpen(false);
+  }, [result, profileId, user, handleShare]);
+
+  // 포스터 이미지를 기기 공유 시트로(인스타그램 스토리). 파일 공유를 못 하면 저장으로 대신한다
+  const handlePosterShareSystem = useCallback(async () => {
+    if (!result) return;
+    setShowProfileCard(true);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    try {
+      const blob = await profileCardToBlob();
+      if (!blob) {
+        alert(tScreen("shareSheet.imageError"));
+        return;
+      }
+      const shared = await shareImageWithSystem({
+        blob,
+        filename: "life_spoiler_lifetime_poster.png",
+        title: result.interpretation.lifeSpoiler.headline,
+      });
+      if (shared === "unsupported") {
+        await downloadProfileImage();
+      }
+    } catch (shareError) {
+      console.error("Failed to share poster with system sheet:", shareError);
+      alert(tScreen("shareSheet.shareError"));
+    } finally {
+      timeoutRef.current = setTimeout(() => {
+        setShowProfileCard(false);
+        setIsProfileShareDrawerOpen(false);
+      }, 500);
+    }
+  }, [result, profileCardToBlob, downloadProfileImage, tScreen]);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -266,7 +313,7 @@ export default function LifetimeFortunePage() {
     />
   );
 
-  const renderPoster = (isImage: boolean) => (
+  const renderPoster = (isImage: boolean, showShare = true) => (
     <LifetimeCharacterPoster
       ref={isImage ? profileCardRef : undefined}
       name={profile.name}
@@ -282,6 +329,7 @@ export default function LifetimeFortunePage() {
         health: t("categories.health"),
       }}
       isImage={isImage}
+      shouldShowShareButton={showShare}
       onShareClick={() => setIsProfileShareDrawerOpen(true)}
     />
   );
@@ -466,27 +514,34 @@ export default function LifetimeFortunePage() {
       />
 
       {/* 공유 드로어 */}
-      <ShareDrawer
+      <FortuneShareSheet
         isOpen={isShareDrawerOpen}
         onClose={() => setIsShareDrawerOpen(false)}
-        onCopyLink={handleShare}
+        eyebrow="SHARE"
+        title={tScreen("shareSheet.linkTitle")}
+        showInvite
         onShareKakao={handleShareKakao}
-        showLine={false}
-        showDownloadImage={false}
-        showEventBanner={true}
-        isDownloading={isDownloading}
+        onShareSystem={handleShareSystem}
+        onCopyLink={handleShare}
       />
 
-      {/* 프로필 이미지 공유 드로어 */}
-      <ShareDrawer
+      {/* 캐릭터 포스터 공유 시트 */}
+      <FortuneShareSheet
         isOpen={isProfileShareDrawerOpen}
         onClose={() => setIsProfileShareDrawerOpen(false)}
-        title={t("profileShareTitle", { default: "프로필 이미지 공유하기" })}
-        showCopyLink={false}
-        showLine={false}
+        eyebrow="POSTER"
+        title={tScreen("shareSheet.posterTitle")}
+        primary="system"
+        preview={{
+          art: renderPoster(false, false),
+          label: tScreen("shareSheet.posterLabel"),
+          title: lifeSpoiler.headline,
+          desc: tScreen("shareSheet.posterDesc"),
+        }}
+        onShareSystem={handlePosterShareSystem}
         onShareKakao={handleProfileShareKakao}
         onDownloadImage={handleProfileDownloadImage}
-        isDownloading={isDownloading}
+        isBusy={isDownloading}
       />
 
       {/* 이미지 생성용 숨겨진 프로필 카드 */}
