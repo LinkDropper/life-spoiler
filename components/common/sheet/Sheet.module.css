@@ -1,0 +1,148 @@
+/* 서비스 공용 상영관 시트. 토큰은 app/globals.css의 --cs-* 를 쓴다. 글로우·그림자 없음 */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* 저사양 모바일 성능을 위해 backdrop-filter 없이 어두운 반투명 면만 */
+  background: rgba(5, 7, 15, 0.72);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  max-height: 92dvh;
+  padding: 8px 20px calc(28px + env(safe-area-inset-bottom));
+  overflow: hidden;
+  border-top: 1px solid var(--cs-line);
+  border-radius: 22px 22px 0 0;
+  background: var(--cs-night);
+  color: #ffffff;
+  font-family: var(--font-pretendard), sans-serif;
+  overflow-wrap: break-word;
+  outline: none;
+  animation: slideUp 0.3s ease-out;
+}
+
+.sheet:lang(ko) {
+  word-break: keep-all;
+}
+
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--cs-stars);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.sheet > * {
+  position: relative;
+}
+
+.handle {
+  display: block;
+  flex-shrink: 0;
+  align-self: center;
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0 12px;
+}
+
+.heading {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: var(--cs-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--cs-accent);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--cs-display);
+  font-size: 24px;
+  font-weight: var(--cs-display-weight);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.close:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--cs-star);
+  outline-offset: -2px;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.footer {
+  flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .sheet {
+    animation: none;
+  }
+}
