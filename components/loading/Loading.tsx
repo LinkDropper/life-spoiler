@@ -1,107 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Lottie from "lottie-react";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
-import { useScreeningHold } from "@/components/screening";
+import { ScreeningLoading, useScreeningHold } from "@/components/screening";
 
-import loadingAnimation from "./loading.json";
-
-import styles from "./Loading.module.css";
-
-const MESSAGE_CHANGE_INTERVAL_MS = 3000;
-
-const LOADING_VIDEOS = [
-  "/video/loading.mp4",
-  "/video/loading2.mp4",
-  "/video/loading3.mp4",
-];
-
-const LOADING_MESSAGES: Record<string, string[]> = {
-  ko: [
-    "당신의 수호성과 교신 중입니다...",
-    "태어난 그 시각, 우주의 기운을 계산합니다",
-    "제왕의 별, '자미성'이 당신을 주목하고 있습니다",
-    "2026년 운명의 스포일러를 다운로드 중...",
-    "밤하늘의 별들을 당신의 명반으로 배치하는 중",
-    "수많은 별들 중 '돈복' 터지는 시기를 찾는 중",
-    "미래에서 온 시그널을 해독하고 있습니다",
-    "이번 생의 결정적 기회를 스캔 중입니다",
-    "꽉 막힌 운명을 뚫어줄 '길성(吉星)'을 찾는 중",
-    "소름 돋을 준비 되셨나요? 결과 생성 임박!",
-  ],
-  en: [
-    "Connecting with your guardian star...",
-    "Calculating cosmic energy from your birth moment",
-    "The Emperor Star 'Zi Wei' is watching you",
-    "Downloading your 2026 destiny spoilers...",
-    "Arranging the stars into your birth chart",
-    "Finding the perfect timing for your fortune",
-    "Decoding signals from the future",
-    "Scanning for life-changing opportunities",
-    "Searching for lucky stars to guide your path",
-    "Ready for goosebumps? Results coming soon!",
-  ],
-  ja: [
-    "あなたの守護星と交信中です...",
-    "生まれたその瞬間、宇宙のエネルギーを計算中",
-    "皇帝の星「紫微星」があなたを見つめています",
-    "2026年運命のネタバレをダウンロード中...",
-    "夜空の星々をあなたの命盤に配置中",
-    "無数の星の中から幸運の時期を探索中",
-    "未来からのシグナルを解読しています",
-    "人生の決定的なチャンスをスキャン中",
-    "運命を切り開く「吉星」を探しています",
-    "鳥肌の準備はできましたか？結果まもなく！",
-  ],
-};
-
+/**
+ * 운세 화면 공용 로딩.
+ * - 예고편·본편: 상영관 전환이 이미 화면을 덮고 있어 빈 화면만 둔다(전환이 이 로딩이 끝날 때까지 기다린다).
+ * - 공유 페이지처럼 전환 대상이 아닌 곳: 같은 상영관 화면을 "친구가 보낸 본편"으로 띄운다.
+ *   (예전 풍경 영상·Lottie·문구 목록은 2026-11 상영관 개편으로 뺐다)
+ */
 export const Loading = () => {
-  const locale = useLocale();
-  // 상영관 입장 전환이 덮고 있으면, 이 로딩이 끝날 때까지 걷히지 않는다.
-  // 덮여 있는 동안은 아무도 못 보므로 영상·Lottie를 띄우지 않는다(디코딩 메모리·CPU 절약)
+  const t = useTranslations("screening");
   const isCoveredByScreening = useScreeningHold();
-  const [messageIndex, setMessageIndex] = useState(0);
-  const videoSrc = useRef(
-    LOADING_VIDEOS[Math.floor(Math.random() * LOADING_VIDEOS.length)]
-  );
-
-  const messages = LOADING_MESSAGES[locale] || LOADING_MESSAGES.ko;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % messages.length);
-    }, MESSAGE_CHANGE_INTERVAL_MS);
-
-    return () => clearInterval(interval);
-  }, [messages.length]);
 
   if (isCoveredByScreening) {
-    return <div className={styles.container} aria-busy="true" />;
+    return (
+      <div
+        aria-busy="true"
+        style={{
+          minHeight: "100vh",
+          background: "var(--cinema-night, #0c1220)",
+        }}
+      />
+    );
   }
 
-  return (
-    <div className={styles.container}>
-      <video
-        className={styles.background}
-        src={videoSrc.current}
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-      <div className={styles.content}>
-        <div className={styles.lottieWrapper}>
-          <Lottie
-            animationData={loadingAnimation}
-            loop
-            autoplay
-            className={styles.lottie}
-          />
-        </div>
-        <p className={styles.message}>{messages[messageIndex]}</p>
-      </div>
-    </div>
-  );
+  return <ScreeningLoading title={t("shared.title")} />;
 };
