@@ -8,6 +8,7 @@ import {
   generateFullInterpretation,
 } from "@/libs/services/ai";
 import {
+  buildRequestFactSheet,
   calculateAge,
   convertChartToRequest,
   convertToDayunData,
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
     // 캐시 키에 언어 + 프롬프트 버전 포함 (항상 full 타입으로 저장)
     // 프롬프트를 고치면 LIFETIME_PROMPT_VERSION만 올리면 됨 — 상세: libs/supabase/analysis-cache.ts
     const cacheKey =
-      `full-${LIFETIME_PROMPT_VERSION}-${language}` as `full-${typeof LIFETIME_PROMPT_VERSION}-${Locale}`;
+      `full-${LIFETIME_PROMPT_VERSION}-${new Date().getFullYear()}-${language}` as const;
     const bypassCache = shouldBypassInterpretationCache(language);
 
     // 1. profileId가 있으면 저장된 fortune 먼저 확인 (BYPASS 모드면 스킵)
@@ -171,6 +172,7 @@ export async function POST(request: NextRequest) {
         currentAge,
         dayunPeriods,
         categoryScores: calculateLifetimeCategoryScores(chart),
+        factSheet: buildRequestFactSheet(chart, dayunResult),
       }),
       language,
     };

@@ -677,6 +677,22 @@ Response format (JSON):
   }
 }`,
 
+    lifetime_timing: `Using "Fact Sheet — timing" in the data, write one reason line for each **future timing candidate**.
+
+## Role
+- For each topic (love & marriage / work & job change / moving & relocation), one reason line per candidate year saying what kind of year it is.
+
+## Writing rules
+- Describe the reason as a life scene. Example: "A year when talk of making a relationship official comes up easily."
+- No certainty words ("definitely", "guaranteed", "100%"). Stay at "a likely year" level.
+- For the caution year, say concretely what to watch for, without scaring.
+- Never use star, palace or transformation names, or terms like "major cycle".
+
+## Response format (JSON)
+{
+  "timing": [{"topic": "love", "likely": [{"year": 2027, "reason": "..."}], "caution": {"year": 2029, "reason": "..."}}]
+}`,
+
     lifetime_age_scenarios: `Write life scenarios for each Dayun (major cycle) period!
 
 ## 🎯 Core: A Different Life Chapter for Each Dayun Period
@@ -748,6 +764,7 @@ Response format (JSON) — the age numbers and the count of 10 below are placeho
     lifetime_health: "Health Palace",
     lifetime_age_scenarios: "Major Cycles",
     lifetime_profile_traits: "Life Palace",
+    lifetime_timing: "Life Palace",
   },
 
   // ============================================================

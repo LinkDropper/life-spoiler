@@ -121,8 +121,12 @@ const generateSample = async (
 ): Promise<LifetimeQualitySample> => {
   // LLM 클라이언트는 env 검증을 동반하므로 --generate 일 때만 불러온다.
   const { generateFullInterpretation } = await import("@/libs/services/ai");
-  const { calculateAge, convertChartToRequest, convertToDayunData } =
-    await import("@/libs/services/ai/lifetime-request");
+  const {
+    buildRequestFactSheet,
+    calculateAge,
+    convertChartToRequest,
+    convertToDayunData,
+  } = await import("@/libs/services/ai/lifetime-request");
   const { calculateAllDayunScores, calculateDayun } =
     await import("@/libs/zi-wei-dou-shu/calculators");
   const { calculateLifetimeCategoryScores } =
@@ -137,6 +141,7 @@ const generateSample = async (
       currentAge: calculateAge(input.birthDate, REFERENCE_DATE),
       dayunPeriods: convertToDayunData(dayunResult, chart.palaces, LANGUAGE),
       categoryScores: calculateLifetimeCategoryScores(chart),
+      factSheet: buildRequestFactSheet(chart, dayunResult, REFERENCE_DATE),
     }),
     language: LANGUAGE,
   };

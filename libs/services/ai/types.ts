@@ -2,6 +2,7 @@ import { z } from "zod/v4";
 
 import type { Locale } from "@/i18n/config";
 import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
+import type { LifetimeFactSheet } from "@/libs/zi-wei-dou-shu/calculators/lifetime-facts";
 
 // ============================================================
 // Gemini API 타입
@@ -82,7 +83,8 @@ export type InterpretationType =
   | "lifetime_relationship"
   | "lifetime_health"
   | "lifetime_age_scenarios"
-  | "lifetime_profile_traits";
+  | "lifetime_profile_traits"
+  | "lifetime_timing";
 
 export interface StarData {
   name: string;
@@ -221,6 +223,11 @@ export interface ZiweiInterpretationRequest {
    * LLM은 점수를 만들지 않고, 이 값을 본문 강약 방향의 근거로만 쓴다.
    */
   categoryScores?: LifetimeCategoryScores;
+  /**
+   * 엔진 사실 시트 (Phase 2). 있으면 각 섹션은 배정된 주장만 서술한다.
+   * libs/zi-wei-dou-shu/calculators/lifetime-facts.ts
+   */
+  factSheet?: LifetimeFactSheet;
   requestType: InterpretationType;
   /** 응답 언어 (기본값: ko) */
   language?: Locale;
@@ -265,6 +272,14 @@ export type LifetimeCoreScenarioResponse = z.infer<
 >;
 
 // 상세 시나리오 카테고리 응답 스키마 (재물/직업/인연/건강)
+/** 인연의 상대 묘사 (외모·직업 단정 없음) */
+export const PartnerProfileSchema = z.object({
+  traits: z.array(z.string()).min(1).max(3),
+  role: z.string(),
+  meetingPaths: z.array(z.string()).min(1).max(3),
+});
+export type PartnerProfile = z.infer<typeof PartnerProfileSchema>;
+
 export const LifetimeCategoryResponseSchema = z.object({
   headline: z.string(),
   content: z.string().optional().default(""),
@@ -272,6 +287,12 @@ export const LifetimeCategoryResponseSchema = z.object({
   oneLiner: z.string(),
   tags: z.array(z.string()).min(1).max(2),
   score: z.number().min(0).max(100),
+  /** 쉬운 말 근거 한 줄 — 엔진 룰 테이블에서 옴 (Phase 3) */
+  evidence: z.string().optional(),
+  /** 직업 영역만: 엔진 후보 안에서 고른 분야명 (응답 언어로) */
+  fields: z.array(z.string()).max(5).optional(),
+  /** 인연 영역만: 상대 묘사 */
+  partner: PartnerProfileSchema.optional(),
 });
 
 export type LifetimeCategoryResponse = z.infer<
@@ -280,7 +301,7 @@ export type LifetimeCategoryResponse = z.infer<
 
 /** LLM 응답 스키마 — 점수는 엔진이 채우므로 LLM에게 받지 않는다 */
 export const LifetimeCategoryLLMResponseSchema =
-  LifetimeCategoryResponseSchema.omit({ score: true });
+  LifetimeCategoryResponseSchema.omit({ score: true, evidence: true });
 
 export type LifetimeCategoryLLMResponse = z.infer<
   typeof LifetimeCategoryLLMResponseSchema
@@ -300,6 +321,31 @@ export const AgeScenarioResponseSchema = z.object({
 });
 
 export type AgeScenarioResponse = z.infer<typeof AgeScenarioResponseSchema>;
+
+// 타이밍 응답 스키마 (Phase 2·3)
+const TimingYearTextSchema = z.object({
+  year: z.number().int(),
+  reason: z.string(),
+});
+
+export const TimingResponseSchema = z.object({
+  timing: z.array(
+    z.object({
+      topic: z.enum(["love", "career", "move"]),
+      likely: z.array(TimingYearTextSchema).max(3),
+      caution: TimingYearTextSchema.nullish(),
+    })
+  ),
+});
+
+export type TimingResponse = z.infer<typeof TimingResponseSchema>;
+
+/** 화면용 타이밍 섹션 */
+export interface TimingSection {
+  topic: "love" | "career" | "move";
+  likely: { year: number; reason: string }[];
+  caution?: { year: number; reason: string };
+}
 
 // ============================================================
 // 프로필 카드용 성향 분석 데이터 (v2)
@@ -350,6 +396,8 @@ export interface FortuneInterpretation {
   ageScenarios: AgeScenarioResponse["ageScenarios"];
   /** 프로필 카드용 성향 분석 (v2, 신규 유저만) */
   profileTraits?: ProfileTraitsResponse;
+  /** 시기 후보 (v4~). 구 결과에는 없음 */
+  timing?: TimingSection[];
   meta: {
     generatedAt: string;
     model: string;

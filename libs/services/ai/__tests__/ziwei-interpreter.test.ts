@@ -114,6 +114,34 @@ describe("generateFullInterpretation", () => {
     expect(result.subSections?.[0].body).toBe("타고난 품위가 있어요");
   });
 
+  it("항목 개수가 형식에 안 맞으면 오류를 알려 주고 한 번 재생성한다", async () => {
+    const tooFew = JSON.parse(makeResponse("본문"));
+    tooFew.subSections = tooFew.subSections.slice(0, 1);
+    mockChatCompletion
+      .mockResolvedValueOnce(JSON.stringify(tooFew))
+      .mockResolvedValueOnce(makeResponse("고친 본문"));
+    const { interpretLifeSpoiler } = loadInterpreter();
+
+    const result = await interpretLifeSpoiler(buildRequest());
+
+    expect(mockChatCompletion).toHaveBeenCalledTimes(2);
+    const [, [retryMessages]] = mockChatCompletion.mock.calls;
+    expect(retryMessages.at(-1)?.content).toContain("subSections");
+    expect(result.subSections?.[0].body).toBe("고친 본문");
+  });
+
+  it("재생성 후에도 형식이 안 맞으면 형식 오류로 실패한다", async () => {
+    const tooFew = JSON.parse(makeResponse("본문"));
+    tooFew.subSections = tooFew.subSections.slice(0, 1);
+    mockChatCompletion.mockResolvedValue(JSON.stringify(tooFew));
+    const { interpretLifeSpoiler } = loadInterpreter();
+
+    await expect(interpretLifeSpoiler(buildRequest())).rejects.toThrow(
+      "AI 응답이 예상된 형식과 다릅니다."
+    );
+    expect(mockChatCompletion).toHaveBeenCalledTimes(2);
+  });
+
   it("LLM 입력에 궁간·신궁·상대 강도를 싣고, 점수 필드는 요구하지 않는다", async () => {
     mockChatCompletion.mockResolvedValue(makeResponse("본문"));
     const { interpretLifetimeWealth } = loadInterpreter();

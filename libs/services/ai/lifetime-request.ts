@@ -8,6 +8,10 @@ import {
   identifyGeokGuk,
   type DayunResult,
 } from "@/libs/zi-wei-dou-shu/calculators";
+import {
+  buildLifetimeFactSheet,
+  type LifetimeFactSheet,
+} from "@/libs/zi-wei-dou-shu/calculators/lifetime-facts";
 import type { Palace, ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 
 import type {
@@ -44,6 +48,20 @@ export const calculateAge = (birthDate: string, today = new Date()): number => {
   }
   return age;
 };
+
+/**
+ * 사실 시트 조립.
+ * 타이밍 후보가 기준 연도에 따라 달라지므로 기준일을 받는다(회귀 스크립트 고정용).
+ */
+export const buildRequestFactSheet = (
+  chart: ZiweiChart,
+  dayunResult: DayunResult,
+  today = new Date()
+): LifetimeFactSheet =>
+  buildLifetimeFactSheet(chart, dayunResult, {
+    birthYear: chart.lunarDate.year,
+    currentYear: today.getFullYear(),
+  });
 
 /**
  * 대운 구간을 로케일에 맞는 나이 표기로 변환
@@ -152,11 +170,12 @@ export const convertChartToRequest = (
     currentAge?: number;
     dayunPeriods?: DayunData[];
     categoryScores?: ZiweiInterpretationRequest["categoryScores"];
+    factSheet?: LifetimeFactSheet;
   }
 ): Omit<ZiweiInterpretationRequest, "requestType"> => {
   const { input, lunarDate, palaces, sihua, wuxingJu, mingGong, shenGong } =
     chart;
-  const { currentAge, dayunPeriods, categoryScores } = options ?? {};
+  const { currentAge, dayunPeriods, categoryScores, factSheet } = options ?? {};
 
   // 음력 생일 정보 문자열
   const lunarBirthInfo = `${lunarDate.year}년 ${lunarDate.month}월 ${lunarDate.day}일${lunarDate.isLeapMonth ? " (윤달)" : ""}`;
@@ -216,5 +235,6 @@ export const convertChartToRequest = (
     dayunPeriods,
     geokGuk: geokGukResults.length > 0 ? geokGukResults : undefined,
     categoryScores,
+    factSheet,
   };
 };
