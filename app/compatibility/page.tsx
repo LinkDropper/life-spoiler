@@ -1,18 +1,14 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
+import { ConfirmSheet, Sheet, SheetButton } from "@/components/common/sheet";
+import { getRelationshipLabel } from "@/components/compatibility";
 import { LineupCard } from "@/components/compatibility/LineupCard";
-import {
-  ScreenSheet,
-  SheetAction,
-} from "@/components/fortune/screen/ScreenSheet";
 import { HeaderClient } from "@/components/landing";
-import { DeleteConfirmModal } from "@/components/profile";
 import { useAuthStatus } from "@/libs/stores/user";
 
 import { useCompatibilityDelete, useCompatibilityList } from "./hooks";
@@ -30,6 +26,8 @@ export default function CompatibilityPage() {
   const authStatus = useAuthStatus();
   const t = useTranslations("compatibility.lineup");
   const tCompat = useTranslations("compatibility");
+  const tCard = useTranslations("compatibility.card");
+  const tDelete = useTranslations("compatibility.deleteModal");
 
   const { items, isLoading, fetchPairs, removePair } = useCompatibilityList();
   const {
@@ -41,6 +39,19 @@ export default function CompatibilityPage() {
   } = useCompatibilityDelete(removePair);
   const [manageId, setManageId] = useState<string | null>(null);
   const managed = items.find((item) => item.id === manageId);
+  // 삭제 실패는 열려 있는 확인 시트 안에 남긴다(시트 뒤 알림은 놓치기 쉽다)
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(
+    null
+  );
+  const deleteTarget = items.find((item) => item.id === deleteTargetId);
+  const deleteTargetLabel = deleteTarget
+    ? `${deleteTarget.nameA} × ${deleteTarget.nameB} · ${
+        deleteTarget.relationshipType === "custom" &&
+        deleteTarget.relationshipCustom
+          ? deleteTarget.relationshipCustom
+          : getRelationshipLabel(deleteTarget.relationshipType, tCard)
+      }`
+    : undefined;
 
   useEffect(() => {
     if (authStatus === "authenticated") {
@@ -57,13 +68,15 @@ export default function CompatibilityPage() {
   const handleDeleteFromSheet = useCallback(() => {
     if (!manageId) return;
     setManageId(null);
+    setDeleteErrorMessage(null);
     handleDeleteClick(manageId);
   }, [manageId, handleDeleteClick]);
 
   const onDeleteConfirm = useCallback(async () => {
+    setDeleteErrorMessage(null);
     const success = await handleDeleteConfirm();
     if (!success) {
-      alert(tCompat("deleteError"));
+      setDeleteErrorMessage(tCompat("deleteError"));
     }
   }, [handleDeleteConfirm, tCompat]);
 
@@ -126,7 +139,7 @@ export default function CompatibilityPage() {
         )}
       </main>
 
-      <ScreenSheet
+      <Sheet
         isOpen={Boolean(managed)}
         onClose={() => setManageId(null)}
         eyebrow="MANAGE"
@@ -136,20 +149,26 @@ export default function CompatibilityPage() {
             : ""
         }
       >
-        <SheetAction
-          icon={<Trash2 size={22} />}
-          label={t("delete")}
-          sub={t("deleteSub")}
-          onClick={handleDeleteFromSheet}
-        />
-      </ScreenSheet>
+        <p className={styles.manageNote}>{t("deleteSub")}</p>
+        <SheetButton variant="ghost" onClick={handleDeleteFromSheet}>
+          {t("delete")}
+        </SheetButton>
+      </Sheet>
 
-      <DeleteConfirmModal
+      <ConfirmSheet
         isOpen={deleteTargetId !== null}
         onClose={handleDeleteCancel}
         onConfirm={onDeleteConfirm}
-        isDeleting={isDeleting}
-        description={tCompat("deleteModal.description")}
+        eyebrow="DELETE"
+        title={tDelete("title")}
+        description={tDelete("description")}
+        targetLabel={tDelete("target")}
+        targetValue={deleteTargetLabel}
+        cancelLabel={tDelete("cancel")}
+        confirmLabel={tDelete("delete")}
+        busyLabel={tDelete("deleting")}
+        isBusy={isDeleting}
+        errorMessage={deleteErrorMessage}
       />
     </div>
   );

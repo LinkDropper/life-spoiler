@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>궁합 삭제 확인, 삭제 중 - 인생스포 (공용 시트 시안 · DeleteConfirmModal)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="sheets.css">
+</head>
+<body class="ov">
+<!-- 뒤 화면: /compatibility -->
+<div class="bg" aria-hidden="true">
+  <header class="hd">
+    <a class="logo" href="#">인생스포</a>
+    <div>
+      <button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+      <button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+  </header>
+  <div class="pg">
+    <h1 style="font-size:28px">궁합 리스트</h1>
+    <div style="margin-top:16px;border-top:1px solid var(--line)">
+      <div class="pl"><span>지수 × 민준<small>연인</small></span><em>86점</em></div>
+      <div class="pl"><span>지수 × 서연<small>친구</small></span><em>72점</em></div>
+      <div class="pl"><span>민준 × 하준<small>동료</small></span><em>64점</em></div>
+    </div>
+  </div>
+</div>
+<div class="dim"></div>
+
+<!-- 삭제 중(isDeleting): 두 버튼 모두 비활성, 버튼 문구만 바뀐다. 상태는 스크린리더가 읽는다 -->
+<div class="sheet" role="alertdialog" aria-modal="true" aria-labelledby="t" aria-describedby="d" aria-busy="true">
+  <span class="handle" aria-hidden="true"></span>
+  <div class="sh-head">
+    <div>
+      <p class="eyebrow" aria-hidden="true">DELETE</p>
+      <h2 class="sh-title" id="t">정말 삭제하시겠어요?</h2>
+    </div>
+  </div>
+  <p class="desc" id="d">삭제 후에는 복구가 불가능합니다. 선택한 궁합의 운세 기록도 모두 삭제됩니다.</p>
+  <dl class="kv">
+    <div><dt>삭제할 궁합</dt><dd>지수 × 민준 · 연인</dd></div>
+  </dl>
+  <div class="btns">
+    <button class="btn" type="button" disabled>취소</button>
+    <button class="btn ghost" type="button" disabled>삭제 중...</button>
+  </div>
+  <p class="sr" role="status">삭제 중...</p>
+</div>
+</body>
+</html>

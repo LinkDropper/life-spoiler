@@ -227,3 +227,11 @@
   font-family: var(--font-pretendard), "Hiragino Sans", sans-serif;
   font-weight: 800;
 }
+
+/* ⋯ 관리 시트 */
+.manageNote {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}

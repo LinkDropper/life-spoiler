@@ -26,9 +26,11 @@ export const LanguageDrawer = ({
     <OptionSheet
       isOpen={isOpen}
       title={t("languageAriaLabel", { default: "언어 설정" })}
+      eyebrow="LANGUAGE"
       options={locales.map((locale) => ({
         value: locale,
         label: localeNames[locale],
+        lang: locale,
       }))}
       selectedValue={currentLocale}
       onSelect={(value) => onSelect(value as Locale)}

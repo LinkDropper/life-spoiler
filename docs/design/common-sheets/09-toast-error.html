@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>앱 안 알림, 오류 - 인생스포 (공용 시트 시안 · alert 대체 1/2)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="sheets.css">
+</head>
+<body class="ov">
+<!-- 뒤 화면: 본편 공유 시트가 열린 상태에서 이미지 저장에 실패 -->
+<div class="bg sharp" aria-hidden="true">
+  <header class="hd">
+    <a class="logo" href="#">인생스포</a>
+    <div><button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button></div>
+  </header>
+  <div class="pg"><p class="eyebrow">FEATURE PRESENTATION</p><h1 style="font-size:28px">지수님의 올해 운세</h1></div>
+</div>
+<div class="dim"></div>
+<div class="sheet" aria-hidden="true">
+  <span class="handle"></span>
+  <div class="sh-head"><div><p class="eyebrow">SHARE</p><h2 class="sh-title">본편 공유하기</h2></div></div>
+  <div class="list">
+    <div class="row"><span class="lbl">카카오톡으로 보내기</span></div>
+    <div class="row"><span class="lbl">링크 복사</span></div>
+    <div class="row" style="font-weight:800;color:#fff"><span class="lbl">이미지로 저장</span></div>
+  </div>
+</div>
+
+<!-- 오류: role=alert 로 즉시 읽는다. 자동으로 안 사라지고(또는 6초) 직접 닫을 수 있다 -->
+<div class="toast" role="alert">
+  <div class="tx">
+    <span class="tag" aria-hidden="true">ERROR</span>
+    <b>이미지를 만들지 못했어요. 다시 시도해 주세요.</b>
+  </div>
+  <button class="x" type="button" aria-label="알림 닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+</div>
+</body>
+</html>

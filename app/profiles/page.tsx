@@ -1,17 +1,14 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import Image from "next/image";
 
+import { ConfirmSheet } from "@/components/common/sheet";
 import { HeaderClient } from "@/components/landing";
-import {
-  ProfileCard,
-  NewProfileCard,
-  DeleteConfirmModal,
-} from "@/components/profile";
+import { ProfileCard, NewProfileCard } from "@/components/profile";
 import { trackDailyEvent } from "@/libs/analytics";
 import {
   useProfiles,
@@ -20,6 +17,7 @@ import {
   useProfileActions,
 } from "@/libs/stores/profile";
 import { useAuthStatus, useUser } from "@/libs/stores/user";
+import { showToast } from "@/libs/toast";
 
 // 임시: 특정 유저는 프로필 추가/삭제 버튼 숨김
 const RESTRICTED_USER_ID = "97f9d7a9-23f2-4fd8-98cf-ac52aa4fe059";
@@ -37,6 +35,7 @@ export default function ProfilesPage() {
   const authStatus = useAuthStatus();
   const user = useUser();
   const t = useTranslations("profiles");
+  const tDelete = useTranslations("profiles.deleteModal");
 
   // 임시: 특정 유저는 프로필 추가/삭제 버튼 숨김
   const isRestrictedUser = user?.id === RESTRICTED_USER_ID;
@@ -80,6 +79,14 @@ export default function ProfilesPage() {
 
   const { navigateToFortune } = useFortuneNavigation({ selectedProfile });
 
+  // 삭제 실패는 열려 있는 시트 안에 남긴다(시트 뒤 토스트는 놓치기 쉽다)
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(
+    null
+  );
+  const deleteTargetName = profiles.find(
+    (profile) => profile.id === deleteTargetId
+  )?.name;
+
   // 페이지 접근 시 프로필 정보를 다시 가져옴
   useEffect(() => {
     if (authStatus === "authenticated") {
@@ -119,7 +126,10 @@ export default function ProfilesPage() {
 
   const handleLifetimeFortune = useCallback(() => {
     if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      showToast({
+        kind: "notice",
+        message: t("selectProfile", { default: "프로필을 선택해주세요." }),
+      });
       return;
     }
     navigateToFortune("lifetime");
@@ -127,7 +137,10 @@ export default function ProfilesPage() {
 
   const handleYearlyFortune = useCallback(() => {
     if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      showToast({
+        kind: "notice",
+        message: t("selectProfile", { default: "프로필을 선택해주세요." }),
+      });
       return;
     }
     navigateToFortune("yearly");
@@ -135,7 +148,10 @@ export default function ProfilesPage() {
 
   const handlePastLifeFortune = useCallback(() => {
     if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      showToast({
+        kind: "notice",
+        message: t("selectProfile", { default: "프로필을 선택해주세요." }),
+      });
       return;
     }
     navigateToFortune("past-life");
@@ -143,7 +159,10 @@ export default function ProfilesPage() {
 
   const handleYearly2027Fortune = useCallback(() => {
     if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      showToast({
+        kind: "notice",
+        message: t("selectProfile", { default: "프로필을 선택해주세요." }),
+      });
       return;
     }
     navigateToFortune("yearly_2027");
@@ -151,17 +170,29 @@ export default function ProfilesPage() {
 
   const handleDailyFortune = useCallback(() => {
     if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+      showToast({
+        kind: "notice",
+        message: t("selectProfile", { default: "프로필을 선택해주세요." }),
+      });
       return;
     }
     trackDailyEvent("daily_profile_select");
     navigateToFortune("daily");
   }, [selectedProfileId, navigateToFortune, t]);
 
+  const onDeleteClick = useCallback(
+    (profileId: string) => {
+      setDeleteErrorMessage(null);
+      handleDeleteClick(profileId);
+    },
+    [handleDeleteClick]
+  );
+
   const onDeleteConfirm = useCallback(async () => {
+    setDeleteErrorMessage(null);
     const success = await handleDeleteConfirm();
     if (!success) {
-      alert(
+      setDeleteErrorMessage(
         t("deleteError", {
           default: "프로필 삭제에 실패했습니다. 다시 시도해주세요.",
         })
@@ -205,9 +236,7 @@ export default function ProfilesPage() {
               completedFortunes={getCompletedFortunes(profile)}
               onSelect={() => handleProfileSelect(profile.id)}
               onDelete={
-                isRestrictedUser
-                  ? undefined
-                  : () => handleDeleteClick(profile.id)
+                isRestrictedUser ? undefined : () => onDeleteClick(profile.id)
               }
             />
           ))}
@@ -283,11 +312,23 @@ export default function ProfilesPage() {
         )}
       </footer>
 
-      <DeleteConfirmModal
+      <ConfirmSheet
         isOpen={deleteTargetId !== null}
         onClose={handleDeleteCancel}
         onConfirm={onDeleteConfirm}
-        isDeleting={isDeleting}
+        eyebrow="DELETE"
+        title={tDelete("title", { default: "정말 삭제하시겠어요?" })}
+        description={tDelete("description", {
+          default:
+            "삭제 후에는 복구가 불가능합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
+        })}
+        targetLabel={tDelete("target", { default: "삭제할 프로필" })}
+        targetValue={deleteTargetName}
+        cancelLabel={tDelete("cancel", { default: "취소" })}
+        confirmLabel={tDelete("delete", { default: "삭제하기" })}
+        busyLabel={tDelete("deleting", { default: "삭제 중..." })}
+        isBusy={isDeleting}
+        errorMessage={deleteErrorMessage}
       />
     </div>
   );

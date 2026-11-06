@@ -31,6 +31,7 @@ import {
   shareLinkWithSystem,
 } from "@/libs/share/system-share";
 import { useUser } from "@/libs/stores/user";
+import { showToast } from "@/libs/toast";
 
 import styles from "./page.module.css";
 
@@ -119,7 +120,7 @@ export default function CompatibilityResultPage() {
     try {
       const blob = await posterToBlob();
       if (!blob) {
-        alert(tC("poster.imageError"));
+        showToast({ kind: "error", message: tC("poster.imageError") });
         return;
       }
       await shareToKakaoWithImage({
@@ -129,7 +130,7 @@ export default function CompatibilityResultPage() {
       });
     } catch (shareError) {
       console.error("Failed to share to Kakao with image:", shareError);
-      alert(tC("poster.shareError"));
+      showToast({ kind: "error", message: tC("poster.shareError") });
     } finally {
       closePosterImageLater();
     }
@@ -160,7 +161,7 @@ export default function CompatibilityResultPage() {
     try {
       const blob = await posterToBlob();
       if (!blob) {
-        alert(tScreen("shareSheet.imageError"));
+        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
         return;
       }
       const shared = await shareImageWithSystem({
@@ -173,7 +174,7 @@ export default function CompatibilityResultPage() {
       }
     } catch (shareError) {
       console.error("Failed to share poster with system sheet:", shareError);
-      alert(tScreen("shareSheet.shareError"));
+      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
     } finally {
       closePosterImageLater();
     }

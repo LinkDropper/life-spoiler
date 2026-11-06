@@ -15,6 +15,7 @@ import {
   useProfiles,
 } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
+import { showToast } from "@/libs/toast";
 import type {
   CompatibilityRelationshipType,
   ProfileRow,
@@ -145,7 +146,7 @@ export default function CompatibilitySetupPage() {
       // 저장하면 새 궁합의 예고편으로 바로 (상영관 전환이 덮는다)
       router.push(`/compatibility/${data.pairId}/fortune/preview`);
     } catch {
-      alert(t("createError"));
+      showToast({ kind: "error", message: t("createError") });
       setIsSubmitting(false);
     }
   };

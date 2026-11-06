@@ -1,0 +1,124 @@
+/* 공용 시트·모달·알림 시안 공통 스타일 (정적 시안용). 구현은 README 참고.
+   디스플레이 폰트: payment-flow와 같은 방식(SB-B.otf 상대 경로). 같은 폴더에 없으면 public/fonts에서 읽는다. */
+@font-face{font-family:"SB AggroOTF";src:url("SB-B.otf") format("opentype"),url("../../../public/fonts/SB-B.otf") format("opentype");font-display:swap}
+:root{
+  --night:#0a0f1c;--deep:#05070f;
+  --haze:rgba(255,255,255,.78);--faint:rgba(255,255,255,.6);
+  --spoiler:#ffccd9;--accent:#ff8fb1;--star:#ffe7a3;--ink:#23142d;
+  --line:rgba(255,204,217,.3);--line-soft:rgba(255,204,217,.15);
+  --display:"SB AggroOTF","Pretendard Variable",Pretendard,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --stars:radial-gradient(1px 1px at 12% 20%,#fff,transparent),radial-gradient(1px 1px at 34% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 58% 18%,#fff,transparent),radial-gradient(1px 1px at 78% 44%,#fff,transparent),radial-gradient(1.2px 1.2px at 90% 76%,#fff,transparent),radial-gradient(1px 1px at 22% 84%,#fff,transparent),radial-gradient(1px 1px at 66% 88%,#fff,transparent)
+}
+*{box-sizing:border-box}
+html{background:var(--deep)}
+body{position:relative;width:375px;min-height:812px;margin:0 auto;background:var(--night);color:#fff;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+body.ov{height:812px;overflow:hidden}
+h1,h2,p,dl,dd,dt,ul{margin:0;padding:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- 뒤 배경 화면 (시안 맥락용, 구현 대상 아님) ---------- */
+.bg{position:absolute;inset:0;overflow:hidden;filter:blur(4px);pointer-events:none}
+.bg.sharp{filter:none}
+.dim{position:absolute;inset:0;z-index:4;background:rgba(5,7,15,.72)}
+.hd{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 20px}
+.logo{font-family:var(--display);font-size:24px;line-height:1;color:var(--spoiler)}
+.hd div{display:flex}
+.ic{display:grid;place-items:center;width:44px;height:44px;border:0;background:none}
+.pg{padding:12px 20px}
+.pg h1{font-family:var(--display);font-size:32px;font-weight:400;line-height:1.2}
+.pg .lead{margin-top:8px;font-size:15px;line-height:1.55;color:var(--haze)}
+.ph{background:rgba(255,255,255,.1);border-radius:8px}
+.pl{display:flex;align-items:center;justify-content:space-between;min-height:64px;border-bottom:1px solid var(--line-soft);font-size:16px;font-weight:800}
+.pl small{display:block;font-size:13px;font-weight:500;color:var(--faint)}
+.pl em{font-style:normal;font-size:14px;font-weight:700;color:var(--haze)}
+
+/* ---------- 시트 (ScreenSheet 문법: 밤하늘 바탕 · mono eyebrow · 디스플레이 제목 · 44px 닫기) ---------- */
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:8px 20px 28px;overflow:hidden;border-top:1px solid var(--line);border-radius:22px 22px 0 0;background:var(--night)}
+.sheet::before{content:"";position:absolute;inset:0;background-image:var(--stars);opacity:.35;pointer-events:none}
+.sheet>*{position:relative}
+.handle{display:block;width:36px;height:4px;margin:0 auto;border-radius:2px;background:rgba(255,255,255,.24)}
+.sh-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 0 12px}
+.eyebrow{margin:0 0 4px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.28em;color:var(--accent)}
+.sh-title{font-family:var(--display);font-size:24px;font-weight:400;line-height:1.2;text-wrap:balance}
+.x{display:grid;flex:none;place-items:center;width:44px;height:44px;margin-right:-12px;border:0;background:none}
+.x:disabled{opacity:.4;cursor:not-allowed}
+
+/* 선택 목록: 결제 수단 행과 같다. 선택 = 굵은 흰 글씨 + 오른쪽 핑크 체크. 테두리·채움·링 없음 */
+.list{border-top:1px solid var(--line)}
+.list.gap{margin-top:16px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:56px;padding:0;border:0;border-bottom:1px solid var(--line-soft);background:none;text-align:left;font-size:16px;font-weight:500;color:var(--haze)}
+.row[aria-selected="true"],.row[aria-checked="true"]{font-weight:800;color:#fff}
+.row[aria-disabled="true"]{opacity:.4;cursor:not-allowed}
+.row:focus-visible{outline-offset:-2px}
+.row .lbl{min-width:0}
+.row.two{min-height:68px;padding:10px 0}
+.row .mt{display:block;margin-top:2px;font-size:13px;font-weight:500;color:var(--faint)}
+.row.act{justify-content:flex-start;gap:10px;font-weight:700;color:#fff}
+.row svg{flex:none}
+
+/* ---------- 확인 시트 (삭제·탈퇴) ---------- */
+.desc{margin-top:4px;font-size:15px;line-height:1.65;color:var(--haze)}
+.kv{margin-top:20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line-soft)}
+.kv div{display:flex;align-items:baseline;justify-content:space-between;gap:16px;min-height:52px;padding:14px 0}
+.kv dt{flex:none;font-size:14px;font-weight:600;color:var(--faint)}
+.kv dd{min-width:0;text-align:right;font-size:15px;font-weight:800;overflow-wrap:anywhere}
+.btns{display:grid;gap:8px;margin-top:24px}
+.btns.row2{grid-template-columns:auto minmax(0,1fr)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;padding:6px 16px;border:0;border-radius:10px;background:var(--spoiler);color:var(--ink);font-size:16px;font-weight:800;line-height:1.3;text-align:center;text-wrap:balance}
+.btn.ghost{border:1.5px solid rgba(255,255,255,.4);background:transparent;color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btns.row2 .btn.ghost{padding:6px 24px}
+.inline-err{display:flex;flex-direction:column;gap:2px;margin-top:20px;padding-top:12px;border-top:1px solid rgba(255,231,163,.4)}
+.tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.24em;color:var(--star)}
+.inline-err b,.toast b{font-size:14px;font-weight:700;line-height:1.5}
+
+/* ---------- 앱 안 알림 (CopyToast 문법: 밤색 면 + 얇은 금색 선 + mono 꼬리표) ---------- */
+.toast{position:absolute;top:64px;left:16px;right:16px;z-index:9;display:flex;align-items:flex-start;justify-content:space-between;gap:4px;padding:12px 4px 12px 16px;border-radius:14px;background:rgba(10,15,28,.98);box-shadow:inset 0 0 0 1px rgba(255,231,163,.4)}
+.toast .tx{display:flex;flex-direction:column;gap:2px;min-width:0;padding-top:2px}
+.toast .x{margin:-8px 0 -8px 0}
+
+/* ---------- 브라우저 이동 안내 (전체 화면, 닫을 수 없음) ---------- */
+.gate{display:flex;flex-direction:column;min-height:812px}
+.gate::before{content:"";position:absolute;inset:0;background-image:var(--stars);opacity:.35;pointer-events:none}
+.gate>*{position:relative}
+.inapp{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 4px 0 16px;background:#1a2030;font-size:14px;font-weight:600;color:var(--haze)}
+.gate main{display:flex;flex:1;flex-direction:column;justify-content:center;padding:0 20px 72px}
+.gate h1{font-family:var(--display);font-size:32px;font-weight:400;line-height:1.25;text-wrap:balance}
+.gate .desc{margin-top:12px;font-size:16px}
+.gate .desc b{display:block;color:#fff;font-weight:800}
+.gate .btn{margin-top:32px;min-height:56px}
+.gate .stat{display:flex;align-items:center;min-height:56px;margin-top:32px;font-size:16px;font-weight:700}
+.help{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;line-height:1.7;color:var(--haze)}
+
+/* ---------- 명반 (PalaceDetailPanel 맥락) ---------- */
+.sec h2{font-family:var(--display);font-size:24px;font-weight:400;line-height:1.3}
+.sec .lead{margin-top:6px;font-size:14px;line-height:1.6;color:var(--haze)}
+.gw{margin-top:16px;overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,85px);margin:0 -1px -1px 0}
+.cell{display:flex;flex-direction:column;gap:2px;padding:6px;border:0;border-right:1px solid rgba(255,255,255,.16);border-bottom:1px solid rgba(255,255,255,.16);background:none;text-align:left}
+.cell i{font-style:normal;font-size:10px;font-weight:600;color:var(--faint)}
+.cell b{font-size:13px;font-weight:800;line-height:1.35}
+.cell span{font-size:11px;line-height:1.35;color:var(--haze)}
+.cell[aria-pressed="true"]{background:rgba(255,204,217,.1)}
+.cell[aria-pressed="true"] i{font-weight:800;color:var(--accent)}
+.cell:focus-visible{outline-offset:-2px}
+.ctr{grid-column:2/4;grid-row:2/4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center}
+.ctr b{font-family:var(--display);font-size:18px;font-weight:400}
+.ctr span{font-size:12px;color:var(--faint)}
+.panel{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.panel header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.panel h3{margin:0;font-family:var(--display);font-size:24px;font-weight:400;line-height:1.25}
+.panel .sub{margin-top:2px;font-size:14px;font-weight:600;color:var(--haze)}
+.panel .meaning{margin-top:12px;font-size:14px;line-height:1.7;color:var(--haze)}
+.panel .read{margin-top:16px;font-size:16px;font-weight:500;line-height:1.75}
+.panel .kv{margin-top:16px}
+.panel .kv dd{font-weight:500;line-height:1.6;text-align:right}
+.panel .kv dd b{font-weight:800}
+.panel .kv.tx dd{font-size:14px;text-align:left}
+.panel .kv.tx div{gap:20px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

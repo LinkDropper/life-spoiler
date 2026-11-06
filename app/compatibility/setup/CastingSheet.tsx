@@ -3,7 +3,7 @@
 import { Check, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { ScreenSheet } from "@/components/fortune/screen/ScreenSheet";
+import { Sheet } from "@/components/common/sheet";
 import type { ProfileRow } from "@/libs/supabase/types";
 
 import styles from "./CastingSheet.module.css";
@@ -43,7 +43,7 @@ export const CastingSheet = ({
   const otherLabel = slot === "b" ? "LEAD A" : "LEAD B";
 
   return (
-    <ScreenSheet
+    <Sheet
       isOpen={slot !== null}
       onClose={onClose}
       eyebrow={`CASTING · ${label}${roleLabel ? ` · ${roleLabel}` : ""}`}
@@ -93,6 +93,6 @@ export const CastingSheet = ({
         <Plus size={20} aria-hidden="true" />
         <b>{t("newActor")}</b>
       </button>
-    </ScreenSheet>
+    </Sheet>
   );
 };
