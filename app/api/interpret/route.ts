@@ -23,6 +23,8 @@ import {
   setCachedResult,
   type LifetimeFortuneData,
 } from "@/libs/supabase";
+import { toLifetimePreview } from "@/libs/fortune/preview-payload";
+import { checkFortuneAccess } from "@/libs/supabase/fortune-access";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 import {
   calculateDayun,
@@ -78,6 +80,16 @@ export async function POST(request: NextRequest) {
       `full-${LIFETIME_PROMPT_VERSION}-${new Date().getFullYear()}-${language}` as const;
     const bypassCache = shouldBypassInterpretationCache(language);
 
+    // 로그인·프로필 소유 확인, 결제 여부 판정 (결제 전이면 예고편 필드만 내려줌)
+    const access = await checkFortuneAccess(profileId, "lifetime", 0);
+    if (!access.ok) {
+      return NextResponse.json(
+        { success: false, error: access.error },
+        { status: access.status }
+      );
+    }
+    const { isPaid } = access;
+
     // 1. profileId가 있으면 저장된 fortune 먼저 확인 (BYPASS 모드면 스킵)
     if (profileId && !bypassCache) {
       const existingFortune = await getFortune(profileId, "lifetime", 0);
@@ -92,9 +104,9 @@ export async function POST(request: NextRequest) {
         ) {
           return NextResponse.json({
             success: true,
-            data: storedData,
+            data: isPaid ? storedData : toLifetimePreview(storedData),
             isAIGenerated: true, // 저장된 데이터는 AI 성공 시에만 저장되므로 true
-            isPaid: !!existingFortune.paid_at,
+            isPaid,
           });
         }
       }
@@ -155,9 +167,9 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        data: responseData,
+        data: isPaid ? responseData : toLifetimePreview(responseData),
         isAIGenerated: true,
-        isPaid: false,
+        isPaid,
       });
     }
 
@@ -210,9 +222,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: responseData,
+      data: isPaid ? responseData : toLifetimePreview(responseData),
       isAIGenerated: isAISuccess,
-      isPaid: false,
+      isPaid,
     });
   } catch (error) {
     console.error("API 오류:", error);

@@ -154,7 +154,7 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
             ganji={ganji}
             title={overview.headline}
             tagline={overview.oneLiner}
-            tags={(overview.keywords ?? []).slice(0, 3)}
+            tags={overview.tags.slice(0, 3)}
             leadStar={cast.leadStar}
             flow={flow}
             nowMonth={nowMonth}

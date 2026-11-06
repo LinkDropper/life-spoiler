@@ -16,7 +16,6 @@ import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import { trackFortuneEvent } from "@/libs/analytics/fortune";
-import { buildLockedQuestions } from "@/libs/fortune/lifetime-extras";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import { getFilmAge } from "@/libs/home/home-film";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
@@ -208,7 +207,7 @@ export default function LifetimeFortunePreviewPage() {
         )}
 
         <FeatureLocks keywords={keywords} />
-        <LockedQuestions questions={buildLockedQuestions(interpretation)} />
+        <LockedQuestions questions={interpretation.lockedQuestions ?? []} />
       </main>
 
       <footer className={styles.footer}>

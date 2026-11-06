@@ -57,7 +57,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
     const fortune = await getFortune(profileId, fortuneType, year);
 
-    if (!fortune) {
+    // 공유 링크는 결제(또는 무료 이용권으로 paid_at이 찍힌) 결과만 보여 준다.
+    // 예고편 단계에서 저장된 본편을 공유 URL로 열어 보는 것을 막는다.
+    if (!fortune || !fortune.paid_at) {
       return NextResponse.json(
         { success: false, error: "운세 데이터를 찾을 수 없습니다." },
         { status: 404 }
