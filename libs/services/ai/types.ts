@@ -93,9 +93,15 @@ export interface StarData {
 export interface PalaceData {
   name: string;
   branch: string;
+  /** 궁간(宮干) 한글 표기 (예: "갑") */
+  stem?: string;
   mainStars: StarData[];
   minorStars: StarData[];
   isShenGong?: boolean;
+  /** 空宮일 때 借對宮 원칙으로 빌려 읽는 주성 */
+  borrowedMainStars?: StarData[];
+  /** 차용 주성의 출처 궁 이름 */
+  borrowedFromPalace?: string;
 }
 
 export interface SihuaData {
@@ -181,6 +187,14 @@ export interface GeokGukData {
   stars: string[];
 }
 
+/** 인생 운세 4영역 점수 */
+export interface LifetimeCategoryScores {
+  wealth: number;
+  career: number;
+  relationship: number;
+  health: number;
+}
+
 export interface ZiweiInterpretationRequest {
   user: {
     gender: "male" | "female";
@@ -191,6 +205,8 @@ export interface ZiweiInterpretationRequest {
     wuxingJu: string;
     mingGongPosition: string;
     shenGongPosition: string;
+    /** 신궁이 겹친 궁 이름 (예: "관록궁") */
+    shenGongPalace?: string;
     sihua: SihuaData;
   };
   /** 모든 12궁 데이터 (궁 이름 → 궁 데이터) */
@@ -200,6 +216,11 @@ export interface ZiweiInterpretationRequest {
   geokGuk?: GeokGukData[];
   /** 이전 섹션 해석 맥락 (섹션 간 일관성용) */
   previousContext?: string;
+  /**
+   * 엔진이 계산한 인생 4영역 표시 점수(40~95, 전체 사용자 분포 기준 백분위 환산).
+   * LLM은 점수를 만들지 않고, 이 값을 본문 강약 방향의 근거로만 쓴다.
+   */
+  categoryScores?: LifetimeCategoryScores;
   requestType: InterpretationType;
   /** 응답 언어 (기본값: ko) */
   language?: Locale;
@@ -255,6 +276,14 @@ export const LifetimeCategoryResponseSchema = z.object({
 
 export type LifetimeCategoryResponse = z.infer<
   typeof LifetimeCategoryResponseSchema
+>;
+
+/** LLM 응답 스키마 — 점수는 엔진이 채우므로 LLM에게 받지 않는다 */
+export const LifetimeCategoryLLMResponseSchema =
+  LifetimeCategoryResponseSchema.omit({ score: true });
+
+export type LifetimeCategoryLLMResponse = z.infer<
+  typeof LifetimeCategoryLLMResponseSchema
 >;
 
 // 나이대별 시나리오 응답 스키마

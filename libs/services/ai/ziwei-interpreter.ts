@@ -1,18 +1,27 @@
 import type { Locale } from "@/i18n/config";
-import { BRANCH_INDEX_MAP } from "@/libs/zi-wei-dou-shu/constants/branches";
+import {
+  BRANCH_INDEX_MAP,
+  STEM_INDEX_MAP,
+} from "@/libs/zi-wei-dou-shu/constants/branches";
 import { PALACE_ORDER } from "@/libs/zi-wei-dou-shu/constants/palaces";
 import { calculateSamBangSaJeong } from "@/libs/zi-wei-dou-shu/calculators/sam-bang";
 import type { BranchIndex, Palace } from "@/libs/zi-wei-dou-shu/types";
 
 import { AIError } from "./errors";
+import {
+  buildViolationFeedback,
+  findOutputViolations,
+} from "./output-validator";
 import { getPrompts } from "./prompts";
 import type {
   AgeScenarioResponse,
   FortuneInterpretation,
+  GeminiMessage,
   GeminiResponseSchema,
   InterpretationType,
   LifeSpoilerResponse,
-  LifetimeCategoryResponse,
+  LifetimeCategoryLLMResponse,
+  LifetimeCategoryScores,
   LifetimeCoreScenarioResponse,
   PalaceData,
   ProfileTraitsResponse,
@@ -21,7 +30,7 @@ import type {
 import {
   AgeScenarioResponseSchema,
   LifeSpoilerResponseSchema,
-  LifetimeCategoryResponseSchema,
+  LifetimeCategoryLLMResponseSchema,
   LifetimeCoreScenarioResponseSchema,
   ProfileTraitsResponseSchema,
 } from "./types";
@@ -101,9 +110,9 @@ const LIFETIME_CATEGORY_SCHEMA: GeminiResponseSchema = {
       type: "array",
       items: { type: "string" },
     },
-    score: { type: "integer", minimum: 0, maximum: 100 },
   },
-  required: ["headline", "tags", "score", "oneLiner"],
+  // score 는 엔진이 계산한다 (libs/zi-wei-dou-shu/calculators/lifetime-score.ts)
+  required: ["headline", "tags", "oneLiner"],
 };
 
 /** 나이대별 시나리오 스키마 */
@@ -304,7 +313,9 @@ const palaceDataToPalace = (
 ): Palace => ({
   name: palaceData.name,
   branch: branchIndex,
-  stem: 0 as Palace["stem"],
+  stem: (palaceData.stem !== undefined
+    ? (STEM_INDEX_MAP[palaceData.stem] ?? 0)
+    : 0) as Palace["stem"],
   mainStars: palaceData.mainStars.map((s) => ({
     name: s.name,
     brightness: s.brightness as Palace["mainStars"][0]["brightness"],
@@ -314,7 +325,14 @@ const palaceDataToPalace = (
     name: s.name,
     brightness: (s.brightness || "평") as Palace["minorStars"][0]["brightness"],
   })),
-  isShenGong: false,
+  isShenGong: palaceData.isShenGong ?? false,
+  isEmptyPalace: palaceData.mainStars.length === 0,
+  borrowedMainStars: palaceData.borrowedMainStars?.map((s) => ({
+    name: s.name,
+    brightness: s.brightness as Palace["mainStars"][0]["brightness"],
+    sihua: s.sihua as Palace["mainStars"][0]["sihua"],
+  })),
+  borrowedFromPalace: palaceData.borrowedFromPalace,
 });
 
 /** 대운 점수(0-100)를 정성적 티어로 변환 — 원 숫자를 프롬프트에 그대로 노출하지 않기 위함 */
@@ -329,18 +347,102 @@ const scoreToTier = (score: number): string => {
 /**
  * 12궁 전체를 압축 요약 (궁별 주성 + 밝기만, 삼방사정 등 상세는 유지한 채 입력 엔트로피 보강용)
  */
+const formatStarWithSihua = (star: {
+  name: string;
+  brightness: string;
+  sihua?: string;
+}): string =>
+  `${star.name}(${star.brightness})${star.sihua ? `[${star.sihua}]` : ""}`;
+
+/** 주성 표기. 空宮이면 빌려 읽는 주성과 출처 궁을 함께 적는다. */
+const formatMainStarsOrBorrowed = (
+  mainStars: { name: string; brightness: string; sihua?: string }[],
+  borrowed?: { name: string; brightness: string; sihua?: string }[],
+  borrowedFrom?: string
+): string => {
+  if (mainStars.length > 0) {
+    return mainStars.map(formatStarWithSihua).join(", ");
+  }
+  if (borrowed && borrowed.length > 0) {
+    return `주성 없음 → ${borrowedFrom ?? "맞은편 궁"} 주성을 빌려 읽음(약하게): ${borrowed
+      .map(formatStarWithSihua)
+      .join(", ")}`;
+  }
+  return "주성 없음";
+};
+
+/**
+ * 12궁 전체 요약 — 주성·밝기·사화·보좌살성·궁간·신궁·공궁 차성.
+ * 대상 궁 밖의 궁도 이 사람만의 조합을 가르는 근거이므로 생략하지 않는다.
+ */
 const formatAllPalacesSummary = (
   palaces: Record<string, PalaceData>
 ): string => {
   return PALACE_ORDER.map((name) => {
     const palace = palaces[name];
     if (!palace) return `- ${name}: 데이터 없음`;
-    const starsStr =
-      palace.mainStars.length > 0
-        ? palace.mainStars.map((s) => `${s.name}(${s.brightness})`).join(", ")
-        : "주성 없음";
-    return `- ${name}: ${starsStr}`;
+    const stemStr = palace.stem ? ` [${palace.stem}]` : "";
+    const shenStr = palace.isShenGong ? " (신궁)" : "";
+    const starsStr = formatMainStarsOrBorrowed(
+      palace.mainStars,
+      palace.borrowedMainStars,
+      palace.borrowedFromPalace
+    );
+    const minorStr =
+      palace.minorStars.length > 0
+        ? ` | 보좌·살성: ${palace.minorStars.map((s) => `${s.name}${s.sihua ? `[${s.sihua}]` : ""}`).join(", ")}`
+        : "";
+    return `- ${name}${stemStr}${shenStr}: ${starsStr}${minorStr}`;
   }).join("\n");
+};
+
+/** 해석 유형 → 인생 4영역 점수 키 */
+const CATEGORY_KEY_BY_TYPE: Partial<
+  Record<InterpretationType, keyof LifetimeCategoryScores>
+> = {
+  lifetime_wealth: "wealth",
+  lifetime_career: "career",
+  lifetime_relationship: "relationship",
+  lifetime_health: "health",
+};
+
+/**
+ * 엔진 점수(40~95, 백분위 환산)를 서술 방향으로 바꾼다.
+ * 점수 자체는 화면에 따로 노출되므로, 본문이 점수와 반대 방향으로 쓰이지 않게 하는 용도.
+ */
+const describeRelativeStrength = (score: number): string => {
+  const percentile = (score - 40) / 55;
+  if (percentile >= 0.8)
+    return "top 20% of all users — write it as a clear strength";
+  if (percentile >= 0.6) return "upper-middle — mostly a strength";
+  if (percentile >= 0.4) return "middle — neither notably strong nor weak";
+  if (percentile >= 0.2)
+    return "lower-middle — mostly a weak spot, say so plainly";
+  return "bottom 20% of all users — write it as a clear weak spot, honestly";
+};
+
+const CATEGORY_LABELS: Record<keyof LifetimeCategoryScores, string> = {
+  wealth: "wealth",
+  career: "career",
+  relationship: "relationship",
+  health: "health",
+};
+
+const formatRelativeStrength = (
+  scores: LifetimeCategoryScores,
+  requestType: InterpretationType
+): string => {
+  const ownKey = CATEGORY_KEY_BY_TYPE[requestType];
+  const ranked = (Object.keys(scores) as (keyof LifetimeCategoryScores)[]).sort(
+    (a, b) => scores[b] - scores[a]
+  );
+  const lines = ranked.map(
+    (key, index) =>
+      `- ${CATEGORY_LABELS[key]}: rank ${index + 1}/4, ${describeRelativeStrength(scores[key])}${key === ownKey ? "  ← THIS SECTION" : ""}`
+  );
+  return `## Relative Strength (engine-computed, internal only — never print ranks, percentages or these labels)
+${lines.join("\n")}
+- The section's overall tone must follow this direction. Do not soften a weak area into praise or inflate a middle area.`;
 };
 
 /**
@@ -393,7 +495,7 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
 ## Chart Info
 - wuxingJu: ${chart.wuxingJu}
 - mingGongPosition: ${chart.mingGongPosition}
-- shenGongPosition: ${chart.shenGongPosition}
+- shenGongPosition: ${chart.shenGongPosition}${chart.shenGongPalace ? ` (${chart.shenGongPalace})` : ""}
 
 ## Sihua Info
 - hualu: ${chart.sihua.hualu.star} (${chart.sihua.hualu.palace})
@@ -410,8 +512,12 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
   }
 
   // 12궁 전체 압축 요약 (대상 궁 4궁 외 나머지 궁의 존재감을 위한 입력 엔트로피 보강)
-  dataStr += `\n\n## All 12 Palaces Summary (main stars + brightness only)
+  dataStr += `\n\n## All 12 Palaces ([palace stem], main stars(brightness)[sihua], minor stars)
 ${formatAllPalacesSummary(palaces)}`;
+
+  if (request.categoryScores) {
+    dataStr += `\n\n${formatRelativeStrength(request.categoryScores, requestType)}`;
+  }
 
   // 대상 궁 + 삼방사정 데이터
   dataStr += `\n\n## Target Palace: ${prompts.palaceNameMap[requestType]} (${targetPalaceName})
@@ -489,22 +595,18 @@ ${formatPalaceFromPalaceType(samBang.triangle2)}`;
  * Palace 타입에서 궁 데이터를 문자열로 포맷팅 (삼방사정용)
  */
 const formatPalaceFromPalaceType = (palace: Palace): string => {
-  const mainStarsStr = palace.mainStars
-    .map((star) => {
-      let str = `${star.name} (${star.brightness})`;
-      if (star.sihua) {
-        str += ` [${star.sihua}]`;
-      }
-      return str;
-    })
-    .join(", ");
+  const mainStarsStr = formatMainStarsOrBorrowed(
+    palace.mainStars,
+    palace.borrowedMainStars,
+    palace.borrowedFromPalace
+  );
 
   const minorStarsStr =
     palace.minorStars.length > 0
       ? palace.minorStars.map((s) => s.name).join(", ")
       : "None";
 
-  return `- Main Stars: ${mainStarsStr || "None"}
+  return `- Main Stars: ${mainStarsStr}
 - Minor Stars: ${minorStarsStr}`;
 };
 
@@ -512,15 +614,11 @@ const formatPalaceFromPalaceType = (palace: Palace): string => {
  * 궁 데이터를 문자열로 포맷팅
  */
 const formatPalaceData = (palace: PalaceData): string => {
-  const mainStarsStr = palace.mainStars
-    .map((star) => {
-      let str = `${star.name} (${star.brightness})`;
-      if (star.sihua) {
-        str += ` [${star.sihua}]`;
-      }
-      return str;
-    })
-    .join(", ");
+  const mainStarsStr = formatMainStarsOrBorrowed(
+    palace.mainStars,
+    palace.borrowedMainStars,
+    palace.borrowedFromPalace
+  );
 
   const minorStarsStr =
     palace.minorStars.length > 0
@@ -533,8 +631,8 @@ const formatPalaceData = (palace: PalaceData): string => {
           .join(", ")
       : "None";
 
-  return `- Branch: ${palace.branch}
-- Main Stars: ${mainStarsStr || "None"}
+  return `- Branch: ${palace.branch}${palace.stem ? `\n- Stem: ${palace.stem}` : ""}${palace.isShenGong ? "\n- 신궁(身宮) overlaps here: this area grows in weight in the second half of life" : ""}
+- Main Stars: ${mainStarsStr}
 - Minor Stars: ${minorStarsStr}`;
 };
 
@@ -556,16 +654,36 @@ const requestInterpretation = async <T>(
 ${userPrompt}`;
 
   const responseSchema = RESPONSE_SCHEMA_MAP[request.requestType];
+  const messages: GeminiMessage[] = [
+    { role: "system", content: prompts.ziweiSystemPrompt },
+    { role: "user", content: fullUserPrompt },
+  ];
 
-  const response = await chatCompletion(
-    [
-      { role: "system", content: prompts.ziweiSystemPrompt },
-      { role: "user", content: fullUserPrompt },
-    ],
-    { responseSchema }
-  );
+  const response = await chatCompletion(messages, { responseSchema });
+  let parsed = parseJsonResponse<unknown>(response);
 
-  const parsed = parseJsonResponse<unknown>(response);
+  // 금지 용어·메타 문구가 있으면 피드백을 붙여 1회 재생성한다.
+  const violations = findOutputViolations(parsed, request.language);
+  if (violations.length > 0) {
+    const retryResponse = await chatCompletion(
+      [
+        ...messages,
+        { role: "assistant", content: response },
+        { role: "user", content: buildViolationFeedback(violations) },
+      ],
+      { responseSchema }
+    );
+    parsed = parseJsonResponse<unknown>(retryResponse);
+
+    const remaining = findOutputViolations(parsed, request.language);
+    if (remaining.length > 0) {
+      // 재생성 후에도 남으면 결과는 내보내되 운영 로그로 추적한다 (품질 지표: 위반률).
+      console.warn("[lifetime-validator] 재생성 후에도 금지 표현 잔존", {
+        requestType: request.requestType,
+        violations: remaining.map((v) => `${v.path}: ${v.match}`),
+      });
+    }
+  }
 
   try {
     return schema.parse(parsed);
@@ -607,10 +725,10 @@ export const interpretLifetimeCore = async (
  */
 export const interpretLifetimeWealth = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<LifetimeCategoryResponse> => {
+): Promise<LifetimeCategoryLLMResponse> => {
   return requestInterpretation(
     { ...request, requestType: "lifetime_wealth" },
-    LifetimeCategoryResponseSchema
+    LifetimeCategoryLLMResponseSchema
   );
 };
 
@@ -619,10 +737,10 @@ export const interpretLifetimeWealth = async (
  */
 export const interpretLifetimeCareer = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<LifetimeCategoryResponse> => {
+): Promise<LifetimeCategoryLLMResponse> => {
   return requestInterpretation(
     { ...request, requestType: "lifetime_career" },
-    LifetimeCategoryResponseSchema
+    LifetimeCategoryLLMResponseSchema
   );
 };
 
@@ -631,10 +749,10 @@ export const interpretLifetimeCareer = async (
  */
 export const interpretLifetimeRelationship = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<LifetimeCategoryResponse> => {
+): Promise<LifetimeCategoryLLMResponse> => {
   return requestInterpretation(
     { ...request, requestType: "lifetime_relationship" },
-    LifetimeCategoryResponseSchema
+    LifetimeCategoryLLMResponseSchema
   );
 };
 
@@ -643,10 +761,10 @@ export const interpretLifetimeRelationship = async (
  */
 export const interpretLifetimeHealth = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">
-): Promise<LifetimeCategoryResponse> => {
+): Promise<LifetimeCategoryLLMResponse> => {
   return requestInterpretation(
     { ...request, requestType: "lifetime_health" },
-    LifetimeCategoryResponseSchema
+    LifetimeCategoryLLMResponseSchema
   );
 };
 
@@ -695,6 +813,14 @@ export const generateFullInterpretation = async (
   const { includeDetails = false } = options;
 
   if (includeDetails) {
+    // 영역 점수는 엔진이 계산해 요청에 실어 보낸다 (LLM은 점수를 만들지 않음)
+    const { categoryScores } = request;
+    if (!categoryScores) {
+      throw new Error(
+        "인생 운세 상세 해석에는 엔진이 계산한 categoryScores 가 필요합니다."
+      );
+    }
+
     // 1단계: 인생 스포일러 + 핵심 시나리오 + 프로필 성향
     const [lifeSpoiler, coreScenario, profileTraits] = await Promise.all([
       interpretLifeSpoiler(request),
@@ -759,10 +885,10 @@ export const generateFullInterpretation = async (
       lifeSpoiler,
       coreScenario,
       categories: {
-        wealth,
-        career,
-        relationship,
-        health,
+        wealth: { ...wealth, score: categoryScores.wealth },
+        career: { ...career, score: categoryScores.career },
+        relationship: { ...relationship, score: categoryScores.relationship },
+        health: { ...health, score: categoryScores.health },
       },
       ageScenarios: ageResult.ageScenarios,
       profileTraits,
