@@ -35,7 +35,7 @@ type SupabaseDB = SupabaseClient<Database>;
  * - 올해 운세(`yearly-{year}-{lang}`), 전생 운세(`full-past_life-{lang}`)는 별도의
  *   `interpretation_type` 문자열을 쓰므로 이 버전과 무관하게 캐시가 유지됩니다.
  */
-export const LIFETIME_PROMPT_VERSION = "v2";
+export const LIFETIME_PROMPT_VERSION = "v4";
 
 /**
  * 캐시 키 타입
@@ -49,7 +49,8 @@ type CacheKeyType =
   | `preview-${Locale}`
   | `full-${Locale}`
   | `preview-${typeof LIFETIME_PROMPT_VERSION}-${Locale}`
-  | `full-${typeof LIFETIME_PROMPT_VERSION}-${Locale}`
+  // v4부터 타이밍 후보가 기준 연도에 따라 달라지므로 연도를 키에 포함한다
+  | `full-${typeof LIFETIME_PROMPT_VERSION}-${number}-${Locale}`
   | `full-past_life-${Locale}`
   | `yearly-${number}-${Locale}`;
 

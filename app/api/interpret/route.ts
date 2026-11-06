@@ -2,18 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
-import type {
-  DayunData,
-  FortuneInterpretation,
-  PalaceData,
-  SihuaData,
-  StarData,
-  ZiweiInterpretationRequest,
-} from "@/libs/services/ai";
+import type { FortuneInterpretation } from "@/libs/services/ai";
 import {
   createFallbackInterpretation,
   generateFullInterpretation,
 } from "@/libs/services/ai";
+import {
+  buildRequestFactSheet,
+  calculateAge,
+  convertChartToRequest,
+  convertToDayunData,
+  WUXING_JU_NAMES,
+} from "@/libs/services/ai/lifetime-request";
 import {
   generateChartHash,
   getCachedResult,
@@ -27,16 +27,10 @@ import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 import {
   calculateDayun,
   calculateAllDayunScores,
-  calculateSihua,
-  identifyGeokGuk,
-  type DayunResult,
 } from "@/libs/zi-wei-dou-shu/calculators";
+import { calculateLifetimeCategoryScores } from "@/libs/zi-wei-dou-shu/calculators/lifetime-score";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
-import type {
-  Palace,
-  ZiweiChart,
-  ZiweiInput,
-} from "@/libs/zi-wei-dou-shu/types";
+import type { ZiweiInput } from "@/libs/zi-wei-dou-shu/types";
 import { ZiweiInputSchema } from "@/libs/zi-wei-dou-shu/types";
 
 // ============================================================
@@ -44,207 +38,6 @@ import { ZiweiInputSchema } from "@/libs/zi-wei-dou-shu/types";
 // false 면 기존 fortunes 행 / chart-hash 캐시를 정상 사용한다.
 // ============================================================
 const shouldBypassInterpretationCache = (_language: Locale): boolean => false;
-
-// ============================================================
-// 차트 변환 유틸리티
-// ============================================================
-
-const WUXING_JU_NAMES: Record<number, string> = {
-  2: "수이국(水二局)",
-  3: "목삼국(木三局)",
-  4: "금사국(金四局)",
-  5: "토오국(土五局)",
-  6: "화육국(火六局)",
-};
-
-/**
- * 현재 나이 계산
- */
-const calculateAge = (birthDate: string): number => {
-  const birth = new Date(birthDate);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
-};
-
-/**
- * 대운 구간을 로케일에 맞는 나이 표기로 변환
- * (AI 프롬프트가 이 문자열을 그대로 복사하므로 로케일 무관 "세" 고정 금지)
- */
-const formatAgeRange = (
-  startAge: number,
-  endAge: number,
-  locale: Locale
-): string => {
-  switch (locale) {
-    case "en":
-      return `Age ${startAge}-${endAge}`;
-    case "ja":
-      return `${startAge}-${endAge}歳`;
-    default:
-      return `${startAge}-${endAge}세`;
-  }
-};
-
-/**
- * DayunResult를 DayunData[]로 변환
- */
-const convertToDayunData = (
-  dayunResult: DayunResult,
-  palaces: Palace[],
-  locale: Locale
-): DayunData[] => {
-  // 별→궁 맵을 한 번만 생성하여 조회 성능 개선
-  const starToPalaceMap = new Map<string, string>();
-  for (const palace of palaces) {
-    for (const star of [...palace.mainStars, ...palace.minorStars]) {
-      starToPalaceMap.set(star.name, palace.name);
-    }
-  }
-  const findPalaceForStar = (starName: string): string =>
-    starToPalaceMap.get(starName) ?? "불명";
-
-  return dayunResult.periods.map((period) => {
-    // 주성 이름 + 밝기 + 사화 목록 (예: "자미(묘)", "무곡(왕, 화록)")
-    const mainStars = period.palace.mainStars.map((s) => {
-      if (s.sihua) {
-        return `${s.name}(${s.brightness}, ${s.sihua})`;
-      }
-      return `${s.name}(${s.brightness})`;
-    });
-
-    // 보성 이름 + 밝기 (예: "문창(리)")
-    const minorStars = period.palace.minorStars.map(
-      (s) => `${s.name}(${s.brightness})`
-    );
-
-    // 대운 천간으로부터 사화 계산
-    const dayunSihuaResult = calculateSihua(period.stemIndex);
-
-    return {
-      period: formatAgeRange(period.startAge, period.endAge, locale),
-      palaceName: period.palaceName,
-      mainStars,
-      minorStars,
-      dayunSihua: {
-        hualu: dayunSihuaResult.hualu,
-        huaquan: dayunSihuaResult.huaquan,
-        huake: dayunSihuaResult.huake,
-        huaji: dayunSihuaResult.huaji,
-        hualuPalace: findPalaceForStar(dayunSihuaResult.hualu),
-        huaquanPalace: findPalaceForStar(dayunSihuaResult.huaquan),
-        huakePalace: findPalaceForStar(dayunSihuaResult.huake),
-        huajiPalace: findPalaceForStar(dayunSihuaResult.huaji),
-      },
-      // NOTE: period.score 는 의도적으로 전달하지 않는다.
-      // dayun.ts 의 점수 산출이 삼방사정·살성·대한사화를 반영하도록 보강되기 전(P1-6)까지는
-      // 검증되지 않은 길흉 점수를 AI 판단의 앵커로 물리면 안 된다.
-      // 보강 완료 후 이 줄을 `score: period.score,` 로 되살리면 프롬프트 배선은 이미 준비돼 있다.
-    };
-  });
-};
-
-/**
- * Palace를 PalaceData로 변환
- */
-const convertToPalaceData = (palace: Palace): PalaceData => {
-  const mainStars: StarData[] = palace.mainStars.map((star) => ({
-    name: star.name,
-    brightness: star.brightness,
-    sihua: star.sihua,
-  }));
-
-  const minorStars: StarData[] = palace.minorStars.map((star) => ({
-    name: star.name,
-    brightness: star.brightness,
-    sihua: star.sihua,
-  }));
-
-  return {
-    name: palace.name,
-    branch: EARTHLY_BRANCHES[palace.branch],
-    mainStars,
-    minorStars,
-  };
-};
-
-/**
- * ZiweiChart를 ZiweiInterpretationRequest로 변환
- */
-const convertChartToRequest = (
-  chart: ZiweiChart,
-  options?: { currentAge?: number; dayunPeriods?: DayunData[] }
-): Omit<ZiweiInterpretationRequest, "requestType"> => {
-  const { input, lunarDate, palaces, sihua, wuxingJu, mingGong, shenGong } =
-    chart;
-  const { currentAge, dayunPeriods } = options ?? {};
-
-  // 음력 생일 정보 문자열
-  const lunarBirthInfo = `${lunarDate.year}년 ${lunarDate.month}월 ${lunarDate.day}일${lunarDate.isLeapMonth ? " (윤달)" : ""}`;
-
-  // 사용자 상태 정보 (프로필 기반)
-  const relationshipStatus = input.relationshipStatus ?? null;
-  const relationshipStatusCustom = input.relationshipStatusCustom ?? null;
-  const occupationStatus = input.occupationStatus ?? null;
-  const occupationStatusCustom = input.occupationStatusCustom ?? null;
-
-  // 사화 정보 변환 - 각 사화가 어느 궁에 있는지 찾기
-  const findPalaceForStar = (starName: string): string => {
-    for (const palace of palaces) {
-      const found =
-        palace.mainStars.find((s) => s.name === starName) ||
-        palace.minorStars.find((s) => s.name === starName);
-      if (found) {
-        return palace.name;
-      }
-    }
-    return "불명";
-  };
-
-  const sihuaData: SihuaData = {
-    hualu: { star: sihua.hualu, palace: findPalaceForStar(sihua.hualu) },
-    huaquan: { star: sihua.huaquan, palace: findPalaceForStar(sihua.huaquan) },
-    huake: { star: sihua.huake, palace: findPalaceForStar(sihua.huake) },
-    huaji: { star: sihua.huaji, palace: findPalaceForStar(sihua.huaji) },
-  };
-
-  const palacesMap: Record<string, PalaceData> = {};
-  for (const palace of palaces) {
-    palacesMap[palace.name] = convertToPalaceData(palace);
-  }
-
-  if (!palacesMap["명궁"]) {
-    throw new Error("명반에서 명궁을 찾을 수 없습니다.");
-  }
-
-  // 격국 분석
-  const geokGukResults = identifyGeokGuk(chart);
-
-  return {
-    user: {
-      gender: input.gender,
-      lunarBirthInfo,
-      currentAge,
-      relationshipStatus,
-      relationshipStatusCustom,
-      occupationStatus,
-      occupationStatusCustom,
-    },
-    chart: {
-      wuxingJu: WUXING_JU_NAMES[wuxingJu] || `${wuxingJu}국`,
-      mingGongPosition: EARTHLY_BRANCHES[mingGong],
-      shenGongPosition: EARTHLY_BRANCHES[shenGong],
-      sihua: sihuaData,
-    },
-    palaces: palacesMap,
-    dayunPeriods,
-    geokGuk: geokGukResults.length > 0 ? geokGukResults : undefined,
-  };
-};
 
 // ============================================================
 // API 라우트
@@ -282,7 +75,7 @@ export async function POST(request: NextRequest) {
     // 캐시 키에 언어 + 프롬프트 버전 포함 (항상 full 타입으로 저장)
     // 프롬프트를 고치면 LIFETIME_PROMPT_VERSION만 올리면 됨 — 상세: libs/supabase/analysis-cache.ts
     const cacheKey =
-      `full-${LIFETIME_PROMPT_VERSION}-${language}` as `full-${typeof LIFETIME_PROMPT_VERSION}-${Locale}`;
+      `full-${LIFETIME_PROMPT_VERSION}-${new Date().getFullYear()}-${language}` as const;
     const bypassCache = shouldBypassInterpretationCache(language);
 
     // 1. profileId가 있으면 저장된 fortune 먼저 확인 (BYPASS 모드면 스킵)
@@ -378,6 +171,8 @@ export async function POST(request: NextRequest) {
       ...convertChartToRequest(chart, {
         currentAge,
         dayunPeriods,
+        categoryScores: calculateLifetimeCategoryScores(chart),
+        factSheet: buildRequestFactSheet(chart, dayunResult),
       }),
       language,
     };

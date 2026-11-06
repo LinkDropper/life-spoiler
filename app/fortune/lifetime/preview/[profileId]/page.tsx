@@ -8,6 +8,7 @@ import { MarkdownContent } from "@/components/fortune";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
 import { FeatureLocks } from "@/components/fortune/screen/FeatureLocks";
 import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
+import { LockedQuestions } from "@/components/fortune/screen/LockedQuestions";
 import { RuntimeTrack } from "@/components/fortune/screen/RuntimeTrack";
 import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
 import { TrailerCuts } from "@/components/fortune/screen/TrailerCuts";
@@ -15,6 +16,7 @@ import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import { trackFortuneEvent } from "@/libs/analytics/fortune";
+import { buildLockedQuestions } from "@/libs/fortune/lifetime-extras";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import { getFilmAge } from "@/libs/home/home-film";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
@@ -206,6 +208,7 @@ export default function LifetimeFortunePreviewPage() {
         )}
 
         <FeatureLocks keywords={keywords} />
+        <LockedQuestions questions={buildLockedQuestions(interpretation)} />
       </main>
 
       <footer className={styles.footer}>

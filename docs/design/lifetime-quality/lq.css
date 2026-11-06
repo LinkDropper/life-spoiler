@@ -1,0 +1,227 @@
+/* 인생 운세 품질 개선 Phase 3 시안 공통 스타일 (정적 시안용, 375px 기준)
+   문법: 얇은 구분선 목록 · 평평한 관람권 종이 · 디스플레이 제목. 글로우/그림자/원 배지/진행 막대/박스 카드 없음.
+   디스플레이 폰트는 같은 폴더의 SB-B.otf, 없으면 public/fonts에서 읽는다. */
+@font-face{font-family:"SB AggroOTF";src:url("SB-B.otf") format("opentype"),url("../../../public/fonts/SB-B.otf") format("opentype");font-display:swap}
+:root{
+  --night:#0a0f1c;--deep:#05070f;
+  --haze:rgba(255,255,255,.78);--faint:rgba(255,255,255,.62);
+  --spoiler:#ffccd9;--accent:#ff8fb1;--star:#ffe7a3;--ink:#23142d;--paper:#f9ecf0;--rose:#8a2f55;
+  --line:rgba(255,204,217,.3);--line-soft:rgba(255,204,217,.15);
+  --display:"SB AggroOTF","Pretendard Variable",Pretendard,sans-serif;--dw:400;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --stars:radial-gradient(1px 1px at 12% 20%,#fff,transparent),radial-gradient(1px 1px at 34% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 58% 18%,#fff,transparent),radial-gradient(1px 1px at 78% 44%,#fff,transparent),radial-gradient(1.2px 1.2px at 90% 76%,#fff,transparent),radial-gradient(1px 1px at 22% 84%,#fff,transparent),radial-gradient(1px 1px at 66% 88%,#fff,transparent)
+}
+*{box-sizing:border-box}
+html{background:var(--deep)}
+body{position:relative;width:375px;margin:0 auto;background:var(--night);color:#fff;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word;overflow-x:clip}
+/* EN/JA: 일본어는 SB 어그로에 한자가 없어 본문 서체 굵게, 줄바꿈은 일반 규칙 */
+[lang="en"],[lang="ja"]{word-break:normal}
+[lang="ja"]{--display:"Pretendard Variable",Pretendard,"Hiragino Sans",sans-serif;--dw:800;line-break:strict}
+h1,h2,h3,h4,h5,p,ul,ol,dl,dd,dt{margin:0;padding:0}
+ul,ol{list-style:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--star);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+
+.hd{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 20px}
+.logo{font-family:var(--display);font-weight:var(--dw);font-size:24px;line-height:1;color:var(--spoiler)}
+.hd div{display:flex}
+.ic{display:grid;place-items:center;width:44px;height:44px}
+.pg{padding:0 20px 56px}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.28em;color:var(--accent)}
+h1,h2,h3{font-family:var(--display);font-weight:var(--dw);text-wrap:balance}
+h1{font-size:32px;line-height:1.2}
+h2{font-size:28px;line-height:1.25}
+h3{font-size:24px;line-height:1.25}
+.lead{margin-top:8px;font-size:15px;line-height:1.6;color:var(--haze)}
+.fine{font-size:13px;line-height:1.6;color:var(--faint)}
+
+/* ---------- 히어로 (FilmPoster 간략 재현, 기존 컴포넌트 유지) ---------- */
+.hero{position:relative;margin:0 -20px;padding:24px 20px 28px;border-bottom:1px solid var(--line-soft)}
+.hero::before{content:"";position:absolute;inset:0;background-image:var(--stars);opacity:.35;pointer-events:none}
+.hero>*{position:relative}
+.hero h1{margin-top:12px}
+.hero .tg{margin-top:12px;font-size:16px;line-height:1.6;color:var(--haze)}
+.hero .who{margin-top:16px;font-size:13px;color:var(--faint)}
+.hero .now{margin-top:12px;font-size:17px;font-weight:700;line-height:1.5}
+.hero .now span{color:var(--faint);font-weight:600}
+.hero .btn{margin-top:20px}
+.rt{margin-top:20px}
+.rt div{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--faint)}
+.rt div b{font-family:inherit;color:#fff;font-weight:600}
+.rt i{display:block;position:relative;height:2px;margin-top:10px;background:rgba(255,255,255,.2)}
+.rt i::after{content:"";position:absolute;left:31%;top:-5px;width:2px;height:12px;background:var(--accent)}
+
+/* ---------- 구역 ---------- */
+.sec{margin-top:48px}
+.act{margin-top:56px;padding-top:24px;border-top:1px solid var(--line)}
+.act h2{margin-top:6px}
+.sec h2{margin-top:6px}
+
+/* ---------- 나의 한 줄 · 근거 한 줄 · 본문 ---------- */
+.line{margin-top:16px;padding-left:14px;border-left:3px solid var(--spoiler);font-family:var(--display);font-weight:var(--dw);font-size:26px;line-height:1.4;text-wrap:balance}
+/* 근거: 본문보다 작고 흐린 한 줄. 위아래 가는 선으로만 구분하고 면·박스는 쓰지 않는다 */
+.why{display:flex;gap:10px;align-items:baseline;margin-top:14px;padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);font-size:14px;line-height:1.6;color:var(--haze)}
+.why b{flex:none;font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--accent)}
+.read{font-size:16px;line-height:1.8;color:var(--haze);text-wrap:pretty}
+.read strong{font-weight:800;color:#fff}
+.read.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+.more{display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:4px;color:var(--haze)}
+.it{padding:20px 0;border-bottom:1px solid var(--line-soft)}
+.it h4{margin-bottom:8px;font-size:17px;font-weight:800;line-height:1.4;text-wrap:balance}
+.it:first-of-type{margin-top:4px}
+.items{margin-top:8px;border-top:1px solid var(--line)}
+
+.blk{margin-top:44px}
+.blk>h3{font-size:22px}
+.blk>.lead{margin-top:6px}
+.area{margin-top:48px;padding-top:24px;border-top:1px solid var(--line)}
+.area h3{margin-top:4px}
+.area .hl{margin-top:8px;font-size:18px;font-weight:800;line-height:1.45;text-wrap:balance}
+
+/* ---------- 목록 행 (얇은 구분선) ---------- */
+.lst{margin-top:16px;border-top:1px solid var(--line)}
+.lst>li{border-bottom:1px solid var(--line-soft)}
+.tc a,.tc button{display:grid;grid-template-columns:minmax(0,1fr) auto 16px;align-items:center;gap:4px 12px;width:100%;min-height:64px;padding:12px 0}
+.tc b{font-size:16px;font-weight:800}
+.tc small{grid-column:1;font-size:14px;line-height:1.5;color:var(--haze)}
+.tc em{grid-column:2;grid-row:1/3;text-align:right;font-style:normal;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.tc em small{display:block;margin-top:2px;font-size:12px;font-weight:700;color:var(--accent)}
+.tc em small.cau{color:var(--star)}
+.tc svg{grid-column:3;grid-row:1/3}
+.gl{margin-top:24px;font-size:13px;font-weight:800;letter-spacing:.02em}
+.gl.hi{color:var(--accent)}
+.gl.cau{color:var(--star)}
+.gl small{margin-left:8px;font-weight:500;color:var(--faint)}
+.fld{padding:14px 0;min-height:64px}
+.fld b{display:block;font-size:16px;font-weight:800}
+.fld span{display:block;margin-top:2px;font-size:14px;line-height:1.55;color:var(--haze)}
+.bul{display:grid;grid-template-columns:20px minmax(0,1fr);padding:12px 0;font-size:15px;line-height:1.6;color:var(--haze)}
+.bul::before{content:"";width:6px;height:1px;margin-top:12px;background:var(--faint)}
+.bul b{color:#fff;font-weight:700}
+.sub2{margin-top:28px}
+.sub2 h4{font-size:17px;font-weight:800;line-height:1.4}
+.sub2 .read{margin-top:6px}
+.link{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:15px;font-weight:700;color:var(--accent)}
+
+/* ---------- 타이밍 ---------- */
+.topic{margin-top:40px;padding-top:24px;border-top:1px solid var(--line)}
+.topic h3{font-size:22px}
+.topic .read{margin-top:10px}
+.yrs{margin-top:8px;border-top:1px solid var(--line-soft)}
+.yrs li{display:grid;grid-template-columns:76px minmax(0,1fr);column-gap:12px;align-items:center;min-height:64px;padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.yr{display:block;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
+.yr small{font-size:14px;font-weight:700;margin-left:1px}
+.ag{display:block;margin-top:2px;font-size:12px;font-weight:600;color:var(--faint)}
+.rs{font-size:15px;line-height:1.55;color:var(--haze)}
+.cavt{margin-top:28px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:13px;line-height:1.6;color:var(--faint)}
+
+/* ---------- 관람권 (평평한 종이) ---------- */
+.tk{--stub:84px;position:relative;display:grid;grid-template-columns:minmax(0,1fr) var(--stub);color:var(--ink)}
+.tk::before,.tk::after{content:"";position:absolute;z-index:1;right:calc(var(--stub) - 8px);width:16px;height:16px;border-radius:50%;background:var(--night)}
+.tk::before{top:-8px}
+.tk::after{bottom:-8px}
+.tk .bd{position:relative;min-width:0;padding:14px 14px 14px 20px;background:var(--paper);border-radius:10px 0 0 10px}
+.tk .bd::before{content:"";position:absolute;top:50%;left:-7px;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--night)}
+.tk .kd{font-family:var(--display);font-weight:var(--dw);font-size:13px;line-height:1.35;color:var(--rose)}
+.tk .tl{margin-top:2px;font-size:20px;font-weight:800;line-height:1.35;font-variant-numeric:tabular-nums}
+.tk .sb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;border-left:2px dashed rgba(35,20,45,.3);border-radius:0 10px 10px 0;background:var(--paper);text-align:center;font-size:12px;font-weight:800;color:var(--rose)}
+.tk .sb strong{font-family:var(--display);font-weight:var(--dw);font-size:20px;line-height:1.1;color:var(--ink);font-variant-numeric:tabular-nums}
+.tk.done .bd,.tk.done .sb{background:#e6d5db}
+.bc{width:44px;height:18px;background-image:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 7px,var(--ink) 7px 10px,transparent 10px 11px,var(--ink) 11px 12px,transparent 12px 15px)}
+
+/* ---------- 지난 시기 확인 컷 ---------- */
+.cutw{margin-top:24px}
+.ql{margin-top:20px;border-top:1px solid var(--line)}
+.q{border-bottom:1px solid var(--line-soft);scroll-margin-top:16px}
+.q-h{display:grid;grid-template-columns:24px minmax(0,1fr) auto;column-gap:10px;align-items:start;padding:16px 0}
+.q-n{font-size:14px;font-weight:700;line-height:1.7;color:var(--faint);font-variant-numeric:tabular-nums}
+.q-t{font-size:15px;line-height:1.65;color:var(--haze);text-wrap:pretty}
+.q[data-state="next"] .q-t{color:var(--faint)}
+.q[data-state="active"] .q-t,.q[data-state="picked"] .q-t{font-size:17px;font-weight:600;color:#fff}
+.q-res{display:none;align-items:center;gap:4px;min-height:44px;margin:-10px 0 -10px 0;padding:0 0 0 8px;font-size:14px;font-weight:800;white-space:nowrap}
+.q[data-state="done"] .q-res{display:inline-flex}
+.q-res>span{display:none;align-items:center;gap:4px}
+.q[data-answer="yes"] .r-yes,.q[data-answer="no"] .r-no,.q[data-answer="skip"] .r-skip{display:inline-flex}
+.r-skip{font-weight:600;color:var(--faint)}
+.q-a{display:none;padding:0 0 12px 34px}
+.q[data-state="active"] .q-a,.q[data-state="picked"] .q-a{display:block}
+.ans{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:8px}
+.ans button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:52px;padding:6px 12px;border-radius:10px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4);font-size:16px;font-weight:700;text-align:center;line-height:1.3;text-wrap:balance}
+.ans button:active{background:rgba(255,255,255,.08)}
+.ans button svg{display:none}
+/* 선택됨: 면·굵은 테두리 없이 글자만 굵게 + 핑크 표시. 고르지 않은 쪽은 한 톤 낮춘다 */
+.ans button[aria-pressed="true"]{font-weight:800}
+.ans button[aria-pressed="true"] svg{display:block}
+.q[data-state="picked"] .ans button[aria-pressed="false"],.q[data-state="picked"] .skip{opacity:.5}
+.skip{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:4px;font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:4px;color:var(--haze)}
+.q-err{display:flex;flex-direction:column;gap:2px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,231,163,.4);font-size:14px;line-height:1.55}
+.q-err b{font-size:14px;font-weight:700}
+.q-err span{color:var(--haze)}
+.sm{margin-top:20px;scroll-margin-top:16px}
+.sm:focus{outline:none}
+.sm h4{font-size:18px;font-weight:800;line-height:1.4;text-wrap:balance}
+.sm p{margin-top:6px;font-size:15px;line-height:1.65;color:var(--haze)}
+.sm .fine{margin-top:12px}
+.nx{display:grid;grid-template-columns:minmax(0,1fr) auto 16px;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line-soft)}
+.nx b{font-size:16px;font-weight:800}
+.nx small{display:block;margin-top:2px;font-size:13px;font-weight:500;color:var(--haze)}
+.nx em{font-style:normal;font-size:14px;font-weight:700;color:var(--haze);text-align:right}
+.nx.ok em{display:inline-flex;align-items:center;gap:4px;font-weight:800;color:#fff}
+
+/* ---------- 예고편 잠금 라벨 ---------- */
+.lg{margin-top:28px;font-family:var(--display);font-weight:var(--dw);font-size:18px;line-height:1.3}
+.lg i{margin-right:8px;font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint)}
+.lk{display:grid;grid-template-columns:minmax(0,1fr) auto 16px;align-items:center;gap:12px;min-height:60px;padding:10px 0}
+.lk b{display:block;font-size:15px;font-weight:800;line-height:1.4}
+.lk small{display:block;margin-top:1px;font-size:13px;color:var(--haze)}
+.lk .dots{font-size:13px;letter-spacing:.12em;white-space:nowrap;color:var(--faint)}
+.lk.free .dots{letter-spacing:0;font-weight:800;color:var(--accent)}
+
+/* ---------- 명반 (기존 ChartConstellation 자리, 간략) ---------- */
+.gw{margin-top:16px;overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,72px);margin:0 -1px -1px 0}
+.cell{display:flex;flex-direction:column;gap:2px;padding:6px;border-right:1px solid rgba(255,255,255,.16);border-bottom:1px solid rgba(255,255,255,.16)}
+.cell i{font-style:normal;font-size:10px;font-weight:600;color:var(--faint)}
+.cell b{font-size:13px;font-weight:800;line-height:1.35}
+.cell.ctr{grid-column:2/4;grid-row:2/4;align-items:center;justify-content:center;text-align:center}
+.cell.ctr b{font-family:var(--display);font-weight:var(--dw);font-size:18px}
+.cell.ctr span{font-size:12px;color:var(--faint)}
+
+/* ---------- 나이별 · 다음 상영 · 크레딧 (기존 유지, 간략) ---------- */
+.ages>li{border-bottom:1px solid var(--line-soft)}
+.ages button{display:grid;grid-template-columns:76px minmax(0,1fr) 16px;column-gap:12px;align-items:center;width:100%;min-height:64px;padding:12px 0}
+.ages b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.ages span{font-size:15px;line-height:1.5;color:var(--haze)}
+.ages .nowt{display:block;margin-bottom:2px;font-size:12px;font-weight:800;color:var(--accent)}
+.ages .pn{padding:0 0 16px 88px;font-size:15px;line-height:1.7;color:var(--haze)}
+.fin{margin-top:48px;padding-top:24px;border-top:1px solid var(--line)}
+.fin h3{margin-top:6px}
+.fin .lead{margin-top:6px}
+.fin .btn{margin-top:16px}
+.cr2{margin-top:16px;border-top:1px solid var(--line-soft)}
+.cr2 div{display:flex;justify-content:space-between;gap:16px;min-height:44px;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:14px}
+.cr2 dt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint)}
+.cr2 dd{font-weight:800}
+
+/* ---------- 버튼 · 하단 바 ---------- */
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;padding:6px 16px;border-radius:10px;background:var(--spoiler);color:var(--ink);font-size:16px;font-weight:800;line-height:1.3;text-align:center;text-wrap:balance}
+.btn.ghost{background:none;color:#fff;font-weight:700;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.4)}
+.btn+.btn{margin-top:8px}
+.bar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:8px;margin:0 -20px;padding:10px 20px 14px 8px;border-top:1px solid var(--line);background:var(--night)}
+.bar .ic{flex:none;width:48px;height:52px}
+.bar .btn{flex:1}
+
+/* ---------- 부품 시안(parts) 전용: 시안 메모 ---------- */
+.spec{margin-top:56px;padding-top:20px;border-top:1px solid var(--line)}
+.spec>h2{font-size:22px}
+.spec>.lead{margin-top:6px}
+.fr{margin-top:28px}
+.fr>.cap{display:block;margin-bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--star)}
+.dev{margin-top:12px;padding-left:12px;border-left:2px dashed rgba(255,231,163,.5);font-size:12.5px;line-height:1.65;color:var(--haze)}
+.dev b{color:var(--star)}
+.pair{display:grid;gap:0;margin-top:8px}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
