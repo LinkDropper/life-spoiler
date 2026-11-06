@@ -10,6 +10,8 @@ interface DeleteConfirmModalProps {
   onClose: () => void;
   onConfirm: () => void;
   isDeleting?: boolean;
+  /** 무엇이 함께 지워지는지 (기본: 프로필의 운세 기록) */
+  description?: string;
 }
 
 export const DeleteConfirmModal = ({
@@ -17,6 +19,7 @@ export const DeleteConfirmModal = ({
   onClose,
   onConfirm,
   isDeleting = false,
+  description,
 }: DeleteConfirmModalProps) => {
   const t = useTranslations("profiles.deleteModal");
 
@@ -65,10 +68,11 @@ export const DeleteConfirmModal = ({
               </span>
             </div>
             <p className={styles.description}>
-              {t("description", {
-                default:
-                  "삭제 후에는 복구가 불가능 합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
-              })}
+              {description ??
+                t("description", {
+                  default:
+                    "삭제 후에는 복구가 불가능 합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
+                })}
             </p>
           </div>
           <div className={styles.buttons}>
