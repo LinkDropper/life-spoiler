@@ -1,0 +1,313 @@
+/* 없는 페이지(SCREEN 404 번호판 + 안내도) · 앱 오류(INTERMISSION) 공용 */
+.page {
+  --ep-night: #0c1220;
+  --ep-panel: #111a2e;
+  --ep-star: var(--primitive-gold, #ffe7a3);
+  --ep-kicker: var(--color-text-accent, #ff8fb1);
+  --ep-ink: #23142d;
+  --ep-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --ep-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --ep-display-weight: 400;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--ep-night);
+  color: #ffffff;
+  font-family: var(--font-pretendard), system-ui, sans-serif;
+  overflow-wrap: break-word;
+}
+
+@supports (min-height: 100svh) {
+  .page {
+    min-height: 100svh;
+  }
+}
+
+/* 한국어는 어절 단위로 줄바꿈. 일본어에 keep-all을 걸면 줄이 넘쳐 ko에만 건다 */
+.page:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.page:lang(ja) {
+  --ep-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --ep-display-weight: 800;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 18px;
+  flex: 1;
+  padding: 40px 20px 48px;
+  text-align: center;
+}
+
+/* ───── 404 번호판 ───── */
+.sign {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  align-self: center;
+  width: 230px;
+  margin-top: 8px;
+  padding: 18px 16px 16px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #1b2440, #121a30);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 231, 163, 0.55),
+    0 0 40px rgba(255, 231, 163, 0.12);
+}
+
+/* 천장에 매단 두 줄 */
+.sign::before,
+.sign::after {
+  content: "";
+  position: absolute;
+  top: -24px;
+  width: 2px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.sign::before {
+  left: 54px;
+}
+
+.sign::after {
+  right: 54px;
+}
+
+.signLabel,
+.signBill {
+  font-family: var(--ep-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+}
+
+.signLabel {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.signNumber {
+  font-family: var(--ep-display);
+  font-weight: var(--ep-display-weight);
+  font-size: 64px;
+  line-height: 1;
+  color: var(--ep-star);
+}
+
+.signBill {
+  letter-spacing: 0.14em;
+  color: var(--ep-kicker);
+}
+
+.title {
+  margin: 8px 0 0;
+  font-family: var(--ep-display);
+  font-weight: var(--ep-display-weight);
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+.desc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* 상영관 안내도 */
+.directory {
+  margin-top: 6px;
+  padding: 14px 16px 4px;
+  border-radius: 14px;
+  background: var(--ep-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.28);
+  text-align: left;
+}
+
+.directoryLabel {
+  font-family: var(--ep-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--ep-star);
+}
+
+.directoryList {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.directoryList li {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.directoryLink {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 8px 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.directoryLink:focus-visible {
+  outline: 2px solid var(--ep-star);
+  outline-offset: 2px;
+}
+
+.hall {
+  font-family: var(--ep-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ep-star);
+}
+
+.directoryText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.directoryText b {
+  font-size: 15px;
+}
+
+.directoryText span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.arrow {
+  font-size: 18px;
+  color: var(--ep-star);
+}
+
+@media (hover: hover) {
+  .directoryLink:hover b {
+    color: var(--ep-star);
+  }
+}
+
+/* ───── 오류: INTERMISSION 스크린 (운세 ErrorState와 같은 모양) ───── */
+.intermission {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 190px;
+  padding: 24px 16px;
+  border-top: 22px solid #000;
+  border-bottom: 22px solid #000;
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0 2px,
+      transparent 2px 6px
+    ),
+    radial-gradient(ellipse 70% 80% at 50% 50%, #1a2135, #05070f);
+}
+
+.intermissionCode {
+  font-family: var(--ep-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  color: var(--ep-star);
+}
+
+.intermissionTitle {
+  font-family: var(--ep-display);
+  font-weight: var(--ep-display-weight);
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.heading {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.digest {
+  align-self: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--ep-mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ───── 버튼 ───── */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.primary,
+.ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  min-height: 52px;
+  background: var(--color-button-primary-surface, #ffccd9);
+  color: var(--ep-ink);
+  font-size: 16px;
+}
+
+.ghost {
+  min-height: 48px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.primary:focus-visible,
+.ghost:focus-visible {
+  outline: 2px solid var(--ep-star);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .primary:hover {
+    background: var(--color-button-primary-surface-hover, #ffa8c0);
+  }
+
+  .ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.primary:active {
+  background: var(--color-button-primary-surface-pressed, #f598b3);
+}

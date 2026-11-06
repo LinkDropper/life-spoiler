@@ -2906,6 +2906,43 @@
         "step3": "내 초대장 서랍에 무료 상영 1회"
       },
       "emptyCta": "내 본편 공유하러 가기"
+    },
+    "errorPage": {
+      "notFound": {
+        "metaTitle": "없는 페이지 - 인생스포",
+        "screen": "SCREEN",
+        "bill": "NOT ON TONIGHT'S BILL",
+        "title": "이 상영관은 없어요",
+        "desc": "주소가 바뀌었거나 상영이 끝난 페이지예요. 아래 안내도에서 보고 싶은 상영관을 골라 주세요.",
+        "directoryLabel": "DIRECTORY · 상영관 안내도",
+        "directory": {
+          "lifetime": {
+            "hall": "1관",
+            "name": "인생 운세",
+            "desc": "평생 흐름과 10년 대운"
+          },
+          "daily": {
+            "hall": "2관",
+            "name": "오늘의 운세",
+            "desc": "매일 00:00 새 콜시트 · 무료"
+          },
+          "compatibility": {
+            "hall": "3관",
+            "name": "궁합 운세",
+            "desc": "두 사람의 공동 주연작"
+          }
+        },
+        "home": "로비로 가기",
+        "back": "이전 화면으로"
+      },
+      "error": {
+        "intermission": "상영이 잠시 멈췄어요",
+        "title": "화면을 불러오지 못했어요",
+        "desc": "잠깐 연결이 고르지 않았을 수 있어요. 다시 불러오면 이어서 볼 수 있어요.",
+        "code": "오류 코드 {code}",
+        "retry": "다시 불러오기",
+        "home": "로비로 가기"
+      }
     }
   },
   "en": {
@@ -5823,6 +5860,43 @@
         "step3": "1 free screening lands in your invitations"
       },
       "emptyCta": "Go share my feature"
+    },
+    "errorPage": {
+      "notFound": {
+        "metaTitle": "Page not found - Life Spoiler",
+        "screen": "SCREEN",
+        "bill": "NOT ON TONIGHT'S BILL",
+        "title": "This theater doesn't exist",
+        "desc": "The address may have changed, or this screening has ended. Pick a theater from the directory below.",
+        "directoryLabel": "DIRECTORY",
+        "directory": {
+          "lifetime": {
+            "hall": "1",
+            "name": "Life Fortune",
+            "desc": "Your lifelong flow and 10-year cycles"
+          },
+          "daily": {
+            "hall": "2",
+            "name": "Today's Fortune",
+            "desc": "A new call sheet at 00:00 · Free"
+          },
+          "compatibility": {
+            "hall": "3",
+            "name": "Compatibility",
+            "desc": "A film with two leads"
+          }
+        },
+        "home": "Go to the lobby",
+        "back": "Go back"
+      },
+      "error": {
+        "intermission": "The screening paused",
+        "title": "We couldn't load this screen",
+        "desc": "The connection may have been unsteady for a moment. Reload to keep watching.",
+        "code": "Error code {code}",
+        "retry": "Reload",
+        "home": "Go to the lobby"
+      }
     }
   },
   "ja": {
@@ -8732,6 +8806,43 @@
         "step3": "招待状に無料上映1回が届く"
       },
       "emptyCta": "本編をシェアしに行く"
+    },
+    "errorPage": {
+      "notFound": {
+        "metaTitle": "ページが見つかりません - ライフスポイラー",
+        "screen": "SCREEN",
+        "bill": "NOT ON TONIGHT'S BILL",
+        "title": "この上映館はありません",
+        "desc": "アドレスが変わったか、上映が終了したページです。下の案内図から見たい上映館を選んでください。",
+        "directoryLabel": "DIRECTORY · 上映館案内図",
+        "directory": {
+          "lifetime": {
+            "hall": "1館",
+            "name": "人生運勢",
+            "desc": "生涯の流れと10年ごとの大運"
+          },
+          "daily": {
+            "hall": "2館",
+            "name": "今日の運勢",
+            "desc": "毎日0:00に新しいコールシート · 無料"
+          },
+          "compatibility": {
+            "hall": "3館",
+            "name": "相性運勢",
+            "desc": "ふたりが主演の作品"
+          }
+        },
+        "home": "ロビーへ",
+        "back": "前の画面へ"
+      },
+      "error": {
+        "intermission": "上映が一時停止しました",
+        "title": "画面を読み込めませんでした",
+        "desc": "一時的に接続が不安定だった可能性があります。再読み込みすると続きから見られます。",
+        "code": "エラーコード {code}",
+        "retry": "再読み込み",
+        "home": "ロビーへ"
+      }
     }
   }
 }
