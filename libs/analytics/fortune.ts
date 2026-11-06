@@ -14,7 +14,14 @@ export type FortuneScreenType =
 /** owner = 본인 본편, shared = 친구가 받은 공유 페이지 */
 export type FortuneSurface = "owner" | "shared";
 
-export type FortuneSceneId = "act1" | "act2" | "act3" | "act4" | "next" | "end";
+export type FortuneSceneId =
+  | "act1"
+  | "act2"
+  | "act3"
+  | "act4"
+  | "act5"
+  | "next"
+  | "end";
 
 interface FortuneEventParamMap {
   fortune_preview_view: { fortune_type: FortuneScreenType };

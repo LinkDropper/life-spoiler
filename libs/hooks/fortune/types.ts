@@ -3,6 +3,7 @@ import type {
   PastLifeFortuneInterpretation,
   YearlyFortuneInterpretation,
 } from "@/libs/services/ai";
+import type { PartnerProfile, TimingSection } from "@/libs/services/ai/types";
 import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
 import type {
@@ -90,6 +91,12 @@ export interface LifetimePreviewResult {
       /** 신규 구조화 — 한국어 lifetime 응답 */
       subSections?: { heading: string; body: string }[];
       oneLiner?: string;
+    };
+    /** v4~: 예고편 잠금 질문 라벨(개수)에만 쓴다. 구 결과에는 없음 */
+    timing?: TimingSection[];
+    categories?: {
+      career?: { fields?: string[] };
+      relationship?: { partner?: PartnerProfile };
     };
   };
 }
