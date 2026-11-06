@@ -2411,7 +2411,8 @@
             "자미두수란 음력 생년월일시로 12칸짜리 도표인 명반(命盤)을 만들고, 그 안에 놓인 별(星)과 궁(宮)의 관계로 개인의 성향과 시기별 흐름을 해석하는 중국 전통 명리학의 한 갈래입니다. 이름의 자미(紫微)는 하늘의 중심인 북극성 주변 구역 자미원(紫微垣)에서 온 말로, 명반의 중심 별인 자미성을 가리켜요.",
             "명반은 인생의 영역을 명궁, 재백궁, 관록궁, 부처궁 등 12궁으로 나누고, 각 궁에 어떤 별이 앉았는지를 살핍니다. 같은 별이라도 어느 궁에 있는지, 밝기가 묘·왕·득·리·평·함 중 어디인지에 따라 해석이 달라져요.",
             "자미두수는 전통 문화이자 해석 체계일 뿐, 과학적으로 검증된 예측 도구가 아닙니다. 별의 배치는 계산으로 정해지지만 그 의미를 풀어내는 일은 해석의 영역이라서, 결과는 나를 돌아보는 하나의 관점으로 받아들이시는 것이 좋아요."
-          ]
+          ],
+          "toc": "자미두수란"
         },
         {
           "id": "history",
@@ -2420,7 +2421,8 @@
             "자미두수의 기원은 전통적으로 오대십국에서 북송 초(10세기)에 활동한 도사 진단(陳摶, 호 희이선생)에게 돌려지지만, 이는 전승일 뿐 사료로 직접 확인된 사실은 아닙니다.",
             "대표 문헌인 《자미두수전서(紫微斗數全書)》에는 진희이의 이름이 붙어 있어요. 다만 현재 전하는 판본은 명(明)대에 간행된 것으로 알려져 있고, 후대에 이름을 빌렸을 가능성도 자주 거론됩니다. 그래서 창시자와 정확한 성립 시기는 지금도 확정하기 어렵다고 보는 것이 안전해요.",
             "20세기 후반 홍콩과 대만에서 연구서와 학파가 늘며 대중화됐고, 이후 한국과 일본, 동남아시아로도 퍼졌습니다. 오늘날 유파는 《전서》의 방식을 따르는 삼합파(三合派), 사화의 비성(飛星)을 중시하는 비성파, 흠천사화파 등으로 나뉘며, 인생스포는 삼합파 방식을 사용해요."
-          ]
+          ],
+          "toc": "기원과 역사"
         },
         {
           "id": "structure",
@@ -2430,7 +2432,8 @@
             "14주성은 명반의 중심이 되는 별로, 자미성 계열 6개(자미, 천기, 태양, 무곡, 천동, 염정)와 천부성 계열 8개(천부, 태음, 탐랑, 거문, 천상, 천량, 칠살, 파군)로 이루어집니다. 두 계열은 배치 방향이 서로 반대이고, 천부의 위치는 자미의 위치에서 정해져요.",
             "보조성은 주성을 돕거나 흔드는 별로, 좌보·우필·문창·문곡 같은 길성과 화성·영성·양인·타라·지겁·지공 같은 살성, 천마·홍란·천희 등이 있습니다. 인생스포는 이 가운데 록존을 포함한 16종을 배치해요.",
             "사화(四化)는 태어난 해의 천간에 따라 네 별에 붙는 변화로, 화록(化祿), 화권(化權), 화과(化科), 화기(化忌)를 말합니다. 예를 들어 갑(甲)년생은 염정에 화록, 파군에 화권, 무곡에 화과, 태양에 화기가 붙어요."
-          ]
+          ],
+          "toc": "명반의 구조"
         },
         {
           "id": "vsSaju",
@@ -2439,7 +2442,8 @@
             "자미두수와 사주(四柱八字)의 가장 큰 차이는 해석의 단위입니다. 사주는 태어난 해·달·날·시를 네 기둥, 여덟 글자로 세워 오행의 균형을 읽고, 자미두수는 음력 생일과 시진으로 명반을 만들어 별과 12궁의 배치를 읽어요.",
             "기준이 되는 달력도 달라요. 사주의 월은 24절기를 기준으로 나누지만, 자미두수는 음력 월과 일을 그대로 씁니다. 해의 경계를 어디에 두는지는 유파마다 다르며, 인생스포는 음력 연도를 사용해요.",
             "두 체계는 같은 출생 정보를 서로 다른 틀로 읽는 방법이지, 한쪽이 다른 쪽을 대체하거나 더 정확하다고 말할 수 있는 관계가 아닙니다. 둘 다 천간지지를 쓰고 10년 단위 대운을 보지만, 과학적으로 검증된 예측 체계는 아니라는 점도 같아요."
-          ]
+          ],
+          "toc": "사주와의 차이"
         },
         {
           "id": "birthTime",
@@ -2448,7 +2452,8 @@
             "자미두수에서 태어난 시간이 중요한 이유는 시진(時辰)이 명궁의 위치를 결정하기 때문입니다. 하루를 2시간 단위 12시진으로 나누고, 명궁은 음력 생월과 시진으로 정해지므로 시진이 달라지면 명반의 틀 자체가 달라져요.",
             "태어난 시간을 모를 때는 출생증명서, 산모수첩, 가족의 기억 등으로 먼저 확인해 보세요. 정확한 시각이 없어도 새벽인지 낮인지 같은 대략적인 시간대를 좁혀 두면 도움이 됩니다.",
             "인생스포는 출생 시간을 모른다고 선택할 수 있고, 이 경우 정오(오시, 11시~12시 59분)를 임의의 대표 시각으로 가정해 명반을 계산합니다. 따라서 시간에 따라 달라지는 명궁과 일부 보조성의 위치는 실제와 다를 수 있어서, 결과에 참고용이라는 안내를 함께 드려요."
-          ]
+          ],
+          "toc": "태어난 시간"
         },
         {
           "id": "daeun",
@@ -2457,7 +2462,8 @@
             "대운(大運)은 자미두수에서 10년 단위로 바뀌는 운의 큰 흐름을 가리키며, 첫 대운은 오행국의 숫자와 같은 나이에 시작합니다. 수2국은 2세, 목3국은 3세, 금4국은 4세, 토5국은 5세, 화6국은 6세부터예요.",
             "대운은 명궁에서 출발해 10년마다 한 궁씩 옮겨 갑니다. 방향은 성별과 태어난 해의 음양으로 정해져서, 양남·음녀는 순행, 음남·양녀는 역행해요. 화6국이라면 6세~15세가 첫 대운, 16세~25세가 두 번째 대운이 됩니다.",
             "유년(流年)은 특정한 한 해의 운을 보는 방식으로, 그해 천간에 따른 사화를 명반에 겹쳐 읽고 월별로도 나누어 봅니다. 대운이 10년의 배경이라면 유년은 그 안에서 한 해의 흐름을 보여 주는 셈이에요."
-          ]
+          ],
+          "toc": "대운과 유년"
         },
         {
           "id": "howLifeSpoilerUses",
@@ -2466,7 +2472,8 @@
             "인생스포는 삼합파 방식으로 명반을 계산하는 자미두수 서비스입니다. 양력을 음력으로 바꾸고 시진을 구한 뒤 명궁, 12궁, 오행국, 자미성 위치 순서로 계산하며, 14주성과 보조성 16종, 연간 기준 사화 4성을 배치하고 주성의 밝기도 조회해요.",
             "명반 계산은 정해진 표와 공식으로 이루어지고, 문장으로 풀어 쓰는 해석에는 AI 모델을 사용합니다. 계산된 명반 데이터를 AI에 전달해 재물, 직업, 인연, 건강 같은 영역별 풀이를 만들기 때문에, 전문 명리가의 감정과는 다를 수 있어요.",
             "현재는 평생 흐름과 대운을 보여 주는 인생 운세, 올해 운세, 두 사람의 궁합, 친구 관계를 모아 보는 기능을 제공합니다. 모두 재미와 자기 이해를 위한 참고용이며, 의료·법률·투자 같은 중요한 판단을 대신하지 않아요."
-          ]
+          ],
+          "toc": "인생스포의 방식"
         }
       ],
       "comparison": {
@@ -2592,7 +2599,25 @@
         "ctaDescription": "생년월일시만 입력하면 12궁과 14주성이 배치된 내 명반과 10년 단위 대운 흐름을 확인할 수 있어요.",
         "ctaButton": "내 명반 확인하기",
         "disclaimer": "인생스포의 자미두수 풀이는 재미와 자기 이해를 위한 참고 자료이며, 의료·법률·투자 판단을 대신하지 않습니다.",
-        "breadcrumbLabel": "현재 위치"
+        "breadcrumbLabel": "현재 위치",
+        "kicker": "PRODUCTION NOTES · 인생스포의 원작",
+        "tocLabel": "CONTENTS",
+        "tocAria": "목차",
+        "note": "NOTE {number}",
+        "chartAria": "예시 명반: 12궁과 각 궁의 주성",
+        "chartCenter": "명반\n12궁",
+        "chartCaption": "예시 인물(1997년 8월 22일 오전 9시 10분생 여성)의 명반이에요. 금색 테두리가 명궁이에요.",
+        "ziweiGroup": "14주성 · 자미 계열 6",
+        "tianfuGroup": "14주성 · 천부 계열 8",
+        "sihuaGroup": "사화 · 태어난 해에 따라 네 별에",
+        "sihua": ["화록 祿", "화권 權", "화과 科", "화기 忌"],
+        "dayunLabel": "예시 인물의 대운",
+        "dayunAge": "{start}–{end}세",
+        "dayunCaption": "10년마다 한 궁씩 옮겨 가요.",
+        "dayunAria": "예시 인물의 10년 단위 대운",
+        "faqKicker": "Q&A",
+        "glossaryKicker": "GLOSSARY CREDITS",
+        "ctaKicker": "YOUR CHART"
       }
     },
     "daily": {
@@ -2702,7 +2727,41 @@
           "ctaTitle": "내 오늘이 궁금하다면",
           "ctaBody": "로그인하고 프로필을 고르면 바로 오늘의 결과를 볼 수 있어요.",
           "ctaButton": "로그인하고 내 오늘 보기",
-          "disclaimer": "재미로 보는 엔터테인먼트용 간이 규칙이에요. 의료·투자·법률 판단의 근거가 아니에요."
+          "disclaimer": "재미로 보는 엔터테인먼트용 간이 규칙이에요. 의료·투자·법률 판단의 근거가 아니에요.",
+          "kicker": "DAILY CALL SHEET · 매일 00:00 발행",
+          "ctaSub": "프로필을 고르면 바로 오늘의 콜시트가 열려요",
+          "sampleStamp": "SAMPLE · 견본",
+          "note": "NOTE {number}",
+          "howToReadKicker": "HOW TO READ",
+          "howToReadTitle": "콜시트 읽는 법",
+          "legend": [
+            {
+              "title": "오늘의 제목",
+              "desc": "그날 총운의 등급 이름이 제목이 돼요"
+            },
+            {
+              "title": "컨디션 · 콜타임",
+              "desc": "총운과 애정·재물·일·학업·건강을 별 1~5개로 보여드려요. 숫자 점수는 쓰지 않아요"
+            },
+            {
+              "title": "오늘의 한 줄",
+              "desc": "하루를 한 문장으로 줄이고, 그 아래에 총운 풀이를 붙여요"
+            },
+            {
+              "title": "소품 · 의상 색",
+              "desc": "오늘의 예고 키워드예요. 색, 소품, 숫자, 시간대가 나와요"
+            },
+            {
+              "title": "NEXT CALL",
+              "desc": "한국 시간 자정에 새 콜시트로 바뀌어요"
+            }
+          ],
+          "scaleLabel": "CONDITION SCALE · 컨디션 등급",
+          "midnightAria": "한국 시간 자정에 어제 콜시트가 오늘 콜시트로 바뀌어요",
+          "yesterday": "어제",
+          "today": "오늘",
+          "faqKicker": "Q&A",
+          "ctaKicker": "TODAY'S CALL"
         },
         "intro": "오늘의 운세는 내 명반(자미두수로 그린 타고난 지도)에 그날의 일진을 겹쳐 매일 다른 하루를 보여드리는 무료 서비스예요. 한 줄 요약부터 분야별 흐름, 예고 키워드까지 1분 안에 확인할 수 있어요.",
         "sections": [
@@ -2733,10 +2792,15 @@
         "example": {
           "headline": "미뤄 둔 결정이 오후에 차분히 풀리는 날이에요.",
           "overall": "오전보다 오후에 판단이 선명해지는 날이에요. 고민하던 일이 있다면 점심 이후에 꺼내 보세요.",
-          "overallGrade": "환한 날",
           "overallLevel": 4,
-          "keywords": "색 남색 · 소품 따뜻한 차 한 잔 · 숫자 4 · 시간대 오후 3~5시",
-          "tip": "중요한 연락은 오후 3시 이후에 보내 보세요."
+          "dateLabel": "11.06 목",
+          "leadName": "나",
+          "sceneNumber": 310,
+          "callTime": "오후 3~5시",
+          "prop": "따뜻한 차 한 잔",
+          "wardrobe": "남색",
+          "hours": 8,
+          "minutes": 12
         },
         "faq": [
           {
@@ -5246,7 +5310,8 @@
             "Zi Wei Dou Shu is a branch of traditional Chinese fate analysis that draws a 12-palace chart (mingpan) from the lunar date and hour of birth, then interprets the relationships between the stars and palaces in it. The name comes from Zi Wei, the Purple Forbidden Enclosure, a region of sky around the pole star, and it refers to the chart's central star.",
             "The chart divides life into 12 areas such as the Life Palace, Wealth Palace, Career Palace, and Spouse Palace, and looks at which stars sit in each. The same star can read differently depending on its palace and its brightness grade, which runs from temple (miao) and prosperous (wang) down to fallen (xian).",
             "Zi Wei Dou Shu is a cultural tradition and an interpretive framework, not a scientifically validated prediction method. Star positions follow fixed calculations, but the meanings attached to them are matters of interpretation, so results are best taken as one perspective for reflecting on yourself."
-          ]
+          ],
+          "toc": "What it is"
         },
         {
           "id": "history",
@@ -5255,7 +5320,8 @@
             "Tradition credits Zi Wei Dou Shu to Chen Tuan (陳摶, styled Chen Xiyi), a Taoist who lived in the Five Dynasties and early Northern Song period around the 10th century, but this is legend rather than a fact confirmed by historical sources.",
             "The best-known text, the Zi Wei Dou Shu Quan Shu (Complete Book of Zi Wei Dou Shu), carries Chen Xiyi's name. However, the surviving editions are generally understood to date from the Ming dynasty, and later attribution to a famous figure is often suggested, so the true author and date of formation remain uncertain.",
             "The system became popular in Hong Kong and Taiwan in the second half of the 20th century and then spread to Korea, Japan, and Southeast Asia. Today it has several schools, including the Sanhe school that follows the Quan Shu tradition, the Feixing (flying star) school, and the Qintian Sihua school. Life Spoiler uses the Sanhe school."
-          ]
+          ],
+          "toc": "Origins and history"
         },
         {
           "id": "structure",
@@ -5265,7 +5331,8 @@
             "The 14 major stars are the core of the chart: six in the Zi Wei group (Zi Wei, Tian Ji, Tai Yang, Wu Qu, Tian Tong, Lian Zhen) and eight in the Tian Fu group (Tian Fu, Tai Yin, Tan Lang, Ju Men, Tian Xiang, Tian Liang, Qi Sha, Po Jun). The two groups are placed in opposite directions, and the position of Tian Fu is derived from that of Zi Wei.",
             "Minor stars support or disturb the major stars. They include auspicious stars such as Zuo Fu, You Bi, Wen Chang, and Wen Qu, malefic stars such as Huo Xing, Ling Xing, Qing Yang, Tuo Luo, Di Jie, and Di Kong, and others such as Tian Ma, Hong Luan, and Tian Xi. Life Spoiler places 16 minor stars, including Lu Cun.",
             "The four transformations are changes attached to four stars according to the heavenly stem of the birth year: Hua Lu (Prosperity), Hua Quan (Authority), Hua Ke (Renown), and Hua Ji (Obstruction). For a Jia year, for example, Lian Zhen gets Hua Lu, Po Jun gets Hua Quan, Wu Qu gets Hua Ke, and Tai Yang gets Hua Ji."
-          ]
+          ],
+          "toc": "Chart structure"
         },
         {
           "id": "vsSaju",
@@ -5274,7 +5341,8 @@
             "The main difference between Zi Wei Dou Shu and Bazi (Four Pillars of Destiny) is the unit of interpretation. Bazi sets up four pillars of eight characters from the year, month, day, and hour of birth and reads the balance of the five elements, while Zi Wei Dou Shu builds a chart from the lunar birthday and birth hour and reads the placement of stars across 12 palaces.",
             "The calendar basis also differs. Bazi divides months by the 24 solar terms, whereas Zi Wei Dou Shu uses the lunar month and day directly. Where the year begins also varies by school, and Life Spoiler uses the lunar year.",
             "The two are different frameworks for reading the same birth information; neither replaces the other, and neither can be called more accurate. Both use the heavenly stems and earthly branches and look at 10-year luck cycles, and both lack scientific validation as predictive systems."
-          ]
+          ],
+          "toc": "Versus Bazi"
         },
         {
           "id": "birthTime",
@@ -5283,7 +5351,8 @@
             "Birth time matters in Zi Wei Dou Shu because the double-hour (shichen) of birth determines the position of the Life Palace. The day is divided into 12 two-hour periods, and since the Life Palace is set by the lunar birth month and the double-hour, a different double-hour changes the whole frame of the chart.",
             "If you do not know your birth time, first try a birth certificate, a maternal health record, or family memory. Even without an exact time, narrowing it to a rough range such as early morning or afternoon helps.",
             "Life Spoiler lets you choose that your birth time is unknown. In that case it assumes noon (the Horse hour, 11:00 to 12:59) as a placeholder to calculate the chart. The Life Palace and some minor stars depend on the hour and may differ from the real ones, so results are marked as reference only."
-          ]
+          ],
+          "toc": "Birth time"
         },
         {
           "id": "daeun",
@@ -5292,7 +5361,8 @@
             "A major luck cycle (da yun) is a 10-year period of luck in Zi Wei Dou Shu, and the first cycle begins at an age equal to the number of the five-element bureau. Water 2 starts at age 2, Wood 3 at 3, Metal 4 at 4, Earth 5 at 5, and Fire 6 at 6.",
             "Cycles start from the Life Palace and move one palace every 10 years. The direction depends on gender and the yin or yang of the birth year: yang males and yin females move forward, and yin males and yang females move backward. For Fire 6, the first cycle covers ages 6 to 15 and the second ages 16 to 25.",
             "Annual luck (liu nian) looks at a single year by overlaying the transformations of that year's heavenly stem on the chart, and it can be broken down by month. If a major luck cycle is the 10-year backdrop, annual luck shows the flow of one year within it."
-          ]
+          ],
+          "toc": "Luck cycles"
         },
         {
           "id": "howLifeSpoilerUses",
@@ -5301,7 +5371,8 @@
             "Life Spoiler is a Zi Wei Dou Shu service that calculates charts using the Sanhe school method. It converts the solar date to the lunar date, finds the double-hour, then calculates the Life Palace, 12 palaces, five-element bureau, and Zi Wei position, placing 14 major stars, 16 minor stars, and the four transformations by birth-year stem, and looking up the brightness of the major stars.",
             "The chart calculation itself runs on fixed tables and formulas, while an AI model writes the narrative interpretation. The calculated chart data is passed to the AI to produce readings on areas such as wealth, career, relationships, and health, so the output may differ from a professional practitioner's reading.",
             "Currently the service offers a lifetime reading showing overall flow and major luck cycles, an annual reading, two-person compatibility, and a feature for viewing friend relationships together. All of these are for enjoyment and self-understanding, and they are not a substitute for medical, legal, or investment decisions."
-          ]
+          ],
+          "toc": "How Life Spoiler uses it"
         }
       ],
       "comparison": {
@@ -5435,7 +5506,25 @@
         "ctaDescription": "Enter your birth date and time to see your chart with the 12 palaces and 14 major stars, plus your 10-year luck periods.",
         "ctaButton": "See my chart",
         "disclaimer": "Life Spoiler readings are for entertainment and self-reflection only and do not replace medical, legal, or financial advice.",
-        "breadcrumbLabel": "Breadcrumb"
+        "breadcrumbLabel": "Breadcrumb",
+        "kicker": "PRODUCTION NOTES · THE SOURCE OF LIFE SPOILER",
+        "tocLabel": "CONTENTS",
+        "tocAria": "Table of contents",
+        "note": "NOTE {number}",
+        "chartAria": "Example chart: the 12 palaces and their major stars",
+        "chartCenter": "Chart\n12 palaces",
+        "chartCaption": "The chart of an example person (female, born 9:10 AM on August 22, 1997). The gold outline marks the Life Palace.",
+        "ziweiGroup": "14 major stars · Zi Wei group of 6",
+        "tianfuGroup": "14 major stars · Tian Fu group of 8",
+        "sihuaGroup": "Four transformations · on four stars by birth year",
+        "sihua": ["Hua Lu 祿", "Hua Quan 權", "Hua Ke 科", "Hua Ji 忌"],
+        "dayunLabel": "The example person's luck cycles (by age)",
+        "dayunAge": "{start}–{end}",
+        "dayunCaption": "Each cycle moves one palace every 10 years.",
+        "dayunAria": "The example person's 10-year luck cycles",
+        "faqKicker": "Q&A",
+        "glossaryKicker": "GLOSSARY CREDITS",
+        "ctaKicker": "YOUR CHART"
       }
     },
     "daily": {
@@ -5545,7 +5634,41 @@
           "ctaTitle": "Curious about your day?",
           "ctaBody": "Log in and pick a profile to see today's result right away.",
           "ctaButton": "Log in to see my today",
-          "disclaimer": "A simplified rule set for entertainment. Not a basis for medical, financial or legal decisions."
+          "disclaimer": "A simplified rule set for entertainment. Not a basis for medical, financial or legal decisions.",
+          "kicker": "DAILY CALL SHEET · NEW AT 00:00",
+          "ctaSub": "Pick a profile and today's call sheet opens right away",
+          "sampleStamp": "SAMPLE",
+          "note": "NOTE {number}",
+          "howToReadKicker": "HOW TO READ",
+          "howToReadTitle": "How to read the call sheet",
+          "legend": [
+            {
+              "title": "Today's title",
+              "desc": "The grade name of the day's overall fortune becomes the title"
+            },
+            {
+              "title": "Condition · call time",
+              "desc": "Overall, love, money, work and study, and health in 1 to 5 stars. No number scores"
+            },
+            {
+              "title": "Today's line",
+              "desc": "The day in one sentence, with the overall reading below it"
+            },
+            {
+              "title": "Props · wardrobe color",
+              "desc": "Today's preview keywords: a color, an item, a number and a time of day"
+            },
+            {
+              "title": "NEXT CALL",
+              "desc": "A new call sheet arrives at midnight, Korea time"
+            }
+          ],
+          "scaleLabel": "CONDITION SCALE",
+          "midnightAria": "At midnight Korea time, yesterday's call sheet turns into today's",
+          "yesterday": "Yesterday",
+          "today": "Today",
+          "faqKicker": "Q&A",
+          "ctaKicker": "TODAY'S CALL"
         },
         "intro": "Daily Fortune overlays today's day pillar on your chart, the natal map drawn with Zi Wei Dou Shu, to show you a different day every day. From a one-line summary to the flow of each area and preview keywords, it takes about a minute.",
         "sections": [
@@ -5576,10 +5699,15 @@
         "example": {
           "headline": "A day when a decision you put off settles calmly in the afternoon.",
           "overall": "Your judgment sharpens in the afternoon more than in the morning. If something has been on your mind, bring it up after lunch.",
-          "overallGrade": "A bright day",
           "overallLevel": 4,
-          "keywords": "Color navy · Item a warm cup of tea · Number 4 · Time of day 3 to 5 PM",
-          "tip": "Send important messages after 3 PM."
+          "dateLabel": "Thu 11.06",
+          "leadName": "Me",
+          "sceneNumber": 310,
+          "callTime": "3 to 5 PM",
+          "prop": "A warm cup of tea",
+          "wardrobe": "Navy",
+          "hours": 8,
+          "minutes": 12
         },
         "faq": [
           {
@@ -8089,7 +8217,8 @@
             "紫微斗数とは、旧暦の生年月日と時刻から12の宮を持つ命盤(めいばん)を作り、その中にある星と宮の関係から性格や時期ごとの流れを読み解く、中国の伝統的な命理学の一分野です。名前の紫微は、天の中心である北極星の周辺領域「紫微垣」に由来し、命盤の中心となる紫微星を指します。",
             "命盤は人生の領域を命宮、財帛宮、官禄宮、夫妻宮などの12宮に分け、それぞれの宮にどの星が入っているかを見ます。同じ星でも、どの宮にあるか、そして廟・旺・得・利・平・陥という明るさの段階によって、解釈が変わります。",
             "紫微斗数は伝統文化であり解釈の体系であって、科学的に検証された予測手法ではありません。星の配置は計算で決まりますが、その意味づけは解釈の領域ですので、結果は自分を振り返るための一つの視点として受け止めるのがおすすめです。"
-          ]
+          ],
+          "toc": "紫微斗数とは"
         },
         {
           "id": "history",
@@ -8098,7 +8227,8 @@
             "紫微斗数の起源は、伝統的には五代から北宋初期(10世紀)に活動した道士・陳摶(ちんたん、号は希夷先生)に帰せられていますが、これは言い伝えであり、史料で直接確認された事実ではありません。",
             "代表的な文献『紫微斗数全書』には陳希夷の名が冠されています。ただし現存する版は明代に刊行されたものとされ、後世に名を借りた可能性もしばしば指摘されます。そのため、創始者や正確な成立時期は今も確定が難しいと考えるのが無難です。",
             "20世紀後半に香港や台湾で研究書や流派が増えて広まり、その後、韓国、日本、東南アジアにも伝わりました。現在の流派には、『全書』の方法に沿う三合派、四化の飛星を重視する飛星派、欽天四化派などがあり、ライフスポイラーは三合派の方式を用いています。"
-          ]
+          ],
+          "toc": "起源と歴史"
         },
         {
           "id": "structure",
@@ -8108,7 +8238,8 @@
             "14主星は命盤の中心となる星で、紫微星系の6星(紫微、天機、太陽、武曲、天同、廉貞)と、天府星系の8星(天府、太陰、貪狼、巨門、天相、天梁、七殺、破軍)から成ります。二つの系統は配置の方向が逆で、天府の位置は紫微の位置から決まります。",
             "補助星は主星を助けたり揺さぶったりする星で、左輔・右弼・文昌・文曲などの吉星、火星・鈴星・擎羊・陀羅・地劫・地空などの煞星、天馬・紅鸞・天喜などがあります。ライフスポイラーでは禄存を含む16種を配置しています。",
             "四化は、生まれ年の天干によって四つの星に付く変化で、化禄、化権、化科、化忌を指します。たとえば甲の年生まれは、廉貞に化禄、破軍に化権、武曲に化科、太陽に化忌が付きます。"
-          ]
+          ],
+          "toc": "命盤の構造"
         },
         {
           "id": "vsSaju",
@@ -8117,7 +8248,8 @@
             "紫微斗数と四柱推命の最大の違いは、解釈の単位です。四柱推命は生まれた年・月・日・時を四本の柱、八文字として立て、五行のバランスを読みます。一方、紫微斗数は旧暦の誕生日と時刻から命盤を作り、星と12宮の配置を読みます。",
             "基準となる暦も異なります。四柱推命の月は二十四節気で区切りますが、紫微斗数は旧暦の月と日をそのまま使います。年の境目をどこに置くかは流派によって異なり、ライフスポイラーは旧暦の年を採用しています。",
             "二つは同じ出生情報を別の枠組みで読む方法であり、一方が他方に取って代わったり、どちらが正確だと言ったりできる関係ではありません。どちらも天干地支を使い、10年単位の大運を見ますが、科学的に検証された予測体系ではない点も共通しています。"
-          ]
+          ],
+          "toc": "四柱推命との違い"
         },
         {
           "id": "birthTime",
@@ -8126,7 +8258,8 @@
             "紫微斗数で生まれた時間が重要なのは、時辰(じしん)が命宮の位置を決めるからです。一日を2時間ごとの12時辰に分け、命宮は旧暦の生まれ月と時辰で決まるため、時辰が変わると命盤の枠組みそのものが変わります。",
             "生まれた時間がわからないときは、出生証明書や母子手帳、ご家族の記憶などでまず確認してみてください。正確な時刻がなくても、明け方か昼かといった大まかな時間帯を絞っておくと役立ちます。",
             "ライフスポイラーでは出生時間を「不明」として選択でき、その場合は正午(午の刻、11時から12時59分)を仮の代表時刻として命盤を計算します。そのため、時間に左右される命宮や一部の補助星の位置は実際と異なる可能性があり、結果には参考用であるとの案内を添えています。"
-          ]
+          ],
+          "toc": "生まれた時間"
         },
         {
           "id": "daeun",
@@ -8135,7 +8268,8 @@
             "大運(たいうん)は、紫微斗数で10年ごとに切り替わる運の大きな流れを指し、最初の大運は五行局の数字と同じ年齢から始まります。水二局は2歳、木三局は3歳、金四局は4歳、土五局は5歳、火六局は6歳からです。",
             "大運は命宮から出発し、10年ごとに一つずつ宮を移ります。方向は性別と生まれ年の陰陽で決まり、陽男・陰女は順行、陰男・陽女は逆行です。火六局なら、6歳から15歳が最初の大運、16歳から25歳が二番目の大運になります。",
             "流年(りゅうねん)は特定の一年の運を見る方法で、その年の天干による四化を命盤に重ねて読み、月ごとにも分けて見ます。大運が10年の背景だとすれば、流年はその中での一年の流れを示すものです。"
-          ]
+          ],
+          "toc": "大運と流年"
         },
         {
           "id": "howLifeSpoilerUses",
@@ -8144,7 +8278,8 @@
             "ライフスポイラーは、三合派の方式で命盤を計算する紫微斗数のサービスです。新暦を旧暦に変換して時辰を求め、命宮、12宮、五行局、紫微星の位置の順に計算し、14主星と補助星16種、生まれ年の天干による四化4星を配置して、主星の明るさも参照します。",
             "命盤の計算は決まった表と数式で行い、文章としての解釈にはAIモデルを使っています。計算した命盤のデータをAIに渡し、金運、仕事、縁、健康といった領域別の読み解きを作るため、専門の命理家の鑑定とは異なる場合があります。",
             "現在は、生涯の流れと大運を示す人生の運勢、今年の運勢、二人の相性、友人関係をまとめて見る機能を提供しています。いずれも楽しみと自己理解のための参考であり、医療・法律・投資といった重要な判断の代わりにはなりません。"
-          ]
+          ],
+          "toc": "ライフスポイラーの方法"
         }
       ],
       "comparison": {
@@ -8270,7 +8405,25 @@
         "ctaDescription": "生年月日と出生時間を入力すると、12宮と14主星が配置されたあなたの命盤と、10年ごとの大運の流れを確認できます。",
         "ctaButton": "自分の命盤を見る",
         "disclaimer": "ライフスポイラーの紫微斗数の解説は、楽しみと自己理解のための参考情報であり、医療・法律・投資の判断に代わるものではありません。",
-        "breadcrumbLabel": "現在地"
+        "breadcrumbLabel": "現在地",
+        "kicker": "PRODUCTION NOTES · ライフスポイラーの原作",
+        "tocLabel": "CONTENTS",
+        "tocAria": "目次",
+        "note": "NOTE {number}",
+        "chartAria": "命盤の例:12宮と各宮の主星",
+        "chartCenter": "命盤\n12宮",
+        "chartCaption": "例の人物(1997年8月22日午前9時10分生まれの女性)の命盤です。金色の枠が命宮です。",
+        "ziweiGroup": "14主星 · 紫微系の6星",
+        "tianfuGroup": "14主星 · 天府系の8星",
+        "sihuaGroup": "四化 · 生まれ年によって4つの星に",
+        "sihua": ["化禄 祿", "化権 權", "化科 科", "化忌 忌"],
+        "dayunLabel": "例の人物の大運",
+        "dayunAge": "{start}〜{end}歳",
+        "dayunCaption": "10年ごとにひとつずつ宮を移っていきます。",
+        "dayunAria": "例の人物の10年ごとの大運",
+        "faqKicker": "Q&A",
+        "glossaryKicker": "GLOSSARY CREDITS",
+        "ctaKicker": "YOUR CHART"
       }
     },
     "daily": {
@@ -8380,7 +8533,41 @@
           "ctaTitle": "あなたの今日が気になるなら",
           "ctaBody": "ログインしてプロフィールを選ぶと、すぐに今日の結果が見られます。",
           "ctaButton": "ログインして私の今日を見る",
-          "disclaimer": "楽しみのためのエンターテインメント用の簡易ルールです。医療・投資・法律判断の根拠にはなりません。"
+          "disclaimer": "楽しみのためのエンターテインメント用の簡易ルールです。医療・投資・法律判断の根拠にはなりません。",
+          "kicker": "DAILY CALL SHEET · 毎日0:00に発行",
+          "ctaSub": "プロフィールを選ぶとすぐに今日のコールシートが開きます",
+          "sampleStamp": "SAMPLE · 見本",
+          "note": "NOTE {number}",
+          "howToReadKicker": "HOW TO READ",
+          "howToReadTitle": "コールシートの読み方",
+          "legend": [
+            {
+              "title": "今日のタイトル",
+              "desc": "その日の総合運の等級名がタイトルになります"
+            },
+            {
+              "title": "コンディション · コールタイム",
+              "desc": "総合運と恋愛・金運・仕事と学業・健康を星1〜5個で表します。数字の点数は使いません"
+            },
+            {
+              "title": "今日のひとこと",
+              "desc": "一日をひとことにまとめ、その下に総合運の解説が続きます"
+            },
+            {
+              "title": "小物 · 衣装の色",
+              "desc": "今日の予告キーワードです。色、小物、数字、時間帯が出ます"
+            },
+            {
+              "title": "NEXT CALL",
+              "desc": "韓国時間の0時に新しいコールシートに変わります"
+            }
+          ],
+          "scaleLabel": "CONDITION SCALE · コンディション等級",
+          "midnightAria": "韓国時間の0時に昨日のコールシートが今日のものに変わります",
+          "yesterday": "昨日",
+          "today": "今日",
+          "faqKicker": "Q&A",
+          "ctaKicker": "TODAY'S CALL"
         },
         "intro": "今日の運勢は、あなたの命盤（紫微斗数で描く生まれ持った地図）にその日の日辰を重ねて、毎日違う一日をお見せする無料サービスです。ひとこと要約から分野別の流れ、予告キーワードまで1分で確認できます。",
         "sections": [
@@ -8411,10 +8598,15 @@
         "example": {
           "headline": "先延ばしにしていた決断が、午後に落ち着いてほどける日です。",
           "overall": "午前より午後のほうが判断が冴える日です。悩んでいることがあれば、昼食のあとに取り出してみましょう。",
-          "overallGrade": "明るい日",
           "overallLevel": 4,
-          "keywords": "色 紺色 · 小物 温かいお茶一杯 · 数字 4 · 時間帯 午後3〜5時",
-          "tip": "大事な連絡は午後3時以降に送ってみましょう。"
+          "dateLabel": "11.06 木",
+          "leadName": "自分",
+          "sceneNumber": 310,
+          "callTime": "午後3〜5時",
+          "prop": "温かいお茶一杯",
+          "wardrobe": "紺色",
+          "hours": 8,
+          "minutes": 12
         },
         "faq": [
           {

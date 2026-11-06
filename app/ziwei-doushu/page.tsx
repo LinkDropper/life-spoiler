@@ -3,7 +3,10 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { FooterInfo, HeaderClient } from "@/components/landing";
+import { PalaceGrid } from "@/components/landing/cinema/PalaceGrid";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { buildChartSnapshot } from "@/libs/landing/chart-snapshot";
+import { LANDING_PROTAGONIST } from "@/libs/landing/landing-cinema-data";
 import { getLocalizedAlternates, getSeoLocale } from "@/libs/seo/metadata";
 import {
   OPEN_GRAPH_LOCALE,
@@ -16,6 +19,8 @@ import {
   buildFaqPageSchema,
 } from "@/libs/seo/structured-data";
 import { getOpenGraphImage } from "@/libs/utils/og";
+import { MAIN_STAR_NAMES } from "@/libs/zi-wei-dou-shu/constants/stars";
+import { translateStarName } from "@/libs/zi-wei-dou-shu/i18n";
 
 import styles from "./page.module.css";
 
@@ -27,8 +32,15 @@ const DATE_MODIFIED = "2026-10-13";
 interface GuideSection {
   id: string;
   heading: string;
+  /** 목차에 쓰는 짧은 장 이름 */
+  toc: string;
   paragraphs: string[];
 }
+
+/** 14주성 중 앞 6개가 자미 계열, 뒤 8개가 천부 계열 */
+const ZIWEI_GROUP_SIZE = 6;
+/** 대운 띠에 보여 줄 앞쪽 대운 수 */
+const DAYUN_FRAME_COUNT = 5;
 
 interface GuideComparison {
   caption: string;
@@ -86,12 +98,122 @@ export default async function ZiweiGuidePage() {
   const comparison = t.raw("comparison") as GuideComparison;
   const faq = t.raw("faq") as GuideFaq[];
   const glossary = t.raw("glossary") as GuideGlossaryItem[];
-  const [comparisonHeader, ...comparisonColumns] = comparison.headers;
+  const sihua = t.raw("ui.sihua") as string[];
+  const [, ...comparisonColumns] = comparison.headers;
 
   const formattedDate = new Intl.DateTimeFormat(locale, {
     dateStyle: "long",
     timeZone: "Asia/Seoul",
   }).format(new Date(`${DATE_MODIFIED}T00:00:00+09:00`));
+
+  // 명반 그림·대운 띠: 랜딩과 같은 예시 인물의 실제 계산값
+  const sample = buildChartSnapshot(
+    { name: "guide", calendarType: "solar", ...LANDING_PROTAGONIST },
+    locale
+  );
+  const dayunFrames = sample.frames.slice(0, DAYUN_FRAME_COUNT);
+  const mainStars = MAIN_STAR_NAMES.map((star) =>
+    translateStarName(star, locale)
+  );
+  const starGroups = [
+    { label: t("ui.ziweiGroup"), items: mainStars.slice(0, ZIWEI_GROUP_SIZE) },
+    { label: t("ui.tianfuGroup"), items: mainStars.slice(ZIWEI_GROUP_SIZE) },
+    { label: t("ui.sihuaGroup"), items: sihua },
+  ];
+
+  const toNoteLabel = (index: number) =>
+    t("ui.note", { number: String(index + 1).padStart(2, "0") });
+
+  const renderSectionFigure = (sectionId: string) => {
+    if (sectionId === "structure") {
+      return (
+        <>
+          <figure className={styles.chart}>
+            <PalaceGrid
+              cells={sample.cells}
+              mingBranch={sample.mingBranch}
+              centerLabel={t("ui.chartCenter")}
+              ariaLabel={t("ui.chartAria")}
+            />
+            <figcaption className={styles.caption}>
+              {t("ui.chartCaption")}
+            </figcaption>
+          </figure>
+          <div className={styles.starGroups}>
+            {starGroups.map((group, index) => (
+              <div key={group.label} className={styles.starGroup}>
+                <span className={styles.groupLabel}>{group.label}</span>
+                <ul className={`${styles.chips} ${styles[`chips${index}`]}`}>
+                  {group.items.map((item) => (
+                    <li key={item} className={styles.chip}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </>
+      );
+    }
+    if (sectionId === "vsSaju") {
+      return (
+        <table className={styles.table}>
+          <caption className={styles.caption}>{comparison.caption}</caption>
+          <thead>
+            <tr>
+              {comparisonColumns.map((header) => (
+                <th key={header} scope="col">
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          {comparison.rows.map(([label, ...cells]) => (
+            <tbody key={label}>
+              <tr>
+                <th scope="colgroup" colSpan={cells.length}>
+                  {label}
+                </th>
+              </tr>
+              <tr>
+                {cells.map((cell) => (
+                  <td key={cell}>{cell}</td>
+                ))}
+              </tr>
+            </tbody>
+          ))}
+        </table>
+      );
+    }
+    if (sectionId === "daeun") {
+      return (
+        <figure className={styles.dayun}>
+          <span className={styles.groupLabel}>{t("ui.dayunLabel")}</span>
+          <ol className={styles.dayunStrip} aria-label={t("ui.dayunAria")}>
+            {dayunFrames.map((frame, index) => (
+              <li
+                key={frame.startAge}
+                className={`${styles.dayunFrame} ${index === 0 ? styles.dayunFirst : ""}`}
+              >
+                <b>
+                  {t("ui.dayunAge", {
+                    start: frame.startAge,
+                    end: frame.endAge,
+                  })}
+                </b>
+                <span>{frame.palaceName}</span>
+              </li>
+            ))}
+          </ol>
+          <figcaption className={styles.caption}>
+            {t("ui.dayunCaption")}
+          </figcaption>
+        </figure>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className={styles.page}>
@@ -132,6 +254,7 @@ export default async function ZiweiGuidePage() {
 
         <article className={styles.article}>
           <header className={styles.header}>
+            <span className={styles.kicker}>{t("ui.kicker")}</span>
             <h1 className={styles.title}>{t("meta.h1")}</h1>
             <p className={styles.updated}>
               {t("ui.updatedLabel")}{" "}
@@ -140,51 +263,53 @@ export default async function ZiweiGuidePage() {
             <p className={styles.intro}>{t("intro")}</p>
           </header>
 
-          {sections.map((section) => (
+          <nav className={styles.toc} aria-label={t("ui.tocAria")}>
+            <span className={styles.tocLabel}>{t("ui.tocLabel")}</span>
+            <ol className={styles.tocList}>
+              {sections.map((section, index) => (
+                <li key={section.id}>
+                  <a href={`#${section.id}`} className={styles.tocLink}>
+                    <span className={styles.tocNo}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    {section.toc}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a href="#faq" className={styles.tocLink}>
+                  <span className={styles.tocNo}>Q</span>
+                  {t("ui.faqTitle")}
+                </a>
+              </li>
+              <li>
+                <a href="#glossary" className={styles.tocLink}>
+                  <span className={styles.tocNo}>G</span>
+                  {t("ui.glossaryTitle")}
+                </a>
+              </li>
+            </ol>
+          </nav>
+
+          {sections.map((section, index) => (
             <section
               key={section.id}
               id={section.id}
               className={styles.section}
               aria-labelledby={`${section.id}-heading`}
             >
-              <h2 id={`${section.id}-heading`} className={styles.heading}>
-                {section.heading}
-              </h2>
+              <div className={styles.sectionHead}>
+                <span className={styles.note}>{toNoteLabel(index)}</span>
+                <h2 id={`${section.id}-heading`} className={styles.heading}>
+                  {section.heading}
+                </h2>
+              </div>
               {section.paragraphs.map((paragraph) => (
                 <p key={paragraph} className={styles.paragraph}>
                   {paragraph}
                 </p>
               ))}
-
-              {section.id === "vsSaju" && (
-                <div className={styles.tableWrapper}>
-                  <table className={styles.table}>
-                    <caption className={styles.caption}>
-                      {comparison.caption}
-                    </caption>
-                    <thead>
-                      <tr>
-                        <th scope="col">{comparisonHeader}</th>
-                        {comparisonColumns.map((header) => (
-                          <th key={header} scope="col">
-                            {header}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {comparison.rows.map(([label, ...cells]) => (
-                        <tr key={label}>
-                          <th scope="row">{label}</th>
-                          {cells.map((cell) => (
-                            <td key={cell}>{cell}</td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+              {renderSectionFigure(section.id)}
             </section>
           ))}
 
@@ -193,35 +318,45 @@ export default async function ZiweiGuidePage() {
             className={styles.section}
             aria-labelledby="faq-heading"
           >
-            <h2 id="faq-heading" className={styles.heading}>
-              {t("ui.faqTitle")}
-            </h2>
-            {faq.map(({ q, a }) => (
-              <div key={q} className={styles.faqItem}>
-                <h3 className={styles.faqQuestion}>{q}</h3>
-                <p className={styles.paragraph}>{a}</p>
-              </div>
-            ))}
+            <div className={styles.sectionHead}>
+              <span className={styles.note}>{t("ui.faqKicker")}</span>
+              <h2 id="faq-heading" className={styles.heading}>
+                {t("ui.faqTitle")}
+              </h2>
+            </div>
+            <div className={styles.faqList}>
+              {faq.map(({ q, a }, index) => (
+                <details key={q} className={styles.faqItem} open={index === 0}>
+                  <summary className={styles.faqQuestion}>
+                    <h3>{q}</h3>
+                    <span className={styles.faqMark} aria-hidden="true" />
+                  </summary>
+                  <p className={styles.faqAnswer}>{a}</p>
+                </details>
+              ))}
+            </div>
           </section>
 
           <section
             id="glossary"
-            className={styles.section}
+            className={styles.credits}
             aria-labelledby="glossary-heading"
           >
-            <h2 id="glossary-heading" className={styles.heading}>
-              {t("ui.glossaryTitle")}
-            </h2>
+            <div className={styles.creditsHead}>
+              <span className={styles.creditsKicker}>
+                {t("ui.glossaryKicker")}
+              </span>
+              <h2 id="glossary-heading" className={styles.heading}>
+                {t("ui.glossaryTitle")}
+              </h2>
+            </div>
             <dl className={styles.glossary}>
               {glossary.map(({ term, reading, definition }) => (
                 <div key={term} className={styles.glossaryItem}>
                   <dt className={styles.glossaryTerm}>
                     {term}
                     {reading && (
-                      <span className={styles.glossaryReading}>
-                        {" "}
-                        ({reading})
-                      </span>
+                      <span className={styles.glossaryReading}>{reading}</span>
                     )}
                   </dt>
                   <dd className={styles.glossaryDefinition}>{definition}</dd>
@@ -231,6 +366,7 @@ export default async function ZiweiGuidePage() {
           </section>
 
           <aside className={styles.cta} aria-labelledby="cta-heading">
+            <span className={styles.kicker}>{t("ui.ctaKicker")}</span>
             <h2 id="cta-heading" className={styles.ctaTitle}>
               {t("ui.ctaTitle")}
             </h2>
