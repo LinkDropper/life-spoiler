@@ -1,79 +1,38 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { Copy } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
 
 import { HeaderClient } from "@/components/landing";
+import {
+  formatInvitationDate,
+  getInvitationHref,
+  sortInvitations,
+  toInvitationFilm,
+  type CouponInvitation,
+} from "@/libs/coupon/invitation";
 import { useAuthStatus } from "@/libs/stores/user";
+import { showToast } from "@/libs/toast";
 
 import styles from "./page.module.css";
 
-interface CouponItem {
-  id: string;
-  code: string;
-  benefitType: "free_fortune" | "discount";
-  fortuneType: string;
-  discountPercent: number | null;
-  status: "active" | "used" | "expired";
-  validUntil: string | null;
-  campaignName: string | null;
-  createdAt: string;
-}
+const HOW_TO_STEPS = ["step1", "step2", "step3"] as const;
 
-const FORTUNE_TYPE_LABEL: Record<string, string> = {
-  all: "전체 운세",
-  lifetime: "인생 운세",
-  yearly: "연간 운세",
-  compatibility: "궁합 운세",
-  past_life: "전생 운세",
-  yearly_2027: "내년 운세",
-};
-
-const STATUS_LABEL: Record<string, string> = {
-  active: "사용 가능",
-  used: "사용 완료",
-  expired: "기간 만료",
-};
-
-const formatBenefit = (coupon: CouponItem): string => {
-  if (coupon.benefitType === "free_fortune") {
-    return "무료 운세 1회";
-  }
-  if (coupon.benefitType === "discount" && coupon.discountPercent) {
-    return `${coupon.discountPercent}% 할인`;
-  }
-  return "쿠폰 혜택";
-};
-
-const formatDate = (dateStr: string | null): string | null => {
-  if (!dateStr) return null;
-  try {
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}.${month}.${day}`;
-  } catch {
-    return null;
-  }
-};
-
+/**
+ * 쿠폰함 = 시사회 초대장 서랍 (2026-11-06).
+ * 쓸 수 있는 초대장부터 보이고, 주 행동은 "그 운세 보러 가기"(결제 화면이 쿠폰을 자동으로 보여 준다).
+ * 코드는 카드 안에 작게 남긴다. 없으면 초대장을 받는 방법 3단계.
+ */
 export default function CouponPage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
+  const t = useTranslations("coupon");
 
-  const [coupons, setCoupons] = useState<CouponItem[]>([]);
+  const [coupons, setCoupons] = useState<CouponInvitation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showToast, setShowToast] = useState(false);
-  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (toastTimerRef.current) {
-        clearTimeout(toastTimerRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     if (authStatus === "unauthenticated") {
@@ -82,168 +41,147 @@ export default function CouponPage() {
   }, [authStatus, router]);
 
   useEffect(() => {
-    const fetchCoupons = async () => {
-      if (authStatus !== "authenticated") return;
+    if (authStatus !== "authenticated") return;
 
+    const fetchCoupons = async () => {
       try {
         const response = await fetch("/api/coupon/list");
-        const result = await response.json();
-
+        const result: { success?: boolean; data?: CouponInvitation[] } =
+          await response.json();
         if (result.success && Array.isArray(result.data)) {
-          setCoupons(result.data);
+          setCoupons(sortInvitations(result.data));
         }
       } catch {
-        // 쿠폰 목록 로딩 실패 시 빈 목록 유지
+        showToast({ kind: "error", message: t("loadError") });
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchCoupons();
-  }, [authStatus]);
+  }, [authStatus, t]);
 
-  const handleCopyCode = useCallback(async (code: string) => {
-    try {
-      await navigator.clipboard.writeText(code);
-
-      if (toastTimerRef.current) {
-        clearTimeout(toastTimerRef.current);
+  const handleCopyCode = useCallback(
+    async (code: string) => {
+      try {
+        await navigator.clipboard.writeText(code);
+        showToast({ kind: "notice", message: t("copied") });
+      } catch {
+        showToast({ kind: "error", message: t("copyError") });
       }
+    },
+    [t]
+  );
 
-      setShowToast(true);
-      toastTimerRef.current = setTimeout(() => {
-        setShowToast(false);
-      }, 2000);
-    } catch {
-      // 클립보드 복사 실패 시 무시
-    }
-  }, []);
+  const toBenefit = (coupon: CouponInvitation): string =>
+    coupon.benefitType === "discount" && coupon.discountPercent
+      ? t("benefit.discount", { percent: coupon.discountPercent })
+      : t("benefit.free");
 
-  const handleGoHome = useCallback(() => {
-    router.push("/home");
-  }, [router]);
-
-  if (authStatus === "loading" || authStatus === "unauthenticated") {
-    return null;
-  }
+  const isPending =
+    authStatus === "loading" || authStatus === "unauthenticated" || isLoading;
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      {showToast && (
-        <div className={styles.toast} role="status" aria-live="polite">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M6.00004 10.78L3.22004 8L2.27337 8.94L6.00004 12.6667L14 4.66667L13.06 3.72667L6.00004 10.78Z"
-              fill="white"
-            />
-          </svg>
-          <span className={styles.toastText}>복사되었습니다</span>
-        </div>
-      )}
-
       <main className={styles.main}>
-        <h1 className={styles.pageTitle}>쿠폰함</h1>
+        <header className={styles.head}>
+          <span className={styles.kicker}>INVITATIONS</span>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.desc}>
+            {isPending || coupons.length > 0 ? t("desc") : t("emptyDesc")}
+          </p>
+        </header>
 
-        {isLoading ? (
-          <div className={styles.loadingContainer}>
-            <div className={styles.spinner} aria-label="로딩 중" />
-          </div>
+        {isPending ? (
+          <p className={styles.status} role="status">
+            {t("loading")}
+          </p>
         ) : coupons.length === 0 ? (
-          <div className={styles.emptyState}>
-            <p className={styles.emptyMessage}>
-              {
-                "아직 쿠폰이 없어요.\n친구를 초대하고 무료 운세 쿠폰을 받아보세요!"
-              }
-            </p>
-            <button
-              type="button"
-              className={styles.emptyButton}
-              onClick={handleGoHome}
-            >
-              친구 초대하기
-            </button>
-          </div>
-        ) : (
-          coupons.map((coupon) => {
-            const isInactive =
-              coupon.status === "used" || coupon.status === "expired";
-            const formattedDate = formatDate(coupon.validUntil);
-            const fortuneLabel =
-              FORTUNE_TYPE_LABEL[coupon.fortuneType] ?? coupon.fortuneType;
-
-            return (
-              <div
-                key={coupon.id}
-                className={`${styles.couponCard} ${isInactive ? styles.couponCardInactive : ""}`}
-              >
-                <div className={styles.couponHeader}>
-                  <p className={styles.couponBenefit}>
-                    {formatBenefit(coupon)}
-                  </p>
-                  <span
-                    className={`${styles.badge} ${coupon.status === "active" ? styles.badgeActive : styles.badgeInactive}`}
-                  >
-                    {STATUS_LABEL[coupon.status] ?? coupon.status}
+          <>
+            <section className={styles.empty}>
+              <span className={styles.emptyCard} aria-hidden="true">
+                PREMIERE
+                <br />
+                INVITATION
+              </span>
+              <b className={styles.emptyTitle}>{t("emptyTitle")}</b>
+            </section>
+            <ol className={styles.steps} aria-label={t("howToAria")}>
+              {HOW_TO_STEPS.map((step, index) => (
+                <li key={step}>
+                  <span className={styles.stepNo} aria-hidden="true">
+                    {String(index + 1).padStart(2, "0")}
                   </span>
-                </div>
-
-                <div className={styles.couponCodeRow}>
-                  <span className={styles.couponCode}>{coupon.code}</span>
-                  {coupon.status === "active" && (
-                    <button
-                      type="button"
-                      className={styles.copyButton}
-                      onClick={() => handleCopyCode(coupon.code)}
-                      aria-label={`쿠폰 코드 ${coupon.code} 복사`}
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 18 18"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-
-                <div className={styles.couponMeta}>
-                  {formattedDate && (
-                    <span className={styles.couponMetaText}>
-                      ~{formattedDate}까지
+                  <b>{t(`howTo.${step}`)}</b>
+                </li>
+              ))}
+            </ol>
+            <Link href="/home" className={styles.primaryLink}>
+              {t("emptyCta")}
+            </Link>
+          </>
+        ) : (
+          <ul className={styles.list}>
+            {coupons.map((coupon) => {
+              const isActive = coupon.status === "active";
+              const film = t(`films.${toInvitationFilm(coupon.fortuneType)}`);
+              const until = formatInvitationDate(coupon.validUntil);
+              return (
+                <li key={coupon.id}>
+                  <article
+                    className={`${styles.card} ${isActive ? styles.cardActive : styles.cardInactive}`}
+                  >
+                    <span className={styles.perforation} aria-hidden="true" />
+                    <div className={styles.cardTop}>
+                      <span className={styles.cardCode}>
+                        PREMIERE INVITATION
+                      </span>
+                      {coupon.campaignName && (
+                        <span className={styles.source}>
+                          {coupon.campaignName}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.cardBody}>
+                      <b className={styles.benefit}>{toBenefit(coupon)}</b>
+                      <span className={styles.meta}>
+                        {film}
+                        {until && ` · ${t("until", { date: until })}`}
+                      </span>
+                    </div>
+                    {!isActive && (
+                      <span className={styles.stamp}>
+                        {t(`stamp.${coupon.status}`)}
+                      </span>
+                    )}
+                    <span className={styles.srOnly}>
+                      {t(`statusAria.${coupon.status}`)}
                     </span>
-                  )}
-                  {formattedDate && (
-                    <span className={styles.metaDivider} aria-hidden="true" />
-                  )}
-                  <span className={styles.couponMetaText}>{fortuneLabel}</span>
-                </div>
-              </div>
-            );
-          })
+                    {isActive && (
+                      <div className={styles.cardActions}>
+                        <Link
+                          href={getInvitationHref(coupon.fortuneType)}
+                          className={styles.useLink}
+                        >
+                          {t("use", { film })}
+                        </Link>
+                        <button
+                          type="button"
+                          className={styles.codeButton}
+                          onClick={() => handleCopyCode(coupon.code)}
+                          aria-label={t("copyAria", { code: coupon.code })}
+                        >
+                          <span>{coupon.code}</span>
+                          <Copy size={14} aria-hidden="true" />
+                        </button>
+                      </div>
+                    )}
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
         )}
       </main>
     </div>

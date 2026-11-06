@@ -1,22 +1,24 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useState } from "react";
 
 import type { CompatibilityPairWithProfiles } from "@/app/api/compatibility/route";
+import {
+  toCompatibilityLineupItem,
+  type CompatibilityLineupItem,
+} from "@/libs/fortune/compatibility-screen";
 
 interface UseCompatibilityListReturn {
-  pairs: CompatibilityPairWithProfiles[];
+  items: CompatibilityLineupItem[];
   isLoading: boolean;
-  selectedPairId: string | null;
-  handlePairSelect: (pairId: string) => void;
   fetchPairs: () => Promise<void>;
   removePair: (pairId: string) => void;
 }
 
+/** 궁합 목록 = 공동 주연작 라인업. 카드를 누르면 바로 상영하므로 고르는 상태는 두지 않는다 */
 export const useCompatibilityList = (): UseCompatibilityListReturn => {
-  const [pairs, setPairs] = useState<CompatibilityPairWithProfiles[]>([]);
+  const [items, setItems] = useState<CompatibilityLineupItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedPairId, setSelectedPairId] = useState<string | null>(null);
 
   const fetchPairs = useCallback(async () => {
     setIsLoading(true);
@@ -25,52 +27,19 @@ export const useCompatibilityList = (): UseCompatibilityListReturn => {
       if (!response.ok) {
         throw new Error("Failed to fetch compatibility pairs");
       }
-      const data = await response.json();
-      setPairs(data.pairs);
-
-      if (data.pairs.length > 0) {
-        setSelectedPairId((prev) => {
-          const stillExists = data.pairs.some(
-            (p: CompatibilityPairWithProfiles) => p.id === prev
-          );
-          if (stillExists) return prev;
-          return data.pairs[0].id;
-        });
-      } else {
-        setSelectedPairId(null);
-      }
+      const data: { pairs: CompatibilityPairWithProfiles[] } =
+        await response.json();
+      setItems(data.pairs.map(toCompatibilityLineupItem));
     } catch {
-      setPairs([]);
+      setItems([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const handlePairSelect = useCallback((pairId: string) => {
-    setSelectedPairId(pairId);
-  }, []);
-
   const removePair = useCallback((pairId: string) => {
-    setPairs((prev) => prev.filter((p) => p.id !== pairId));
-    setSelectedPairId((prev) => {
-      if (prev === pairId) return null;
-      return prev;
-    });
+    setItems((prev) => prev.filter((item) => item.id !== pairId));
   }, []);
 
-  // 삭제 후 선택이 해제된 경우 첫 번째 항목을 자동 선택
-  useEffect(() => {
-    if (selectedPairId === null && pairs.length > 0) {
-      setSelectedPairId(pairs[0].id);
-    }
-  }, [pairs, selectedPairId]);
-
-  return {
-    pairs,
-    isLoading,
-    selectedPairId,
-    handlePairSelect,
-    fetchPairs,
-    removePair,
-  };
+  return { items, isLoading, fetchPairs, removePair };
 };

@@ -1,3 +1,1 @@
-export { ProfileCard } from "./ProfileCard";
-export { NewProfileCard } from "./NewProfileCard";
-export { DeleteConfirmModal } from "./DeleteConfirmModal";
+export { RosterCard } from "./RosterCard";

@@ -1,0 +1,200 @@
+/* 출연진 명단의 배우 카드. 토큰은 app/globals.css의 --cs-* */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #0f1628;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.monogram {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 204, 217, 0.3),
+      transparent 70%
+    ),
+    rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 204, 217, 0.5);
+  font-family: var(--cs-display);
+  font-weight: var(--cs-display-weight);
+  font-size: 20px;
+}
+
+.who {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--cs-display);
+  font-weight: var(--cs-display-weight);
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.me {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255, 143, 177, 0.5);
+  font-family: var(--cs-mono);
+  font-size: 10px;
+  color: var(--cs-accent);
+}
+
+.line {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* 오른쪽: 그 운세의 상태 + 열기 */
+.state {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.stateCode {
+  font-family: var(--cs-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.owned .stateCode {
+  color: var(--cs-star);
+}
+
+.trailer .stateCode {
+  color: var(--cs-accent);
+}
+
+.open {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* 링크가 카드 전체를 덮는다 */
+.open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 14px;
+}
+
+.open:focus-visible {
+  outline: none;
+}
+
+.open:focus-visible::after {
+  box-shadow: inset 0 0 0 2px var(--cs-star);
+}
+
+/* ⋯ 관리: 카드 링크 위에 떠 있는 버튼 */
+.more {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -12px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+.more:focus-visible {
+  outline: 2px solid var(--cs-star);
+  outline-offset: 2px;
+}
+
+/* 필모그래피 */
+.films {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.filmsLabel {
+  flex-shrink: 0;
+  font-family: var(--cs-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.chipOn {
+  background: rgba(255, 231, 163, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.5);
+  color: var(--cs-star);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

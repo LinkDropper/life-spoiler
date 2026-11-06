@@ -454,7 +454,6 @@ export const ZiweiChartGrid = ({
           {explanation ? (
             <PalaceDetailPanel
               explanation={explanation}
-              locale={locale}
               onClose={handleClose}
             />
           ) : (

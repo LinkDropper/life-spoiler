@@ -1,10 +1,8 @@
-/* 명반 궁 셀 탭 시 하단에 나타나는 설명 패널 */
-.detailPanel {
-  margin-top: var(--gap-12, 12px);
-  padding: 20px 16px;
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: var(--radius-8, 8px);
+/* 명반 칸 설명: 박스·칩·글로우 없이 얇은 선 아래 본문. 토큰은 app/globals.css의 --cs-* */
+.panel {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cs-line);
   animation: palacePanelIn 0.25s ease-out;
 }
 
@@ -19,157 +17,118 @@
   }
 }
 
-/* 헤더 */
 .header {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid
-    var(--color-border-default, rgba(255, 255, 255, 0.16));
-}
-
-.headerDot {
-  flex: 0 0 auto;
-  width: 6px;
-  height: 6px;
-  margin-top: 7px;
-  border-radius: 50%;
-  background: var(--primitive-primary, #ffccd9);
-  box-shadow: 0 0 6px 0 rgba(255, 204, 217, 0.6);
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .headerText {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
   min-width: 0;
 }
 
 .palaceName {
-  font-family: "Pretendard", sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-text-default, #ffffff);
-  line-height: 1.4;
+  margin: 0;
+  font-family: var(--cs-display);
+  font-size: 24px;
+  font-weight: var(--cs-display-weight);
+  line-height: 1.25;
 }
 
 .title {
-  font-family: "Pretendard", sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  line-height: 1.4;
+  margin: 2px 0 0;
+  color: var(--cs-haze);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .closeButton {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin: -6px -6px 0 0;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -6px -12px 0 0;
   padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  font-size: 14px;
+  border: 0;
+  background: none;
+  color: #ffffff;
   cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
-}
-
-.closeButton:hover {
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
-  color: var(--color-text-default, #ffffff);
 }
 
 .closeButton:focus-visible {
-  outline: 2px solid var(--color-focus-ring, #ffe7a3);
-  outline-offset: 2px;
-}
-
-/* 본문 */
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  outline: 2px solid var(--cs-star);
+  outline-offset: -2px;
 }
 
 .meaning {
-  font-family: "Pretendard", sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  line-height: 1.6;
-  margin: 0;
+  margin: 12px 0 0;
+  color: var(--cs-haze);
+  font-size: 14px;
+  line-height: 1.7;
 }
 
-/* 별 이름 칩 (이름만 표시, 개별 설명 없음) */
-.chips {
+/* 별·주의 줄: 위아래 얇은 선 사이의 이름표 + 값 */
+.row {
+  margin: 16px 0 0;
+  border-top: 1px solid var(--cs-line);
+  border-bottom: 1px solid var(--cs-line-soft);
+}
+
+.rowInner {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  padding: 14px 0;
 }
 
-.chip {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-family: "Pretendard", sans-serif;
-  font-size: 12px;
+.rowText {
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.rowLabel {
+  flex: none;
+  color: var(--cs-faint);
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1.4;
 }
 
-.chipMain {
-  background: var(--primitive-primary-opacity-1, rgba(255, 204, 217, 0.12));
-  color: var(--color-text-primary-secondary, #ffdde6);
-}
-
-.chipMinor {
-  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.06));
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-}
-
-/* 통합 해석 한 단락 */
-.reading {
-  font-family: "Pretendard", sans-serif;
+/* 주성은 굵게, 보조성은 일반 굵기 */
+.stars {
+  min-width: 0;
+  margin: 0;
   font-size: 15px;
   font-weight: 500;
-  color: var(--color-text-default, #ffffff);
-  line-height: 1.7;
-  margin: 0;
-}
-
-/* 통합 주의 한 단락 */
-.caution {
-  display: flex;
-  gap: 6px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--color-border-default, rgba(255, 255, 255, 0.16));
-  font-family: "Pretendard", sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
   line-height: 1.6;
-  margin: 0;
+  text-align: right;
 }
 
-.cautionMark {
-  flex: 0 0 auto;
+.stars b {
+  font-weight: 800;
+}
+
+.reading {
+  margin: 16px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+.cautionText {
+  min-width: 0;
+  margin: 0;
+  color: var(--cs-haze);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .detailPanel {
+  .panel {
     animation: none;
-  }
-  .closeButton {
-    transition: none;
   }
 }

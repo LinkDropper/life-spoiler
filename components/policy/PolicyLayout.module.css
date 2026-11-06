@@ -1,113 +1,319 @@
-.container {
-  min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    rgba(12, 18, 32, 1) 0%,
-    rgba(46, 20, 49, 1) 100%
-  );
+/*
+ * 이용약관·개인정보 처리방침 공용 틀.
+ * 다른 화면과 같은 밤색 위에 전환 탭 → 머리말 → 조항 바로 가기 → 조항들 → 문서 끝 닫기.
+ */
+.page {
+  --policy-night: #0c1220;
+  --policy-panel: #111a2e;
+  --policy-line: rgba(255, 255, 255, 0.1);
+  --policy-star: var(--primitive-gold, #ffe7a3);
+  --policy-kicker: var(--color-text-accent, #ff8fb1);
+  --policy-ink: #23142d;
+  --policy-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --policy-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --policy-display-weight: 400;
+
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  position: relative;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  height: 60px;
-  border-bottom: 1px solid var(--primitive-primary, #ffccd9);
-}
-
-.logo {
-  height: 32px;
-  width: auto;
-}
-
-.content {
-  flex: 1;
-  padding: 24px 16px;
-  padding-bottom: 84px;
-}
-
-.sectionTitle {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.2;
+  background: var(--policy-night);
   color: var(--color-text-default, #ffffff);
-  padding-bottom: 12px;
-  border-bottom: 1px solid
-    var(--color-border-default, rgba(255, 255, 255, 0.16));
-  margin-bottom: 24px;
-}
-
-.body {
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--color-text-default, #ffffff);
-}
-
-.body p {
-  margin-bottom: 24px;
-}
-
-.body p:last-child {
-  margin-bottom: 0;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  padding: 16px;
-  background: linear-gradient(180deg, transparent 0%, rgba(46, 20, 49, 1) 20%);
-}
-
-.articleTitle {
-  font-weight: 700;
-}
-
-.closeButton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 52px;
-  padding: 16px 20px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-button-primary-surface, #ffccd9);
-  color: #2d1b4e;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.closeButton:hover {
-  opacity: 0.9;
-}
-
-.closeButton:active {
-  opacity: 0.8;
+  overflow-wrap: break-word;
 }
 
 @supports (min-height: 100svh) {
-  .container {
+  .page {
     min-height: 100svh;
   }
 }
 
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-.closeButton:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
+/* 한국어는 어절 단위로 줄바꿈. 일본어에 keep-all을 걸면 줄이 넘쳐 ko에만 건다 */
+.page:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.page:lang(ja) {
+  --policy-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --policy-display-weight: 800;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  flex: 1;
+  min-width: 0;
+  padding: 12px 20px 48px;
+}
+
+/* ───── 두 문서 전환 탭 ───── */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--policy-panel);
+  box-shadow: inset 0 0 0 1px var(--policy-line);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 6px 8px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--policy-star);
+  outline-offset: 2px;
+}
+
+.tabActive {
+  background: var(--color-button-primary-surface, #ffccd9);
+  color: var(--policy-ink);
+}
+
+/* ───── 머리말 ───── */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kicker,
+.indexLabel {
+  font-family: var(--policy-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--policy-kicker);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--policy-display);
+  font-weight: var(--policy-display-weight);
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.chip {
+  align-self: flex-start;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 231, 163, 0.14);
+  color: var(--policy-star);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ───── 조항 바로 가기 ───── */
+.index {
+  padding: 14px 16px 4px;
+  border-radius: 14px;
+  background: var(--policy-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.28);
+}
+
+.indexLabel {
+  color: var(--policy-star);
+}
+
+.indexList {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.indexList li + li {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.indexLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 4px 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: inherit;
+  text-decoration: none;
+}
+
+.indexLink:focus-visible {
+  outline: 2px solid var(--policy-star);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .indexLink:hover {
+    color: var(--policy-star);
+  }
+}
+
+.indexNo {
+  flex-shrink: 0;
+  min-width: 44px;
+  font-family: var(--policy-mono);
+  font-size: 11px;
+  color: var(--policy-star);
+}
+
+/* ───── 조항 ───── */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--policy-line);
+  scroll-margin-top: 72px;
+}
+
+.articleHead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+
+.articleNo {
+  font-family: var(--policy-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--policy-kicker);
+}
+
+.articleName {
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.paragraph {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding-left: 22px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.item::marker {
+  font-family: var(--policy-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.subItems {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 16px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.box {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--policy-panel);
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.box p,
+.box ul {
+  margin: 0;
+}
+
+.box ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.box a {
+  color: var(--policy-star);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.box a:focus-visible {
+  outline: 2px solid var(--policy-star);
+  outline-offset: 2px;
+}
+
+.box_contact {
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.28);
+}
+
+.box_notice {
+  background: rgba(255, 143, 177, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 143, 177, 0.35);
+}
+
+/* ───── 문서 끝 닫기 ───── */
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  color: inherit;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.close:focus-visible {
+  outline: 2px solid var(--policy-star);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .close:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.close:active {
+  background: rgba(255, 255, 255, 0.1);
 }

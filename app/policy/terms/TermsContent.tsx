@@ -2,82 +2,51 @@
 
 import { useTranslations } from "next-intl";
 
-import { PolicyLayout } from "@/components/policy/PolicyLayout";
+import {
+  PolicyArticle,
+  PolicyBox,
+  PolicyChip,
+  PolicyLayout,
+} from "@/components/policy/PolicyLayout";
 
-import styles from "./page.module.css";
+/** 조항별 번호 항목 수. 제1조는 번호 없이 문단 하나 */
+const ARTICLE_ITEM_COUNTS = [0, 3, 2, 2, 2, 3, 2, 2] as const;
 
 export const TermsContent = () => {
   const t = useTranslations("policy.terms");
 
+  const articles = ARTICLE_ITEM_COUNTS.map((itemCount, index) => {
+    const key = `article${index + 1}`;
+    return {
+      id: key,
+      title: t(`${key}.title`),
+      lead: itemCount === 0 ? t(`${key}.content`) : undefined,
+      items: Array.from({ length: itemCount }, (_, itemIndex) =>
+        t(`${key}.item${itemIndex + 1}`)
+      ),
+    };
+  });
+
   return (
-    <PolicyLayout title={t("title")} closeButtonText={t("closeButton")}>
-      <p>
-        <strong className={styles.articleTitle}>{t("article1.title")}</strong>
-        <br />
-        {t("article1.content")}
-      </p>
-
-      <p>
-        <strong className={styles.articleTitle}>{t("article2.title")}</strong>
-        <br />
-        1. {t("article2.item1")}
-        <br />
-        2. {t("article2.item2")}
-        <br />
-        3. {t("article2.item3")}
-      </p>
-
-      <p>
-        <strong className={styles.articleTitle}>{t("article3.title")}</strong>
-        <br />
-        1. {t("article3.item1")}
-        <br />
-        2. {t("article3.item2")}
-      </p>
-
-      <p>
-        <strong className={styles.articleTitle}>{t("article4.title")}</strong>
-        <br />
-        1. {t("article4.item1")}
-        <br />
-        2. {t("article4.item2")}
-      </p>
-
-      <p>
-        <strong className={styles.articleTitle}>{t("article5.title")}</strong>
-        <br />
-        1. {t("article5.item1")}
-        <br />
-        2. {t("article5.item2")}
-      </p>
-
-      <p>
-        <strong className={styles.articleTitle}>{t("article6.title")}</strong>
-        <br />
-        1. {t("article6.item1")}
-        <br />
-        2. {t("article6.item2")}
-        <br />
-        3. {t("article6.item3")}
-      </p>
-
-      <p>
-        <strong className={styles.articleTitle}>{t("article7.title")}</strong>
-        <br />
-        1. {t("article7.item1")}
-        <br />
-        2. {t("article7.item2")}
-      </p>
-
-      <p>
-        <strong className={styles.articleTitle}>{t("article8.title")}</strong>
-        <br />
-        1. {t("article8.item1")}
-        <br />
-        2. {t("article8.item2")}
-      </p>
-
-      <p>{t("effectiveDate")}</p>
+    <PolicyLayout
+      kind="terms"
+      title={t("title")}
+      lead={<PolicyChip>{t("effectiveChip")}</PolicyChip>}
+      articles={articles}
+      closeButtonText={t("closeButton")}
+    >
+      {articles.map((article) => (
+        <PolicyArticle
+          key={article.id}
+          id={article.id}
+          title={article.title}
+          lead={article.lead}
+          items={article.items}
+        />
+      ))}
+      <PolicyBox>
+        <p>{t("effectiveDate")}</p>
+      </PolicyBox>
     </PolicyLayout>
   );
 };

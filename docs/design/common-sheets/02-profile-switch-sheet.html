@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>상영 프로필 전환 시트 - 인생스포 (공용 시트 시안 · OptionSheet 2/3)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="sheets.css">
+</head>
+<body class="ov">
+<!-- 뒤 화면: 홈 히어로, 프로필 셀렉트 -->
+<div class="bg" aria-hidden="true">
+  <header class="hd">
+    <a class="logo" href="#">인생스포</a>
+    <div>
+      <button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+      <button class="ic" type="button" tabindex="-1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+  </header>
+  <div class="pg">
+    <p style="font-size:16px;font-weight:800">지수님의 인생 ⌄</p>
+    <div class="ph" style="height:360px;margin-top:16px"></div>
+    <div class="ph" style="height:52px;margin-top:20px;background:var(--spoiler);opacity:.8"></div>
+  </div>
+</div>
+<div class="dim"></div>
+
+<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t">
+  <span class="handle" aria-hidden="true"></span>
+  <div class="sh-head">
+    <div>
+      <p class="eyebrow" aria-hidden="true">NOW SHOWING</p>
+      <h2 class="sh-title" id="t">상영할 프로필 고르기</h2>
+    </div>
+    <button class="x" type="button" aria-label="닫기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+
+  <div class="list" role="listbox" aria-labelledby="t">
+    <button class="row" type="button" role="option" aria-selected="true"><span class="lbl">지수님의 인생</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+    <button class="row" type="button" role="option" aria-selected="false"><span class="lbl">민준님의 인생</span></button>
+    <button class="row" type="button" role="option" aria-selected="false"><span class="lbl">서연님의 인생</span></button>
+  </div>
+
+  <!-- 이동 항목: 선택지가 아니므로 목록과 떨어뜨리고, 체크 자리 없이 왼쪽 + 아이콘 -->
+  <div class="list gap">
+    <a class="row act" href="#"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="lbl">다른 사람 인생 추가</span></a>
+  </div>
+</div>
+</body>
+</html>

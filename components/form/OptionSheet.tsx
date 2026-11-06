@@ -1,27 +1,36 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-
-import styles from "./OptionSheet.module.css";
-
-import type { KeyboardEvent, MouseEvent } from "react";
+import {
+  Sheet,
+  SheetActionRow,
+  SheetList,
+  SheetOption,
+} from "@/components/common/sheet";
 
 export interface OptionSheetOption {
   value: string;
   label: string;
+  /** 라벨 아래 보조 한 줄 */
+  description?: string;
+  /** 라벨의 언어 (언어 목록처럼 행마다 언어가 다를 때) */
+  lang?: string;
 }
 
-/** 목록 아래에 따로 두는 이동 항목 (예: 홈 프로필 셀렉트의 "프로필 추가") */
+/**
+ * 목록 아래에 따로 두는 이동 항목 (예: 홈 프로필 셀렉트의 "프로필 추가").
+ * href가 있으면 링크, 없으면 onClick을 부르는 버튼이다.
+ */
 export interface OptionSheetAction {
   label: string;
-  href: string;
+  href?: string;
+  onClick?: () => void;
 }
 
 interface OptionSheetProps {
   isOpen: boolean;
   title: string;
+  /** 제목 위 영문 장식 라벨 (번역하지 않는다). 없으면 그리지 않는다 */
+  eyebrow?: string;
   options: OptionSheetOption[];
   selectedValue: string;
   onSelect: (value: string) => void;
@@ -30,187 +39,53 @@ interface OptionSheetProps {
 }
 
 /**
- * 서비스 공용 선택 드로어 — 아래에서 올라오는 시트에서 하나를 고른다.
+ * 서비스 공용 선택 시트 — 아래에서 올라오는 시트에서 하나를 고른다.
  * 헤더 언어 선택(LanguageDrawer)과 공용 Select가 함께 쓴다.
- * 열리면 선택된 항목으로 포커스가 가고, ↑↓로 이동, Esc·바깥 누르기로 닫힌다.
- * 포커스를 되돌리는 일은 여는 쪽(트리거)이 맡는다.
+ * 열리면 선택된 항목(없으면 첫 항목)으로 포커스가 가고, ↑↓로 이동,
+ * Esc·닫기 버튼·바깥 누르기로 닫힌다. 닫히면 연 버튼으로 포커스가 돌아간다.
  */
 export const OptionSheet = ({
   isOpen,
   title,
+  eyebrow,
   options,
   selectedValue,
   onSelect,
   onClose,
   action,
 }: OptionSheetProps) => {
-  const titleId = useId();
-  const [isMounted, setIsMounted] = useState(false);
-  const listRef = useRef<HTMLDivElement>(null);
+  const hasSelected = options.some((option) => option.value === selectedValue);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // 열려 있는 동안 뒤 페이지가 스크롤되지 않게
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  // 열리면 선택된 항목(없으면 첫 항목)으로 포커스
-  useEffect(() => {
-    if (!isOpen || !isMounted) {
-      return;
-    }
-    const items =
-      listRef.current?.querySelectorAll<HTMLButtonElement>("[role='option']");
-    const selected = Array.from(items ?? []).find(
-      (item) => item.getAttribute("aria-selected") === "true"
-    );
-    (selected ?? items?.[0])?.focus();
-  }, [isOpen, isMounted]);
-
-  if (!isMounted || !isOpen) {
-    return null;
-  }
-
-  const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
+  const handleActionClick = () => {
+    action?.onClick?.();
+    onClose();
   };
 
-  const handleListKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") {
-      return;
-    }
-    event.preventDefault();
-    const items = Array.from(
-      listRef.current?.querySelectorAll<HTMLButtonElement>("[role='option']") ??
-        []
-    );
-    const index = items.findIndex((item) => item === document.activeElement);
-    const step = event.key === "ArrowDown" ? 1 : -1;
-    items[(index + step + items.length) % items.length]?.focus();
-  };
+  return (
+    <Sheet isOpen={isOpen} onClose={onClose} title={title} eyebrow={eyebrow}>
+      <SheetList label={title}>
+        {options.map((option, index) => (
+          <SheetOption
+            key={option.value}
+            label={option.label}
+            description={option.description}
+            lang={option.lang}
+            isSelected={option.value === selectedValue}
+            isInitialFocus={
+              hasSelected ? option.value === selectedValue : index === 0
+            }
+            onSelect={() => onSelect(option.value)}
+          />
+        ))}
+      </SheetList>
 
-  return createPortal(
-    <div className={styles.backdrop} onClick={handleBackdropClick}>
-      <div
-        className={styles.drawer}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-      >
-        <div className={styles.header}>
-          <span id={titleId} className={styles.title}>
-            {title}
-          </span>
-        </div>
-
-        <div className={styles.separator}>
-          <hr className={styles.separatorLine} />
-        </div>
-
-        <div
-          ref={listRef}
-          className={styles.menuItems}
-          role="listbox"
-          aria-labelledby={titleId}
-          onKeyDown={handleListKeyDown}
-        >
-          {options.map((option) => {
-            const isSelected = option.value === selectedValue;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                role="option"
-                aria-selected={isSelected}
-                className={styles.menuItem}
-                onClick={() => onSelect(option.value)}
-              >
-                <span className={styles.label}>{option.label}</span>
-                {isSelected && <CheckIcon />}
-              </button>
-            );
-          })}
-        </div>
-
-        {action && (
-          <>
-            <div className={styles.separator}>
-              <hr className={styles.separatorLine} />
-            </div>
-            <Link
-              href={action.href}
-              className={`${styles.menuItem} ${styles.actionItem}`}
-              onClick={onClose}
-            >
-              <PlusIcon />
-              <span className={styles.label}>{action.label}</span>
-            </Link>
-          </>
-        )}
-      </div>
-    </div>,
-    document.body
+      {action && (
+        <SheetActionRow
+          label={action.label}
+          href={action.href}
+          onClick={handleActionClick}
+        />
+      )}
+    </Sheet>
   );
 };
-
-const CheckIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    aria-hidden="true"
-    className={styles.checkIcon}
-  >
-    <path
-      d="M15 4.5L6.75 12.75L3 9"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 18 18"
-    fill="none"
-    aria-hidden="true"
-    className={styles.plusIcon}
-  >
-    <path
-      d="M9 3.5v11M3.5 9h11"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    />
-  </svg>
-);

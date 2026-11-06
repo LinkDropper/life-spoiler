@@ -12,7 +12,7 @@ import {
 } from "@/libs/reviews/review-reason";
 import type { ReviewFortuneType } from "@/libs/supabase/types";
 
-import { ScreenSheet } from "./screen/ScreenSheet";
+import { Sheet } from "@/components/common/sheet";
 import styles from "./ReviewDrawer.module.css";
 
 const MAX_CONTENT_LENGTH = 200;
@@ -272,14 +272,14 @@ export const ReviewDrawer = ({
   };
 
   return (
-    <ScreenSheet
+    <Sheet
       isOpen={isOpen}
       onClose={onClose}
       eyebrow="REVIEW"
       title={t("title")}
       isBusy={isSubmitting}
     >
-      {renderBody()}
-    </ScreenSheet>
+      <div className={styles.content}>{renderBody()}</div>
+    </Sheet>
   );
 };

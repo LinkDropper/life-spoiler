@@ -1,0 +1,74 @@
+.description {
+  margin: 4px 0 0;
+  color: var(--cs-haze);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* 무엇이 사라지는지 밝히는 대상 줄 */
+.target {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  margin: 20px 0 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--cs-line);
+  border-bottom: 1px solid var(--cs-line-soft);
+}
+
+.targetLabel {
+  flex: none;
+  color: var(--cs-faint);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.targetValue {
+  min-width: 0;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* 시트 안에서 일어난 실패는 시트 안에 한 줄로 남긴다 */
+.error {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 231, 163, 0.4);
+}
+
+.errorTag {
+  color: var(--cs-star);
+  font-family: var(--cs-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+}
+
+.errorMessage {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.buttons {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

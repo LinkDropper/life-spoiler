@@ -17,7 +17,7 @@
   flex-shrink: 0;
   padding-right: 10px;
   border-right: 1.5px dashed rgba(255, 204, 217, 0.45);
-  font-family: var(--fs-mono);
+  font-family: var(--cs-mono);
   font-size: 10px;
   letter-spacing: 0.2em;
   color: #ffccd9;
@@ -31,7 +31,7 @@
   gap: 3px;
   font-size: 13px;
   line-height: 1.5;
-  color: var(--fs-haze);
+  color: var(--cs-haze);
 }
 
 .inviteText b {
@@ -74,12 +74,19 @@
 .previewText b {
   font-size: 16px;
   line-height: 1.4;
-  color: var(--fs-text);
+  color: #ffffff;
 }
 
 .previewLabel {
-  font-family: var(--fs-mono);
+  font-family: var(--cs-mono);
   font-size: 10px;
   letter-spacing: 0.2em;
-  color: var(--fs-star);
+  color: var(--cs-star);
+}
+
+/* 시트 본문: 줄 사이 12px */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }

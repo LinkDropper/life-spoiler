@@ -1,0 +1,226 @@
+/* 공동 주연작 카드. A = 핑크, B = 하늘색, 둘이 함께 받은 점수 = 금색 (궁합 본편과 같은 색) */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 50% 90% at 0% 0%,
+      rgba(255, 143, 177, 0.18),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 90% at 100% 0%,
+      rgba(158, 197, 255, 0.16),
+      transparent 70%
+    ),
+    #0f1628;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.badge {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.badgeOwned {
+  background: rgba(255, 231, 163, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.5);
+  color: #ffe7a3;
+}
+
+.badgeTrailer {
+  background: rgba(255, 143, 177, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 143, 177, 0.5);
+  color: #ff8fb1;
+}
+
+.genre {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ⋯ 관리: 카드 링크 위에 떠 있는 버튼 */
+.more {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -12px -12px -12px 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+.cast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stars {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.stars img {
+  width: 56px;
+  height: 31px;
+  object-fit: contain;
+}
+
+.stars img + img {
+  margin-left: -14px;
+}
+
+.names {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.names b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.nameA {
+  color: #ffd1de;
+}
+
+.nameB {
+  color: #d6e6ff;
+}
+
+.times {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.costar {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.score {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.score span {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.score b {
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+  color: #ffe7a3;
+}
+
+.score .scoreEmpty {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.line {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.lineEmpty {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.open {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.open span {
+  color: #ffe7a3;
+}
+
+/* 링크가 카드 전체를 덮는다 */
+.open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 14px;
+}
+
+.open:focus-visible {
+  outline: none;
+}
+
+.open:focus-visible::after {
+  box-shadow: inset 0 0 0 2px #ffe7a3;
+}
+
+.more:focus-visible {
+  outline: 2px solid #ffe7a3;
+  outline-offset: 2px;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.names b:lang(ja),
+.score b:lang(ja) {
+  font-family: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  font-weight: 800;
+}

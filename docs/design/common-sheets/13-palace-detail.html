@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>명반 궁 설명 패널 - 인생스포 (공용 시트 시안 · PalaceDetailPanel)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="sheets.css">
+</head>
+<body>
+<header class="hd">
+  <a class="logo" href="#">인생스포</a>
+  <div>
+    <button class="ic" type="button" aria-label="언어 변경"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+    <button class="ic" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+</header>
+
+<main class="pg sec" style="padding-bottom:40px">
+  <h2>원작 · 내 명반</h2>
+  <p class="lead">칸을 누르면 그 궁이 무엇을 보는지 알려 드려요. 선은 명궁과 함께 움직이는 세 궁이에요.</p>
+
+  <!-- 명반: 12궁. 별 이름은 예시 -->
+  <div class="gw"><div class="grid" role="group" aria-label="내 명반 12궁">
+    <button class="cell" type="button" aria-pressed="false"><i>명궁</i><b>자미</b><span>좌보</span></button>
+    <button class="cell" type="button" aria-pressed="false"><i>형제궁</i><b>천기</b><span>문창</span></button>
+    <button class="cell" type="button" aria-pressed="false"><i>부처궁</i><b>태양</b><span>우필</span></button>
+    <button class="cell" type="button" aria-pressed="false"><i>자녀궁</i><b>무곡</b><span>문곡</span></button>
+
+    <button class="cell" type="button" aria-pressed="false"><i>부모궁</i><b>천부</b><span>천괴</span></button>
+    <div class="cell ctr"><b>지수님</b><span>수이국</span></div>
+    <button class="cell" type="button" aria-pressed="true"><i>재백궁</i><b>천동</b><span>태음 · 록존</span></button>
+
+    <button class="cell" type="button" aria-pressed="false"><i>복덕궁</i><b>염정</b><span>천월</span></button>
+    <button class="cell" type="button" aria-pressed="false"><i>질액궁</i><b>탐랑</b><span>화성</span></button>
+
+    <button class="cell" type="button" aria-pressed="false"><i>전택궁</i><b>거문</b><span>경양</span></button>
+    <button class="cell" type="button" aria-pressed="false"><i>관록궁</i><b>천상</b><span>타라</span></button>
+    <button class="cell" type="button" aria-pressed="false"><i>노복궁</i><b>천량</b><span>지공</span></button>
+    <button class="cell" type="button" aria-pressed="false"><i>천이궁</i><b>칠살</b><span>지겁</span></button>
+  </div></div>
+
+  <!-- 설명 패널: 박스·배경 없이 얇은 선 아래로 이어진다. 이모지·칩·글로우 점 제거 -->
+  <section class="panel" role="region" aria-live="polite" aria-labelledby="pt">
+    <header>
+      <div>
+        <h3 id="pt">재백궁</h3>
+        <p class="sub">돈이 들고 나는 흐름</p>
+      </div>
+      <button class="x" type="button" aria-label="설명 닫기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </header>
+    <p class="meaning">돈을 버는 방식과 쓰는 습관, 재물이 들어오고 나가는 흐름을 보는 자리예요.</p>
+
+    <dl class="kv">
+      <div><dt>별</dt><dd><b>천동</b> · <b>태음</b> · 녹존</dd></div>
+    </dl>
+
+    <p class="read">한 번에 크게 버는 쪽보다 꾸준히 들어오는 돈에 강한 자리예요. 차곡차곡 모을수록 결과가 좋아요.</p>
+
+    <dl class="kv tx">
+      <div><dt>주의</dt><dd>마음이 후해서 모으는 만큼 나가기 쉬워요. 쓰는 기준을 하나 정해 두면 좋아요.</dd></div>
+    </dl>
+  </section>
+</main>
+</body>
+</html>
