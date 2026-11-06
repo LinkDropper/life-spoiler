@@ -1799,7 +1799,8 @@
           "item1": "회사가 작성한 저작물에 대한 저작권 및 기타 지적재산권은 회사에 귀속합니다.",
           "item2": "이용자는 서비스를 통해 얻은 정보를 개인적인 용도(SNS 공유 등)로만 사용할 수 있으며, 이를 영리 목적으로 복제, 송신, 출판, 배포, 방송 기타 방법에 의하여 이용하거나 제3자에게 이용하게 하여서는 안 됩니다."
         },
-        "effectiveDate": "본 약관은 2026년 1월 18일부터 적용됩니다."
+        "effectiveDate": "본 약관은 2026년 1월 18일부터 적용됩니다.",
+        "effectiveChip": "2026년 1월 18일부터 적용"
       },
       "privacy": {
         "title": "개인정보 처리방침",
@@ -1850,6 +1851,15 @@
           "settings": "쿠키의 설치·운영 및 거부: 웹브라우저 상단의 도구 > 인터넷 옵션 > 개인정보 메뉴의 옵션 설정을 통해 쿠키 저장을 거부할 수 있습니다.",
           "warning": "쿠키 저장을 거부할 경우 맞춤형 서비스 이용에 어려움이 발생할 수 있습니다."
         }
+      },
+      "common": {
+        "tabsAria": "약관 문서",
+        "termsTab": "이용약관",
+        "privacyTab": "개인정보 처리방침",
+        "indexLabel": "INDEX · 조항 바로 가기",
+        "termsKicker": "HOUSE RULES · 상영관 이용 규정",
+        "privacyKicker": "AUDIENCE DATA · 관객 정보 보관 안내",
+        "emailAria": "{email}로 메일 보내기"
       }
     },
     "faceSpoiler": {
@@ -4698,7 +4708,8 @@
           "item1": "Copyright and other intellectual property rights for works created by the Company belong to the Company.",
           "item2": "Users may only use information obtained through the Service for personal purposes (such as SNS sharing) and may not reproduce, transmit, publish, distribute, broadcast, or otherwise use it for commercial purposes or allow third parties to use it."
         },
-        "effectiveDate": "These terms are effective from January 18, 2026."
+        "effectiveDate": "These terms are effective from January 18, 2026.",
+        "effectiveChip": "Effective January 18, 2026"
       },
       "privacy": {
         "title": "Privacy Policy",
@@ -4749,6 +4760,15 @@
           "settings": "Cookie Installation, Operation and Rejection: You can refuse cookie storage through Tools > Internet Options > Privacy menu option settings at the top of your web browser.",
           "warning": "If you refuse to store cookies, you may have difficulty using personalized services."
         }
+      },
+      "common": {
+        "tabsAria": "Policy documents",
+        "termsTab": "Terms",
+        "privacyTab": "Privacy Policy",
+        "indexLabel": "INDEX · JUMP TO ARTICLE",
+        "termsKicker": "HOUSE RULES",
+        "privacyKicker": "AUDIENCE DATA",
+        "emailAria": "Email {email}"
       }
     },
     "faceSpoiler": {
@@ -7605,7 +7625,8 @@
           "item1": "会社が作成した著作物に対する著作権及びその他の知的財産権は会社に帰属します。",
           "item2": "利用者はサービスを通じて得た情報を個人的な用途（SNS共有など）でのみ使用でき、これを営利目的で複製、送信、出版、配布、放送その他の方法で利用したり、第三者に利用させてはなりません。"
         },
-        "effectiveDate": "本規約は2026年1月18日より適用されます。"
+        "effectiveDate": "本規約は2026年1月18日より適用されます。",
+        "effectiveChip": "2026年1月18日より適用"
       },
       "privacy": {
         "title": "個人情報処理方針",
@@ -7656,6 +7677,15 @@
           "settings": "クッキーの設置・運営及び拒否：ウェブブラウザ上部のツール > インターネットオプション > プライバシーメニューのオプション設定を通じてクッキー保存を拒否できます。",
           "warning": "クッキー保存を拒否する場合、カスタマイズサービスの利用に困難が生じる可能性があります。"
         }
+      },
+      "common": {
+        "tabsAria": "規約文書",
+        "termsTab": "利用規約",
+        "privacyTab": "個人情報処理方針",
+        "indexLabel": "INDEX · 条項へ移動",
+        "termsKicker": "HOUSE RULES · 上映館の利用規定",
+        "privacyKicker": "AUDIENCE DATA · 観客情報の保管案内",
+        "emailAria": "{email}にメールを送る"
       }
     },
     "faceSpoiler": {
