@@ -30,6 +30,10 @@
   animation: slideUp 0.3s ease-out;
 }
 
+.tall {
+  height: 82dvh;
+}
+
 .sheet:lang(ko) {
   word-break: keep-all;
 }
@@ -86,6 +90,11 @@
   font-weight: var(--cs-display-weight);
   line-height: 1.2;
   text-wrap: balance;
+}
+
+.headerExtra {
+  display: flex;
+  margin-top: 6px;
 }
 
 .close {

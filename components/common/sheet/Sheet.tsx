@@ -28,6 +28,10 @@ interface SheetProps {
   hasCloseButton?: boolean;
   /** 스크롤되는 본문 아래에 고정되는 영역 (취소·확인 등) */
   footer?: ReactNode;
+  /** 제목 아래 한 줄 (전문가 질문: 남은 횟수) */
+  headerExtra?: ReactNode;
+  /** tall = 내용이 늘어나는 시트(전문가 질문): 화면 높이의 82%로 고정 */
+  size?: "auto" | "tall";
   children: ReactNode;
 }
 
@@ -47,6 +51,8 @@ export const Sheet = ({
   isBusy = false,
   hasCloseButton = true,
   footer,
+  headerExtra,
+  size = "auto",
   children,
 }: SheetProps) => {
   const tCommon = useTranslations("common");
@@ -142,7 +148,7 @@ export const Sheet = ({
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div
         ref={sheetRef}
-        className={styles.sheet}
+        className={`${styles.sheet} ${size === "tall" ? styles.tall : ""}`}
         role={role}
         aria-modal="true"
         aria-labelledby={titleId}
@@ -162,6 +168,9 @@ export const Sheet = ({
             <h2 id={titleId} className={styles.title}>
               {title}
             </h2>
+            {headerExtra && (
+              <div className={styles.headerExtra}>{headerExtra}</div>
+            )}
           </div>
           {hasCloseButton && (
             <button

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { Sheet } from "@/components/common/sheet";
 import type { FollowUpFortuneType } from "@/libs/supabase/types";
 
 import {
@@ -12,7 +13,6 @@ import {
   MIN_QUESTION_LENGTH,
   RATE_LIMIT_SECONDS,
 } from "./chat-drawer.constants";
-import { ScreenSheet } from "./screen/ScreenSheet";
 import styles from "./ChatDrawer.module.css";
 
 interface ChatMessage {
@@ -282,13 +282,13 @@ export const ChatDrawer = ({
     trimmedLength < MIN_QUESTION_LENGTH;
 
   return (
-    <ScreenSheet
+    <Sheet
       isOpen={isOpen}
       onClose={onClose}
       eyebrow="ASK THE EXPERT"
       title={t("title")}
       isBusy={isSending}
-      tall
+      size="tall"
       headerExtra={
         <span className={styles.remaining} aria-live="polite">
           {t("remaining", { remaining, limit: FREE_QUESTION_LIMIT })}
@@ -435,7 +435,7 @@ export const ChatDrawer = ({
           </div>
         )}
       </div>
-    </ScreenSheet>
+    </Sheet>
   );
 };
 
