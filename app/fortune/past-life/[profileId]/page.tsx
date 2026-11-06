@@ -27,6 +27,7 @@ import {
   shareLinkWithSystem,
 } from "@/libs/share/system-share";
 import { useUser } from "@/libs/stores/user";
+import { showToast } from "@/libs/toast";
 
 import styles from "./page.module.css";
 
@@ -123,7 +124,7 @@ export default function PastLifeFortunePage() {
     try {
       const blob = await profileCardToBlob();
       if (!blob) {
-        alert(tP("poster.imageError"));
+        showToast({ kind: "error", message: tP("poster.imageError") });
         return;
       }
 
@@ -136,7 +137,7 @@ export default function PastLifeFortunePage() {
       });
     } catch (shareError) {
       console.error("Failed to share to Kakao with image:", shareError);
-      alert(tP("poster.shareError"));
+      showToast({ kind: "error", message: tP("poster.shareError") });
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
@@ -170,7 +171,7 @@ export default function PastLifeFortunePage() {
     try {
       const blob = await profileCardToBlob();
       if (!blob) {
-        alert(tScreen("shareSheet.imageError"));
+        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
         return;
       }
       const shared = await shareImageWithSystem({
@@ -183,7 +184,7 @@ export default function PastLifeFortunePage() {
       }
     } catch (shareError) {
       console.error("Failed to share poster with system sheet:", shareError);
-      alert(tScreen("shareSheet.shareError"));
+      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);

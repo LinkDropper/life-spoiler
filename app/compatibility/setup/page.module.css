@@ -153,7 +153,7 @@
   color: var(--primitive-primary, #ffccd9);
 }
 
-/* Shared profile card content (used in selected profiles & modal) */
+/* Shared profile card content (selected profiles) */
 .profileCardNameRow {
   display: flex;
   justify-content: space-between;
@@ -202,156 +202,12 @@
   color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
 }
 
-/* Profile Selection Modal */
-.modalBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 24px 12px;
-  background: var(--color-overlay-dimmed, rgba(17, 17, 28, 0.6));
-}
-
-.modal {
-  width: 100%;
-  max-width: 432px;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-  background: var(--color-surface-default, #18181b);
-  border-radius: 20px;
-  box-shadow: 0 4px 20px var(--color-modal-shadow, rgba(0, 0, 0, 0.12));
-}
-
-.modalContent {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  overflow-y: auto;
-}
-
-.modalTitle {
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-}
-
-/* Modal profile cards */
-.modalProfileCard {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  padding: 20px;
-  background: var(--color-surface-default, #18181b);
-  border: 2px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-  text-align: left;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.modalProfileCard:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
-.modalProfileCard.modalProfileSelected {
-  border-color: var(--color-border-selected, #ff8fb1);
-}
-
-/* Modal new profile card */
-.modalNewProfileCard {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  height: 52px;
-  padding: 20px;
-  background: var(--color-surface-default, #18181b);
-  border: 2px dashed var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-  color: var(--color-text-default, #ffffff);
-  -webkit-tap-highlight-color: transparent;
-}
-
-.modalNewProfileCard:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
-.modalNewProfileLabel {
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-}
-
-/* Modal footer */
+/* Profile Selection Sheet: 시트 아래 고정 영역의 취소·확인 */
 .modalButtons {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(96px, auto) minmax(0, 1fr);
   gap: 8px;
-}
-
-.modalCancelButton {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 52px;
-  padding: 16px 20px;
-  background: transparent;
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.16));
-  border-radius: 8px;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-default, #ffffff);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.modalCancelButton:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.modalConfirmButton {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 52px;
-  padding: 16px 20px;
-  background: var(--color-button-primary-surface, #ffccd9);
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #2d1b4e;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.modalConfirmButton:hover {
-  opacity: 0.9;
-}
-
-.modalConfirmButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  margin-top: 24px;
 }
 
 /* Footer */
@@ -421,9 +277,4 @@
   .page {
     min-height: 100svh;
   }
-}
-
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-.modalConfirmButton:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

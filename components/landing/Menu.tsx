@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 
+import { ConfirmSheet } from "@/components/common/sheet";
 import {
   getFortuneHref,
   isFortuneOwned,
@@ -135,6 +136,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [withdrawError, setWithdrawError] = useState<string | null>(null);
   const [coupons, setCoupons] = useState<CouponState>({ status: "loading" });
 
   const isLoggedIn = Boolean(user);
@@ -226,8 +228,18 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
     }
   }, [logout, onClose, router]);
 
+  const handleOpenWithdraw = useCallback(() => {
+    setWithdrawError(null);
+    setShowWithdrawModal(true);
+  }, []);
+
+  const handleCloseWithdraw = useCallback(() => {
+    setShowWithdrawModal(false);
+  }, []);
+
   const handleWithdraw = useCallback(async () => {
     setIsWithdrawing(true);
+    setWithdrawError(null);
 
     try {
       const response = await fetch("/api/auth/withdraw", {
@@ -240,12 +252,13 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
         onClose();
         router.push("/");
       } else {
-        const data = await response.json();
-        alert(data.error || t("withdrawError"));
+        // 서버 문구는 언어가 섞일 수 있어 번역된 고정 문구만 보여 준다
+        console.error("회원탈퇴 실패:", response.status);
+        setWithdrawError(t("withdrawError"));
       }
     } catch (error) {
       console.error("회원탈퇴 실패:", error);
-      alert(t("withdrawError"));
+      setWithdrawError(t("withdrawError"));
     } finally {
       setIsWithdrawing(false);
     }
@@ -526,7 +539,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
                     <button
                       type="button"
                       className={`${styles.footerButton} ${styles.footerButtonFaint}`}
-                      onClick={() => setShowWithdrawModal(true)}
+                      onClick={handleOpenWithdraw}
                     >
                       {t("withdraw")}
                     </button>
@@ -554,60 +567,19 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
         </div>
       </div>
 
-      {/* Withdraw Confirmation Modal */}
-      {showWithdrawModal && (
-        <div
-          className={styles.modalOverlay}
-          onClick={() => !isWithdrawing && setShowWithdrawModal(false)}
-        >
-          <div
-            className={styles.modal}
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="withdraw-modal-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={styles.modalContent}>
-              <div className={styles.modalHeader}>
-                <div className={styles.modalTitleRow}>
-                  <Image
-                    src="/images/landing/alert-circle.svg"
-                    alt=""
-                    width={24}
-                    height={24}
-                  />
-                  <h2 id="withdraw-modal-title" className={styles.modalTitle}>
-                    {t("withdrawModal.title")}
-                  </h2>
-                </div>
-                <p className={styles.modalDescription}>
-                  {t("withdrawModal.description")}
-                </p>
-              </div>
-              <div className={styles.modalButtons}>
-                <button
-                  type="button"
-                  className={styles.modalCancelButton}
-                  onClick={() => setShowWithdrawModal(false)}
-                  disabled={isWithdrawing}
-                >
-                  {tCommon("cancel")}
-                </button>
-                <button
-                  type="button"
-                  className={styles.modalConfirmButton}
-                  onClick={handleWithdraw}
-                  disabled={isWithdrawing}
-                >
-                  {isWithdrawing
-                    ? t("withdrawModal.withdrawing")
-                    : t("withdrawModal.confirm")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmSheet
+        isOpen={showWithdrawModal}
+        onClose={handleCloseWithdraw}
+        onConfirm={handleWithdraw}
+        eyebrow="WITHDRAW"
+        title={t("withdrawModal.title")}
+        description={t("withdrawModal.description")}
+        cancelLabel={tCommon("cancel")}
+        confirmLabel={t("withdrawModal.confirm")}
+        busyLabel={t("withdrawModal.withdrawing")}
+        isBusy={isWithdrawing}
+        errorMessage={withdrawError}
+      />
     </>
   );
 };

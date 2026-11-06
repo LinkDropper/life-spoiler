@@ -643,3 +643,38 @@ a {
 button {
   font-family: inherit;
 }
+
+/* ==========================================================================
+   상영관 공용 시트·알림 토큰 (components/common/sheet, components/common/toast,
+   BrowserRedirect, PalaceDetailPanel이 함께 쓴다). 글로우·그림자 없는 평면 톤
+   ========================================================================== */
+
+:root {
+  --cs-night: #0a0f1c;
+  --cs-deep: #05070f;
+  --cs-haze: rgba(255, 255, 255, 0.78);
+  --cs-faint: rgba(255, 255, 255, 0.6);
+  --cs-spoiler: #ffccd9;
+  --cs-accent: #ff8fb1;
+  --cs-star: #ffe7a3;
+  --cs-ink: #23142d;
+  --cs-line: rgba(255, 204, 217, 0.3);
+  --cs-line-soft: rgba(255, 204, 217, 0.15);
+  --cs-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --cs-display-weight: 400;
+  --cs-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --cs-stars:
+    radial-gradient(1px 1px at 12% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 34% 62%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 58% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 78% 44%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 90% 76%, #fff, transparent),
+    radial-gradient(1px 1px at 22% 84%, #fff, transparent),
+    radial-gradient(1px 1px at 66% 88%, #fff, transparent);
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+:root:lang(ja) {
+  --cs-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --cs-display-weight: 800;
+}

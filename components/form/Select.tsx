@@ -24,6 +24,8 @@ interface SelectProps {
   variant?: "field" | "plain";
   /** 드로어 제목. 없으면 label을 쓴다 */
   sheetTitle?: string;
+  /** 드로어 제목 위 영문 장식 라벨 (번역하지 않는다) */
+  sheetEyebrow?: string;
   /** 드로어 목록 아래에 두는 이동 항목 */
   sheetAction?: OptionSheetAction;
   disabled?: boolean;
@@ -46,6 +48,7 @@ export const Select = ({
   isLabelHidden = false,
   variant = "field",
   sheetTitle,
+  sheetEyebrow,
   sheetAction,
   disabled,
   className,
@@ -109,6 +112,7 @@ export const Select = ({
       <OptionSheet
         isOpen={isOpen}
         title={sheetTitle ?? label}
+        eyebrow={sheetEyebrow}
         options={options}
         selectedValue={value}
         onSelect={handleSelect}

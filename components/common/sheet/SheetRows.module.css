@@ -1,0 +1,80 @@
+/* 시트 안 목록 행: 얇은 구분선 행. 선택 = 굵은 흰 글씨 + 오른쪽 핑크 체크 (테두리·채움·링 없음) */
+.list {
+  border-top: 1px solid var(--cs-line);
+}
+
+.actionList {
+  margin-top: 16px;
+  border-top: 1px solid var(--cs-line);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--cs-line-soft);
+  background: none;
+  color: var(--cs-haze);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--cs-star);
+  outline-offset: -2px;
+}
+
+.row[aria-selected="true"] {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.row[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.rowTwoLine {
+  min-height: 68px;
+  padding: 10px 0;
+}
+
+.label {
+  min-width: 0;
+}
+
+.description {
+  display: block;
+  margin-top: 2px;
+  color: var(--cs-faint);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.check {
+  flex-shrink: 0;
+  color: var(--cs-accent);
+}
+
+/* 이동 항목: 선택지와 떨어뜨리고 왼쪽 + 아이콘. 핑크는 선택 표시 전용이라 흰색 */
+.actionRow {
+  justify-content: flex-start;
+  gap: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.actionRow svg {
+  flex-shrink: 0;
+}

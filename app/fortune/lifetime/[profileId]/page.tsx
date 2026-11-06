@@ -42,6 +42,7 @@ import {
 import { useUser } from "@/libs/stores/user";
 import { extractKeywordsFromChart } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
+import { showToast } from "@/libs/toast";
 
 import styles from "./page.module.css";
 
@@ -178,7 +179,7 @@ export default function LifetimeFortunePage() {
       // 이미지 Blob 생성
       const blob = await profileCardToBlob();
       if (!blob) {
-        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
+        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
         return;
       }
 
@@ -192,14 +193,14 @@ export default function LifetimeFortunePage() {
       });
     } catch (error) {
       console.error("Failed to share to Kakao with image:", error);
-      alert("공유에 실패했습니다. 다시 시도해주세요.");
+      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
         setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [result, profile, profileId, profileCardToBlob, user]);
+  }, [result, profile, profileId, profileCardToBlob, user, tScreen]);
 
   // 기기 공유 시트(인스타그램 등). 지원하지 않는 브라우저면 링크 복사로 대신한다
   const handleShareSystem = useCallback(async () => {
@@ -226,7 +227,7 @@ export default function LifetimeFortunePage() {
     try {
       const blob = await profileCardToBlob();
       if (!blob) {
-        alert(tScreen("shareSheet.imageError"));
+        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
         return;
       }
       const shared = await shareImageWithSystem({
@@ -239,7 +240,7 @@ export default function LifetimeFortunePage() {
       }
     } catch (shareError) {
       console.error("Failed to share poster with system sheet:", shareError);
-      alert(tScreen("shareSheet.shareError"));
+      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);

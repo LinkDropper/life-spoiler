@@ -21,6 +21,7 @@ import { formatBirthDate, formatBirthTime } from "./utils";
 import styles from "./page.module.css";
 
 import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
+import { showToast } from "@/libs/toast";
 
 const PET_RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
   "cat_owner",
@@ -157,11 +158,12 @@ export default function CompatibilitySetupPage() {
 
       router.push("/compatibility");
     } catch {
-      alert(
-        t("createError", {
+      showToast({
+        kind: "error",
+        message: t("createError", {
           default: "궁합 생성에 실패했습니다. 다시 시도해주세요.",
-        })
-      );
+        }),
+      });
     } finally {
       setIsSubmitting(false);
     }

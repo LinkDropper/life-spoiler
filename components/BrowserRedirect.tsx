@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   isKakaoTalkBrowser,
@@ -9,12 +9,14 @@ import {
 import styles from "./BrowserRedirect.module.css";
 
 /**
- * 카카오톡 인앱 브라우저 감지 및 외부 브라우저(크롬/사파리)로 리다이렉트
+ * 카카오톡 인앱 브라우저 감지 및 외부 브라우저(크롬/사파리)로 리다이렉트.
+ * 닫을 수 없는 전체 화면 관문이라 X 버튼이 없다.
  */
 export default function BrowserRedirect() {
   const t = useTranslations("browserRedirect");
   const [isKakaoTalk, setIsKakaoTalk] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const openButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // 카카오톡 브라우저인지 확인
@@ -34,41 +36,48 @@ export default function BrowserRedirect() {
     }
   }, []);
 
+  // 수동 버튼이 나타나면 바로 누를 수 있게 포커스
+  useEffect(() => {
+    if (isKakaoTalk && !isRedirecting) {
+      openButtonRef.current?.focus();
+    }
+  }, [isKakaoTalk, isRedirecting]);
+
   if (!isKakaoTalk) {
     return null;
   }
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <div className={styles.iconWrapper}>
-          <svg
-            className={styles.browserIcon}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
-        </div>
+    <div
+      className={styles.gate}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="browser-redirect-title"
+      aria-describedby="browser-redirect-description"
+      aria-busy={isRedirecting}
+    >
+      <div className={styles.content}>
+        <p className={styles.eyebrow} aria-hidden="true">
+          OPEN IN BROWSER
+        </p>
 
-        <h2 className={styles.title}>
+        <h1 id="browser-redirect-title" className={styles.title}>
           {isRedirecting ? t("redirecting") : t("openExternal")}
-        </h2>
+        </h1>
 
-        <p className={styles.description}>
+        <p id="browser-redirect-description" className={styles.description}>
           {t("description")}
-          <br />
           <strong>{t("chromeOrSafari")}</strong>
         </p>
 
-        {!isRedirecting && (
+        {isRedirecting ? (
+          <p className={styles.status} role="status">
+            {t("redirectingStatus")}
+          </p>
+        ) : (
           <button
+            ref={openButtonRef}
+            type="button"
             className={styles.button}
             onClick={() => {
               setIsRedirecting(true);
@@ -77,13 +86,6 @@ export default function BrowserRedirect() {
           >
             {t("openButton")}
           </button>
-        )}
-
-        {isRedirecting && (
-          <div className={styles.loading}>
-            <div className={styles.spinner} />
-            <p className={styles.loadingText}>{t("redirectingStatus")}</p>
-          </div>
         )}
 
         <p className={styles.helpText}>
