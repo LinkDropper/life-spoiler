@@ -1,34 +1,28 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { ArrowLeftRight, ChevronLeft, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
 
-import Image from "next/image";
-
-import { HeaderClient } from "@/components/landing";
-import { SelectableChips } from "@/components/form";
 import { getRelationshipLabel } from "@/components/compatibility";
+import { HeaderClient } from "@/components/landing";
+import { toCompatibilityGenre } from "@/libs/fortune/compatibility-screen";
+import { NEW_PROFILE_TOKEN } from "@/libs/profile/setup-redirect";
 import {
-  useProfiles,
   useIsProfilesLoading,
   useProfileActions,
+  useProfiles,
 } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
+import type {
+  CompatibilityRelationshipType,
+  ProfileRow,
+} from "@/libs/supabase/types";
 
-import { ProfileSelectModal } from "./ProfileSelectModal";
-import { formatBirthDate, formatBirthTime } from "./utils";
+import { CastingSheet, type CastingSlot } from "./CastingSheet";
+import { formatProfileLine } from "./utils";
 import styles from "./page.module.css";
-
-import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
-
-const PET_RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
-  "cat_owner",
-  "dog_owner",
-];
-
-const isPetRelationship = (type: CompatibilityRelationshipType): boolean =>
-  PET_RELATIONSHIP_TYPES.includes(type);
 
 const RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
   "lover",
@@ -43,26 +37,40 @@ const RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
   "custom",
 ];
 
-const MAX_SELECTED = 2;
+const PET_RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [
+  "cat_owner",
+  "dog_owner",
+];
 
+const CUSTOM_MAX_LENGTH = 20;
+
+/**
+ * 궁합 만들기 = 공동 주연 캐스팅 (2026-11-06).
+ * LEAD A · LEAD B 칸을 배우 고르기 시트로 하나씩 채우고, 관계를 고르면 그 관계가 장르가 된다.
+ * 저장하면 목록으로 돌아가지 않고 새 궁합의 예고편으로 바로 간다.
+ * 새 배우 프로필을 만들고 돌아오면(?a=&b=) 그 칸에 바로 앉는다.
+ */
 export default function CompatibilitySetupPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
-  const t = useTranslations("compatibility.setup");
+  const t = useTranslations("compatibility.casting");
   const tCard = useTranslations("compatibility.card");
+  const tC = useTranslations("fortune.screen.compatibility");
   const tProfile = useTranslations("profiles.card");
 
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
   const { fetchProfiles } = useProfileActions();
 
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [cast, setCast] = useState<Record<CastingSlot, string | null>>({
+    a: searchParams.get("a") || null,
+    b: searchParams.get("b") || null,
+  });
+  const [pickingSlot, setPickingSlot] = useState<CastingSlot | null>(null);
   const [relationshipType, setRelationshipType] =
     useState<CompatibilityRelationshipType>("lover");
-  const [relationshipTypeCustom, setRelationshipTypeCustom] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [tempSelectedIds, setTempSelectedIds] = useState<string[]>([]);
+  const [relationshipCustom, setRelationshipCustom] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -77,379 +85,277 @@ export default function CompatibilitySetupPage() {
     }
   }, [authStatus, router]);
 
-  // 프로필 생성 후 돌아왔을 때 모달 자동 열기
+  // 새 프로필을 만들고 돌아온 주소(?a=&b=)는 한 번 읽고 지운다
   useEffect(() => {
-    if (searchParams.get("modal") === "open" && !isProfilesLoading) {
-      setIsModalOpen(true);
-      router.replace("/compatibility/setup", {
-        scroll: false,
-      });
+    if (searchParams.get("a") || searchParams.get("b")) {
+      router.replace("/compatibility/setup", { scroll: false });
     }
-  }, [searchParams, isProfilesLoading, router]);
+  }, [searchParams, router]);
 
-  const selectedProfiles = selectedIds
-    .map((id) => profiles.find((p) => p.id === id))
-    .filter((p): p is (typeof profiles)[number] => !!p);
+  const findProfile = (id: string | null): ProfileRow | undefined =>
+    id ? profiles.find((profile) => profile.id === id) : undefined;
+  const leadA = findProfile(cast.a);
+  const leadB = findProfile(cast.b);
+  const isPet = PET_RELATIONSHIP_TYPES.includes(relationshipType);
+  const genre = toCompatibilityGenre(relationshipType);
 
-  const handleBack = useCallback(() => {
-    router.push("/compatibility");
-  }, [router]);
-
-  const handleOpenModal = useCallback(() => {
-    setTempSelectedIds([...selectedIds]);
-    setIsModalOpen(true);
-  }, [selectedIds]);
-
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
+  const handleCast = useCallback((slot: CastingSlot, profileId: string) => {
+    setCast((prev) => ({ ...prev, [slot]: profileId }));
+    setPickingSlot(null);
   }, []);
 
-  const handleToggleProfile = useCallback((profileId: string) => {
-    setTempSelectedIds((prev) => {
-      if (prev.includes(profileId)) {
-        return prev.filter((id) => id !== profileId);
-      }
-      if (prev.length >= MAX_SELECTED) return prev;
-      return [...prev, profileId];
-    });
-  }, []);
+  const handleSwap = () => {
+    setCast((prev) => ({ a: prev.b, b: prev.a }));
+  };
 
-  const handleConfirmSelection = useCallback(() => {
-    setSelectedIds(tempSelectedIds);
-    setIsModalOpen(false);
-  }, [tempSelectedIds]);
+  const handleNewProfile = useCallback(
+    (slot: CastingSlot) => {
+      const next = { ...cast, [slot]: NEW_PROFILE_TOKEN };
+      const back = `/compatibility/setup?a=${next.a ?? ""}&b=${next.b ?? ""}`;
+      router.push(`/profile/setup?redirect=${encodeURIComponent(back)}`);
+    },
+    [cast, router]
+  );
 
-  const handleSwapProfiles = useCallback(() => {
-    setSelectedIds((prev) => {
-      if (prev.length !== 2) return prev;
-      return [prev[1], prev[0]];
-    });
-  }, []);
+  const isReady =
+    Boolean(leadA && leadB) &&
+    (relationshipType !== "custom" || relationshipCustom.trim().length > 0);
 
-  const handleNewProfile = useCallback(() => {
-    const path = "/compatibility/setup?modal=open";
-    const redirect = encodeURIComponent(path);
-    router.push(`/profile/setup?redirect=${redirect}`);
-  }, [router]);
-
-  const handleSubmit = useCallback(async () => {
-    if (selectedIds.length < MAX_SELECTED) return;
+  const handleSubmit = async () => {
+    if (!isReady || isSubmitting) return;
 
     setIsSubmitting(true);
-
     try {
       const response = await fetch("/api/compatibility", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          profileAId: selectedIds[0],
-          profileBId: selectedIds[1],
+          profileAId: cast.a,
+          profileBId: cast.b,
           relationshipType,
-          ...(relationshipType === "custom" && relationshipTypeCustom.trim()
-            ? { relationshipTypeCustom: relationshipTypeCustom.trim() }
+          ...(relationshipType === "custom"
+            ? { relationshipTypeCustom: relationshipCustom.trim() }
             : {}),
         }),
       });
-
-      if (!response.ok) {
+      const data: { pairId?: string } = await response.json();
+      if (!response.ok || !data.pairId) {
         throw new Error("Failed to create compatibility pair");
       }
-
-      router.push("/compatibility");
+      // 저장하면 새 궁합의 예고편으로 바로 (상영관 전환이 덮는다)
+      router.push(`/compatibility/${data.pairId}/fortune/preview`);
     } catch {
-      alert(
-        t("createError", {
-          default: "궁합 생성에 실패했습니다. 다시 시도해주세요.",
-        })
-      );
-    } finally {
+      alert(t("createError"));
       setIsSubmitting(false);
     }
-  }, [selectedIds, relationshipType, relationshipTypeCustom, router, t]);
-
-  const getCalendarLabel = (type: "solar" | "lunar") => {
-    return type === "solar"
-      ? tProfile("solar", { default: "양력" })
-      : tProfile("lunar", { default: "음력" });
   };
 
-  const getGenderLabel = (g: "male" | "female") => {
-    return g === "male"
-      ? tProfile("male", { default: "남성" })
-      : tProfile("female", { default: "여성" });
+  const getRoleLabel = (slot: CastingSlot): string | null => {
+    if (!isPet) return null;
+    if (slot === "a") return t("petOwner");
+    return relationshipType === "cat_owner" ? t("petCat") : t("petDog");
   };
 
-  const getPetRoleLabel = (index: number): string | null => {
-    if (!isPetRelationship(relationshipType)) return null;
-    if (index === 0) {
-      return t("petRoleOwner", { default: "집사" });
+  const toProfileLine = (profile: ProfileRow) =>
+    formatProfileLine(profile, {
+      solar: tProfile("solar"),
+      lunar: tProfile("lunar"),
+      male: tProfile("male"),
+      female: tProfile("female"),
+      timeUnknown: tProfile("timeUnknown"),
+    });
+
+  const renderSlot = (slot: CastingSlot, profile: ProfileRow | undefined) => {
+    const label = slot === "a" ? "LEAD A" : "LEAD B";
+    const role = getRoleLabel(slot);
+    const slotClass = slot === "a" ? styles.slotA : styles.slotB;
+
+    if (!profile) {
+      return (
+        <button
+          type="button"
+          className={`${styles.slot} ${styles.slotEmpty} ${slotClass}`}
+          onClick={() => setPickingSlot(slot)}
+          aria-haspopup="dialog"
+        >
+          <span className={styles.slotPlus} aria-hidden="true">
+            <Plus size={24} />
+          </span>
+          <span className={styles.slotLabel}>
+            {label}
+            {role && ` · ${role}`}
+          </span>
+          <b className={styles.slotCta}>{t("pickActor")}</b>
+        </button>
+      );
     }
-    return relationshipType === "cat_owner"
-      ? t("petRoleCat", { default: "고양이" })
-      : t("petRoleDog", { default: "강아지" });
-  };
 
-  const isFormValid =
-    selectedIds.length === MAX_SELECTED &&
-    !isSubmitting &&
-    (relationshipType !== "custom" || relationshipTypeCustom.trim().length > 0);
-  const timeUnknownLabel = tProfile("timeUnknown", {
-    default: "시간 모름",
-  });
+    return (
+      <button
+        type="button"
+        className={`${styles.slot} ${styles.slotFilled} ${slotClass}`}
+        onClick={() => setPickingSlot(slot)}
+        aria-haspopup="dialog"
+        aria-label={t("slotAria", { label, name: profile.name })}
+      >
+        <span className={styles.monogram} aria-hidden="true">
+          {profile.name.slice(0, 1)}
+        </span>
+        <span className={styles.slotLabel}>
+          {label}
+          {role && ` · ${role}`}
+        </span>
+        <b className={styles.slotName}>{profile.name}</b>
+        <span className={styles.slotSub}>{toProfileLine(profile)}</span>
+        <span className={styles.slotChange}>{t("change")}</span>
+      </button>
+    );
+  };
 
   if (
     authStatus === "loading" ||
-    isProfilesLoading ||
-    authStatus === "unauthenticated"
+    authStatus === "unauthenticated" ||
+    isProfilesLoading
   ) {
     return (
       <div className={styles.page}>
         <HeaderClient />
-        <div className={styles.loading}>
-          {t("loading", { default: "로딩 중..." })}
-        </div>
+        <p className={styles.status} role="status">
+          {t("loading")}
+        </p>
       </div>
     );
   }
-
-  const relationshipOptions = RELATIONSHIP_TYPES.map((type) => ({
-    value: type,
-    label: getRelationshipLabel(type, tCard),
-  }));
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       <main className={styles.main}>
-        {/* 프로필 선택 섹션 */}
-        <div className={styles.section}>
-          <span className={styles.sectionLabel}>
-            {t("profileSelection", {
-              default: "프로필 선택",
-            })}
+        <header className={styles.head}>
+          <span className={styles.kicker}>CASTING</span>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.desc}>{t("desc")}</p>
+        </header>
+
+        <section className={styles.step} aria-labelledby="casting-step-1">
+          <span id="casting-step-1" className={styles.stepLabel}>
+            {t("step1")}
           </span>
-
-          {selectedProfiles.length > 0 && (
-            <div className={styles.selectedProfiles}>
-              {selectedProfiles.map((profile, index) => {
-                const petRole = getPetRoleLabel(index);
-                return (
-                  <div key={profile.id}>
-                    {index === 1 &&
-                      isPetRelationship(relationshipType) &&
-                      selectedProfiles.length === 2 && (
-                        <button
-                          type="button"
-                          className={styles.swapButton}
-                          onClick={handleSwapProfiles}
-                          aria-label={t("petSwap", {
-                            default: "집사/반려동물 순서 바꾸기",
-                          })}
-                        >
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 18 18"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M5.25 3L2.25 6L5.25 9"
-                              stroke="#FFCCD9"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M2.25 6H12.75"
-                              stroke="#FFCCD9"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M12.75 15L15.75 12L12.75 9"
-                              stroke="#FFCCD9"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M15.75 12H5.25"
-                              stroke="#FFCCD9"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          <span className={styles.swapButtonLabel}>
-                            {t("petSwapLabel", {
-                              default: "순서 바꾸기",
-                            })}
-                          </span>
-                        </button>
-                      )}
-                    <div className={styles.selectedProfileCard}>
-                      {petRole && (
-                        <span className={styles.petRoleLabel}>{petRole}</span>
-                      )}
-                      <div className={styles.profileCardNameRow}>
-                        <span className={styles.profileCardName}>
-                          {profile.name}
-                        </span>
-                      </div>
-                      <div className={styles.profileCardInfoRow}>
-                        <div className={styles.profileCardDateTime}>
-                          <span className={styles.profileCardInfoText}>
-                            {formatBirthDate(profile.birth_date)}
-                          </span>
-                          <span className={styles.profileCardInfoText}>
-                            {formatBirthTime(
-                              profile.birth_time,
-                              profile.birth_time_unknown,
-                              timeUnknownLabel
-                            )}
-                          </span>
-                        </div>
-                        <div className={styles.profileCardTags}>
-                          <span className={styles.profileCardTag}>
-                            {getCalendarLabel(profile.calendar_type)}
-                          </span>
-                          <span className={styles.profileCardTag}>
-                            {getGenderLabel(profile.gender)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-              <button
-                type="button"
-                className={styles.changeButton}
-                onClick={handleOpenModal}
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9 15H15.75"
-                    stroke="#FFCCD9"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12.375 2.62499C12.6734 2.32662 13.078 2.15906 13.5 2.15906C13.7091 2.15906 13.9162 2.20023 14.1094 2.28029C14.3025 2.36034 14.4781 2.47775 14.625 2.62499C14.7722 2.77224 14.8897 2.94781 14.9697 3.14097C15.0498 3.33413 15.0909 3.54122 15.0909 3.75031C15.0909 3.9594 15.0498 4.16649 14.9697 4.35965C14.8897 4.55281 14.7722 4.72838 14.625 4.87562L5.25 14.2506L2.25 15L3 12L12.375 2.62499Z"
-                    stroke="#FFCCD9"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className={styles.changeButtonLabel}>
-                  {t("edit", { default: "수정하기" })}
-                </span>
-              </button>
-            </div>
-          )}
-
-          {selectedProfiles.length === 0 && (
-            <button
-              type="button"
-              className={styles.profileSelectButton}
-              onClick={handleOpenModal}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9 3.75V14.25"
-                  stroke="#FFCCD9"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M3.75 9H14.25"
-                  stroke="#FFCCD9"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className={styles.profileSelectButtonLabel}>
-                {t("addProfile", {
-                  default: "프로필 추가",
-                })}
-              </span>
+          <div className={styles.slots}>
+            {renderSlot("a", leadA)}
+            <span className={styles.times} aria-hidden="true">
+              ×
+            </span>
+            {renderSlot("b", leadB)}
+          </div>
+          {leadA && leadB && (
+            <button type="button" className={styles.swap} onClick={handleSwap}>
+              <ArrowLeftRight size={16} aria-hidden="true" />
+              {t("swap")}
             </button>
           )}
-        </div>
+        </section>
 
-        {/* 관계 선택 섹션 */}
-        <SelectableChips
-          label={t("relationshipSelection", { default: "관계 선택" })}
-          options={relationshipOptions}
-          value={relationshipType}
-          customValue={relationshipTypeCustom}
-          onChange={(value, customValue) => {
-            setRelationshipType(value);
-            setRelationshipTypeCustom(customValue ?? "");
-          }}
-          columns={2}
-          customPlaceholder={t("customRelationshipPlaceholder", {
-            default: "직접 입력해주세요",
-          })}
-          customMaxLength={20}
-        />
+        <section className={styles.step} aria-labelledby="casting-step-2">
+          <span id="casting-step-2" className={styles.stepLabel}>
+            {t("step2")}
+          </span>
+          <div
+            className={styles.genres}
+            role="radiogroup"
+            aria-labelledby="casting-step-2"
+          >
+            {RELATIONSHIP_TYPES.map((type) => {
+              const isSelected = type === relationshipType;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  className={`${styles.genre} ${isSelected ? styles.genreOn : ""}`}
+                  onClick={() => setRelationshipType(type)}
+                >
+                  <b>
+                    {type === "custom"
+                      ? t("customRelation")
+                      : getRelationshipLabel(type, tCard)}
+                  </b>
+                  <span>{tC(`genre.${toCompatibilityGenre(type)}`)}</span>
+                </button>
+              );
+            })}
+          </div>
+          {relationshipType === "custom" && (
+            <label className={styles.customField}>
+              <span className={styles.srOnly}>{t("customPlaceholder")}</span>
+              <input
+                type="text"
+                value={relationshipCustom}
+                onChange={(event) =>
+                  setRelationshipCustom(
+                    event.target.value.slice(0, CUSTOM_MAX_LENGTH)
+                  )
+                }
+                placeholder={t("customPlaceholder")}
+                maxLength={CUSTOM_MAX_LENGTH}
+                className={styles.customInput}
+              />
+            </label>
+          )}
+        </section>
+
+        {leadA && leadB && (
+          <div className={styles.billing} aria-live="polite">
+            <span className={styles.billingCol}>
+              <span>NOW CASTING</span>
+              <b>
+                <span className={styles.nameA}>{leadA.name}</span> ×{" "}
+                <span className={styles.nameB}>{leadB.name}</span>
+              </b>
+            </span>
+            <span className={`${styles.billingCol} ${styles.billingRight}`}>
+              <span>GENRE</span>
+              <b className={styles.billingGenre}>{tC(`genre.${genre}`)}</b>
+            </span>
+          </div>
+        )}
       </main>
 
       <footer className={styles.footer}>
         <button
           type="button"
           className={styles.backButton}
-          onClick={handleBack}
-          aria-label={t("back", { default: "뒤로가기" })}
+          onClick={() => router.push("/compatibility")}
+          aria-label={t("back")}
         >
-          <Image
-            src="/images/common/back-button.svg"
-            alt=""
-            width={52}
-            height={52}
-          />
+          <ChevronLeft size={24} aria-hidden="true" />
         </button>
         <button
           type="button"
           className={styles.primaryButton}
           onClick={handleSubmit}
-          disabled={!isFormValid}
+          disabled={!isReady || isSubmitting}
         >
           {isSubmitting
-            ? t("submitting", { default: "생성 중..." })
-            : t("save", { default: "저장하기" })}
+            ? t("submitting")
+            : leadA && leadB
+              ? t("submit")
+              : t("needTwo")}
         </button>
       </footer>
 
-      {isModalOpen && (
-        <ProfileSelectModal
-          profiles={profiles}
-          tempSelectedIds={tempSelectedIds}
-          onToggleProfile={handleToggleProfile}
-          onNewProfile={handleNewProfile}
-          onConfirm={handleConfirmSelection}
-          onClose={handleCloseModal}
-        />
-      )}
+      <CastingSheet
+        slot={pickingSlot}
+        profiles={profiles}
+        cast={cast}
+        roleLabel={pickingSlot ? getRoleLabel(pickingSlot) : null}
+        toProfileLine={toProfileLine}
+        onCast={handleCast}
+        onNewProfile={handleNewProfile}
+        onClose={() => setPickingSlot(null)}
+      />
     </div>
   );
 }
