@@ -1,48 +1,63 @@
+/*
+ * 자미두수 가이드 = 인생스포라는 영화의 원작을 풀어 쓴 프로덕션 노트.
+ * 목차 → NOTE 01~07 → 자주 묻는 질문 → 용어 크레딧. 본문 글은 그대로 두고
+ * 명반 그림(랜딩과 같은 PalaceGrid), 주성 계열 칩, 비교 표, 대운 띠만 더한다.
+ */
 .page {
+  /* PalaceGrid가 쓰는 랜딩 상영관 색 (app/page.module.css와 같은 값) */
+  --cinema-text: #ffffff;
+  --cinema-haze: rgba(255, 255, 255, 0.72);
+  --cinema-line: rgba(255, 255, 255, 0.14);
+  --cinema-accent: var(--primitive-primary-strong, #ff8fb1);
+  --cinema-star: var(--primitive-gold, #ffe7a3);
+  --cinema-display: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  --cinema-display-weight: 400;
+
+  --guide-night: #0c1220;
+  --guide-panel: #111a2e;
+  --guide-credits: #070a12;
+  --guide-line: rgba(255, 255, 255, 0.1);
+  --guide-star: var(--cinema-star);
+  --guide-pink: var(--primitive-primary, #ffccd9);
+  --guide-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  background: var(--guide-night);
   color: var(--color-text-default, #ffffff);
+  overflow-wrap: break-word;
+}
+
+/* 한국어는 어절 단위로 줄바꿈. 일본어에 keep-all을 걸면 줄이 넘쳐 ko에만 건다 */
+.page:lang(ko) {
+  word-break: keep-all;
+}
+
+/* SB 어그로에는 한자 글리프가 없다 */
+.page:lang(ja) {
+  --cinema-display: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  --cinema-display-weight: 800;
 }
 
 .main {
   flex: 1;
   min-width: 0;
-  padding: 16px 24px 48px;
-
-  @media (max-width: 375px) {
-    padding: 16px 16px 48px;
-  }
+  padding: 8px 20px 48px;
 }
 
 .breadcrumb ol {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 0 0 20px;
+  gap: 0 6px;
+  margin: 0 0 12px;
   padding: 0;
   list-style: none;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.breadcrumb li + li::before {
-  content: "›";
-  margin-right: 6px;
-  color: var(--primitive-primary, #ffccd9);
-}
-
-.breadcrumb a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  color: var(--color-text-accent, #ff8fb1);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .breadcrumb li {
@@ -50,220 +65,494 @@
   align-items: center;
 }
 
+.breadcrumb li + li::before {
+  content: "›";
+  margin-right: 6px;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .article {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 48px;
   min-width: 0;
 }
 
+/* ───── 머리말 ───── */
 .header {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+.kicker,
+.note,
+.tocLabel,
+.creditsKicker {
+  font-family: var(--guide-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--guide-star);
+}
+
+.note {
+  color: var(--color-text-accent, #ff8fb1);
+}
+
 .title {
   margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.4;
-  word-break: keep-all;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.35;
 }
 
 .updated {
   margin: 0;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.intro {
+.intro,
+.paragraph {
   margin: 0;
-  padding: 16px;
-  border: 1px solid rgba(255, 204, 217, 0.25);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 16px;
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.84);
 }
 
+/* ───── 목차 ───── */
+.toc {
+  margin-top: -20px;
+  padding: 16px 16px 6px;
+  border-radius: 14px;
+  background: var(--guide-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.28);
+}
+
+.tocList {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tocList li + li {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tocLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 15px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.tocLink:focus-visible {
+  outline: 2px solid var(--guide-star);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .tocLink:hover {
+    color: var(--guide-star);
+  }
+}
+
+.tocNo {
+  flex-shrink: 0;
+  width: 22px;
+  font-family: var(--guide-mono);
+  font-size: 12px;
+  color: var(--guide-star);
+}
+
+/* ───── 본문 ───── */
 .section {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-width: 0;
+  gap: 12px;
+  scroll-margin-top: 72px;
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .heading {
   margin: 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.4;
-  word-break: keep-all;
-}
-
-.paragraph {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.75;
-  color: rgba(255, 255, 255, 0.88);
-  word-break: keep-all;
-  overflow-wrap: anywhere;
-}
-
-.tableWrapper {
-  max-width: 100%;
-  overflow-x: auto;
-  border: 1px solid rgba(255, 204, 217, 0.2);
-  border-radius: 12px;
-}
-
-.table {
-  width: 100%;
-  min-width: 420px;
-  border-collapse: collapse;
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .caption {
-  padding: 12px;
+  font-size: 13px;
+  line-height: 1.6;
   text-align: left;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.groupLabel {
+  font-family: var(--guide-mono);
+  font-size: 10px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.table th,
-.table td {
-  padding: 10px 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  text-align: left;
-  vertical-align: top;
-  word-break: keep-all;
-}
-
-.table thead th {
-  background: rgba(255, 204, 217, 0.08);
-  color: var(--color-text-accent, #ff8fb1);
-}
-
-.table tbody th {
-  white-space: nowrap;
-  font-weight: 600;
-}
-
-.faqItem {
+/* 명반 그림 */
+.chart {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin: 4px 0 0;
+}
+
+/* 주성 계열·사화 칩 */
+.starGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   padding: 16px;
-  border: 1px solid rgba(255, 204, 217, 0.15);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  background: var(--guide-panel);
+}
+
+.starGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chips0 .chip {
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.55);
+}
+
+.chips1 .chip {
+  box-shadow: inset 0 0 0 1px rgba(255, 204, 217, 0.5);
+}
+
+/* 자미두수 · 사주 비교: 항목 한 줄 + 두 칸 */
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  table-layout: fixed;
+}
+
+.table .caption {
+  caption-side: bottom;
+  padding-top: 8px;
+}
+
+.table thead th {
+  padding: 10px 14px;
+  background: rgba(255, 231, 163, 0.1);
+  font-family: var(--guide-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: left;
+  color: var(--guide-star);
+}
+
+.table thead th + th {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.table tbody tr:first-child th {
+  padding: 10px 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.table td {
+  padding: 4px 14px 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  vertical-align: top;
+}
+
+.table td + td {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 대운 띠 */
+.dayun {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 0;
+}
+
+.dayunStrip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dayunFrame {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px var(--guide-line);
+}
+
+.dayunFrame b {
+  font-family: var(--guide-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dayunFrame span {
+  font-size: 12px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.dayunFirst {
+  background: rgba(255, 231, 163, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.5);
+}
+
+/* 자주 묻는 질문: 펼치고 접기. 답은 접혀도 문서 안에 있어 검색에 잡힌다 */
+.faqList {
+  display: flex;
+  flex-direction: column;
+}
+
+.faqItem {
+  border-bottom: 1px solid var(--guide-line);
 }
 
 .faqQuestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 10px 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faqQuestion::-webkit-details-marker {
+  display: none;
+}
+
+.faqQuestion:focus-visible {
+  outline: 2px solid var(--guide-star);
+  outline-offset: 2px;
+}
+
+.faqQuestion h3 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   line-height: 1.5;
+}
+
+.faqMark {
+  position: relative;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.faqMark::before,
+.faqMark::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 14px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-text-accent, #ff8fb1);
+}
+
+.faqMark::after {
+  transform: rotate(90deg);
+}
+
+.faqItem[open] .faqMark::after {
+  display: none;
+}
+
+.faqAnswer {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ───── 용어 크레딧: 용어는 오른쪽, 뜻은 왼쪽 정렬로 가운데서 마주 본다 ───── */
+.credits {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 16px;
+  border-radius: 4px;
+  background: var(--guide-credits);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  scroll-margin-top: 72px;
+}
+
+.creditsHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
 }
 
 .glossary {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   margin: 0;
 }
 
 .glossaryItem {
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  grid-template-columns: minmax(84px, 0.4fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
 }
 
 .glossaryTerm {
-  font-size: 16px;
-  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: right;
 }
 
 .glossaryReading {
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--guide-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .glossaryDefinition {
-  margin: 4px 0 0;
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
 }
 
+/* ───── 마무리 ───── */
 .cta {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 24px 20px;
+  padding: 22px 18px;
   border-radius: 16px;
-  background: rgba(255, 204, 217, 0.08);
-  border: 1px solid rgba(255, 204, 217, 0.3);
+  background:
+    radial-gradient(
+      ellipse 80% 90% at 50% 0%,
+      rgba(255, 231, 163, 0.14),
+      transparent 70%
+    ),
+    var(--guide-panel);
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 163, 0.3);
 }
 
 .ctaTitle {
   margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.4;
+  font-family: var(--cinema-display);
+  font-weight: var(--cinema-display-weight);
+  font-size: 24px;
+  line-height: 1.25;
 }
 
 .ctaDescription {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .ctaButton {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 52px;
+  justify-content: center;
+  min-height: 56px;
   padding: 14px 20px;
-  border-radius: 8px;
+  border-radius: 14px;
   background: var(--color-button-primary-surface, #ffccd9);
-  color: #2d1b4e;
-  font-size: 16px;
-  font-weight: 600;
+  color: #23142d;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
   text-decoration: none;
 }
 
-.ctaButton:focus-visible,
-.breadcrumb a:focus-visible {
-  outline: 2px solid #ffffff;
+.ctaButton:focus-visible {
+  outline: 2px solid var(--guide-star);
   outline-offset: 2px;
 }
 
-.disclaimer {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.72);
-}
-
-@supports (min-height: 100svh) {
-  .page {
-    min-height: 100svh;
-  }
-}
-
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
 @media (hover: hover) {
-  .ctaButton:hover:not(:disabled) {
+  .ctaButton:hover {
     background: var(--color-button-primary-surface-hover, #ffa8c0);
   }
 }
 
-.ctaButton:active:not(:disabled) {
+.ctaButton:active {
   background: var(--color-button-primary-surface-pressed, #f598b3);
+}
+
+.disclaimer {
+  margin: -24px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
 }
