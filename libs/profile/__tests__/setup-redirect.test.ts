@@ -1,4 +1,4 @@
-import { getProfileSetupRedirect } from "../setup-redirect";
+import { NEW_PROFILE_TOKEN, getProfileSetupRedirect } from "../setup-redirect";
 
 describe("getProfileSetupRedirect", () => {
   it("홈에서 왔으면 새 프로필을 고른 홈으로 돌아간다", () => {
@@ -27,5 +27,17 @@ describe("getProfileSetupRedirect", () => {
       "/profiles?type=lifetime"
     );
     expect(getProfileSetupRedirect(null, null, "p-1")).toBe("/profiles");
+  });
+});
+
+describe("getProfileSetupRedirect · 새 프로필 자리", () => {
+  it("redirect 안의 자리를 방금 만든 프로필 id로 바꾼다", () => {
+    expect(
+      getProfileSetupRedirect(
+        `/compatibility/setup?a=p1&b=${NEW_PROFILE_TOKEN}`,
+        null,
+        "p2"
+      )
+    ).toBe("/compatibility/setup?a=p1&b=p2");
   });
 });
