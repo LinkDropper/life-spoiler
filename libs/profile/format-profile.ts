@@ -1,3 +1,4 @@
+/** 프로필 생년월일·시간 표시 (궁합 캐스팅 · 출연진 명단 공용) */
 import type { ProfileRow } from "@/libs/supabase/types";
 
 export const formatBirthDate = (dateString: string) => {
