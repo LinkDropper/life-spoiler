@@ -3,6 +3,7 @@ import {
   getStoryScore,
   pickNextAfterCompatibility,
   toCompatibilityGenre,
+  toCompatibilityLineupItem,
 } from "../compatibility-screen";
 
 import type { ProfileWithFortunes } from "@/libs/stores/profile/types";
@@ -67,5 +68,48 @@ describe("pickNextAfterCompatibility", () => {
 
   it("프로필을 모르면 인생 운세", () => {
     expect(pickNextAfterCompatibility(null)).toBe("lifetime");
+  });
+});
+
+describe("toCompatibilityLineupItem", () => {
+  const base = {
+    id: "pair-1",
+    relationship_type: "friend" as const,
+    relationship_type_custom: null,
+    score: null,
+    paid_at: null,
+    result: null,
+    profile_a: { name: "지수" },
+    profile_b: { name: "서연" },
+  };
+
+  it("예고편 전이면 점수·한 줄 없이 예고편으로 보낸다", () => {
+    expect(toCompatibilityLineupItem(base)).toMatchObject({
+      nameA: "지수",
+      nameB: "서연",
+      genre: "buddy",
+      isOwned: false,
+      score: null,
+      headline: null,
+      starKeyA: null,
+      href: "/compatibility/pair-1/fortune/preview",
+    });
+  });
+
+  it("소장한 궁합은 본편으로, 해석의 한 줄을 쓴다", () => {
+    const item = toCompatibilityLineupItem({
+      ...base,
+      score: 82,
+      paid_at: "2026-11-01T00:00:00Z",
+      result: {
+        interpretation: { headline: "말보다 박자가 먼저 맞는 두 사람" },
+      },
+    });
+    expect(item).toMatchObject({
+      isOwned: true,
+      score: 82,
+      headline: "말보다 박자가 먼저 맞는 두 사람",
+      href: "/compatibility/pair-1/fortune/result",
+    });
   });
 });

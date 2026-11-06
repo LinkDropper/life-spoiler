@@ -1,40 +1,35 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
 
-import Image from "next/image";
-
-import { ConfirmSheet } from "@/components/common/sheet";
+import { ConfirmSheet, Sheet, SheetButton } from "@/components/common/sheet";
+import { getRelationshipLabel } from "@/components/compatibility";
+import { LineupCard } from "@/components/compatibility/LineupCard";
 import { HeaderClient } from "@/components/landing";
-import {
-  CompatibilityCard,
-  NewCompatibilityCard,
-} from "@/components/compatibility";
-import { getRelationshipLabel } from "@/components/compatibility/utils";
 import { useAuthStatus } from "@/libs/stores/user";
-import { showToast } from "@/libs/toast";
 
-import { useCompatibilityList, useCompatibilityDelete } from "./hooks";
+import { useCompatibilityDelete, useCompatibilityList } from "./hooks";
 import styles from "./page.module.css";
 
+const SETUP_HREF = "/compatibility/setup";
+
+/**
+ * 궁합 목록 = 공동 주연작 라인업 (2026-11-06).
+ * 카드를 누르면 바로 상영(소장 = 본편, 아니면 예고편). 삭제는 카드의 ⋯ 안에.
+ * 하나도 없으면 빈 배역 칸 두 개와 "캐스팅 시작하기".
+ */
 export default function CompatibilityPage() {
   const router = useRouter();
   const authStatus = useAuthStatus();
-  const t = useTranslations("compatibility");
+  const t = useTranslations("compatibility.lineup");
+  const tCompat = useTranslations("compatibility");
   const tCard = useTranslations("compatibility.card");
   const tDelete = useTranslations("compatibility.deleteModal");
 
-  const {
-    pairs,
-    isLoading,
-    selectedPairId,
-    handlePairSelect,
-    fetchPairs,
-    removePair,
-  } = useCompatibilityList();
-
+  const { items, isLoading, fetchPairs, removePair } = useCompatibilityList();
   const {
     deleteTargetId,
     isDeleting,
@@ -42,21 +37,20 @@ export default function CompatibilityPage() {
     handleDeleteCancel,
     handleDeleteConfirm,
   } = useCompatibilityDelete(removePair);
-
-  // 삭제 실패는 열려 있는 시트 안에 남긴다(시트 뒤 토스트는 놓치기 쉽다)
+  const [manageId, setManageId] = useState<string | null>(null);
+  const managed = items.find((item) => item.id === manageId);
+  // 삭제 실패는 열려 있는 확인 시트 안에 남긴다(시트 뒤 알림은 놓치기 쉽다)
   const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(
     null
   );
-  const deleteTargetPair = pairs.find((pair) => pair.id === deleteTargetId);
-  const deleteTargetLabel = deleteTargetPair
-    ? [
-        `${deleteTargetPair.profile_a.name} × ${deleteTargetPair.profile_b.name}`,
-        deleteTargetPair.relationship_type
-          ? getRelationshipLabel(deleteTargetPair.relationship_type, tCard)
-          : null,
-      ]
-        .filter(Boolean)
-        .join(" · ")
+  const deleteTarget = items.find((item) => item.id === deleteTargetId);
+  const deleteTargetLabel = deleteTarget
+    ? `${deleteTarget.nameA} × ${deleteTarget.nameB} · ${
+        deleteTarget.relationshipType === "custom" &&
+        deleteTarget.relationshipCustom
+          ? deleteTarget.relationshipCustom
+          : getRelationshipLabel(deleteTarget.relationshipType, tCard)
+      }`
     : undefined;
 
   useEffect(() => {
@@ -71,125 +65,108 @@ export default function CompatibilityPage() {
     }
   }, [authStatus, router]);
 
-  const handleBack = useCallback(() => {
-    router.push("/home");
-  }, [router]);
-
-  const handleNewPair = useCallback(() => {
-    router.push("/compatibility/setup");
-  }, [router]);
-
-  const handleViewFortune = useCallback(() => {
-    if (!selectedPairId) {
-      showToast({
-        kind: "notice",
-        message: t("selectPair", { default: "궁합을 선택해주세요." }),
-      });
-      return;
-    }
-    const selectedPair = pairs.find((p) => p.id === selectedPairId);
-    const path = selectedPair?.paid_at
-      ? `/compatibility/${selectedPairId}/fortune/result`
-      : `/compatibility/${selectedPairId}/fortune/preview`;
-    router.push(path);
-  }, [selectedPairId, pairs, router, t]);
-
-  const onDeleteClick = useCallback(
-    (pairId: string) => {
-      setDeleteErrorMessage(null);
-      handleDeleteClick(pairId);
-    },
-    [handleDeleteClick]
-  );
+  const handleDeleteFromSheet = useCallback(() => {
+    if (!manageId) return;
+    setManageId(null);
+    setDeleteErrorMessage(null);
+    handleDeleteClick(manageId);
+  }, [manageId, handleDeleteClick]);
 
   const onDeleteConfirm = useCallback(async () => {
     setDeleteErrorMessage(null);
     const success = await handleDeleteConfirm();
     if (!success) {
-      setDeleteErrorMessage(
-        t("deleteError", {
-          default: "궁합 삭제에 실패했습니다. 다시 시도해주세요.",
-        })
-      );
+      setDeleteErrorMessage(tCompat("deleteError"));
     }
-  }, [handleDeleteConfirm, t]);
+  }, [handleDeleteConfirm, tCompat]);
 
-  if (
-    authStatus === "loading" ||
-    isLoading ||
-    authStatus === "unauthenticated"
-  ) {
-    return (
-      <div className={styles.page}>
-        <HeaderClient />
-        <div className={styles.loading}>
-          {t("loading", { default: "로딩 중..." })}
-        </div>
-      </div>
-    );
-  }
+  const isPending =
+    authStatus === "loading" || authStatus === "unauthenticated" || isLoading;
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
       <main className={styles.main}>
-        <div className={styles.pairList}>
-          {pairs.map((pair) => (
-            <CompatibilityCard
-              key={pair.id}
-              nameA={pair.profile_a.name}
-              nameB={pair.profile_b.name}
-              score={pair.score}
-              relationshipType={pair.relationship_type}
-              isSelected={pair.id === selectedPairId}
-              onSelect={() => handlePairSelect(pair.id)}
-              onDelete={() => onDeleteClick(pair.id)}
-            />
-          ))}
-          <NewCompatibilityCard onClick={handleNewPair} />
-        </div>
+        <header className={styles.head}>
+          <span className={styles.kicker}>CO-STARRING LINEUP</span>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.desc}>
+            {isPending || items.length > 0 ? t("desc") : t("emptyDesc")}
+          </p>
+        </header>
+
+        {isPending ? (
+          <p className={styles.status} role="status">
+            {t("loading")}
+          </p>
+        ) : items.length === 0 ? (
+          <section className={styles.empty}>
+            <div className={styles.emptySlots} aria-hidden="true">
+              <span className={`${styles.emptySlot} ${styles.slotA}`}>
+                <span>+</span>LEAD A
+              </span>
+              <span className={styles.emptyTimes}>×</span>
+              <span className={`${styles.emptySlot} ${styles.slotB}`}>
+                <span>+</span>LEAD B
+              </span>
+            </div>
+            <b className={styles.emptyTitle}>{t("emptyTitle")}</b>
+            <p className={styles.emptyBody}>{t("emptyBody")}</p>
+            <Link href={SETUP_HREF} className={styles.primaryLink}>
+              {t("emptyCta")}
+            </Link>
+          </section>
+        ) : (
+          <>
+            <Link href={SETUP_HREF} className={styles.newCard}>
+              <span className={styles.newIcon} aria-hidden="true">
+                +
+              </span>
+              <span className={styles.newText}>
+                <b>{t("newTitle")}</b>
+                <span>{t("newDesc")}</span>
+              </span>
+            </Link>
+            <ul className={styles.list}>
+              {items.map((item) => (
+                <li key={item.id}>
+                  <LineupCard item={item} onMore={() => setManageId(item.id)} />
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </main>
 
-      <footer className={styles.footer}>
-        <button
-          type="button"
-          className={styles.backButton}
-          onClick={handleBack}
-          aria-label={t("back", { default: "뒤로가기" })}
-        >
-          <Image
-            src="/images/common/back-button.svg"
-            alt=""
-            width={52}
-            height={52}
-          />
-        </button>
-        <button
-          type="button"
-          className={styles.primaryButton}
-          onClick={handleViewFortune}
-          disabled={!selectedPairId}
-        >
-          {t("viewFortune", { default: "궁합 운세 보기" })}
-        </button>
-      </footer>
+      <Sheet
+        isOpen={Boolean(managed)}
+        onClose={() => setManageId(null)}
+        eyebrow="MANAGE"
+        title={
+          managed
+            ? t("manageTitle", { a: managed.nameA, b: managed.nameB })
+            : ""
+        }
+      >
+        <p className={styles.manageNote}>{t("deleteSub")}</p>
+        <SheetButton variant="ghost" onClick={handleDeleteFromSheet}>
+          {t("delete")}
+        </SheetButton>
+      </Sheet>
 
       <ConfirmSheet
         isOpen={deleteTargetId !== null}
         onClose={handleDeleteCancel}
         onConfirm={onDeleteConfirm}
         eyebrow="DELETE"
-        title={tDelete("title", { default: "정말 삭제하시겠어요?" })}
-        description={tDelete("description", {
-          default:
-            "삭제 후에는 복구가 불가능합니다. 선택한 궁합의 운세 기록도 모두 삭제됩니다.",
-        })}
-        targetLabel={tDelete("target", { default: "삭제할 궁합" })}
+        title={tDelete("title")}
+        description={tDelete("description")}
+        targetLabel={tDelete("target")}
         targetValue={deleteTargetLabel}
-        cancelLabel={tDelete("cancel", { default: "취소" })}
-        confirmLabel={tDelete("delete", { default: "삭제하기" })}
-        busyLabel={tDelete("deleting", { default: "삭제 중..." })}
+        cancelLabel={tDelete("cancel")}
+        confirmLabel={tDelete("delete")}
+        busyLabel={tDelete("deleting")}
         isBusy={isDeleting}
         errorMessage={deleteErrorMessage}
       />

@@ -8,7 +8,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { trackEvent } from "@/libs/analytics";
 import { canUseSystemShare } from "@/libs/share/system-share";
 
-import { ScreenSheet, SheetAction } from "./ScreenSheet";
+import { Sheet, SheetAction } from "@/components/common/sheet";
 import styles from "./FortuneShareSheet.module.css";
 
 interface SharePreview {
@@ -120,56 +120,58 @@ export const FortuneShareSheet = ({
       : [kakaoAction, systemAction];
 
   return (
-    <ScreenSheet
+    <Sheet
       isOpen={isOpen}
       onClose={onClose}
       eyebrow={eyebrow}
       title={title}
       isBusy={isBusy}
     >
-      {showInvite && (
-        <div className={styles.invite}>
-          <span className={styles.inviteStub} aria-hidden="true">
-            INVITE
-          </span>
-          <span className={styles.inviteText}>
-            <b>{t("inviteTitle")}</b>
-            <span>{t("inviteBody")}</span>
-          </span>
-        </div>
-      )}
-
-      {preview && (
-        <div className={styles.preview}>
-          <div className={styles.previewArt} aria-hidden="true">
-            {preview.art}
+      <div className={styles.content}>
+        {showInvite && (
+          <div className={styles.invite}>
+            <span className={styles.inviteStub} aria-hidden="true">
+              INVITE
+            </span>
+            <span className={styles.inviteText}>
+              <b>{t("inviteTitle")}</b>
+              <span>{t("inviteBody")}</span>
+            </span>
           </div>
-          <span className={styles.previewText}>
-            <span className={styles.previewLabel}>{preview.label}</span>
-            <b>{preview.title}</b>
-            {preview.desc && <span>{preview.desc}</span>}
-          </span>
-        </div>
-      )}
+        )}
 
-      {actions}
+        {preview && (
+          <div className={styles.preview}>
+            <div className={styles.previewArt} aria-hidden="true">
+              {preview.art}
+            </div>
+            <span className={styles.previewText}>
+              <span className={styles.previewLabel}>{preview.label}</span>
+              <b>{preview.title}</b>
+              {preview.desc && <span>{preview.desc}</span>}
+            </span>
+          </div>
+        )}
 
-      {onCopyLink && (
-        <SheetAction
-          icon={<Link2 size={22} />}
-          label={t("copyLink")}
-          disabled={isBusy}
-          onClick={handleCopy}
-        />
-      )}
-      {onDownloadImage && (
-        <SheetAction
-          icon={<Download size={22} />}
-          label={isBusy ? t("saving") : (downloadLabel ?? t("saveImage"))}
-          disabled={isBusy}
-          onClick={handleDownload}
-        />
-      )}
-    </ScreenSheet>
+        {actions}
+
+        {onCopyLink && (
+          <SheetAction
+            icon={<Link2 size={22} />}
+            label={t("copyLink")}
+            disabled={isBusy}
+            onClick={handleCopy}
+          />
+        )}
+        {onDownloadImage && (
+          <SheetAction
+            icon={<Download size={22} />}
+            label={isBusy ? t("saving") : (downloadLabel ?? t("saveImage"))}
+            disabled={isBusy}
+            onClick={handleDownload}
+          />
+        )}
+      </div>
+    </Sheet>
   );
 };

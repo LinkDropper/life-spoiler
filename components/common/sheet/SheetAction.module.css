@@ -1,0 +1,66 @@
+/* 시트 안 행동 한 줄. 토큰은 app/globals.css의 --cs-* */
+.action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 60px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.primary {
+  background: rgba(255, 231, 163, 0.06);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 231, 163, 0.55);
+}
+
+.action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (hover: hover) {
+  .action:not(:disabled):hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--cs-star);
+  outline-offset: 2px;
+}
+
+.icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.text b {
+  font-size: 16px;
+}
+
+.text span {
+  font-size: 12px;
+  color: var(--cs-faint);
+}
