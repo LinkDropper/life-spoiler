@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getRelationshipLabel } from "@/components/compatibility";
 import { HeaderClient } from "@/components/landing";
 import { toCompatibilityGenre } from "@/libs/fortune/compatibility-screen";
+import { formatProfileLine } from "@/libs/profile/format-profile";
 import { NEW_PROFILE_TOKEN } from "@/libs/profile/setup-redirect";
 import {
   useIsProfilesLoading,
@@ -22,7 +23,6 @@ import type {
 } from "@/libs/supabase/types";
 
 import { CastingSheet, type CastingSlot } from "./CastingSheet";
-import { formatProfileLine } from "./utils";
 import styles from "./page.module.css";
 
 const RELATIONSHIP_TYPES: CompatibilityRelationshipType[] = [

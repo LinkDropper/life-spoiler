@@ -416,12 +416,6 @@
     "profiles": {
       "loading": "로딩 중...",
       "deleteError": "프로필 삭제에 실패했습니다. 다시 시도해주세요.",
-      "selectProfile": "프로필을 선택해주세요.",
-      "lifetimeFortune": "인생 운세 보기",
-      "yearlyFortune": "올해 운세 보기",
-      "yearly2027Fortune": "내년 운세 보기",
-      "pastLifeFortune": "전생 운세 보기",
-      "newProfile": "새 프로필 만들기",
       "deleteModal": {
         "title": "정말 삭제하시겠어요?",
         "description": "삭제 후에는 복구가 불가능합니다. 선택한 프로필의 운세 기록도 모두 삭제됩니다.",
@@ -442,7 +436,49 @@
         "yearly2027Fortune": "내년 운세",
         "pastLifeFortune": "전생 운세"
       },
-      "dailyFortune": "오늘의 운세 보기"
+      "roster": {
+        "kicker": {
+          "lifetime": "인생 운세",
+          "yearly": "올해 운세",
+          "past-life": "전생 운세",
+          "yearly_2027": "내년 운세",
+          "daily": "오늘의 운세"
+        },
+        "title": {
+          "lifetime": "누구의 인생을 상영할까요?",
+          "yearly": "누구의 올해를 상영할까요?",
+          "past-life": "누구의 전편을 상영할까요?",
+          "yearly_2027": "누구의 내년을 상영할까요?",
+          "daily": "오늘 누구의 콜시트를 볼까요?",
+          "plain": "출연진"
+        },
+        "descTyped": "주연을 고르면 바로 상영돼요. 본편을 가진 배우는 이어 보고, 없으면 예고편부터 무료예요.",
+        "descPlain": "내가 만든 배우 프로필이에요. 배우를 누르면 그 사람의 상영관으로 가요.",
+        "me": "나",
+        "state": {
+          "owned": "본편 소장",
+          "trailer": "예고편 무료"
+        },
+        "open": {
+          "owned": "이어 보기 →",
+          "trailer": "예고편 →",
+          "daily": "오늘 운세 →",
+          "home": "상영관 →"
+        },
+        "moreAria": "{name} 관리",
+        "films": {
+          "lifetime": "인생",
+          "yearly": "올해",
+          "pastLife": "전생",
+          "yearly2027": "내년"
+        },
+        "filmOwned": "소장:",
+        "filmNone": "없음:",
+        "newTitle": "새 배우 프로필",
+        "newDesc": "가족·친구의 생년월일로 주연을 늘려요",
+        "delete": "이 배우 프로필 삭제",
+        "deleteSub": "이 배우의 운세 기록도 함께 지워져요"
+      }
     },
     "compatibility": {
       "deleteError": "궁합 삭제에 실패했습니다. 다시 시도해주세요.",
@@ -2755,6 +2791,47 @@
       "shared": {
         "title": "친구가 보낸 본편"
       }
+    },
+    "coupon": {
+      "title": "초대장",
+      "desc": "받은 무료 상영 초대장이에요. 결제할 때 자동으로 고를 수 있어요.",
+      "emptyDesc": "아직 받은 초대장이 없어요.",
+      "loading": "초대장을 꺼내는 중이에요",
+      "loadError": "초대장을 불러오지 못했어요.",
+      "benefit": {
+        "free": "무료 상영 1회",
+        "discount": "본편 {percent}% 할인"
+      },
+      "films": {
+        "all": "모든 운세",
+        "lifetime": "인생 운세",
+        "yearly": "올해 운세",
+        "compatibility": "궁합 운세",
+        "past_life": "전생 운세",
+        "yearly_2027": "내년 운세"
+      },
+      "until": "{date}까지",
+      "use": "{film} 보러 가기",
+      "stamp": {
+        "used": "USED · 사용 완료",
+        "expired": "EXPIRED · 기간 만료"
+      },
+      "statusAria": {
+        "active": "사용할 수 있는 초대장",
+        "used": "사용한 초대장",
+        "expired": "기간이 지난 초대장"
+      },
+      "copyAria": "초대장 코드 {code} 복사",
+      "copied": "초대장 코드를 복사했어요",
+      "copyError": "코드를 복사하지 못했어요.",
+      "emptyTitle": "친구를 초대하면\n무료 상영 초대장이 와요",
+      "howToAria": "초대장을 받는 방법",
+      "howTo": {
+        "step1": "본편 끝에서 ‘본편 공유하기’",
+        "step2": "친구가 링크로 들어와 가입",
+        "step3": "내 초대장 서랍에 무료 상영 1회"
+      },
+      "emptyCta": "내 본편 공유하러 가기"
     }
   },
   "en": {
@@ -3174,12 +3251,6 @@
     "profiles": {
       "loading": "Loading...",
       "deleteError": "Failed to delete profile. Please try again.",
-      "selectProfile": "Please select a profile.",
-      "lifetimeFortune": "View Lifetime Fortune",
-      "yearlyFortune": "View This Year's Fortune",
-      "yearly2027Fortune": "View Next Year's Fortune",
-      "pastLifeFortune": "View Past Life Fortune",
-      "newProfile": "Create New Profile",
       "deleteModal": {
         "title": "Are you sure you want to delete?",
         "description": "This cannot be undone. All fortune records for this profile will also be deleted.",
@@ -3200,7 +3271,49 @@
         "yearly2027Fortune": "Next Year's Fortune",
         "pastLifeFortune": "Past Life Fortune"
       },
-      "dailyFortune": "See daily fortune"
+      "roster": {
+        "kicker": {
+          "lifetime": "LIFE FORTUNE",
+          "yearly": "THIS YEAR",
+          "past-life": "PAST LIFE",
+          "yearly_2027": "NEXT YEAR",
+          "daily": "TODAY"
+        },
+        "title": {
+          "lifetime": "Whose life will we screen?",
+          "yearly": "Whose year will we screen?",
+          "past-life": "Whose prequel will we screen?",
+          "yearly_2027": "Whose next year will we screen?",
+          "daily": "Whose call sheet today?",
+          "plain": "Cast"
+        },
+        "descTyped": "Pick the lead and the screening starts. Leads with the feature continue it; others start with the free trailer.",
+        "descPlain": "The actor profiles you made. Tap an actor to go to their theater.",
+        "me": "Me",
+        "state": {
+          "owned": "Feature owned",
+          "trailer": "Free trailer"
+        },
+        "open": {
+          "owned": "Continue →",
+          "trailer": "Trailer →",
+          "daily": "Today →",
+          "home": "Theater →"
+        },
+        "moreAria": "Manage {name}",
+        "films": {
+          "lifetime": "Life",
+          "yearly": "Year",
+          "pastLife": "Past",
+          "yearly2027": "Next"
+        },
+        "filmOwned": "Owned:",
+        "filmNone": "Not owned:",
+        "newTitle": "New actor profile",
+        "newDesc": "Add more leads with family and friends' birth dates",
+        "delete": "Delete this actor profile",
+        "deleteSub": "Their fortune records are deleted too"
+      }
     },
     "compatibility": {
       "deleteError": "Failed to delete compatibility pair. Please try again.",
@@ -5521,6 +5634,47 @@
       "shared": {
         "title": "A feature from a friend"
       }
+    },
+    "coupon": {
+      "title": "Invitations",
+      "desc": "Free screening invitations you've received. You can pick them at checkout.",
+      "emptyDesc": "No invitations yet.",
+      "loading": "Opening your invitations",
+      "loadError": "We couldn't load your invitations.",
+      "benefit": {
+        "free": "1 free screening",
+        "discount": "{percent}% off the feature"
+      },
+      "films": {
+        "all": "Any fortune",
+        "lifetime": "Life Fortune",
+        "yearly": "This Year",
+        "compatibility": "Compatibility",
+        "past_life": "Past Life",
+        "yearly_2027": "Next Year"
+      },
+      "until": "Until {date}",
+      "use": "Watch {film}",
+      "stamp": {
+        "used": "USED",
+        "expired": "EXPIRED"
+      },
+      "statusAria": {
+        "active": "Available invitation",
+        "used": "Used invitation",
+        "expired": "Expired invitation"
+      },
+      "copyAria": "Copy invitation code {code}",
+      "copied": "Invitation code copied",
+      "copyError": "We couldn't copy the code.",
+      "emptyTitle": "Invite a friend and get\na free screening invitation",
+      "howToAria": "How to get an invitation",
+      "howTo": {
+        "step1": "Tap “Share the feature” at the end",
+        "step2": "Your friend signs up through the link",
+        "step3": "1 free screening lands in your invitations"
+      },
+      "emptyCta": "Go share my feature"
     }
   },
   "ja": {
@@ -5940,12 +6094,6 @@
     "profiles": {
       "loading": "読み込み中...",
       "deleteError": "プロフィールの削除に失敗しました。もう一度お試しください。",
-      "selectProfile": "プロフィールを選択してください。",
-      "lifetimeFortune": "人生運勢を見る",
-      "yearlyFortune": "今年の運勢を見る",
-      "yearly2027Fortune": "来年の運勢を見る",
-      "pastLifeFortune": "前世占いを見る",
-      "newProfile": "新しいプロフィールを作成",
       "deleteModal": {
         "title": "本当に削除しますか？",
         "description": "削除後は復元できません。選択したプロフィールの運勢記録もすべて削除されます。",
@@ -5966,7 +6114,49 @@
         "yearly2027Fortune": "来年の運勢",
         "pastLifeFortune": "前世運勢"
       },
-      "dailyFortune": "今日の運勢を見る"
+      "roster": {
+        "kicker": {
+          "lifetime": "人生運勢",
+          "yearly": "今年の運勢",
+          "past-life": "前世運勢",
+          "yearly_2027": "来年の運勢",
+          "daily": "今日の運勢"
+        },
+        "title": {
+          "lifetime": "誰の人生を上映しますか？",
+          "yearly": "誰の今年を上映しますか？",
+          "past-life": "誰の前編を上映しますか？",
+          "yearly_2027": "誰の来年を上映しますか？",
+          "daily": "今日は誰のコールシートを見ますか？",
+          "plain": "出演者"
+        },
+        "descTyped": "主演を選ぶとすぐ上映されます。本編を持っている人は続きから、ない人は予告編から無料です。",
+        "descPlain": "作成した俳優プロフィールです。俳優を押すとその人の上映館へ移動します。",
+        "me": "自分",
+        "state": {
+          "owned": "本編購入済み",
+          "trailer": "予告編 無料"
+        },
+        "open": {
+          "owned": "続きを見る →",
+          "trailer": "予告編 →",
+          "daily": "今日の運勢 →",
+          "home": "上映館 →"
+        },
+        "moreAria": "{name}を管理",
+        "films": {
+          "lifetime": "人生",
+          "yearly": "今年",
+          "pastLife": "前世",
+          "yearly2027": "来年"
+        },
+        "filmOwned": "購入済み：",
+        "filmNone": "未購入：",
+        "newTitle": "新しい俳優プロフィール",
+        "newDesc": "家族や友だちの生年月日で主演を増やしましょう",
+        "delete": "この俳優プロフィールを削除",
+        "deleteSub": "この人の運勢の記録も一緒に削除されます"
+      }
     },
     "compatibility": {
       "deleteError": "相性の削除に失敗しました。もう一度お試しください。",
@@ -8279,6 +8469,47 @@
       "shared": {
         "title": "友だちから届いた本編"
       }
+    },
+    "coupon": {
+      "title": "招待状",
+      "desc": "受け取った無料上映の招待状です。お支払いのときに自動で選べます。",
+      "emptyDesc": "まだ招待状がありません。",
+      "loading": "招待状を取り出しています",
+      "loadError": "招待状を読み込めませんでした。",
+      "benefit": {
+        "free": "無料上映1回",
+        "discount": "本編{percent}%オフ"
+      },
+      "films": {
+        "all": "すべての運勢",
+        "lifetime": "人生運勢",
+        "yearly": "今年の運勢",
+        "compatibility": "相性運勢",
+        "past_life": "前世運勢",
+        "yearly_2027": "来年の運勢"
+      },
+      "until": "{date}まで",
+      "use": "{film}を見に行く",
+      "stamp": {
+        "used": "USED · 使用済み",
+        "expired": "EXPIRED · 期限切れ"
+      },
+      "statusAria": {
+        "active": "使える招待状",
+        "used": "使用済みの招待状",
+        "expired": "期限切れの招待状"
+      },
+      "copyAria": "招待状コード {code} をコピー",
+      "copied": "招待状コードをコピーしました",
+      "copyError": "コードをコピーできませんでした。",
+      "emptyTitle": "友だちを招待すると\n無料上映の招待状が届きます",
+      "howToAria": "招待状を受け取る方法",
+      "howTo": {
+        "step1": "本編の最後で「本編をシェア」",
+        "step2": "友だちがリンクから登録",
+        "step3": "招待状に無料上映1回が届く"
+      },
+      "emptyCta": "本編をシェアしに行く"
     }
   }
 }

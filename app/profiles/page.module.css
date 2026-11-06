@@ -1,134 +1,123 @@
+/* 프로필 목록 = 출연진 명단 */
 .page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   width: 100%;
   max-width: 480px;
+  min-height: 100dvh;
   margin: 0 auto;
-  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+  background: #0a0f1c;
+  color: #ffffff;
+}
+
+.page:lang(ko) {
+  word-break: keep-all;
 }
 
 .main {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 20px 40px;
+}
+
+.head {
   display: flex;
   flex-direction: column;
-  padding: 24px 16px;
-  padding-bottom: 100px;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
-.loading {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-  font-size: 16px;
+.kicker {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: #ff8fb1;
 }
 
-.profileList {
+.title {
+  margin: 0;
+  font-family: "SB AggroOTF", var(--font-pretendard), sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.status {
+  margin: 0;
+  padding: 48px 0;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  display: flex;
-  gap: 8px;
-  padding: 16px;
-  background: linear-gradient(
-    180deg,
-    rgba(46, 20, 49, 0) 0%,
-    rgba(46, 20, 49, 1) 20%
-  );
-}
-
-.backButton {
-  flex-shrink: 0;
-  width: 52px;
-  height: 52px;
+  gap: 14px;
+  margin: 0;
   padding: 0;
-  border: none;
-  border-radius: 8px;
-  background: transparent;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  list-style: none;
 }
 
-.backButton:hover {
-  opacity: 0.9;
+.manageNote {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.primaryButton {
-  flex: 1;
+/* 새 배우 프로필 */
+.newActor {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 52px;
-  padding: 16px 20px;
-  background: var(--color-button-primary-surface, #ffccd9);
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font-pretendard), sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #2d1b4e;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1.5px dashed rgba(255, 231, 163, 0.45);
+  border-radius: 14px;
+  color: #ffffff;
+  text-decoration: none;
 }
 
-.primaryButton:hover {
-  opacity: 0.9;
-}
-
-.primaryButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.secondaryButton {
-  flex: 1;
+.newIcon {
   display: flex;
-  justify-content: center;
+  flex-shrink: 0;
   align-items: center;
-  height: 52px;
-  padding: 16px 20px;
-  background: #b8a4ff;
-  border: none;
-  border-radius: 8px;
-  font-family: var(--font-pretendard), sans-serif;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: #ffe7a3;
+}
+
+.newText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.newText b {
   font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-text-invert, #18181b);
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
+  color: #ffffff;
 }
 
-.secondaryButton:hover {
-  opacity: 0.9;
+.newActor:focus-visible {
+  outline: 2px solid #ffe7a3;
+  outline-offset: 2px;
 }
 
-.secondaryButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@supports (min-height: 100svh) {
-  .page {
-    min-height: 100svh;
-  }
-}
-
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-.primaryButton:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
+/* SB 어그로에는 한자 글리프가 없다 */
+.title:lang(ja) {
+  font-family: var(--font-pretendard), "Hiragino Sans", sans-serif;
+  font-weight: 800;
 }

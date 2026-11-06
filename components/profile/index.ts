@@ -1,2 +1,1 @@
-export { ProfileCard } from "./ProfileCard";
-export { NewProfileCard } from "./NewProfileCard";
+export { RosterCard } from "./RosterCard";
