@@ -1,6 +1,7 @@
 import type { Locale } from "@/i18n/config";
 import {
   TIMING_TOPIC_LABELS,
+  type DecadeFacts,
   type FactCategory,
   type FortuneClaim,
   type LifetimeFactSheet,
@@ -63,8 +64,115 @@ const formatSectionClaims = (
   return claims.map(formatClaim).join("\n");
 };
 
+/**
+ * 대운 구간 표기. 나이별 시나리오가 period 값을 이 문자열 그대로 복사하므로
+ * 요청의 dayunPeriods(로케일 표기)를 우선 쓰고, 개수가 어긋나면 숫자 범위로 둔다.
+ */
+export interface DecadeContext {
+  periodLabels?: string[];
+  currentAge?: number;
+}
+
+const decadeLabel = (
+  decades: DecadeFacts[],
+  index: number,
+  { periodLabels }: DecadeContext
+): string =>
+  periodLabels && periodLabels.length === decades.length
+    ? periodLabels[index]
+    : `${decades[index].startAge}-${decades[index].endAge}`;
+
+/** 현재 나이가 속한 구간 + 다음 2개 구간 */
+const FOCUS_AHEAD = 2;
+/** 집중 구간이 아니면 앞쪽 주장 2개만 (화기·화록 우선 정렬) */
+const NON_FOCUS_CLAIMS = 2;
+
+const focusIndexes = (
+  decades: DecadeFacts[],
+  currentAge: number | undefined
+): Set<number> => {
+  if (currentAge === undefined) return new Set();
+  const current = decades.findIndex(
+    (d) => currentAge >= d.startAge && currentAge <= d.endAge
+  );
+  if (current < 0) return new Set();
+  return new Set(
+    Array.from({ length: FOCUS_AHEAD + 1 }, (_, i) => current + i).filter(
+      (i) => i < decades.length
+    )
+  );
+};
+
+const DECADE_RULES = `Rules for the decade fact sheet:
+- One ageScenarios item per period line above, in the same order; copy each period string verbatim.
+- Write each period ONLY from that period's stage and claims: the headline names that period's stage in plain words, and every bullet carries one claim's topic plus one concrete scene from it (rewritten, not copied).
+- Keep each claim's direction: negative → name the difficulty and the situation plainly; positive → the opportunity and where it shows up. Do not soften a negative claim with generic advice.
+- Do not add generic life advice that no claim of that period supports (pace, rhythm, routines, setting standards, enduring, resting, writing things down).
+- Two periods may share claims; then make them differ through their stage, and do not repeat a sentence or headline structure used in another period.
+- A period with no claims: one short bullet from its stage only.
+- Periods marked [youth]: write school, family and friend situations of that age. Never mention jobs, earning money, dating, marriage or children.
+- Periods marked [senior]: write later-life situations (family, health, neighbours, hobbies, handing things over). No job hunting or promotions.
+- Claims without scenes: invent one concrete scene that fits that period's age.`;
+
+/** 나이별 시나리오: 대운 구간마다 무대 + 대운 사화 주장 */
+const formatDecadeBlock = (
+  sheet: LifetimeFactSheet,
+  context: DecadeContext
+): string => {
+  const { decades } = sheet;
+  const focus = focusIndexes(decades, context.currentAge);
+  const lines = decades.map((decade, index) => {
+    const isFocus = focus.has(index);
+    const claims = isFocus
+      ? decade.claims
+      : decade.claims.slice(0, NON_FOCUS_CLAIMS);
+    const body = claims.map((c, i) => `  ${formatClaim(c, i)}`).join("\n");
+    const stageMark =
+      decade.lifeStage === "adult" ? "" : ` [${decade.lifeStage}]`;
+    return `- ${decadeLabel(decades, index, context)}${isFocus ? " [focus]" : ""}${stageMark} | stage: ${decade.stage}${body ? `\n${body}` : ""}`;
+  });
+  const focusLine =
+    context.currentAge !== undefined
+      ? `\n- **Focus on current age ${context.currentAge} Dayun period!**`
+      : "";
+
+  return `## Dayun (10-year cycles) — engine-computed fact sheet, internal only
+${lines.join("\n")}${focusLine}
+
+${DECADE_RULES}`;
+};
+
+/** 핵심 시나리오의 하이라이트·고비에 쓸 대운 (엔진이 고른 구간만) */
+const formatDecadeTones = (
+  sheet: LifetimeFactSheet,
+  context: DecadeContext
+): string => {
+  const { decades, decadeTones } = sheet;
+  const toneLine = (
+    label: string,
+    index: number | undefined,
+    direction: "positive" | "negative"
+  ): string => {
+    if (index === undefined) {
+      return `- ${label}: (none — write this paragraph without naming any age range)`;
+    }
+    const decade = decades[index];
+    const claim =
+      decade.claims.find((c) => c.direction === direction) ?? decade.claims[0];
+    return `- ${label}: ${decadeLabel(decades, index, context)} | stage: ${decade.stage}${claim ? ` | ${claim.topic}` : ""}`;
+  };
+
+  return `### Dayun highlight and hard period (engine-selected)
+${toneLine("highlight", decadeTones.highlight, "positive")}
+${toneLine("hard", decadeTones.hard, "negative")}
+- Use these age ranges verbatim for the highlight and trial paragraphs. Never name any other age or age range.`;
+};
+
 /** 스포일러·핵심 시나리오: 핵심 주장 + 각 영역 대표 주장 1개 */
-const formatCoreBlock = (sheet: LifetimeFactSheet): string => {
+const formatCoreBlock = (
+  sheet: LifetimeFactSheet,
+  decadeTones = ""
+): string => {
   const highlights = CATEGORY_SECTIONS.flatMap((category) => {
     const [top] = sheet.claims[category];
     return top ? [`- ${category}: [${top.direction}] ${top.topic}`] : [];
@@ -74,7 +182,7 @@ ${formatSectionClaims(sheet, "core")}
 
 ### One headline claim per area (mention at most briefly; areas have their own sections)
 ${highlights.join("\n") || "- (none)"}
-
+${decadeTones ? `\n${decadeTones}\n` : ""}
 ${NARRATION_RULES}`;
 };
 
@@ -124,10 +232,16 @@ Rules:
 
 export const formatFactSheetBlock = (
   sheet: LifetimeFactSheet,
-  requestType: InterpretationType
+  requestType: InterpretationType,
+  decadeContext: DecadeContext = {}
 ): string => {
   if (requestType === "lifetime_timing") return formatTimingBlock(sheet);
-  if (requestType === "lifetime_age_scenarios") return "";
+  if (requestType === "lifetime_age_scenarios") {
+    return formatDecadeBlock(sheet, decadeContext);
+  }
+  if (requestType === "lifetime_core") {
+    return formatCoreBlock(sheet, formatDecadeTones(sheet, decadeContext));
+  }
 
   const section = SECTION_BY_TYPE[requestType];
   if (!section) return "";
