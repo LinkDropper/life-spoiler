@@ -21,6 +21,8 @@ import {
   setCachedResult,
   type PastLifeFortuneData,
 } from "@/libs/supabase";
+import { toPastLifePreview } from "@/libs/fortune/preview-payload";
+import { checkFortuneAccess } from "@/libs/supabase/fortune-access";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
 import { identifyGeokGuk } from "@/libs/zi-wei-dou-shu/calculators";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
@@ -181,6 +183,16 @@ export async function POST(request: NextRequest) {
     // 캐시 키에 언어 포함
     const cacheKey = `full-past_life-${language}` as `full-past_life-${Locale}`;
 
+    // 로그인·프로필 소유 확인, 결제 여부 판정 (결제 전이면 예고편 필드만 내려줌)
+    const access = await checkFortuneAccess(profileId, "past_life", 0);
+    if (!access.ok) {
+      return NextResponse.json(
+        { success: false, error: access.error },
+        { status: access.status }
+      );
+    }
+    const { isPaid } = access;
+
     // 1. profileId가 있으면 저장된 fortune 먼저 확인 (BYPASS 모드면 스킵)
     if (profileId && !BYPASS_INTERPRETATION_CACHE) {
       const existingFortune = await getFortune(profileId, "past_life", 0);
@@ -194,9 +206,9 @@ export async function POST(request: NextRequest) {
         ) {
           return NextResponse.json({
             success: true,
-            data: storedData,
+            data: isPaid ? storedData : toPastLifePreview(storedData),
             isAIGenerated: true,
-            isPaid: !!existingFortune.paid_at,
+            isPaid,
           });
         }
       }
@@ -257,9 +269,9 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        data: responseData,
+        data: isPaid ? responseData : toPastLifePreview(responseData),
         isAIGenerated: true,
-        isPaid: false,
+        isPaid,
       });
     }
 
@@ -304,9 +316,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: responseData,
+      data: isPaid ? responseData : toPastLifePreview(responseData),
       isAIGenerated: isAISuccess,
-      isPaid: false,
+      isPaid,
     });
   } catch (error) {
     console.error("API 오류:", error);

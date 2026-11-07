@@ -3,7 +3,11 @@ import type {
   PastLifeFortuneInterpretation,
   YearlyFortuneInterpretation,
 } from "@/libs/services/ai";
-import type { PartnerProfile, TimingSection } from "@/libs/services/ai/types";
+import type {
+  LifetimePreviewPayload,
+  PastLifePreviewPayload,
+  YearlyPreviewPayload,
+} from "@/libs/fortune/preview-payload";
 import type { ZiweiChart } from "@/libs/zi-wei-dou-shu/types";
 import type { DayunResult } from "@/libs/zi-wei-dou-shu/calculators";
 import type {
@@ -70,57 +74,10 @@ export interface YearlyFortuneResult {
   interpretation: YearlyFortuneInterpretation;
 }
 
-export interface LifetimePreviewResult {
-  chart: {
-    wuxingJu: string;
-    mingGong: string;
-    shenGong: string;
-    sihua: {
-      hualu: string;
-      huaquan: string;
-      huake: string;
-      huaji: string;
-    };
-  };
-  rawChart: ZiweiChart;
-  interpretation: {
-    lifeSpoiler: {
-      headline: string;
-      /** 레거시 / en·ja */
-      summary?: string;
-      /** 신규 구조화 — 한국어 lifetime 응답 */
-      subSections?: { heading: string; body: string }[];
-      oneLiner?: string;
-    };
-    /** v4~: 예고편 잠금 질문 라벨(개수)에만 쓴다. 구 결과에는 없음 */
-    timing?: TimingSection[];
-    categories?: {
-      career?: { fields?: string[] };
-      relationship?: { partner?: PartnerProfile };
-    };
-  };
-}
+/** 결제 전 응답은 서버에서 예고편 필드만 남긴다 (libs/fortune/preview-payload.ts) */
+export type LifetimePreviewResult = LifetimePreviewPayload;
 
-export interface YearlyPreviewResult {
-  year: number;
-  chart: {
-    wuxingJu: string;
-    mingGong: string;
-  };
-  rawChart: ZiweiChart;
-  yearlySihua: YearlySihua;
-  interpretation: {
-    overview: {
-      headline: string;
-      /** 레거시 / en·ja */
-      summary?: string;
-      /** 신규 구조화 — 한국어 yearly 응답 */
-      subSections?: { heading: string; body: string }[];
-      oneLiner?: string;
-      keywords: string[];
-    };
-  };
-}
+export type YearlyPreviewResult = YearlyPreviewPayload;
 
 export interface PastLifeFortuneResult {
   chart: {
@@ -138,4 +95,4 @@ export interface PastLifeFortuneResult {
   interpretation: PastLifeFortuneInterpretation;
 }
 
-export type PastLifePreviewResult = PastLifeFortuneResult;
+export type PastLifePreviewResult = PastLifePreviewPayload;
