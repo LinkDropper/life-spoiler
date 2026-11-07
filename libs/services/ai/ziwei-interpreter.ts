@@ -566,13 +566,17 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
 
   // 사실 시트가 있으면 서술 전용: 원 명반 대신 이 섹션에 배정된 주장만 넘긴다.
   // (원 명반을 같이 주면 모델이 사전지식 평균으로 다시 메운다 — 설계 문서 §3 ①②)
-  if (factSheet && requestType !== "lifetime_age_scenarios") {
+  // 나이별 시나리오도 원 대운 별 목록 대신 엔진이 만든 대운별 무대·주장만 받는다.
+  if (factSheet) {
     const blocks = [
       userInfoStr,
       request.categoryScores
         ? formatRelativeStrength(request.categoryScores, requestType)
         : "",
-      formatFactSheetBlock(factSheet, requestType),
+      formatFactSheetBlock(factSheet, requestType, {
+        periodLabels: dayunPeriods?.map((p) => p.period),
+        currentAge: user.currentAge,
+      }),
       previousContext ?? "",
     ];
     return blocks.filter(Boolean).join("\n\n");
