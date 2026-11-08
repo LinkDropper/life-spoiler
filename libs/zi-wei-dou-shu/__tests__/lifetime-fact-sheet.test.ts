@@ -103,6 +103,98 @@ describe("사실 시트", () => {
   });
 });
 
+describe("대운 사실", () => {
+  it.each(INPUTS)(
+    "대운 구간과 같은 순서·개수로, 무대와 대운 사화 주장을 싣는다: $birthDate",
+    (input) => {
+      const { chart, dayun } = setup(input);
+      const sheet = buildLifetimeFactSheet(chart, dayun, {
+        birthYear: chart.lunarDate.year,
+        currentYear: 2026,
+      });
+      expect(sheet.decades).toHaveLength(dayun.periods.length);
+      sheet.decades.forEach((decade, i) => {
+        const period = dayun.periods[i];
+        expect([decade.startAge, decade.endAge]).toEqual([
+          period.startAge,
+          period.endAge,
+        ]);
+        expect(decade.stage.length).toBeGreaterThan(0);
+        expect(decade.claims.length).toBeLessThanOrEqual(4);
+        for (const claim of decade.claims) {
+          expect(claim.period).toBe(`${period.startAge}-${period.endAge}`);
+          expect(claim.section).toBe("timing");
+        }
+      });
+    }
+  );
+
+  it("대운 주장은 화기·화록·화권·화과 순서다", () => {
+    const { chart, dayun } = setup(INPUTS[0]);
+    const sheet = buildLifetimeFactSheet(chart, dayun, {
+      birthYear: chart.lunarDate.year,
+      currentYear: 2026,
+    });
+    const order = ["화기", "화록", "화권", "화과"];
+    for (const decade of sheet.decades) {
+      const kinds = decade.claims.map((c) => c.id.split(":")[1].slice(0, 2));
+      const ranks = kinds.map((k) => order.indexOf(k));
+      expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
+    }
+  });
+
+  it("유년기는 연애·자녀 주장을 빼고, 20세 이후 성인기 밖 구간은 장면 없이 주제만 싣는다", () => {
+    for (const input of INPUTS) {
+      const { chart, dayun } = setup(input);
+      const { decades } = buildLifetimeFactSheet(chart, dayun, {
+        birthYear: chart.lunarDate.year,
+        currentYear: 2026,
+      });
+      for (const decade of decades) {
+        if (decade.lifeStage === "youth") {
+          expect(decade.endAge).toBeLessThan(20);
+          for (const claim of decade.claims) {
+            expect(claim.id).not.toMatch(/@(부처궁|자녀궁)$/);
+          }
+        }
+        if (decade.lifeStage !== "adult" || decade.startAge < 20) {
+          for (const claim of decade.claims) {
+            expect(claim.sceneSeeds).toEqual([]);
+          }
+        }
+      }
+    }
+  });
+
+  it("고비는 중심 궁 화기 구간 중 최저점, 하이라이트는 그 외 최고점(양수), 성인 구간에서만", () => {
+    for (const input of INPUTS) {
+      const { chart, dayun } = setup(input);
+      const { decades, decadeTones } = buildLifetimeFactSheet(chart, dayun, {
+        birthYear: chart.lunarDate.year,
+        currentYear: 2026,
+      });
+      const adult = decades.filter((d) => d.endAge >= 20 && d.startAge <= 70);
+      const { highlight, hard } = decadeTones;
+      if (highlight !== undefined) {
+        expect(decades[highlight].startAge).toBeLessThanOrEqual(70);
+      }
+      if (hard !== undefined) {
+        expect(decades[hard].startAge).toBeLessThanOrEqual(70);
+        expect(decades[hard].hasCoreHuaji).toBe(true);
+        expect(decades[hard].endAge).toBeGreaterThanOrEqual(20);
+        expect(decades[hard].score).toBe(
+          Math.min(...adult.filter((d) => d.hasCoreHuaji).map((d) => d.score))
+        );
+      }
+      if (highlight !== undefined) {
+        expect(highlight).not.toBe(hard);
+        expect(decades[highlight].score).toBeGreaterThan(0);
+        expect(decades[highlight].endAge).toBeGreaterThanOrEqual(20);
+      }
+    }
+  });
+});
+
 describe("타이밍", () => {
   it("후보 연도는 기준 연도 다음 해부터 10년 안, likely는 점수 양수만", () => {
     const { chart, dayun } = setup(INPUTS[0]);

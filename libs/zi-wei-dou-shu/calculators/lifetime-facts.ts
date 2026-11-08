@@ -14,6 +14,7 @@
  */
 
 import {
+  DECADE_STAGE,
   FLYING_SIHUA_RULES,
   PARTNER_RULES,
   SIHUA_PALACE_RULES,
@@ -81,8 +82,32 @@ export interface TimingEntry {
   caution?: TimingYear;
 }
 
+/** 대운(10년) 한 구간의 사실. 나이별 시나리오·핵심 시나리오의 시기 재료 */
+export interface DecadeFacts {
+  startAge: number;
+  endAge: number;
+  /** 그 10년의 생활 무대 (쉬운 말 한 줄) */
+  stage: string;
+  /** 생애 단계. 장면 씨앗은 성인기 생활 기준이라 성인기에만 싣는다 */
+  lifeStage: LifeStage;
+  /** 대운 사화가 떨어진 자리의 주장. 화기·화록·화권·화과 순 */
+  claims: FortuneClaim[];
+  /** 대운 사화 가감 합 (클수록 순탄). 하이라이트·고비 선택용 */
+  score: number;
+  /** 대운 화기가 생활 중심 궁(명·재·관·부·질·천이)에 떨어지는지 */
+  hasCoreHuaji: boolean;
+}
+
+export type DecadeTone = "highlight" | "hard";
+
+export type LifeStage = "youth" | "adult" | "senior";
+
 export interface LifetimeFactSheet {
   claims: Record<FactSection, FortuneClaim[]>;
+  /** 대운 구간 순서 그대로 (DayunResult.periods 와 같은 순서·개수) */
+  decades: DecadeFacts[];
+  /** 하이라이트·고비로 고른 대운의 인덱스 (decades 기준) */
+  decadeTones: Partial<Record<DecadeTone, number>>;
   /** 영역별 화면 노출용 근거 한 줄 */
   evidence: Partial<Record<FactCategory, LocalizedText>>;
   careerFields: string[];
@@ -534,6 +559,126 @@ export const calculateTiming = (
   });
 
 // ============================================================
+// 대운(10년) 사실
+// ============================================================
+
+/** 대운 사화를 읽는 순서: 막힘을 빼먹지 않도록 화기 먼저 */
+const DECADE_SIHUA_ORDER: Sihua[] = ["화기", "화록", "화권", "화과"];
+
+/** 하이라이트·고비 점수에서 생활 중심 궁은 온전히, 나머지는 절반만 */
+const DECADE_CORE_PALACES: PalaceName[] = [
+  "명궁",
+  "재백궁",
+  "관록궁",
+  "부처궁",
+  "질액궁",
+  "천이궁",
+];
+const DECADE_SIDE_WEIGHT = 0.5;
+
+/**
+ * 하이라이트·고비는 20세 이후~70대 시작 구간에서만 고른다
+ * (유년기 고비나 90대 하이라이트는 인생 서사의 중심으로 쓰기 어렵다)
+ */
+const DECADE_TONE_MIN_END_AGE = 20;
+const DECADE_TONE_MAX_START_AGE = 70;
+/** 장면 씨앗(직장·연애·살림)은 이 나이 이후에 시작하는 성인기 구간에만 싣는다 */
+const SCENE_MIN_START_AGE = 20;
+
+/** 구간 끝 나이가 이보다 어리면 유년기, 시작 나이가 이 이상이면 노년기 */
+const YOUTH_END_AGE = 20;
+const SENIOR_START_AGE = 65;
+
+/** 유년기에는 연애·결혼·자녀 주장을 싣지 않는다 (그 나이에 맞는 장면으로 옮길 수 없다) */
+const YOUTH_EXCLUDED_PALACES: PalaceName[] = ["부처궁", "자녀궁"];
+
+const toLifeStage = (startAge: number, endAge: number): LifeStage =>
+  endAge < YOUTH_END_AGE
+    ? "youth"
+    : startAge >= SENIOR_START_AGE
+      ? "senior"
+      : "adult";
+
+export const calculateDecadeFacts = (
+  dayun: DayunResult,
+  starPalace: Map<string, PalaceName>
+): DecadeFacts[] =>
+  dayun.periods.map((period) => {
+    const ageRange = `${period.startAge}-${period.endAge}`;
+    const lifeStage = toLifeStage(period.startAge, period.endAge);
+    const lands = landSihua(calculateSihua(period.stemIndex), starPalace).sort(
+      (a, b) =>
+        DECADE_SIHUA_ORDER.indexOf(a.sihua) -
+        DECADE_SIHUA_ORDER.indexOf(b.sihua)
+    );
+    const claims = lands
+      .filter(
+        ({ palace }) =>
+          lifeStage !== "youth" || !YOUTH_EXCLUDED_PALACES.includes(palace)
+      )
+      .map(({ sihua, palace }) => {
+        const claim = toClaim(
+          `dayun${period.index}:${sihua}@${palace}`,
+          "timing",
+          SIHUA_PALACE_RULES[sihua][palace],
+          undefined,
+          0,
+          ageRange
+        );
+        // 장면 씨앗(직장·연애·살림)은 성인기 장면이라 다른 생애 단계에는 주제만 넘긴다
+        return lifeStage === "adult" && period.startAge >= SCENE_MIN_START_AGE
+          ? claim
+          : { ...claim, sceneSeeds: [] };
+      });
+    const score = lands.reduce(
+      (sum, { sihua, palace }) =>
+        sum +
+        TIMING_SIHUA_SCORE[sihua] *
+          (DECADE_CORE_PALACES.includes(palace) ? 1 : DECADE_SIDE_WEIGHT),
+      0
+    );
+    return {
+      startAge: period.startAge,
+      endAge: period.endAge,
+      stage: DECADE_STAGE[period.palace.name as PalaceName],
+      lifeStage,
+      claims,
+      hasCoreHuaji: lands.some(
+        ({ sihua, palace }) =>
+          sihua === "화기" && DECADE_CORE_PALACES.includes(palace)
+      ),
+      score,
+    };
+  });
+
+/**
+ * 고비 = 대운 화기가 생활 중심 궁에 떨어지는 성인 구간 중 점수가 가장 낮은 곳.
+ * (사화 4개를 합치면 화기 하나가 나머지에 상쇄돼 음수가 드물어서, 합계 부호로는 고르지 않는다)
+ * 하이라이트 = 고비를 뺀 성인 구간 중 점수가 가장 높은(양수) 곳.
+ */
+export const pickDecadeTones = (
+  decades: DecadeFacts[]
+): Partial<Record<DecadeTone, number>> => {
+  const adult = decades
+    .map((d, index) => ({ d, index }))
+    .filter(
+      ({ d }) =>
+        d.endAge >= DECADE_TONE_MIN_END_AGE &&
+        d.startAge <= DECADE_TONE_MAX_START_AGE
+    );
+  const [hard] = adult
+    .filter(({ d }) => d.hasCoreHuaji)
+    .sort((a, b) => a.d.score - b.d.score || a.index - b.index);
+  const [best] = adult
+    .filter(({ index }) => index !== hard?.index)
+    .sort((a, b) => b.d.score - a.d.score || a.index - b.index);
+  return {
+    ...(best && best.d.score > 0 ? { highlight: best.index } : {}),
+    ...(hard ? { hard: hard.index } : {}),
+  };
+};
+
+// ============================================================
 // 메인
 // ============================================================
 
@@ -558,8 +703,12 @@ export const buildLifetimeFactSheet = (
     collectFallbackClaims(chart)
   );
 
+  const decades = calculateDecadeFacts(dayun, starPalace);
+
   return {
     claims,
+    decades,
+    decadeTones: pickDecadeTones(decades),
     evidence: pickEvidence(chart, claims),
     careerFields: collectCareerFields(chart),
     partner: pickPartner(chart),
