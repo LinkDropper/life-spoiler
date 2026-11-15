@@ -8,6 +8,7 @@ import { MarkdownContent } from "@/components/fortune";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
 import { FeatureLocks } from "@/components/fortune/screen/FeatureLocks";
 import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
+import { LockedQuestions } from "@/components/fortune/screen/LockedQuestions";
 import { RuntimeTrack } from "@/components/fortune/screen/RuntimeTrack";
 import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
 import { TrailerCuts } from "@/components/fortune/screen/TrailerCuts";
@@ -206,6 +207,7 @@ export default function LifetimeFortunePreviewPage() {
         )}
 
         <FeatureLocks keywords={keywords} />
+        <LockedQuestions questions={interpretation.lockedQuestions ?? []} />
       </main>
 
       <footer className={styles.footer}>

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>인생 운세 본편 - 인생스포 (품질 개선 Phase 3 시안 · 본편 전체 구성)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="lq.css">
+</head>
+<body>
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div>
+    <button class="ic" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+    <button class="ic" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+</header>
+
+<!-- 상영 컨트롤 바(ScreenPlayer): 기존 유지. ACT 이름만 새 구성으로 교체 (첫 장면 / 언제 / 네 가지 장면 / 나이별) -->
+<main class="pg">
+  <!-- 0 히어로: 기존 LifetimeNowShowing 유지. 시안에서는 간략 재현 -->
+  <section class="hero">
+    <p class="eyebrow">● NOW SHOWING</p>
+    <p class="now">지수님 <span>· 지금 31세 · 3번째 장면 (22~31세)</span></p>
+    <h1 style="margin-top:8px">자리를 만들어 가는 시기</h1>
+    <button class="btn" type="button">지금 장면 보기</button>
+  </section>
+
+  <!-- ACT 1: 스포일러 + 핵심 시나리오 + CAST 를 한 막으로. 나의 한 줄 -> 근거 -> 확인 컷 -> 핵심 장면 2 -->
+  <section class="act" id="act1" aria-labelledby="h-act1">
+    <p class="eyebrow">ACT 1</p>
+    <h2 id="h-act1">나는 이런 사람이에요</h2>
+
+    <p class="line">결정은 빠른데, 시작은 느려요.</p>
+    <p class="why"><b>근거</b><span>나를 보는 자리에 생각이 빠른 기운과 신중한 기운이 함께 있어요.</span></p>
+
+    <!-- 지난 시기 확인 컷: 구간 1은 예고편에서 답한 기록 요약, 구간 2는 새로 -->
+    <div class="blk" data-cut="live">
+      <h3>지난 장면 확인</h3>
+      <p class="lead">풀이가 지나온 시기와 맞는지 직접 확인해 보세요.</p>
+
+      <button class="nx ok" type="button" style="margin-top:20px" aria-label="2017년부터 2021년 확인 컷, 3개 중 2개가 맞아요. 눌러서 다시 보기">
+        <span><b>2017 ~ 2021년 · 22~26세</b><small>예고편에서 답한 3개</small></span>
+        <em><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>2개 맞아요</em>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+
+      <div class="cutw">
+        <div class="tk" role="group" aria-label="지난 장면 2022년부터 2025년, 27세부터 30세">
+          <div class="bd"><div class="kd">지난 장면 · 27~30세</div><div class="tl">2022 ~ 2025년</div></div>
+          <div class="sb"><span>답한 수</span><strong data-cnt>0/3</strong><i class="bc" aria-hidden="true"></i></div>
+        </div>
+        <p class="sr" role="status" aria-live="polite" data-live-msg></p>
+        <ol class="ql">
+          <li class="q" data-state="active">
+            <div class="q-h"><span class="q-n" aria-hidden="true">1</span><p class="q-t">새로운 일이나 역할을 맡아 책임이 커졌을 가능성이 커요.</p>
+              <button class="q-res" type="button" aria-label="답 바꾸기"><span class="r-yes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</span><span class="r-no"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</span><span class="r-skip">기억 안 나요</span></button></div>
+            <div class="q-a" role="group" aria-label="1번 진술에 답하기"><div class="ans">
+              <button type="button" data-v="yes" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</button>
+              <button type="button" data-v="no" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</button></div>
+              <button class="skip" type="button" data-v="skip">기억 안 나요</button></div>
+          </li>
+          <li class="q" data-state="next">
+            <div class="q-h"><span class="q-n" aria-hidden="true">2</span><p class="q-t">마음먹은 일을 시작하기까지 예상보다 오래 걸렸을 가능성이 커요.</p>
+              <button class="q-res" type="button" aria-label="답 바꾸기"><span class="r-yes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</span><span class="r-no"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</span><span class="r-skip">기억 안 나요</span></button></div>
+            <div class="q-a" role="group" aria-label="2번 진술에 답하기"><div class="ans">
+              <button type="button" data-v="yes" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</button>
+              <button type="button" data-v="no" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</button></div>
+              <button class="skip" type="button" data-v="skip">기억 안 나요</button></div>
+          </li>
+          <li class="q" data-state="next">
+            <div class="q-h"><span class="q-n" aria-hidden="true">3</span><p class="q-t">가까운 사람 때문에 큰 결정을 미루거나 바꾼 일이 있었을 가능성이 커요.</p>
+              <button class="q-res" type="button" aria-label="답 바꾸기"><span class="r-yes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</span><span class="r-no"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</span><span class="r-skip">기억 안 나요</span></button></div>
+            <div class="q-a" role="group" aria-label="3번 진술에 답하기"><div class="ans">
+              <button type="button" data-v="yes" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</button>
+              <button type="button" data-v="no" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</button></div>
+              <button class="skip" type="button" data-v="skip">기억 안 나요</button></div>
+          </li>
+        </ol>
+        <div class="sm" tabindex="-1" hidden>
+          <div class="sm-good">
+            <h4><span data-sum-total>3</span>개 중 <span data-sum-yes>2</span>개가 맞는다고 하셨어요</h4>
+            <p>이 시기도 읽은 내용과 겹치는 부분이 있어요. 아래 풀이도 같은 방식으로 읽었어요.</p>
+          </div>
+          <div class="sm-low" hidden>
+            <h4>맞지 않는 부분이 더 많았어요</h4>
+            <p>태어난 시간이 정확하지 않으면 시기가 어긋나게 읽힐 수 있어요. 프로필에서 태어난 시간을 다시 확인해 보세요.</p>
+            <a class="link" href="#">프로필에서 확인하기<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+          </div>
+        </div>
+        <p class="fine" style="margin-top:16px">답변은 풀이를 다듬는 데만 쓰이고 다른 사람에게는 보이지 않아요.</p>
+      </div>
+    </div>
+
+    <!-- 핵심 장면 2개: 기존 스포일러 소제목 3~4개 + 핵심 시나리오 소제목 3개 + CAST 성향을 2개로 -->
+    <div class="blk">
+      <h3>핵심 장면</h3>
+      <div class="items">
+        <article class="it">
+          <h4>정하는 건 빠르고, 움직이는 건 느려요</h4>
+          <p class="read"><strong>마음속에서는 이미 답이 나와 있는데 몸이 따라가는 데 시간이 걸려요.</strong> 그래서 주변에서는 신중한 사람으로 보지만, 본인은 속으로 답답할 때가 많아요. 첫 걸음을 아주 작게 나눠 두면 시작하는 시간이 눈에 띄게 짧아져요.</p>
+        </article>
+        <article class="it">
+          <h4>가까운 사람에게만 속도를 맞춰요</h4>
+          <p class="read"><strong>처음 만난 사람에게는 한 걸음 물러서 있다가, 마음을 열면 누구보다 오래 곁을 지켜요.</strong> 관계의 수는 적어도 깊이로 채우는 편이라, 오래 알고 지낸 사람이 가장 큰 힘이 돼요. 다만 서운함을 말하지 않고 쌓아 두는 버릇은 조심하세요.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORIGINAL: 기존 ChartConstellation 유지. CAST 포스터는 페이지에서 빼고 공유 시트 안 이미지로만 남긴다 -->
+  <section class="sec" aria-labelledby="h-orig">
+    <p class="eyebrow">ORIGINAL</p>
+    <h2 id="h-orig">내 명반</h2>
+    <p class="lead">위의 한 줄과 근거는 이 명반에서 읽었어요. 칸을 누르면 그 자리가 보는 것을 알려 드려요.</p>
+    <div class="gw"><div class="grid" role="group" aria-label="지수님의 명반 12궁">
+      <button class="cell" type="button"><i>명궁</i><b>자미</b></button><button class="cell" type="button"><i>형제궁</i><b>천기</b></button><button class="cell" type="button"><i>부처궁</i><b>태양</b></button><button class="cell" type="button"><i>자녀궁</i><b>무곡</b></button>
+      <button class="cell" type="button"><i>부모궁</i><b>천부</b></button><div class="cell ctr"><b>지수님</b><span>수이국</span></div><button class="cell" type="button"><i>재백궁</i><b>천동</b></button>
+      <button class="cell" type="button"><i>복덕궁</i><b>염정</b></button><button class="cell" type="button"><i>질액궁</i><b>탐랑</b></button>
+      <button class="cell" type="button"><i>전택궁</i><b>거문</b></button><button class="cell" type="button"><i>관록궁</i><b>천상</b></button><button class="cell" type="button"><i>노복궁</i><b>천량</b></button><button class="cell" type="button"><i>천이궁</i><b>칠살</b></button>
+    </div></div>
+  </section>
+
+  <!-- ACT 2: 타이밍 (신규) -->
+  <section class="act" id="act2" aria-labelledby="h-act2">
+    <p class="eyebrow">ACT 2</p>
+    <h2 id="h-act2">언제 오는지 볼게요</h2>
+    <p class="lead">가능성이 높은 해와 조심할 해를 골랐어요. 정해진 일정이 아니라 가능성이라, 준비와 선택에 따라 달라져요.</p>
+
+    <ul class="lst tc" aria-label="주제별 가장 가까운 후보">
+      <li><a href="#t-love"><b>결혼 · 연애</b><small>가능성이 높은 해 3개</small><em>2027년<small>가장 가까운 후보</small></em><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a href="#t-job"><b>취업 · 이직</b><small>가능성이 높은 해 2개</small><em>2027년<small>가장 가까운 후보</small></em><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a href="#t-move"><b>이사 · 이동</b><small>가능성이 높은 해 3개</small><em>2028년<small>가장 가까운 후보</small></em><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+    </ul>
+
+    <article class="topic" id="t-love" aria-labelledby="h-love">
+      <h3 id="h-love">결혼 · 연애</h3>
+      <p class="read"><strong>진지한 만남은 서두르기보다 마음이 열리는 해에 이어지기 쉬워요.</strong> 지수님은 사람을 오래 지켜본 뒤에 마음을 정하는 편이라, 관계가 깊어지는 해가 따로 있어요. 아래 해에는 새로운 인연이나 지금 관계의 다음 단계가 가까이 올 가능성이 커요.</p>
+      <p class="gl hi">가능성이 높은 해<small>가까운 순서</small></p>
+      <ul class="yrs">
+        <li><span><span class="yr">2027<small>년</small></span><span class="ag">32세</span></span><span class="rs">관계에 마음이 열려 진지한 만남이 이어지기 쉬워요.</span></li>
+        <li><span><span class="yr">2029<small>년</small></span><span class="ag">34세</span></span><span class="rs">곁에 두고 싶은 사람이 분명해지는 해예요.</span></li>
+        <li><span><span class="yr">2032<small>년</small></span><span class="ag">37세</span></span><span class="rs">오래 알던 사람과 사이가 한 단계 깊어지기 쉬워요.</span></li>
+      </ul>
+      <p class="gl cau">조심할 해</p>
+      <ul class="yrs">
+        <li><span><span class="yr">2028<small>년</small></span><span class="ag">33세</span></span><span class="rs">서둘러 정하면 후회가 남기 쉬워요. 확인할 시간을 넉넉히 두세요.</span></li>
+      </ul>
+    </article>
+
+    <article class="topic" id="t-job" aria-labelledby="h-job">
+      <h3 id="h-job">취업 · 이직</h3>
+      <p class="read"><strong>자리를 옮기는 일은 준비가 쌓인 뒤에 한 번에 오는 쪽이에요.</strong> 맡은 일을 오래 쌓은 만큼, 평가가 바뀌는 해에 제안이나 기회가 들어오기 쉬워요. 옮기는 해보다 옮기기 전 1년의 준비가 결과를 좌우해요.</p>
+      <p class="gl hi">가능성이 높은 해<small>가까운 순서</small></p>
+      <ul class="yrs">
+        <li><span><span class="yr">2027<small>년</small></span><span class="ag">32세</span></span><span class="rs">하던 일의 역할이 커지거나 새 자리 제안이 들어오기 쉬워요.</span></li>
+        <li><span><span class="yr">2030<small>년</small></span><span class="ag">35세</span></span><span class="rs">경력을 한 단계 올려 옮기기에 좋은 해예요.</span></li>
+      </ul>
+      <p class="gl cau">조심할 해</p>
+      <ul class="yrs">
+        <li><span><span class="yr">2029<small>년</small></span><span class="ag">34세</span></span><span class="rs">조건만 보고 옮기면 일하는 방식이 맞지 않을 수 있어요.</span></li>
+      </ul>
+    </article>
+
+    <article class="topic" id="t-move" aria-labelledby="h-move">
+      <h3 id="h-move">이사 · 이동</h3>
+      <p class="read"><strong>사는 곳이나 일하는 곳을 크게 바꾸는 해는 많지 않아요.</strong> 그만큼 움직일 때는 이유가 분명한 편이에요. 아래 해에는 이사나 장거리 이동처럼 생활 터전이 바뀌는 일이 생기기 쉬워요.</p>
+      <p class="gl hi">가능성이 높은 해<small>가까운 순서</small></p>
+      <ul class="yrs">
+        <li><span><span class="yr">2028<small>년</small></span><span class="ag">33세</span></span><span class="rs">생활 터전을 바꾸고 싶은 마음이 커지는 해예요.</span></li>
+        <li><span><span class="yr">2031<small>년</small></span><span class="ag">36세</span></span><span class="rs">자리를 잡기 좋은 곳을 찾기 쉬워요.</span></li>
+        <li><span><span class="yr">2033<small>년</small></span><span class="ag">38세</span></span><span class="rs">가족이나 일 때문에 이동이 잦아질 수 있어요.</span></li>
+      </ul>
+      <p class="gl cau">조심할 해</p>
+      <ul class="yrs">
+        <li><span><span class="yr">2030<small>년</small></span><span class="ag">35세</span></span><span class="rs">큰 계약은 한 번 더 확인하세요. 서두르면 조건이 어긋나기 쉬워요.</span></li>
+      </ul>
+    </article>
+    <p class="cavt">시기는 정해진 일정이 아니라 가능성을 읽은 거예요. 같은 해라도 준비와 선택에 따라 달라질 수 있어요.</p>
+  </section>
+
+  <!-- ACT 3: 네 가지 장면. 박스 타일 RatingBoard 는 한 줄 목록으로 교체, 순위(#1~#4) 제거 -->
+  <section class="act" id="act3" aria-labelledby="h-act3">
+    <p class="eyebrow">ACT 3</p>
+    <h2 id="h-act3">네 가지 장면</h2>
+    <p class="lead">영역마다 왜 그렇게 읽었는지 한 줄을 먼저 적었어요.</p>
+
+    <ul class="lst tc" aria-label="영역별 한 줄 평">
+      <li><a href="#a-wealth"><b>재물</b><small>꾸준히 쌓는 돈에서 힘이 나요</small><em>7.2</em><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a href="#a-career"><b>직업</b><small>구조를 짜고 끝까지 쌓는 자리에서 강해요</small><em>8.4<small>가장 강한 영역</small></em><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a href="#a-love"><b>인연</b><small>천천히 가까워져 오래 가는 사랑이에요</small><em>6.8</em><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+      <li><a href="#a-health"><b>건강</b><small>쌓인 피로를 먼저 챙기면 좋아요</small><em>5.9<small class="cau">조심해서 볼 영역</small></em><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+    </ul>
+
+    <!-- 재물 -->
+    <article class="area" id="a-wealth" aria-labelledby="h-wealth">
+      <p class="eyebrow">WEALTH</p>
+      <h3 id="h-wealth">재물</h3>
+      <p class="hl">꾸준히 쌓는 돈에서 힘이 나요</p>
+      <p class="why"><b>근거</b><span>돈을 보는 자리에 계산이 빠른 기운이 있어요.</span></p>
+      <div class="items">
+        <section class="it"><h4>버는 방식</h4>
+          <p class="read"><strong>정해진 수입처럼 예측할 수 있는 돈에서 가장 힘이 나요.</strong> 투자는 재미보다 손해를 먼저 계산하는 편이라 큰 승부를 벌이지 않는 게 맞아요. 몇 년에 한 번쯤 수입이 한 단계 오르는 때가 오는데, 그때 준비가 되어 있으면 크게 받아요.</p></section>
+        <section class="it"><h4>쓰는 습관</h4>
+          <p class="read clamp" id="r-w2"><strong>필요한 곳에는 아끼지 않고 쓰는 편이에요.</strong> 특히 가까운 사람을 위한 지출은 계획보다 늘기 쉬워요. 한 달에 쓸 수 있는 선을 미리 정해 두면 마음 편하게 쓸 수 있고, 그 선 안에서는 죄책감 없이 쓰셔도 돼요.</p>
+          <button class="more" type="button" data-more data-open="더 읽기" data-close="접기" aria-expanded="false" aria-controls="r-w2">더 읽기</button></section>
+      </div>
+    </article>
+
+    <!-- 직업 + 잘 맞는 분야 -->
+    <article class="area" id="a-career" aria-labelledby="h-career">
+      <p class="eyebrow">CAREER</p>
+      <h3 id="h-career">직업</h3>
+      <p class="hl">구조를 짜고 끝까지 쌓는 자리에서 강해요</p>
+      <p class="why"><b>근거</b><span>일을 보는 자리에 끈기 있게 쌓아 가는 기운이 있어요.</span></p>
+      <div class="items">
+        <section class="it"><h4>일하는 방식</h4>
+          <p class="read"><strong>목표가 분명할 때 가장 안정적으로 성과를 내요.</strong> 처음에는 눈에 띄지 않아도 맡은 일을 끝까지 쌓아서 마지막에 인정받는 쪽이에요. 여러 일을 한꺼번에 받으면 속도가 급격히 떨어지니, 우선순위를 먼저 정해 달라고 요청하세요.</p></section>
+        <section class="it"><h4>힘이 나는 때</h4>
+          <p class="read clamp" id="r-c2"><strong>혼자 깊이 생각할 시간이 있고, 정리한 결과를 보여 줄 기회가 있을 때예요.</strong> 즉흥적인 발표나 급한 조율이 많은 자리에서는 평소 실력이 덜 보이기 쉬워요. 미리 준비할 수 있는 역할을 맡으면 평가가 훨씬 좋아져요.</p>
+          <button class="more" type="button" data-more data-open="더 읽기" data-close="접기" aria-expanded="false" aria-controls="r-c2">더 읽기</button></section>
+      </div>
+      <div class="sub2">
+        <h4>잘 맞는 분야</h4>
+        <ul class="lst" style="margin-top:8px">
+          <li class="fld"><b>기획</b><span>전체 구조를 먼저 그리는 일에서 힘이 나요.</span></li>
+          <li class="fld"><b>데이터 분석</b><span>숫자에서 패턴을 찾는 일이 잘 맞아요.</span></li>
+          <li class="fld"><b>교육</b><span>설명하며 정리하는 일에서 강점이 보여요.</span></li>
+          <li class="fld"><b>콘텐츠 운영</b><span>꾸준히 다듬어 쌓는 일에 강해요.</span></li>
+          <li class="fld"><b>리서치</b><span>파고들수록 성과가 나오는 일이에요.</span></li>
+        </ul>
+        <p class="fine" style="margin-top:12px">직업을 정해 주는 게 아니라, 일하는 방식이 맞는 분야를 골랐어요.</p>
+        <a class="link" href="#t-job">취업 · 이직 시기 보기<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+      </div>
+    </article>
+
+    <!-- 인연 + 만날 사람 -->
+    <article class="area" id="a-love" aria-labelledby="h-lovearea">
+      <p class="eyebrow">RELATIONSHIP</p>
+      <h3 id="h-lovearea">인연</h3>
+      <p class="hl">천천히 가까워져 오래 가는 사랑이에요</p>
+      <p class="why"><b>근거</b><span>마음을 보는 자리에 신중하게 다가가는 기운이 있어요.</span></p>
+      <div class="items">
+        <section class="it"><h4>사랑하는 방식</h4>
+          <p class="read"><strong>마음을 여는 데는 오래 걸리지만, 한번 열면 깊이 주는 사랑이에요.</strong> 처음에는 거리를 두다가 신뢰가 쌓이면 누구보다 꾸준히 곁을 지켜요. 말보다 행동으로 마음을 보여 주는 편이라, 표현이 부족하다는 말을 들을 수 있어요.</p></section>
+        <section class="it"><h4>관계에서 조심할 점</h4>
+          <p class="read clamp" id="r-l2"><strong>서운함을 말하지 않고 쌓아 두는 버릇은 조심하세요.</strong> 괜찮다고 넘기던 일이 어느 날 한꺼번에 커져서 관계가 멀어지기 쉬워요. 작은 불편은 그때그때 짧게 말하는 연습이 관계를 오래 지켜 줘요.</p>
+          <button class="more" type="button" data-more data-open="더 읽기" data-close="접기" aria-expanded="false" aria-controls="r-l2">더 읽기</button></section>
+      </div>
+      <div class="sub2">
+        <h4>만날 사람</h4>
+        <p class="gl hi" style="margin-top:12px">성향</p>
+        <ul class="lst" style="margin-top:4px">
+          <li class="bul">차분하게 말을 고르고, 감정을 급하게 몰아붙이지 않는 사람</li>
+          <li class="bul">약속과 일정을 가볍게 여기지 않는 사람</li>
+          <li class="bul">지수님이 정한 속도를 기다려 줄 줄 아는 사람</li>
+        </ul>
+        <p class="gl hi">관계에서 맡는 역할</p>
+        <p class="read" style="margin-top:6px"><strong>지수님이 앞서 정하는 만큼 현실적인 기준을 챙겨 주는 쪽이에요.</strong> 큰 일정과 생활 계획을 함께 정리하고, 지수님이 멈칫할 때 부담 없이 먼저 한 걸음 내미는 역할을 맡기 쉬워요.</p>
+        <p class="gl hi">만나는 경로</p>
+        <ul class="lst" style="margin-top:4px">
+          <li class="bul">일이나 프로젝트로 만나 신뢰가 쌓인 사람의 소개</li>
+          <li class="bul">오래 다닌 모임이나 취미에서 자주 마주치는 사람</li>
+          <li class="bul">같은 공간에서 반복해서 마주치다 말문이 트인 사람</li>
+        </ul>
+        <p class="fine" style="margin-top:12px">외모나 직업은 말하지 않아요. 성향과 관계의 모양만 읽어요.</p>
+        <a class="link" href="#t-love">결혼 · 연애 시기 보기<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+      </div>
+    </article>
+
+    <!-- 건강 -->
+    <article class="area" id="a-health" aria-labelledby="h-health">
+      <p class="eyebrow">HEALTH</p>
+      <h3 id="h-health">건강</h3>
+      <p class="hl">쌓인 피로를 먼저 챙기면 좋아요</p>
+      <p class="why"><b>근거</b><span>몸을 보는 자리에 에너지를 한 번에 쓰는 기운이 있어요.</span></p>
+      <div class="items">
+        <section class="it"><h4>지치는 패턴</h4>
+          <p class="read"><strong>한 번에 몰아서 쓰고 크게 지치는 패턴이에요.</strong> 일이 몰리는 시기에는 잠과 식사 시간이 먼저 무너지기 쉬워요. 컨디션이 떨어진 뒤에 쉬기보다, 바쁜 시기 앞에 쉬는 시간을 먼저 일정에 넣어 두는 쪽이 맞아요.</p></section>
+        <section class="it"><h4>챙기면 좋은 것</h4>
+          <p class="read clamp" id="r-h2"><strong>몸이 보내는 작은 신호를 넘기지 않는 게 중요해요.</strong> 소화나 수면처럼 매일 반복되는 부분에서 먼저 신호가 나타나기 쉬워요. 불편이 길어지면 운세에 기대지 말고 병원에서 상담받으세요.</p>
+          <button class="more" type="button" data-more data-open="더 읽기" data-close="접기" aria-expanded="false" aria-controls="r-h2">더 읽기</button></section>
+      </div>
+    </article>
+  </section>
+
+  <!-- ACT 4: 나이별 장면. 기존 AgeLens 유지(시안은 간략) -->
+  <section class="act" id="act4" aria-labelledby="h-act4">
+    <p class="eyebrow">ACT 4</p>
+    <h2 id="h-act4">나이별 장면</h2>
+    <ul class="lst ages">
+      <li>
+        <button type="button" aria-expanded="true"><b>22~31세</b><span><span class="nowt">지금</span>자리를 만들어 가는 시기</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+        <p class="pn">새로 맡은 역할을 안정시키는 데 힘이 들어가는 시기예요. 지금 쌓는 신뢰가 이후 10년의 바탕이 돼요.</p>
+      </li>
+      <li><button type="button" aria-expanded="false"><b>32~41세</b><span>맡은 일의 범위가 넓어지는 시기</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></li>
+      <li><button type="button" aria-expanded="false"><b>42~51세</b><span>쌓은 것을 나누는 시기</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></li>
+      <li><button type="button" aria-expanded="false"><b>52세~</b><span>여유가 생기는 시기</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></li>
+    </ul>
+  </section>
+
+  <!-- 다음 상영 / 엔딩 크레딧: 기존 NextShow, EndCredits 유지 -->
+  <section class="fin" aria-labelledby="h-next">
+    <p class="eyebrow">TRAILER · 2026</p>
+    <h3 id="h-next">올해 운세</h3>
+    <p class="lead">올해 남은 두 달의 일정을 달 단위로 볼 수 있어요.</p>
+    <a class="btn ghost" href="#">올해 운세 예고편 보기</a>
+  </section>
+
+  <section class="fin" aria-labelledby="h-end">
+    <p class="eyebrow">END CREDITS</p>
+    <h3 id="h-end">지수님의 인생 본편</h3>
+    <dl class="cr2">
+      <div><dt>LEAD STAR</dt><dd>천동</dd></div>
+      <div><dt>ORIGINAL</dt><dd>수이국</dd></div>
+    </dl>
+    <button class="btn" type="button">친구에게 공유하기</button>
+    <button class="btn ghost" type="button">후기 남기기</button>
+  </section>
+</main>
+<!-- 전문가에게 질문(FollowUpEntry) 플로팅 버튼: 기존 위치 유지 -->
+<script src="lq.js"></script>
+</body>
+</html>

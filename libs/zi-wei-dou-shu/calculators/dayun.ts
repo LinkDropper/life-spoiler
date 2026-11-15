@@ -102,19 +102,6 @@ const cycleBranch = (index: number): BranchIndex => {
 };
 
 /**
- * 대운궁의 천간 계산
- * 대운궁 천간은 명궁 천간에서 시작하여 순행/역행
- */
-const getDayunStem = (
-  baseStem: StemIndex,
-  steps: number,
-  direction: "순행" | "역행"
-): StemIndex => {
-  const delta = direction === "순행" ? steps : -steps;
-  return ((((baseStem + delta) % 10) + 10) % 10) as StemIndex;
-};
-
-/**
  * 지지 인덱스로 궁 이름 찾기
  */
 const findPalaceByBranch = (
@@ -150,9 +137,6 @@ export const calculateDayun = (
   // 2. 대운 시작 나이
   const startAge = getDayunStartAge(wuxingJu);
 
-  // 3. 명궁의 천간 찾기
-  const mingPalace = findPalaceByBranch(palaces, mingGong);
-
   // 4. 대운 기간 계산
   const periods: DayunPeriod[] = [];
   let currentAge = startAge;
@@ -165,12 +149,9 @@ export const calculateDayun = (
     const endAge = Math.min(currentAge + 9, maxAge - 1);
     const palace = findPalaceByBranch(palaces, currentBranch);
 
-    // 대운 천간 계산 (명궁 천간에서 이동)
-    const stemIndex = getDayunStem(
-      mingPalace.stem,
-      periodIndex - 1,
-      directionKo
-    );
+    // 대운 천간 = 대운궁의 궁간(五虎遁). 명궁 천간에서 선형으로 세면
+    // 子→丑→寅 경계에서 궁간 배열과 어긋난다.
+    const stemIndex = palace.stem;
 
     periods.push({
       index: periodIndex,

@@ -4,43 +4,13 @@ import {
   isYearlyEdition,
   resolveTargetYear,
 } from "@/libs/fortune/yearly-editions";
-import { createServerClient } from "@/libs/supabase/client";
 import { getFortune, updateFortunePaidAt } from "@/libs/supabase/fortune";
 import type { FortuneType } from "@/libs/supabase/fortune";
+import { hasFreeAccess } from "@/libs/supabase/fortune-access";
 
 interface RouteContext {
   params: Promise<{ profileId: string }>;
 }
-
-/**
- * profile_free_access 테이블에서 유효한 free access가 있는지 확인
- */
-const checkFreeAccess = async (
-  profileId: string,
-  fortuneType: FortuneType
-): Promise<boolean> => {
-  try {
-    const supabase = createServerClient();
-    const now = new Date().toISOString();
-
-    const { data, error } = await supabase
-      .from("profile_free_access")
-      .select("id")
-      .eq("profile_id", profileId)
-      .eq("fortune_type", fortuneType)
-      .or(`expires_at.is.null,expires_at.gt.${now}`)
-      .maybeSingle();
-
-    if (error) {
-      console.error("Free access 확인 실패:", error);
-      return false;
-    }
-
-    return data !== null;
-  } catch {
-    return false;
-  }
-};
 
 /**
  * 운세 결제 상태 확인 API
@@ -77,9 +47,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
     // fortune이 없으면 아직 운세를 조회하지 않은 상태
     // 하지만 free access가 있을 수 있으므로 확인 필요
     if (!fortune) {
-      const hasFreeAccess = await checkFreeAccess(profileId, fortuneType);
+      const freeAccess = await hasFreeAccess(profileId, fortuneType);
 
-      if (hasFreeAccess) {
+      if (freeAccess) {
         // free access가 있으면 결과 페이지에서 fortune 생성 후 접근 가능
         return NextResponse.json({
           success: true,
@@ -113,9 +83,9 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     // paid_at이 없으면 free access 확인
-    const hasFreeAccess = await checkFreeAccess(profileId, fortuneType);
+    const freeAccess = await hasFreeAccess(profileId, fortuneType);
 
-    if (hasFreeAccess) {
+    if (freeAccess) {
       // free access가 있으면 paid_at을 현재 시간으로 업데이트
       const updated = await updateFortunePaidAt(profileId, fortuneType, year);
 

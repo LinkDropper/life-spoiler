@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>인생 운세 예고편 - 인생스포 (품질 개선 Phase 3 시안 · 예고편 전체 구성)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="lq.css">
+</head>
+<body>
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div>
+    <button class="ic" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></button>
+    <button class="ic" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+</header>
+
+<main class="pg">
+  <!-- 1 히어로: 기존 FilmPoster(variant=preview) + RuntimeTrack 유지. 시안에서는 간략 재현 -->
+  <section class="hero">
+    <p class="eyebrow">TRAILER</p>
+    <h1>천천히 시작해<br>오래 가는 사람</h1>
+    <p class="tg">생각은 빠르고 시작은 느려서, 한번 움직이면 끝까지 가는 사람이에요.</p>
+    <p class="who">지수님 · 수이국 · 31세</p>
+    <div class="rt" role="img" aria-label="러닝타임 99세 중 지금 31세">
+      <div><span>RUNNING TIME</span><b>지금 31세 / 99</b></div>
+      <i></i>
+    </div>
+  </section>
+
+  <!-- 2 나의 한 줄 + 근거 한 줄 (스포일러·핵심 시나리오·CAST 통합 상단. 무료) -->
+  <section class="sec" aria-labelledby="h-line">
+    <p class="eyebrow">ONE LINE</p>
+    <h2 id="h-line">나의 한 줄</h2>
+    <p class="line">결정은 빠른데, 시작은 느려요.</p>
+    <p class="why"><b>근거</b><span>나를 보는 자리에 생각이 빠른 기운과 신중한 기운이 함께 있어요.</span></p>
+  </section>
+
+  <!-- 3 지난 시기 확인 컷 (무료 · 1구간 공개). data-cut="live" 는 시안 동작 데모 -->
+  <section class="sec" aria-labelledby="h-cut" data-cut="live">
+    <p class="eyebrow">CHECK</p>
+    <h2 id="h-cut">지난 장면 확인</h2>
+    <p class="lead">이미 지나온 시기라 직접 맞춰 볼 수 있어요. 읽은 내용이 나와 맞는지 먼저 확인해 보세요.</p>
+
+    <div class="cutw">
+      <div class="tk" role="group" aria-label="지난 장면 2017년부터 2021년, 22세부터 26세">
+        <div class="bd"><div class="kd">지난 장면 · 22~26세</div><div class="tl">2017 ~ 2021년</div></div>
+        <div class="sb"><span>답한 수</span><strong data-cnt>0/3</strong><i class="bc" aria-hidden="true"></i></div>
+      </div>
+      <p class="sr" role="status" aria-live="polite" data-live-msg></p>
+
+      <ol class="ql">
+        <li class="q" data-state="active">
+          <div class="q-h">
+            <span class="q-n" aria-hidden="true">1</span>
+            <p class="q-t">이 시기에 사는 곳이나 소속이 한 번 이상 바뀌었을 가능성이 커요.</p>
+            <button class="q-res" type="button" aria-label="답 바꾸기"><span class="r-yes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</span><span class="r-no"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</span><span class="r-skip">기억 안 나요</span></button>
+          </div>
+          <div class="q-a" role="group" aria-label="1번 진술에 답하기">
+            <div class="ans">
+              <button type="button" data-v="yes" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</button>
+              <button type="button" data-v="no" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</button>
+            </div>
+            <button class="skip" type="button" data-v="skip">기억 안 나요</button>
+          </div>
+        </li>
+        <li class="q" data-state="next">
+          <div class="q-h">
+            <span class="q-n" aria-hidden="true">2</span>
+            <p class="q-t">가까운 사람과 거리가 멀어지거나, 새로 가까워진 사람이 생겼을 가능성이 커요.</p>
+            <button class="q-res" type="button" aria-label="답 바꾸기"><span class="r-yes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</span><span class="r-no"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</span><span class="r-skip">기억 안 나요</span></button>
+          </div>
+          <div class="q-a" role="group" aria-label="2번 진술에 답하기">
+            <div class="ans">
+              <button type="button" data-v="yes" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</button>
+              <button type="button" data-v="no" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</button>
+            </div>
+            <button class="skip" type="button" data-v="skip">기억 안 나요</button>
+          </div>
+        </li>
+        <li class="q" data-state="next">
+          <div class="q-h">
+            <span class="q-n" aria-hidden="true">3</span>
+            <p class="q-t">돈을 쓰는 기준을 스스로 다시 세운 일이 있었을 가능성이 커요.</p>
+            <button class="q-res" type="button" aria-label="답 바꾸기"><span class="r-yes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</span><span class="r-no"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</span><span class="r-skip">기억 안 나요</span></button>
+          </div>
+          <div class="q-a" role="group" aria-label="3번 진술에 답하기">
+            <div class="ans">
+              <button type="button" data-v="yes" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>맞아요</button>
+              <button type="button" data-v="no" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>아니에요</button>
+            </div>
+            <button class="skip" type="button" data-v="skip">기억 안 나요</button>
+          </div>
+        </li>
+      </ol>
+
+      <div class="sm" tabindex="-1" hidden>
+        <div class="sm-good">
+          <h4><span data-sum-total>3</span>개 중 <span data-sum-yes>2</span>개가 맞는다고 하셨어요</h4>
+          <p>이 시기는 읽은 내용과 겹치는 부분이 있어요. 본편의 풀이도 같은 방식으로 읽었어요.</p>
+        </div>
+        <div class="sm-low" hidden>
+          <h4>맞지 않는 부분이 더 많았어요</h4>
+          <p>태어난 시간이 정확하지 않으면 시기가 어긋나게 읽힐 수 있어요. 프로필에서 태어난 시간을 다시 확인해 보세요.</p>
+          <a class="link" href="#">프로필에서 확인하기<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+        </div>
+      </div>
+
+      <div class="nx" role="group" style="margin-top:20px" aria-label="2022년부터 2025년 확인 컷은 본편에서 열려요">
+        <span><b>2022 ~ 2025년 · 27~30세</b><small>확인 컷 3개</small></span>
+        <em>본편에서</em>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <p class="fine" style="margin-top:12px">답변은 풀이를 다듬는 데만 쓰이고 다른 사람에게는 보이지 않아요.</p>
+    </div>
+  </section>
+
+  <!-- 4 예고 장면 1개 (기존 TrailerCuts의 색 타일 스틸 제거, 제목+본문만. 첫 문장 굵게) -->
+  <section class="sec" aria-labelledby="h-cut1">
+    <p class="eyebrow">TRAILER CUT</p>
+    <h2 id="h-cut1">예고 장면</h2>
+    <div class="items">
+      <article class="it">
+        <h4>정하는 건 빠르고, 움직이는 건 느려요</h4>
+        <p class="read"><strong>마음속에서는 이미 답이 나와 있는데 몸이 따라가는 데 시간이 걸려요.</strong> 그래서 주변에서는 신중한 사람으로 보지만, 본인은 속으로 답답할 때가 많아요. 첫 걸음을 아주 작게 나눠 두면 시작하는 시간이 눈에 띄게 짧아져요.</p>
+      </article>
+    </div>
+    <p class="fine" style="margin-top:12px">이 장면 뒤로 이어지는 이야기는 본편에서 볼 수 있어요.</p>
+  </section>
+
+  <!-- 5 ORIGINAL 명반: 기존 ChartConstellation(interactive=false) 유지. 간략 재현 -->
+  <section class="sec" aria-labelledby="h-orig">
+    <p class="eyebrow">ORIGINAL</p>
+    <h2 id="h-orig">내 명반</h2>
+    <p class="lead">위의 한 줄과 근거는 이 명반에서 읽었어요.</p>
+    <div class="gw"><div class="grid" role="img" aria-label="지수님의 명반 12궁">
+      <div class="cell"><i>명궁</i><b>자미</b></div><div class="cell"><i>형제궁</i><b>천기</b></div><div class="cell"><i>부처궁</i><b>태양</b></div><div class="cell"><i>자녀궁</i><b>무곡</b></div>
+      <div class="cell"><i>부모궁</i><b>천부</b></div><div class="cell ctr"><b>지수님</b><span>수이국</span></div><div class="cell"><i>재백궁</i><b>천동</b></div>
+      <div class="cell"><i>복덕궁</i><b>염정</b></div><div class="cell"><i>질액궁</i><b>탐랑</b></div>
+      <div class="cell"><i>전택궁</i><b>거문</b></div><div class="cell"><i>관록궁</i><b>천상</b></div><div class="cell"><i>노복궁</i><b>천량</b></div><div class="cell"><i>천이궁</i><b>칠살</b></div>
+    </div></div>
+  </section>
+
+  <!-- 6 본편에서 열리는 장면: FeatureLocks 교체. 질문 유형을 라벨로, 내용은 가림.
+       잠긴 내용(연도·분야명·성향)은 서버가 예고편 응답에 싣지 않는다. 라벨·개수만 내려준다 -->
+  <section class="sec" aria-labelledby="h-lock">
+    <p class="eyebrow">FEATURE</p>
+    <h2 id="h-lock">본편에서 열리는 장면</h2>
+    <p class="lead">어떤 질문에 답하는지만 먼저 보여 드려요. 내용은 결제 후에 열려요.</p>
+
+    <p class="lg"><i>ACT 2</i>언제 오는지</p>
+    <ul class="lst">
+      <li class="lk" aria-label="결혼 연애 시기, 가능성이 높은 해 후보 3개 중 첫 번째, 본편에서 열려요"><span><b>결혼 · 연애 시기</b><small>가능성이 높은 해 후보 3개 중 첫 번째</small></span><span class="dots" aria-hidden="true">●●●●년</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+      <li class="lk" aria-label="취업 이직 시기, 후보 2개 중 첫 번째, 본편에서 열려요"><span><b>취업 · 이직 시기</b><small>가능성이 높은 해 후보 2개 중 첫 번째</small></span><span class="dots" aria-hidden="true">●●●●년</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+      <li class="lk" aria-label="이사 이동 시기, 후보 3개 중 첫 번째, 본편에서 열려요"><span><b>이사 · 이동 시기</b><small>가능성이 높은 해 후보 3개 중 첫 번째</small></span><span class="dots" aria-hidden="true">●●●●년</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+      <li class="lk" aria-label="조심할 해, 세 주제에서 각 1개, 본편에서 열려요"><span><b>조심할 해</b><small>세 주제에서 각 1개</small></span><span class="dots" aria-hidden="true">●●●●년</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+    </ul>
+
+    <p class="lg"><i>ACT 3</i>네 가지 장면</p>
+    <ul class="lst">
+      <li class="lk" aria-label="재물 직업 인연 건강 영역별 근거 한 줄 4개, 본편에서 열려요"><span><b>영역별 근거 한 줄</b><small>재물 · 직업 · 인연 · 건강 4개</small></span><span class="dots" aria-hidden="true">●●●</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+      <li class="lk" aria-label="잘 맞는 직업 분야 5개 중 첫 번째, 본편에서 열려요"><span><b>잘 맞는 직업 분야</b><small>5개 중 첫 번째</small></span><span class="dots" aria-hidden="true">●●●</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+      <li class="lk" aria-label="만날 사람의 성향 3가지 중 첫 번째, 본편에서 열려요"><span><b>만날 사람의 성향</b><small>3가지 중 첫 번째</small></span><span class="dots" aria-hidden="true">●●●●●</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+      <li class="lk" aria-label="만나는 경로 3가지 중 첫 번째, 본편에서 열려요"><span><b>만나는 경로</b><small>3가지 중 첫 번째</small></span><span class="dots" aria-hidden="true">●●●●●</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+    </ul>
+
+    <p class="lg"><i>ACT 4</i>나이별 장면</p>
+    <ul class="lst">
+      <li class="lk" aria-label="다음 시기 장면의 제목, 본편에서 열려요"><span><b>다음 시기 장면의 제목</b><small>32~41세 구간</small></span><span class="dots" aria-hidden="true">●●●●●●</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.62)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></li>
+    </ul>
+  </section>
+
+  <!-- 7 결제 바: 기존 footer 유지 -->
+  <div class="bar">
+    <button class="ic" type="button" aria-label="이전으로"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+    <button class="btn" type="button">990원으로 전체 보기</button>
+  </div>
+</main>
+<script src="lq.js"></script>
+</body>
+</html>

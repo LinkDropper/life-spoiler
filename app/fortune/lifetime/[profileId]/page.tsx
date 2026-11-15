@@ -13,10 +13,15 @@ import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
 import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
 import { FortuneShareSheet } from "@/components/fortune/screen/FortuneShareSheet";
 import { AgeLens, toAgeSceneId } from "@/components/fortune/screen/AgeLens";
+import {
+  CareerFields,
+  PartnerProfile,
+} from "@/components/fortune/screen/CategoryExtras";
 import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
 import { EndCredits } from "@/components/fortune/screen/EndCredits";
 import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
+import { LifetimeTiming } from "@/components/fortune/screen/LifetimeTiming";
 import { LifetimeNowShowing } from "@/components/fortune/screen/LifetimeNowShowing";
 import { NextShow } from "@/components/fortune/screen/NextShow";
 import { NumberedSections } from "@/components/fortune/screen/NumberedSections";
@@ -28,6 +33,11 @@ import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
 import screen from "@/components/fortune/screen/screen.module.css";
 import type { CategoryKey } from "@/libs/fortune/lifetime-screen";
 import type { FortuneSceneId } from "@/libs/analytics/fortune";
+import {
+  getCareerFields,
+  getPartner,
+  getVisibleTiming,
+} from "@/libs/fortune/lifetime-extras";
 import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
 import { getFilmAge } from "@/libs/home/home-film";
@@ -53,7 +63,7 @@ const CATEGORY_KEYS: CategoryKey[] = [
   "health",
 ];
 
-const ACT_IDS = ["act1", "act2", "act3", "act4"] as const;
+const ACT_IDS = ["act1", "act2", "act3", "act4", "act5"] as const;
 
 const EXTRA_SCENE_IDS: FortuneSceneId[] = ["next", "end"];
 
@@ -122,15 +132,23 @@ export default function LifetimeFortunePage() {
 
   const cast = useScreenCast(result?.rawChart ?? null);
 
+  // 타이밍(ACT 5)은 보여 줄 연도가 있을 때만 막으로 둔다 (v3 이하 결과에는 없음)
+  const visibleTiming = useMemo(
+    () => getVisibleTiming(result?.interpretation.timing),
+    [result?.interpretation.timing]
+  );
+
   const scenes = useMemo<PlayerScene[]>(
     () =>
-      ACT_IDS.map((id, index) => ({
-        id,
-        act: `ACT ${index + 1}`,
-        title: tScreen(`acts.${id}.title`),
-        sub: tScreen(`acts.${id}.sub`),
-      })),
-    [tScreen]
+      ACT_IDS.filter((id) => id !== "act5" || visibleTiming.length > 0).map(
+        (id, index) => ({
+          id,
+          act: `ACT ${index + 1}`,
+          title: tScreen(`acts.${id}.title`),
+          sub: tScreen(`acts.${id}.sub`),
+        })
+      ),
+    [tScreen, visibleTiming.length]
   );
 
   // 프로필 이미지 다운로드 핸들러
@@ -295,6 +313,9 @@ export default function LifetimeFortunePage() {
     health: categories.health.score ?? 0,
   };
 
+  const careerFields = getCareerFields(interpretation);
+  const partner = getPartner(interpretation);
+
   const ratingItems: RatingItem[] = CATEGORY_KEYS.map((key) => ({
     key,
     label: t(`categories.${key}`),
@@ -446,7 +467,15 @@ export default function LifetimeFortunePage() {
             subSections={categories[key].subSections}
             oneLiner={categories[key].oneLiner}
             tags={categories[key].tags}
-          />
+            evidence={categories[key].evidence}
+          >
+            {key === "career" && careerFields.length > 0 && (
+              <CareerFields fields={careerFields} />
+            )}
+            {key === "relationship" && partner && (
+              <PartnerProfile partner={partner} />
+            )}
+          </CategoryStory>
         ))}
 
         {ageScenarios.length > 0 && (
@@ -458,6 +487,13 @@ export default function LifetimeFortunePage() {
               birthTimeUnknown={profile.birth_time_unknown}
               surface="owner"
             />
+          </>
+        )}
+
+        {visibleTiming.length > 0 && (
+          <>
+            {renderActIntertitle("act5")}
+            <LifetimeTiming topics={visibleTiming} />
           </>
         )}
 

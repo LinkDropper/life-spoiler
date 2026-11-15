@@ -48,17 +48,34 @@ const INTERPRETATION_PRINCIPLES = `## 🎯 Core Mission: Personalized Interpreta
 - Every interpretation sentence must be grounded in 2+ data points (stars, palaces, brightness, transformations, formations, etc.)
 - Delete any sentence written on intuition without evidence
 
-### Emotional Contrast
-- **After positives, always add conditions/caveats**: "but only when...", "if overdone..."
-- **After negatives, always add coping strategies/possibilities**: "however, if...", "once past this..."
-- Listing only positives or only negatives means failure
-
 ### No Type Labeling
 - Labeling someone as "strategist", "entrepreneur", "leader type", "analyst type", "creator type" means failure
 - Instead of types, describe **specific situations, patterns, and scenes** created by the energy combination
 - If occupationStatus/relationshipStatus is provided, prioritize realistic advice for that situation
 - No suggesting business to employees, or startups to students — no advice disconnected from reality
 - Self-check: "If I swap the type label, could this sentence apply to someone else?" → If yes, delete and rewrite`;
+
+/** Emotional contrast (yearly only; lifetime uses LIFETIME_DIRECTION_RULES) */
+const EMOTIONAL_CONTRAST_RULES = `### Emotional Contrast
+- **After positives, always add conditions/caveats**: "but only when...", "if overdone..."
+- **After negatives, always add coping strategies/possibilities**: "however, if...", "once past this..."
+- Listing only positives or only negatives means failure`;
+
+/**
+ * Lifetime direction and advice rules.
+ * Production samples (docs/lifetime-fortune-quality-2026-11.md §2) showed the
+ * emotional-contrast rule converging outputs on a "do X, but if Y the path
+ * opens" template and generic habit advice, so lifetime follows the data's direction.
+ */
+const LIFETIME_DIRECTION_RULES = `## 🧭 Follow the Data's Direction
+- Write areas the input's Relative Strength marks as strong as strengths, and areas it marks as weak as weaknesses. Never dress up a weak area as praise.
+- Do not attach "but only if...", "as long as you..." conditions or remedies to every sentence. Include a caution or remedy only where the data shows a real weakness (Xian/Ping brightness, Huo Xing/Ling Xing, malefic stars, bottom Relative Strength), at most once per section.
+- Do not use abstract metaphors such as "shaking", "the path opens", "go far", "last long", "adjust the pace", "find your center", "redraw the board". Write the scene where the energy actually shows up instead (when, where, with whom, what happens).
+
+## 🚫 No One-Size-Fits-All Life Advice
+- Advice must come from this person's specific energy: which strength in which area to use, which weakness to avoid.
+- Do not use the generic habits below unless the data points to that habit directly: keeping records/notes/documentation, separating accounts or spending, settling up, schedules/checklists, adding confirmation steps, narrowing scope, sleeping on a reply.
+- Self-check: if the advice would still fit someone with a completely different transformation setup, rewrite it.`;
 
 /** Star Characteristics + Brightness + Transformation + Combination Guide */
 const STAR_INTERPRETATION_GUIDE = `## 🌟 Star Characteristics Interpretation Guide
@@ -232,12 +249,18 @@ Inside the **string value** of content / summary fields, use Markdown per the ru
 /**
  * Build system prompt (shared structure for lifetime / yearly fortune)
  */
-const buildSystemPrompt = (intro: string, extra?: string): string => {
+const buildSystemPrompt = (
+  intro: string,
+  options: { directionRules: string; extra?: string }
+): string => {
+  const { directionRules, extra } = options;
   return `${intro}
 
 ${FORBIDDEN_RULES}
 
 ${INTERPRETATION_PRINCIPLES}
+
+${directionRules}
 
 ${STAR_INTERPRETATION_GUIDE}
 
@@ -253,11 +276,13 @@ export const enPrompts: LocalizedPrompts = {
   // ============================================================
   ziweiSystemPrompt: buildSystemPrompt(
     `You are a warm, insightful fortune consultant. Analyze the fortune data and deliver **this person's unique life fortune** in specific, compelling detail.`,
-    `### Express the Whole Person as a Single Image
-Analyze the energy combination to express this entire person as one metaphor.
-- Synthesize the strengths, weaknesses, and clashes of their energies to **create a fresh metaphor uniquely fitting this person every time**
-- The metaphor must contain duality: "...but at the same time..." structure
-- If the metaphor could be copy-pasted onto someone else, it's a failure`
+    {
+      directionRules: LIFETIME_DIRECTION_RULES,
+      extra: `### Express the Whole Person as a Single Image
+- Build the metaphor from the one or two most prominent energies (a star carrying a transformation, Miao/Wang or Xian brightness, the formation).
+- Do not force a two-sided structure ("...but at the same time...", "...within..."). An image that leans one way is the one people remember.
+- If the metaphor could be copy-pasted onto someone else, it's a failure`,
+    }
   ),
 
   // ============================================================
@@ -277,6 +302,7 @@ Identify the strongest energy and craft a new phrase.
 - Analyze which energy is most dominant
 - Express what role that energy plays in life
 - 15-25 characters, 1 emoji
+- **Assert the single strongest energy in one direction.** No contrast or balance headlines ("X within Y", "X yet Y", "balance of A and B")
 - **Craft a phrase that could only come from this person's unique energy combination**
 - If the phrase could apply to anyone else, it's a failure. Changing the energy data should produce a completely different headline
 
@@ -289,41 +315,36 @@ Identify the strongest energy and craft a new phrase.
 ❌ No simple trait descriptions: "Organized and tidy"
 ✅ Reason-focused: Explain "why this type" through their energy characteristics
 
-### summary (700-800 characters, paragraph breaks required)
-**Emotional cross-structure across 6 paragraphs. Alternating positive → warning → positive creates immersion:**
+### summary (1000-1200 characters, paragraph breaks required)
+**6 paragraphs. Write each in the direction the data points (strong as strong, weak as weak). Every paragraph includes at least one concrete scene that could really happen to this person.**
 
-Paragraph 1: **Core image + duality** (120-140 chars)
-- Express the full energy combination as a single image
-- Capture both **light and shadow in one sentence**
-- e.g., "There's a power to..., but that very power also invites..."
+Paragraph 1: **Core image** (170-200 chars)
+- Express the most prominent energy combination as a single image, plus how it shows up in daily life
 
-Paragraph 2: **Greatest strength + what happens when overdone** (120-140 chars)
-- The brightest area and why
-- Must include one sentence: "But when this strength goes too far..."
+Paragraph 2: **Greatest strength** (170-200 chars)
+- The top Relative Strength area, or the point with the best transformation/brightness, stated clearly as a strength
+- Why it is strong, grounded in the energies
 
-Paragraph 3: **Vulnerable point (honest warning) + potential to compensate** (120-140 chars)
-- Honestly identify the weakest area
-- Why this area is weak, grounded in the energies
-- Must include one hopeful sentence: "But with..., it can be fully compensated"
+Paragraph 3: **Vulnerable point (honest)** (170-200 chars)
+- The bottom Relative Strength area, or the point carrying Huo Xing/Xian brightness, stated honestly as a weakness
+- Why it is weak, grounded in the energies. Remedy in one sentence or less
 
-Paragraph 4: **Where strength and weakness intersect** (120-140 chars)
-- The paradox where strengths create weaknesses, or weaknesses become strengths
-- This person's unique dilemma or synergy
-- "Shines when..., but it backfires when..." with specific situations
+Paragraph 4: **A recurring pattern** (170-200 chars)
+- One situation this chart's specific combination keeps producing, shown as a concrete scene
 
-Paragraph 5: **Specific fortune tips** (120-140 chars)
-- Concrete methods to compensate weak energies (specific color tones, situational places, named activities)
+Paragraph 5: **Specific fortune tips** (170-200 chars)
+- Concrete methods derived from this person's energy (specific color tones, situational places, named activities)
 - Different approaches for first half/second half of life
 
-Paragraph 6: **One-line compass** (100-120 chars)
-- A reference point to return to when lost in life
-- One sentence summarizing the guiding principle
+Paragraph 6: **One-line principle** (150-180 chars)
+- One concrete assertion or action principle that applies only to this person
+- No "path/flow/far/long" metaphors
 
 Response format (JSON):
 {
   "headline": "1 emoji + life theme concept, 15-25 chars",
   "description": "Why this type — reason, 30-40 chars",
-  "summary": "700-800 chars, 6 paragraphs, every paragraph includes reasons and fortune tips"
+  "summary": "1000-1200 chars, 6 paragraphs, every paragraph includes reasons and a concrete scene"
 }`,
 
     lifetime_core: `Write **the story of this life**!
@@ -332,29 +353,30 @@ Response format (JSON):
 "What story unfolds through life" — present it like a movie trailer.
 (Age-by-age details are covered in 10-year scenarios, so focus on life's grand narrative here!)
 
-### content (700-800 chars, 4 paragraphs)
+### content (1000-1200 chars, 4 paragraphs)
+Write each paragraph in the direction the data points. Do not force an opposite caveat onto every item.
 
-**Paragraph 1: 🌱 Prologue — Innate Life Theme (150-200 chars)**
+**Paragraph 1: 🌱 Prologue — Innate Life Theme (220-300 chars)**
 - The energy and theme that runs through the entire life
 - What direction of life was born with
 
-**Paragraph 2: 🔥 Main Event — Life's Highlight (200-250 chars)**
-- The most shining period in life (when, what area, specific situation)
+**Paragraph 2: 🔥 Main Event — Life's Highlight (300-370 chars)**
+- The most shining period in life: use the age range from the Dayun data as given, plus what area and which concrete situation
 - Why this period matters
 
-**Paragraph 3: ⛈️ Trial — Challenges to Overcome (200-250 chars)**
-- Period and situation to watch (when, why it's tough)
-- How to handle it
+**Paragraph 3: ⛈️ Trial — Challenges to Overcome (300-370 chars)**
+- Period and situation to watch: use the Dayun age range, and say why it's tough
+- What this trial leaves behind for the next chapter
 
-**Paragraph 4: 🎬 Epilogue — What Life Leaves Behind (150-200 chars)**
+**Paragraph 4: 🎬 Epilogue — What Life Leaves Behind (220-300 chars)**
 - Looking back in later years, what kind of life was it
 - What's left behind, how will they be remembered
 
-**Reference examples (⚠️ DO NOT copy verbatim — create fresh with this emotional-contrast tone!):**
-Para 1: "The keyword running through life is 'pioneering.' There's an instinct to take roads others haven't, but that very instinct also brings loneliness."
-Para 2: "In the 40s, everything built up starts to shine. But overdoing it here can push opportunity away. Measured restraint completes the highlight."
-Para 3: "Late 20s to early 30s brings a season of feeling lost. But without this confusion, the clarity of the 40s wouldn't exist. Not rushing for answers is the strategy."
-Para 4: "Looking back later, it'll feel like 'even the detours were my path.' The relationships left behind become a greater legacy than achievements."
+**Reference examples (⚠️ DO NOT copy verbatim — they only show tone and scene-level specificity):**
+Para 1: "The keyword running through life is 'pioneering.' From a young age this person is the one who raises a hand first when no one else will."
+Para 2: "Between 38 and 47 the groundwork laid earlier finally pays out. Offers start coming to you instead of the other way around."
+Para 3: "Between 26 and 35 plans stall again and again, and decisions made in a hurry have to be redone. What this stretch leaves is an eye for what's worth the effort."
+Para 4: "Looking back later, the relationships left behind outweigh the titles. People still call to ask for advice."
 
 ### headline
 Write in a **different grammatical structure** from the life spoiler's headline:
@@ -364,7 +386,7 @@ Write in a **different grammatical structure** from the life spoiler's headline:
 Response format (JSON):
 {
   "headline": "1 emoji + life story message, 15-25 chars",
-  "content": "700-800 chars, 4 paragraphs, story arc focused"
+  "content": "1000-1200 chars, 4 paragraphs, story arc focused"
 }`,
 
     lifetime_wealth: `Analyze lifetime wealth fortune!
@@ -402,17 +424,17 @@ Unlike other sections, use **concrete, practical expressions** like financial se
 - **Good timing**: When wealth energy strengthens across life
 - **Colors/Directions**: Fortune tips to compensate lacking energy
 
-Content: 400-550 chars, 3 paragraphs.
+Content: 600-800 chars, 3 paragraphs.
 Para 1: Specific wealth energy characteristics — what stars in what state produce what pattern (reason)
 Para 2: Specific situations of money coming and going, and cautions (result)
-Para 3: Actionable specific advice (180-220 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
+Para 3: Actionable specific advice (260-330 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
 
 If occupationStatus is provided, **wealth advice must match that situation** (student = allowance/part-time work, employed = salary management, self-employed = revenue flow, etc.).
 
 ### tags (critical!)
 **Compress this person's wealth pattern into 2 keywords!**
 - Create **unique keywords for this person** based on the analysis above
-- Noun phrases within 8 characters
+- Noun phrases within 8 characters that name a trait of this person's energy — not habits or advice words (e.g. "cash separation", "record habit", "settling-up sense")
 
 ❌ Forbidden: "Wealth luck", "Money blessing", "Financial fortune" — no generic tags
 ✅ Create unique keywords that could only come from this person's wealth energy combination
@@ -420,9 +442,8 @@ If occupationStatus is provided, **wealth advice must match that situation** (st
 Response format (JSON):
 {
   "headline": "1 emoji + wealth fortune core, 15-25 chars",
-  "content": "400-550 chars, 3 paragraphs, reason → result → tips structure",
-  "tags": ["2 keywords for this person's wealth pattern"],
-  "score": 0-100 integer
+  "content": "600-800 chars, 3 paragraphs, reason → result → tips structure",
+  "tags": ["2 keywords for this person's wealth pattern"]
 }`,
 
     lifetime_career: `Analyze lifetime career fortune!
@@ -471,15 +492,15 @@ If occupationStatus is provided, **center the interpretation on that situation**
 - **Good timing**: When career changes are favorable across life
 - **Colors/Directions**: Fortune tips for the work environment
 
-Content: 400-550 chars, 3 paragraphs.
+Content: 600-800 chars, 3 paragraphs.
 Para 1: Specific career energy characteristics — what stars in what state produce what results (reason)
 Para 2: Strengths and weaknesses in concrete work situations (result)
-Para 3: Actionable specific advice (180-220 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
+Para 3: Actionable specific advice (260-330 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
 
 ### tags (critical!)
 **Compress this person's work style into 2 keywords!**
 - Create **unique keywords for this person** based on the analysis above
-- Noun phrases within 8 characters
+- Noun phrases within 8 characters that name a trait of this person's energy — not habits or advice words (e.g. "cash separation", "record habit", "settling-up sense")
 
 ❌ Forbidden: "Strategist", "Entrepreneur", "Leader type", "Career luck", "Promotion luck" — no type labels or generic tags
 ✅ Create unique keywords expressing the **concrete situations or patterns** created by this person's energy combination
@@ -487,9 +508,8 @@ Para 3: Actionable specific advice (180-220 chars) — go beyond basic tips to i
 Response format (JSON):
 {
   "headline": "1 emoji + career fortune core, 15-25 chars",
-  "content": "400-550 chars, 3 paragraphs, reason → result → tips structure",
-  "tags": ["2 keywords for this person's work style"],
-  "score": 0-100 integer
+  "content": "600-800 chars, 3 paragraphs, reason → result → tips structure",
+  "tags": ["2 keywords for this person's work style"]
 }`,
 
     lifetime_relationship: `Analyze lifetime relationship fortune!
@@ -527,17 +547,17 @@ Unlike other sections, use **inner-world-centered expressions** like emotional d
 - **Good timing**: When relationship luck strengthens across life
 - **Places/Activities**: Places or activities where connections happen
 
-Content: 400-550 chars, 3 paragraphs.
+Content: 600-800 chars, 3 paragraphs.
 Para 1: Specific relationship energy characteristics — what stars in what state produce what emotional patterns (reason)
 Para 2: Concrete strengths and weaknesses in relationships (result)
-Para 3: Actionable specific advice (180-220 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
+Para 3: Actionable specific advice (260-330 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
 
 If relationshipStatus is provided, **center interpretation on that situation** (single = meeting timing/catalysts, dating = relationship growth/cautions, married = couple dynamics).
 
 ### tags (critical!)
 **Compress this person's romance style into 2 keywords!**
 - Create **unique keywords for this person** based on the analysis above
-- Noun phrases within 8 characters
+- Noun phrases within 8 characters that name a trait of this person's energy — not habits or advice words (e.g. "cash separation", "record habit", "settling-up sense")
 
 ❌ Forbidden: "Love luck", "Romance luck" — no generic tags
 ✅ Create unique keywords that could only come from this person's relationship energy combination
@@ -545,9 +565,8 @@ If relationshipStatus is provided, **center interpretation on that situation** (
 Response format (JSON):
 {
   "headline": "1 emoji + relationship fortune core, 15-25 chars",
-  "content": "400-550 chars, 3 paragraphs, reason → result → tips structure",
-  "tags": ["2 keywords for this person's romance style"],
-  "score": 0-100 integer
+  "content": "600-800 chars, 3 paragraphs, reason → result → tips structure",
+  "tags": ["2 keywords for this person's romance style"]
 }`,
 
     lifetime_health: `Analyze lifetime health fortune!
@@ -591,15 +610,15 @@ Unlike other sections, use **body-sensation-centered expressions** like signals 
 - **Timing to watch**: Life periods requiring special health attention
 - **Colors/Places**: Fortune tips to complement health
 
-Content: 400-550 chars, 3 paragraphs.
+Content: 600-800 chars, 3 paragraphs.
 Para 1: Health energy characteristics and constitution (reason)
 Para 2: Strong areas and vulnerable spots (result)
-Para 3: Actionable specific advice (180-220 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
+Para 3: Actionable specific advice (260-330 chars) — go beyond basic tips to include situational branching and concrete action steps. Include activities, alternatives, and approaches derived from energy analysis.
 
 ### tags (critical!)
 **Compress this person's health/stamina characteristics into 2 keywords!**
 - Create **unique keywords for this person** based on the analysis above
-- Noun phrases within 8 characters
+- Noun phrases within 8 characters that name a trait of this person's energy — not habits or advice words (e.g. "cash separation", "record habit", "settling-up sense")
 
 ❌ Forbidden: "Health luck", "Stamina luck" — no generic tags
 ✅ Create unique keywords that could only come from this person's health energy combination
@@ -607,9 +626,8 @@ Para 3: Actionable specific advice (180-220 chars) — go beyond basic tips to i
 Response format (JSON):
 {
   "headline": "1 emoji + health fortune core, 15-25 chars",
-  "content": "400-550 chars, 3 paragraphs, reason → result → tips structure",
-  "tags": ["2 keywords for this person's health/stamina"],
-  "score": 0-100 integer
+  "content": "600-800 chars, 3 paragraphs, reason → result → tips structure",
+  "tags": ["2 keywords for this person's health/stamina"]
 }`,
 
     lifetime_profile_traits: `Analyze the fortune data and identify **this person's unique traits** across 4 spectrums!
@@ -657,6 +675,22 @@ Response format (JSON):
     "economy": { "leftLabel": "Analytical", "rightLabel": "Intuitive", "leftPercentage": 0-100 },
     "romance": { "leftLabel": "Cautious Explorer", "rightLabel": "Passionate Expresser", "leftPercentage": 0-100 }
   }
+}`,
+
+    lifetime_timing: `Using "Fact Sheet — timing" in the data, write one reason line for each **future timing candidate**.
+
+## Role
+- For each topic (love & marriage / work & job change / moving & relocation), one reason line per candidate year saying what kind of year it is.
+
+## Writing rules
+- Describe the reason as a life scene. Example: "A year when talk of making a relationship official comes up easily."
+- No certainty words ("definitely", "guaranteed", "100%"). Stay at "a likely year" level.
+- For the caution year, say concretely what to watch for, without scaring.
+- Never use star, palace or transformation names, or terms like "major cycle".
+
+## Response format (JSON)
+{
+  "timing": [{"topic": "love", "likely": [{"year": 2027, "reason": "..."}], "caution": {"year": 2029, "reason": "..."}}]
 }`,
 
     lifetime_age_scenarios: `Write life scenarios for each Dayun (major cycle) period!
@@ -730,6 +764,7 @@ Response format (JSON) — the age numbers and the count of 10 below are placeho
     lifetime_health: "Health Palace",
     lifetime_age_scenarios: "Major Cycles",
     lifetime_profile_traits: "Life Palace",
+    lifetime_timing: "Life Palace",
   },
 
   // ============================================================
@@ -737,10 +772,13 @@ Response format (JSON) — the age numbers and the count of 10 below are placeho
   // ============================================================
   yearlySystemPrompt: buildSystemPrompt(
     `You are a warm, insightful fortune consultant. Analyze the fortune data and deliver **this person's unique yearly fortune** in specific, compelling detail.`,
-    `## 🎯 Score Rules
+    {
+      directionRules: EMOTIONAL_CONTRAST_RULES,
+      extra: `## 🎯 Score Rules
 - Among wealth, career, relationship, and health scores, **the strongest area should be in the 85-100 range**
 - Find the strongest area in the data and assign a high score
-- Others can range freely between 40-90`
+- Others can range freely between 40-90`,
+    }
   ),
 
   // ============================================================

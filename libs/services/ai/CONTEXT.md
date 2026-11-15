@@ -18,6 +18,9 @@ libs/services/ai/
 │   ├── ko.ts             # 한국어 프롬프트
 │   ├── en.ts             # 영어 프롬프트
 │   └── ja.ts             # 일본어 프롬프트
+├── lifetime-request.ts   # 명반 → 인생 운세 LLM 요청 조립 (라우트·회귀 스크립트 공용)
+├── output-validator.ts   # 금지 용어·메타 문구 검증 (위반 시 섹션 1회 재생성)
+├── quality-metrics.ts    # 출력 품질 지표 (scripts/fortune-quality에서 사용)
 ├── ziwei-interpreter.ts  # 인생 운세 해석 서비스
 └── yearly-interpreter.ts # 올해 운세 해석 서비스
 ```
@@ -25,6 +28,7 @@ libs/services/ai/
 ## 주요 파일
 
 ### types.ts
+
 - `GeminiMessage`, `GeminiRequest`, `GeminiResponse`: API 통신 타입 (이름은 Gemini 기준이지만 OpenAI 호출에도 그대로 재사용됨)
 - `ZiweiInterpretationRequest`: 인생 운세 해석 요청 데이터
 - `YearlyInterpretationRequest`: 올해 운세 해석 요청 데이터
@@ -32,28 +36,36 @@ libs/services/ai/
 - `FortuneInterpretation`, `YearlyFortuneInterpretation`: 최종 해석 결과 타입
 
 ### provider.ts (LLM 디스패처)
+
 - 인터프리터들은 이 파일에서 `chatCompletion`/`parseJsonResponse`/`CURRENT_MODEL_NAME`을 import한다 (gemini.ts/openai.ts를 직접 import하지 않음)
 - `env.LIFE_SPOILER_LLM_PROVIDER`가 `"openai"`(default)면 openai.ts, `"gemini"`면 gemini.ts로 라우팅
 
 ### openai.ts (OpenAI 클라이언트, 기본 제공자)
+
 - `chatCompletion()`: `/v1/chat/completions` 호출 (재시도 로직 포함), gemini.ts와 동일한 시그니처
 - `responseSchema`(Gemini 느슨한 스키마)를 OpenAI Structured Outputs strict 모드 스키마로 자동 변환 (`toStrictJsonSchema`) — 원래 optional이던 필드는 nullable 타입으로 표현
 - 설정: temperature 0.8, maxTokens 12000, timeout 60초, 최대 3회 재시도
 - 모델: `env.OPENAI_FACE_MODEL` (face-spoiler와 공유)
 
 ### gemini.ts (Gemini 클라이언트, 롤백용)
+
 - `chatCompletion()`: Gemini API 호출 (재시도 로직 포함)
 - `parseJsonResponse()`: AI 응답 JSON 파싱 (마크다운 코드블록 처리, truncation 복구) — provider 공용 유틸이라 openai.ts 경로에서도 이 함수를 그대로 사용
 - 설정: temperature 0.8, maxTokens 12000, timeout 30초, 최대 3회 재시도
 - JSON 응답 모드 사용 (`responseMimeType: "application/json"`)
 
 ### prompts/
+
 - 다국어 프롬프트 지원 (ko, en, ja)
 - 시스템 프롬프트: MZ세대 감성의 친근한 운세 상담사 역할
 - 전문 용어 사용 금지 규칙 (궁 이름, 별 이름, 사화 등)
 - 해석 유형별 유저 프롬프트 (life_spoiler, lifetime_core, yearly_overview 등)
 
 ### ziwei-interpreter.ts
+
+- 4영역 `score`는 LLM이 만들지 않는다. 라우트가 `calculateLifetimeCategoryScores`(libs/zi-wei-dou-shu/calculators/lifetime-score.ts)로 계산해 `categoryScores`로 넘기고, 본문 방향 근거("Relative Strength")로도 쓴다.
+- 각 호출 결과는 `findOutputViolations`로 검사하고, 위반이 있으면 피드백을 붙여 1회 재생성한다. 그래도 남으면 `[lifetime-validator]` 경고 로그를 남긴다.
+- 배경과 측정 기준: docs/lifetime-fortune-quality-2026-11.md
 - `interpretLifeSpoiler()`: 인생 스포일러 해석
 - `interpretLifetimeCore()`: 핵심 시나리오 해석
 - `interpretLifetimeWealth/Career/Relationship/Health()`: 카테고리별 해석
@@ -62,6 +74,7 @@ libs/services/ai/
 - `createFallbackInterpretation()`: 오류 시 폴백 응답
 
 ### yearly-interpreter.ts
+
 - `interpretYearlyOverview()`: 올해 스포일러 해석
 - `interpretYearlyWealth/Career/Relationship/Health()`: 카테고리별 해석
 - `interpretYearlyMonthly()`: 월별 운세 해석

@@ -1052,6 +1052,10 @@
           "act4": {
             "title": "나이대별 시나리오",
             "sub": "가까운 장면일수록 크게, 지금부터 펼쳐요"
+          },
+          "act5": {
+            "title": "타이밍",
+            "sub": "언제가 좋을까요"
           }
         },
         "character": {
@@ -1621,6 +1625,45 @@
           "errorNetwork": "네트워크 오류가 났어요. 다시 시도해 주세요.",
           "fab": "전문가에게 묻기",
           "fabAria": "전문가에게 묻기, 남은 질문 {remaining}개"
+        },
+        "timing": {
+          "title": "앞으로 10년, 눈여겨볼 해를 짚어 봤어요",
+          "desc": "명반의 흐름으로 본 참고 시기예요. 그해에 꼭 일어난다는 뜻은 아니고, 마음의 준비를 해 두면 좋은 해를 골랐어요.",
+          "note": "재미로 보는 해석이에요. 중요한 결정은 실제 상황을 우선해 주세요.",
+          "likely": "가능성이 높은 해",
+          "caution": "조심할 해",
+          "yearUnit": "년",
+          "topics": {
+            "love": "연애·결혼",
+            "career": "일·이직",
+            "move": "이사·이동"
+          }
+        },
+        "categoryExtras": {
+          "evidence": "근거",
+          "fieldsTitle": "잘 맞는 분야",
+          "fieldsNote": "직업을 정해 주는 건 아니고, 잘 맞는 쪽을 골랐어요.",
+          "partnerTitle": "만날 사람",
+          "partnerTraits": "성향",
+          "partnerRole": "역할",
+          "partnerPaths": "만나는 길",
+          "partnerNote": "외모와 직업은 말하지 않아요. 어떤 성향의 사람이, 어떤 자리에서 닿는지만 봤어요."
+        },
+        "answers": {
+          "title": "본편에서 답해 드려요",
+          "desc": "가장 많이 궁금해하시는 ‘언제’와 ‘누구’를 본편에서 열어 드려요.",
+          "groupWhen": "언제",
+          "groupWork": "일",
+          "groupLove": "인연",
+          "timingTitle": "{topic} 시기",
+          "timingDesc": "가능성이 높은 해 후보 {count}개",
+          "cautionTitle": "{topic}에서 조심할 해",
+          "cautionDesc": "조심할 해 1개",
+          "fieldsTitle": "잘 맞는 직업 분야",
+          "fieldsDesc": "{count}개",
+          "partnerTitle": "만날 사람의 성향",
+          "partnerDesc": "성향 · 역할 · 만나는 길",
+          "lockedAria": "본편에서 열려요"
         }
       }
     },
@@ -3998,6 +4041,10 @@
           "act4": {
             "title": "Scenarios by age",
             "sub": "The nearer the scene, the bigger it plays"
+          },
+          "act5": {
+            "title": "Timing",
+            "sub": "When is a good time"
           }
         },
         "character": {
@@ -4567,6 +4614,45 @@
           "errorNetwork": "A network error occurred. Please try again.",
           "fab": "Ask the expert",
           "fabAria": "Ask the expert, {remaining} questions left"
+        },
+        "timing": {
+          "title": "Years worth watching over the next decade",
+          "desc": "These are reference years read from your chart. They are not certain events — they are years worth preparing for.",
+          "note": "This is a reading for fun. For important decisions, put your real situation first.",
+          "likely": "Likely year",
+          "caution": "Year to be careful",
+          "yearUnit": "",
+          "topics": {
+            "love": "Love & marriage",
+            "career": "Work & job change",
+            "move": "Moving & relocation"
+          }
+        },
+        "categoryExtras": {
+          "evidence": "Why",
+          "fieldsTitle": "Fields that suit you",
+          "fieldsNote": "This doesn’t decide your job — it points to fields that fit you well.",
+          "partnerTitle": "Who you may meet",
+          "partnerTraits": "Traits",
+          "partnerRole": "Role",
+          "partnerPaths": "Where you meet",
+          "partnerNote": "We don’t predict looks or jobs — only what kind of person, and in what setting."
+        },
+        "answers": {
+          "title": "Answered in the full reading",
+          "desc": "The full reading opens the questions people ask most: “when” and “who”.",
+          "groupWhen": "When",
+          "groupWork": "Work",
+          "groupLove": "Love",
+          "timingTitle": "{topic} timing",
+          "timingDesc": "{count, plural, one {# likely year} other {# likely years}}",
+          "cautionTitle": "Year to be careful: {topic}",
+          "cautionDesc": "1 year to be careful",
+          "fieldsTitle": "Career fields that suit you",
+          "fieldsDesc": "{count, plural, one {# field} other {# fields}}",
+          "partnerTitle": "The person you may meet",
+          "partnerDesc": "Traits · role · where you meet",
+          "lockedAria": "Opens in the full reading"
         }
       }
     },
@@ -6952,6 +7038,10 @@
           "act4": {
             "title": "年代別シナリオ",
             "sub": "近い場面ほど大きく、いまから広げます"
+          },
+          "act5": {
+            "title": "タイミング",
+            "sub": "いつが良いのか"
           }
         },
         "character": {
@@ -7521,6 +7611,45 @@
           "errorNetwork": "ネットワークエラーが発生しました。もう一度お試しください。",
           "fab": "専門家に聞く",
           "fabAria": "専門家に聞く、残りの質問 {remaining}件"
+        },
+        "timing": {
+          "title": "これからの10年、注目したい年",
+          "desc": "命盤の流れから見た参考の時期です。その年に必ず起こるという意味ではなく、心の準備をしておくと良い年を選びました。",
+          "note": "楽しみとして読む解釈です。大切な決断は実際の状況を優先してください。",
+          "likely": "可能性が高い年",
+          "caution": "気をつけたい年",
+          "yearUnit": "年",
+          "topics": {
+            "love": "恋愛・結婚",
+            "career": "仕事・転職",
+            "move": "引っ越し・移動"
+          }
+        },
+        "categoryExtras": {
+          "evidence": "根拠",
+          "fieldsTitle": "向いている分野",
+          "fieldsNote": "職業を決めるものではなく、相性の良い方向を選びました。",
+          "partnerTitle": "出会う人",
+          "partnerTraits": "性格",
+          "partnerRole": "役割",
+          "partnerPaths": "出会い方",
+          "partnerNote": "外見や職業は言いません。どんな性格の人と、どんな場で出会うかだけを見ました。"
+        },
+        "answers": {
+          "title": "本編でお答えします",
+          "desc": "いちばん気になる「いつ」と「誰」を本編でお見せします。",
+          "groupWhen": "いつ",
+          "groupWork": "仕事",
+          "groupLove": "縁",
+          "timingTitle": "{topic}の時期",
+          "timingDesc": "可能性が高い年の候補 {count}つ",
+          "cautionTitle": "{topic}で気をつけたい年",
+          "cautionDesc": "気をつけたい年 1つ",
+          "fieldsTitle": "向いている職業分野",
+          "fieldsDesc": "{count}つ",
+          "partnerTitle": "出会う人の性格",
+          "partnerDesc": "性格・役割・出会い方",
+          "lockedAria": "本編で公開されます"
         }
       }
     },

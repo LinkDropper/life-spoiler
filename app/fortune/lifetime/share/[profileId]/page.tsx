@@ -8,10 +8,15 @@ import { ErrorState, MarkdownContent } from "@/components/fortune";
 import { LifetimeCharacterPoster } from "@/components/fortune/LifetimeCharacterPoster";
 import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
 import { AgeLens, toAgeSceneId } from "@/components/fortune/screen/AgeLens";
+import {
+  CareerFields,
+  PartnerProfile,
+} from "@/components/fortune/screen/CategoryExtras";
 import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
 import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
 import { EndCredits } from "@/components/fortune/screen/EndCredits";
 import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
+import { LifetimeTiming } from "@/components/fortune/screen/LifetimeTiming";
 import { LifetimeNowShowing } from "@/components/fortune/screen/LifetimeNowShowing";
 import { NumberedSections } from "@/components/fortune/screen/NumberedSections";
 import { RatingBoard } from "@/components/fortune/screen/RatingBoard";
@@ -23,6 +28,11 @@ import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
 import type { FortuneSceneId } from "@/libs/analytics/fortune";
+import {
+  getCareerFields,
+  getPartner,
+  getVisibleTiming,
+} from "@/libs/fortune/lifetime-extras";
 import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
 import type { CategoryKey } from "@/libs/fortune/lifetime-screen";
 import { useScreenCast } from "@/libs/fortune/use-screen-cast";
@@ -39,7 +49,7 @@ const CATEGORY_KEYS: CategoryKey[] = [
   "health",
 ];
 
-const ACT_IDS = ["act1", "act2", "act3", "act4"] as const;
+const ACT_IDS = ["act1", "act2", "act3", "act4", "act5"] as const;
 
 const EXTRA_SCENE_IDS: FortuneSceneId[] = ["end"];
 
@@ -76,15 +86,23 @@ export default function LifetimeFortuneSharePage() {
 
   const cast = useScreenCast(result?.rawChart ?? null);
 
+  // 타이밍(ACT 5)은 보여 줄 연도가 있을 때만 막으로 둔다 (v3 이하 결과에는 없음)
+  const visibleTiming = useMemo(
+    () => getVisibleTiming(result?.interpretation.timing),
+    [result?.interpretation.timing]
+  );
+
   const scenes = useMemo<PlayerScene[]>(
     () =>
-      ACT_IDS.map((id, index) => ({
-        id,
-        act: `ACT ${index + 1}`,
-        title: tScreen(`acts.${id}.title`),
-        sub: tScreen(`acts.${id}.sub`),
-      })),
-    [tScreen]
+      ACT_IDS.filter((id) => id !== "act5" || visibleTiming.length > 0).map(
+        (id, index) => ({
+          id,
+          act: `ACT ${index + 1}`,
+          title: tScreen(`acts.${id}.title`),
+          sub: tScreen(`acts.${id}.sub`),
+        })
+      ),
+    [tScreen, visibleTiming.length]
   );
 
   if (isLoading) {
@@ -129,6 +147,9 @@ export default function LifetimeFortuneSharePage() {
     relationship: categories.relationship.score ?? 0,
     health: categories.health.score ?? 0,
   };
+
+  const careerFields = getCareerFields(interpretation);
+  const partner = getPartner(interpretation);
 
   const ratingItems: RatingItem[] = CATEGORY_KEYS.map((key) => ({
     key,
@@ -273,7 +294,15 @@ export default function LifetimeFortuneSharePage() {
             subSections={categories[key].subSections}
             oneLiner={categories[key].oneLiner}
             tags={categories[key].tags}
-          />
+            evidence={categories[key].evidence}
+          >
+            {key === "career" && careerFields.length > 0 && (
+              <CareerFields fields={careerFields} />
+            )}
+            {key === "relationship" && partner && (
+              <PartnerProfile partner={partner} />
+            )}
+          </CategoryStory>
         ))}
 
         {ageScenarios.length > 0 && (
@@ -285,6 +314,13 @@ export default function LifetimeFortuneSharePage() {
               birthTimeUnknown={profile.birth_time_unknown}
               surface="shared"
             />
+          </>
+        )}
+
+        {visibleTiming.length > 0 && (
+          <>
+            {renderActIntertitle("act5")}
+            <LifetimeTiming topics={visibleTiming} />
           </>
         )}
 
