@@ -12,6 +12,11 @@ import {
 } from "@/libs/services/payment/first-payment-event";
 import { isFirstPaymentEligible } from "@/libs/services/payment/first-payment-eligibility";
 import {
+  fetchTossPayment,
+  isApprovedPaymentForOrder,
+} from "@/libs/services/payment/toss-payment";
+import type { TossPayment } from "@/libs/services/payment/toss-payment";
+import {
   createServerClient,
   updateCompatibilityPaidAt,
   updateFortunePaidAt,
@@ -39,20 +44,29 @@ interface TossPaymentConfirmRequest {
   currency?: Currency;
 }
 
-interface TossPaymentResponse {
-  paymentKey: string;
-  orderId: string;
-  status: string;
-  totalAmount: number;
-  method: string;
-  approvedAt: string;
-  [key: string]: unknown;
-}
-
 interface TossPaymentError {
   code: string;
   message: string;
 }
+
+/**
+ * 이미 승인된 결제에 대한 재요청 응답.
+ * paid_at·디스코드 알림은 첫 승인 때 처리됐으므로 다시 하지 않는다.
+ */
+const buildAlreadyApprovedResponse = (payment: TossPayment) => {
+  return NextResponse.json({
+    success: true,
+    alreadyProcessed: true,
+    data: {
+      paymentKey: payment.paymentKey,
+      orderId: payment.orderId,
+      status: payment.status,
+      totalAmount: payment.totalAmount,
+      method: payment.method,
+      approvedAt: payment.approvedAt,
+    },
+  });
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,6 +90,34 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    // PayPal(USD) 결제는 별도 시크릿 키 사용
+    const secretKey = currency === "USD" ? PAYPAL_SECRET_KEY : SECRET_KEY;
+
+    if (!secretKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "CONFIGURATION_ERROR",
+          message: "결제 설정이 올바르지 않습니다.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const encodedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
+
+    // 결제 완료 페이지는 paymentKey를 URL에 담은 채 승인을 요청하므로
+    // 새로고침·뒤로가기·탭 복원으로 다시 들어오면 같은 결제를 또 승인하려 한다.
+    // 이미 승인된 결제면 금액 검증·승인 호출 없이 그대로 성공을 돌려준다.
+    // (첫 결제 할인 결제는 승인 뒤 자격이 사라져 금액 검증에서 막히므로 그보다 먼저 확인)
+    const existingPayment = await fetchTossPayment(
+      paymentKey,
+      encodedSecretKey
+    );
+    if (isApprovedPaymentForOrder(existingPayment, orderId)) {
+      return buildAlreadyApprovedResponse(existingPayment);
     }
 
     // 예상 결제 금액을 서버에서 독립적으로 결정 (클라이언트 금액 신뢰 안 함).
@@ -104,22 +146,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // PayPal(USD) 결제는 별도 시크릿 키 사용
-    const secretKey = currency === "USD" ? PAYPAL_SECRET_KEY : SECRET_KEY;
-
-    if (!secretKey) {
-      return NextResponse.json(
-        {
-          success: false,
-          code: "CONFIGURATION_ERROR",
-          message: "결제 설정이 올바르지 않습니다.",
-        },
-        { status: 500 }
-      );
-    }
-
-    const encodedSecretKey = Buffer.from(`${secretKey}:`).toString("base64");
-
     const response = await fetch(
       "https://api.tosspayments.com/v1/payments/confirm",
       {
@@ -140,6 +166,18 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorData = data as TossPaymentError;
+
+      // 위 사전 조회와 승인 사이에 같은 결제의 다른 요청이 먼저 승인한 경우
+      if (errorData.code === "ALREADY_PROCESSED_PAYMENT") {
+        const approvedPayment = await fetchTossPayment(
+          paymentKey,
+          encodedSecretKey
+        );
+        if (isApprovedPaymentForOrder(approvedPayment, orderId)) {
+          return buildAlreadyApprovedResponse(approvedPayment);
+        }
+      }
+
       console.error("TossPayments API error:", errorData);
       return NextResponse.json(
         {
@@ -151,7 +189,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const paymentData = data as TossPaymentResponse;
+    const paymentData = data as TossPayment;
 
     // 결제 승인 성공 시 paid_at 업데이트
     let fortuneUpdateFailed = false;
