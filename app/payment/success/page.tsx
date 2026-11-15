@@ -80,7 +80,7 @@ function PaymentSuccessContent() {
           }),
         });
 
-        await response.json();
+        const result: { alreadyProcessed?: boolean } = await response.json();
 
         if (!response.ok) {
           throw new Error(tPayment("confirmError"));
@@ -88,8 +88,8 @@ function PaymentSuccessContent() {
 
         setIsConfirmed(true);
 
-        // GA 결제 이벤트 전송
-        if (orderId && amount && fortuneType) {
+        // GA 결제 이벤트 전송. 새로고침 등으로 다시 들어온 이미 승인된 결제는 중복 집계하지 않는다
+        if (!result.alreadyProcessed && orderId && amount && fortuneType) {
           trackPurchase({
             transaction_id: orderId,
             value: Number(amount),
