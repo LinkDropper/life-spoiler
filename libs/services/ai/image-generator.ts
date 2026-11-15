@@ -7,14 +7,16 @@ import { AIError } from "./errors";
 // 설정
 // ============================================================
 
-const IMAGEN_CONFIG = {
-  baseUrl: "https://generativelanguage.googleapis.com/v1beta/models",
-  // 표준 imagen-4.0-generate-001은 용량 제한(429/503)이 잦고 응답이 매우 느려
-  // (실측 시 503이 ~78초 후 반환) 프로덕션에서 60초 타임아웃이 터졌다.
-  // Fast 모델은 동일 프롬프트를 ~5초에 안정적으로 생성하므로 이를 사용한다.
-  model: "imagen-4.0-fast-generate-001",
-  timeout: 45000, // 45초 (Fast는 보통 ~5초, 지연 대비 넉넉한 마진)
-  maxRetries: 2, // 일시적 429/503은 백오프 재시도, 타임아웃(Abort)은 즉시 중단
+const IMAGE_CONFIG = {
+  url: "https://api.openai.com/v1/images/generations",
+  // Google imagen-4.0-fast-generate-001(약 $0.02/장) 종료로 교체.
+  // OpenAI 이미지 모델 중 1024x1024 단가가 가장 가까운 gpt-image-1-mini
+  // medium($0.011/장)을 사용한다. (low $0.005, high $0.036)
+  model: "gpt-image-1-mini",
+  quality: "medium",
+  size: "1024x1024",
+  timeout: 60000, // 60초 (gpt-image 계열은 Imagen Fast보다 응답이 느림)
+  maxRetries: 2, // 일시적 429/5xx는 백오프 재시도, 타임아웃(Abort)은 즉시 중단
   retryDelay: 2000,
   bucket: "past-life-images",
 } as const;
@@ -34,23 +36,20 @@ const IMAGE_STYLE_PREFIX =
   "do NOT add any human face or human features. ";
 
 // ============================================================
-// Imagen 3 API
+// OpenAI Images API
 // ============================================================
 
-interface ImagenRequest {
-  instances: { prompt: string }[];
-  parameters: {
-    sampleCount: number;
-    aspectRatio: string;
-    personGeneration: string;
-  };
+interface OpenAIImageRequest {
+  model: string;
+  prompt: string;
+  n: number;
+  size: string;
+  quality: string;
+  output_format: "png";
 }
 
-interface ImagenResponse {
-  predictions?: {
-    bytesBase64Encoded: string;
-    mimeType: string;
-  }[];
+interface OpenAIImageResponse {
+  data?: { b64_json?: string }[];
 }
 
 /**
@@ -61,47 +60,43 @@ const sleep = (ms: number): Promise<void> => {
 };
 
 /**
- * Imagen 3 API로 이미지 생성
+ * OpenAI Images API로 이미지 생성
  */
-const generateImageWithImagen = async (prompt: string): Promise<Buffer> => {
-  const apiKey = env.GEMINI_API_KEY;
+const generateImageWithOpenAI = async (prompt: string): Promise<Buffer> => {
+  const apiKey = env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    throw new AIError("Gemini API 키가 설정되지 않았습니다.", {
+    throw new AIError("OpenAI API 키가 설정되지 않았습니다.", {
       code: "API_KEY_MISSING",
     });
   }
 
-  const styledPrompt = `${IMAGE_STYLE_PREFIX}${prompt}`;
-
-  const request: ImagenRequest = {
-    instances: [{ prompt: styledPrompt }],
-    parameters: {
-      sampleCount: 1,
-      aspectRatio: "1:1",
-      personGeneration: "allow_all",
-    },
+  const request: OpenAIImageRequest = {
+    model: IMAGE_CONFIG.model,
+    prompt: `${IMAGE_STYLE_PREFIX}${prompt}`,
+    n: 1,
+    size: IMAGE_CONFIG.size,
+    quality: IMAGE_CONFIG.quality,
+    output_format: "png",
   };
 
   let lastError: Error | null = null;
 
-  for (let attempt = 0; attempt <= IMAGEN_CONFIG.maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= IMAGE_CONFIG.maxRetries; attempt++) {
     const attemptStart = Date.now();
     try {
-      const url = `${IMAGEN_CONFIG.baseUrl}/${IMAGEN_CONFIG.model}:predict`;
-
       const controller = new AbortController();
       const timeoutId = setTimeout(
         () => controller.abort(),
-        IMAGEN_CONFIG.timeout
+        IMAGE_CONFIG.timeout
       );
 
       try {
-        const response = await fetch(url, {
+        const response = await fetch(IMAGE_CONFIG.url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-goog-api-key": apiKey,
+            Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify(request),
           signal: controller.signal,
@@ -117,21 +112,21 @@ const generateImageWithImagen = async (prompt: string): Promise<Buffer> => {
             });
           }
 
-          throw new AIError(`Imagen API 요청 실패: ${errorText}`, {
+          throw new AIError(`OpenAI 이미지 API 요청 실패: ${errorText}`, {
             code: "API_REQUEST_FAILED",
             statusCode: response.status,
           });
         }
 
-        const data: ImagenResponse = await response.json();
+        const data: OpenAIImageResponse = await response.json();
+        const base64 = data.data?.[0]?.b64_json;
 
-        if (!data.predictions || data.predictions.length === 0) {
+        if (!base64) {
           throw new AIError("이미지 생성 결과가 비어있습니다.", {
             code: "INVALID_RESPONSE",
           });
         }
 
-        const base64 = data.predictions[0].bytesBase64Encoded;
         return Buffer.from(base64, "base64");
       } finally {
         clearTimeout(timeoutId);
@@ -150,7 +145,7 @@ const generateImageWithImagen = async (prompt: string): Promise<Buffer> => {
         error instanceof Error ? error.message : String(error);
 
       console.warn(
-        `Imagen 시도 ${attempt + 1}/${IMAGEN_CONFIG.maxRetries + 1} 실패 ` +
+        `이미지 생성 시도 ${attempt + 1}/${IMAGE_CONFIG.maxRetries + 1} 실패 ` +
           `(${elapsed}ms, ${isAbort ? "타임아웃" : errorName}): ${errorMessage}`
       );
 
@@ -164,8 +159,8 @@ const generateImageWithImagen = async (prompt: string): Promise<Buffer> => {
       }
 
       // 그 외(일시적 네트워크/5xx)만 백오프 후 재시도.
-      if (attempt < IMAGEN_CONFIG.maxRetries) {
-        const backoffDelay = IMAGEN_CONFIG.retryDelay * Math.pow(2, attempt);
+      if (attempt < IMAGE_CONFIG.maxRetries) {
+        const backoffDelay = IMAGE_CONFIG.retryDelay * Math.pow(2, attempt);
         await sleep(backoffDelay);
         continue;
       }
@@ -199,7 +194,7 @@ const uploadToStorage = async (
   const filePath = `${profileId}/${timestamp}-${randomStr}.png`;
 
   const { data, error } = await supabase.storage
-    .from(IMAGEN_CONFIG.bucket)
+    .from(IMAGE_CONFIG.bucket)
     .upload(filePath, imageBuffer, {
       contentType: "image/png",
       upsert: false,
@@ -214,7 +209,7 @@ const uploadToStorage = async (
 
   const {
     data: { publicUrl },
-  } = supabase.storage.from(IMAGEN_CONFIG.bucket).getPublicUrl(data.path);
+  } = supabase.storage.from(IMAGE_CONFIG.bucket).getPublicUrl(data.path);
 
   return publicUrl;
 };
@@ -226,7 +221,7 @@ const uploadToStorage = async (
 /**
  * 전생 이미지 생성 및 업로드
  *
- * 1. imagePrompt로 Imagen 3 API 호출 (캐릭터 일러스트 스타일)
+ * 1. imagePrompt로 OpenAI Images API 호출 (캐릭터 일러스트 스타일)
  * 2. 생성된 이미지를 Supabase Storage에 업로드
  * 3. 공개 URL 반환
  *
@@ -237,7 +232,7 @@ export const generatePastLifeImage = async (
   profileId: string
 ): Promise<string | null> => {
   try {
-    const imageBuffer = await generateImageWithImagen(imagePrompt);
+    const imageBuffer = await generateImageWithOpenAI(imagePrompt);
     const publicUrl = await uploadToStorage(imageBuffer, profileId);
     return publicUrl;
   } catch (error) {
