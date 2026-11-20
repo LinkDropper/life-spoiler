@@ -68,7 +68,7 @@ const EMOTIONAL_CONTRAST_RULES = `### Emotional Contrast
  * opens" template and generic habit advice, so lifetime follows the data's direction.
  */
 const LIFETIME_DIRECTION_RULES = `## 🧭 Follow the Data's Direction
-- Write areas the input's Relative Strength marks as strong as strengths, and areas it marks as weak as weaknesses. Never dress up a weak area as praise.
+- Take the overall weight of an area from the input's Relative Strength, and the direction of each point from the Fact Sheet claim's direction (positive/negative/mixed). When they differ, the claim wins: a weak spot inside a strong area is still written as a weak spot, and a strength inside a weak area is still a strength. The screen shows the score and a one-line basis taken from the claims next to the text, so text that contradicts a claim reads as a contradiction. Never dress up a weak area as praise.
 - Do not attach "but only if...", "as long as you..." conditions or remedies to every sentence. Include a caution or remedy only where the data shows a real weakness (Xian/Ping brightness, Huo Xing/Ling Xing, malefic stars, bottom Relative Strength), at most once per section.
 - Do not use abstract metaphors such as "shaking", "the path opens", "go far", "last long", "adjust the pace", "find your center", "redraw the board". Write the scene where the energy actually shows up instead (when, where, with whom, what happens).
 
