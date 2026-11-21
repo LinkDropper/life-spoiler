@@ -6,4 +6,4 @@ export {
   MAIN_STARS,
 } from "./star-image";
 export { isKakaoTalkBrowser, openWithExternalBrowser } from "./browser";
-export { hasKoreanBatchim, pickParticle, removeEmoji } from "./text";
+export { removeEmoji } from "./text";

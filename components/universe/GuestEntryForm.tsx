@@ -4,12 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { ChoiceGroup } from "@/app/profile/setup/ChoiceGroup";
-import { Button, Checkbox, Input } from "@/components/form";
+import { Button, Checkbox, Input, RadioGroup } from "@/components/form";
 
-import { ScreeningTicket } from "./ScreeningTicket";
-import styles from "./ScreeningForm.module.css";
-import sectionStyles from "./GuestEntryForm.module.css";
+import styles from "./GuestEntryForm.module.css";
 
 export interface GuestFormValues {
   name: string;
@@ -21,7 +18,6 @@ export interface GuestFormValues {
 }
 
 interface GuestEntryFormProps {
-  ownerName: string | null;
   isSubmitting: boolean;
   /** 참여 인원 하드캡 도달 시 제출 차단 */
   isFull: boolean;
@@ -40,7 +36,7 @@ const INITIAL_VALUES: GuestFormValues = {
 };
 
 /**
- * 2번 영역 — 초대장(친구 입력 폼).
+ * 2번 영역 — 친구 입력 폼.
  *
  * 성별을 받지 않는다(컨셉 확정). 계산 엔진은 성별 의존 로직을 쓰지 않으므로 문제없다.
  *
@@ -49,7 +45,6 @@ const INITIAL_VALUES: GuestFormValues = {
  * 루프가 끊긴다 (CPO 결정).
  */
 export const GuestEntryForm = ({
-  ownerName,
   isSubmitting,
   isFull,
   submitError,
@@ -63,17 +58,16 @@ export const GuestEntryForm = ({
   >({});
   /*
     개인정보 동의는 계산에 쓰이는 명반 값이 아니라 제출 게이트일 뿐이라
-    GuestFormValues(서버 전송 페이로드의 소스)에 넣지 않고 별도 로컬 상태로 둔다.
+    GuestFormValues(서버 전송 페이로드의 소스)에 넣지 않고 별도 로컬 상태로 둔다
+    (useGuestSubmit이 필드를 하나씩 골라 보내므로 섞여도 무해하지만, 타입을
+    "서버로 나가는 값"과 "제출 조건"으로 분리해두는 게 더 명확하다).
   */
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [privacyConsentError, setPrivacyConsentError] = useState<string | null>(
     null
   );
 
-  const calendarOptions: {
-    value: GuestFormValues["calendarType"];
-    label: string;
-  }[] = [
+  const calendarOptions = [
     { value: "solar", label: tCreate("calendarSolar") },
     { value: "lunar", label: tCreate("calendarLunar") },
   ];
@@ -97,9 +91,8 @@ export const GuestEntryForm = ({
     setErrors((prev) => ({ ...prev, birthTime: undefined }));
   };
 
-  const handleCalendarChange = (
-    calendarType: GuestFormValues["calendarType"]
-  ) => {
+  const handleCalendarChange = (value: string) => {
+    const calendarType = value as GuestFormValues["calendarType"];
     setValues((prev) => ({
       ...prev,
       calendarType,
@@ -145,25 +138,9 @@ export const GuestEntryForm = ({
     onSubmit(values);
   };
 
-  const ownerTitle = ownerName
-    ? t("ownerTitle", { name: ownerName })
-    : t("ownerTitleFallback");
-
   return (
-    <section className={sectionStyles.section}>
-      <h2 className={sectionStyles.title}>{t("formTitle")}</h2>
-      <p className={sectionStyles.lead}>
-        {ownerName
-          ? t("formDescription", { name: ownerName })
-          : t("formDescriptionFallback")}
-      </p>
-
-      <ScreeningTicket
-        isDecorative
-        kind={t("inviteKind")}
-        title={ownerTitle}
-        stubLabel={t("inviteAdmit")}
-      />
+    <section className={styles.section}>
+      <h2 className={styles.title}>{t("formTitle")}</h2>
 
       <div className={styles.form}>
         <Input
@@ -199,17 +176,14 @@ export const GuestEntryForm = ({
             disabled={values.birthTimeUnknown}
             maxLength={5}
           />
-          <div className={styles.checkRow}>
-            <Checkbox
-              label={tCreate("birthTimeUnknown")}
-              checked={values.birthTimeUnknown}
-              onChange={handleTimeUnknownChange}
-            />
-          </div>
+          <Checkbox
+            label={tCreate("birthTimeUnknown")}
+            checked={values.birthTimeUnknown}
+            onChange={handleTimeUnknownChange}
+          />
         </div>
 
-        <ChoiceGroup
-          variant="segment"
+        <RadioGroup
           label={tCreate("calendarLabel")}
           options={calendarOptions}
           value={values.calendarType}
@@ -217,28 +191,26 @@ export const GuestEntryForm = ({
         />
 
         {values.calendarType === "lunar" && (
-          <div className={styles.checkRow}>
-            <Checkbox
-              label={tCreate("leapMonth")}
-              checked={values.isLeapMonth}
-              onChange={(checked) => updateField("isLeapMonth", checked)}
-            />
-          </div>
+          <Checkbox
+            label={tCreate("leapMonth")}
+            checked={values.isLeapMonth}
+            onChange={(checked) => updateField("isLeapMonth", checked)}
+          />
         )}
 
-        <div className={styles.consent}>
-          <div className={styles.checkRow}>
-            <Checkbox
-              label={t("privacyConsentLabel")}
-              checked={privacyConsent}
-              onChange={(checked) => {
-                setPrivacyConsent(checked);
-                if (checked) {
-                  setPrivacyConsentError(null);
-                }
-              }}
-            />
-          </div>
+        <div className={styles.consentSection}>
+          <Checkbox
+            label={t("privacyConsentLabel")}
+            checked={privacyConsent}
+            onChange={(checked) => {
+              setPrivacyConsent(checked);
+              if (checked) {
+                setPrivacyConsentError(null);
+              }
+            }}
+          />
+          {/* 체크박스 버튼(고정 높이 52px, 라벨이 이미 한 줄 폭을 거의 다 씀)과
+              겹치거나 폭을 다투지 않도록 아래 줄에 우측 정렬 칩으로 둔다. */}
           <Link
             href="/policy/privacy"
             target="_blank"
@@ -253,11 +225,7 @@ export const GuestEntryForm = ({
           )}
         </div>
 
-        {isFull && (
-          <p className={styles.blocked} role="status">
-            {t("fullNotice")}
-          </p>
-        )}
+        {isFull && <p className={styles.blocked}>{t("fullNotice")}</p>}
 
         {submitError && (
           <p className={styles.error} role="alert">
@@ -265,11 +233,9 @@ export const GuestEntryForm = ({
           </p>
         )}
 
-        <div className={styles.submit}>
-          <Button onClick={handleSubmit} disabled={isSubmitting || isFull}>
-            {isSubmitting ? t("submitting") : t("submit")}
-          </Button>
-        </div>
+        <Button onClick={handleSubmit} disabled={isSubmitting || isFull}>
+          {isSubmitting ? t("submitting") : t("submit")}
+        </Button>
       </div>
     </section>
   );
