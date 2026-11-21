@@ -1,0 +1,1000 @@
+/* 인생 운세 품질 개선 5요소 - 옛 디자인(시네마 이전) 시안 공용 스타일
+   값은 app/fortune/lifetime/[profileId]/page.module.css, components/fortune/** 의 실제 CSS에서 가져왔다.
+   모바일(<=640px) 기준 값을 쓴다. 새 요소는 [data-new] 로 표시해 두었고 주소 끝에 #mark 를 붙이면 점선으로 보인다. */
+
+:root {
+  --text: #ffffff;
+  --text2: rgba(255, 255, 255, 0.7);
+  --text3: rgba(255, 255, 255, 0.5);
+  --border: rgba(255, 255, 255, 0.16);
+  --hair: rgba(255, 255, 255, 0.08);
+  --surface2: rgba(255, 255, 255, 0.08);
+  --primary: #ffccd9;
+  --primary-3: #ffdde6;
+  --primary-op1: rgba(255, 204, 217, 0.08);
+  --primary-op2: rgba(255, 204, 217, 0.16);
+  --ink: #2d1b4e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #0c1220;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Noto Sans KR", "Malgun Gothic", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+
+h1, h2, h3, h4, h5, p, ul, ol, dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- 헤더 (Header.module.css) ---------- */
+.hd {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0c1220;
+  border-bottom: 1px solid var(--primary);
+  z-index: 100;
+}
+
+.hd-spacer {
+  height: 60px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.hd-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hd-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* ---------- 페이지 골격 (page.module.css) ---------- */
+.page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #0c1220 0%, #2e1431 100%);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 24px 16px 16px;
+  padding-bottom: 100px;
+}
+
+/* ---------- 섹션 헤더 (SectionHeader) ---------- */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 0 12px 0;
+  margin: 24px 0 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  text-align: left;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--text);
+  transition: transform 0.2s ease;
+}
+
+[aria-expanded="true"] > .chevron {
+  transform: rotate(180deg);
+}
+
+.section {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+/* ---------- 프로필 정보 (ProfileInfo) ---------- */
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 20px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+}
+
+.profileTitle {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 140%;
+}
+
+.profileDetails {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.profileDate {
+  display: flex;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 140%;
+  color: var(--text2);
+}
+
+.tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: var(--surface2);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 140%;
+  color: var(--text2);
+}
+
+.spacer16 {
+  width: 100%;
+  height: 16px;
+}
+
+/* ---------- 프로필 카드 (NewProfileCard, isImage=false) ---------- */
+.pcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 20px 20px 24px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+}
+
+.pcard-share {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.pcard-img {
+  align-self: center;
+  width: 251px;
+  max-width: 100%;
+  height: 137px;
+  margin: 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.pcard-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--primary);
+}
+
+.pcard-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 4px;
+}
+
+.bar-labels {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.bar-labels span {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text3);
+}
+
+.bar-labels span:first-child {
+  width: 80px;
+  text-align: left;
+}
+
+.bar-labels span:last-child {
+  width: 80px;
+  text-align: right;
+}
+
+.bar-labels b {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text2);
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+}
+
+.bar-pct {
+  width: 40px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text3);
+}
+
+.bar-pct:last-child {
+  text-align: right;
+}
+
+.bar-pct.on {
+  color: var(--primary);
+}
+
+.bar-track {
+  position: relative;
+  flex: 1;
+  height: 20px;
+  overflow: hidden;
+  background: var(--surface2);
+  border-radius: 18px;
+}
+
+.bar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: var(--primary);
+  border-radius: 18px;
+}
+
+.bar-track i {
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 100%;
+  border-left: 1px dashed #18181b;
+}
+
+/* ---------- 명반 (ZiweiChartGrid) ---------- */
+.chartSection {
+  width: 100%;
+  margin-bottom: 24px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, minmax(85px, auto));
+  width: 100%;
+}
+
+.pal {
+  display: flex;
+  flex-direction: column;
+  min-height: 85px;
+  padding: 6px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.pal.c4 {
+  border-right: none;
+}
+
+.pal.r4 {
+  border-bottom: none;
+}
+
+.pal.ming {
+  background: var(--surface2);
+}
+
+.pal-h {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+  padding-bottom: 2px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pal-n {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.pal-b {
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--text2);
+}
+
+.pal-s {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.pal-m {
+  margin-top: auto;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border);
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--text2);
+}
+
+.pal-c {
+  grid-column: 2 / 4;
+  grid-row: 2 / 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.pal-img {
+  width: 146px;
+  height: 80px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #9b8cff 0%, #6366f1 100%);
+}
+
+.pal-who {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.pal-who span {
+  padding: 2px 6px;
+  border-radius: 12px;
+  background: var(--surface2);
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text2);
+}
+
+.pal-sh {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text2);
+  text-align: center;
+}
+
+/* ---------- 키워드 그리드 (KeywordGrid) ---------- */
+.keywordGridSection {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.kgrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 80px);
+  gap: 2px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.kcell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: var(--surface2);
+}
+
+.kcell.ctr {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ktag {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text2);
+  text-align: center;
+}
+
+.kone {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 140%;
+  color: var(--primary-3);
+  text-align: center;
+}
+
+.kname {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 140%;
+  text-align: center;
+}
+
+/* 예고편 전용: 아래 3행 흐림 */
+.kgrid.isPreview::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 80%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 40%);
+  pointer-events: none;
+}
+
+/* ---------- 본문 공통 (overview / coreScenario) ---------- */
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.overviewHeadline,
+.coreHeadline {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+.subList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.subCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.subHeading {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+}
+
+.subBody {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text2);
+}
+
+/* OneLinerAlert */
+.alert {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+}
+
+.alert-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+
+.alert-text {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+}
+
+.teaser {
+  font-size: 18px;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  color: var(--text2);
+}
+
+/* ---------- 상세 시나리오 (CategoryItem) ---------- */
+.categories {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.categoryLabel {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.categoryHeadline {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+.categoryBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.categoryBody[hidden] {
+  display: none;
+}
+
+.categoryTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.categoryTags .tag {
+  font-size: 16px;
+}
+
+/* ---------- 나이대별 시나리오 (ScenarioItem) ---------- */
+.scenarioList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+.scenarioItem {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scenarioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.scenarioHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scenarioLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: var(--surface2);
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text2);
+  white-space: nowrap;
+}
+
+.scenarioHeadline {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.scenarioBullets {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 1.2em;
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: 0.3px;
+  color: var(--text2);
+  list-style: disc;
+}
+
+.scenarioBullets li {
+  padding-left: 4px;
+}
+
+.scenarioItem > [hidden] {
+  display: none;
+}
+
+/* ---------- 하단 버튼 ---------- */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 480px;
+  padding: 32px 16px 16px;
+  background: linear-gradient(180deg, transparent 0%, #2e1431 20%);
+  z-index: 90;
+}
+
+.reviewButton,
+.shareButton,
+.paymentButton {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.reviewButton {
+  padding: 16px 20px;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+}
+
+.shareButton,
+.paymentButton {
+  flex: 1;
+  color: var(--ink);
+  background: var(--primary);
+  border: none;
+}
+
+.backButton {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* =====================================================================
+   새 요소 5종 (옛 화면 부품을 그대로 재사용)
+   ===================================================================== */
+
+/* 1. 근거 한 줄: ScenarioItem 의 [칩 + 문장] 한 줄 패턴 */
+.evidence {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.evidence .tag {
+  flex-shrink: 0;
+}
+
+.evidence p {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text2);
+}
+
+/* 2 3. 직업 분야 / 만날 사람: SubSectionList 카드(소제목 + 본문) 모양 그대로 */
+.extra {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.extra .categoryTags {
+  margin-top: 2px;
+}
+
+.note {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text2);
+}
+
+.partnerGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 2px;
+}
+
+.partnerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.partnerLabel {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+  color: var(--primary-3);
+}
+
+/* 4. 타이밍: 상세 시나리오와 같은 [토글 헤더 + 본문] 구조, 연도는 ScenarioItem 칩 */
+.timingLead {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.timingLead .subBody {
+  font-size: 15px;
+}
+
+.timingRows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timingRows[hidden] {
+  display: none;
+}
+
+.timingRow {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.yearChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.yearChip.likely {
+  background: var(--primary-op2);
+  color: var(--primary-3);
+}
+
+.yearChip.caution {
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  color: var(--text);
+}
+
+.timingText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 5. 예고편 잠금 질문: 키워드 그리드 흐림 + YearlyInsightsCard 행 구분선 어휘 */
+.answersDesc {
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text2);
+}
+
+.lockGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.lockGroup > .subHeading {
+  margin-bottom: 4px;
+}
+
+.lockRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 0;
+}
+
+.lockRow + .lockRow {
+  border-top: 1px solid var(--hair);
+}
+
+.lockText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lockTitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.lockDesc {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text2);
+}
+
+.lockIcon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--text2);
+}
+
+/* ---------- 검수용 표시 (#mark) ---------- */
+body.mark [data-new] {
+  outline: 1px dashed #7fd1ff;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}
