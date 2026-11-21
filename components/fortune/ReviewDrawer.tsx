@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { CircleCheckBig } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import {
-  REVIEW_REASON_MESSAGE_KEYS,
   encodeReviewContent,
-  getReviewReasonCodes,
-  LOW_RATING_THRESHOLD,
+  REVIEW_REASON_CODES,
   type ReviewReasonCode,
 } from "@/libs/reviews/review-reason";
 import type { ReviewFortuneType } from "@/libs/supabase/types";
 
-import { Sheet } from "@/components/common/sheet";
 import styles from "./ReviewDrawer.module.css";
 
 const MAX_CONTENT_LENGTH = 200;
-const STAR_VALUES = [1, 2, 3, 4, 5] as const;
+/** 이 평점 이하면 "아쉬운 점" 칩을 더 적극적으로(먼저) 노출한다 */
+const LOW_RATING_THRESHOLD = 3;
 
 interface ReviewDrawerProps {
   isOpen: boolean;
@@ -25,10 +24,6 @@ interface ReviewDrawerProps {
   fortuneType: ReviewFortuneType;
 }
 
-/**
- * 관람평 시트 (엔딩 크레딧 "관람평 남기기").
- * 별점은 지금처럼 1~5로 저장하고, 칩은 별점에 따라 4~5점 = 좋았던 점, 1~3점 = 아쉬운 점.
- */
 export const ReviewDrawer = ({
   isOpen,
   onClose,
@@ -36,6 +31,8 @@ export const ReviewDrawer = ({
   fortuneType,
 }: ReviewDrawerProps) => {
   const t = useTranslations("fortune.common.review");
+  const tCommon = useTranslations("common");
+
   const [rating, setRating] = useState(0);
   const [selectedReasons, setSelectedReasons] = useState<ReviewReasonCode[]>(
     []
@@ -46,40 +43,56 @@ export const ReviewDrawer = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 열 때 이미 남긴 관람평이 있는지 확인, 닫으면 입력을 비운다
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      setIsLoading(true);
+      const url = `/api/reviews?profileId=${profileId}&fortuneType=${fortuneType}`;
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.exists) {
+            setIsCompleted(true);
+          }
+        })
+        .catch(() => {
+          // 체크 실패해도 폼은 표시
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      document.body.style.overflow = "";
       setRating(0);
       setSelectedReasons([]);
       setContent("");
       setIsCompleted(false);
       setError(null);
-      return;
     }
-    setIsLoading(true);
-    fetch(`/api/reviews?profileId=${profileId}&fortuneType=${fortuneType}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.exists) {
-          setIsCompleted(true);
-        }
-      })
-      .catch(() => {
-        // 확인에 실패해도 폼은 보여 준다
-      })
-      .finally(() => setIsLoading(false));
+
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen, profileId, fortuneType]);
 
-  const reasonCodes = getReviewReasonCodes(rating);
-  const isLowRating = rating > 0 && rating <= LOW_RATING_THRESHOLD;
+  const handleBackdropClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget && !isSubmitting) {
+        onClose();
+      }
+    },
+    [isSubmitting, onClose]
+  );
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+
+    if (value.length <= MAX_CONTENT_LENGTH) {
+      setContent(value);
+    }
+
+    setError(null);
+  };
 
   const handleStarClick = (star: number) => {
-    // 좋았던 점 ↔ 아쉬운 점 칩이 바뀌면 고른 칩을 비운다
-    const crossesThreshold =
-      star <= LOW_RATING_THRESHOLD !== rating <= LOW_RATING_THRESHOLD;
-    if (rating > 0 && crossesThreshold) {
-      setSelectedReasons([]);
-    }
     setRating(star);
     setError(null);
   };
@@ -93,18 +106,22 @@ export const ReviewDrawer = ({
     setError(null);
   };
 
-  const handleContentChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setContent(event.target.value.slice(0, MAX_CONTENT_LENGTH));
-    setError(null);
-  };
+  // 별점만 있으면 제출 가능 — 텍스트/칩은 선택 사항
+  const isValid = rating >= 1;
+  const showReasons = rating >= 1;
+  const reasonPrompt =
+    rating > 0 && rating <= LOW_RATING_THRESHOLD
+      ? t("reasonPromptLow")
+      : t("reasonPromptHigh");
 
   const handleSubmit = async () => {
-    if (rating < 1 || isSubmitting) return;
+    if (!isValid || isSubmitting) return;
 
     setIsSubmitting(true);
     setError(null);
+
+    const encodedContent = encodeReviewContent(selectedReasons, content);
+
     try {
       const response = await fetch("/api/reviews", {
         method: "POST",
@@ -113,14 +130,17 @@ export const ReviewDrawer = ({
           profileId,
           fortuneType,
           rating,
-          content: encodeReviewContent(selectedReasons, content),
+          content: encodedContent,
         }),
       });
+
       const data = await response.json();
+
       if (!response.ok) {
         setError(data.error ?? t("errorSave"));
         return;
       }
+
       setIsCompleted(true);
     } catch {
       setError(t("errorNetwork"));
@@ -129,157 +149,195 @@ export const ReviewDrawer = ({
     }
   };
 
-  const renderBody = () => {
-    if (isLoading) {
-      return (
-        <p className={styles.status} role="status">
-          {t("loading")}
-        </p>
-      );
-    }
+  if (!isOpen) return null;
 
-    if (isCompleted) {
-      return (
-        <div className={styles.done} role="status">
-          <span className={styles.doneStamp} aria-hidden="true">
-            REVIEWED
-          </span>
-          <b className={styles.doneTitle}>{t("completedMessage")}</b>
-          <span className={styles.doneSub}>{t("completedSub")}</span>
+  if (isLoading) {
+    return (
+      <div className={styles.backdrop} onClick={handleBackdropClick}>
+        <div className={styles.drawer}>
+          <div className={styles.completedBody}>
+            <span className={styles.completedSub}>{t("loading")}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isCompleted) {
+    return (
+      <div className={styles.backdrop} onClick={handleBackdropClick}>
+        <div className={styles.drawer}>
+          <div className={styles.header}>
+            <span className={styles.title}>{t("title")}</span>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={onClose}
+              aria-label={tCommon("close")}
+            >
+              <CloseIcon />
+            </button>
+          </div>
+          <div className={styles.separator}>
+            <hr className={styles.separatorLine} />
+          </div>
+          <div className={styles.completedBody}>
+            <CircleCheckBig size={40} color="#ffccd9" strokeWidth={1.5} />
+            <p className={styles.completedMessage}>{t("completedMessage")}</p>
+            <p className={styles.completedSub}>{t("completedSub")}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.backdrop} onClick={handleBackdropClick}>
+      <div className={styles.drawer}>
+        <div className={styles.header}>
+          <span className={styles.title}>{t("title")}</span>
           <button
             type="button"
-            className={styles.ghostButton}
+            className={styles.closeButton}
             onClick={onClose}
+            disabled={isSubmitting}
+            aria-label={tCommon("close")}
           >
-            {t("close")}
+            <CloseIcon />
           </button>
         </div>
-      );
-    }
 
-    return (
-      <>
-        <div className={styles.stub}>
-          <span className={styles.stubMain}>
-            <span className={styles.stubLabel}>NOW REVIEWING</span>
-            <b>{t(`stub.${fortuneType}`)}</b>
-          </span>
-          <span className={styles.stubEdge} aria-hidden="true">
-            ADMIT
-            <br />
-            ONE
-          </span>
+        <div className={styles.separator}>
+          <hr className={styles.separatorLine} />
         </div>
 
-        <div className={styles.rating}>
-          <span className={styles.ratingQuestion}>{t("subtitle")}</span>
-          <div
-            className={styles.stars}
-            role="radiogroup"
-            aria-label={t("subtitle")}
-          >
-            {STAR_VALUES.map((star) => (
-              <button
-                key={star}
-                type="button"
-                role="radio"
-                aria-checked={star === rating}
-                aria-label={t("starAriaLabel", { star })}
-                className={`${styles.star} ${star <= rating ? styles.starOn : ""}`}
-                onClick={() => handleStarClick(star)}
-              >
-                ★
-              </button>
-            ))}
+        <div className={styles.body}>
+          {/* 별점 */}
+          <div className={styles.ratingSection}>
+            <span className={styles.ratingLabel}>{t("subtitle")}</span>
+            <div className={styles.stars}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  className={styles.starButton}
+                  onClick={() => handleStarClick(star)}
+                  aria-label={t("starAriaLabel", { star })}
+                  aria-pressed={star <= rating}
+                >
+                  <StarIcon filled={star <= rating} />
+                </button>
+              ))}
+            </div>
           </div>
-          {rating > 0 && (
-            <span className={styles.ratingWord}>
-              {t("ratingWord", { rating, word: t(`ratingWords.${rating}`) })}
-            </span>
-          )}
-        </div>
 
-        {rating > 0 && (
-          <div
-            className={styles.reasons}
-            role="group"
-            aria-label={
-              isLowRating ? t("reasonsGroupLow") : t("reasonsGroupHigh")
-            }
-          >
-            <span className={styles.reasonPrompt}>
-              {isLowRating ? t("reasonPromptLow") : t("reasonPromptHigh")}
-            </span>
-            <div className={styles.chips}>
-              {reasonCodes.map((reason) => {
-                const isSelected = selectedReasons.includes(reason);
-                return (
+          {/* 불만 유형 칩 (별점을 매긴 뒤에만 노출) */}
+          {showReasons && (
+            <div
+              className={styles.reasonSection}
+              role="group"
+              aria-label={t("reasonsGroupAriaLabel")}
+            >
+              <span className={styles.reasonLabel}>{reasonPrompt}</span>
+              <div className={styles.reasonChips}>
+                {REVIEW_REASON_CODES.map((reason) => (
                   <button
                     key={reason}
                     type="button"
-                    aria-pressed={isSelected}
-                    className={`${styles.chip} ${
-                      isSelected
-                        ? isLowRating
-                          ? styles.chipLow
-                          : styles.chipHigh
+                    className={`${styles.reasonChip} ${
+                      selectedReasons.includes(reason)
+                        ? styles.reasonChipSelected
                         : ""
                     }`}
                     onClick={() => handleReasonToggle(reason)}
+                    aria-pressed={selectedReasons.includes(reason)}
                   >
-                    {t(`reasons.${REVIEW_REASON_MESSAGE_KEYS[reason]}`)}
+                    {t(`reasons.${reason}`)}
                   </button>
-                );
-              })}
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 텍스트 입력 */}
+          <div className={styles.textSection}>
+            <textarea
+              className={styles.textarea}
+              placeholder={t("placeholder")}
+              value={content}
+              onChange={handleContentChange}
+              maxLength={MAX_CONTENT_LENGTH}
+              disabled={isSubmitting}
+              aria-label={t("placeholder")}
+            />
+            <div className={styles.textMeta}>
+              <span
+                className={`${styles.charCount} ${
+                  content.length > MAX_CONTENT_LENGTH
+                    ? styles.charCountOver
+                    : ""
+                }`}
+              >
+                {t("charCountLabel", {
+                  count: content.length,
+                  max: MAX_CONTENT_LENGTH,
+                })}
+              </span>
             </div>
           </div>
-        )}
 
-        <label className={styles.textField}>
-          <span className={styles.srOnly}>{t("placeholder")}</span>
-          <textarea
-            className={styles.textarea}
-            placeholder={t("placeholder")}
-            value={content}
-            onChange={handleContentChange}
-            maxLength={MAX_CONTENT_LENGTH}
-            disabled={isSubmitting}
-          />
-          <span className={styles.charCount} aria-hidden="true">
-            {t("charCountLabel", {
-              count: content.length,
-              max: MAX_CONTENT_LENGTH,
-            })}
-          </span>
-        </label>
+          {/* 에러 메시지 */}
+          {error && <p className={styles.errorMessage}>{error}</p>}
 
-        {error && (
-          <p className={styles.error} role="alert">
-            {error}
-          </p>
-        )}
-
-        <button
-          type="button"
-          className={styles.submit}
-          onClick={handleSubmit}
-          disabled={rating < 1 || isSubmitting}
-        >
-          {isSubmitting ? t("submitting") : t("submit")}
-        </button>
-      </>
-    );
-  };
-
-  return (
-    <Sheet
-      isOpen={isOpen}
-      onClose={onClose}
-      eyebrow="REVIEW"
-      title={t("title")}
-      isBusy={isSubmitting}
-    >
-      <div className={styles.content}>{renderBody()}</div>
-    </Sheet>
+          {/* 제출 버튼 */}
+          <button
+            type="button"
+            className={styles.submitButton}
+            onClick={handleSubmit}
+            disabled={!isValid || isSubmitting}
+          >
+            {isSubmitting ? t("submitting") : t("submit")}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
+
+const StarIcon = ({ filled }: { filled: boolean }) => (
+  <svg
+    width="32"
+    height="32"
+    viewBox="0 0 24 24"
+    fill={filled ? "#ffccd9" : "none"}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+      stroke="#ffccd9"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M15 5L5 15M5 5L15 15"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export default ReviewDrawer;

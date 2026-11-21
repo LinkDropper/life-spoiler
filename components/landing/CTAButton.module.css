@@ -6,17 +6,6 @@
   z-index: 100;
   display: flex;
   justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.wrapperHidden {
-  transform: translateY(110%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wrapper {
-    transition: none;
-  }
 }
 
 .container {
@@ -27,6 +16,7 @@
   max-width: 480px;
   padding: 12px 16px;
   padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(12, 18, 32, 0) 0%, #0c1220 20%);
 }
 
 .button {
@@ -48,7 +38,7 @@
   font-size: 19px;
   font-weight: 700;
   line-height: 1.4;
-  color: #2d1b4e;
+    color: #2d1b4e;
 }
 
 .priceBadge {
@@ -85,15 +75,4 @@
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
   border-top: 6px solid rgba(255, 255, 255, 0.12);
-}
-
-/* 주 버튼 오버·누름: 한 단계씩 진하게 (app/globals.css 색 역할) */
-@media (hover: hover) {
-  .button:hover:not(:disabled) {
-    background: var(--color-button-primary-surface-hover, #ffa8c0);
-  }
-}
-
-.button:active:not(:disabled) {
-  background: var(--color-button-primary-surface-pressed, #f598b3);
 }

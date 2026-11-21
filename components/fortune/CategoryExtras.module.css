@@ -1,0 +1,114 @@
+/* 근거 한 줄: ScenarioItem 의 [칩 + 문장] 패턴 */
+.evidence {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: var(--color-surface-secondary, rgba(255, 255, 255, 0.08));
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.evidenceText {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+/* 직업 분야 / 만날 사람: SubSectionList 카드(소제목 + 본문) 모양 */
+.extra {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.extraHeading {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+  color: var(--color-text-default, #ffffff);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips .chip {
+  font-size: 16px;
+}
+
+.note,
+.noteSpaced {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.noteSpaced {
+  margin-top: 6px;
+}
+
+.partnerGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 2px;
+}
+
+.partnerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.partnerLabel {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+  color: var(--color-text-primary-secondary, #ffdde6);
+}
+
+.body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.78));
+}
+
+.bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 0 1.2em;
+  list-style: disc;
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: 0.3px;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.78));
+}
+
+.bullets li {
+  padding-left: 4px;
+}

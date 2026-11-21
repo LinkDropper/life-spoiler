@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>인생 운세 예고편 - 인생스포 (옛 디자인 기준 · 잠금 질문 시안)</title>
+<link rel="stylesheet" href="classic.css">
+</head>
+<body>
+<!-- 시안 보는 법: 주소 끝에 #mark 를 붙이면 새로 들어간 요소(5 잠금 질문)에 파란 점선이 보입니다.
+     구조는 app/fortune/lifetime/preview/[profileId]/page.tsx 의 실제 순서 그대로입니다.
+     잠금 질문 행은 서버가 내려주는 lockedQuestions(종류·주제·개수)만 그립니다. 연도·분야명·성향 같은 내용은 화면에 없고 응답에도 없습니다. -->
+
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div class="hd-right">
+    <button class="hd-btn" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></button>
+    <button class="hd-btn" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<div class="hd-spacer"></div>
+
+<div class="page">
+<main class="main" style="align-items:stretch">
+
+  <!-- ProfileInfo -->
+  <div class="profileInfo">
+    <div class="profileTitle">지수님의 인생 운세</div>
+    <div class="profileDetails">
+      <div class="profileDate"><span>1995.03.14</span><span>14 : 30</span></div>
+      <div class="tags"><span class="tag">양력</span><span class="tag">여성</span></div>
+    </div>
+  </div>
+
+  <!-- 자미두수 명반 (interactive=false) -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-chart" data-toggle="s-chart">
+    <h3 class="sectionTitle">자미두수 명반</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="chartSection" id="s-chart">
+    <div class="chartGrid" role="img" aria-label="지수님의 명반 12궁">
+      <div class="pal"><div class="pal-h"><span class="pal-n">전택궁</span><span class="pal-b">사</span></div><div class="pal-s">거문 묘</div><div class="pal-m">좌보 문곡</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">관록궁</span><span class="pal-b">오</span></div><div class="pal-s">천상 득</div><div class="pal-m">우필</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">노복궁</span><span class="pal-b">미</span></div><div class="pal-s">천량 왕</div><div class="pal-m">천괴</div></div>
+      <div class="pal c4"><div class="pal-h"><span class="pal-n">천이궁</span><span class="pal-b">신</span></div><div class="pal-s">칠살 묘</div><div class="pal-m">천월</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">복덕궁</span><span class="pal-b">진</span></div><div class="pal-s">염정 평</div><div class="pal-m">문창</div></div>
+      <div class="pal c4"><div class="pal-h"><span class="pal-n">질액궁</span><span class="pal-b">유</span></div><div class="pal-s">탐랑 왕</div><div class="pal-m">경양</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">부모궁</span><span class="pal-b">묘</span></div><div class="pal-s">천부 묘</div><div class="pal-m">타라</div></div>
+      <div class="pal c4"><div class="pal-h"><span class="pal-n">재백궁</span><span class="pal-b">술</span></div><div class="pal-s">천동 왕</div><div class="pal-m">록존</div></div>
+      <div class="pal r4 ming"><div class="pal-h"><span class="pal-n">명궁</span><span class="pal-b">인</span></div><div class="pal-s">자미 묘</div><div class="pal-m">좌보</div></div>
+      <div class="pal r4"><div class="pal-h"><span class="pal-n">형제궁</span><span class="pal-b">축</span></div><div class="pal-s">천기 득</div><div class="pal-m">화성</div></div>
+      <div class="pal r4"><div class="pal-h"><span class="pal-n">부처궁</span><span class="pal-b">자</span></div><div class="pal-s">태양 평</div><div class="pal-m">지공</div></div>
+      <div class="pal r4 c4"><div class="pal-h"><span class="pal-n">자녀궁</span><span class="pal-b">해</span></div><div class="pal-s">무곡 묘</div><div class="pal-m">지겁</div></div>
+      <div class="pal-c">
+        <div class="pal-img" aria-hidden="true"></div>
+        <div class="pal-who">지수 <span>수이국</span></div>
+        <div class="pal-sh">화록 천동 · 화권 천기</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 키워드 그리드 (isPreview: 3행 흐림, 자리 문구는 실제 코드와 같음) -->
+  <section class="keywordGridSection">
+    <div class="kgrid isPreview">
+      <div class="kcell"><span class="ktag">#직관</span></div>
+      <div class="kcell"><span class="ktag">#독립심</span></div>
+      <div class="kcell"><span class="ktag">#계획성</span></div>
+      <div class="kcell"><span class="ktag">#의리</span></div>
+      <div class="kcell ctr"><span class="kone">생각이 깊은 전략가</span><span class="kname">지수</span></div>
+      <div class="kcell"><span class="ktag">#신중함</span></div>
+      <div class="kcell"><span class="ktag">#미리보기 방지</span></div>
+      <div class="kcell"><span class="ktag">#미리보기 방지</span></div>
+      <div class="kcell"><span class="ktag">#미리보기 방지</span></div>
+    </div>
+  </section>
+
+  <!-- 인생 스포일러 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-spoiler" data-toggle="s-spoiler" style="margin-top:0">
+    <h3 class="sectionTitle">인생 스포일러</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="overview" id="s-spoiler" style="margin-bottom:24px">
+    <h2 class="overviewHeadline">결정은 빠른데, 시작은 느린 사람</h2>
+    <div class="subList">
+      <div class="subCard"><h4 class="subHeading">정하는 건 빠르고 움직이는 건 느려요</h4><div class="subBody">마음속에서는 이미 답이 나와 있는데 몸이 따라가는 데 시간이 걸려요. 첫걸음을 아주 작게 나눠 두면 시작하는 시간이 눈에 띄게 짧아져요.</div></div>
+      <div class="subCard"><h4 class="subHeading">가까운 사람에게만 속도를 맞춰요</h4><div class="subBody">처음 만난 사람에게는 한 걸음 물러서 있다가, 마음을 열면 누구보다 오래 곁을 지켜요.</div></div>
+    </div>
+    <div class="alert"><span class="alert-label">한 줄 정리</span><p class="alert-text">천천히 시작해서 한번 움직이면 끝까지 가는 사람이에요.</p></div>
+    <!-- 실제 teaser 문구 그대로 (translations fortune.preview.teaser) -->
+    <p class="teaser">지금 보신 건 '예고편'에 불과해요. 평생 재물운이 폭발하는 나이와 미래 배우자의 소름 돋는 특징은 본편 시나리오에서만 몰래 스포해 드릴게요. 🤫</p>
+  </section>
+
+  <!-- [신규 5] 본편에서 답해 드려요: 스포일러 섹션 바로 뒤, 결제 버튼 앞 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-answers" data-toggle="s-answers" style="margin-top:0" data-new>
+    <h3 class="sectionTitle">본편에서 답해 드려요</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section id="s-answers" data-new>
+    <p class="answersDesc">가장 많이 궁금해하시는 ‘언제’와 ‘누구’를 본편에서 열어 드려요.</p>
+
+    <div class="lockGroups">
+
+      <div class="lockGroup">
+        <h4 class="subHeading">언제</h4>
+        <ul>
+          <li class="lockRow">
+            <div class="lockText"><span class="lockTitle">연애·결혼 시기</span><span class="lockDesc">가능성이 높은 해 후보 2개</span></div>
+            <svg class="lockIcon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr">본편에서 열려요</span>
+          </li>
+          <li class="lockRow">
+            <div class="lockText"><span class="lockTitle">연애·결혼에서 조심할 해</span><span class="lockDesc">조심할 해 1개</span></div>
+            <svg class="lockIcon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr">본편에서 열려요</span>
+          </li>
+          <li class="lockRow">
+            <div class="lockText"><span class="lockTitle">일·이직 시기</span><span class="lockDesc">가능성이 높은 해 후보 2개</span></div>
+            <svg class="lockIcon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr">본편에서 열려요</span>
+          </li>
+          <li class="lockRow">
+            <div class="lockText"><span class="lockTitle">일·이직에서 조심할 해</span><span class="lockDesc">조심할 해 1개</span></div>
+            <svg class="lockIcon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr">본편에서 열려요</span>
+          </li>
+          <li class="lockRow">
+            <div class="lockText"><span class="lockTitle">이사·이동 시기</span><span class="lockDesc">가능성이 높은 해 후보 2개</span></div>
+            <svg class="lockIcon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr">본편에서 열려요</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="lockGroup">
+        <h4 class="subHeading">일</h4>
+        <ul>
+          <li class="lockRow">
+            <div class="lockText"><span class="lockTitle">잘 맞는 직업 분야</span><span class="lockDesc">5개</span></div>
+            <svg class="lockIcon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr">본편에서 열려요</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="lockGroup">
+        <h4 class="subHeading">인연</h4>
+        <ul>
+          <li class="lockRow">
+            <div class="lockText"><span class="lockTitle">만날 사람의 성향</span><span class="lockDesc">성향 · 역할 · 만나는 길</span></div>
+            <svg class="lockIcon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr">본편에서 열려요</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- 하단 CTA (기존 그대로) -->
+<footer class="footer" style="padding-top:16px;background:linear-gradient(180deg,transparent 0%,#2e1431 30%)">
+  <button class="backButton" type="button" aria-label="이전"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.5303 5.46967C15.8232 5.76256 15.8232 6.23744 15.5303 6.53033L10.0607 12L15.5303 17.4697C15.8232 17.7626 15.8232 18.2374 15.5303 18.5303C15.2374 18.8232 14.7626 18.8232 14.4697 18.5303L8.46967 12.5303C8.17678 12.2374 8.17678 11.7626 8.46967 11.4697L14.4697 5.46967C14.7626 5.17678 15.2374 5.17678 15.5303 5.46967Z" fill="#18181B"/></svg></button>
+  <button class="paymentButton" type="button">전체 스포 확인하기 (990원)</button>
+</footer>
+</div>
+
+<script>
+  document.querySelectorAll("[data-toggle]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var target = document.getElementById(btn.getAttribute("data-toggle"));
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", String(open));
+      if (target) target.hidden = !open;
+    });
+  });
+  if (location.hash === "#mark") document.body.classList.add("mark");
+</script>
+</body>
+</html>

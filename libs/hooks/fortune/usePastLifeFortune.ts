@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 import {
   useProfileById,
@@ -10,7 +10,6 @@ import {
   useProfileActions,
 } from "@/libs/stores/profile";
 import { useAuthStatus, useUser } from "@/libs/stores/user";
-import { showToast } from "@/libs/toast";
 
 import type { ProfileData, PastLifeFortuneResult } from "./types";
 
@@ -38,7 +37,6 @@ export const usePastLifeFortune = (
   const authStatus = useAuthStatus();
   const user = useUser();
   const locale = useLocale();
-  const tToast = useTranslations("common.toast");
   const profileId = params.profileId as string;
 
   const cachedProfile = useProfileById(profileId);
@@ -209,13 +207,12 @@ export const usePastLifeFortune = (
         setShowCopyToast(true);
         toastTimerRef.current = setTimeout(() => setShowCopyToast(false), 2000);
       } catch {
-        showToast({
-          kind: "error",
-          message: tToast("copyFailed", { url: shareUrl }),
-        });
+        alert(
+          `링크 복사에 실패했습니다. 다음 주소를 직접 복사해주세요: ${shareUrl}`
+        );
       }
     }
-  }, [profileId, user, tToast]);
+  }, [profileId, user]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;

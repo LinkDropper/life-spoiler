@@ -6,66 +6,56 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
-import { MarkdownContent, CopyToast, ErrorState } from "@/components/fortune";
-import { LifetimeCharacterPoster } from "@/components/fortune/LifetimeCharacterPoster";
+import {
+  ProfileInfo,
+  ZiweiChartGrid,
+  SectionHeader,
+  ScenarioItem,
+  ScenarioList,
+  MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
+  CopyToast,
+  ErrorState,
+  ShareDrawer,
+  KeywordGrid,
+  EventBadge,
+  LifetimeCategoryList,
+  LifetimeTiming,
+} from "@/components/fortune";
+import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
+import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
+import NewProfileCard from "@/components/fortune/NewProfileCard";
 import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
 import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
-import { ActIntertitle } from "@/components/fortune/screen/ActIntertitle";
-import { FortuneShareSheet } from "@/components/fortune/screen/FortuneShareSheet";
-import { AgeLens, toAgeSceneId } from "@/components/fortune/screen/AgeLens";
-import {
-  CareerFields,
-  PartnerProfile,
-} from "@/components/fortune/screen/CategoryExtras";
-import { CategoryStory } from "@/components/fortune/screen/CategoryStory";
-import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
-import { EndCredits } from "@/components/fortune/screen/EndCredits";
-import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
-import { LifetimeTiming } from "@/components/fortune/screen/LifetimeTiming";
-import { LifetimeNowShowing } from "@/components/fortune/screen/LifetimeNowShowing";
-import { NextShow } from "@/components/fortune/screen/NextShow";
-import { NumberedSections } from "@/components/fortune/screen/NumberedSections";
-import { RatingBoard } from "@/components/fortune/screen/RatingBoard";
-import type { RatingItem } from "@/components/fortune/screen/RatingBoard";
-import { ScreenPlayer } from "@/components/fortune/screen/ScreenPlayer";
-import type { PlayerScene } from "@/components/fortune/screen/ScreenPlayer";
-import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
-import screen from "@/components/fortune/screen/screen.module.css";
-import type { CategoryKey } from "@/libs/fortune/lifetime-screen";
-import type { FortuneSceneId } from "@/libs/analytics/fortune";
-import {
-  getCareerFields,
-  getPartner,
-  getVisibleTiming,
-} from "@/libs/fortune/lifetime-extras";
-import { buildAgeLens } from "@/libs/fortune/lifetime-screen";
-import { useScreenCast } from "@/libs/fortune/use-screen-cast";
-import { getFilmAge } from "@/libs/home/home-film";
-import { YEARLY_AFTER_LIFETIME_PER_100 } from "@/libs/home/home-profile";
+import EventSection from "@/components/landing/EventSection";
 import { useLifetimeFortune } from "@/libs/hooks/fortune";
+import { getVisibleTiming } from "@/libs/fortune/lifetime-extras";
+import type {
+  FortuneInterpretation,
+  ProfileTraitsResponse,
+} from "@/libs/services/ai/types";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
-import {
-  shareImageWithSystem,
-  shareLinkWithSystem,
-} from "@/libs/share/system-share";
 import { useUser } from "@/libs/stores/user";
-import { extractKeywordsFromChart } from "@/libs/zi-wei-dou-shu/calculators";
+import {
+  extractKeywordsFromChart,
+  extractOneLinerFromChart,
+} from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
-import { showToast } from "@/libs/toast";
 
 import styles from "./page.module.css";
 
-const CATEGORY_KEYS: CategoryKey[] = [
-  "wealth",
-  "career",
-  "relationship",
-  "health",
-];
-
-const ACT_IDS = ["act1", "act2", "act3", "act4", "act5"] as const;
-
-const EXTRA_SCENE_IDS: FortuneSceneId[] = ["next", "end"];
+/**
+ * profileTraits 존재 여부 타입 가드
+ */
+const hasProfileTraits = (
+  interpretation: FortuneInterpretation
+): interpretation is FortuneInterpretation & {
+  profileTraits: ProfileTraitsResponse;
+} => {
+  return !!interpretation.profileTraits?.spectrums;
+};
 
 export default function LifetimeFortunePage() {
   const router = useRouter();
@@ -73,7 +63,8 @@ export default function LifetimeFortunePage() {
   const user = useUser();
   const t = useTranslations("fortune.lifetime");
   const tCommon = useTranslations("fortune.common");
-  const tScreen = useTranslations("fortune.screen");
+  const tPreview = useTranslations("fortune.preview");
+  const tStory = useTranslations("fortune.instagramStory");
 
   const {
     isLoading,
@@ -93,6 +84,12 @@ export default function LifetimeFortunePage() {
         default: "알 수 없는 오류가 발생했습니다.",
       }),
   });
+
+  const [chartExpanded, setChartExpanded] = useState(true);
+  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [coreExpanded, setCoreExpanded] = useState(true);
+  const [detailExpanded, setDetailExpanded] = useState(true);
+  const [ageExpanded, setAgeExpanded] = useState(true);
 
   // 후기 드로어 상태
   const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
@@ -130,26 +127,11 @@ export default function LifetimeFortunePage() {
     return extractKeywordsFromChart(result.rawChart, locale);
   }, [result?.rawChart, locale]);
 
-  const cast = useScreenCast(result?.rawChart ?? null);
-
-  // 타이밍(ACT 5)은 보여 줄 연도가 있을 때만 막으로 둔다 (v3 이하 결과에는 없음)
-  const visibleTiming = useMemo(
-    () => getVisibleTiming(result?.interpretation.timing),
-    [result?.interpretation.timing]
-  );
-
-  const scenes = useMemo<PlayerScene[]>(
-    () =>
-      ACT_IDS.filter((id) => id !== "act5" || visibleTiming.length > 0).map(
-        (id, index) => ({
-          id,
-          act: `ACT ${index + 1}`,
-          title: tScreen(`acts.${id}.title`),
-          sub: tScreen(`acts.${id}.sub`),
-        })
-      ),
-    [tScreen, visibleTiming.length]
-  );
+  // 한줄 표현 추출 (명궁 대표 주성 기반)
+  const oneLiner = useMemo(() => {
+    if (!result?.rawChart) return null;
+    return extractOneLinerFromChart(result.rawChart, locale);
+  }, [result?.rawChart, locale]);
 
   // 프로필 이미지 다운로드 핸들러
   const handleProfileDownloadImage = useCallback(async () => {
@@ -197,7 +179,7 @@ export default function LifetimeFortunePage() {
       // 이미지 Blob 생성
       const blob = await profileCardToBlob();
       if (!blob) {
-        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
+        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
         return;
       }
 
@@ -211,61 +193,14 @@ export default function LifetimeFortunePage() {
       });
     } catch (error) {
       console.error("Failed to share to Kakao with image:", error);
-      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
+      alert("공유에 실패했습니다. 다시 시도해주세요.");
     } finally {
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
         setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [result, profile, profileId, profileCardToBlob, user, tScreen]);
-
-  // 기기 공유 시트(인스타그램 등). 지원하지 않는 브라우저면 링크 복사로 대신한다
-  const handleShareSystem = useCallback(async () => {
-    if (!result) return;
-    try {
-      const shared = await shareLinkWithSystem({
-        title: result.interpretation.lifeSpoiler.headline,
-        url: `${window.location.origin}/fortune/lifetime/share/${profileId}?ref=${user?.id ?? ""}`,
-      });
-      if (shared === "unsupported") {
-        handleShare();
-      }
-    } catch (shareError) {
-      console.error("Failed to share with system sheet:", shareError);
-    }
-    setIsShareDrawerOpen(false);
-  }, [result, profileId, user, handleShare]);
-
-  // 포스터 이미지를 기기 공유 시트로(인스타그램 스토리). 파일 공유를 못 하면 저장으로 대신한다
-  const handlePosterShareSystem = useCallback(async () => {
-    if (!result) return;
-    setShowProfileCard(true);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    try {
-      const blob = await profileCardToBlob();
-      if (!blob) {
-        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
-        return;
-      }
-      const shared = await shareImageWithSystem({
-        blob,
-        filename: "life_spoiler_lifetime_poster.png",
-        title: result.interpretation.lifeSpoiler.headline,
-      });
-      if (shared === "unsupported") {
-        await downloadProfileImage();
-      }
-    } catch (shareError) {
-      console.error("Failed to share poster with system sheet:", shareError);
-      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
-    } finally {
-      timeoutRef.current = setTimeout(() => {
-        setShowProfileCard(false);
-        setIsProfileShareDrawerOpen(false);
-      }, 500);
-    }
-  }, [result, profileCardToBlob, downloadProfileImage, tScreen]);
+  }, [result, profile, profileId, profileCardToBlob, user]);
 
   if (isLoading) {
     return <Loading />;
@@ -293,253 +228,255 @@ export default function LifetimeFortunePage() {
   }
 
   const { interpretation, rawChart } = result;
-  const { lifeSpoiler, coreScenario, categories, ageScenarios } =
-    interpretation;
-  const age = getFilmAge(profile.birth_date);
-  const currentYear = new Date().getFullYear();
-  const ageLens =
-    ageScenarios.length > 0
-      ? buildAgeLens(
-          ageScenarios.map((scenario) => scenario.period),
-          age
-        )
-      : null;
+
+  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
+  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
+  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
 
   // 인스타 스토리용 점수
   const storyScores = {
-    wealth: categories.wealth.score ?? 0,
-    career: categories.career.score ?? 0,
-    relationship: categories.relationship.score ?? 0,
-    health: categories.health.score ?? 0,
+    wealth: interpretation.categories.wealth.score ?? 0,
+    career: interpretation.categories.career.score ?? 0,
+    relationship: interpretation.categories.relationship.score ?? 0,
+    health: interpretation.categories.health.score ?? 0,
   };
 
-  const careerFields = getCareerFields(interpretation);
-  const partner = getPartner(interpretation);
+  // 인스타 스토리용 레이블
+  const storyLabels: InstagramStoryCardLabels = {
+    mainStar: tStory("mainStar"),
+    categories: {
+      wealth: tStory("categories.wealth"),
+      career: tStory("categories.career"),
+      relationship: tStory("categories.relationship"),
+      health: tStory("categories.health"),
+    },
+  };
 
-  const ratingItems: RatingItem[] = CATEGORY_KEYS.map((key) => ({
-    key,
-    label: t(`categories.${key}`),
-    score: storyScores[key],
-    review: categories[key].headline,
-  }));
-
-  // 한 줄 정리 라벨 (i18n)
+  // 한 줄 정리 alert 라벨 (i18n)
   const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
-
-  const renderActIntertitle = (id: (typeof ACT_IDS)[number]) => (
-    <ActIntertitle
-      id={id}
-      act={`ACT ${ACT_IDS.indexOf(id) + 1}`}
-      title={tScreen(`acts.${id}.title`)}
-      sub={tScreen(`acts.${id}.sub`)}
-    />
-  );
-
-  const renderPoster = (isImage: boolean, showShare = true) => (
-    <LifetimeCharacterPoster
-      ref={isImage ? profileCardRef : undefined}
-      name={profile.name}
-      leadStarKey={cast.stars[0]?.starName ?? null}
-      leadStarLabel={cast.starLabels[0] ?? ""}
-      headline={lifeSpoiler.headline}
-      profileTraits={interpretation.profileTraits}
-      scores={storyScores}
-      categoryLabels={{
-        wealth: t("categories.wealth"),
-        career: t("categories.career"),
-        relationship: t("categories.relationship"),
-        health: t("categories.health"),
-      }}
-      isImage={isImage}
-      shouldShowShareButton={showShare}
-      onShareClick={() => setIsProfileShareDrawerOpen(true)}
-    />
-  );
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={`${screen.root} ${styles.main}`}>
-        <div className={styles.bleed}>
-          {ageLens ? (
-            <LifetimeNowShowing
-              name={profile.name}
-              age={age}
-              scenarios={ageScenarios}
-              targetId={toAgeSceneId(ageLens.nowIndex)}
-              surface="owner"
-            />
-          ) : (
-            <FilmPoster
-              variant="feature"
-              title={lifeSpoiler.headline}
-              tagline={lifeSpoiler.oneLiner}
-              name={profile.name}
-              leadStar={cast.leadStar}
-              wuxingJu={result.chart.wuxingJu}
-              stars={cast.stars}
-              starLabels={cast.starLabels}
-            />
-          )}
-        </div>
-
-        <ScreenPlayer
-          scenes={scenes}
-          age={age}
-          nowTargetId={ageLens ? toAgeSceneId(ageLens.nowIndex) : undefined}
-          extraSceneIds={EXTRA_SCENE_IDS}
-          surface="owner"
-        />
-
-        <section className={screen.section}>
-          <p className={screen.eyebrow}>CAST</p>
-          <h2 className={screen.sectionTitle}>{tScreen("character.title")}</h2>
-          {renderPoster(false)}
-        </section>
-
-        <section className={screen.section}>
-          <p className={screen.eyebrow}>ORIGINAL</p>
-          <h2 className={screen.sectionTitle}>{tScreen("chart.title")}</h2>
-          <p className={screen.sectionDesc}>{tScreen("chart.featureDesc")}</p>
-          <ChartConstellation
-            chart={rawChart}
-            profileName={profile.name}
-            wuxingJu={result.chart.wuxingJu}
-            stars={cast.stars}
-          />
-          {keywords.length > 0 && (
-            <ul className={screen.keywords}>
-              {keywords.map((keyword, index) => (
-                <li key={`${keyword}-${index}`} className={screen.keyword}>
-                  #{keyword}
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        {renderActIntertitle("act1")}
-        <section className={screen.section}>
-          <p className={screen.lead}>{lifeSpoiler.headline}</p>
-          {lifeSpoiler.subSections && lifeSpoiler.subSections.length > 0 ? (
-            <NumberedSections items={lifeSpoiler.subSections} />
-          ) : (
-            lifeSpoiler.summary && (
-              <MarkdownContent className={screen.prose}>
-                {lifeSpoiler.summary}
-              </MarkdownContent>
-            )
-          )}
-          {lifeSpoiler.oneLiner && (
-            <SubtitleStill label={oneLinerLabel} text={lifeSpoiler.oneLiner} />
-          )}
-        </section>
-
-        {renderActIntertitle("act2")}
-        <section className={screen.section}>
-          {coreScenario.headline && (
-            <p className={screen.lead}>{coreScenario.headline}</p>
-          )}
-          {coreScenario.subSections && coreScenario.subSections.length > 0 ? (
-            <NumberedSections items={coreScenario.subSections} />
-          ) : (
-            coreScenario.content && (
-              <MarkdownContent className={screen.prose}>
-                {coreScenario.content}
-              </MarkdownContent>
-            )
-          )}
-          {coreScenario.oneLiner && (
-            <SubtitleStill label={oneLinerLabel} text={coreScenario.oneLiner} />
-          )}
-        </section>
-
-        {renderActIntertitle("act3")}
-        <RatingBoard items={ratingItems} />
-        {CATEGORY_KEYS.map((key) => (
-          <CategoryStory
-            key={key}
-            label={t(`categories.${key}`)}
-            score={storyScores[key]}
-            headline={categories[key].headline}
-            content={categories[key].content}
-            subSections={categories[key].subSections}
-            oneLiner={categories[key].oneLiner}
-            tags={categories[key].tags}
-            evidence={categories[key].evidence}
-          >
-            {key === "career" && careerFields.length > 0 && (
-              <CareerFields fields={careerFields} />
-            )}
-            {key === "relationship" && partner && (
-              <PartnerProfile partner={partner} />
-            )}
-          </CategoryStory>
-        ))}
-
-        {ageScenarios.length > 0 && (
-          <>
-            {renderActIntertitle("act4")}
-            <AgeLens
-              scenarios={ageScenarios}
-              age={age}
-              birthTimeUnknown={profile.birth_time_unknown}
-              surface="owner"
-            />
-          </>
-        )}
-
-        {visibleTiming.length > 0 && (
-          <>
-            {renderActIntertitle("act5")}
-            <LifetimeTiming topics={visibleTiming} />
-          </>
-        )}
-
-        <NextShow
-          href={`/fortune/yearly/${profileId}`}
-          kicker={`TRAILER · ${currentYear}`}
-          name={tScreen("next.name")}
-          body={tScreen("next.body", {
-            count: YEARLY_AFTER_LIFETIME_PER_100,
-            year: currentYear,
-          })}
-          button={tScreen("next.button")}
-          fortuneType="lifetime"
-          nextType="yearly"
-        />
-
-        <EndCredits
+      <main className={styles.main}>
+        {/* 프로필 정보 */}
+        <ProfileInfo
           name={profile.name}
-          rows={[
-            { label: "LEAD STAR", value: cast.leadStar },
-            { label: "ORIGINAL", value: result.chart.wuxingJu },
-          ]}
+          fortuneType="lifetime"
+          birthDate={profile.birth_date}
+          birthTime={profile.birth_time}
+          birthTimeUnknown={profile.birth_time_unknown}
+          calendarType={profile.calendar_type}
+          gender={profile.gender}
+        />
+
+        <div style={{ width: "100%", height: 16 }} />
+
+        {hasProfileTraits(interpretation) ? (
+          <NewProfileCard
+            mainStars={mainStarNames}
+            headline={interpretation.lifeSpoiler.headline}
+            profileTraits={interpretation.profileTraits}
+            isImage={false}
+            onShareClick={() => setIsProfileShareDrawerOpen(true)}
+          />
+        ) : (
+          <LifetimeProfileCard
+            mainStars={mainStarNames}
+            headline={interpretation.lifeSpoiler.headline}
+            description={interpretation.lifeSpoiler.description}
+            scores={storyScores}
+            labels={storyLabels}
+            isImage={false}
+            onShareClick={() => setIsProfileShareDrawerOpen(true)}
+          />
+        )}
+
+        {/* 자미두수 명반 섹션 */}
+        <SectionHeader
+          title={tPreview("chartTitle", { default: "자미두수 명반" })}
+          expanded={chartExpanded}
+          onToggle={() => setChartExpanded(!chartExpanded)}
+        />
+
+        {chartExpanded && rawChart && (
+          <section className={styles.chartSection}>
+            <ZiweiChartGrid
+              chart={rawChart}
+              profileName={profile.name}
+              wuxingJu={result.chart.wuxingJu}
+            />
+          </section>
+        )}
+
+        {/* 키워드 그리드 섹션 (명궁이 空宮이면 oneLiner 없이 키워드만 노출) */}
+        {keywords.length > 0 && (
+          <section className={styles.keywordGridSection}>
+            <KeywordGrid
+              keywords={keywords}
+              oneLiner={oneLiner}
+              name={profile.name}
+            />
+          </section>
+        )}
+
+        {/* 인생 스포일러 섹션 */}
+        <SectionHeader
+          title={tPreview("spoilerTitle", { default: "인생 스포일러" })}
+          expanded={spoilerExpanded}
+          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
+        />
+
+        {spoilerExpanded && (
+          <section className={styles.overviewSection}>
+            <h2 className={styles.overviewHeadline}>
+              {interpretation.lifeSpoiler.headline}
+            </h2>
+            {interpretation.lifeSpoiler.subSections &&
+            interpretation.lifeSpoiler.subSections.length > 0 ? (
+              <>
+                <SubSectionList
+                  items={interpretation.lifeSpoiler.subSections}
+                />
+                {interpretation.lifeSpoiler.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.lifeSpoiler.oneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.lifeSpoiler.summary && (
+                <MarkdownContent className={styles.overviewSummary}>
+                  {interpretation.lifeSpoiler.summary}
+                </MarkdownContent>
+              )
+            )}
+          </section>
+        )}
+
+        {/* 핵심 시나리오 섹션 */}
+        <SectionHeader
+          title={t("coreScenario.title", { default: "핵심 시나리오" })}
+          expanded={coreExpanded}
+          onToggle={() => setCoreExpanded(!coreExpanded)}
+        />
+
+        {coreExpanded &&
+          (interpretation.coreScenario.subSections?.length ||
+            interpretation.coreScenario.content) && (
+            <section className={styles.section}>
+              <div className={styles.coreScenario}>
+                {interpretation.coreScenario.headline && (
+                  <h3 className={styles.coreHeadline}>
+                    {interpretation.coreScenario.headline}
+                  </h3>
+                )}
+                {interpretation.coreScenario.subSections &&
+                interpretation.coreScenario.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList
+                      items={interpretation.coreScenario.subSections}
+                    />
+                    {interpretation.coreScenario.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.coreScenario.oneLiner}
+                        label={oneLinerLabel}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.coreScenario.content && (
+                    <MarkdownContent>
+                      {interpretation.coreScenario.content}
+                    </MarkdownContent>
+                  )
+                )}
+              </div>
+            </section>
+          )}
+
+        {/* 상세 시나리오 섹션 */}
+        <SectionHeader
+          title={t("detailScenario.title", { default: "상세 시나리오" })}
+          expanded={detailExpanded}
+          onToggle={() => setDetailExpanded(!detailExpanded)}
+        />
+
+        {detailExpanded && (
+          <section className={styles.section}>
+            <div className={styles.categoriesContainer}>
+              <LifetimeCategoryList
+                categories={interpretation.categories}
+                oneLinerLabel={oneLinerLabel}
+              />
+            </div>
+          </section>
+        )}
+
+        {/* 타이밍 섹션 (데이터가 없으면 섹션 자체를 그리지 않음) */}
+        <LifetimeTiming topics={getVisibleTiming(interpretation.timing)} />
+
+        {/* 나이대별 시나리오 섹션 */}
+        <SectionHeader
+          title={t("ageScenario.title", { default: "나이대별 시나리오" })}
+          expanded={ageExpanded}
+          onToggle={() => setAgeExpanded(!ageExpanded)}
+        />
+
+        {ageExpanded && interpretation.ageScenarios.length > 0 && (
+          <section className={styles.section}>
+            <ScenarioList>
+              {interpretation.ageScenarios.map((scenario, idx) => (
+                <ScenarioItem
+                  key={idx}
+                  label={scenario.period}
+                  headline={scenario.headline}
+                  content={scenario.content}
+                  bullets={scenario.bullets}
+                  oneLiner={scenario.oneLiner}
+                  oneLinerLabel={oneLinerLabel}
+                />
+              ))}
+            </ScenarioList>
+          </section>
+        )}
+
+        <EventSection isResultPage />
+      </main>
+
+      {/* 하단 버튼 */}
+      <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.reviewButton}
+          onClick={() => setIsReviewDrawerOpen(true)}
         >
+          {t("reviewButton", { default: "후기 남기기" })}
+        </button>
+        <div className={styles.shareButtonWrapper}>
+          <EventBadge />
           <button
             type="button"
-            className={screen.primaryButton}
+            className={styles.shareButton}
             onClick={() => setIsShareDrawerOpen(true)}
           >
-            {tScreen("credits.share")}
+            {t("shareButton", { default: "공유하기" })}
           </button>
-          <button
-            type="button"
-            className={screen.ghostButton}
-            onClick={() => setIsReviewDrawerOpen(true)}
-          >
-            {tScreen("credits.review")}
-          </button>
-        </EndCredits>
-      </main>
+        </div>
+      </footer>
 
       {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
       <FollowUpEntry
         profileId={profileId}
         fortuneType="lifetime"
-        fortuneName={tScreen("followUp.name")}
-        examplePrompts={tScreen.raw("followUp.prompts") as string[]}
+        fortuneName="평생운세"
+        examplePrompts={[
+          "내 직업운은 어때?",
+          "결혼 적령기는 언제야?",
+          "재물운이 궁금해",
+        ]}
       />
 
       {/* 후기 드로어 */}
@@ -551,34 +488,27 @@ export default function LifetimeFortunePage() {
       />
 
       {/* 공유 드로어 */}
-      <FortuneShareSheet
+      <ShareDrawer
         isOpen={isShareDrawerOpen}
         onClose={() => setIsShareDrawerOpen(false)}
-        eyebrow="SHARE"
-        title={tScreen("shareSheet.linkTitle")}
-        showInvite
-        onShareKakao={handleShareKakao}
-        onShareSystem={handleShareSystem}
         onCopyLink={handleShare}
+        onShareKakao={handleShareKakao}
+        showLine={false}
+        showDownloadImage={false}
+        showEventBanner={true}
+        isDownloading={isDownloading}
       />
 
-      {/* 캐릭터 포스터 공유 시트 */}
-      <FortuneShareSheet
+      {/* 프로필 이미지 공유 드로어 */}
+      <ShareDrawer
         isOpen={isProfileShareDrawerOpen}
         onClose={() => setIsProfileShareDrawerOpen(false)}
-        eyebrow="POSTER"
-        title={tScreen("shareSheet.posterTitle")}
-        primary="system"
-        preview={{
-          art: renderPoster(false, false),
-          label: tScreen("shareSheet.posterLabel"),
-          title: lifeSpoiler.headline,
-          desc: tScreen("shareSheet.posterDesc"),
-        }}
-        onShareSystem={handlePosterShareSystem}
+        title={t("profileShareTitle", { default: "프로필 이미지 공유하기" })}
+        showCopyLink={false}
+        showLine={false}
         onShareKakao={handleProfileShareKakao}
         onDownloadImage={handleProfileDownloadImage}
-        isBusy={isDownloading}
+        isDownloading={isDownloading}
       />
 
       {/* 이미지 생성용 숨겨진 프로필 카드 */}
@@ -592,7 +522,25 @@ export default function LifetimeFortunePage() {
             pointerEvents: "none",
           }}
         >
-          {renderPoster(true)}
+          {hasProfileTraits(interpretation) ? (
+            <NewProfileCard
+              ref={profileCardRef}
+              mainStars={mainStarNames}
+              headline={interpretation.lifeSpoiler.headline}
+              profileTraits={interpretation.profileTraits}
+              isImage={true}
+            />
+          ) : (
+            <LifetimeProfileCard
+              ref={profileCardRef}
+              mainStars={mainStarNames}
+              headline={interpretation.lifeSpoiler.headline}
+              description={interpretation.lifeSpoiler.description}
+              scores={storyScores}
+              labels={storyLabels}
+              isImage={true}
+            />
+          )}
         </div>
       )}
 

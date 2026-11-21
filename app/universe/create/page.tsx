@@ -4,21 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { ChoiceGroup } from "@/app/profile/setup/ChoiceGroup";
-import { Button, Checkbox, Input } from "@/components/form";
+import { Button, Checkbox, Input, RadioGroup } from "@/components/form";
 import { HeaderClient } from "@/components/landing";
-import { SeatMap } from "@/components/universe";
-import formStyles from "@/components/universe/ScreeningForm.module.css";
-import theme from "@/components/universe/ScreeningTheme.module.css";
 import { useUniverseCreate } from "@/libs/hooks/universe";
-import { buildSeatMap } from "@/libs/universe/seat-map";
 
 import styles from "./page.module.css";
 
 import type { UniverseCreateValues } from "@/libs/hooks/universe";
-
-/** 관객이 없는 빈 객석 — 친구가 입장하면 이 자리에 앉는다 */
-const EMPTY_SEAT_ROWS = buildSeatMap([], null).rows;
 
 const INITIAL_VALUES: UniverseCreateValues = {
   ownerName: "",
@@ -31,7 +23,7 @@ const INITIAL_VALUES: UniverseCreateValues = {
 };
 
 /**
- * 시사회 열기(owner 생성 폼) — 빈 스크린과 빈 좌석 54석 아래에 폼을 둔다.
+ * owner 우주 생성 폼.
  *
  * guest 폼과 달리 **"시간 모름"에 안내 마찰을 넣는다.** owner가 시간을 모르면
  * 모든 쌍에 owner가 포함되므로 그 우주의 결과 전체가 `estimated`가 되고 아무도
@@ -50,18 +42,12 @@ export default function UniverseCreatePage() {
     null
   );
 
-  const calendarOptions: {
-    value: UniverseCreateValues["calendarType"];
-    label: string;
-  }[] = [
+  const calendarOptions = [
     { value: "solar", label: t("calendarSolar") },
     { value: "lunar", label: t("calendarLunar") },
   ];
 
-  const genderOptions: {
-    value: UniverseCreateValues["gender"];
-    label: string;
-  }[] = [
+  const genderOptions = [
     { value: "female", label: t("genderFemale") },
     { value: "male", label: t("genderMale") },
   ];
@@ -85,9 +71,8 @@ export default function UniverseCreatePage() {
     setErrors((prev) => ({ ...prev, birthTime: undefined }));
   };
 
-  const handleCalendarChange = (
-    calendarType: UniverseCreateValues["calendarType"]
-  ) => {
+  const handleCalendarChange = (value: string) => {
+    const calendarType = value as UniverseCreateValues["calendarType"];
     setValues((prev) => ({
       ...prev,
       calendarType,
@@ -129,23 +114,16 @@ export default function UniverseCreatePage() {
   };
 
   return (
-    <div className={`${theme.theme} ${styles.page}`}>
+    <div className={styles.page}>
       <HeaderClient />
 
       <main className={styles.main}>
-        <h1 className={styles.title}>{t("title")}</h1>
-        <p className={styles.lead}>{t("description")}</p>
+        <header className={styles.header}>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.description}>{t("description")}</p>
+        </header>
 
-        <div className={styles.seats}>
-          <SeatMap
-            rows={EMPTY_SEAT_ROWS}
-            mode="empty"
-            ariaLabel={t("emptySeatsAria")}
-          />
-        </div>
-        <p className={styles.legend}>{t("seatsLegend")}</p>
-
-        <div className={formStyles.form}>
+        <div className={styles.form}>
           <Input
             label={t("ownerNameLabel")}
             name="ownerName"
@@ -166,7 +144,7 @@ export default function UniverseCreatePage() {
             maxLength={10}
           />
 
-          <div className={formStyles.timeSection}>
+          <div className={styles.timeSection}>
             <Input
               label={t("birthTimeLabel")}
               name="birthTime"
@@ -179,18 +157,15 @@ export default function UniverseCreatePage() {
               maxLength={5}
             />
             {/* owner 전용 마찰 안내 — "시간 모름" 선택 전에 먼저 보이도록 위에 둔다 */}
-            <p className={formStyles.hint}>{t("birthTimeOwnerHint")}</p>
-            <div className={formStyles.checkRow}>
-              <Checkbox
-                label={t("birthTimeUnknown")}
-                checked={values.birthTimeUnknown}
-                onChange={handleTimeUnknownChange}
-              />
-            </div>
+            <p className={styles.timeHint}>{t("birthTimeOwnerHint")}</p>
+            <Checkbox
+              label={t("birthTimeUnknown")}
+              checked={values.birthTimeUnknown}
+              onChange={handleTimeUnknownChange}
+            />
           </div>
 
-          <ChoiceGroup
-            variant="segment"
+          <RadioGroup
             label={t("calendarLabel")}
             options={calendarOptions}
             value={values.calendarType}
@@ -198,63 +173,58 @@ export default function UniverseCreatePage() {
           />
 
           {values.calendarType === "lunar" && (
-            <div className={formStyles.checkRow}>
-              <Checkbox
-                label={t("leapMonth")}
-                checked={values.isLeapMonth}
-                onChange={(checked) => updateField("isLeapMonth", checked)}
-              />
-            </div>
+            <Checkbox
+              label={t("leapMonth")}
+              checked={values.isLeapMonth}
+              onChange={(checked) => updateField("isLeapMonth", checked)}
+            />
           )}
 
-          <ChoiceGroup
-            variant="segment"
+          <RadioGroup
             label={t("genderLabel")}
             options={genderOptions}
             value={values.gender}
-            onChange={(value) => updateField("gender", value)}
+            onChange={(value) =>
+              updateField("gender", value as UniverseCreateValues["gender"])
+            }
           />
 
-          <p className={formStyles.note}>{t("linkWarning")}</p>
+          <p className={styles.warning}>{t("linkWarning")}</p>
 
-          <div className={formStyles.consent}>
-            <div className={formStyles.checkRow}>
-              <Checkbox
-                label={t("privacyConsentLabel")}
-                checked={privacyConsent}
-                onChange={(checked) => {
-                  setPrivacyConsent(checked);
-                  if (checked) {
-                    setPrivacyConsentError(null);
-                  }
-                }}
-              />
-            </div>
+          <div className={styles.consentSection}>
+            <Checkbox
+              label={t("privacyConsentLabel")}
+              checked={privacyConsent}
+              onChange={(checked) => {
+                setPrivacyConsent(checked);
+                if (checked) {
+                  setPrivacyConsentError(null);
+                }
+              }}
+            />
             <Link
               href="/policy/privacy"
               target="_blank"
-              className={formStyles.privacyLink}
+              className={styles.privacyLink}
             >
               {t("privacyConsentLink")}
             </Link>
             {privacyConsentError && (
-              <p className={formStyles.error} role="alert">
+              <p className={styles.error} role="alert">
                 {privacyConsentError}
               </p>
             )}
           </div>
 
           {submitError && (
-            <p className={formStyles.error} role="alert">
+            <p className={styles.error} role="alert">
               {submitError}
             </p>
           )}
 
-          <div className={formStyles.submit}>
-            <Button onClick={handleSubmit} disabled={isSubmitting}>
-              {isSubmitting ? t("submitting") : t("submit")}
-            </Button>
-          </div>
+          <Button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? t("submitting") : t("submit")}
+          </Button>
         </div>
       </main>
     </div>

@@ -54,9 +54,8 @@ export const useCompatibilityShare = (): UseCompatibilityShareReturn => {
     fetchData();
   }, [pairId]);
 
-  // 공유 페이지 CTA "우리 궁합 예고편 무료로 보기" → 궁합 만들기
   const handleCheckMyFortune = useCallback(() => {
-    router.push("/compatibility");
+    router.push("/");
   }, [router]);
 
   return {

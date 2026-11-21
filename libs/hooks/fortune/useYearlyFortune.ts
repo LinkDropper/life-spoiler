@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 import type { YearlyEdition } from "@/libs/fortune/yearly-editions";
 import { resolveTargetYear } from "@/libs/fortune/yearly-editions";
@@ -12,7 +12,6 @@ import {
   useProfileActions,
 } from "@/libs/stores/profile";
 import { useAuthStatus, useUser } from "@/libs/stores/user";
-import { showToast } from "@/libs/toast";
 
 import type { ProfileData, YearlyFortuneResult } from "./types";
 
@@ -44,7 +43,6 @@ export const useYearlyFortune = (
   const authStatus = useAuthStatus();
   const user = useUser();
   const locale = useLocale();
-  const tToast = useTranslations("common.toast");
   const profileId = params.profileId as string;
 
   const cachedProfile = useProfileById(profileId);
@@ -222,13 +220,12 @@ export const useYearlyFortune = (
         setShowCopyToast(true);
         toastTimerRef.current = setTimeout(() => setShowCopyToast(false), 2000);
       } catch {
-        showToast({
-          kind: "error",
-          message: tToast("copyFailed", { url: shareUrl }),
-        });
+        alert(
+          `링크 복사에 실패했습니다. 다음 주소를 직접 복사해주세요: ${shareUrl}`
+        );
       }
     }
-  }, [profileId, user, edition, tToast]);
+  }, [profileId, user, edition]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;

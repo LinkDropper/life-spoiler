@@ -38,7 +38,7 @@
 
 .input:focus {
   outline: none;
-  border-color: var(--color-focus-ring, #ffe7a3);
+  border-color: var(--primitive-primary, #ffccd9);
 }
 
 .input:disabled {

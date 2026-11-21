@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>인생 운세 본편 - 인생스포 (옛 디자인 기준 · 품질 개선 새 요소 시안)</title>
+<link rel="stylesheet" href="classic.css">
+</head>
+<body>
+<!-- 시안 보는 법: 주소 끝에 #mark 를 붙이면 새로 들어간 요소(1 근거, 2 직업 분야, 3 만날 사람, 4 타이밍)에 파란 점선이 보입니다.
+     구조는 app/fortune/lifetime/[profileId]/page.tsx 의 실제 순서 그대로입니다.
+     (EventSection, FollowUpEntry 플로팅 버튼, 드로어는 이번 시안과 무관해 생략) -->
+
+<header class="hd">
+  <a class="logo" href="#" aria-label="인생스포 홈">인생스포</a>
+  <div class="hd-right">
+    <button class="hd-btn" type="button" aria-label="언어 선택"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></button>
+    <button class="hd-btn" type="button" aria-label="메뉴 열기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+<div class="hd-spacer"></div>
+
+<div class="page">
+<main class="main">
+
+  <!-- ProfileInfo -->
+  <div class="profileInfo">
+    <div class="profileTitle">지수님의 인생 운세</div>
+    <div class="profileDetails">
+      <div class="profileDate"><span>1995.03.14</span><span>14 : 30</span></div>
+      <div class="tags"><span class="tag">양력</span><span class="tag">여성</span></div>
+    </div>
+  </div>
+
+  <div class="spacer16"></div>
+
+  <!-- NewProfileCard (isImage=false) -->
+  <section class="pcard" aria-label="지수님의 프로필 카드">
+    <button class="pcard-share" type="button" aria-label="프로필 이미지 공유하기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8.5 6.5 12 3l3.5 3.5M8 9H7a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1"/></svg></button>
+    <div class="pcard-img" role="img" aria-label="명궁 주성 이미지 자리">주성 이미지</div>
+    <div>
+      <h2 class="pcard-title">결정은 빠른데, 시작은 느린 사람</h2>
+      <div class="pcard-tags"><span class="tag">#신중한</span><span class="tag">#꾸준한</span><span class="tag">#의리</span></div>
+    </div>
+    <div class="bars">
+      <div><div class="bar-labels"><span>즉흥적</span><b>활동</b><span>계획적</span></div>
+        <div class="bar-row"><span class="bar-pct">32%</span><div class="bar-track" role="img" aria-label="활동 계획적 68%"><div class="bar-fill" style="right:0;width:68%"></div><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><span class="bar-pct on" style="text-align:right">68%</span></div></div>
+      <div><div class="bar-labels"><span>협업</span><b>업무</b><span>독립</span></div>
+        <div class="bar-row"><span class="bar-pct">41%</span><div class="bar-track" role="img" aria-label="업무 독립 59%"><div class="bar-fill" style="right:0;width:59%"></div><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><span class="bar-pct on" style="text-align:right">59%</span></div></div>
+      <div><div class="bar-labels"><span>저축</span><b>경제</b><span>소비</span></div>
+        <div class="bar-row"><span class="bar-pct on">64%</span><div class="bar-track" role="img" aria-label="경제 저축 64%"><div class="bar-fill" style="left:0;width:64%"></div><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><span class="bar-pct" style="text-align:right">36%</span></div></div>
+      <div><div class="bar-labels"><span>신중</span><b>연애</b><span>적극</span></div>
+        <div class="bar-row"><span class="bar-pct on">71%</span><div class="bar-track" role="img" aria-label="연애 신중 71%"><div class="bar-fill" style="left:0;width:71%"></div><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><span class="bar-pct" style="text-align:right">29%</span></div></div>
+    </div>
+  </section>
+
+  <!-- 자미두수 명반 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-chart" data-toggle="s-chart">
+    <h3 class="sectionTitle">자미두수 명반</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="chartSection" id="s-chart">
+    <div class="chartGrid" role="group" aria-label="지수님의 명반 12궁">
+      <div class="pal"><div class="pal-h"><span class="pal-n">전택궁</span><span class="pal-b">사</span></div><div class="pal-s">거문 묘</div><div class="pal-m">좌보 문곡</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">관록궁</span><span class="pal-b">오</span></div><div class="pal-s">천상 득</div><div class="pal-m">우필</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">노복궁</span><span class="pal-b">미</span></div><div class="pal-s">천량 왕</div><div class="pal-m">천괴</div></div>
+      <div class="pal c4"><div class="pal-h"><span class="pal-n">천이궁</span><span class="pal-b">신</span></div><div class="pal-s">칠살 묘</div><div class="pal-m">천월</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">복덕궁</span><span class="pal-b">진</span></div><div class="pal-s">염정 평</div><div class="pal-m">문창</div></div>
+      <div class="pal c4"><div class="pal-h"><span class="pal-n">질액궁</span><span class="pal-b">유</span></div><div class="pal-s">탐랑 왕</div><div class="pal-m">경양</div></div>
+      <div class="pal"><div class="pal-h"><span class="pal-n">부모궁</span><span class="pal-b">묘</span></div><div class="pal-s">천부 묘</div><div class="pal-m">타라</div></div>
+      <div class="pal c4"><div class="pal-h"><span class="pal-n">재백궁</span><span class="pal-b">술</span></div><div class="pal-s">천동 왕</div><div class="pal-m">록존</div></div>
+      <div class="pal r4 ming"><div class="pal-h"><span class="pal-n">명궁</span><span class="pal-b">인</span></div><div class="pal-s">자미 묘</div><div class="pal-m">좌보</div></div>
+      <div class="pal r4"><div class="pal-h"><span class="pal-n">형제궁</span><span class="pal-b">축</span></div><div class="pal-s">천기 득</div><div class="pal-m">화성</div></div>
+      <div class="pal r4"><div class="pal-h"><span class="pal-n">부처궁</span><span class="pal-b">자</span></div><div class="pal-s">태양 평</div><div class="pal-m">지공</div></div>
+      <div class="pal r4 c4"><div class="pal-h"><span class="pal-n">자녀궁</span><span class="pal-b">해</span></div><div class="pal-s">무곡 묘</div><div class="pal-m">지겁</div></div>
+      <div class="pal-c">
+        <div class="pal-img" aria-hidden="true"></div>
+        <div class="pal-who">지수 <span>수이국</span></div>
+        <div class="pal-sh">화록 천동 · 화권 천기</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 키워드 그리드 -->
+  <section class="keywordGridSection">
+    <div class="kgrid">
+      <div class="kcell"><span class="ktag">#끈기</span></div>
+      <div class="kcell"><span class="ktag">#책임감</span></div>
+      <div class="kcell"><span class="ktag">#관찰력</span></div>
+      <div class="kcell"><span class="ktag">#신중함</span></div>
+      <div class="kcell ctr"><span class="kone">생각이 깊은 전략가</span><span class="kname">지수</span></div>
+      <div class="kcell"><span class="ktag">#의리</span></div>
+      <div class="kcell"><span class="ktag">#계획성</span></div>
+      <div class="kcell"><span class="ktag">#독립심</span></div>
+      <div class="kcell"><span class="ktag">#직관</span></div>
+    </div>
+  </section>
+
+  <!-- 인생 스포일러 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-spoiler" data-toggle="s-spoiler">
+    <h3 class="sectionTitle">인생 스포일러</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="overview" id="s-spoiler">
+    <h2 class="overviewHeadline">결정은 빠른데, 시작은 느린 사람</h2>
+    <div class="subList">
+      <div class="subCard"><h4 class="subHeading">정하는 건 빠르고 움직이는 건 느려요</h4><div class="subBody">마음속에서는 이미 답이 나와 있는데 몸이 따라가는 데 시간이 걸려요. 첫걸음을 아주 작게 나눠 두면 시작하는 시간이 눈에 띄게 짧아져요.</div></div>
+      <div class="subCard"><h4 class="subHeading">가까운 사람에게만 속도를 맞춰요</h4><div class="subBody">처음 만난 사람에게는 한 걸음 물러서 있다가, 마음을 열면 누구보다 오래 곁을 지켜요.</div></div>
+    </div>
+    <div class="alert"><span class="alert-label">한 줄 정리</span><p class="alert-text">천천히 시작해서 한번 움직이면 끝까지 가는 사람이에요.</p></div>
+  </section>
+
+  <!-- 핵심 시나리오 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-core" data-toggle="s-core">
+    <h3 class="sectionTitle">핵심 시나리오</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="section" id="s-core">
+    <div class="overview" style="margin-bottom:0">
+      <h3 class="coreHeadline">쌓아 둔 신뢰가 서른 중반에 한꺼번에 돌아와요</h3>
+      <div class="subList">
+        <div class="subCard"><h4 class="subHeading">성과는 늦게, 대신 오래 가요</h4><div class="subBody">처음 몇 년은 눈에 띄지 않아도 맡은 일을 끝까지 쌓는 쪽이라, 마지막에 크게 인정받아요.</div></div>
+        <div class="subCard"><h4 class="subHeading">혼자 정리할 시간이 힘이 돼요</h4><div class="subBody">깊이 생각하고 정리한 결과를 보여 줄 때 평소 실력이 가장 잘 드러나요.</div></div>
+      </div>
+      <div class="alert"><span class="alert-label">한 줄 정리</span><p class="alert-text">늦게 피어도 오래 지는 않는 시나리오예요.</p></div>
+    </div>
+  </section>
+
+  <!-- 상세 시나리오 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-detail" data-toggle="s-detail">
+    <h3 class="sectionTitle">상세 시나리오</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="section" id="s-detail">
+    <div class="categories">
+
+      <!-- 재물운 : [신규 1] 근거 한 줄 -->
+      <div class="categoryCard">
+        <button class="categoryHeader" type="button" aria-expanded="true" aria-controls="c-wealth" data-toggle="c-wealth">
+          <span class="categoryLabel">재물운</span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="categoryBody" id="c-wealth">
+          <h4 class="categoryHeadline">꾸준히 쌓는 돈에서 힘이 나요</h4>
+          <div class="evidence" data-new><span class="tag">근거</span><p>돈을 보는 자리에 계산이 빠른 기운이 있어요.</p></div>
+          <div class="subList">
+            <div class="subCard"><h4 class="subHeading">버는 방식</h4><div class="subBody">정해진 수입처럼 예측할 수 있는 돈에서 가장 힘이 나요. 몇 년에 한 번쯤 수입이 한 단계 오르는 때가 오는데, 그때 준비가 되어 있으면 크게 받아요.</div></div>
+            <div class="subCard"><h4 class="subHeading">쓰는 습관</h4><div class="subBody">필요한 곳에는 아끼지 않고 쓰는 편이에요. 한 달에 쓸 수 있는 선을 미리 정해 두면 그 안에서는 마음 편하게 쓰셔도 돼요.</div></div>
+          </div>
+          <div class="alert"><span class="alert-label">한 줄 정리</span><p class="alert-text">모으는 힘은 충분해요. 쓰는 선만 정해 두세요.</p></div>
+          <div class="categoryTags"><span class="tag">안정형</span><span class="tag">장기 저축</span></div>
+        </div>
+      </div>
+
+      <!-- 직업운 : [신규 1] 근거 한 줄 + [신규 2] 직업 분야 -->
+      <div class="categoryCard">
+        <button class="categoryHeader" type="button" aria-expanded="true" aria-controls="c-career" data-toggle="c-career">
+          <span class="categoryLabel">직업운</span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="categoryBody" id="c-career">
+          <h4 class="categoryHeadline">구조를 짜고 끝까지 쌓는 자리에서 강해요</h4>
+          <div class="evidence" data-new><span class="tag">근거</span><p>일을 보는 자리에 끈기 있게 쌓아 가는 기운이 있어요.</p></div>
+          <div class="subList">
+            <div class="subCard"><h4 class="subHeading">일하는 방식</h4><div class="subBody">목표가 분명할 때 가장 안정적으로 성과를 내요. 여러 일을 한꺼번에 받으면 속도가 급격히 떨어지니, 우선순위를 먼저 정해 달라고 요청하세요.</div></div>
+            <div class="subCard"><h4 class="subHeading">힘이 나는 때</h4><div class="subBody">혼자 깊이 생각할 시간이 있고, 정리한 결과를 보여 줄 기회가 있을 때예요. 미리 준비할 수 있는 역할을 맡으면 평가가 훨씬 좋아져요.</div></div>
+          </div>
+
+          <!-- 직업 분야: 소제목 카드 + 기존 태그 칩 -->
+          <div class="extra" data-new>
+            <h4 class="subHeading">잘 맞는 분야</h4>
+            <div class="categoryTags">
+              <span class="tag">기획</span><span class="tag">데이터 분석</span><span class="tag">교육</span><span class="tag">콘텐츠 운영</span><span class="tag">리서치</span>
+            </div>
+            <p class="note">직업을 정해 주는 건 아니고, 잘 맞는 쪽을 골랐어요.</p>
+          </div>
+
+          <div class="alert"><span class="alert-label">한 줄 정리</span><p class="alert-text">준비한 만큼 평가받는 자리가 잘 맞아요.</p></div>
+          <div class="categoryTags"><span class="tag">전문가형</span><span class="tag">설계</span></div>
+        </div>
+      </div>
+
+      <!-- 인연운 : [신규 1] 근거 한 줄 + [신규 3] 만날 사람 -->
+      <div class="categoryCard">
+        <button class="categoryHeader" type="button" aria-expanded="true" aria-controls="c-love" data-toggle="c-love">
+          <span class="categoryLabel">인연운</span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="categoryBody" id="c-love">
+          <h4 class="categoryHeadline">천천히 가까워져 오래 가는 사랑이에요</h4>
+          <div class="evidence" data-new><span class="tag">근거</span><p>마음을 보는 자리에 신중하게 다가가는 기운이 있어요.</p></div>
+          <div class="subList">
+            <div class="subCard"><h4 class="subHeading">사랑하는 방식</h4><div class="subBody">마음을 여는 데는 오래 걸리지만, 한번 열면 깊이 주는 사랑이에요. 말보다 행동으로 마음을 보여 주는 편이라 표현이 부족하다는 말을 들을 수 있어요.</div></div>
+            <div class="subCard"><h4 class="subHeading">관계에서 조심할 점</h4><div class="subBody">서운함을 말하지 않고 쌓아 두는 버릇은 조심하세요. 작은 불편은 그때그때 짧게 말하는 연습이 관계를 오래 지켜 줘요.</div></div>
+          </div>
+
+          <!-- 만날 사람: 소제목 카드 + 기존 불릿 목록(ScenarioItem bullets) -->
+          <div class="extra" data-new>
+            <h4 class="subHeading">만날 사람</h4>
+            <div class="partnerGroups">
+              <div class="partnerGroup">
+                <h5 class="partnerLabel">성향</h5>
+                <ul class="scenarioBullets">
+                  <li>차분하게 말을 고르고, 감정을 급하게 몰아붙이지 않는 사람</li>
+                  <li>약속과 일정을 가볍게 여기지 않는 사람</li>
+                  <li>지수님이 정한 속도를 기다려 줄 줄 아는 사람</li>
+                </ul>
+              </div>
+              <div class="partnerGroup">
+                <h5 class="partnerLabel">역할</h5>
+                <p class="subBody">지수님이 앞서 정하는 만큼 현실적인 기준을 챙겨 주는 쪽이에요. 지수님이 멈칫할 때 부담 없이 먼저 한 걸음 내미는 역할을 맡기 쉬워요.</p>
+              </div>
+              <div class="partnerGroup">
+                <h5 class="partnerLabel">만나는 길</h5>
+                <ul class="scenarioBullets">
+                  <li>일이나 프로젝트로 만나 신뢰가 쌓인 사람의 소개</li>
+                  <li>오래 다닌 모임이나 취미에서 자주 마주치는 사람</li>
+                  <li>같은 공간에서 반복해서 마주치다 말문이 트인 사람</li>
+                </ul>
+              </div>
+            </div>
+            <p class="note" style="margin-top:6px">외모와 직업은 말하지 않아요. 어떤 성향의 사람이, 어떤 자리에서 닿는지만 봤어요.</p>
+          </div>
+
+          <div class="alert"><span class="alert-label">한 줄 정리</span><p class="alert-text">서두르지 않는 만큼, 닿은 인연은 오래 가요.</p></div>
+          <div class="categoryTags"><span class="tag">신중형</span><span class="tag">깊은 관계</span></div>
+        </div>
+      </div>
+
+      <!-- 건강운 : [신규 1] 근거 한 줄 -->
+      <div class="categoryCard">
+        <button class="categoryHeader" type="button" aria-expanded="true" aria-controls="c-health" data-toggle="c-health">
+          <span class="categoryLabel">건강운</span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="categoryBody" id="c-health">
+          <h4 class="categoryHeadline">쌓인 피로를 먼저 챙기면 좋아요</h4>
+          <div class="evidence" data-new><span class="tag">근거</span><p>몸을 보는 자리에 에너지를 한 번에 쓰는 기운이 있어요.</p></div>
+          <div class="subList">
+            <div class="subCard"><h4 class="subHeading">지치는 패턴</h4><div class="subBody">한 번에 몰아서 쓰고 크게 지치는 패턴이에요. 바쁜 시기 앞에 쉬는 시간을 먼저 일정에 넣어 두는 쪽이 맞아요.</div></div>
+            <div class="subCard"><h4 class="subHeading">챙기면 좋은 것</h4><div class="subBody">소화나 수면처럼 매일 반복되는 부분에서 먼저 신호가 나타나기 쉬워요. 불편이 길어지면 병원에서 상담받으세요.</div></div>
+          </div>
+          <div class="alert"><span class="alert-label">한 줄 정리</span><p class="alert-text">몰아 쓰기 전에 쉬는 시간부터 잡아 두세요.</p></div>
+          <div class="categoryTags"><span class="tag">회복 필요</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- [신규 4] 타이밍: 상세 시나리오와 나이대별 시나리오 사이 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-timing" data-toggle="s-timing" data-new>
+    <h3 class="sectionTitle">타이밍</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="section" id="s-timing" data-new>
+    <div class="timingLead">
+      <h4 class="categoryHeadline">앞으로 10년, 눈여겨볼 해를 짚어 봤어요</h4>
+      <p class="subBody">명반의 흐름으로 본 참고 시기예요. 그해에 꼭 일어난다는 뜻은 아니고, 마음의 준비를 해 두면 좋은 해를 골랐어요.</p>
+    </div>
+
+    <div class="categories">
+
+      <div class="categoryCard">
+        <button class="categoryHeader" type="button" aria-expanded="true" aria-controls="t-love" data-toggle="t-love">
+          <span class="categoryLabel">연애·결혼</span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="timingRows" id="t-love">
+          <li class="timingRow"><span class="yearChip likely">2027년</span><div class="timingText"><h5 class="subHeading">가능성이 높은 해</h5><p class="subBody">관계에 마음이 열려 진지한 만남이 이어지기 쉬워요.</p></div></li>
+          <li class="timingRow"><span class="yearChip caution">2028년</span><div class="timingText"><h5 class="subHeading">조심할 해</h5><p class="subBody">서둘러 정하면 후회가 남기 쉬워요. 확인할 시간을 넉넉히 두세요.</p></div></li>
+          <li class="timingRow"><span class="yearChip likely">2029년</span><div class="timingText"><h5 class="subHeading">가능성이 높은 해</h5><p class="subBody">곁에 두고 싶은 사람이 분명해지는 해예요.</p></div></li>
+        </ul>
+      </div>
+
+      <div class="categoryCard">
+        <button class="categoryHeader" type="button" aria-expanded="true" aria-controls="t-career" data-toggle="t-career">
+          <span class="categoryLabel">일·이직</span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="timingRows" id="t-career">
+          <li class="timingRow"><span class="yearChip likely">2027년</span><div class="timingText"><h5 class="subHeading">가능성이 높은 해</h5><p class="subBody">하던 일의 역할이 커지거나 새 자리 제안이 들어오기 쉬워요.</p></div></li>
+          <li class="timingRow"><span class="yearChip caution">2029년</span><div class="timingText"><h5 class="subHeading">조심할 해</h5><p class="subBody">조건만 보고 옮기면 일하는 방식이 맞지 않을 수 있어요.</p></div></li>
+          <li class="timingRow"><span class="yearChip likely">2030년</span><div class="timingText"><h5 class="subHeading">가능성이 높은 해</h5><p class="subBody">경력을 한 단계 올려 옮기기에 좋은 해예요.</p></div></li>
+        </ul>
+      </div>
+
+      <!-- 이 주제는 조심할 해 데이터가 없어 가능성이 높은 해만 나온다 (데이터 있는 것만 노출) -->
+      <div class="categoryCard">
+        <button class="categoryHeader" type="button" aria-expanded="true" aria-controls="t-move" data-toggle="t-move">
+          <span class="categoryLabel">이사·이동</span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="timingRows" id="t-move">
+          <li class="timingRow"><span class="yearChip likely">2028년</span><div class="timingText"><h5 class="subHeading">가능성이 높은 해</h5><p class="subBody">생활 터전을 바꾸고 싶은 마음이 커지는 해예요.</p></div></li>
+          <li class="timingRow"><span class="yearChip likely">2031년</span><div class="timingText"><h5 class="subHeading">가능성이 높은 해</h5><p class="subBody">자리를 잡기 좋은 곳을 찾기 쉬워요.</p></div></li>
+        </ul>
+      </div>
+
+    </div>
+    <p class="note" style="margin-top:24px">재미로 보는 해석이에요. 중요한 결정은 실제 상황을 우선해 주세요.</p>
+  </section>
+
+  <!-- 나이대별 시나리오 -->
+  <button class="sectionHeader" type="button" aria-expanded="true" aria-controls="s-age" data-toggle="s-age">
+    <h3 class="sectionTitle">나이대별 시나리오</h3>
+    <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <section class="section" id="s-age">
+    <div class="scenarioList">
+      <div class="scenarioItem">
+        <button class="scenarioHeader" type="button" aria-expanded="true" aria-controls="a-1" data-toggle="a-1">
+          <span class="scenarioHeaderLeft"><span class="scenarioLabel">22~31세</span><span class="scenarioHeadline">자리를 만들어 가는 시기</span></span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="scenarioBullets" id="a-1">
+          <li>새로 맡은 역할을 안정시키는 데 힘이 들어가요.</li>
+          <li>지금 쌓는 신뢰가 이후 10년의 바탕이 돼요.</li>
+          <li>무리하게 넓히기보다 한 가지를 깊게 가져가세요.</li>
+        </ul>
+      </div>
+      <div class="scenarioItem">
+        <button class="scenarioHeader" type="button" aria-expanded="true" aria-controls="a-2" data-toggle="a-2">
+          <span class="scenarioHeaderLeft"><span class="scenarioLabel">32~41세</span><span class="scenarioHeadline">맡은 범위가 넓어져요</span></span>
+          <svg class="chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 12.5L10 7.5L15 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="scenarioBullets" id="a-2">
+          <li>쌓아 온 평가가 제안과 기회로 돌아오는 시기예요.</li>
+          <li>가까운 사람과 생활 계획을 함께 정리하기 좋아요.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <button class="reviewButton" type="button">후기 남기기</button>
+  <button class="shareButton" type="button">공유하기</button>
+</footer>
+</div>
+
+<script>
+  document.querySelectorAll("[data-toggle]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var target = document.getElementById(btn.getAttribute("data-toggle"));
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", String(open));
+      if (target) target.hidden = !open;
+    });
+  });
+  if (location.hash === "#mark") document.body.classList.add("mark");
+</script>
+</body>
+</html>

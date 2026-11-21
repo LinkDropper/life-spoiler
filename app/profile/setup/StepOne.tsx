@@ -3,41 +3,31 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
-import { Input, Checkbox, Button } from "@/components/form";
+import { Input, RadioGroup, Checkbox, Button } from "@/components/form";
 
-import { ChoiceGroup } from "./ChoiceGroup";
 import type { StepOneData } from "./page";
 import styles from "./StepOne.module.css";
 
 interface StepOneProps {
   initialData: StepOneData;
   onNext: (data: StepOneData) => void;
-  /** 랜딩 "내 명반 그려보기"에서 넣은 생년월일시로 채워졌는지 */
-  isPrefilledFromLanding?: boolean;
 }
 
-export const StepOne = ({
-  initialData,
-  onNext,
-  isPrefilledFromLanding = false,
-}: StepOneProps) => {
+export const StepOne = ({ initialData, onNext }: StepOneProps) => {
   const t = useTranslations("profileSetup.stepOne");
   const [formData, setFormData] = useState<StepOneData>(initialData);
   const [errors, setErrors] = useState<
     Partial<Record<keyof StepOneData, string>>
   >({});
 
-  const CALENDAR_OPTIONS: {
-    value: StepOneData["calendarType"];
-    label: string;
-  }[] = [
-    { value: "solar", label: t("calendar.solar") },
-    { value: "lunar", label: t("calendar.lunar") },
+  const CALENDAR_OPTIONS = [
+    { value: "solar", label: t("calendar.solar", { default: "양력" }) },
+    { value: "lunar", label: t("calendar.lunar", { default: "음력" }) },
   ];
 
-  const GENDER_OPTIONS: { value: StepOneData["gender"]; label: string }[] = [
-    { value: "female", label: t("gender.female") },
-    { value: "male", label: t("gender.male") },
+  const GENDER_OPTIONS = [
+    { value: "female", label: t("gender.female", { default: "여자" }) },
+    { value: "male", label: t("gender.male", { default: "남자" }) },
   ];
 
   const updateField = <K extends keyof StepOneData>(
@@ -107,11 +97,6 @@ export const StepOne = ({
   return (
     <div className={styles.container}>
       <div className={styles.form}>
-        {isPrefilledFromLanding && (
-          <p className={styles.prefillNotice} role="status">
-            {t("prefillNotice")}
-          </p>
-        )}
         <Input
           label={t("name.label", { default: "이름" })}
           name="name"
@@ -149,30 +134,34 @@ export const StepOne = ({
             disabled={formData.birthTimeUnknown}
             maxLength={5}
           />
-          <div className={styles.timeRow}>
-            <p className={styles.timeHint}>{t("birthTime.hint")}</p>
-            <Checkbox
-              label={t("birthTime.unknown", { default: "시간 모름" })}
-              checked={formData.birthTimeUnknown}
-              onChange={handleTimeUnknownChange}
-            />
-          </div>
+          <Checkbox
+            label={t("birthTime.unknown", { default: "시간 모름" })}
+            checked={formData.birthTimeUnknown}
+            onChange={handleTimeUnknownChange}
+          />
+          <p className={styles.timeHint}>
+            {t("birthTime.hint", {
+              default: "정확한 운세 확인을 위해 시간을 꼭 입력해주세요.",
+            })}
+          </p>
         </div>
 
-        <ChoiceGroup
-          variant="segment"
-          label={t("calendar.label")}
+        <RadioGroup
+          label={t("calendar.label", { default: "달력" })}
           options={CALENDAR_OPTIONS}
           value={formData.calendarType}
-          onChange={(value) => updateField("calendarType", value)}
+          onChange={(value) =>
+            updateField("calendarType", value as StepOneData["calendarType"])
+          }
         />
 
-        <ChoiceGroup
-          variant="segment"
-          label={t("gender.label")}
+        <RadioGroup
+          label={t("gender.label", { default: "성별" })}
           options={GENDER_OPTIONS}
           value={formData.gender}
-          onChange={(value) => updateField("gender", value)}
+          onChange={(value) =>
+            updateField("gender", value as StepOneData["gender"])
+          }
         />
       </div>
 
