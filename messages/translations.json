@@ -227,35 +227,42 @@
       "agreement": "계속 진행하면 인생스포 <terms>이용약관</terms>에 동의하고 <privacy>개인정보처리방침</privacy>을 읽었음을 인정하는 것으로 간주됩니다."
     },
     "home": {
+      "shelf": {
+        "title": "스포일러 고르기",
+        "titleWithToday": "다른 스포일러 고르기"
+      },
+      "today": {
+        "title": "오늘의 운세",
+        "description": "무료로 매일 자정에 새로 열려요"
+      },
       "lifetime": {
         "title": "인생 운세",
-        "subtitle": "내 사용 설명서 확인하기",
-        "button": "인생 운세 확인하기"
+        "subtitle": "99세까지의 흐름"
       },
       "yearly": {
         "title": "올해 운세",
-        "subtitle": "올해 공략 방법 보기",
-        "button": "올해 운세 확인하기"
+        "subtitle": "2026년 공략법"
       },
       "yearly2027": {
         "title": "내년 운세",
-        "subtitle": "2027년 공략 방법 미리 보기",
-        "button": "내년 운세 확인하기"
+        "subtitle": "2027년 미리 보기"
       },
       "compatibility": {
         "title": "궁합 운세",
-        "subtitle": "내 인간관계 분석하기",
-        "button": "궁합 운세 확인하기"
+        "subtitle": "둘 사이의 흐름"
       },
       "pastLife": {
         "title": "전생 운세",
-        "subtitle": "전생의 나를 만나보기",
-        "button": "전생 운세 확인하기"
+        "subtitle": "전생의 나"
       },
       "faceReading": {
         "title": "관상 운세",
-        "subtitle": "얼굴에 담긴 내 성향 보기",
-        "button": "관상 운세 확인하기"
+        "subtitle": "사진 한 장으로"
+      },
+      "universe": {
+        "title": "나만의 별자리",
+        "free": "무료",
+        "description": "링크 하나로 친구들과 궁합 보기"
       }
     },
     "profiles": {
@@ -1350,11 +1357,6 @@
       }
     },
     "universe": {
-      "home": {
-        "title": "나만의 별자리 만들기",
-        "subtitle": "링크 하나로 친구들과 궁합 보기",
-        "button": "무료로 시작하기"
-      },
       "create": {
         "title": "나만의 별자리 만들기",
         "description": "생년월일시를 넣으면 나만의 우주가 만들어져요. 링크를 공유하면 친구들이 별로 들어옵니다.",
@@ -1674,11 +1676,6 @@
         "money": "재물",
         "work": "일·학업",
         "health": "건강"
-      },
-      "home": {
-        "title": "오늘의 운세",
-        "subtitle": "매일 달라지는 나의 하루를 미리 확인해요",
-        "button": "오늘 운세 보기"
       },
       "result": {
         "pageTitle": "오늘의 운세",
@@ -2042,35 +2039,42 @@
       "agreement": "By continuing, you agree to Life Spoiler's <terms>Terms of Service</terms> and acknowledge that you have read the <privacy>Privacy Policy</privacy>."
     },
     "home": {
+      "shelf": {
+        "title": "Pick a spoiler",
+        "titleWithToday": "Pick other spoilers"
+      },
+      "today": {
+        "title": "Daily Fortune",
+        "description": "Free, renewed every midnight"
+      },
       "lifetime": {
         "title": "Lifetime Fortune",
-        "subtitle": "Check your life manual",
-        "button": "View Lifetime Fortune"
+        "subtitle": "Your flow to age 99"
       },
       "yearly": {
         "title": "This Year's Fortune",
-        "subtitle": "See how to navigate this year",
-        "button": "View This Year's Fortune"
+        "subtitle": "2026 game plan"
       },
       "yearly2027": {
         "title": "Next Year's Fortune",
-        "subtitle": "Preview how to navigate 2027",
-        "button": "View Next Year's Fortune"
+        "subtitle": "Preview of 2027"
       },
       "compatibility": {
         "title": "Compatibility",
-        "subtitle": "Analyze my relationships",
-        "button": "View Compatibility Fortune"
+        "subtitle": "Flow between two"
       },
       "pastLife": {
         "title": "Past Life Fortune",
-        "subtitle": "Meet Who You Once Were",
-        "button": "Check Past Life Fortune"
+        "subtitle": "Who you once were"
       },
       "faceReading": {
         "title": "Face Reading",
-        "subtitle": "See what your face reveals about you",
-        "button": "View Face Reading"
+        "subtitle": "From a single photo"
+      },
+      "universe": {
+        "title": "My own constellation",
+        "free": "Free",
+        "description": "Compare with friends via one link"
       }
     },
     "profiles": {
@@ -3165,11 +3169,6 @@
       }
     },
     "universe": {
-      "home": {
-        "title": "Create my universe",
-        "subtitle": "Check compatibility with friends via one link",
-        "button": "Start for free"
-      },
       "create": {
         "title": "Create my universe",
         "description": "Enter your birth details to open your own universe. Share the link and friends will join as stars.",
@@ -3489,11 +3488,6 @@
         "money": "Money",
         "work": "Work & study",
         "health": "Wellbeing"
-      },
-      "home": {
-        "title": "Daily Fortune",
-        "subtitle": "Preview how your day unfolds, fresh every day",
-        "button": "See today's fortune"
       },
       "result": {
         "pageTitle": "Daily Fortune",
@@ -3857,35 +3851,42 @@
       "agreement": "続行すると、ライフスポイラーの<terms>利用規約</terms>に同意し、<privacy>プライバシーポリシー</privacy>を読んだことを認めるものとします。"
     },
     "home": {
+      "shelf": {
+        "title": "スポイラーを選ぶ",
+        "titleWithToday": "ほかのスポイラーを選ぶ"
+      },
+      "today": {
+        "title": "今日の運勢",
+        "description": "無料で毎日0時に更新"
+      },
       "lifetime": {
         "title": "人生運勢",
-        "subtitle": "自分の取扱説明書を確認する",
-        "button": "人生運勢を見る"
+        "subtitle": "99歳までの流れ"
       },
       "yearly": {
         "title": "今年の運勢",
-        "subtitle": "今年の攻略法を見る",
-        "button": "今年の運勢を見る"
+        "subtitle": "2026年の攻略法"
       },
       "yearly2027": {
         "title": "来年の運勢",
-        "subtitle": "2027年の攻略法を先取り",
-        "button": "来年の運勢を見る"
+        "subtitle": "2027年を先取り"
       },
       "compatibility": {
         "title": "相性占い",
-        "subtitle": "人間関係を分析する",
-        "button": "相性占いを見る"
+        "subtitle": "二人の流れ"
       },
       "pastLife": {
         "title": "前世占い",
-        "subtitle": "前世の自分に会いに行く",
-        "button": "前世占いを確認する"
+        "subtitle": "前世の自分"
       },
       "faceReading": {
         "title": "顔相占い",
-        "subtitle": "顔に表れる自分の性向を見る",
-        "button": "顔相占いを確認する"
+        "subtitle": "写真1枚で"
+      },
+      "universe": {
+        "title": "自分だけの星座",
+        "free": "無料",
+        "description": "リンク1つで友達と相性チェック"
       }
     },
     "profiles": {
@@ -4980,11 +4981,6 @@
       }
     },
     "universe": {
-      "home": {
-        "title": "自分のユニバースを作る",
-        "subtitle": "リンク1つで友達との相性をチェック",
-        "button": "無料で始める"
-      },
       "create": {
         "title": "自分のユニバースを作る",
         "description": "生年月日時を入力すると自分だけのユニバースができます。リンクを共有すると友達が星として参加します。",
@@ -5304,11 +5300,6 @@
         "money": "金運",
         "work": "仕事・学業",
         "health": "健康"
-      },
-      "home": {
-        "title": "今日の運勢",
-        "subtitle": "毎日変わるあなたの一日を先取りチェック",
-        "button": "今日の運勢を見る"
       },
       "result": {
         "pageTitle": "今日の運勢",
