@@ -478,18 +478,18 @@ const CATEGORY_KEY_BY_TYPE: Partial<
 };
 
 /**
- * 엔진 점수(40~95, 백분위 환산)를 서술 방향으로 바꾼다.
- * 점수 자체는 화면에 따로 노출되므로, 본문이 점수와 반대 방향으로 쓰이지 않게 하는 용도.
+ * 엔진 점수(40~95, 백분위 환산)를 영역 전체의 위치로 바꾼다.
+ * 점수는 영역의 '무게'만 정한다. 개별 내용의 방향은 사실 시트 주장의 방향이 정한다
+ * (고정 명반 48개 중 31% 섹션에서 점수 방향과 가장 센 주장 방향이 반대였고,
+ * "강점으로 써라" 지시가 부정 주장을 양면·칭찬으로 흐리게 만들었다).
  */
 const describeRelativeStrength = (score: number): string => {
   const percentile = (score - 40) / 55;
-  if (percentile >= 0.8)
-    return "top 20% of all users — write it as a clear strength";
-  if (percentile >= 0.6) return "upper-middle — mostly a strength";
+  if (percentile >= 0.8) return "top 20% of all users — a strong area overall";
+  if (percentile >= 0.6) return "upper-middle — a fairly strong area overall";
   if (percentile >= 0.4) return "middle — neither notably strong nor weak";
-  if (percentile >= 0.2)
-    return "lower-middle — mostly a weak spot, say so plainly";
-  return "bottom 20% of all users — write it as a clear weak spot, honestly";
+  if (percentile >= 0.2) return "lower-middle — a fairly weak area overall";
+  return "bottom 20% of all users — a weak area overall";
 };
 
 const CATEGORY_LABELS: Record<keyof LifetimeCategoryScores, string> = {
@@ -513,7 +513,9 @@ const formatRelativeStrength = (
   );
   return `## Relative Strength (engine-computed, internal only — never print ranks, percentages or these labels)
 ${lines.join("\n")}
-- The section's overall tone must follow this direction. Do not soften a weak area into praise or inflate a middle area.`;
+- This sets the overall weight of the area only: how confident the headline sounds and how the section is balanced as a whole.
+- It never changes a fact-sheet claim's direction. When they differ, the claim wins: a negative claim in a strong area is still a weak spot said plainly (strong areas can have a specific weak point), and a positive claim in a weak area is still a strength. Reason: the screen shows the score and a one-line basis taken from these claims next to the text, so text that contradicts the claim reads as a contradiction to the user.
+- Do not soften a weak area into praise or inflate a middle area.`;
 };
 
 /**
@@ -753,6 +755,9 @@ const requestInterpretation = async <T>(
   const chartData = formatChartDataForAI(request);
   const userPrompt = prompts.userPrompts[request.requestType];
 
+  // 데이터 → 섹션 지시 순서를 유지한다. "지시 → 데이터 → 과제 한 줄"로 바꿔 본 실측
+  // (docs/lifetime-fortune-quality-2026-11.md §13)에서 비용은 1.5%만 줄고
+  // 블라인드 비교의 구체성은 기존 순서가 앞섰다(23 대 13).
   const fullUserPrompt = `${chartData}
 
 ---
