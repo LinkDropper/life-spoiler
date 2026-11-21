@@ -974,8 +974,6 @@ export const generateCompatibilityInterpretation = async (
     interpretation: {
       headline: sanitizedOverview.headline,
       tags: sanitizedOverview.tags,
-      profileASummary: sanitizedOverview.profileASummary,
-      profileBSummary: sanitizedOverview.profileBSummary,
       insights: sanitizedInsights,
       spoiler: sanitizedOverview.spoiler,
       overviewSubSections: sanitizedOverview.subSections,

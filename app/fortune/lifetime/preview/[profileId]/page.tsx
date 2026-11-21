@@ -1,23 +1,19 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
+import { useTranslations, useLocale } from "next-intl";
 
-import { MarkdownContent } from "@/components/fortune";
-import { ChartConstellation } from "@/components/fortune/screen/ChartConstellation";
-import { FeatureLocks } from "@/components/fortune/screen/FeatureLocks";
-import { FilmPoster } from "@/components/fortune/screen/FilmPoster";
-import { LockedQuestions } from "@/components/fortune/screen/LockedQuestions";
-import { RuntimeTrack } from "@/components/fortune/screen/RuntimeTrack";
-import { SubtitleStill } from "@/components/fortune/screen/SubtitleStill";
-import { TrailerCuts } from "@/components/fortune/screen/TrailerCuts";
-import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
-import { trackFortuneEvent } from "@/libs/analytics/fortune";
-import { useScreenCast } from "@/libs/fortune/use-screen-cast";
-import { getFilmAge } from "@/libs/home/home-film";
+import {
+  ProfileInfo,
+  ZiweiChartGrid,
+  SectionHeader,
+  KeywordGrid,
+  MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
+} from "@/components/fortune";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
 import {
   useFirstPaymentEligibility,
@@ -34,8 +30,8 @@ import styles from "./page.module.css";
 export default function LifetimeFortunePreviewPage() {
   const locale = useLocale() as Locale;
   const tCommon = useTranslations("fortune.common");
+  const tPreview = useTranslations("fortune.preview");
   const tLifetime = useTranslations("fortune.lifetime");
-  const t = useTranslations("fortune.screen");
 
   const {
     isLoading,
@@ -52,6 +48,9 @@ export default function LifetimeFortunePreviewPage() {
     onAIGenerationFailed: () => tLifetime("interpretError"),
   });
 
+  const [chartExpanded, setChartExpanded] = useState(true);
+  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+
   // 첫 결제 100원 자격 시 CTA 금액 표기를 100원으로
   const firstPaymentEligible = useFirstPaymentEligibility(
     profile?.id,
@@ -64,22 +63,11 @@ export default function LifetimeFortunePreviewPage() {
     return extractKeywordsFromChart(result.rawChart, locale);
   }, [result?.rawChart, locale]);
 
-  // 한줄 표현 추출 (명궁 대표 주성 기반) — AI 한 줄 정리가 없을 때 포스터 카피
-  const chartOneLiner = useMemo(() => {
+  // 한줄 표현 추출 (명궁 대표 주성 기반)
+  const oneLiner = useMemo(() => {
     if (!result?.rawChart) return null;
     return extractOneLinerFromChart(result.rawChart, locale);
   }, [result?.rawChart, locale]);
-
-  const cast = useScreenCast(result?.rawChart ?? null);
-
-  const hasTrackedViewRef = useRef(false);
-  useEffect(() => {
-    if (!result || hasTrackedViewRef.current) {
-      return;
-    }
-    hasTrackedViewRef.current = true;
-    trackFortuneEvent("fortune_preview_view", { fortune_type: "lifetime" });
-  }, [result]);
 
   if (isLoading) {
     return <Loading />;
@@ -93,21 +81,28 @@ export default function LifetimeFortunePreviewPage() {
     return (
       <div className={styles.page}>
         <HeaderClient />
-        <main className={`${screen.root} ${styles.main}`}>
-          <div className={styles.error} role="alert">
-            <h2 className={styles.errorTitle}>{t("error.title")}</h2>
-            <p className={styles.errorDescription}>{t("error.desc")}</p>
+        <main className={styles.main}>
+          <div className={styles.error}>
+            <div className={styles.errorIcon}>⏳</div>
+            <h2 className={styles.errorTitle}>
+              일시적으로 접속이 원활하지 않아요
+            </h2>
+            <p className={styles.errorDescription}>
+              현재 이용자가 많아 운세 생성에 실패했어요.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </p>
             <div className={styles.errorButtons}>
               <button
                 type="button"
-                className={screen.primaryButton}
+                className={styles.refreshButton}
                 onClick={handleRefresh}
               >
-                {t("error.refresh")}
+                새로고침
               </button>
               <button
                 type="button"
-                className={screen.ghostButton}
+                className={styles.backButton}
                 onClick={handleBack}
               >
                 {tCommon("backToProfiles")}
@@ -124,110 +119,124 @@ export default function LifetimeFortunePreviewPage() {
   }
 
   const { interpretation, rawChart } = result;
-  const { lifeSpoiler } = interpretation;
-  const age = getFilmAge(profile.birth_date);
-  const subSections = lifeSpoiler.subSections ?? [];
-
-  const handlePayClick = () => {
-    trackFortuneEvent("fortune_preview_cta_click", {
-      fortune_type: "lifetime",
-      first_payment: firstPaymentEligible,
-    });
-    handlePayment();
-  };
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={`${screen.root} ${styles.main}`}>
-        <div className={styles.bleed}>
-          <FilmPoster
-            variant="preview"
-            title={lifeSpoiler.headline}
-            tagline={lifeSpoiler.oneLiner ?? chartOneLiner}
-            name={profile.name}
-            leadStar={cast.leadStar}
-            wuxingJu={result.chart.wuxingJu}
-            stars={cast.stars}
-            starLabels={cast.starLabels}
-          />
-        </div>
+      <main className={styles.main}>
+        {/* 프로필 정보 */}
+        <ProfileInfo
+          name={profile.name}
+          fortuneType="lifetime"
+          birthDate={profile.birth_date}
+          birthTime={profile.birth_time}
+          birthTimeUnknown={profile.birth_time_unknown}
+          calendarType={profile.calendar_type}
+          gender={profile.gender}
+        />
 
-        <section className={screen.runtime}>
-          <div className={screen.runtimeHead}>
-            <span className={screen.runtimeLabel}>RUNNING TIME</span>
-            <span className={screen.runtimeAge}>
-              {t.rich("runtime.age", {
-                age,
-                max: 99,
-                b: (chunks) => <b>{chunks}</b>,
-              })}
-            </span>
-          </div>
-          <RuntimeTrack age={age} />
-          <p className={screen.runtimeNote}>
-            {t.rich("runtime.trailerNote", {
-              age,
-              b: (chunks) => <b>{chunks}</b>,
-            })}
-          </p>
-        </section>
+        {/* 자미두수 명반 섹션 헤더 */}
+        <SectionHeader
+          title={tPreview("chartTitle")}
+          expanded={chartExpanded}
+          onToggle={() => setChartExpanded(!chartExpanded)}
+        />
 
-        <section className={screen.section}>
-          <p className={screen.eyebrow}>ORIGINAL</p>
-          <h2 className={screen.sectionTitle}>{t("chart.title")}</h2>
-          <p className={screen.sectionDesc}>{t("chart.desc")}</p>
-          <ChartConstellation
-            chart={rawChart}
-            profileName={profile.name}
-            wuxingJu={result.chart.wuxingJu}
-            stars={cast.stars}
-            interactive={false}
-          />
-        </section>
-
-        {subSections.length > 0 ? (
-          <TrailerCuts items={subSections} />
-        ) : (
-          lifeSpoiler.summary && (
-            <section className={screen.section}>
-              <p className={screen.eyebrow}>TRAILER</p>
-              <MarkdownContent className={screen.prose}>
-                {lifeSpoiler.summary}
-              </MarkdownContent>
-            </section>
-          )
-        )}
-        {lifeSpoiler.oneLiner && (
-          <SubtitleStill
-            label={tCommon("oneLinerLabel")}
-            text={lifeSpoiler.oneLiner}
-          />
+        {/* 명반 그리드 */}
+        {chartExpanded && (
+          <section className={styles.chartSection}>
+            <ZiweiChartGrid
+              chart={rawChart}
+              profileName={profile.name}
+              wuxingJu={result.chart.wuxingJu}
+              interactive={false}
+            />
+          </section>
         )}
 
-        <FeatureLocks keywords={keywords} />
-        <LockedQuestions questions={interpretation.lockedQuestions ?? []} />
+        {/* 키워드 그리드 (미리보기 - 3행 블러, 명궁 空宮이면 oneLiner 없이 노출) */}
+        {keywords.length > 0 && (
+          <section className={styles.keywordGridSection}>
+            <KeywordGrid
+              keywords={keywords}
+              oneLiner={oneLiner}
+              name={profile.name}
+              isPreview={true}
+            />
+          </section>
+        )}
+
+        {/* 인생 스포일러 섹션 헤더 */}
+        <SectionHeader
+          title={tPreview("spoilerTitle")}
+          expanded={spoilerExpanded}
+          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
+        />
+
+        {/* 미리보기 텍스트 */}
+        {spoilerExpanded && (
+          <section className={styles.previewContent}>
+            <h2 className={styles.previewHeadline}>
+              {interpretation.lifeSpoiler.headline}
+            </h2>
+            {interpretation.lifeSpoiler.subSections &&
+            interpretation.lifeSpoiler.subSections.length > 0 ? (
+              <>
+                <SubSectionList
+                  items={interpretation.lifeSpoiler.subSections}
+                />
+                {interpretation.lifeSpoiler.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.lifeSpoiler.oneLiner}
+                    label={tCommon("oneLinerLabel", { default: "한 줄 정리" })}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.lifeSpoiler.summary && (
+                <MarkdownContent className={styles.previewDescription}>
+                  {interpretation.lifeSpoiler.summary}
+                </MarkdownContent>
+              )
+            )}
+            <p className={styles.previewTeaser}>{tPreview("teaser")}</p>
+          </section>
+        )}
       </main>
 
+      {/* 하단 CTA */}
       <footer className={styles.footer}>
         <button
           type="button"
-          className={styles.backButton}
+          className={styles.shareButton}
           onClick={handleBack}
-          aria-label={t("pay.back")}
+          aria-label={tCommon("back")}
         >
-          <ChevronLeft size={24} aria-hidden="true" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M15.5303 5.46967C15.8232 5.76256 15.8232 6.23744 15.5303 6.53033L10.0607 12L15.5303 17.4697C15.8232 17.7626 15.8232 18.2374 15.5303 18.5303C15.2374 18.8232 14.7626 18.8232 14.4697 18.5303L8.46967 12.5303C8.17678 12.2374 8.17678 11.7626 8.46967 11.4697L14.4697 5.46967C14.7626 5.17678 15.2374 5.17678 15.5303 5.46967Z"
+              fill="#18181B"
+            />
+          </svg>
         </button>
         <button
           type="button"
           className={styles.paymentButton}
-          onClick={handlePayClick}
-          disabled={!isAIGenerated}
+          onClick={handlePayment}
+          disabled={!!error || !isAIGenerated}
         >
           {firstPaymentEligible
-            ? toEventPriceText(t("pay.button"))
-            : t("pay.button")}
+            ? toEventPriceText(tPreview("ctaButton"))
+            : tPreview("ctaButton")}
         </button>
       </footer>
     </div>

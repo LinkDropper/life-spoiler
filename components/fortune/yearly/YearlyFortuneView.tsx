@@ -1,60 +1,69 @@
 "use client";
 
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { CopyToast, ErrorState } from "@/components/fortune";
-import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
-import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
-import { YearlyCharacterPoster } from "@/components/fortune/YearlyCharacterPoster";
-import { EndCredits } from "@/components/fortune/screen/EndCredits";
-import { FortuneShareSheet } from "@/components/fortune/screen/FortuneShareSheet";
-import { NextShow } from "@/components/fortune/screen/NextShow";
-import screen from "@/components/fortune/screen/screen.module.css";
 import { HeaderClient } from "@/components/landing";
 import { Loading } from "@/components/loading";
-import type { FortuneSceneId } from "@/libs/analytics/fortune";
 import {
-  buildMonthLens,
-  formatYearGanji,
-  getYearFlow,
-  pickNextAfterYearly,
-} from "@/libs/fortune/yearly-screen";
+  ProfileInfo,
+  ZiweiChartGrid,
+  SectionHeader,
+  CategoryItem,
+  ScenarioItem,
+  ScenarioList,
+  MarkdownContent,
+  SubSectionList,
+  OneLinerAlert,
+  CopyToast,
+  ErrorState,
+  ShareDrawer,
+  YearlyInsightsCard,
+  EventBadge,
+  type CategoryKey,
+} from "@/components/fortune";
+import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
+import YealryProfileCard from "@/components/fortune/YealryProfileCard";
+import { ReviewDrawer } from "@/components/fortune/ReviewDrawer";
+import { FollowUpEntry } from "@/components/fortune/FollowUpEntry";
+import EventSection from "@/components/landing/EventSection";
 import type { YearlyEdition } from "@/libs/fortune/yearly-editions";
-import { getFortuneHref } from "@/libs/home/home-profile";
 import { useYearlyFortune } from "@/libs/hooks/fortune";
 import { useImageDownload } from "@/libs/hooks/useImageDownload";
 import { shareToKakao, shareToKakaoWithImage } from "@/libs/kakao";
-import { useProfileById } from "@/libs/stores/profile/provider";
-import {
-  shareImageWithSystem,
-  shareLinkWithSystem,
-} from "@/libs/share/system-share";
 import { useUser } from "@/libs/stores/user";
 import { calculateYearlyInsights } from "@/libs/zi-wei-dou-shu/calculators";
 import type { Locale } from "@/i18n/config";
-import { showToast } from "@/libs/toast";
 
-import { YearlyFeatureBody } from "./YearlyFeatureBody";
 import styles from "./YearlyFortuneView.module.css";
 
-const EXTRA_SCENE_IDS: FortuneSceneId[] = ["next", "end"];
+const CATEGORY_KEYS: CategoryKey[] = [
+  "wealth",
+  "career",
+  "relationship",
+  "health",
+];
+
+const DEFAULT_LABELS: Record<CategoryKey, string> = {
+  wealth: "재물운",
+  career: "직업운",
+  relationship: "인연운",
+  health: "건강운",
+};
 
 interface YearlyFortuneViewProps {
   edition: YearlyEdition;
 }
 
-/** 올해·내년 운세 본편 (기획서 §10) */
 export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
   const router = useRouter();
   const locale = useLocale() as Locale;
   const user = useUser();
   const t = useTranslations("fortune.yearly");
   const tCommon = useTranslations("fortune.common");
-  const tScreen = useTranslations("fortune.screen");
-  const tY = useTranslations("fortune.screen.yearly");
-  const tHome = useTranslations("home");
+  const tPreview = useTranslations("fortune.preview");
+  const tStory = useTranslations("fortune.instagramStory");
 
   const {
     isLoading,
@@ -76,17 +85,24 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
         default: "알 수 없는 오류가 발생했습니다.",
       }),
   });
-  // 다음 상영작 고르기용 소장 정보 (프로필 스토어)
-  const storedProfile = useProfileById(profileId);
 
+  const [chartExpanded, setChartExpanded] = useState(true);
+  const [insightsExpanded, setInsightsExpanded] = useState(true);
+  const [spoilerExpanded, setSpoilerExpanded] = useState(true);
+  const [coreExpanded, setCoreExpanded] = useState(true);
+  const [detailExpanded, setDetailExpanded] = useState(true);
+  const [monthlyExpanded, setMonthlyExpanded] = useState(true);
+
+  // 공유 드로어 상태
   const [isReviewDrawerOpen, setIsReviewDrawerOpen] = useState(false);
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
+  // 프로필 이미지 공유 드로어 상태
   const [isProfileShareDrawerOpen, setIsProfileShareDrawerOpen] =
     useState(false);
   const [showProfileCard, setShowProfileCard] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 캐릭터 포스터 이미지 훅
+  // 프로필 카드 이미지 훅 (프로필 공유용 - YealryProfileCard)
   const {
     ref: profileCardRef,
     download: downloadProfileImage,
@@ -97,6 +113,7 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     pixelRatio: 2,
   });
 
+  // cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -105,14 +122,16 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     };
   }, []);
 
+  // 프로필 이미지 공유 드로어용 다운로드 핸들러
   const handleProfileDownloadImage = useCallback(async () => {
     setShowProfileCard(true);
-    // React 렌더링이 완료될 시간을 확보
+    // React 렌더링이 완료될 시간을 확보 (requestAnimationFrame보다 안정적)
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
       await downloadProfileImage();
     } finally {
+      // 이미지 다운로드 완료 후 UI 정리를 위한 딜레이
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
         setIsProfileShareDrawerOpen(false);
@@ -120,6 +139,7 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     }
   }, [downloadProfileImage]);
 
+  // 카카오톡 공유 핸들러
   const handleShareKakao = useCallback(() => {
     if (!result || !profile) return;
 
@@ -136,89 +156,44 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     setIsShareDrawerOpen(false);
   }, [result, profile, profileId, user, edition]);
 
+  // 프로필 이미지 공유 - 카카오톡 핸들러
   const handleProfileShareKakao = useCallback(async () => {
     if (!result || !profile) return;
 
+    // 프로필 카드 표시
     setShowProfileCard(true);
+    // React 렌더링이 완료될 시간을 확보 (requestAnimationFrame보다 안정적)
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     try {
+      // 이미지 Blob 생성
       const blob = await profileCardToBlob();
       if (!blob) {
-        showToast({ kind: "error", message: tY("cast.imageError") });
+        alert("이미지 생성에 실패했습니다. 다시 시도해주세요.");
         return;
       }
 
       const shareUrl = `${window.location.origin}/fortune/${edition}/share/${profileId}?ref=${user?.id ?? ""}`;
 
+      // 카카오톡 이미지 템플릿으로 공유 (카카오 서버에 이미지 업로드 후 공유)
       await shareToKakaoWithImage({
         imageBlob: blob,
         name: profile.name,
         webDomain: shareUrl,
       });
-    } catch (shareError) {
-      console.error("Failed to share to Kakao with image:", shareError);
-      showToast({ kind: "error", message: tY("cast.shareError") });
+    } catch (error) {
+      console.error("Failed to share to Kakao with image:", error);
+      alert("공유에 실패했습니다. 다시 시도해주세요.");
     } finally {
+      // 공유 UI가 표시될 시간을 확보하기 위한 딜레이
       timeoutRef.current = setTimeout(() => {
         setShowProfileCard(false);
         setIsProfileShareDrawerOpen(false);
       }, 500);
     }
-  }, [result, profile, profileId, profileCardToBlob, user, edition, tY]);
+  }, [result, profile, profileId, profileCardToBlob, user, edition]);
 
-  // 기기 공유 시트(인스타그램 등). 지원하지 않는 브라우저면 링크 복사로 대신한다
-  const handleShareSystem = useCallback(async () => {
-    if (!result) return;
-    try {
-      const shared = await shareLinkWithSystem({
-        title: result.interpretation.overview.headline,
-        url: `${window.location.origin}/fortune/${edition}/share/${profileId}?ref=${user?.id ?? ""}`,
-      });
-      if (shared === "unsupported") {
-        handleShare();
-      }
-    } catch (shareError) {
-      console.error("Failed to share with system sheet:", shareError);
-    }
-    setIsShareDrawerOpen(false);
-  }, [result, edition, profileId, user, handleShare]);
-
-  // 포스터 이미지를 기기 공유 시트로(인스타그램 스토리). 파일 공유를 못 하면 저장으로 대신한다
-  const handlePosterShareSystem = useCallback(async () => {
-    if (!result) return;
-    setShowProfileCard(true);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    try {
-      const blob = await profileCardToBlob();
-      if (!blob) {
-        showToast({ kind: "error", message: tScreen("shareSheet.imageError") });
-        return;
-      }
-      const shared = await shareImageWithSystem({
-        blob,
-        filename: "life_spoiler_yearly_poster.png",
-        title: result.interpretation.overview.headline,
-      });
-      if (shared === "unsupported") {
-        await downloadProfileImage();
-      }
-    } catch (shareError) {
-      console.error("Failed to share poster with system sheet:", shareError);
-      showToast({ kind: "error", message: tScreen("shareSheet.shareError") });
-    } finally {
-      timeoutRef.current = setTimeout(() => {
-        setShowProfileCard(false);
-        setIsProfileShareDrawerOpen(false);
-      }, 500);
-    }
-  }, [result, profileCardToBlob, downloadProfileImage, tScreen]);
-
-  // 12개월 계산이 무거우므로 명반·연도가 바뀔 때만
-  const flow = useMemo(
-    () => (result ? getYearFlow(result.rawChart, currentYear) : null),
-    [result, currentYear]
-  );
+  // 행운 키워드 인사이트 (12개월치 계산이 무거우므로 result 변경 시에만 재계산)
   const insights = useMemo(
     () =>
       result
@@ -226,7 +201,6 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
         : null,
     [result, currentYear, locale]
   );
-  const lens = useMemo(() => buildMonthLens(currentYear), [currentYear]);
 
   if (isLoading) {
     return <Loading />;
@@ -249,111 +223,270 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
     );
   }
 
-  if (!result || !profile || !flow) {
+  if (!result || !profile) {
     return null;
   }
 
   const { interpretation, rawChart, yearlySihua } = result;
-  const ganji = formatYearGanji(currentYear, locale);
-  const scores = {
+  const monthUnit = t("monthly.monthUnit", { default: "월" });
+  const oneLinerLabel = tCommon("oneLinerLabel", { default: "한 줄 정리" });
+
+  // 명궁의 주성 이름 목록 (원본 - 이미지 경로용)
+  const mingGongPalace = rawChart.palaces.find((p) => p.name === "명궁");
+  const mainStarNames = mingGongPalace?.mainStars.map((s) => s.name) || [];
+
+  // 인스타 스토리용 점수
+  const storyScores = {
     wealth: interpretation.categories.wealth.score ?? 0,
     career: interpretation.categories.career.score ?? 0,
     relationship: interpretation.categories.relationship.score ?? 0,
     health: interpretation.categories.health.score ?? 0,
   };
-  const categoryLabels = {
-    wealth: t("categories.wealth"),
-    career: t("categories.career"),
-    relationship: t("categories.relationship"),
-    health: t("categories.health"),
-  };
-  const nextKey = pickNextAfterYearly(storedProfile ?? null, edition);
-  const [bestMonth] = flow.bestMonths;
 
-  const renderPoster = (isImage: boolean, showShare = true) => (
-    <YearlyCharacterPoster
-      ref={isImage ? profileCardRef : undefined}
-      name={profile.name}
-      year={currentYear}
-      ganji={ganji}
-      headline={interpretation.overview.headline}
-      tags={interpretation.overview.tags}
-      scores={scores}
-      categoryLabels={categoryLabels}
-      isImage={isImage}
-      shouldShowShareButton={showShare}
-      onShareClick={() => setIsProfileShareDrawerOpen(true)}
-    />
-  );
+  // 인스타 스토리용 레이블
+  const storyLabels: InstagramStoryCardLabels = {
+    mainStar: tStory("mainStar"),
+    categories: {
+      wealth: tStory("categories.wealth"),
+      career: tStory("categories.career"),
+      relationship: tStory("categories.relationship"),
+      health: tStory("categories.health"),
+    },
+  };
+
+  const followUpFortuneName = t("followUpName", {
+    year: currentYear,
+    default: `${currentYear}년 운세`,
+  });
 
   return (
     <div className={styles.page}>
       <HeaderClient />
 
-      <main className={`${screen.root} ${styles.main}`}>
-        <YearlyFeatureBody
+      <main className={styles.main}>
+        {/* 프로필 정보 */}
+        <ProfileInfo
           name={profile.name}
-          year={currentYear}
-          interpretation={interpretation}
-          rawChart={rawChart}
-          wuxingJu={result.chart.wuxingJu}
-          yearlySihua={yearlySihua}
-          flow={flow}
-          lens={lens}
-          insights={insights}
           fortuneType={edition}
-          surface="owner"
-          cast={renderPoster(false)}
-          extraSceneIds={EXTRA_SCENE_IDS}
+          year={currentYear}
+          birthDate={profile.birth_date}
+          birthTime={profile.birth_time}
+          birthTimeUnknown={profile.birth_time_unknown}
+          calendarType={profile.calendar_type}
+          gender={profile.gender}
         />
 
-        {nextKey && (
-          <NextShow
-            href={getFortuneHref(storedProfile ?? null, nextKey)}
-            kicker={tY(`next.kicker.${nextKey}`, { year: currentYear + 1 })}
-            name={tHome(`${nextKey}.title`)}
-            body={tY(`next.body.${nextKey}`, { year: currentYear })}
-            button={tY("next.button")}
-            fortuneType={edition}
-            nextType={nextKey}
-          />
+        <div className={styles.spacer} />
+
+        <YealryProfileCard
+          year={currentYear}
+          mainStars={mainStarNames}
+          headline={interpretation.overview.headline}
+          tags={interpretation.overview.tags}
+          description={interpretation.overview.description}
+          scores={storyScores}
+          labels={storyLabels}
+          isImage={false}
+          onShareClick={() => setIsProfileShareDrawerOpen(true)}
+        />
+
+        {/* 자미두수 명반 섹션 */}
+        <SectionHeader
+          title={tPreview("chartTitle", { default: "자미두수 명반" })}
+          expanded={chartExpanded}
+          onToggle={() => setChartExpanded(!chartExpanded)}
+        />
+
+        {chartExpanded && rawChart && (
+          <section className={styles.chartSection}>
+            <ZiweiChartGrid
+              chart={rawChart}
+              profileName={profile.name}
+              wuxingJu={result.chart.wuxingJu}
+              yearlySihua={yearlySihua}
+            />
+          </section>
         )}
 
-        <EndCredits
-          name={profile.name}
-          endLabel={`THE END · ${currentYear}`}
-          rows={[
-            { label: "YEAR", value: ganji },
-            {
-              label: "BEST MONTH",
-              value: tY("credits.bestMonth", { month: bestMonth }),
-            },
-          ]}
-        >
-          <button
-            type="button"
-            className={screen.primaryButton}
-            onClick={() => setIsShareDrawerOpen(true)}
-          >
-            {tScreen("credits.share")}
-          </button>
-          <button
-            type="button"
-            className={screen.ghostButton}
-            onClick={() => setIsReviewDrawerOpen(true)}
-          >
-            {tScreen("credits.review")}
-          </button>
-        </EndCredits>
+        {/* 행운 키워드 섹션 */}
+        <SectionHeader
+          title={t("luckyKeywordsTitle", { default: "행운 키워드" })}
+          expanded={insightsExpanded}
+          onToggle={() => setInsightsExpanded(!insightsExpanded)}
+        />
+
+        {insights && insightsExpanded && (
+          <section className={styles.section}>
+            <YearlyInsightsCard insights={insights} />
+          </section>
+        )}
+
+        {/* 올해 스포일러 섹션 */}
+        <SectionHeader
+          title={tPreview("yearlySpoilerTitle", { default: "올해 스포일러" })}
+          expanded={spoilerExpanded}
+          onToggle={() => setSpoilerExpanded(!spoilerExpanded)}
+        />
+
+        {spoilerExpanded && (
+          <section className={styles.overviewSection}>
+            <h2 className={styles.overviewHeadline}>
+              {interpretation.overview.headline}
+            </h2>
+            {interpretation.overview.subSections &&
+            interpretation.overview.subSections.length > 0 ? (
+              <>
+                <SubSectionList items={interpretation.overview.subSections} />
+                {interpretation.overview.oneLiner && (
+                  <OneLinerAlert
+                    text={interpretation.overview.oneLiner}
+                    label={oneLinerLabel}
+                  />
+                )}
+              </>
+            ) : (
+              interpretation.overview.summary && (
+                <MarkdownContent className={styles.overviewSummary}>
+                  {interpretation.overview.summary}
+                </MarkdownContent>
+              )
+            )}
+          </section>
+        )}
+
+        {/* 핵심 시나리오 섹션 */}
+        <SectionHeader
+          title={t("coreScenario.title", { default: "핵심 시나리오" })}
+          expanded={coreExpanded}
+          onToggle={() => setCoreExpanded(!coreExpanded)}
+        />
+
+        {coreExpanded &&
+          (interpretation.coreScenario.subSections?.length ||
+            interpretation.coreScenario.content) && (
+            <section className={styles.section}>
+              <div className={styles.coreScenario}>
+                {interpretation.coreScenario.headline && (
+                  <h3 className={styles.coreHeadline}>
+                    {interpretation.coreScenario.headline}
+                  </h3>
+                )}
+                {interpretation.coreScenario.subSections &&
+                interpretation.coreScenario.subSections.length > 0 ? (
+                  <>
+                    <SubSectionList
+                      items={interpretation.coreScenario.subSections}
+                    />
+                    {interpretation.coreScenario.oneLiner && (
+                      <OneLinerAlert
+                        text={interpretation.coreScenario.oneLiner}
+                        label={oneLinerLabel}
+                      />
+                    )}
+                  </>
+                ) : (
+                  interpretation.coreScenario.content && (
+                    <MarkdownContent>
+                      {interpretation.coreScenario.content}
+                    </MarkdownContent>
+                  )
+                )}
+              </div>
+            </section>
+          )}
+
+        {/* 상세 시나리오 섹션 */}
+        <SectionHeader
+          title={t("detailScenario.title", { default: "상세 시나리오" })}
+          expanded={detailExpanded}
+          onToggle={() => setDetailExpanded(!detailExpanded)}
+        />
+
+        {detailExpanded && (
+          <section className={styles.section}>
+            <div className={styles.categoriesContainer}>
+              {CATEGORY_KEYS.map((key) => (
+                <CategoryItem
+                  key={key}
+                  categoryKey={key}
+                  label={t(`categories.${key}`, {
+                    default: DEFAULT_LABELS[key],
+                  })}
+                  headline={interpretation.categories[key].headline}
+                  content={interpretation.categories[key].content}
+                  subSections={interpretation.categories[key].subSections}
+                  oneLiner={interpretation.categories[key].oneLiner}
+                  oneLinerLabel={oneLinerLabel}
+                  tags={interpretation.categories[key].tags}
+                  showHashtag={true}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 월별 시나리오 섹션 */}
+        <SectionHeader
+          title={t("monthly.detailTitle", { default: "월별 시나리오" })}
+          expanded={monthlyExpanded}
+          onToggle={() => setMonthlyExpanded(!monthlyExpanded)}
+        />
+
+        {monthlyExpanded && (
+          <section className={styles.section}>
+            <ScenarioList>
+              {interpretation.monthlyFortunes.map((fortune) => (
+                <ScenarioItem
+                  key={fortune.month}
+                  label={`${fortune.month}${monthUnit}`}
+                  headline={fortune.headline}
+                  content={fortune.content}
+                  bullets={fortune.bullets}
+                  oneLiner={fortune.oneLiner}
+                  oneLinerLabel={oneLinerLabel}
+                />
+              ))}
+            </ScenarioList>
+          </section>
+        )}
       </main>
 
+      <EventSection isResultPage />
+
+      {/* 하단 버튼 */}
+      <footer className={styles.footer}>
+        <button
+          type="button"
+          className={styles.reviewButton}
+          onClick={() => setIsReviewDrawerOpen(true)}
+        >
+          {t("reviewButton", { default: "후기 남기기" })}
+        </button>
+        <div className={styles.shareButtonWrapper}>
+          <EventBadge />
+          <button
+            type="button"
+            className={styles.shareButton}
+            onClick={() => setIsShareDrawerOpen(true)}
+          >
+            {t("shareButton", { default: "공유하기" })}
+          </button>
+        </div>
+      </footer>
+
+      {/* 전문가 질문 플로팅 버튼 + 채팅 드로어 */}
       <FollowUpEntry
         profileId={profileId}
         fortuneType={edition}
-        fortuneName={t("followUpName", { year: currentYear })}
-        examplePrompts={tY.raw("followUp.prompts") as string[]}
+        fortuneName={followUpFortuneName}
+        examplePrompts={[
+          "이직 타이밍 언제가 좋을까?",
+          "올해 조심해야 할 건 뭐야?",
+          "연애운은 어떨까?",
+        ]}
       />
 
+      {/* 후기 드로어 */}
       <ReviewDrawer
         isOpen={isReviewDrawerOpen}
         onClose={() => setIsReviewDrawerOpen(false)}
@@ -361,36 +494,31 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
         fortuneType={edition}
       />
 
-      <FortuneShareSheet
+      {/* 공유 드로어 */}
+      <ShareDrawer
         isOpen={isShareDrawerOpen}
         onClose={() => setIsShareDrawerOpen(false)}
-        eyebrow="SHARE"
-        title={tScreen("shareSheet.linkTitle")}
-        showInvite
-        onShareKakao={handleShareKakao}
-        onShareSystem={handleShareSystem}
         onCopyLink={handleShare}
+        onShareKakao={handleShareKakao}
+        showLine={false}
+        showDownloadImage={false}
+        showEventBanner={true}
+        isDownloading={isDownloading}
       />
 
-      <FortuneShareSheet
+      {/* 프로필 이미지 공유 드로어 */}
+      <ShareDrawer
         isOpen={isProfileShareDrawerOpen}
         onClose={() => setIsProfileShareDrawerOpen(false)}
-        eyebrow="POSTER"
-        title={tScreen("shareSheet.posterTitle")}
-        primary="system"
-        preview={{
-          art: renderPoster(false, false),
-          label: tScreen("shareSheet.posterLabel"),
-          title: interpretation.overview.headline,
-          desc: tScreen("shareSheet.posterDesc"),
-        }}
-        onShareSystem={handlePosterShareSystem}
+        title={t("profileShareTitle", { default: "프로필 이미지 공유하기" })}
+        showCopyLink={false}
+        showLine={false}
         onShareKakao={handleProfileShareKakao}
         onDownloadImage={handleProfileDownloadImage}
-        isBusy={isDownloading}
+        isDownloading={isDownloading}
       />
 
-      {/* 이미지 생성용 숨겨진 캐릭터 포스터 (375×667) */}
+      {/* 이미지 생성용 숨겨진 프로필 카드 (YealryProfileCard) */}
       {showProfileCard && (
         <div
           style={{
@@ -401,10 +529,21 @@ export const YearlyFortuneView = ({ edition }: YearlyFortuneViewProps) => {
             pointerEvents: "none",
           }}
         >
-          {renderPoster(true)}
+          <YealryProfileCard
+            ref={profileCardRef}
+            year={currentYear}
+            mainStars={mainStarNames}
+            headline={interpretation.overview.headline}
+            tags={interpretation.overview.tags}
+            description={interpretation.overview.description}
+            scores={storyScores}
+            labels={storyLabels}
+            isImage={true}
+          />
         </div>
       )}
 
+      {/* 복사 완료 토스트 */}
       {showCopyToast && <CopyToast message={tCommon("copySuccess")} />}
     </div>
   );

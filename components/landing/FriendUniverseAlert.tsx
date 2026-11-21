@@ -6,13 +6,12 @@ import { useLocale, useTranslations } from "next-intl";
 import styles from "./FriendUniverseAlert.module.css";
 
 /**
- * 랜딩 최상단 — 친구 시사회(친구 우주 궁합) 알림 바.
+ * 랜딩 최상단 — 친구 우주 궁합(나만의 별자리 만들기) 알림 바.
  *
  * 이 기능은 로그인 없이 쓸 수 있는데도 진입점이 `/home`(로그인 필수)과 이미 우주
  * 링크를 받아 들어온 사람이 보는 홍보 영역뿐이라, 비로그인 신규 방문자가 도달할
  * 경로가 없었다. 랜딩 하단에 섹션을 두면 끝까지 스크롤한 사람만 보게 되므로,
  * 헤더 바로 아래 첫 화면에서 존재만 한 줄로 알리는 형태를 택했다.
- * 상영관 컨셉에 맞춰 가로 띠가 아니라 장면 위에 얹힌 금색 상태 칩으로 둔다.
  *
  * `/login`을 거치지 않고 `/universe/create`로 직행한다 — 로그인을 끼우면 익명
  * 기능의 진입 장벽을 스스로 만드는 셈이 된다.
@@ -27,31 +26,32 @@ export const FriendUniverseAlert = () => {
   }
 
   return (
-    <div className={styles.wrap}>
-      <Link
-        href="/universe/create"
-        className={styles.chip}
-        aria-label={t("ariaLabel")}
-      >
-        <span className={styles.dot} aria-hidden="true" />
-        <span className={styles.text}>{t("chip")}</span>
+    <Link
+      href="/universe/create"
+      className={styles.bar}
+      aria-label={t("ariaLabel")}
+    >
+      <span className={styles.badge}>{t("badge")}</span>
+      <span className={styles.text}>{t("text")}</span>
+      <span className={styles.action}>
+        <span className={styles.actionText}>{t("action")}</span>
+        {/* 공용 chevron 에셋은 stroke가 white로 고정이라, 강조색과 맞추려고 인라인으로 둔다 */}
         <svg
-          className={styles.chevron}
           width="16"
           height="16"
-          viewBox="0 0 16 16"
+          viewBox="0 0 20 20"
+          fill="none"
           aria-hidden="true"
         >
           <path
-            d="M6 4l4 4-4 4"
-            fill="none"
+            d="M7.5 4.375L13.125 10L7.5 15.625"
             stroke="currentColor"
-            strokeWidth="1.8"
+            strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
-      </Link>
-    </div>
+      </span>
+    </Link>
   );
 };
