@@ -2,18 +2,13 @@
 
 import { useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import {
-  CompatibilityFortuneCard,
-  DailyFortuneCard,
-  FaceReadingCard,
-  FriendUniverseCard,
-  LifetimeFortuneCard,
-  NextYearFortuneCard,
-  PastLifeCard,
-  YearlyFortuneCard,
+  SpoilerShelf,
+  TodayFortuneBanner,
+  UniverseBanner,
 } from "@/components/home";
 import { trackDailyEvent } from "@/libs/analytics";
 import { useReferral } from "@/libs/hooks/useReferral";
@@ -26,6 +21,8 @@ export default function HomePage() {
   const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
   const locale = useLocale();
+  const t = useTranslations("home");
+  const isKo = locale === "ko";
   const { claimReferralReward } = useReferral();
 
   useEffect(() => {
@@ -52,36 +49,7 @@ export default function HomePage() {
 
   const handleDailyFortune = useCallback(() => {
     trackDailyEvent("daily_entry_click", { source: "home" });
-    router.push("/profiles?type=daily");
-  }, [router]);
-
-  const handleLifetimeFortune = useCallback(() => {
-    router.push("/profiles?type=lifetime");
-  }, [router]);
-
-  const handleNextYearFortune = useCallback(() => {
-    router.push("/profiles?type=yearly_2027");
-  }, [router]);
-
-  const handleYearlyFortune = useCallback(() => {
-    router.push("/profiles?type=yearly");
-  }, [router]);
-
-  const handleCompatibilityFortune = useCallback(() => {
-    router.push("/compatibility");
-  }, [router]);
-
-  const handlePastLifeFortune = useCallback(() => {
-    router.push("/profiles?type=past-life");
-  }, [router]);
-
-  const handleFaceReading = useCallback(() => {
-    router.push("/face-spoiler/profiles");
-  }, [router]);
-
-  const handleFriendUniverse = useCallback(() => {
-    router.push("/universe/create");
-  }, [router]);
+  }, []);
 
   if (authStatus === "loading" || authStatus === "unauthenticated") {
     return null;
@@ -91,22 +59,23 @@ export default function HomePage() {
     <div className={styles.page}>
       <HeaderClient />
       <main className={styles.main}>
+        {/* 오늘의 운세는 문구 사전이 KO뿐이라 KO 로케일에서만 진입점을 노출한다 */}
+        {isKo && (
+          <TodayFortuneBanner
+            href="/profiles?type=daily"
+            onClick={handleDailyFortune}
+          />
+        )}
+        <h1 className={styles.heading}>
+          {t(isKo ? "shelf.titleWithToday" : "shelf.title")}
+        </h1>
+        <SpoilerShelf />
         {/*
           친구 우주 궁합은 한줄평/등급 라벨 EN/JA 번역이 Phase 2라
           KO 로케일에서만 노출한다. 링크 직접 진입(/universe/{publicId})은
           로케일과 무관하게 항상 동작한다 — 막으면 바이럴 루프가 끊긴다.
         */}
-        {locale === "ko" && (
-          <FriendUniverseCard onClick={handleFriendUniverse} />
-        )}
-        {/* 오늘의 운세는 문구 사전이 KO뿐이라 KO 로케일에서만 진입점을 노출한다 */}
-        {locale === "ko" && <DailyFortuneCard onClick={handleDailyFortune} />}
-        <LifetimeFortuneCard onClick={handleLifetimeFortune} />
-        <NextYearFortuneCard onClick={handleNextYearFortune} />
-        <YearlyFortuneCard onClick={handleYearlyFortune} />
-        <CompatibilityFortuneCard onClick={handleCompatibilityFortune} />
-        <PastLifeCard onClick={handlePastLifeFortune} />
-        <FaceReadingCard onClick={handleFaceReading} />
+        {isKo && <UniverseBanner href="/universe/create" />}
       </main>
     </div>
   );
