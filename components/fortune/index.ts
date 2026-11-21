@@ -4,6 +4,9 @@ export { ShareDrawer } from "./ShareDrawer";
 export { EventBadge } from "./EventBadge";
 export { default as KeywordGrid } from "./KeywordGrid";
 export { default as YearlyInsightsCard } from "./YearlyInsightsCard";
+export { LifetimeCategoryList } from "./LifetimeCategoryList";
+export { LifetimeTiming } from "./LifetimeTiming";
+export { LockedQuestions } from "./LockedQuestions";
 
 export {
   ChevronIcon,

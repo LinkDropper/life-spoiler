@@ -12,19 +12,20 @@ import {
   ProfileInfo,
   ZiweiChartGrid,
   SectionHeader,
-  CategoryItem,
   ScenarioItem,
   ScenarioList,
   MarkdownContent,
   SubSectionList,
   OneLinerAlert,
   ErrorState,
-  type CategoryKey,
+  LifetimeCategoryList,
+  LifetimeTiming,
 } from "@/components/fortune";
 import { type InstagramStoryCardLabels } from "@/components/fortune/InstagramStoryCard";
 import LifetimeProfileCard from "@/components/fortune/LifetimeProfileCard";
 import NewProfileCard from "@/components/fortune/NewProfileCard";
 import { useLifetimeShare } from "@/libs/hooks/fortune";
+import { getVisibleTiming } from "@/libs/fortune/lifetime-extras";
 import type {
   FortuneInterpretation,
   ProfileTraitsResponse,
@@ -41,20 +42,6 @@ const hasProfileTraits = (
   profileTraits: ProfileTraitsResponse;
 } => {
   return !!interpretation.profileTraits?.spectrums;
-};
-
-const CATEGORY_KEYS: CategoryKey[] = [
-  "wealth",
-  "career",
-  "relationship",
-  "health",
-];
-
-const DEFAULT_LABELS: Record<CategoryKey, string> = {
-  wealth: "재물운",
-  career: "직업운",
-  relationship: "인연운",
-  health: "건강운",
 };
 
 export default function LifetimeFortuneSharePage() {
@@ -286,25 +273,16 @@ export default function LifetimeFortuneSharePage() {
         {detailExpanded && (
           <section className={styles.section}>
             <div className={styles.categoriesContainer}>
-              {CATEGORY_KEYS.map((key) => (
-                <CategoryItem
-                  key={key}
-                  categoryKey={key}
-                  label={t(`categories.${key}`, {
-                    default: DEFAULT_LABELS[key],
-                  })}
-                  headline={interpretation.categories[key].headline}
-                  content={interpretation.categories[key].content}
-                  subSections={interpretation.categories[key].subSections}
-                  oneLiner={interpretation.categories[key].oneLiner}
-                  oneLinerLabel={oneLinerLabel}
-                  tags={interpretation.categories[key].tags}
-                  showHashtag={false}
-                />
-              ))}
+              <LifetimeCategoryList
+                categories={interpretation.categories}
+                oneLinerLabel={oneLinerLabel}
+              />
             </div>
           </section>
         )}
+
+        {/* 타이밍 섹션 (데이터가 없으면 섹션 자체를 그리지 않음) */}
+        <LifetimeTiming topics={getVisibleTiming(interpretation.timing)} />
 
         {/* 나이대별 시나리오 섹션 */}
         <SectionHeader

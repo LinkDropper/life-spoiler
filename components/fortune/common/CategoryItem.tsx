@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 
 import { ChevronIcon } from "./ChevronIcon";
 import { MarkdownContent } from "./MarkdownContent";
@@ -14,7 +15,7 @@ import type { SubSection } from "@/libs/services/ai/types";
 export type CategoryKey = "wealth" | "career" | "relationship" | "health";
 
 interface CategoryItemProps {
-  categoryKey: CategoryKey;
+  categoryKey?: CategoryKey;
   label: string;
   headline?: string;
   content?: string;
@@ -25,6 +26,10 @@ interface CategoryItemProps {
   /** oneLiner alert 라벨 (i18n) */
   oneLinerLabel?: string;
   tags?: string[];
+  /** 헤드라인 바로 아래에 놓는 요소 (근거 한 줄 등) */
+  evidence?: ReactNode;
+  /** 본문 뒤, 한 줄 정리 앞에 놓는 요소 (직업 분야·만날 사람·타이밍 등) */
+  extra?: ReactNode;
   showHashtag?: boolean;
   defaultExpanded?: boolean;
 }
@@ -37,6 +42,8 @@ export const CategoryItem = ({
   oneLiner,
   oneLinerLabel,
   tags = [],
+  evidence,
+  extra,
   showHashtag = false,
   defaultExpanded = true,
 }: CategoryItemProps) => {
@@ -51,6 +58,7 @@ export const CategoryItem = ({
         type="button"
         className={styles.categoryHeader}
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
       >
         <span className={styles.categoryLabel}>{label}</span>
         <ChevronIcon expanded={expanded} size="small" />
@@ -58,6 +66,7 @@ export const CategoryItem = ({
       {expanded && (
         <>
           {headline && <h4 className={styles.categoryHeadline}>{headline}</h4>}
+          {evidence}
           {hasStructured ? (
             <SubSectionList items={subSections!} />
           ) : (
@@ -67,6 +76,7 @@ export const CategoryItem = ({
               </MarkdownContent>
             )
           )}
+          {extra}
           {oneLiner && <OneLinerAlert text={oneLiner} label={oneLinerLabel} />}
           {tags.length > 0 && (
             <div className={styles.categoryTags}>

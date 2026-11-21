@@ -13,6 +13,7 @@ import {
   MarkdownContent,
   SubSectionList,
   OneLinerAlert,
+  LockedQuestions,
 } from "@/components/fortune";
 import { useLifetimePreview } from "@/libs/hooks/fortune";
 import {
@@ -203,6 +204,9 @@ export default function LifetimeFortunePreviewPage() {
             <p className={styles.previewTeaser}>{tPreview("teaser")}</p>
           </section>
         )}
+
+        {/* 본편에서 답해 드려요 (잠금 질문 라벨만, 내용은 내려오지 않음) */}
+        <LockedQuestions questions={interpretation.lockedQuestions} />
       </main>
 
       {/* 하단 CTA */}
