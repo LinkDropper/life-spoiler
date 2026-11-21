@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>홈 v4 B · 오브젝트 목록</title>
+<style>
+  :root { --night: #0e1222; --text: #f5f3f7; --sub: #aeabbd; --brand: #ffccd9; --rule: rgba(255,255,255,0.07); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--night); color: var(--text);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    -webkit-font-smoothing: antialiased; word-break: keep-all; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  .page { max-width: 480px; margin: 0 auto; min-height: 100vh; padding-bottom: 40px; }
+  .hd { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px; }
+  .logo { font-size: 18px; font-weight: 800; color: var(--brand); }
+  .me { display: flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--sub); }
+  h1 { margin: 20px 20px 8px; font-size: 24px; line-height: 1.35; font-weight: 700; letter-spacing: -0.02em; }
+
+  h2 { margin: 28px 20px 4px; font-size: 15px; font-weight: 600; color: var(--sub); }
+  ul { list-style: none; margin: 0; padding: 0 20px; }
+  li + li .row { border-top: 1px solid var(--rule); }
+  .row { display: grid; grid-template-columns: 72px 1fr auto; align-items: center; column-gap: 16px; min-height: 88px; padding: 8px 0; }
+  .obj { position: relative; width: 72px; height: 72px; border-radius: 20px;
+    background: color-mix(in srgb, var(--hue) 16%, var(--night)); }
+  .obj img { position: absolute; inset: -10px; width: calc(100% + 20px); height: calc(100% + 20px);
+    object-fit: contain; transform: scale(var(--s, 1)); }
+  .title { display: block; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  .free { margin-left: 6px; font-size: 13px; font-weight: 600; color: var(--hue); }
+  .desc { display: block; margin-top: 3px; font-size: 14px; line-height: 1.45; color: var(--sub); }
+  .chev { width: 18px; height: 18px; color: rgba(255,255,255,0.35); }
+  .face { -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 95%); mask-image: linear-gradient(to bottom, #000 65%, transparent 95%); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="hd"><span class="logo">인생스포</span><a class="me" href="#">내 프로필</a></header>
+  <h1>어떤 스포일러부터<br>볼까요?</h1>
+
+  <h2>매일, 그리고 올해</h2>
+  <ul>
+    <li><a class="row" href="#" style="--hue:#d9b3f2; --s:1.15"><span class="obj"><img src="img/daily.png" alt=""></span>
+      <span><span class="title">오늘의 운세<span class="free">무료</span></span><span class="desc">매일 자정에 바뀌는 오늘의 흐름</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+    <li><a class="row" href="#" style="--hue:#b7a6f2; --s:1.2"><span class="obj"><img src="img/yearly.png" alt=""></span>
+      <span><span class="title">올해 운세</span><span class="desc">2026년 공략 방법 보기</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+    <li><a class="row" href="#" style="--hue:#8ccbf3; --s:1.2"><span class="obj"><img src="img/next.png" alt=""></span>
+      <span><span class="title">내년 운세</span><span class="desc">2027년 공략 방법 미리 보기</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+  </ul>
+
+  <h2>나에 대해</h2>
+  <ul>
+    <li><a class="row" href="#" style="--hue:#f59e95; --s:1.05"><span class="obj"><img src="img/lifetime.png" alt=""></span>
+      <span><span class="title">인생 운세</span><span class="desc">타고난 기질과 99세까지의 흐름</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+    <li><a class="row" href="#" style="--hue:#b49ae6; --s:0.95"><span class="obj"><img src="img/past.png" alt=""></span>
+      <span><span class="title">전생 운세</span><span class="desc">전생의 나를 만나보기</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+    <li><a class="row" href="#" style="--hue:#e8c3a6; --s:0.85"><span class="obj"><img class="face" src="img/face.png" alt=""></span>
+      <span><span class="title">관상 운세</span><span class="desc">사진 한 장으로 보는 내 성향</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+  </ul>
+
+  <h2>함께</h2>
+  <ul>
+    <li><a class="row" href="#" style="--hue:#f2c29b; --s:0.8"><span class="obj"><img src="img/compat.png" alt=""></span>
+      <span><span class="title">궁합 운세</span><span class="desc">두 사람 사이의 흐름 분석</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+    <li><a class="row" href="#" style="--hue:#9fd6e8; --s:1.25"><span class="obj"><img src="img/universe.png" alt=""></span>
+      <span><span class="title">나만의 별자리<span class="free">무료</span></span><span class="desc">링크 하나로 친구들과 궁합 보기</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+  </ul>
+</div>
+</body>
+</html>

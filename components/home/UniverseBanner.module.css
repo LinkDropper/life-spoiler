@@ -1,0 +1,50 @@
+.banner {
+  position: relative;
+  display: block;
+  margin: 20px 16px 0;
+  min-height: 96px;
+  padding: 20px 150px 20px 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  color: #f5f3f7;
+  text-decoration: none;
+  background: color-mix(in srgb, #9fd6e8 14%, #0e1222);
+}
+
+.banner:focus-visible {
+  outline: 2px solid #f5f3f7;
+  outline-offset: 3px;
+}
+
+.image {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 150px;
+  height: 110px;
+  transform: translateY(-50%);
+  object-fit: contain;
+}
+
+.name {
+  position: relative;
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.free {
+  font-size: 13px;
+  font-weight: 600;
+  color: #9fd6e8;
+}
+
+.line {
+  position: relative;
+  display: block;
+  margin-top: 4px;
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: #aeabbd;
+}
