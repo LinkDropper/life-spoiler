@@ -14,7 +14,12 @@ export const SectionHeader = ({
   onToggle,
 }: SectionHeaderProps) => {
   return (
-    <button type="button" className={styles.sectionHeader} onClick={onToggle}>
+    <button
+      type="button"
+      className={styles.sectionHeader}
+      onClick={onToggle}
+      aria-expanded={expanded}
+    >
       <h3 className={styles.sectionTitle}>{title}</h3>
       <ChevronIcon expanded={expanded} />
     </button>

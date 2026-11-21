@@ -45,6 +45,7 @@ export const ScenarioItem = ({
         type="button"
         className={styles.scenarioHeader}
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
       >
         <div className={styles.scenarioHeaderLeft}>
           <div className={styles.scenarioLabel}>{label}</div>
