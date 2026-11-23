@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 
+import { logUtmEvent, readAttributionCookies } from "@/libs/attribution";
 import { sendSignupNotification } from "@/libs/discord";
 import { logger } from "@/libs/logger";
 import { createAuthClient } from "@/libs/supabase";
@@ -88,7 +89,8 @@ export const GET = async (request: Request) => {
     if (upsertError) {
       console.error("User upsert failed:", upsertError);
     } else if (upsertedUser) {
-      const ownerToken = (await cookies()).get(OWNER_TOKEN_COOKIE)?.value;
+      const cookieStore = await cookies();
+      const ownerToken = cookieStore.get(OWNER_TOKEN_COOKIE)?.value;
 
       if (ownerToken) {
         try {
@@ -113,6 +115,7 @@ export const GET = async (request: Request) => {
         const service = nextPath.startsWith("/face-spoiler")
           ? "face-spoiler"
           : "life-spoiler";
+        const { attribution, visitorId } = readAttributionCookies(cookieStore);
 
         sendSignupNotification({
           userId: user.id,
@@ -121,9 +124,20 @@ export const GET = async (request: Request) => {
           provider,
           signedUpAt: loginTime,
           service,
+          attribution,
         }).catch((error) => {
           console.error("Discord 회원가입 알림 전송 실패:", error);
         });
+
+        after(() =>
+          logUtmEvent({
+            eventType: "signup",
+            attribution,
+            visitorId,
+            userId: user.id,
+            product: service,
+          })
+        );
 
         const redirectUrl = new URL(`${origin}${nextPath}`);
         redirectUrl.searchParams.set("new", "1");

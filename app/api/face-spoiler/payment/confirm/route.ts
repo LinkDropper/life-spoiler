@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 
+import { logUtmEvent, readAttributionCookies } from "@/libs/attribution";
 import { sendFaceReportPaymentNotification } from "@/libs/discord";
 import {
   createAuthClient,
@@ -167,6 +168,21 @@ export async function POST(request: NextRequest) {
       console.error("face_reports paid_at 업데이트 실패:", { shareId });
     }
 
+    const { attribution, visitorId } = readAttributionCookies(request.cookies);
+
+    after(() =>
+      logUtmEvent({
+        eventType: "payment",
+        attribution,
+        visitorId,
+        userId: user.id,
+        orderId: paymentData.orderId,
+        amount: paymentData.totalAmount,
+        currency,
+        product: "face_spoiler",
+      })
+    );
+
     // Discord 알림 (비동기, 실패해도 결제 응답에 영향 없음)
     sendFaceReportPaymentNotification({
       orderId: paymentData.orderId,
@@ -178,6 +194,7 @@ export async function POST(request: NextRequest) {
       userEmail: user.email ?? undefined,
       approvedAt: paymentData.approvedAt,
       updateFailed,
+      attribution,
     }).catch((error) => {
       console.error("디스코드 알림 전송 실패:", error);
     });
