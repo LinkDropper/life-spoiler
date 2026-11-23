@@ -3,6 +3,18 @@ import type { NextRequest } from "next/server";
 const mockIsFirstPaymentEligible = jest.fn();
 const mockUpdateFortunePaidAt = jest.fn();
 const mockSendPaymentNotification = jest.fn();
+const mockLogUtmEvent = jest.fn();
+
+// after()는 요청 스코프 밖(테스트)에서 호출하면 throw 하므로 즉시 실행으로 대체
+jest.mock("next/server", () => ({
+  ...jest.requireActual("next/server"),
+  after: (callback: () => unknown) => callback(),
+}));
+
+jest.mock("@/libs/attribution", () => ({
+  ...jest.requireActual("@/libs/attribution"),
+  logUtmEvent: (...args: unknown[]) => mockLogUtmEvent(...args),
+}));
 
 jest.mock("@/libs/services/payment/first-payment-eligibility", () => ({
   isFirstPaymentEligible: (...args: unknown[]) =>
@@ -43,8 +55,15 @@ const approvedPayment = {
   approvedAt: "2026-11-15T10:00:00+09:00",
 };
 
-const createRequest = (amount: number): NextRequest =>
+const createRequest = (
+  amount: number,
+  cookieValues: Record<string, string> = {}
+): NextRequest =>
   ({
+    cookies: {
+      get: (name: string) =>
+        name in cookieValues ? { value: cookieValues[name] } : undefined,
+    },
     json: async () => ({
       paymentKey: PAYMENT_KEY,
       orderId: ORDER_ID,
@@ -85,6 +104,7 @@ describe("POST /api/payment/confirm 중복 승인 처리", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(mockUpdateFortunePaidAt).not.toHaveBeenCalled();
     expect(mockSendPaymentNotification).not.toHaveBeenCalled();
+    expect(mockLogUtmEvent).not.toHaveBeenCalled();
   });
 
   it("다른 주문의 승인된 paymentKey면 재사용하지 않고 정상 검증으로 넘긴다", async () => {
@@ -155,5 +175,69 @@ describe("POST /api/payment/confirm 중복 승인 처리", () => {
     expect(response.status).toBe(200);
     expect(body.success).toBe(true);
     expect(mockUpdateFortunePaidAt).toHaveBeenCalledTimes(1);
+  });
+
+  it("UTM 쿠키가 있으면 결제 로그와 디스코드 알림에 유입경로를 싣는다", async () => {
+    mockIsFirstPaymentEligible.mockResolvedValue(true);
+    fetchMock
+      .mockResolvedValueOnce(
+        jsonResponse(200, { ...approvedPayment, status: "IN_PROGRESS" })
+      )
+      .mockResolvedValueOnce(jsonResponse(200, approvedPayment));
+    const attribution = {
+      utmSource: "x",
+      utmMedium: "social",
+      utmCampaign: "2026-11-ziwei-intro",
+      utmContent: null,
+      utmTerm: null,
+      landingPath: "/",
+      referrerHost: "t.co",
+      touchedAt: "2026-11-15T09:00:00.000Z",
+    };
+    const visitorId = "0b7c3f1e-2a4d-4c8e-9f10-1234567890ab";
+
+    await POST(
+      createRequest(100, {
+        ls_attr: JSON.stringify(attribution),
+        ls_vid: visitorId,
+      })
+    );
+
+    expect(mockLogUtmEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: "payment",
+        attribution,
+        visitorId,
+        orderId: ORDER_ID,
+        amount: 100,
+        currency: "KRW",
+        product: "lifetime",
+      })
+    );
+    expect(mockSendPaymentNotification).toHaveBeenCalledWith(
+      expect.objectContaining({ attribution })
+    );
+  });
+
+  it("UTM 쿠키가 없어도 결제 로그는 유입경로 없이 남긴다", async () => {
+    mockIsFirstPaymentEligible.mockResolvedValue(true);
+    fetchMock
+      .mockResolvedValueOnce(
+        jsonResponse(200, { ...approvedPayment, status: "IN_PROGRESS" })
+      )
+      .mockResolvedValueOnce(jsonResponse(200, approvedPayment));
+
+    await POST(createRequest(100));
+
+    expect(mockLogUtmEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: "payment",
+        attribution: null,
+        visitorId: null,
+      })
+    );
+    expect(mockSendPaymentNotification).toHaveBeenCalledWith(
+      expect.objectContaining({ attribution: null })
+    );
   });
 });
