@@ -3,6 +3,8 @@
  */
 
 import { env } from "@/env";
+import { formatAttributionForDiscord } from "@/libs/attribution";
+import type { Attribution } from "@/libs/attribution";
 import {
   isYearlyEdition,
   resolveTargetYear,
@@ -31,6 +33,15 @@ interface DiscordEmbed {
   };
   timestamp?: string;
 }
+
+/** 유입경로 필드. UTM 쿠키가 없으면 "UTM 없음"으로 표시한다. */
+const buildAttributionField = (
+  attribution: Attribution | null
+): DiscordEmbedField => ({
+  name: "🧭 유입경로",
+  value: formatAttributionForDiscord(attribution),
+  inline: false,
+});
 
 interface DiscordWebhookPayload {
   content?: string;
@@ -89,6 +100,8 @@ interface PaymentNotificationParams {
   year?: number;
   /** paid_at 업데이트 실패 여부 (true면 DB 동기화 실패) */
   fortuneUpdateFailed?: boolean;
+  /** 결제 시점의 마지막 UTM 유입 */
+  attribution: Attribution | null;
 }
 
 /**
@@ -108,6 +121,7 @@ export const sendPaymentNotification = async (
     approvedAt,
     year,
     fortuneUpdateFailed,
+    attribution,
   } = params;
 
   const productName =
@@ -167,6 +181,7 @@ export const sendPaymentNotification = async (
       value: formattedDate,
       inline: true,
     },
+    buildAttributionField(attribution),
   ];
 
   // paid_at 업데이트 실패 시 경고 필드 추가
@@ -207,6 +222,8 @@ interface FaceReportPaymentNotificationParams {
   userEmail?: string;
   approvedAt: string;
   updateFailed?: boolean;
+  /** 결제 시점의 마지막 UTM 유입 */
+  attribution: Attribution | null;
 }
 
 /**
@@ -225,6 +242,7 @@ export const sendFaceReportPaymentNotification = async (
     userEmail,
     approvedAt,
     updateFailed,
+    attribution,
   } = params;
 
   const formattedAmount =
@@ -279,6 +297,7 @@ export const sendFaceReportPaymentNotification = async (
       value: formattedDate,
       inline: true,
     },
+    buildAttributionField(attribution),
   ];
 
   if (updateFailed) {
@@ -373,6 +392,8 @@ interface SignupNotificationParams {
   provider: string;
   signedUpAt: string;
   service: SignupService;
+  /** 가입 시점의 마지막 UTM 유입 */
+  attribution: Attribution | null;
 }
 
 const PROVIDER_LABELS: Record<string, string> = {
@@ -460,7 +481,8 @@ export const sendUniverseCreatedNotification = async (
 export const sendSignupNotification = async (
   params: SignupNotificationParams
 ): Promise<boolean> => {
-  const { userId, email, name, provider, signedUpAt, service } = params;
+  const { userId, email, name, provider, signedUpAt, service, attribution } =
+    params;
 
   const signedUpDate = new Date(signedUpAt);
   const formattedDate = signedUpDate.toLocaleString("ko-KR", {
@@ -508,6 +530,7 @@ export const sendSignupNotification = async (
         value: formattedDate,
         inline: true,
       },
+      buildAttributionField(attribution),
     ],
     footer: {
       text: SERVICE_FOOTER[service],

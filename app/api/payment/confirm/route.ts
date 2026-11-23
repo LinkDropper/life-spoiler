@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 
+import { logUtmEvent, readAttributionCookies } from "@/libs/attribution";
 import { sendPaymentNotification } from "@/libs/discord";
 import {
   isYearlyEdition,
@@ -224,6 +225,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const { attribution, visitorId } = readAttributionCookies(request.cookies);
+
+    after(() =>
+      logUtmEvent({
+        eventType: "payment",
+        attribution,
+        visitorId,
+        orderId: paymentData.orderId,
+        amount: paymentData.totalAmount,
+        currency,
+        product: fortuneType,
+      })
+    );
+
     // 디스코드 결제 알림 전송 (비동기로 실행, 실패해도 결제 응답에 영향 없음)
     if (profileId && fortuneType) {
       const yearValue = isYearlyEdition(fortuneType)
@@ -282,6 +297,7 @@ export async function POST(request: NextRequest) {
         approvedAt: paymentData.approvedAt,
         year: yearValue,
         fortuneUpdateFailed,
+        attribution,
       }).catch((error) => {
         console.error("디스코드 알림 전송 실패:", error);
       });
