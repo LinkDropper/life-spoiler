@@ -11,14 +11,11 @@ import type { BranchIndex, Palace } from "@/libs/zi-wei-dou-shu/types";
 
 import { AIError } from "./errors";
 import {
+  categorySubSectionCount,
   formatFactSheetBlock,
   mergeTiming,
   pickEvidence,
 } from "./lifetime-fact-format";
-import {
-  buildViolationFeedback,
-  findOutputViolations,
-} from "./output-validator";
 import { getPrompts } from "./prompts";
 import type {
   AgeScenarioResponse,
@@ -48,6 +45,7 @@ import {
   parseJsonResponse,
   CURRENT_MODEL_NAME,
 } from "./provider";
+import { completeWithViolationRetry, withJudgment } from "./violation-retry";
 
 // ============================================================
 // Gemini responseSchema 정의
@@ -70,9 +68,9 @@ const SUB_SECTION_SCHEMA: GeminiResponseSchema = {
  */
 const LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
   type: "object",
+  // 본문(subSections)을 headline보다 먼저 둔다. strict 모드는 속성 순서대로 생성해서,
+  // headline이 앞에 있으면 본문을 쓰기 전에 요약부터 정했다(재설계 §1 D8).
   properties: {
-    headline: { type: "string" },
-    description: { type: "string" },
     summary: { type: "string" },
     subSections: {
       type: "array",
@@ -80,6 +78,8 @@ const LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
       minItems: 3,
       maxItems: 5,
     },
+    headline: { type: "string" },
+    description: { type: "string" },
     oneLiner: { type: "string" },
   },
   required: ["headline", "description", "oneLiner"],
@@ -89,7 +89,6 @@ const LIFE_SPOILER_SCHEMA: GeminiResponseSchema = {
 const LIFETIME_CORE_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
-    headline: { type: "string" },
     content: { type: "string" },
     subSections: {
       type: "array",
@@ -97,6 +96,7 @@ const LIFETIME_CORE_SCHEMA: GeminiResponseSchema = {
       minItems: 3,
       maxItems: 5,
     },
+    headline: { type: "string" },
     oneLiner: { type: "string" },
   },
   required: ["headline", "oneLiner"],
@@ -106,14 +106,14 @@ const LIFETIME_CORE_SCHEMA: GeminiResponseSchema = {
 const LIFETIME_CATEGORY_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
-    headline: { type: "string" },
     content: { type: "string" },
     subSections: {
       type: "array",
       items: SUB_SECTION_SCHEMA,
       minItems: 2,
-      maxItems: 4,
+      maxItems: 3,
     },
+    headline: { type: "string" },
     oneLiner: { type: "string" },
     tags: {
       type: "array",
@@ -499,14 +499,52 @@ const CATEGORY_LABELS: Record<keyof LifetimeCategoryScores, string> = {
   health: "health",
 };
 
+const KO_CATEGORY_LABELS: Record<keyof LifetimeCategoryScores, string> = {
+  wealth: "재물",
+  career: "직업",
+  relationship: "인연",
+  health: "건강",
+};
+
+const describeRelativeStrengthKo = (score: number): string => {
+  const percentile = (score - 40) / 55;
+  if (percentile >= 0.8) return "전체 사용자 상위 20% — 전반적으로 강한 영역";
+  if (percentile >= 0.6) return "중상위 — 꽤 강한 영역";
+  if (percentile >= 0.4) return "중간 — 특별히 강하지도 약하지도 않은 영역";
+  if (percentile >= 0.2) return "중하위 — 다소 약한 영역";
+  return "전체 사용자 하위 20% — 전반적으로 약한 영역";
+};
+
+/**
+ * KO 영역 위치 블록. 영어 블록을 그대로 두면 지시문 문체가 출력에 새어 "~니다"가 섞였다.
+ */
+const formatRelativeStrengthKo = (
+  ranked: (keyof LifetimeCategoryScores)[],
+  scores: LifetimeCategoryScores,
+  ownKey: keyof LifetimeCategoryScores | undefined
+): string => {
+  const lines = ranked.map(
+    (key, index) =>
+      `- ${KO_CATEGORY_LABELS[key]}: 4개 중 ${index + 1}위, ${describeRelativeStrengthKo(scores[key])}${key === ownKey ? "  ← 이 섹션" : ""}`
+  );
+  return `## 영역별 위치 (엔진 계산, 내부용 — 순위·퍼센트·이 표의 말은 본문에 쓰지 않아요)
+${lines.join("\n")}
+- 이 위치는 영역 전체의 무게만 정해요. 판정이 얼마나 자신 있게 들릴지, 섹션 전체의 균형을 정할 때 써요.
+- 사실 시트 주장의 방향은 바꾸지 않아요. 강한 영역의 negative 주장도 약점으로 그대로 말하고, 약한 영역의 positive 주장도 강점이에요. 화면에 점수와 주장에서 뽑은 근거가 본문 옆에 같이 보여서, 반대로 쓰면 모순으로 읽혀요.`;
+};
+
 const formatRelativeStrength = (
   scores: LifetimeCategoryScores,
-  requestType: InterpretationType
+  requestType: InterpretationType,
+  language?: Locale
 ): string => {
   const ownKey = CATEGORY_KEY_BY_TYPE[requestType];
   const ranked = (Object.keys(scores) as (keyof LifetimeCategoryScores)[]).sort(
     (a, b) => scores[b] - scores[a]
   );
+  if (language === "ko") {
+    return formatRelativeStrengthKo(ranked, scores, ownKey);
+  }
   const lines = ranked.map(
     (key, index) =>
       `- ${CATEGORY_LABELS[key]}: rank ${index + 1}/4, ${describeRelativeStrength(scores[key])}${key === ownKey ? "  ← THIS SECTION" : ""}`
@@ -573,11 +611,12 @@ const formatChartDataForAI = (request: ZiweiInterpretationRequest): string => {
     const blocks = [
       userInfoStr,
       request.categoryScores
-        ? formatRelativeStrength(request.categoryScores, requestType)
+        ? formatRelativeStrength(request.categoryScores, requestType, language)
         : "",
       formatFactSheetBlock(factSheet, requestType, {
         periodLabels: dayunPeriods?.map((p) => p.period),
         currentAge: user.currentAge,
+        language,
       }),
       previousContext ?? "",
     ];
@@ -747,6 +786,47 @@ ${issues}
 Rewrite the whole JSON so it matches the format and item counts the instructions ask for. Keep the content and language.`;
 };
 
+/** 응답 스키마의 subSections 개수를 고정한 사본 (원본 상수는 건드리지 않음) */
+const withSubSectionCount = (
+  schema: GeminiResponseSchema,
+  count: number
+): GeminiResponseSchema => {
+  const subSections = schema.properties?.subSections;
+  if (!subSections) return schema;
+  return {
+    ...schema,
+    properties: {
+      ...schema.properties,
+      subSections: { ...subSections, minItems: count, maxItems: count },
+    },
+  };
+};
+
+/** 판정 필드를 받는 해석 유형 (KO 섹션 지시가 judgment를 먼저 쓰게 한다) */
+const JUDGMENT_TYPES: InterpretationType[] = [
+  "life_spoiler",
+  "lifetime_core",
+  "lifetime_wealth",
+  "lifetime_career",
+  "lifetime_relationship",
+  "lifetime_health",
+];
+
+const buildResponseSchema = (
+  request: ZiweiInterpretationRequest
+): GeminiResponseSchema => {
+  const base = RESPONSE_SCHEMA_MAP[request.requestType];
+  const count = request.factSheet
+    ? categorySubSectionCount(request.factSheet, request.requestType)
+    : undefined;
+  const counted = count ? withSubSectionCount(base, count) : base;
+  return request.language === "ko" &&
+    request.factSheet &&
+    JUDGMENT_TYPES.includes(request.requestType)
+    ? withJudgment(counted)
+    : counted;
+};
+
 const requestInterpretation = async <T>(
   request: ZiweiInterpretationRequest,
   schema: z.ZodType<T>
@@ -764,38 +844,18 @@ const requestInterpretation = async <T>(
 
 ${userPrompt}`;
 
-  const responseSchema = RESPONSE_SCHEMA_MAP[request.requestType];
+  const responseSchema = buildResponseSchema(request);
   const messages: GeminiMessage[] = [
     { role: "system", content: prompts.ziweiSystemPrompt },
     { role: "user", content: fullUserPrompt },
   ];
 
-  let response = await chatCompletion(messages, { responseSchema });
-  let parsed = parseJsonResponse<unknown>(response);
-
-  // 금지 용어·메타 문구가 있으면 피드백을 붙여 1회 재생성한다.
-  const violations = findOutputViolations(parsed, request.language);
-  if (violations.length > 0) {
-    const retryResponse = await chatCompletion(
-      [
-        ...messages,
-        { role: "assistant", content: response },
-        { role: "user", content: buildViolationFeedback(violations) },
-      ],
-      { responseSchema }
-    );
-    response = retryResponse;
-    parsed = parseJsonResponse<unknown>(retryResponse);
-
-    const remaining = findOutputViolations(parsed, request.language);
-    if (remaining.length > 0) {
-      // 재생성 후에도 남으면 결과는 내보내되 운영 로그로 추적한다 (품질 지표: 위반률).
-      console.warn("[lifetime-validator] 재생성 후에도 금지 표현 잔존", {
-        requestType: request.requestType,
-        violations: remaining.map((v) => `${v.path}: ${v.match}`),
-      });
-    }
-  }
+  // 금지 용어·문체 위반이 있으면 피드백을 붙여 1회 재생성한다.
+  const { response, parsed } = await completeWithViolationRetry(messages, {
+    language: request.language,
+    completion: { responseSchema },
+    label: `lifetime:${request.requestType}`,
+  });
 
   const first = schema.safeParse(parsed);
   if (first.success) {

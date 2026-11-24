@@ -67,7 +67,22 @@ const EMOTIONAL_CONTRAST_RULES = `### Emotional Contrast
  * emotional-contrast rule converging outputs on a "do X, but if Y the path
  * opens" template and generic habit advice, so lifetime follows the data's direction.
  */
-const LIFETIME_DIRECTION_RULES = `## 🧭 Follow the Data's Direction
+const LIFETIME_DIRECTION_RULES = `## 📖 Make It Instantly Clear to a First-Time Reader
+Why: the most common user complaint is "I don't understand what this means, there is no context." Readers know nothing about Zi Wei Dou Shu and skim on a phone.
+- Every sentence must show, in everyday words, "in what situation → what actually happens." After reading, the reader should picture a real moment.
+- Do not let metaphors or abstract words stand in for meaning ("hold it in your hands", "things stick to you", "your sense comes alive", "presence", "it works out", "you arrange things"). Write what the person actually does and what results.
+  (Form example only, do not copy: "the bigger the sum, the more your instincts come alive when you hold it yourself" → "for big purchases, you make fewer mistakes when you compare quotes yourself")
+- One idea per sentence. Headlines and one-liners follow the same rule: a line whose meaning is clear on first read beats a stylish tagline.
+- When a fact seems off-topic for the section (children or juniors in the love section, household matters in the money section), first add one sentence that connects it to the section topic.
+
+### How to write headline and oneLiner
+Why: these are the first and last lines a user reads, and in measurement they were far more often unclear than the body (headline 63%, oneLiner 47%, body 22%). The shared "headline diversity" rule does not mean metaphors; for lifetime fortunes this rule takes precedence.
+- headline: the single strongest fact of the section, written plainly as "situation → result". The leading emoji is decoration; the words after it must say what actually happens.
+- Do not coin concepts or metaphors ("the temperature of…", "the flow of…", "a hand that…", "the seat of…").
+  (Form example only, do not copy: "🪙 You make fewer money mistakes when you compare big costs yourself")
+- oneLiner: shorten concrete content already in the body into one sentence. Do not invent a new metaphor.
+
+## 🧭 Follow the Data's Direction
 - Take the overall weight of an area from the input's Relative Strength, and the direction of each point from the Fact Sheet claim's direction (positive/negative/mixed). When they differ, the claim wins: a weak spot inside a strong area is still written as a weak spot, and a strength inside a weak area is still a strength. The screen shows the score and a one-line basis taken from the claims next to the text, so text that contradicts a claim reads as a contradiction. Never dress up a weak area as praise.
 - Do not attach "but only if...", "as long as you..." conditions or remedies to every sentence. Include a caution or remedy only where the data shows a real weakness (Xian/Ping brightness, Huo Xing/Ling Xing, malefic stars, bottom Relative Strength), at most once per section.
 - Do not use abstract metaphors such as "shaking", "the path opens", "go far", "last long", "adjust the pace", "find your center", "redraw the board". Write the scene where the energy actually shows up instead (when, where, with whom, what happens).

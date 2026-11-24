@@ -35,7 +35,23 @@ type SupabaseDB = SupabaseClient<Database>;
  * - 올해 운세(`yearly-{year}-{lang}`), 전생 운세(`full-past_life-{lang}`)는 별도의
  *   `interpretation_type` 문자열을 쓰므로 이 버전과 무관하게 캐시가 유지됩니다.
  */
-export const LIFETIME_PROMPT_VERSION = "v6";
+export const LIFETIME_PROMPT_VERSION = "v15";
+
+/**
+ * 올해·내년 운세(yearly) 프롬프트 버전.
+ * `prompts/ko.ts`의 올해 운세 프롬프트나 사실 시트(yearly-fact-format.ts)를 바꾸면 올린다.
+ * v1(키에 버전 없음) → v2: 인생 운세 재설계 기법 적용 (사실 시트, judgment, 검사·재생성).
+ * 이미 저장된 사용자 결과(fortunes 행)는 그대로 두고, 새로 생성하는 결과부터 적용된다.
+ */
+export const YEARLY_PROMPT_VERSION = "v2";
+
+/**
+ * 전생 운세 프롬프트 버전.
+ * `prompts/past-life-ko.ts`나 전생 데이터 블록을 바꾸면 올린다.
+ * v1(키에 버전 없음) → v2: 인생 운세 재설계 기법 적용 (해요체 서사, judgment, 검사·재생성, 탄생을 스포일러 뒤로).
+ * 이미 저장된 사용자 결과(fortunes 행)는 그대로 두고, 새로 생성하는 결과부터 적용된다.
+ */
+export const PAST_LIFE_PROMPT_VERSION = "v2";
 
 /**
  * 캐시 키 타입
@@ -52,7 +68,9 @@ type CacheKeyType =
   // v4부터 타이밍 후보가 기준 연도에 따라 달라지므로 연도를 키에 포함한다
   | `full-${typeof LIFETIME_PROMPT_VERSION}-${number}-${Locale}`
   | `full-past_life-${Locale}`
-  | `yearly-${number}-${Locale}`;
+  | `full-past_life-${typeof PAST_LIFE_PROMPT_VERSION}-${Locale}`
+  | `yearly-${number}-${Locale}`
+  | `yearly-${typeof YEARLY_PROMPT_VERSION}-${number}-${Locale}`;
 
 /**
  * 명반 데이터로부터 고유 해시 생성

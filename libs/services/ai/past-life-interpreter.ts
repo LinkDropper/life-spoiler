@@ -1,11 +1,9 @@
+import type { Locale } from "@/i18n/config";
 import { defaultLocale } from "@/i18n/config";
 
 import { AIError } from "./errors";
-import {
-  chatCompletion,
-  parseJsonResponse,
-  CURRENT_MODEL_NAME,
-} from "./provider";
+import type { OutputValidatorOptions } from "./output-validator";
+import { CURRENT_MODEL_NAME } from "./provider";
 import { generatePastLifeImage } from "./image-generator";
 import {
   categoryLabelToExistenceType,
@@ -13,8 +11,10 @@ import {
   generatePastLifeCoordinates,
 } from "./past-life-seed";
 import { getPastLifePrompts } from "./prompts";
+import { completeWithViolationRetry, withJudgment } from "./violation-retry";
 import type {
   GeminiResponseSchema,
+  GeminiSchemaProperty,
   PalaceData,
   PastLifeBirthResponse,
   PastLifeConnectionsResponse,
@@ -328,6 +328,124 @@ const PAST_LIFE_RESPONSE_SCHEMA_MAP: Record<
   past_life_traces: PAST_LIFE_TRACES_SCHEMA,
 };
 
+// ============================================================
+// KO 스키마 (인생 운세 재설계와 같은 순서)
+// ============================================================
+//
+// strict 모드는 속성 순서대로 생성하므로 judgment(판정) → 본문 → 제목 순으로 둔다.
+// 스포일러는 존재 유형을 먼저 정하고, 이미지 프롬프트는 본문을 다 쓴 뒤 맨 끝에 써서
+// 그림이 글과 같은 존재를 그리게 한다. 레거시 칸(summary, content)은 뺀다.
+
+const subSections = (count: number): GeminiSchemaProperty => ({
+  type: "array",
+  items: SUB_SECTION_SCHEMA,
+  minItems: count,
+  maxItems: count,
+});
+
+const narrative = (
+  extra: Record<string, GeminiSchemaProperty> = {},
+  before: Record<string, GeminiSchemaProperty> = {}
+): GeminiResponseSchema =>
+  withJudgment({
+    type: "object",
+    properties: {
+      ...before,
+      subSections: subSections(3),
+      headline: { type: "string" },
+      oneLiner: { type: "string" },
+      ...extra,
+    },
+    required: [
+      ...Object.keys(before),
+      "subSections",
+      "headline",
+      "oneLiner",
+      ...Object.keys(extra),
+    ],
+  });
+
+const existenceTypeProperty = (
+  PAST_LIFE_SPOILER_SCHEMA.properties as Record<string, GeminiSchemaProperty>
+).existenceType;
+
+const KO_SPOILER_SCHEMA: GeminiResponseSchema = (() => {
+  const base = narrative({
+    description: { type: "string" },
+    imagePrompt: { type: "string" },
+  });
+  // existenceType → judgment → 본문 → headline → description → oneLiner → imagePrompt
+  return {
+    ...base,
+    properties: { existenceType: existenceTypeProperty, ...base.properties },
+    required: ["existenceType", ...(base.required ?? [])],
+  };
+})();
+
+const withCount = (
+  schema: GeminiResponseSchema,
+  key: string,
+  count: number
+): GeminiResponseSchema => ({
+  ...schema,
+  properties: {
+    ...schema.properties,
+    [key]: {
+      ...(schema.properties?.[key] as GeminiSchemaProperty),
+      minItems: count,
+      maxItems: count,
+    },
+  },
+});
+
+const KO_PAST_LIFE_RESPONSE_SCHEMA_MAP: Record<
+  PastLifeInterpretationType,
+  GeminiResponseSchema
+> = {
+  past_life_spoiler: KO_SPOILER_SCHEMA,
+  past_life_birth: narrative(),
+  past_life_journey: narrative(
+    {},
+    {
+      events: PAST_LIFE_JOURNEY_SCHEMA.properties
+        ?.events as GeminiSchemaProperty,
+    }
+  ),
+  past_life_end: narrative({ lastWords: { type: "string" } }),
+  past_life_connections: narrative(),
+  past_life_profile_card: withCount(
+    withCount(PAST_LIFE_PROFILE_CARD_SCHEMA, "hashtags", 3),
+    "spectrums",
+    4
+  ),
+  past_life_stats: withCount(PAST_LIFE_STATS_SCHEMA, "stats", 5),
+  past_life_contrast: PAST_LIFE_CONTRAST_SCHEMA,
+  past_life_lessons: PAST_LIFE_LESSONS_SCHEMA,
+  past_life_world: PAST_LIFE_WORLD_SCHEMA,
+  past_life_traces: PAST_LIFE_TRACES_SCHEMA,
+};
+
+const isKoRequest = (language?: Locale): boolean =>
+  (language ?? defaultLocale) === "ko";
+
+/**
+ * 이미지 프롬프트와 존재 유형은 화면에 나오지 않아 검사하지 않는다.
+ * 기상 현상·지형 전생은 "강의 흐름", "기온"처럼 추상어 목록의 말이 실제 뜻으로 쓰여 그 검사를 끈다.
+ */
+const validatorOptionsFor = (
+  request: Omit<ZiweiInterpretationRequest, "requestType">
+): OutputValidatorOptions => {
+  const locale = request.language ?? defaultLocale;
+  const { category } = generatePastLifeCoordinates(request, locale);
+  const type = categoryLabelToExistenceType(category);
+  return {
+    skipKeys: ["imagePrompt", "existenceType"],
+    ...(type === "weather" || type === "landform"
+      ? { skipCodes: ["ABSTRACT_WORD"] }
+      : {}),
+  };
+};
+
 /**
  * 신규(subSections+oneLiner) / 레거시(content) 어느 쪽이든 안전하게 첫 문장 발췌.
  * previousContext 불릿에 들어가므로 모든 whitespace 평탄화.
@@ -407,6 +525,34 @@ const formatPastLifeDataForAI = (
   const coordinates = generatePastLifeCoordinates(request, locale);
   const coordinateBlock = formatCoordinatesForPrompt(coordinates, locale);
 
+  if (isKoRequest(request.language)) {
+    // KO: 지시문 문체가 출력에 새지 않도록 헤더도 한국어로 쓴다 (명반 원문은 내부용)
+    let koStr = `${coordinateBlock}
+
+## 손님 정보
+- 성별: ${user.gender === "male" ? "남성" : "여성"}
+
+## 명반 (내부용, 이름은 출력하지 않아요)
+- 오행국: ${chart.wuxingJu}
+- 화록: ${chart.sihua.hualu.star} (${chart.sihua.hualu.palace})
+- 화권: ${chart.sihua.huaquan.star} (${chart.sihua.huaquan.palace})
+- 화과: ${chart.sihua.huake.star} (${chart.sihua.huake.palace})
+- 화기: ${chart.sihua.huaji.star} (${chart.sihua.huaji.palace})`;
+    for (const palaceName of PAST_LIFE_PALACES) {
+      const palace = palaces[palaceName];
+      if (!palace) continue;
+      const stars = (list: PalaceData["mainStars"]) =>
+        list
+          .map(
+            (st) =>
+              `${st.name}${st.brightness ? `(${st.brightness})` : ""}${st.sihua ? `[${st.sihua}]` : ""}`
+          )
+          .join(", ") || "없음";
+      koStr += `\n- ${palaceName}: 주성 ${stars(palace.mainStars)} / 보조 ${stars(palace.minorStars)}`;
+    }
+    return previousContext ? `${koStr}\n\n${previousContext}` : koStr;
+  }
+
   let dataStr = `${coordinateBlock}
 
 ## User Info
@@ -464,17 +610,23 @@ const requestPastLifeInterpretation = async <T>(
 
 ${userPrompt}`;
 
-  const responseSchema = PAST_LIFE_RESPONSE_SCHEMA_MAP[interpretationType];
+  const responseSchema = isKoRequest(request.language)
+    ? KO_PAST_LIFE_RESPONSE_SCHEMA_MAP[interpretationType]
+    : PAST_LIFE_RESPONSE_SCHEMA_MAP[interpretationType];
 
-  const response = await chatCompletion(
+  // 금지 용어·문체 위반이 있으면 피드백을 붙여 1회 재생성한다 (인생 운세와 같은 검사기)
+  const { parsed } = await completeWithViolationRetry(
     [
       { role: "system", content: prompts.systemPrompt },
       { role: "user", content: fullUserPrompt },
     ],
-    { responseSchema }
+    {
+      language: request.language,
+      completion: { responseSchema },
+      validator: validatorOptionsFor(request),
+      label: `past-life:${interpretationType}`,
+    }
   );
-
-  const parsed = parseJsonResponse<unknown>(response);
 
   // spoiler.existenceType은 schema enum 11종 중 하나여야 하지만, LLM이 좌표
   // 라벨("인간"·"포유류 (육상)"·"Land mammal" 등)을 그대로 출력해 zod 검증이
@@ -681,34 +833,31 @@ export const generatePastLifeInterpretation = async (
   request: Omit<ZiweiInterpretationRequest, "requestType">,
   profileId: string
 ): Promise<PastLifeFortuneInterpretation> => {
-  // Stage 1: 스포일러 + 탄생 (병렬)
-  const [spoiler, birth] = await Promise.all([
-    interpretPastLifeSpoiler(request),
-    interpretPastLifeBirth(request),
-  ]);
+  // Stage 1: 스포일러. 탄생은 스포일러가 정한 존재를 알아야 해서 Stage 2로 옮겼다
+  // (예전에는 병렬이라 두 섹션이 서로 다른 종을 고를 수 있었다).
+  const spoiler = await interpretPastLifeSpoiler(request);
 
   // Stage 1 완료 후 이미지 생성 시작 (Stage 2~3과 병렬 진행)
   const imagePromise = spoiler.imagePrompt
     ? generatePastLifeImage(spoiler.imagePrompt, profileId)
     : Promise.resolve(null);
 
-  // Stage 1 맥락 생성 (신구조/레거시 모두 안전)
-  const birthOpening = extractPastLifeOpening(
-    birth.subSections,
-    birth.oneLiner,
-    birth.content,
+  // 앞 섹션이 쓴 말. 지시문 문체가 출력에 새지 않도록 해요체로 쓴다.
+  const spoilerOpening = extractPastLifeOpening(
+    spoiler.subSections,
+    spoiler.oneLiner,
+    spoiler.summary,
     100
   );
-  const stage1Context = `## 이전 섹션 맥락 (일관성 유지, 표현 반복 금지)
+  const stage1Context = `## 앞 섹션에서 정한 것
 - 전생 존재: ${spoiler.headline} (${spoiler.existenceType})
-- 전생 설명: ${spoiler.description}
-- 탄생 headline: "${birth.headline}"
-- 탄생 첫 문장: "${birthOpening}"
-위 표현과 같은 구조·어휘·패턴을 사용하지 마세요. 완전히 다른 표현을 창작하세요.
-전생 존재 유형(${spoiler.existenceType})에 맞는 서사 톤을 유지하세요.`;
+- 설명: ${spoiler.description}
+- 스포일러 첫 문단: "${spoilerOpening}"
+이 존재 그대로 이어서 쓰고, 위와 같은 문장 구조와 낱말은 피해요.`;
 
-  // Stage 2: 삶 + 죽음과 카르마 + 능력치 + 세계 (병렬, Stage 1 맥락 전달)
-  const [journey, end, stats, world] = await Promise.all([
+  // Stage 2: 탄생 + 삶 + 마지막 + 능력치 + 세계 (병렬, Stage 1 맥락 전달)
+  const [birth, journey, end, stats, world] = await Promise.all([
+    interpretPastLifeBirth(request, stage1Context),
     interpretPastLifeJourney(request, stage1Context),
     interpretPastLifeEnd(request, stage1Context),
     interpretPastLifeStats(request, stage1Context),
@@ -716,7 +865,7 @@ export const generatePastLifeInterpretation = async (
   ]);
 
   // Stage 1~2 맥락 생성
-  const stage2Context = `## 이전 섹션 맥락 (일관성 유지, 표현 반복 금지)
+  const stage2Context = `## 앞 섹션에서 정한 것
 - 전생 존재: ${spoiler.headline} (${spoiler.existenceType})
 - 전생 설명: ${spoiler.description}
 - 탄생: ${birth.headline}
@@ -727,9 +876,7 @@ export const generatePastLifeInterpretation = async (
 - 전생 칭호: ${stats.title}
 - 능력치: ${stats.stats.map((s) => `${s.label}=${s.score}`).join(", ")}
 - 세계: ${world.era}, ${world.location}
-위 headline·표현과 같은 구조·어휘를 사용하지 마세요.
-전생 존재 유형(${spoiler.existenceType})에 맞는 서사 톤을 유지하세요.
-지금까지의 전생 서사 전체를 종합하여 응답하세요.`;
+지금까지의 전생 이야기와 이어지게 쓰고, 위와 같은 문장 구조와 낱말은 피해요.`;
 
   // Stage 3: 인연 + 대비 + 교훈 + 프로필 카드 + 흔적 (병렬, Stage 1~2 맥락 전달)
   const [connections, contrast, lessons, profileCard, traces] =
@@ -804,7 +951,13 @@ export const createPastLifeFallbackInterpretation = (
     stats: { title: "", stats: [] },
     contrast: { contrasts: [] },
     lessons: { lessons: [] },
-    world: { era: "", location: "", atmosphere: "", socialRole: "", description: "" },
+    world: {
+      era: "",
+      location: "",
+      atmosphere: "",
+      socialRole: "",
+      description: "",
+    },
     traces: { traces: [] },
     imageUrl: null,
     meta: {

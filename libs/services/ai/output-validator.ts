@@ -11,7 +11,14 @@ import type { Locale } from "@/i18n/config";
  * 어휘 반복·양면 헤지 같은 '품질' 지표는 회귀 스크립트에서 측정한다.
  */
 
-export type OutputViolationCode = "FORBIDDEN_TERM" | "META_PHRASE";
+export type OutputViolationCode =
+  | "FORBIDDEN_TERM"
+  | "META_PHRASE"
+  | "FORMAL_ENDING"
+  | "BANNED_PHRASE"
+  | "THIRD_PERSON"
+  | "ABSTRACT_WORD"
+  | "REPEATED_JUDGMENT";
 
 export interface OutputViolation {
   code: OutputViolationCode;
@@ -60,13 +67,67 @@ const META_PHRASES_BY_LOCALE: Record<Locale, RegExp[]> = {
   ja: [/(参考程度に|お役に立てれば|ご質問があれば)/g],
 };
 
+/**
+ * KO 본문은 해요체. "~니다"는 영어 지시문 문체가 새어 들어온 흔적이라 코드로 잡는다
+ * (재설계 1단계: 시스템 프롬프트의 문체 규칙을 줄이는 대신 여기서 강제한다).
+ */
+const KO_FORMAL_ENDING = /[가-힣]*니다(?=[.!?,\s"'”’)]|$)/g;
+
+/**
+ * KO 본문은 손님에게 직접 말하는 글이라 손님을 3인칭으로 가리키지 않는다.
+ * v15 프롬프트가 "필요할 때만 '이런 분은'처럼"이라고 쓴 뒤 섹션마다 "이 사람은",
+ * "이분은"이 나와 설명서처럼 읽혔다. "이분법", "이런 분위기", "이 사람 저 사람"은 비켜 간다.
+ */
+const KO_THIRD_PERSON =
+  /(?<![가-힣])(이 ?사람(?! 저 ?사람)(?=[은이의도한에]|\s)|이분(?!법)(?=[은이의도께]|\s)|이런 ?분(?=[은이들께의도]|\s)|이런 ?사람(?=[은이들의도]|\s)|이 ?타입)/g;
+
+/**
+ * KO 추상어. 뜻을 대신하는 말이라 읽고 나서 장면이 남지 않는다
+ * (일반 독자 판정에서 "뜻이 흐림"으로 자주 걸린 말, docs/lifetime-fortune-quality-2026-11.md).
+ * v15 재료 개편 뒤에도 "~듣는 흐름", "존재감이 또렷", "체온감이 살아 있는"이 나왔다.
+ */
+const KO_ABSTRACT_WORDS =
+  /(흐름|존재감|기운|에너지|감이 살아|(?<!체)온도|중심을 잡|멀리 가)/g;
+
+/**
+ * 유형 꼬리표("~타입이에요")는 쓰지 않고, 판정 맺음("~사람이에요")은 섹션에 두 번까지.
+ * 문단마다 같은 말로 맺으면 같은 판정을 되풀이하는 글이 됐다(2003-08-08: 각 3회).
+ */
+const KO_TYPE_LABEL = /타입이(?:에요|죠|라|고)/g;
+const KO_JUDGMENT_ENDING = /사람이(?:에요|죠)/g;
+const MAX_JUDGMENT_ENDINGS = 2;
+
+/** 브랜드 금지 표현 (.claude/rules/brand-voice.md) */
+const BANNED_PHRASES_BY_LOCALE: Record<Locale, RegExp[]> = {
+  ko: [
+    /(뼈 ?때리는|소름 ?돋는|충격적인|대박|인생역전|운명을 바꿔라|럭키 ?컬러|\d+% ?적중)/g,
+    /(!{2,}|\?{2,}|[!?]{3,})/g,
+  ],
+  en: [],
+  ja: [],
+};
+
 /** 검사에서 제외하는 필드 (엔진이 넘긴 나이 구간을 그대로 복사하는 값) */
 const SKIPPED_KEYS = new Set(["period"]);
+
+/**
+ * 운세별 검사 옵션. 인생 운세 기준 규칙을 다른 운세에 그대로 쓰면 오탐이 나는 곳만 끈다
+ * (예: 전생의 "강의 흐름", 궁합에서 두 사람을 이름으로 부르는 문장).
+ */
+export interface OutputValidatorOptions {
+  /** 이 운세에서 검사하지 않는 규칙 */
+  skipCodes?: OutputViolationCode[];
+  /** 검사하지 않는 필드 이름 (이미지 프롬프트처럼 화면에 나오지 않는 값) */
+  skipKeys?: string[];
+  /** "~사람이에요" 맺음 허용 횟수 (기본 2) */
+  maxJudgmentEndings?: number;
+}
 
 const collectStrings = (
   value: unknown,
   path: string,
-  out: { path: string; text: string }[]
+  out: { path: string; text: string }[],
+  skippedKeys: ReadonlySet<string> = SKIPPED_KEYS
 ): void => {
   if (typeof value === "string") {
     out.push({ path, text: value });
@@ -74,14 +135,19 @@ const collectStrings = (
   }
   if (Array.isArray(value)) {
     value.forEach((item, index) =>
-      collectStrings(item, path ? `${path}.${index}` : `${index}`, out)
+      collectStrings(
+        item,
+        path ? `${path}.${index}` : `${index}`,
+        out,
+        skippedKeys
+      )
     );
     return;
   }
   if (value && typeof value === "object") {
     for (const [key, child] of Object.entries(value)) {
-      if (SKIPPED_KEYS.has(key)) continue;
-      collectStrings(child, path ? `${path}.${key}` : key, out);
+      if (skippedKeys.has(key)) continue;
+      collectStrings(child, path ? `${path}.${key}` : key, out, skippedKeys);
     }
   }
 };
@@ -102,26 +168,91 @@ const matchAll = (
  */
 export const findOutputViolations = (
   output: unknown,
-  language: Locale = "ko"
+  language: Locale = "ko",
+  options: OutputValidatorOptions = {}
 ): OutputViolation[] => {
+  const {
+    skipCodes = [],
+    skipKeys = [],
+    maxJudgmentEndings = MAX_JUDGMENT_ENDINGS,
+  } = options;
   const fields: { path: string; text: string }[] = [];
-  collectStrings(output, "", fields);
+  collectStrings(output, "", fields, new Set([...SKIPPED_KEYS, ...skipKeys]));
 
-  return [
+  const violations: OutputViolation[] = [
     ...matchAll(FORBIDDEN_TERMS_BY_LOCALE[language], "FORBIDDEN_TERM", fields),
     ...matchAll(META_PHRASES_BY_LOCALE[language], "META_PHRASE", fields),
+    ...matchAll(BANNED_PHRASES_BY_LOCALE[language], "BANNED_PHRASE", fields),
+    ...(language === "ko"
+      ? [
+          ...matchAll([KO_FORMAL_ENDING], "FORMAL_ENDING", fields),
+          ...matchAll([KO_THIRD_PERSON], "THIRD_PERSON", fields),
+          ...matchAll([KO_ABSTRACT_WORDS], "ABSTRACT_WORD", fields),
+          ...matchAll([KO_TYPE_LABEL], "REPEATED_JUDGMENT", fields),
+          ...matchAll([KO_JUDGMENT_ENDING], "REPEATED_JUDGMENT", fields).slice(
+            maxJudgmentEndings
+          ),
+        ]
+      : []),
   ];
+  return violations.filter((v) => !skipCodes.includes(v.code));
+};
+
+const uniqueMatches = (
+  violations: OutputViolation[],
+  codes: OutputViolationCode[]
+): string[] =>
+  Array.from(
+    new Set(
+      violations.filter((v) => codes.includes(v.code)).map((v) => v.match)
+    )
+  );
+
+const quote = (terms: string[]): string =>
+  terms.map((t) => `"${t}"`).join(", ");
+
+/** KO 피드백. 지시 문체가 출력에 새지 않도록 한국어 해요체로 쓴다. */
+const buildKoViolationFeedback = (violations: OutputViolation[]): string => {
+  const terms = uniqueMatches(violations, ["FORBIDDEN_TERM"]);
+  const phrases = uniqueMatches(violations, ["META_PHRASE", "BANNED_PHRASE"]);
+  const formal = uniqueMatches(violations, ["FORMAL_ENDING"]);
+  const thirdPerson = uniqueMatches(violations, ["THIRD_PERSON"]);
+  const abstract = uniqueMatches(violations, ["ABSTRACT_WORD"]);
+  const repeated = uniqueMatches(violations, ["REPEATED_JUDGMENT"]);
+  const lines = [
+    terms.length > 0
+      ? `- 손님이 모르는 용어가 들어갔어요: ${quote(terms)}. 그 말이 뜻하는 생활 속 모습으로 바꿔 주세요.`
+      : "",
+    phrases.length > 0
+      ? `- 쓰지 않는 표현이 들어갔어요: ${quote(phrases)}. 빼거나 담백한 말로 바꿔 주세요.`
+      : "",
+    formal.length > 0
+      ? `- "~니다"로 끝난 말이 있어요: ${quote(formal)}. 모든 문장을 해요체로 바꿔 주세요.`
+      : "",
+    thirdPerson.length > 0
+      ? `- 손님을 남 얘기하듯 가리킨 말이 있어요: ${quote(thirdPerson)}. 손님에게 직접 말하는 글이라 주어를 빼고 다시 써 주세요.`
+      : "",
+    abstract.length > 0
+      ? `- 뜻을 대신하는 말이 있어요: ${quote(abstract)}. 그 자리에 실제로 하는 일이나 생기는 일을 써 주세요.`
+      : "",
+    repeated.length > 0
+      ? `- 같은 맺음이 되풀이되거나 유형 꼬리표가 있어요: ${quote(repeated)}. 판정은 첫 문장에서 한 번만 말하고, 나머지 문단은 장면에서 생기는 일이나 곁 사람의 반응으로 맺어 주세요.`
+      : "",
+  ].filter(Boolean);
+  return `방금 답에서 고칠 곳이 있어요.
+${lines.join("\n")}
+같은 JSON 형식과 내용, 구성은 그대로 두고 이 부분만 고쳐서 다시 써 주세요.`;
 };
 
 /**
  * 재생성 요청에 붙일 피드백 문구. 위반 표현만 짚고 내용은 유지하도록 요청한다.
  */
 export const buildViolationFeedback = (
-  violations: OutputViolation[]
+  violations: OutputViolation[],
+  language: Locale = "en"
 ): string => {
+  if (language === "ko") return buildKoViolationFeedback(violations);
   const terms = Array.from(new Set(violations.map((v) => v.match)));
-  return `The previous answer contained forbidden expressions: ${terms
-    .map((t) => `"${t}"`)
-    .join(", ")}.
+  return `The previous answer contained forbidden expressions: ${quote(terms)}.
 Rewrite the same JSON in the same language without these expressions. Replace technical terms with plain descriptions of what they mean, and remove meta phrases entirely. Keep the meaning and structure.`;
 };
