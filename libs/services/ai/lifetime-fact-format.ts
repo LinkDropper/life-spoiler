@@ -37,21 +37,97 @@ const CATEGORY_SECTIONS: FactCategory[] = [
   "health",
 ];
 
+/** 연애 재료 표처럼 필드로 된 주장: 장면 단서·곁 사람의 말·피할 해석 */
+const formatClaimMaterial = (claim: FortuneClaim): string =>
+  [
+    claim.cues?.length ? `  cues: ${claim.cues.join(" / ")}` : "",
+    claim.voice ? `  voice: ${claim.voice}` : "",
+    claim.avoid ? `  avoid: ${claim.avoid}` : "",
+  ]
+    .filter(Boolean)
+    .map((line) => `\n${line}`)
+    .join("");
+
 const formatClaim = (claim: FortuneClaim, index: number): string => {
-  const scenes =
-    claim.sceneSeeds.length > 0
-      ? `\n  scenes: ${claim.sceneSeeds.map((s) => `"${s}"`).join(" / ")}`
-      : "";
   const period = claim.period ? ` | period: ${claim.period}` : "";
-  return `${index + 1}. [${claim.direction}, strength ${claim.strength}${period}] ${claim.topic}${scenes}`;
+  const lens = claim.lens ? ` | lens: ${claim.lens}` : "";
+  return `${index + 1}. [${claim.direction}, strength ${claim.strength}${period}${lens}] ${claim.topic}${formatClaimMaterial(claim)}`;
 };
 
-const NARRATION_RULES = `Rules for using the fact sheet:
-- Use these claims as the material for the section (their topics + at least one scene each, rewritten in your own words and in the response language). Use claims in the given order; stronger claims get more space.
-- Keep exactly the number of items (subSections, bullets, paragraphs) the section's response format asks for. Do not add or drop items to match the number of claims: with fewer claims, cover different angles or scenes of the same claims; with more, merge or leave out the weakest.
+/** 스포일러·핵심 시나리오: 항목 구성이 서사 구조(본질·강점·약점·패턴 등)라 개수를 고정한다 */
+const FIXED_ITEM_RULE =
+  "- Keep exactly the number of items (subSections, bullets, paragraphs) the section's response format asks for. Do not add or drop items to match the number of claims: with fewer claims, cover different angles or scenes of the same claims; with more, merge or leave out the weakest.";
+
+/**
+ * 영역 섹션 소제목 개수: 말할 거리만큼(2~3).
+ * v13~v14는 3개로 고정했는데, 주장이 2개(한 별의 강점·주의)뿐인 섹션은 3칸을 채우려고
+ * 같은 이야기를 쪼개 되풀이했다(2003-08-08 인연 ②③). 재설계 1단계에서
+ * 주장이 2개 이하면 2개, 3개 이상이면 3개로 둔다(docs/lifetime-prompt-redesign-2026-11.md §3.5).
+ */
+export const CATEGORY_ITEM_MIN = 2;
+export const CATEGORY_ITEM_MAX = 3;
+
+const categoryItemCount = (claimCount: number): number =>
+  Math.min(CATEGORY_ITEM_MAX, Math.max(CATEGORY_ITEM_MIN, claimCount));
+
+/**
+ * 영역 섹션이면 소제목 개수를, 아니면 undefined.
+ * 응답 스키마의 subSections 개수를 이 값으로 고정한다. 데이터 블록 지시만으로는
+ * 모델이 응답 형식 예시(3개)를 따라 20개 섹션 모두 3개로 썼다.
+ */
+export const categorySubSectionCount = (
+  sheet: LifetimeFactSheet,
+  requestType: InterpretationType
+): number | undefined => {
+  const section = SECTION_BY_TYPE[requestType];
+  if (!section || section === "core") return undefined;
+  return categoryItemCount(sheet.claims[section].length);
+};
+
+const categoryItemRule = (count: number): string =>
+  `- Write exactly ${count} items (subSections, or paragraphs when the format uses a content field), one angle per item. Do not split one claim into several items that say the same thing.`;
+
+const narrationRules = (
+  itemRule: string
+): string => `Rules for using the fact sheet:
+- Use these claims as the material for the section (their topics, each shown through at least one concrete scene, in your own words and in the response language). Claims are ordered by how central they are to this section: the first claim sets the section's main point; later claims support it or show its other side.
+${itemRule}
+- Do not pad by restating a point in other words. When a claim has more to show, use another of its cues; when it has nothing more, move to the next claim.
 - Keep each claim's direction: positive → strength, negative → weak spot said plainly, mixed → both sides.
 - Do not add life events, years, ages, job names or partner details that are not in this sheet.
-- The scenes are seeds, not text to copy. Change the wording; keep the concrete who/when/where.`;
+- Build each scene yourself from the claim's cues (who/when/where/what); do not copy them as text. voice is material for a line someone close would say; lens is the angle the claim covers; avoid is the reading to steer clear of.`;
+
+/**
+ * KO 사실 시트 사용 규칙.
+ * 영어 규칙 블록을 그대로 두면 지시문의 문체가 출력에 새어 "~니다"가 섞였다
+ * (칸별 키워드 실험: 영어 16개 → 한국어 해요체 0개, 2003-08-08).
+ */
+const KO_FIXED_ITEM_RULE =
+  "- 응답 형식이 정한 항목 수를 그대로 지켜요. 주장이 적으면 같은 주장의 다른 장면을 보여 주고, 많으면 약한 주장을 합치거나 빼요.";
+
+const koCategoryItemRule = (count: number): string =>
+  `- 문단은 정확히 ${count}개, 문단마다 관점 하나예요. 주장 하나를 여러 문단으로 쪼개 같은 이야기를 되풀이하지 않아요.`;
+
+const koNarrationRules = (itemRule: string): string => `사실 시트 쓰는 법:
+- 위 주장들이 이 섹션의 재료예요. 이 섹션 질문에 가까운 순서로 놓여 있어서, 판정은 첫 번째 주장에서 정해요. 나머지 주장은 그 판정을 보여 주는 다른 장면이나 반대쪽 모습으로 써요.
+${itemRule}
+- 주장의 방향을 지켜요. positive는 강점으로, negative는 약점을 그대로, mixed는 양쪽을 말해요.
+- 장면은 주장의 cues로 직접 만들어요(언제·어디서·누구와·무엇). 단서를 그대로 옮기지 말고, 입력의 연애·직업 상태에 맞는 그 사람의 장면으로 만들어요. voice는 곁 사람이 할 법한 말의 재료예요. 상황에 맞게 고쳐서, 누가 말했는지 붙인 큰따옴표 대사로 장면 안에 넣어요. lens는 그 주장이 맡을 관점이고, avoid는 그렇게 읽히지 않게 할 해석이에요.
+- 이 시트에 없는 사건, 나이, 연도, 직업명, 상대 정보는 만들지 않아요.`;
+
+const sectionNarration = (
+  language: Locale,
+  kind: "fixed" | { count: number }
+): string => {
+  if (language === "ko") {
+    return koNarrationRules(
+      kind === "fixed" ? KO_FIXED_ITEM_RULE : koCategoryItemRule(kind.count)
+    );
+  }
+  return narrationRules(
+    kind === "fixed" ? FIXED_ITEM_RULE : categoryItemRule(kind.count)
+  );
+};
 
 const formatSectionClaims = (
   sheet: LifetimeFactSheet,
@@ -71,6 +147,8 @@ const formatSectionClaims = (
 export interface DecadeContext {
   periodLabels?: string[];
   currentAge?: number;
+  /** 사실 시트 사용 규칙의 언어 (KO만 한국어 규칙) */
+  language?: Locale;
 }
 
 const decadeLabel = (
@@ -112,7 +190,7 @@ const DECADE_RULES = `Rules for the decade fact sheet:
 - A period with no claims: one short bullet from its stage only.
 - Periods marked [youth]: write school, family and friend situations of that age. Never mention jobs, earning money, dating, marriage or children.
 - Periods marked [senior]: write later-life situations (family, health, neighbours, hobbies, handing things over). No job hunting or promotions.
-- Claims without scenes: invent one concrete scene that fits that period's age.`;
+- Claims with cues: build the scene from the cues and voice (rewritten, never copied). Claims without cues: invent one concrete scene that fits that period's age.`;
 
 /** 나이별 시나리오: 대운 구간마다 무대 + 대운 사화 주장 */
 const formatDecadeBlock = (
@@ -171,6 +249,7 @@ ${toneLine("hard", decadeTones.hard, "negative")}
 /** 스포일러·핵심 시나리오: 핵심 주장 + 각 영역 대표 주장 1개 */
 const formatCoreBlock = (
   sheet: LifetimeFactSheet,
+  language: Locale,
   decadeTones = ""
 ): string => {
   const highlights = CATEGORY_SECTIONS.flatMap((category) => {
@@ -183,7 +262,7 @@ ${formatSectionClaims(sheet, "core")}
 ### One headline claim per area (mention at most briefly; areas have their own sections)
 ${highlights.join("\n") || "- (none)"}
 ${decadeTones ? `\n${decadeTones}\n` : ""}
-${NARRATION_RULES}`;
+${sectionNarration(language, "fixed")}`;
 };
 
 const formatCareerExtra = (sheet: LifetimeFactSheet): string =>
@@ -239,13 +318,18 @@ export const formatFactSheetBlock = (
   if (requestType === "lifetime_age_scenarios") {
     return formatDecadeBlock(sheet, decadeContext);
   }
+  const language = decadeContext.language ?? "en";
   if (requestType === "lifetime_core") {
-    return formatCoreBlock(sheet, formatDecadeTones(sheet, decadeContext));
+    return formatCoreBlock(
+      sheet,
+      language,
+      formatDecadeTones(sheet, decadeContext)
+    );
   }
 
   const section = SECTION_BY_TYPE[requestType];
   if (!section) return "";
-  if (section === "core") return formatCoreBlock(sheet);
+  if (section === "core") return formatCoreBlock(sheet, language);
 
   const extra =
     requestType === "lifetime_career"
@@ -257,7 +341,9 @@ export const formatFactSheetBlock = (
   return `## Fact Sheet — ${section} (engine-computed, internal only)
 ${formatSectionClaims(sheet, section)}
 
-${NARRATION_RULES}${extra}`;
+${sectionNarration(language, {
+  count: categoryItemCount(sheet.claims[section].length),
+})}${extra}`;
 };
 
 // ============================================================

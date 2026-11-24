@@ -19,25 +19,6 @@ const LOCALES = ["ko", "en", "ja"] as const;
 /** validator가 일부러 제외한 궁 이름 + 사화/대운 용어 (표 문장에서는 전부 금지) */
 const EXTRA_KO_FORBIDDEN = /(천이|복덕|대운|유년|명반|삼합|사화|비화)/;
 
-/** 운영 측정에서 걸린 상투어 (sceneSeeds 전용) */
-const STOCK_PHRASES = [
-  "흔들림",
-  "길이 열",
-  "멀리 간",
-  "멀리 가",
-  "오래 간",
-  "오래 가",
-  "판을 짜",
-  "판을 바꾸",
-  "흐름",
-  "속도 조절",
-  "기준을 세",
-  "기록",
-  "통장",
-  "정산",
-  "체크리스트",
-];
-
 const DIRECTION_VALUES = new Set(["positive", "negative", "mixed"]);
 
 /** 객체 값 중 문자열만 모은다 (키는 제외). */
@@ -74,7 +55,8 @@ describe("lifetime-facts 지식 룰 테이블", () => {
         const cell = SIHUA_PALACE_RULES[s][p];
         expect(cell).toBeDefined();
         expect(cell.topic.length).toBeGreaterThan(0);
-        expect(cell.sceneSeeds.length).toBeGreaterThanOrEqual(2);
+        // 장면 재료 형식은 fact-rule-material.test.ts에서 검사한다
+        expect(cell.material.cues.length).toBeGreaterThanOrEqual(3);
       });
     });
     expect(
@@ -144,22 +126,16 @@ describe("lifetime-facts 지식 룰 테이블", () => {
     }).filter((t) => !DIRECTION_VALUES.has(t));
 
     // 키(궁·사화 이름)는 제외하고 값만 검사. 영어·일본어 evidence는 해당 언어 규칙 적용.
-    expect(findOutputViolations(koTexts, "ko")).toEqual([]);
+    // 용어만 본다: 화면용 evidence는 "~기운이 있어요" 형태라 본문용 추상어·맺음 검사 대상이 아니다.
+    expect(
+      findOutputViolations(koTexts, "ko").filter(
+        (v) => v.code === "FORBIDDEN_TERM"
+      )
+    ).toEqual([]);
     koTexts.forEach((t) => expect(t).not.toMatch(EXTRA_KO_FORBIDDEN));
     (["en", "ja"] as const).forEach((l) => {
       const texts = allEvidence().map((e) => e[l]);
       expect(findOutputViolations(texts, l)).toEqual([]);
-    });
-  });
-
-  it("sceneSeeds에 운영 측정 상투어가 없다", () => {
-    allRules().forEach((r) => {
-      r.sceneSeeds.forEach((seed) => {
-        STOCK_PHRASES.forEach((phrase) => {
-          expect(seed).not.toContain(phrase);
-        });
-        expect(seed).not.toMatch(/(^|\s)결(\s|$|이|을)/);
-      });
     });
   });
 });

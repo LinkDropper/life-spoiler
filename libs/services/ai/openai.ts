@@ -282,6 +282,14 @@ const toStrictJsonSchema = (
       items: schema.items
         ? toStrictJsonSchema(schema.items)
         : { type: "string" },
+      // strict 모드는 minItems·maxItems를 지원한다(2026-11 실호출로 확인).
+      // 빼면 개수 제약이 Zod 검증에서야 걸려 재생성·fallback으로 이어진다.
+      ...("minItems" in schema && schema.minItems !== undefined
+        ? { minItems: schema.minItems }
+        : {}),
+      ...("maxItems" in schema && schema.maxItems !== undefined
+        ? { maxItems: schema.maxItems }
+        : {}),
       ...("description" in schema && schema.description
         ? { description: schema.description }
         : {}),
