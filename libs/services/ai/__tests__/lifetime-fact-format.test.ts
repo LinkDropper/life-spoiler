@@ -1,7 +1,7 @@
 import type { LifetimeFactSheet } from "@/libs/zi-wei-dou-shu/calculators/lifetime-facts";
 
 import {
-  CATEGORY_ITEM_COUNT,
+  categorySubSectionCount,
   formatFactSheetBlock,
   mergeTiming,
 } from "../lifetime-fact-format";
@@ -15,7 +15,6 @@ const claim = (id: string, section: "core" | "wealth" | "timing") => ({
   topic: `${id} 주제`,
   direction: "positive" as const,
   strength: 3 as const,
-  sceneSeeds: [`${id} 장면`],
   evidence,
 });
 
@@ -94,12 +93,67 @@ describe("formatFactSheetBlock", () => {
   });
 
   describe("영역 섹션 항목 수", () => {
-    it("주장이 2개뿐이어도 항목 3개를 지시하고, 되풀이 대신 다른 장면을 쓰게 한다", () => {
-      const block = formatFactSheetBlock(sheet, "lifetime_wealth");
-      expect(CATEGORY_ITEM_COUNT).toBe(3);
-      expect(block).toContain("Write exactly 3 items");
-      expect(block).toContain("another scene of the same claim");
-      expect(block).toContain("Do not pad");
+    it("주장이 2개 이하면 2개, 3개 이상이면 3개를 지시한다", () => {
+      expect(categorySubSectionCount(sheet, "lifetime_wealth")).toBe(2);
+      expect(formatFactSheetBlock(sheet, "lifetime_wealth")).toContain(
+        "Write exactly 2 items"
+      );
+
+      const rich: LifetimeFactSheet = {
+        ...sheet,
+        claims: {
+          ...sheet.claims,
+          wealth: ["w1", "w2", "w3", "w4"].map((id) => claim(id, "wealth")),
+        },
+      };
+      expect(categorySubSectionCount(rich, "lifetime_wealth")).toBe(3);
+      expect(formatFactSheetBlock(rich, "lifetime_wealth")).toContain(
+        "Write exactly 3 items"
+      );
+    });
+
+    it("스포일러·핵심 시나리오는 개수를 스키마로 고정하지 않는다", () => {
+      expect(categorySubSectionCount(sheet, "life_spoiler")).toBeUndefined();
+      expect(categorySubSectionCount(sheet, "lifetime_core")).toBeUndefined();
+    });
+
+    it("연애 재료 주장은 관점·단서·말·피할 해석을 함께 싣는다", () => {
+      const love: LifetimeFactSheet = {
+        ...sheet,
+        claims: {
+          ...sheet.claims,
+          relationship: [
+            {
+              id: "love:self:천동:energy",
+              section: "relationship",
+              topic: "같이 있으면 긴장이 풀리게 하는 사람",
+              direction: "positive",
+              strength: 3,
+              lens: "상대가 보는 나",
+              cues: ["동네 카페", "주말 늦은 아침", "편의점 산책"],
+              voice: "너랑 있으면 그냥 편해",
+              avoid: "무관심",
+            },
+          ],
+        },
+      };
+      const block = formatFactSheetBlock(love, "lifetime_relationship", {
+        language: "ko",
+      });
+      expect(block).toContain("| lens: 상대가 보는 나]");
+      expect(block).toContain("cues: 동네 카페 / 주말 늦은 아침 / 편의점 산책");
+      expect(block).toContain("voice: 너랑 있으면 그냥 편해");
+      expect(block).toContain("avoid: 무관심");
+    });
+
+    it("KO는 사실 시트 규칙을 한국어 해요체로 준다", () => {
+      const block = formatFactSheetBlock(sheet, "lifetime_wealth", {
+        language: "ko",
+      });
+      expect(block).toContain("사실 시트 쓰는 법");
+      expect(block).toContain("문단은 정확히 2개");
+      expect(block).not.toContain("Rules for using the fact sheet");
+      expect(block).not.toMatch(/니다/);
     });
 
     it("스포일러는 서사 구조라 항목 수를 고정한다", () => {

@@ -4,7 +4,7 @@ import {
 } from "@/libs/zi-wei-dou-shu/calculators";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
 
-import { CATEGORY_ITEM_COUNT } from "../lifetime-fact-format";
+import { categorySubSectionCount } from "../lifetime-fact-format";
 import {
   buildRequestFactSheet,
   convertChartToRequest,
@@ -173,7 +173,7 @@ describe("generateFullInterpretation", () => {
       calculateAllDayunScores(calculateDayun(chart, 100, "ko")),
       new Date("2026-11-20T00:00:00+09:00")
     );
-    const expected = CATEGORY_ITEM_COUNT;
+    const expected = categorySubSectionCount(factSheet, "lifetime_wealth");
 
     await interpretLifetimeWealth({ ...buildRequest(), factSheet });
 
@@ -181,7 +181,59 @@ describe("generateFullInterpretation", () => {
     const schema = options?.responseSchema as {
       properties: { subSections: { minItems: number; maxItems: number } };
     };
+    expect(expected).toBe(
+      Math.min(3, Math.max(2, factSheet.claims.wealth.length))
+    );
     expect(schema.properties.subSections.minItems).toBe(expected);
     expect(schema.properties.subSections.maxItems).toBe(expected);
+  });
+
+  it("KO 사실 시트 요청은 판정을 먼저, 본문을 headline보다 먼저 쓰게 한다", async () => {
+    mockChatCompletion.mockResolvedValue(makeResponse("본문"));
+    const { interpretLifetimeRelationship } = loadInterpreter();
+    const factSheet = buildRequestFactSheet(
+      chart,
+      calculateAllDayunScores(calculateDayun(chart, 100, "ko")),
+      new Date("2026-11-20T00:00:00+09:00")
+    );
+
+    await interpretLifetimeRelationship({ ...buildRequest(), factSheet });
+
+    const [[messages, options]] = mockChatCompletion.mock.calls;
+    const keys = Object.keys(
+      (options?.responseSchema as { properties: Record<string, unknown> })
+        .properties
+    );
+    expect(keys[0]).toBe("judgment");
+    expect(keys.indexOf("subSections")).toBeLessThan(keys.indexOf("headline"));
+    const user = messages.find((m) => m.role === "user")?.content ?? "";
+    expect(user).toContain("사실 시트 쓰는 법");
+    expect(user).toContain("## 영역별 위치");
+    expect(user).not.toContain("Rules for using the fact sheet");
+  });
+
+  it("EN 요청에는 판정 칸을 붙이지 않는다", async () => {
+    mockChatCompletion.mockResolvedValue(makeResponse("body"));
+    const { interpretLifetimeRelationship } = loadInterpreter();
+    const factSheet = buildRequestFactSheet(
+      chart,
+      calculateAllDayunScores(calculateDayun(chart, 100, "ko")),
+      new Date("2026-11-20T00:00:00+09:00")
+    );
+
+    await interpretLifetimeRelationship({
+      ...buildRequest(),
+      language: "en",
+      factSheet,
+    });
+
+    const [[messages, options]] = mockChatCompletion.mock.calls;
+    const keys = Object.keys(
+      (options?.responseSchema as { properties: Record<string, unknown> })
+        .properties
+    );
+    expect(keys).not.toContain("judgment");
+    const user = messages.find((m) => m.role === "user")?.content ?? "";
+    expect(user).toContain("Rules for using the fact sheet");
   });
 });
