@@ -29,7 +29,9 @@ export {
   getCachedResult,
   getOrCreateCachedResult,
   LIFETIME_PROMPT_VERSION,
+  PAST_LIFE_PROMPT_VERSION,
   setCachedResult,
+  YEARLY_PROMPT_VERSION,
 } from "./analysis-cache";
 export { getFaceReportByShareId, updateFaceReportPaidAt } from "./face-report";
 export {

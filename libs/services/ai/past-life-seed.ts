@@ -242,7 +242,17 @@ interface ChartBias {
 }
 
 const STAR_GROUPS: Record<string, string[]> = {
-  human: ["자미", "태양", "거문", "천량", "천상", "무곡", "천기", "문창", "문곡"],
+  human: [
+    "자미",
+    "태양",
+    "거문",
+    "천량",
+    "천상",
+    "무곡",
+    "천기",
+    "문창",
+    "문곡",
+  ],
   wild: ["탐랑", "칠살", "파군", "염정"],
   quiet: ["천동", "태음"],
   storm: ["칠살", "파군"],
@@ -361,10 +371,9 @@ const COORDINATE_LABELS: Record<Locale, Record<AxisName, string>> = {
 };
 
 const COORDINATE_INTRO: Record<Locale, string> = {
-  ko: `## 🎯 이번 사용자의 전생 좌표 (반드시 준수)
-아래 좌표는 명반 기운 + 사용자 고유 시드로 산출된 이번 사용자만의 무대입니다.
-이 좌표 안에서 **실존하는(했던) 구체적 종(種)·존재**를 직접 골라 캐릭터를 창작하세요.
-좌표를 무시하고 다른 카테고리/시대/지역으로 이동하지 마세요.`,
+  // 지시문 문체가 출력에 새지 않도록 해요체로 쓴다 (prompts/past-life-ko.ts)
+  ko: `## 이번 손님의 전생 좌표 (엔진 계산, 내부용)
+명반과 손님 고유의 시드로 정한 이번 손님만의 무대예요. 이 안에서 실제로 있었던 종이나 인물상을 하나 골라요. 다른 카테고리나 시대, 지역으로 옮기지 않아요.`,
   en: `## 🎯 This user's past life coordinates (mandatory)
 These coordinates are derived from the chart's energy plus a deterministic per-user seed.
 Pick a **specific real species / being that exists (or existed)** within these coordinates and create the character.
@@ -376,14 +385,13 @@ Do not drift to a different category, era, or region.`,
 };
 
 const COORDINATE_OUTRO: Record<Locale, string> = {
-  ko: `위 좌표는 캐릭터 본체(headline / existenceType / description / imagePrompt)와 세계 묘사(world / birth / journey / end)에 모두 일관되게 반영하세요.
-좌표가 어색하다고 다른 좌표로 갈아타지 말 것 — 그 안에서 창작하는 게 다양성의 핵심입니다.
-- "드라마성: 찰나의 격변·이른 끝맺음" → 며칠/한 계절짜리 짧은 일생.
-- "카테고리: 광물·암석" → 흑요석·자수정·소금·운모 같은 실존 광물 이름.
-- "카테고리: 기상 현상" → 계절풍·천둥구름·아침안개·우박 같은 실존 현상.
-- "카테고리: 균류·이끼" → 송이버섯·붉은 영지·바위이끼 같은 실존 종.
-- "위계: 이방인·떠돌이" → 고향이 없거나 이주 중인 존재.
-좌표가 인간이 아니면 imagePrompt에서 "portrait/face/person/human" 단어 절대 금지.`,
+  ko: `이 좌표는 전생의 정체와 세계, 탄생, 삶, 마지막 이야기 모두에 그대로 이어져요.
+- 드라마성이 "찰나의 격변·이른 끝맺음"이면 며칠이나 한 계절 동안의 짧은 생이에요.
+- 광물·암석이면 흑요석, 자수정, 소금, 운모처럼 실제 광물 이름이에요.
+- 기상 현상이면 계절풍, 천둥구름, 아침안개, 우박처럼 실제 현상이에요.
+- 균류·이끼면 송이버섯, 영지, 바위이끼처럼 실제 종이에요.
+- 위계가 "이방인·떠돌이"면 고향이 없거나 옮겨 다니는 존재예요.
+- 사람이 아닌 카테고리면 imagePrompt에 portrait, face, person, human을 넣지 않아요.`,
   en: `Apply these coordinates consistently across the character body (headline / existenceType / description / imagePrompt) and the world description (world / birth / journey / end).
 If a coordinate feels awkward, do NOT switch to another — creating within it is the whole point of diversity.
 - "Dramaturgy: brief upheaval / early ending" → a life of days or one season.
@@ -451,11 +459,18 @@ const CATEGORY_TO_TYPE: Array<{ pattern: RegExp; type: string }> = [
   { pattern: /파충|양서|reptile|amphibian|爬虫|両生/i, type: "reptile" },
   { pattern: /어류|해양|fish|marine|魚|海洋/i, type: "fish" },
   { pattern: /곤충|절지|insect|arthropod|昆虫|節足/i, type: "insect" },
-  { pattern: /꽃|풀|관목|교목|고목|plant|tree|flower|grass|shrub|花|草|低木|高木|古木/i, type: "plant" },
+  {
+    pattern:
+      /꽃|풀|관목|교목|고목|plant|tree|flower|grass|shrub|花|草|低木|高木|古木/i,
+    type: "plant",
+  },
   { pattern: /균류|이끼|fungi|moss|菌|苔/i, type: "fungi" },
   { pattern: /광물|암석|mineral|rock|鉱物|岩石/i, type: "mineral" },
   { pattern: /기상|weather|wind|cloud|rain|気象|風|雲|雨/i, type: "weather" },
-  { pattern: /지형|지질|landform|river|mountain|cave|地形|地質|川|山|洞窟/i, type: "landform" },
+  {
+    pattern: /지형|지질|landform|river|mountain|cave|地形|地質|川|山|洞窟/i,
+    type: "landform",
+  },
 ];
 
 export const categoryLabelToExistenceType = (categoryLabel: string): string => {

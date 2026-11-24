@@ -48,7 +48,7 @@ const formatClaimMaterial = (claim: FortuneClaim): string =>
     .map((line) => `\n${line}`)
     .join("");
 
-const formatClaim = (claim: FortuneClaim, index: number): string => {
+export const formatClaim = (claim: FortuneClaim, index: number): string => {
   const period = claim.period ? ` | period: ${claim.period}` : "";
   const lens = claim.lens ? ` | lens: ${claim.lens}` : "";
   return `${index + 1}. [${claim.direction}, strength ${claim.strength}${period}${lens}] ${claim.topic}${formatClaimMaterial(claim)}`;

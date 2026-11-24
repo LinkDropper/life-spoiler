@@ -4,6 +4,7 @@ import { calculateSamBangSaJeong } from "@/libs/zi-wei-dou-shu/calculators/sam-b
 import type { BranchIndex, Palace } from "@/libs/zi-wei-dou-shu/types";
 
 import { AIError } from "./errors";
+import type { OutputValidatorOptions } from "./output-validator";
 import { getPrompts } from "./prompts";
 import type { PalaceData } from "./types";
 import type {
@@ -22,11 +23,12 @@ import {
   YearlyMonthlyFortuneSchema,
   YearlyOverviewResponseSchema,
 } from "./types";
+import { CURRENT_MODEL_NAME } from "./provider";
+import { completeWithViolationRetry, withJudgment } from "./violation-retry";
 import {
-  chatCompletion,
-  parseJsonResponse,
-  CURRENT_MODEL_NAME,
-} from "./provider";
+  formatYearlyFactBlockKo,
+  yearlyCategoryItemCount,
+} from "./yearly-fact-format";
 
 // ============================================================
 // Gemini responseSchema 정의 (유년)
@@ -146,6 +148,133 @@ const YEARLY_RESPONSE_SCHEMA_MAP: Record<
   yearly_health: YEARLY_CATEGORY_SCHEMA,
   yearly_monthly: YEARLY_MONTHLY_SCHEMA,
 };
+
+// ============================================================
+// KO 사실 시트 요청용 스키마
+// ============================================================
+//
+// 인생 운세 재설계와 같은 순서다. strict 모드는 속성 순서대로 생성하므로
+// judgment(판정) → 본문 → headline 순으로 두어 결론을 먼저 정하고 제목은 본문 뒤에 쓴다.
+// 레거시 칸(summary, content)은 빼서 같은 내용을 두 번 쓰지 않게 한다.
+
+const KO_YEARLY_OVERVIEW_SCHEMA: GeminiResponseSchema = withJudgment({
+  type: "object",
+  properties: {
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 4,
+      maxItems: 4,
+    },
+    headline: { type: "string" },
+    description: { type: "string" },
+    oneLiner: { type: "string" },
+    tags: {
+      type: "array",
+      items: { type: "string" },
+      minItems: 2,
+      maxItems: 3,
+    },
+  },
+  required: ["subSections", "headline", "description", "oneLiner", "tags"],
+});
+
+const KO_YEARLY_CORE_SCHEMA: GeminiResponseSchema = withJudgment({
+  type: "object",
+  properties: {
+    subSections: {
+      type: "array",
+      items: SUB_SECTION_SCHEMA,
+      minItems: 4,
+      maxItems: 4,
+    },
+    headline: { type: "string" },
+    oneLiner: { type: "string" },
+  },
+  required: ["subSections", "headline", "oneLiner"],
+});
+
+const koYearlyCategorySchema = (count: number): GeminiResponseSchema =>
+  withJudgment({
+    type: "object",
+    properties: {
+      subSections: {
+        type: "array",
+        items: SUB_SECTION_SCHEMA,
+        minItems: count,
+        maxItems: count,
+      },
+      headline: { type: "string" },
+      oneLiner: { type: "string" },
+      tags: {
+        type: "array",
+        items: { type: "string" },
+        minItems: 2,
+        maxItems: 2,
+      },
+      score: { type: "integer", minimum: 0, maximum: 100 },
+    },
+    required: ["subSections", "headline", "oneLiner", "tags", "score"],
+  });
+
+const KO_YEARLY_MONTHLY_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    monthlyFortunes: {
+      type: "array",
+      minItems: 12,
+      maxItems: 12,
+      items: {
+        type: "object",
+        properties: {
+          month: { type: "integer", minimum: 1, maximum: 12 },
+          bullets: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 2,
+            maxItems: 3,
+          },
+          headline: { type: "string" },
+          oneLiner: { type: "string" },
+        },
+        required: ["month", "bullets", "headline", "oneLiner"],
+      },
+    },
+  },
+  required: ["monthlyFortunes"],
+};
+
+const isKoFactRequest = (request: YearlyInterpretationRequest): boolean =>
+  (request.language ?? "ko") === "ko" && request.factSheet !== undefined;
+
+const buildYearlyResponseSchema = (
+  request: YearlyInterpretationRequest
+): GeminiResponseSchema => {
+  if (!isKoFactRequest(request) || !request.factSheet) {
+    return YEARLY_RESPONSE_SCHEMA_MAP[request.requestType];
+  }
+  switch (request.requestType) {
+    case "yearly_overview":
+      return KO_YEARLY_OVERVIEW_SCHEMA;
+    case "yearly_core":
+      return KO_YEARLY_CORE_SCHEMA;
+    case "yearly_monthly":
+      return KO_YEARLY_MONTHLY_SCHEMA;
+    default:
+      return koYearlyCategorySchema(
+        yearlyCategoryItemCount(request.factSheet, request.requestType) ?? 3
+      );
+  }
+};
+
+/**
+ * 월별은 12달이라 "~사람이에요" 맺음 허용을 늘린다.
+ * 나머지는 인생 운세와 같은 기준이다.
+ */
+const validatorOptionsFor = (
+  request: YearlyInterpretationRequest
+): OutputValidatorOptions =>
+  request.requestType === "yearly_monthly" ? { maxJudgmentEndings: 6 } : {};
 
 /**
  * 신규/레거시 응답 어느 쪽이든 안전하게 첫 문장(요약)을 뽑아낸다.
@@ -323,6 +452,26 @@ const formatYearlyDataForAI = (
 
   const genderLabel = prompts.statusLabels.gender[user.gender];
 
+  // KO는 원본 명반 텍스트 대신 엔진 사실 시트를 넘긴다
+  if (isKoFactRequest(request) && request.factSheet) {
+    const block = formatYearlyFactBlockKo(
+      request.factSheet,
+      request.requestType,
+      {
+        targetYear,
+        currentAge: user.currentAge,
+        gender: genderLabel,
+        relationshipLabel,
+        occupationLabel,
+        engineScores: request.engineScores,
+        monthlyFortunes,
+      }
+    );
+    return request.previousContext
+      ? `${block}\n\n${request.previousContext}`
+      : block;
+  }
+
   let userStatusStr = "";
   if (relationshipLabel) {
     userStatusStr += `\n- relationshipStatus: ${relationshipLabel}`;
@@ -491,17 +640,21 @@ const requestYearlyInterpretation = async <T>(
 
 ${userPrompt}`;
 
-  const responseSchema = YEARLY_RESPONSE_SCHEMA_MAP[request.requestType];
+  const responseSchema = buildYearlyResponseSchema(request);
 
-  const response = await chatCompletion(
+  // 금지 용어·문체 위반이 있으면 피드백을 붙여 1회 재생성한다 (인생 운세와 같은 검사기)
+  const { parsed } = await completeWithViolationRetry(
     [
       { role: "system", content: prompts.yearlySystemPrompt },
       { role: "user", content: fullUserPrompt },
     ],
-    { responseSchema }
+    {
+      language: request.language,
+      completion: { responseSchema },
+      validator: validatorOptionsFor(request),
+      label: `yearly:${request.requestType}`,
+    }
   );
-
-  const parsed = parseJsonResponse<unknown>(response);
 
   try {
     return schema.parse(parsed);
@@ -626,11 +779,12 @@ export const generateYearlyInterpretation = async (
     overview.oneLiner,
     overview.summary
   );
-  const stage1Context = `## 이미 사용한 표현 (절대 반복 금지!)
+  // 앞 섹션이 쓴 말. 지시문 문체가 출력에 새지 않도록 해요체로 쓴다.
+  const stage1Context = `## 앞 섹션에서 이미 쓴 말
 - 올해 스포일러 headline: "${overview.headline}"
-- 올해 시나리오 headline: "${coreScenario.headline}"
+- 올해 스토리 headline: "${coreScenario.headline}"
 - 스포일러 첫 문장: "${overviewOpening}"
-위 headline과 같은 구조·어휘·패턴을 사용하지 마세요. 완전히 다른 표현을 창작하세요.`;
+이 섹션에서는 위와 같은 문장 구조와 낱말을 피하고 다른 표현으로 써요.`;
 
   const [wealth, career] = await Promise.all([
     interpretYearlyWealth({ ...request, previousContext: stage1Context }),
@@ -650,15 +804,15 @@ export const generateYearlyInterpretation = async (
     career.content,
     60
   );
-  const stage2Context = `## 이미 사용한 표현 (절대 반복 금지!)
+  const stage2Context = `## 앞 섹션에서 이미 쓴 말
 - 올해 스포일러 headline: "${overview.headline}"
-- 올해 시나리오 headline: "${coreScenario.headline}"
+- 올해 스토리 headline: "${coreScenario.headline}"
 - 재물 headline: "${wealth.headline}"
 - 직업 headline: "${career.headline}"
 - 스포일러 첫 문장: "${overviewOpening}"
 - 재물 첫 문장: "${wealthOpening}"
 - 직업 첫 문장: "${careerOpening}"
-위 headline·첫 문장과 같은 구조·어휘·패턴을 사용하지 마세요.`;
+이 섹션에서는 위와 같은 문장 구조와 낱말을 피하고 다른 표현으로 써요.`;
 
   const [relationship, health] = await Promise.all([
     interpretYearlyRelationship({
@@ -668,8 +822,11 @@ export const generateYearlyInterpretation = async (
     interpretYearlyHealth({ ...request, previousContext: stage2Context }),
   ]);
 
-  // 4단계: 월별 운세 (프롬프트가 길어서 분리)
-  const monthlyResult = await interpretYearlyMonthly(request);
+  // 4단계: 월별 운세 (프롬프트가 길어서 분리). 앞 섹션 headline을 넘겨 겹치지 않게 한다.
+  const monthlyResult = await interpretYearlyMonthly({
+    ...request,
+    previousContext: stage1Context,
+  });
 
   return {
     overview,

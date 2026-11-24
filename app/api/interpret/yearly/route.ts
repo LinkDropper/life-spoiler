@@ -22,12 +22,13 @@ import {
 import {
   generateChartHash,
   getCachedResult,
+  YEARLY_PROMPT_VERSION,
   getFortune,
   saveFortune,
   setCachedResult,
   type YearlyFortuneData,
 } from "@/libs/supabase";
-import { calculateAge } from "@/libs/utils";
+import { calculateAgeInYear } from "@/libs/utils";
 import { toYearlyPreview } from "@/libs/fortune/preview-payload";
 import { checkFortuneAccess } from "@/libs/supabase/fortune-access";
 import { EARTHLY_BRANCHES } from "@/libs/zi-wei-dou-shu/constants/branches";
@@ -36,6 +37,8 @@ import {
   calculateYearlyFortune,
   getCurrentDayun,
 } from "@/libs/zi-wei-dou-shu/calculators";
+import { buildYearlyFactSheet } from "@/libs/zi-wei-dou-shu/calculators/yearly-facts";
+import { buildRequestFactSheet } from "@/libs/services/ai/lifetime-request";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
 import type { ZiweiInput } from "@/libs/zi-wei-dou-shu/types";
 import { ZiweiInputSchema } from "@/libs/zi-wei-dou-shu/types";
@@ -196,8 +199,9 @@ export async function POST(request: NextRequest) {
 
     // 2. 저장된 데이터가 없으면 새로 계산
     // 캐시 키 생성 (연도 및 언어 포함)
+    // 프롬프트 버전을 넣어 새 프롬프트로 만든 결과만 캐시에서 꺼낸다
     const cacheKey =
-      `yearly-${targetYear}-${language}` as `yearly-${number}-${Locale}`;
+      `yearly-${YEARLY_PROMPT_VERSION}-${targetYear}-${language}` as const;
     const chartHash = generateChartHash({
       birthDate: input.birthDate,
       birthTime: input.birthTime,
@@ -212,7 +216,8 @@ export async function POST(request: NextRequest) {
     const chart = generateZiweiChart(input);
 
     // 유년 운세 계산
-    const currentAge = calculateAge(input.birthDate);
+    // 대상 연도의 나이. 내년 운세는 지금 나이가 아니라 그해 나이로 대운과 나이를 본다.
+    const currentAge = calculateAgeInYear(input.birthDate, targetYear);
     const yearlyFortune = calculateYearlyFortune(chart, targetYear, currentAge);
 
     // 캐시 확인 (BYPASS 모드면 스킵, 캐시 쓰기는 아래에서 그대로 진행)
@@ -367,6 +372,19 @@ export async function POST(request: NextRequest) {
       natalPalaces,
       natalSihua,
       monthlyFortunes: monthlyFortunesData,
+      // KO는 원본 명반 대신 엔진 사실 시트로 쓴다 (yearly-fact-format.ts)
+      factSheet: buildYearlyFactSheet(
+        buildRequestFactSheet(chart, dayunResult),
+        yearlyFortune.sihua,
+        yearlyFortune.peachBlossom,
+        currentAge
+      ),
+      engineScores: {
+        wealth: yearlyFortune.scores.wealth,
+        career: yearlyFortune.scores.career,
+        relationship: yearlyFortune.scores.relationship,
+        health: yearlyFortune.scores.health,
+      },
       language,
     };
 

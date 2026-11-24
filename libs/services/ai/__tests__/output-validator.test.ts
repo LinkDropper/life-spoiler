@@ -202,3 +202,31 @@ describe("buildViolationFeedback", () => {
     expect(feedback.match(/자미/g)).toHaveLength(1);
   });
 });
+
+describe("findOutputViolations 운세별 옵션", () => {
+  it("skipCodes로 고른 규칙은 검사하지 않는다", () => {
+    const output = { body: "강의 흐름을 따라 내려가요." };
+    expect(findOutputViolations(output, "ko").map((v) => v.code)).toEqual([
+      "ABSTRACT_WORD",
+    ]);
+    expect(
+      findOutputViolations(output, "ko", { skipCodes: ["ABSTRACT_WORD"] })
+    ).toEqual([]);
+  });
+
+  it("skipKeys로 고른 필드는 검사하지 않는다", () => {
+    const output = { imagePrompt: "자미 star portrait", body: "담백해요." };
+    expect(findOutputViolations(output, "ko")).toHaveLength(1);
+    expect(
+      findOutputViolations(output, "ko", { skipKeys: ["imagePrompt"] })
+    ).toEqual([]);
+  });
+
+  it("maxJudgmentEndings로 판정 맺음 허용 횟수를 바꾼다", () => {
+    const output = { a: "든든한 사람이에요.", b: "다정한 사람이에요." };
+    expect(findOutputViolations(output, "ko")).toEqual([]);
+    expect(
+      findOutputViolations(output, "ko", { maxJudgmentEndings: 1 })
+    ).toHaveLength(1);
+  });
+});

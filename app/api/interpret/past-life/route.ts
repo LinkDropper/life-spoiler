@@ -17,6 +17,7 @@ import {
   generateChartHash,
   getCachedResult,
   getFortune,
+  PAST_LIFE_PROMPT_VERSION,
   saveFortune,
   setCachedResult,
   type PastLifeFortuneData,
@@ -181,7 +182,9 @@ export async function POST(request: NextRequest) {
         : defaultLocale;
 
     // 캐시 키에 언어 포함
-    const cacheKey = `full-past_life-${language}` as `full-past_life-${Locale}`;
+    // 프롬프트 버전을 넣어 새 프롬프트로 만든 결과만 캐시에서 꺼낸다
+    const cacheKey =
+      `full-past_life-${PAST_LIFE_PROMPT_VERSION}-${language}` as const;
 
     // 로그인·프로필 소유 확인, 결제 여부 판정 (결제 전이면 예고편 필드만 내려줌)
     const access = await checkFortuneAccess(profileId, "past_life", 0);

@@ -16,10 +16,6 @@ import {
   mergeTiming,
   pickEvidence,
 } from "./lifetime-fact-format";
-import {
-  buildViolationFeedback,
-  findOutputViolations,
-} from "./output-validator";
 import { getPrompts } from "./prompts";
 import type {
   AgeScenarioResponse,
@@ -49,6 +45,7 @@ import {
   parseJsonResponse,
   CURRENT_MODEL_NAME,
 } from "./provider";
+import { completeWithViolationRetry, withJudgment } from "./violation-retry";
 
 // ============================================================
 // Gemini responseSchema 정의
@@ -815,17 +812,6 @@ const JUDGMENT_TYPES: InterpretationType[] = [
   "lifetime_health",
 ];
 
-/**
- * 맨 앞에 judgment(섹션 판정 한 문장)를 둔 사본.
- * 본문을 쓰기 전에 "이 섹션에서 결국 하는 말"을 먼저 정하게 하는 칸이다(재설계 §1 D3).
- * 화면에는 쓰지 않고 Zod 파싱에서 버려진다.
- */
-const withJudgment = (schema: GeminiResponseSchema): GeminiResponseSchema => ({
-  ...schema,
-  properties: { judgment: { type: "string" }, ...schema.properties },
-  required: ["judgment", ...(schema.required ?? [])],
-});
-
 const buildResponseSchema = (
   request: ZiweiInterpretationRequest
 ): GeminiResponseSchema => {
@@ -864,35 +850,12 @@ ${userPrompt}`;
     { role: "user", content: fullUserPrompt },
   ];
 
-  let response = await chatCompletion(messages, { responseSchema });
-  let parsed = parseJsonResponse<unknown>(response);
-
-  // 금지 용어·메타 문구가 있으면 피드백을 붙여 1회 재생성한다.
-  const violations = findOutputViolations(parsed, request.language);
-  if (violations.length > 0) {
-    const retryResponse = await chatCompletion(
-      [
-        ...messages,
-        { role: "assistant", content: response },
-        {
-          role: "user",
-          content: buildViolationFeedback(violations, request.language),
-        },
-      ],
-      { responseSchema }
-    );
-    response = retryResponse;
-    parsed = parseJsonResponse<unknown>(retryResponse);
-
-    const remaining = findOutputViolations(parsed, request.language);
-    if (remaining.length > 0) {
-      // 재생성 후에도 남으면 결과는 내보내되 운영 로그로 추적한다 (품질 지표: 위반률).
-      console.warn("[lifetime-validator] 재생성 후에도 금지 표현 잔존", {
-        requestType: request.requestType,
-        violations: remaining.map((v) => `${v.path}: ${v.match}`),
-      });
-    }
-  }
+  // 금지 용어·문체 위반이 있으면 피드백을 붙여 1회 재생성한다.
+  const { response, parsed } = await completeWithViolationRetry(messages, {
+    language: request.language,
+    completion: { responseSchema },
+    label: `lifetime:${request.requestType}`,
+  });
 
   const first = schema.safeParse(parsed);
   if (first.success) {
