@@ -20,15 +20,16 @@ import {
   SIHUA_PALACE_RULES,
   STAR_CAREER,
   STAR_PAIR_RULES,
+  STAR_PALACE_FACTS,
 } from "../constants/lifetime-facts";
 import type {
   FactDirection,
   FactRule,
   FactSection,
   FactStrength,
+  FallbackPalace,
   PartnerEntry,
 } from "../constants/lifetime-facts/types";
-import { STAR_IN_PALACE } from "../constants/explanations";
 import type { LocalizedText } from "../constants/explanations/types";
 import type { PalaceName } from "../constants/palaces";
 import type { MainStarName } from "../constants/stars";
@@ -137,15 +138,14 @@ const PALACE_SECTION: Record<PalaceName, FactSection> = {
   부모궁: "core",
 };
 
-/** 쌍성 조합을 주장으로 쓰는 궁 (나머지 궁의 동궁은 신호가 약함) */
-const PAIR_PALACES: PalaceName[] = [
-  "명궁",
-  "재백궁",
-  "관록궁",
-  "부처궁",
-  "질액궁",
-  "복덕궁",
-];
+/**
+ * 쌍성 조합을 주장으로 쓰는 궁.
+ * 쌍성 표(STAR_PAIR_RULES)는 궁과 무관한 성격 묘사라 성격을 다루는 궁에만 쓴다.
+ * 재백·관록·부처·질액궁에 그대로 넣으면 영역과 어긋난 글이 나왔다
+ * (예: 질액궁 염정+칠살 → 건강 섹션에 "날 선 승부욕" 이야기). 그 궁들은
+ * 궁별로 쓴 보충 표(STAR_PALACE_FACTS)가 같은 별을 영역에 맞게 다룬다.
+ */
+const PAIR_PALACES: PalaceName[] = ["명궁", "복덕궁"];
 
 /** 섹션별 최대 주장 수 */
 const SECTION_LIMIT: Record<FactSection, number> = {
@@ -344,7 +344,7 @@ const effectiveMainStarNames = (palace: Palace | undefined): MainStarName[] =>
     : [];
 
 /** 섹션 → 보충 주장을 뽑을 궁 */
-const SECTION_PALACE: Partial<Record<FactSection, PalaceName>> = {
+const SECTION_PALACE: Partial<Record<FactSection, FallbackPalace>> = {
   core: "명궁",
   wealth: "재백궁",
   career: "관록궁",
@@ -352,34 +352,41 @@ const SECTION_PALACE: Partial<Record<FactSection, PalaceName>> = {
   health: "질액궁",
 };
 
-/** 섹션당 최소 주장 수. 모자라면 별×궁 설명 표에서 보충한다 */
-const SECTION_MIN = 2;
+/**
+ * 섹션당 최소 주장 수. 모자라면 별×궁 설명 표에서 보충한다.
+ * 2개일 때는 고정 명반 48개의 영역 섹션 89%가 주장 2개뿐이라 소제목 3개를 채우면
+ * 같은 말을 되풀이했고, 줄이면 "짧고 부실하다"는 피드백을 받았다. 궁의 다른 주성 문구까지
+ * 넣어 재료를 늘린다(주성이 하나뿐인 궁은 2개에 머문다).
+ */
+const SECTION_MIN = 4;
 
 /**
- * 사화·비화·쌍성 신호가 없는 섹션은 해당 궁 주성의 별×궁 설명으로 보충한다.
+ * 사화·비화·쌍성 신호가 없는 섹션은 해당 궁 주성의 별×영역 보충 주장으로 채운다.
  * 강도 2(약한 신호)로 두어 실제 신호가 있으면 그쪽이 먼저 배정된다.
+ * 문구는 화면용 궁 설명(STAR_IN_PALACE)이 아니라 LLM 전용 표(STAR_PALACE_FACTS)를 쓴다.
+ * 화면용 문장은 장면 없는 성격 묘사라 그대로 넘기면 본문이 흐려졌다.
  */
 const collectFallbackClaims = (chart: ZiweiChart): FortuneClaim[] =>
-  (Object.entries(SECTION_PALACE) as [FactSection, PalaceName][]).flatMap(
+  (Object.entries(SECTION_PALACE) as [FactSection, FallbackPalace][]).flatMap(
     ([section, palaceName]) =>
       effectiveMainStarNames(findPalace(chart, palaceName)).flatMap((star) => {
-        const entry = STAR_IN_PALACE[palaceName][star];
+        const { energy, caution } = STAR_PALACE_FACTS[palaceName][star];
         return [
           {
             id: `base:${star}@${palaceName}:energy`,
             section,
-            topic: entry.energy.ko,
+            topic: energy.topic,
             direction: "positive" as const,
             strength: 2 as const,
-            sceneSeeds: [],
+            sceneSeeds: energy.sceneSeeds,
           },
           {
             id: `base:${star}@${palaceName}:caution`,
             section,
-            topic: entry.caution.ko,
+            topic: caution.topic,
             direction: "negative" as const,
             strength: 1 as const,
-            sceneSeeds: [],
+            sceneSeeds: caution.sceneSeeds,
           },
         ];
       })

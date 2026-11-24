@@ -5,3 +5,4 @@ export { STAR_PAIR_RULES } from "./star-pairs";
 export { FLYING_SIHUA_RULES } from "./flying-sihua";
 export { PARTNER_RULES } from "./partner";
 export { DECADE_STAGE } from "./decade-stage";
+export { STAR_PALACE_FACTS } from "./star-palace-facts";

@@ -253,6 +253,19 @@ describe("영역 근거 한 줄", () => {
     });
   });
 
+  it("보충 주장은 LLM 전용 표의 장면을 함께 싣는다 (화면용 성격 설명을 넘기지 않음)", () => {
+    let fallbackCount = 0;
+    for (const sheet of sheets) {
+      for (const claim of Object.values(sheet.claims).flat()) {
+        if (!claim.id.startsWith("base:")) continue;
+        fallbackCount++;
+        expect(claim.sceneSeeds.length).toBeGreaterThanOrEqual(2);
+        expect(claim.topic.length).toBeLessThanOrEqual(45);
+      }
+    }
+    expect(fallbackCount).toBeGreaterThan(0);
+  });
+
   it("쌍성·보충 주장은 영역 근거로 지정되지 않는다 (성격 설명이라 영역과 어긋남)", () => {
     for (const sheet of sheets) {
       for (const claim of Object.values(sheet.claims).flat()) {
@@ -277,13 +290,24 @@ describe("영역 근거 한 줄", () => {
     }
   });
 
-  it("쌍성이 건강 자리에 있어도 성격 문구를 건강 근거로 쓰지 않는다", () => {
+  it("쌍성 성격 문구는 영역 섹션에 넣지 않고, 건강은 질액궁 전용 문구로 채운다", () => {
+    for (const sheet of sheets) {
+      for (const section of [
+        "wealth",
+        "career",
+        "relationship",
+        "health",
+      ] as const) {
+        for (const claim of sheet.claims[section]) {
+          expect(claim.id.startsWith("pair:")).toBe(false);
+        }
+      }
+    }
     const [pairInHealth] = sheets;
+    const topics = pairInHealth.claims.health.map((c) => c.topic);
+    expect(topics).not.toContain("날 선 승부욕이 강해 충돌이 잦은 편");
     expect(
-      pairInHealth.claims.health.some((c) => c.id.startsWith("pair:"))
+      pairInHealth.claims.health.some((c) => c.id.endsWith("@질액궁:caution"))
     ).toBe(true);
-    expect(pairInHealth.evidence.health?.ko).not.toBe(
-      "날 선 승부욕이 강한 기운이에요"
-    );
   });
 });

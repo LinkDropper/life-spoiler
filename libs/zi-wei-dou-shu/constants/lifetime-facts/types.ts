@@ -90,3 +90,33 @@ export interface PartnerEntry {
 }
 
 export type PartnerTable = Record<MainStarName, PartnerEntry>;
+
+/**
+ * 사실이 부족한 섹션을 채우는 "별 × 영역" 보충 주장 (LLM 전용).
+ *
+ * 화면용 궁 설명(STAR_IN_PALACE)은 성격 묘사 문장이라 장면이 없고, LLM 입력으로
+ * 쓰면 "뜻이 흐린" 문장이 됐다(일반 독자 판정: 사실 한 줄이 바로 이해됨 49%, 장면 0%).
+ * 화면 문구는 그대로 두고, LLM에는 이 표의 쉬운 말 주제와 장면을 넘긴다.
+ *
+ * - topic: 그 영역에서 실제로 무슨 일이 생기는지 한 줄 (KO, 45자 이내, 비유·성격 꼬리표 금지)
+ * - sceneSeeds: 누가·언제·어디서·무슨 일이 보이는 장면 2~3개 (KO, 각 45자 이내)
+ */
+export interface FallbackFact {
+  topic: string;
+  sceneSeeds: string[];
+}
+
+export interface StarPalaceFact {
+  /** 강점 쪽 (direction positive, strength 2) */
+  energy: FallbackFact;
+  /** 주의 쪽 (direction negative, strength 1) */
+  caution: FallbackFact;
+}
+
+/** 보충 주장을 뽑는 궁: 섹션마다 그 섹션의 본궁 하나 */
+export type FallbackPalace = "명궁" | "재백궁" | "관록궁" | "부처궁" | "질액궁";
+
+export type StarPalaceFactTable = Record<
+  FallbackPalace,
+  Record<MainStarName, StarPalaceFact>
+>;
