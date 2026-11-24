@@ -29,7 +29,9 @@ export interface Attribution {
   touchedAt: string;
 }
 
-const normalizeValue = (value: string | null | undefined): string | null => {
+export const normalizeValue = (
+  value: string | null | undefined
+): string | null => {
   const trimmed = value?.trim();
   if (!trimmed) {
     return null;
@@ -38,7 +40,7 @@ const normalizeValue = (value: string | null | undefined): string | null => {
 };
 
 /** 같은 사이트 내부 이동은 referrer로 취급하지 않는다. */
-const resolveReferrerHost = (
+export const resolveReferrerHost = (
   referrer: string | null,
   currentHost: string
 ): string | null => {

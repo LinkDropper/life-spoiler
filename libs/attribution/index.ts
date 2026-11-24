@@ -11,4 +11,5 @@ export {
   serializeAttribution,
 } from "./attribution";
 export type { Attribution } from "./attribution";
+export { logAccess } from "./access-log";
 export { logUtmEvent } from "./log-event";
