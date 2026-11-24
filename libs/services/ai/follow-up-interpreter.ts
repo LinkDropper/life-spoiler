@@ -1,27 +1,41 @@
+import type { FollowUpFortuneType } from "@/libs/supabase/types";
+
 import { AIError } from "./errors";
-import { chatCompletion, parseJsonResponse } from "./provider";
 import {
   buildFollowUpSystemPrompt,
   buildFollowUpUserPrompt,
 } from "./prompts/follow-up-ko";
 import type { GeminiMessage, GeminiResponseSchema } from "./types";
-import type { FollowUpFortuneType } from "@/libs/supabase/types";
+import { completeWithViolationRetry } from "./violation-retry";
 
 // ============================================================
 // 추가 질문 응답 생성 (운세 결과 기반 대화)
 // ============================================================
 
-const FOLLOW_UP_MAX_OUTPUT_TOKENS = 550;
+/** judgment 칸이 늘어 550에서 올렸다 (잘리면 openai.ts가 오류를 던진다) */
+const FOLLOW_UP_MAX_OUTPUT_TOKENS = 900;
 const FOLLOW_UP_TEMPERATURE = 0.6;
 const ANSWER_MAX_CHARS = 600;
 
+/**
+ * isRelevant → judgment → answer 순서. strict 모드는 속성 순서대로 생성하므로
+ * 답(judgment)을 먼저 한 문장으로 정한 뒤 본문을 쓴다. judgment는 화면에 쓰지 않는다.
+ */
 const FOLLOW_UP_RESPONSE_SCHEMA: GeminiResponseSchema = {
   type: "object",
   properties: {
     isRelevant: { type: "boolean" },
+    judgment: { type: "string" },
     answer: { type: "string" },
   },
-  required: ["isRelevant", "answer"],
+  required: ["isRelevant", "judgment", "answer"],
+};
+
+/** 범위 밖 질문의 고정 거절 문구는 검사하지 않는다 */
+const pickAnswerToCheck = (parsed: unknown): unknown => {
+  if (!parsed || typeof parsed !== "object") return parsed;
+  const { isRelevant, answer } = parsed as Partial<FollowUpResponse>;
+  return isRelevant === false ? null : { answer };
 };
 
 export interface FollowUpRequest {
@@ -43,7 +57,7 @@ export interface FollowUpResponse {
 
 /**
  * 운세 결과 + 사용자 컨텍스트(나이/오늘 날짜) + 이전 이력을 바탕으로
- * Gemini에 질문하고 관련성 판정 + 답변을 받는다.
+ * 관련성 판정 + 답변을 받는다. 문체 위반(~니다, 별·궁 이름, 추상어 등)이 있으면 1회 재생성한다.
  */
 export const generateFollowUpAnswer = async (
   request: FollowUpRequest
@@ -56,13 +70,19 @@ export const generateFollowUpAnswer = async (
     { role: "user", content: userPrompt },
   ];
 
-  const raw = await chatCompletion(messages, {
-    temperature: FOLLOW_UP_TEMPERATURE,
-    maxTokens: FOLLOW_UP_MAX_OUTPUT_TOKENS,
-    responseSchema: FOLLOW_UP_RESPONSE_SCHEMA,
-  });
-
-  const parsed = parseJsonResponse<FollowUpResponse>(raw);
+  const { parsed } = await completeWithViolationRetry<FollowUpResponse>(
+    messages,
+    {
+      language: "ko",
+      completion: {
+        temperature: FOLLOW_UP_TEMPERATURE,
+        maxTokens: FOLLOW_UP_MAX_OUTPUT_TOKENS,
+        responseSchema: FOLLOW_UP_RESPONSE_SCHEMA,
+      },
+      pickTarget: pickAnswerToCheck,
+      label: `follow-up:${request.fortuneType}`,
+    }
+  );
 
   if (
     typeof parsed.isRelevant !== "boolean" ||
