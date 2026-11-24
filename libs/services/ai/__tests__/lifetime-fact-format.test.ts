@@ -1,6 +1,10 @@
 import type { LifetimeFactSheet } from "@/libs/zi-wei-dou-shu/calculators/lifetime-facts";
 
-import { formatFactSheetBlock, mergeTiming } from "../lifetime-fact-format";
+import {
+  CATEGORY_ITEM_COUNT,
+  formatFactSheetBlock,
+  mergeTiming,
+} from "../lifetime-fact-format";
 import type { TimingResponse } from "../types";
 
 const evidence = { ko: "근거예요", en: "Evidence", ja: "根拠です" };
@@ -87,6 +91,22 @@ describe("formatFactSheetBlock", () => {
     expect(formatFactSheetBlock(sheet, "lifetime_health")).toContain(
       "no strong signal"
     );
+  });
+
+  describe("영역 섹션 항목 수", () => {
+    it("주장이 2개뿐이어도 항목 3개를 지시하고, 되풀이 대신 다른 장면을 쓰게 한다", () => {
+      const block = formatFactSheetBlock(sheet, "lifetime_wealth");
+      expect(CATEGORY_ITEM_COUNT).toBe(3);
+      expect(block).toContain("Write exactly 3 items");
+      expect(block).toContain("another scene of the same claim");
+      expect(block).toContain("Do not pad");
+    });
+
+    it("스포일러는 서사 구조라 항목 수를 고정한다", () => {
+      const block = formatFactSheetBlock(sheet, "life_spoiler");
+      expect(block).toContain("Keep exactly the number of items");
+      expect(block).not.toContain("Write exactly 2 items");
+    });
   });
 
   describe("나이대 시나리오", () => {

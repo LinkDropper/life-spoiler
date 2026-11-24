@@ -11,6 +11,7 @@ import type { BranchIndex, Palace } from "@/libs/zi-wei-dou-shu/types";
 
 import { AIError } from "./errors";
 import {
+  categorySubSectionCount,
   formatFactSheetBlock,
   mergeTiming,
   pickEvidence,
@@ -747,6 +748,22 @@ ${issues}
 Rewrite the whole JSON so it matches the format and item counts the instructions ask for. Keep the content and language.`;
 };
 
+/** 응답 스키마의 subSections 개수를 고정한 사본 (원본 상수는 건드리지 않음) */
+const withSubSectionCount = (
+  schema: GeminiResponseSchema,
+  count: number
+): GeminiResponseSchema => {
+  const subSections = schema.properties?.subSections;
+  if (!subSections) return schema;
+  return {
+    ...schema,
+    properties: {
+      ...schema.properties,
+      subSections: { ...subSections, minItems: count, maxItems: count },
+    },
+  };
+};
+
 const requestInterpretation = async <T>(
   request: ZiweiInterpretationRequest,
   schema: z.ZodType<T>
@@ -764,7 +781,15 @@ const requestInterpretation = async <T>(
 
 ${userPrompt}`;
 
-  const responseSchema = RESPONSE_SCHEMA_MAP[request.requestType];
+  const subSectionCount = request.factSheet
+    ? categorySubSectionCount(request.factSheet, request.requestType)
+    : undefined;
+  const responseSchema = subSectionCount
+    ? withSubSectionCount(
+        RESPONSE_SCHEMA_MAP[request.requestType],
+        subSectionCount
+      )
+    : RESPONSE_SCHEMA_MAP[request.requestType];
   const messages: GeminiMessage[] = [
     { role: "system", content: prompts.ziweiSystemPrompt },
     { role: "user", content: fullUserPrompt },

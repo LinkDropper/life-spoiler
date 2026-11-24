@@ -1,7 +1,15 @@
-import { calculateDayun } from "@/libs/zi-wei-dou-shu/calculators";
+import {
+  calculateAllDayunScores,
+  calculateDayun,
+} from "@/libs/zi-wei-dou-shu/calculators";
 import { generateZiweiChart } from "@/libs/zi-wei-dou-shu/core";
 
-import { convertChartToRequest, convertToDayunData } from "../lifetime-request";
+import { CATEGORY_ITEM_COUNT } from "../lifetime-fact-format";
+import {
+  buildRequestFactSheet,
+  convertChartToRequest,
+  convertToDayunData,
+} from "../lifetime-request";
 import type { GeminiMessage } from "../types";
 
 const mockChatCompletion = jest.fn<
@@ -155,5 +163,25 @@ describe("generateFullInterpretation", () => {
     expect(userPrompt).toContain("## Relative Strength");
     expect(userPrompt).toMatch(/wealth: rank 4\/4.*← THIS SECTION/);
     expect(JSON.stringify(options?.responseSchema)).not.toContain("score");
+  });
+
+  it("사실 시트가 있으면 영역 섹션의 소제목 개수를 스키마로 고정한다", async () => {
+    mockChatCompletion.mockResolvedValue(makeResponse("본문"));
+    const { interpretLifetimeWealth } = loadInterpreter();
+    const factSheet = buildRequestFactSheet(
+      chart,
+      calculateAllDayunScores(calculateDayun(chart, 100, "ko")),
+      new Date("2026-11-20T00:00:00+09:00")
+    );
+    const expected = CATEGORY_ITEM_COUNT;
+
+    await interpretLifetimeWealth({ ...buildRequest(), factSheet });
+
+    const [[, options]] = mockChatCompletion.mock.calls;
+    const schema = options?.responseSchema as {
+      properties: { subSections: { minItems: number; maxItems: number } };
+    };
+    expect(schema.properties.subSections.minItems).toBe(expected);
+    expect(schema.properties.subSections.maxItems).toBe(expected);
   });
 });

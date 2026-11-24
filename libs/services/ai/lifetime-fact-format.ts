@@ -46,9 +46,41 @@ const formatClaim = (claim: FortuneClaim, index: number): string => {
   return `${index + 1}. [${claim.direction}, strength ${claim.strength}${period}] ${claim.topic}${scenes}`;
 };
 
-const NARRATION_RULES = `Rules for using the fact sheet:
+/** 스포일러·핵심 시나리오: 항목 구성이 서사 구조(본질·강점·약점·패턴 등)라 개수를 고정한다 */
+const FIXED_ITEM_RULE =
+  "- Keep exactly the number of items (subSections, bullets, paragraphs) the section's response format asks for. Do not add or drop items to match the number of claims: with fewer claims, cover different angles or scenes of the same claims; with more, merge or leave out the weakest.";
+
+/**
+ * 영역 섹션 소제목 개수.
+ * v7~v11은 주장이 2개뿐이면 2개로 줄였다(당시 보충 주장에 장면이 없어 3개를 채우면
+ * 같은 말을 돌려 썼다). 보충 주장에도 장면이 붙은 뒤로는 2개가 "내용이 짧고 부실하다"는
+ * 피드백을 받아, 주장 수와 무관하게 3개(조건·신호·지금 할 일)로 고정한다.
+ */
+export const CATEGORY_ITEM_COUNT = 3;
+
+/**
+ * 영역 섹션이면 소제목 개수를, 아니면 undefined.
+ * 응답 스키마의 subSections 개수를 이 값으로 고정한다. 데이터 블록 지시만으로는
+ * 모델이 응답 형식 예시(3개)를 따라 20개 섹션 모두 3개로 썼다.
+ */
+export const categorySubSectionCount = (
+  sheet: LifetimeFactSheet,
+  requestType: InterpretationType
+): number | undefined => {
+  const section = SECTION_BY_TYPE[requestType];
+  if (!section || section === "core") return undefined;
+  return CATEGORY_ITEM_COUNT;
+};
+
+const CATEGORY_ITEM_RULE =
+  "- Write exactly 3 items (subSections, or paragraphs when the format uses a content field), in the order the response format lists them. With few claims, use another scene of the same claim instead of repeating an earlier item in other words.";
+
+const narrationRules = (
+  itemRule: string
+): string => `Rules for using the fact sheet:
 - Use these claims as the material for the section (their topics + at least one scene each, rewritten in your own words and in the response language). Use claims in the given order; stronger claims get more space.
-- Keep exactly the number of items (subSections, bullets, paragraphs) the section's response format asks for. Do not add or drop items to match the number of claims: with fewer claims, cover different angles or scenes of the same claims; with more, merge or leave out the weakest.
+${itemRule}
+- Do not pad by restating a point in other words. When a claim has more to show, use its other scenes; when it has nothing more, move to the next claim.
 - Keep each claim's direction: positive → strength, negative → weak spot said plainly, mixed → both sides.
 - Do not add life events, years, ages, job names or partner details that are not in this sheet.
 - The scenes are seeds, not text to copy. Change the wording; keep the concrete who/when/where.`;
@@ -183,7 +215,7 @@ ${formatSectionClaims(sheet, "core")}
 ### One headline claim per area (mention at most briefly; areas have their own sections)
 ${highlights.join("\n") || "- (none)"}
 ${decadeTones ? `\n${decadeTones}\n` : ""}
-${NARRATION_RULES}`;
+${narrationRules(FIXED_ITEM_RULE)}`;
 };
 
 const formatCareerExtra = (sheet: LifetimeFactSheet): string =>
@@ -257,7 +289,7 @@ export const formatFactSheetBlock = (
   return `## Fact Sheet — ${section} (engine-computed, internal only)
 ${formatSectionClaims(sheet, section)}
 
-${NARRATION_RULES}${extra}`;
+${narrationRules(CATEGORY_ITEM_RULE)}${extra}`;
 };
 
 // ============================================================
