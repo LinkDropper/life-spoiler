@@ -6,6 +6,7 @@ import {
   ATTRIBUTION_COOKIE_MAX_AGE,
   VISITOR_ID_COOKIE,
   VISITOR_ID_COOKIE_MAX_AGE,
+  logAccess,
   logUtmEvent,
   parseAttributionFromUrl,
   parseVisitorId,
@@ -97,26 +98,27 @@ const isPageNavigation = (request: NextRequest) => {
 };
 
 /**
- * utm_* 가 붙은 랜딩이면 마지막 유입 쿠키를 갱신하고 utm_events에 landing을 남긴다.
- * 가입·결제 시 이 쿠키를 읽어 유입경로를 귀속시킨다.
+ * 페이지 접속을 access_logs에 남기고, utm_* 가 붙은 랜딩이면 마지막 유입 쿠키를
+ * 갱신해 utm_events에 landing도 남긴다. 가입·결제 시 이 쿠키를 읽어 유입경로를
+ * 귀속시킨다.
+ *
+ * 방문자 ID는 모든 방문자에게 발급해 접속 → 유입 → 가입 → 결제를 묶는다.
+ * 만료를 늦추기 위해 접속마다 쿠키를 다시 내려준다.
  */
-const trackUtmLanding = (
+const trackVisit = (
   request: NextRequest,
   response: NextResponse,
   event: NextFetchEvent
 ) => {
   if (!isPageNavigation(request)) return;
 
-  const attribution = parseAttributionFromUrl({
-    url: request.nextUrl,
-    referrer: request.headers.get("referer"),
-  });
-  if (!attribution) return;
-
-  const secure = request.nextUrl.protocol === "https:";
-  const visitorId =
-    parseVisitorId(request.cookies.get(VISITOR_ID_COOKIE)?.value) ??
-    crypto.randomUUID();
+  const { nextUrl, headers, cookies } = request;
+  const referrer = headers.get("referer");
+  const secure = nextUrl.protocol === "https:";
+  const existingVisitorId = parseVisitorId(
+    cookies.get(VISITOR_ID_COOKIE)?.value
+  );
+  const visitorId = existingVisitorId ?? crypto.randomUUID();
 
   response.cookies.set(VISITOR_ID_COOKIE, visitorId, {
     path: "/",
@@ -125,6 +127,23 @@ const trackUtmLanding = (
     sameSite: "lax",
     secure,
   });
+
+  event.waitUntil(
+    logAccess({
+      url: nextUrl,
+      referrer,
+      visitorId,
+      isNewVisitor: !existingVisitorId,
+      // resolveLocaleResponse가 요청 쿠키에 적용 로케일을 넣어 둔다
+      locale: cookies.get(LOCALE_COOKIE_NAME)?.value ?? null,
+      rawDeviceType: userAgent(request).device.type,
+      country: headers.get("x-vercel-ip-country"),
+    })
+  );
+
+  const attribution = parseAttributionFromUrl({ url: nextUrl, referrer });
+  if (!attribution) return;
+
   response.cookies.set(ATTRIBUTION_COOKIE, serializeAttribution(attribution), {
     path: "/",
     maxAge: ATTRIBUTION_COOKIE_MAX_AGE,
@@ -140,7 +159,7 @@ const trackUtmLanding = (
 
 export const middleware = (request: NextRequest, event: NextFetchEvent) => {
   const response = resolveLocaleResponse(request);
-  trackUtmLanding(request, response, event);
+  trackVisit(request, response, event);
   return response;
 };
 
