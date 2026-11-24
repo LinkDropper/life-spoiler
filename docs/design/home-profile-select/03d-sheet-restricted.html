@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>홈 프로필 셀렉트 · 예외 계정 시트(추가·편집 없음)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="home.css">
+</head>
+<body class="ov">
+<div class="bg" aria-hidden="true">
+  <header class="hd"><span class="logo">인생스포</span><span class="me">내 프로필</span></header>
+  <div class="pick" style="margin-top:4px">
+    <span class="who"><span class="nm"><span class="n">민지</span><span class="s">님의 스포일러</span></span><span class="bd">1995.03.14</span></span>
+    <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(180deg)"><path d="m6 9 6 6 6-6"/></svg></span>
+  </div>
+  <div class="today"><img src="../home-v4/img/daily.png" alt=""><span class="date">11월 24일 화요일</span><span class="t">오늘의 운세</span><span class="d">무료로 매일 자정에 새로 열려요</span></div>
+  <p class="shelf-h">다른 스포일러 고르기</p>
+</div>
+<div class="dim"></div>
+
+<!-- RESTRICTED_USER_ID: "편집"과 "프로필 추가"만 빠진 같은 시트. 전환(선택)은 그대로 된다 -->
+<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t">
+  <span class="handle" aria-hidden="true"></span>
+  <div class="sh-head">
+    <div>
+      <p class="eyebrow" aria-hidden="true">NOW SHOWING</p>
+      <h2 class="sh-title" id="t">누구의 스포일러를 볼까요?</h2>
+    </div>
+    <div class="sh-act">
+      <button class="x" type="button" aria-label="닫기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+  </div>
+
+  <div class="list" role="listbox" aria-labelledby="t">
+    <button class="row" type="button" role="option" aria-selected="true"><span class="lbl"><span class="nm">민지</span><span class="mt">1995.03.14</span></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button>
+    <button class="row" type="button" role="option" aria-selected="false"><span class="lbl"><span class="nm">서연</span><span class="mt">2001.11.02</span></span></button>
+  </div>
+</div>
+</body>
+</html>
