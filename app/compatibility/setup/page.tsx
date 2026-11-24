@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -13,6 +13,7 @@ import {
   useProfiles,
   useIsProfilesLoading,
   useProfileActions,
+  useSelectedProfile,
 } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
 
@@ -56,6 +57,7 @@ export default function CompatibilitySetupPage() {
   const profiles = useProfiles();
   const isProfilesLoading = useIsProfilesLoading();
   const { fetchProfiles } = useProfileActions();
+  const homeProfile = useSelectedProfile();
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [relationshipType, setRelationshipType] =
@@ -86,6 +88,15 @@ export default function CompatibilitySetupPage() {
       });
     }
   }, [searchParams, isProfilesLoading, router]);
+
+  // 홈에서 고른 프로필을 첫 번째 사람으로 미리 채워 두고, 두 번째만 고르게 한다
+  const homeProfileId = homeProfile?.id;
+  const hasPrefilledRef = useRef(false);
+  useEffect(() => {
+    if (hasPrefilledRef.current || !homeProfileId) return;
+    hasPrefilledRef.current = true;
+    setSelectedIds((prev) => (prev.length === 0 ? [homeProfileId] : prev));
+  }, [homeProfileId]);
 
   const selectedProfiles = selectedIds
     .map((id) => profiles.find((p) => p.id === id))

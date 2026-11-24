@@ -28,7 +28,7 @@ function PaymentFailContent() {
     if (profileId && fortuneType) {
       router.push(`/payment/${fortuneType}/${profileId}`);
     } else {
-      router.push("/profiles");
+      router.push("/home");
     }
   };
 
@@ -40,7 +40,7 @@ function PaymentFailContent() {
         router.push(`/fortune/${fortuneType}/preview/${profileId}`);
       }
     } else {
-      router.push("/profiles");
+      router.push("/home");
     }
   };
 

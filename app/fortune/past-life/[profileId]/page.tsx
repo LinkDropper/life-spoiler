@@ -162,8 +162,8 @@ export default function PastLifeFortunePage() {
         <main className={styles.main}>
           <ErrorState
             message={error}
-            buttonText={tCommon("backToProfiles")}
-            onButtonClick={() => router.push("/profiles?type=past-life")}
+            buttonText={tCommon("backToHome")}
+            onButtonClick={() => router.push("/home")}
           />
         </main>
       </div>

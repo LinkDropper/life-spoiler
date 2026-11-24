@@ -82,7 +82,7 @@ export default function PastLifePreviewPage() {
                 className={styles.errorBackButton}
                 onClick={handleBack}
               >
-                {tCommon("backToProfiles")}
+                {tCommon("backToHome")}
               </button>
             </div>
           </div>
