@@ -2,9 +2,13 @@ import type { Locale } from "@/i18n/config";
 import { defaultLocale } from "@/i18n/config";
 
 import { AIError } from "./errors";
+import type { OutputValidatorOptions } from "./output-validator";
 import { enCompatibilityPrompts } from "./prompts/compatibility-en";
 import { jaCompatibilityPrompts } from "./prompts/compatibility-ja";
-import { koCompatibilityPrompts } from "./prompts/compatibility-ko";
+import {
+  buildKoCategoriesCombinedPrompt,
+  koCompatibilityPrompts,
+} from "./prompts/compatibility-ko";
 import type { CompatibilityLocalizedPrompts } from "./prompts/compatibility-ko";
 import type {
   CompatibilityCategoryResponse,
@@ -15,6 +19,7 @@ import type {
   CompatibilityOverviewResponse,
   CompatibilityScenariosResponse,
   GeminiResponseSchema,
+  GeminiSchemaProperty,
 } from "./types";
 import {
   CompatibilityCategoryResponseSchema,
@@ -23,11 +28,8 @@ import {
   CompatibilityOverviewResponseSchema,
   CompatibilityScenariosResponseSchema,
 } from "./types";
-import {
-  chatCompletion,
-  parseJsonResponse,
-  CURRENT_MODEL_NAME,
-} from "./provider";
+import { CURRENT_MODEL_NAME } from "./provider";
+import { completeWithViolationRetry, withJudgment } from "./violation-retry";
 import type { CompatibilityResult } from "@/libs/hooks/compatibility/types";
 
 // ============================================================
@@ -181,6 +183,152 @@ const COMPATIBILITY_RESPONSE_SCHEMA_MAP: Record<
 };
 
 // ============================================================
+// KO 스키마 (인생 운세 재설계와 같은 순서)
+// ============================================================
+//
+// strict 모드는 속성 순서대로 생성하므로 judgment(판정) → 본문 → 제목 순으로 둔다.
+// 레거시 칸(spoiler, content, advice)은 빼서 같은 내용을 두 번 쓰지 않게 한다.
+// 인사이트는 화면에 점수·라벨만 나와서 headline·content를 생성하지 않는다.
+
+const subSections = (count: number): GeminiSchemaProperty => ({
+  type: "array",
+  items: SUB_SECTION_SCHEMA,
+  minItems: count,
+  maxItems: count,
+});
+
+const KO_OVERVIEW_SCHEMA: GeminiResponseSchema = withJudgment({
+  type: "object",
+  properties: {
+    subSections: subSections(3),
+    headline: { type: "string" },
+    oneLiner: { type: "string" },
+    tags: {
+      type: "array",
+      items: { type: "string" },
+      minItems: 2,
+      maxItems: 3,
+    },
+    profileASummary: { type: "string" },
+    profileBSummary: { type: "string" },
+  },
+  required: [
+    "subSections",
+    "headline",
+    "oneLiner",
+    "tags",
+    "profileASummary",
+    "profileBSummary",
+  ],
+});
+
+const KO_INSIGHT_ITEM_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    score: { type: "integer", minimum: 0, maximum: 100 },
+    label: { type: "string" },
+  },
+  required: ["score", "label"],
+};
+
+const KO_INSIGHTS_SCHEMA: GeminiResponseSchema = {
+  ...COMPATIBILITY_INSIGHTS_SCHEMA,
+  properties: Object.fromEntries(
+    Object.keys(COMPATIBILITY_INSIGHTS_SCHEMA.properties ?? {}).map((key) => [
+      key,
+      KO_INSIGHT_ITEM_SCHEMA,
+    ])
+  ),
+};
+
+const KO_SCENARIOS_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    coreScenarios: {
+      type: "array",
+      minItems: 3,
+      maxItems: 3,
+      items: withJudgment({
+        type: "object",
+        properties: {
+          subSections: subSections(3),
+          title: { type: "string" },
+          oneLiner: { type: "string" },
+        },
+        required: ["subSections", "title", "oneLiner"],
+      }),
+    },
+    adviceSubSections: subSections(3),
+    adviceOneLiner: { type: "string" },
+  },
+  required: ["coreScenarios", "adviceSubSections", "adviceOneLiner"],
+};
+
+const KO_CATEGORY_SCHEMA: GeminiResponseSchema = withJudgment({
+  type: "object",
+  properties: {
+    subSections: subSections(3),
+    headline: { type: "string" },
+    oneLiner: { type: "string" },
+    tags: {
+      type: "array",
+      items: { type: "string" },
+      minItems: 2,
+      maxItems: 2,
+    },
+  },
+  required: ["subSections", "headline", "oneLiner", "tags"],
+});
+
+const KO_CATEGORIES_COMBINED_SCHEMA: GeminiResponseSchema = {
+  type: "object",
+  properties: {
+    communication: KO_CATEGORY_SCHEMA,
+    growth: KO_CATEGORY_SCHEMA,
+    emotion: KO_CATEGORY_SCHEMA,
+    crisis: KO_CATEGORY_SCHEMA,
+  },
+  required: ["communication", "growth", "emotion", "crisis"],
+};
+
+type SchemaKey =
+  | CompatibilityInterpretationType
+  | "compatibility_categories_combined";
+
+const KO_RESPONSE_SCHEMA_MAP: Record<SchemaKey, GeminiResponseSchema> = {
+  compatibility_overview: KO_OVERVIEW_SCHEMA,
+  compatibility_insights: KO_INSIGHTS_SCHEMA,
+  compatibility_core_scenarios: KO_SCENARIOS_SCHEMA,
+  compatibility_communication: KO_CATEGORY_SCHEMA,
+  compatibility_growth: KO_CATEGORY_SCHEMA,
+  compatibility_emotion: KO_CATEGORY_SCHEMA,
+  compatibility_crisis: KO_CATEGORY_SCHEMA,
+  compatibility_categories_combined: KO_CATEGORIES_COMBINED_SCHEMA,
+};
+
+const isKoRequest = (language?: Locale): boolean =>
+  (language ?? defaultLocale) === "ko";
+
+const responseSchemaFor = (
+  key: SchemaKey,
+  language?: Locale
+): GeminiResponseSchema =>
+  isKoRequest(language)
+    ? KO_RESPONSE_SCHEMA_MAP[key]
+    : COMPATIBILITY_RESPONSE_SCHEMA_MAP[key];
+
+/**
+ * 장면 3개·카테고리 4개를 한 응답에 쓰는 호출은 "~사람이에요" 맺음 허용을 늘린다.
+ * 나머지는 인생 운세와 같은 기준이다.
+ */
+const validatorOptionsFor = (key: SchemaKey): OutputValidatorOptions =>
+  key === "compatibility_categories_combined"
+    ? { maxJudgmentEndings: 6 }
+    : key === "compatibility_core_scenarios"
+      ? { maxJudgmentEndings: 4 }
+      : {};
+
+// ============================================================
 // 프롬프트 가져오기
 // ============================================================
 
@@ -241,10 +389,7 @@ const ensureLineBreaks = (text: string): string => {
 
   // 단일 \n만 있으면 → 문장 종결 뒤에서만 \n\n으로 승격
   if (text.includes("\n")) {
-    let result = text.replace(
-      /([.!?…다요죠까])\s*\n/g,
-      "$1\n\n"
-    );
+    let result = text.replace(/([.!?…다요죠까])\s*\n/g, "$1\n\n");
     // 남은 단독 \n은 공백으로 교체 (문장 중간의 잘못된 줄바꿈)
     result = result.replace(/(?<!\n)\n(?!\n)/g, " ");
     return result;
@@ -257,7 +402,12 @@ const ensureLineBreaks = (text: string): string => {
     const next = text[i + 1];
     if (
       next === " " &&
-      (ch === "." || ch === "!" || ch === "?" || ch === "요" || ch === "죠" || ch === "다")
+      (ch === "." ||
+        ch === "!" ||
+        ch === "?" ||
+        ch === "요" ||
+        ch === "죠" ||
+        ch === "다")
     ) {
       boundaries.push(i + 1);
     }
@@ -311,7 +461,7 @@ const cleanupBrokenLineBreaks = (text: string): string => {
       buffer = next;
     } else {
       // 문장 중간이거나 너무 짧은 조각 → 이어붙이기
-      buffer += " " + next;
+      buffer += ` ${next}`;
     }
   }
 
@@ -360,10 +510,68 @@ const ensureAllLineBreaks = <T>(obj: T): T => {
 // 데이터 포맷팅 (사전 분석 기반)
 // ============================================================
 
+/** 궁 이름 → 손님이 알아듣는 영역 이름 (궁 이름은 출력 금지라 넘기지 않는다) */
+const PALACE_AREA_LABELS: Record<string, string> = {
+  명궁: "성격",
+  부처궁: "가까운 관계",
+  재백궁: "돈",
+  관록궁: "일",
+  질액궁: "몸과 컨디션",
+  천이궁: "바깥 활동",
+  복덕궁: "마음과 쉼",
+  부모궁: "윗사람",
+  형제궁: "형제와 동료",
+  자녀궁: "아랫사람",
+  노복궁: "사회 관계",
+  전택궁: "집과 살림",
+  교우궁: "친구와 인맥",
+};
+
+const palaceToArea = (palace: string): string =>
+  PALACE_AREA_LABELS[palace] || palace;
+
+const list = (items: string[], empty = "없음"): string =>
+  items.length > 0 ? items.join(", ") : empty;
+
 /**
- * 사전 분석 데이터를 AI 입력용으로 포맷
- * - 기존: raw 별/궁 데이터 전체를 전달
- * - 변경: 사전 분석된 성격 프로필 + 교차 분석 + 핵심 궁 참고 데이터
+ * 엔진 사전 분석 문구 중 궁·별 이름과 밝기가 그대로 들어간 것(예: "복덕궁: A 태음(함) + B 무곡(왕)
+ * → tension", "긴장 에너지가 전택궁 영역에 존재")과 성격 프로필을 되풀이한 것("A 소통: …")은
+ * 넘기지 않는다. 모델이 용어를 그대로 옮기거나 같은 말을 되풀이했다.
+ */
+const ENGINE_TERM_POINT =
+  /(궁|→|사화|밝기|\((?:묘|왕|득|리|평|함)\)|에너지|tension|good)|^(?:A|B) (?:소통|가치관|감정|갈등):/;
+
+const usablePoints = (points: string[]): string[] =>
+  points.filter((p) => !ENGINE_TERM_POINT.test(p));
+
+/** 엔진 문구의 "A", "B"를 이름으로 바꾼다 (A/B 혼동 방지) */
+const withNames = (text: string, nameA: string, nameB: string): string =>
+  text
+    .replace(/(^|\s|vs\s)A(?=의|\s|$)/g, `$1${nameA}`)
+    .replace(/(^|\s|vs\s)B(?=의|\s|$)/g, `$1${nameB}`);
+
+const formatPersonality = (
+  title: string,
+  p: NonNullable<CompatibilityInterpretationRequest["personalityA"]>,
+  isAnimal: boolean
+): string =>
+  `## ${title} (엔진 사전 분석, 내부용)
+- ${isAnimal ? "핵심 기질" : "핵심 성격"}: ${list(p.coreTraits)}
+- ${isAnimal ? "표현하는 방식" : "말하는 방식"}: ${list(p.communicationStyle)}
+- 감정 패턴: ${list(p.emotionalPattern)}
+- ${isAnimal ? "스트레스 반응" : "갈등 대처"}: ${list(p.conflictStyle)}
+- ${isAnimal ? "평소 성향" : "가치관"}: ${list(p.valueOrientation)}
+- 관계에서의 강점: ${list(p.strengths)}
+- 관계에서의 약점: ${list(p.weaknesses)}
+- 타고난 오행: ${p.dominantElement}`;
+
+/**
+ * 사전 분석 데이터를 AI 입력용으로 포맷한다.
+ *
+ * 인생 운세 사실 시트처럼 엔진이 미리 계산한 결론만 넘긴다. 예전 블록은 이모지 헤더,
+ * 영어 헤더(Profile A Info, Zodiac Compatibility, Score Range), "⚠️ 실패" 경고와
+ * 생년 음력 원문을 함께 넘겼고, 지시문 문체가 출력에 샜다. 지금은 해요체 한국어로만 쓴다.
+ * 이름 혼동·전문 용어 규칙은 시스템 프롬프트와 output-validator가 맡는다.
  */
 const formatCompatibilityDataForAI = (
   request: CompatibilityInterpretationRequest
@@ -379,248 +587,141 @@ const formatCompatibilityDataForAI = (
     previousContext,
   } = request;
 
-  // ──── 0. 관계 맥락 (최상단 — AI가 가장 먼저 읽는 정보) ────
-  const genderLabelA = profileA.gender === "male" ? "남성" : "여성";
-  const genderLabelB = profileB.gender === "male" ? "남성" : "여성";
-  const genderCombo = `${genderLabelA}-${genderLabelB}`;
-  const ageDiff = Math.abs(profileA.currentAge - profileB.currentAge);
-
+  const genderLabel = (gender: string) => (gender === "male" ? "남성" : "여성");
   const isPetRelationship =
     request.relationshipTypeKey === "cat_owner" ||
     request.relationshipTypeKey === "dog_owner";
-
   const petAnimalLabel =
     request.relationshipTypeKey === "cat_owner" ? "고양이" : "강아지";
+  const nameA = `${profileA.name}님`;
+  const nameB = isPetRelationship ? profileB.name : `${profileB.name}님`;
 
-  let contextBlock: string;
+  // ──── 관계 ────
+  const relationLines = isPetRelationship
+    ? [
+        `- 관계: ${relationshipType}`,
+        `- 집사: ${nameA} (${genderLabel(profileA.gender)}, ${profileA.currentAge}세)`,
+        `- 반려${petAnimalLabel}: ${nameB} (이름만 불러요)`,
+      ]
+    : (() => {
+        const ageDiff = Math.abs(profileA.currentAge - profileB.currentAge);
+        const older =
+          profileA.currentAge >= profileB.currentAge ? nameA : nameB;
+        return [
+          `- 관계: ${relationshipType}`,
+          `- ${nameA}: ${genderLabel(profileA.gender)}, ${profileA.currentAge}세 (${profileA.birthYear}년생)`,
+          `- ${nameB}: ${genderLabel(profileB.gender)}, ${profileB.currentAge}세 (${profileB.birthYear}년생)`,
+          ageDiff === 0
+            ? "- 나이: 동갑이에요"
+            : `- 나이: ${older}이 ${ageDiff}살 많아요`,
+        ];
+      })();
 
-  if (isPetRelationship) {
-    contextBlock = `## 🔑 관계 맥락 (이 정보를 모든 해석의 기준으로 삼으세요)
-- 관계 유형: **${relationshipType}**
-- 집사: ${profileA.name}님 (${profileA.currentAge}세, ${genderLabelA})
-- 반려${petAnimalLabel}: ${profileB.name}
-- ⚠️ 반려동물 관계: 나이·성별 비교 불필요, 사람-동물 역학에 집중
-- ⚠️ ${profileB.name}은(는) ${petAnimalLabel}입니다. "님", "분", "씨" 등 경칭을 절대 붙이지 마세요.`;
-  } else {
-    contextBlock = `## 🔑 관계 맥락 (이 정보를 모든 해석의 기준으로 삼으세요)
-- 관계 유형: **${relationshipType}**
-- 성별 조합: ${genderCombo}
-- ${profileA.name}: ${genderLabelA}, ${profileA.currentAge}세 (${profileA.birthYear}년생)
-- ${profileB.name}: ${genderLabelB}, ${profileB.currentAge}세 (${profileB.birthYear}년생)`;
+  const blocks: string[] = [`## 관계\n${relationLines.join("\n")}`];
 
-    if (ageDiff === 0) {
-      contextBlock += `\n- 나이 관계: 동갑 — 수평적 역학을 반영하세요`;
-    } else {
-      const olderName =
-        profileA.currentAge >= profileB.currentAge
-          ? profileA.name
-          : profileB.name;
-      contextBlock += `\n- 나이 차이: ${ageDiff}세 (${olderName}님이 연상)`;
-      if (ageDiff >= 5) {
-        contextBlock += ` — 경험·세대 차이를 구체적 장면에 녹이세요`;
-      }
-    }
-  }
-
-  contextBlock += `\n\n⚠️ 위 관계 맥락을 모든 해석에 일관되게 반영하세요. ${relationshipType} 관계에 맞지 않는 표현을 사용하면 실패입니다.`;
-
-  // ──── 1. 사전 분석된 성격 프로필 (핵심 데이터) ────
-  let dataStr = contextBlock + "\n\n";
-
+  // ──── 성격 프로필 ────
   if (request.personalityA && request.personalityB) {
-    const pA = request.personalityA;
-    const pB = request.personalityB;
-
-    if (isPetRelationship) {
-      dataStr += `## ⭐ 집사 (${profileA.name}) 성격 프로필 (사전 분석 완료)
-- 핵심 성격: ${pA.coreTraits.join(", ")}
-- 소통 스타일: ${pA.communicationStyle.join(", ")}
-- 감정 패턴: ${pA.emotionalPattern.join(", ")}
-- 갈등 대처: ${pA.conflictStyle.join(", ")}
-- 가치관: ${pA.valueOrientation.join(", ")}
-- 관계 강점: ${pA.strengths.join(", ")}
-- 관계 약점: ${pA.weaknesses.join(", ")}
-- 지배 오행: ${pA.dominantElement}
-- 종합: ${pA.summary}
-
-## ⭐ 반려${petAnimalLabel} (${profileB.name}) 기운 프로필 (사전 분석 완료)
-⚠️ 아래 특성은 동물의 기질·기운으로 해석하세요. 인간 성격처럼 해석하면 실패입니다.
-- 핵심 기질: ${pB.coreTraits.join(", ")}
-- 표현 방식: ${pB.communicationStyle.join(", ")}
-- 감정 기운: ${pB.emotionalPattern.join(", ")}
-- 스트레스 반응: ${pB.conflictStyle.join(", ")}
-- 에너지 성향: ${pB.valueOrientation.join(", ")}
-- 강점 기운: ${pB.strengths.join(", ")}
-- 약점 기운: ${pB.weaknesses.join(", ")}
-- 지배 오행: ${pB.dominantElement}
-- 종합: ${pB.summary}`;
-    } else {
-      dataStr += `## ⭐ A (${profileA.name}) 성격 프로필 (사전 분석 완료)
-- 핵심 성격: ${pA.coreTraits.join(", ")}
-- 소통 스타일: ${pA.communicationStyle.join(", ")}
-- 감정 패턴: ${pA.emotionalPattern.join(", ")}
-- 갈등 대처: ${pA.conflictStyle.join(", ")}
-- 가치관: ${pA.valueOrientation.join(", ")}
-- 관계 강점: ${pA.strengths.join(", ")}
-- 관계 약점: ${pA.weaknesses.join(", ")}
-- 지배 오행: ${pA.dominantElement}
-- 종합: ${pA.summary}
-
-## ⭐ B (${profileB.name}) 성격 프로필 (사전 분석 완료)
-- 핵심 성격: ${pB.coreTraits.join(", ")}
-- 소통 스타일: ${pB.communicationStyle.join(", ")}
-- 감정 패턴: ${pB.emotionalPattern.join(", ")}
-- 갈등 대처: ${pB.conflictStyle.join(", ")}
-- 가치관: ${pB.valueOrientation.join(", ")}
-- 관계 강점: ${pB.strengths.join(", ")}
-- 관계 약점: ${pB.weaknesses.join(", ")}
-- 지배 오행: ${pB.dominantElement}
-- 종합: ${pB.summary}`;
-    }
+    blocks.push(
+      formatPersonality(
+        isPetRelationship
+          ? `집사 ${nameA} 성격 프로필`
+          : `${nameA} 성격 프로필`,
+        request.personalityA,
+        false
+      ),
+      formatPersonality(
+        isPetRelationship
+          ? `반려${petAnimalLabel} ${nameB} 기질 프로필`
+          : `${nameB} 성격 프로필`,
+        request.personalityB,
+        isPetRelationship
+      )
+    );
   }
 
-  // ──── 2. 사전 분석된 교차 분석 결과 ────
+  // ──── 교차 분석 ────
   if (request.analysis) {
     const a = request.analysis;
-
-    dataStr += `\n\n## 🔀 교차 분석 결과 (사전 계산 완료)
-
+    const interactions = [
+      ...new Set([
+        ...a.communication.starInteractions.slice(0, 2),
+        ...a.growth.starInteractions.slice(0, 1),
+        ...a.emotion.starInteractions.slice(0, 1),
+        ...a.crisis.starInteractions.slice(0, 1),
+      ]),
+    ]
+      .map(sanitizeStarInteraction)
+      .filter((i) => !ENGINE_TERM_POINT.test(i))
+      .map((i) => `- ${i}`);
+    const named = (items: string[]) =>
+      usablePoints(items).map((d) => `- ${withNames(d, nameA, nameB)}`);
+    const orNone = (lines: string[]) =>
+      lines.length > 0 ? lines.join("\n") : "- 따로 없음";
+    const category = (points: string[]) =>
+      usablePoints(points)
+        .map((d) => withNames(d, nameA, nameB))
+        .join(" / ") || "따로 없음";
+    blocks.push(`## 두 사람 교차 분석 (엔진 사전 분석, 내부용)
 ### 핵심 역학
-${a.keyDynamics.map((d) => `- ${d}`).join("\n")}
+${orNone(named(a.keyDynamics))}
 
-### 시너지 포인트
-${a.synergyPoints.length > 0 ? a.synergyPoints.map((s) => `- ${s}`).join("\n") : "- 특별한 시너지 없음"}
+### 잘 맞는 점
+${orNone(named(a.synergyPoints))}
 
-### 긴장 포인트
-${a.tensionPoints.length > 0 ? a.tensionPoints.map((t) => `- ${t}`).join("\n") : "- 특별한 긴장 없음"}
+### 부딪히는 점
+${orNone(named(a.tensionPoints))}
 
-### 카테고리별 사전 분석
-**소통**: ${a.communication.analysisPoints.join(" / ")} (사전 점수: ${a.communication.suggestedScore})
-**성장**: ${a.growth.analysisPoints.join(" / ")} (사전 점수: ${a.growth.suggestedScore})
-**감정**: ${a.emotion.analysisPoints.join(" / ")} (사전 점수: ${a.emotion.suggestedScore})
-**위기**: ${a.crisis.analysisPoints.join(" / ")} (사전 점수: ${a.crisis.suggestedScore})
+### 영역별
+- 소통: ${category(a.communication.analysisPoints)}
+- 성장: ${category(a.growth.analysisPoints)}
+- 감정: ${category(a.emotion.analysisPoints)}
+- 위기: ${category(a.crisis.analysisPoints)}
 
-### 주요 상호작용 패턴
-${[
-  ...new Set([
-    ...a.communication.starInteractions.slice(0, 2),
-    ...a.growth.starInteractions.slice(0, 1),
-    ...a.emotion.starInteractions.slice(0, 1),
-    ...a.crisis.starInteractions.slice(0, 1),
-  ]),
-]
-  .map((i) => `- ${sanitizeStarInteraction(i)}`)
-  .join("\n")}`;
+### 자주 보이는 상호작용
+${orNone(interactions)}`);
   }
 
-  // ──── 3. 기본 정보 ────
-  if (isPetRelationship) {
-    dataStr += `\n\n## 집사 (${profileA.name}) Info
-- name: ${profileA.name}
-- gender: ${genderLabelA}
-- age: ${profileA.currentAge}세 (${profileA.birthYear}년생)
-- lunarBirthInfo: ${profileA.lunarBirthInfo}
-
-## 반려${petAnimalLabel} (${profileB.name}) Info
-- name: ${profileB.name}
-- lunarBirthInfo: ${profileB.lunarBirthInfo}`;
-  } else {
-    dataStr += `\n\n## Profile A (${profileA.name}) Info
-- name: ${profileA.name}
-- gender: ${genderLabelA}
-- age: ${profileA.currentAge}세 (${profileA.birthYear}년생)
-- lunarBirthInfo: ${profileA.lunarBirthInfo}
-
-## Profile B (${profileB.name}) Info
-- name: ${profileB.name}
-- gender: ${genderLabelB}
-- age: ${profileB.currentAge}세 (${profileB.birthYear}년생)
-- lunarBirthInfo: ${profileB.lunarBirthInfo}`;
-  }
-
-  // ──── 4. 에너지 분포 정보 (전문용어 제거) ────
-  const palaceToLabel = (palace: string): string => {
-    const labelMap: Record<string, string> = {
-      명궁: "성격 영역",
-      부처궁: "관계 영역",
-      재백궁: "재물 영역",
-      관록궁: "커리어 영역",
-      질액궁: "건강/위기 영역",
-      천이궁: "외부활동 영역",
-      복덕궁: "내면/감정 영역",
-      부모궁: "윗사람 영역",
-      형제궁: "형제/동료 영역",
-      자녀궁: "후배/아랫사람 영역",
-      노복궁: "사회관계 영역",
-      전택궁: "가정/부동산 영역",
-      교우궁: "친구/소통 영역",
-    };
-    return labelMap[palace] || palace;
-  };
-
-  dataStr += `\n\n## 타고난 에너지 흐름 (⚠️ 아래 문장은 참고용 — 그대로 출력 금지!)
-- A (${profileA.name}): 타고난 행운이 ${palaceToLabel(chartA.sihua.hualu.palace)}에 모여 있고, 스트레스 요인은 ${palaceToLabel(chartA.sihua.huaji.palace)}에서 생기기 쉬움
-- B (${profileB.name}): 타고난 행운이 ${palaceToLabel(chartB.sihua.hualu.palace)}에 모여 있고, 스트레스 요인은 ${palaceToLabel(chartB.sihua.huaji.palace)}에서 생기기 쉬움`;
-
-  // ──── 6. 상성 정보 ────
-  dataStr += `\n\n## Zodiac Compatibility
-${zodiacCompatibility}
-
-## Five Element Compatibility
-${fiveElementCompatibility}`;
-
+  // ──── 타고난 쪽 ────
+  const fortuneLine = (name: string, chart: typeof chartA) =>
+    `- ${name}: 운이 모이는 곳은 ${palaceToArea(chart.sihua.hualu.palace)}, 스트레스가 생기기 쉬운 곳은 ${palaceToArea(chart.sihua.huaji.palace)}`;
+  const fortuneLines = [fortuneLine(nameA, chartA), fortuneLine(nameB, chartB)];
   if (request.huajiCrossAnalysis) {
     const h = request.huajiCrossAnalysis;
-    dataStr += `\n\n## 스트레스 요인 교차 영향 (⚠️ 참고용 — 그대로 출력 금지!)
-- A의 스트레스 요인(${palaceToLabel(h.huajiPalaceA)})이 B의 ${h.aHuajiAffectsBPalaces.length > 0 ? h.aHuajiAffectsBPalaces.map(palaceToLabel).join(", ") : "없음"} 영역에 영향
-- B의 스트레스 요인(${palaceToLabel(h.huajiPalaceB)})이 A의 ${h.bHuajiAffectsAPalaces.length > 0 ? h.bHuajiAffectsAPalaces.map(palaceToLabel).join(", ") : "없음"} 영역에 영향
-- 양쪽 스트레스가 같은 영역에 집중: ${h.bothHuajiSameArea ? "예" : "아니오"}`;
+    const areas = (palaces: string[]) =>
+      palaces.length > 0 ? palaces.map(palaceToArea).join(", ") : "없음";
+    fortuneLines.push(
+      `- ${nameA}의 스트레스가 ${nameB}에게 닿는 곳: ${areas(h.aHuajiAffectsBPalaces)}`,
+      `- ${nameB}의 스트레스가 ${nameA}에게 닿는 곳: ${areas(h.bHuajiAffectsAPalaces)}`,
+      `- 둘의 스트레스가 같은 곳에 몰려요: ${h.bothHuajiSameArea ? "예" : "아니오"}`
+    );
   }
+  blocks.push(`## 타고난 쪽 (참고용)\n${fortuneLines.join("\n")}`);
 
-  // ──── 7. 점수 제약 ────
+  // ──── 띠·오행 ────
+  blocks.push(`## 띠 궁합\n${zodiacCompatibility}`);
+  blocks.push(`## 오행 궁합\n${fiveElementCompatibility}`);
+
+  // ──── 점수 범위 ────
+  const scoreLines: string[] = [];
   if (request.scoreRange) {
-    dataStr += `\n\n## Score Range
-궁합 점수(overall.score)는 반드시 ${request.scoreRange.min}~${request.scoreRange.max} 범위 안에서 결정하세요.`;
+    scoreLines.push(
+      `- overall: ${request.scoreRange.min}~${request.scoreRange.max}`
+    );
   }
-
   if (request.analysis?.scoreConstraints) {
-    const sc = request.analysis.scoreConstraints;
-    dataStr += `\n\n## 카테고리별 점수 제약 (사전 계산)
-각 항목의 점수를 아래 범위 내에서 결정하세요:`;
-    for (const [key, constraint] of Object.entries(sc)) {
-      dataStr += `\n- ${key}: ${constraint.min}~${constraint.max} (권장: ${constraint.suggested})`;
+    for (const [key, c] of Object.entries(request.analysis.scoreConstraints)) {
+      scoreLines.push(`- ${key}: ${c.min}~${c.max} (권장 ${c.suggested})`);
     }
+  }
+  if (scoreLines.length > 0) {
+    blocks.push(`## 점수 범위 (엔진 계산, 내부용)\n${scoreLines.join("\n")}`);
   }
 
   if (previousContext) {
-    dataStr += `\n\n${previousContext}`;
+    blocks.push(previousContext);
   }
 
-  if (isPetRelationship) {
-    dataStr += `\n\n## ⚠️ 최종 점검
-1. 출력에 궁 이름(명궁, 부처궁 등), 별 이름(자미, 천기 등), 사화 용어(화록, 화기 등)가 포함되면 실패입니다.
-2. 위의 프로필 데이터를 기반으로 문장을 작성하세요. 별/궁 데이터를 직접 해석하지 마세요.
-3. **집사/반려동물 혼동 금지 — 출력 전 반드시 검증!**
-   - 집사 = ${profileA.name}님, 반려${petAnimalLabel} = ${profileB.name}
-   - ${profileA.name}님에 대해 쓸 때 → 반드시 "집사 (${profileA.name}) 성격 프로필"에서 가져온 특성만 사용
-   - ${profileB.name}에 대해 쓸 때 → 반드시 "반려${petAnimalLabel} (${profileB.name}) 기운 프로필"에서 가져온 특성만 사용
-4. **⚠️ 반려동물 경칭 금지 — ${profileB.name}에 "님", "분", "씨" 절대 금지!**
-   - ✅ "${profileB.name}는", "${profileB.name}가", "${profileB.name}이"
-   - ❌ "${profileB.name}님은", "${profileB.name}님이", "${profileB.name}님의"
-5. **⚠️ 인간 관계 표현 금지 — "연인", "친구", "동료", "소통 방식" 등 인간 대 인간 관계 표현 사용 금지!**`;
-  } else {
-    dataStr += `\n\n## ⚠️ 최종 점검
-1. 출력에 궁 이름(명궁, 부처궁 등), 별 이름(자미, 천기 등), 사화 용어(화록, 화기 등)가 포함되면 실패입니다.
-2. 위의 성격 프로필 데이터를 기반으로 문장을 작성하세요. 별/궁 데이터를 직접 해석하지 마세요.
-3. **A/B 혼동 금지 — 출력 전 반드시 검증!**
-   - A = ${profileA.name}님, B = ${profileB.name}님
-   - ${profileA.name}님에 대해 쓸 때 → 반드시 "A (${profileA.name}) 성격 프로필"에서 가져온 특성만 사용
-   - ${profileB.name}님에 대해 쓸 때 → 반드시 "B (${profileB.name}) 성격 프로필"에서 가져온 특성만 사용
-   - "${profileA.name}님이 ${profileA.name}님을 보완" 같은 자기 자신 참조는 절대 금지 — 반드시 상대방 이름이어야 함
-   - 문장을 쓴 뒤, 주어와 목적어의 이름이 다른지 반드시 확인하세요.`;
-  }
-
-  return dataStr;
+  return blocks.join("\n\n");
 };
 
 // ============================================================
@@ -643,9 +744,13 @@ const requestCompatibilityInterpretation = async <T>(
 
 ${userPrompt}`;
 
-  const responseSchema = COMPATIBILITY_RESPONSE_SCHEMA_MAP[request.requestType];
+  const responseSchema = responseSchemaFor(
+    request.requestType,
+    request.language
+  );
 
-  const response = await chatCompletion(
+  // 금지 용어·문체 위반이 있으면 피드백을 붙여 1회 재생성한다 (인생 운세와 같은 검사기)
+  const { parsed } = await completeWithViolationRetry(
     [
       {
         role: "system",
@@ -654,12 +759,15 @@ ${userPrompt}`;
       { role: "user", content: fullUserPrompt },
     ],
     {
-      responseSchema,
-      ...(options?.maxTokens && { maxTokens: options.maxTokens }),
+      language: request.language,
+      completion: {
+        responseSchema,
+        ...(options?.maxTokens && { maxTokens: options.maxTokens }),
+      },
+      validator: validatorOptionsFor(request.requestType),
+      label: `compatibility:${request.requestType}`,
     }
   );
-
-  const parsed = parseJsonResponse<unknown>(response);
 
   try {
     return schema.parse(parsed);
@@ -762,14 +870,12 @@ export const interpretCompatibilityCategoriesCombined = async (
     requestType: "compatibility_communication", // 타입 호환용, 실제로는 사용 안 됨
   });
 
-  // 4개 카테고리 통합 프롬프트 구성
-  const combinedUserPrompt = `${chartData}
-
----
-
-아래 4가지 카테고리를 **하나의 JSON 응답**으로 한번에 작성해주세요.
+  // 4개 카테고리 통합 프롬프트 구성 (KO는 섹션별 질문을 둔 새 프롬프트)
+  const categoriesPrompt = isKoRequest(request.language)
+    ? buildKoCategoriesCombinedPrompt(request.relationshipTypeKey)
+    : `아래 4가지 카테고리를 **하나의 JSON 응답**으로 한번에 작성해주세요.
 ⚠️ 위의 성격 프로필과 교차 분석 결과를 반드시 활용하세요.
-⚠️ 4개 카테고리 간 성격 묘사가 일관되어야 합니다. A와 B의 성격을 절대 혼동하지 마세요. 같은 사람이 같은 사람을 보완한다는 문장(예: "A님이 A님을 보완")은 절대 금지!
+⚠️ 4개 카테고리 간 성격 묘사가 일관되어야 합니다. A와 B의 성격을 절대 혼동하지 마세요.
 
 ### communication (소통 & 갈등)
 ${prompts.userPrompts[request.relationshipTypeKey].compatibility_communication}
@@ -790,11 +896,13 @@ ${prompts.userPrompts[request.relationshipTypeKey].compatibility_crisis}
   "emotion": { "headline": "...", "content": "...", "tags": [...] },
   "crisis": { "headline": "...", "content": "...", "tags": [...] }
 }`;
+  const combinedUserPrompt = `${chartData}
 
-  const responseSchema =
-    COMPATIBILITY_RESPONSE_SCHEMA_MAP["compatibility_categories_combined"];
+---
 
-  const response = await chatCompletion(
+${categoriesPrompt}`;
+
+  const { parsed } = await completeWithViolationRetry(
     [
       {
         role: "system",
@@ -803,12 +911,18 @@ ${prompts.userPrompts[request.relationshipTypeKey].compatibility_crisis}
       { role: "user", content: combinedUserPrompt },
     ],
     {
-      responseSchema,
-      maxTokens: LARGE_RESPONSE_MAX_TOKENS,
+      language: request.language,
+      completion: {
+        responseSchema: responseSchemaFor(
+          "compatibility_categories_combined",
+          request.language
+        ),
+        maxTokens: LARGE_RESPONSE_MAX_TOKENS,
+      },
+      validator: validatorOptionsFor("compatibility_categories_combined"),
+      label: "compatibility:categories_combined",
     }
   );
-
-  const parsed = parseJsonResponse<unknown>(response);
 
   try {
     return CompatibilityCategoriesCombinedResponseSchema.parse(parsed);
@@ -831,10 +945,10 @@ export const generateCompatibilityInterpretation = async (
   // ──── 성격 앵커 (사전 분석된 프로필 기반, 200자 내외) ────
   const personalityAnchor =
     request.personalityA && request.personalityB
-      ? `## 참고: A/B 성격 설정 (사전 분석 완료 — 이 설정과 모순되지 않게 작성)
-- ${request.profileA.name}: ${request.personalityA.summary}
-- ${request.profileB.name}: ${request.personalityB.summary}
-(이 설정과 모순되지 않게 쓰되, 이 섹션 고유의 주제에 집중하세요. 성격 소개를 반복하지 마세요.)`
+      ? `## 두 사람 성격 요약 (엔진 사전 분석)
+- ${request.profileA.name}: ${request.personalityA.coreTraits.slice(0, 3).join(", ")}
+- ${request.profileB.name}: ${request.personalityB.coreTraits.slice(0, 3).join(", ")}
+이 요약과 어긋나지 않게 쓰되, 성격 소개를 되풀이하지 말고 이 섹션의 질문에 집중해요.`
       : "";
 
   // ──── Stage 1: overview + insights 병렬 ────
@@ -893,15 +1007,14 @@ export const generateCompatibilityInterpretation = async (
     overview.spoiler,
     150
   );
+  // 앞 섹션이 쓴 말. 지시문 문체가 출력에 새지 않도록 해요체로 쓴다.
+  // (KO 인사이트는 점수·라벨만 생성하므로 요약 섹션의 말만 넘긴다)
   const stage1Context = `${personalityAnchor}
 
-## 이미 사용한 표현 (절대 반복 금지!)
+## 앞 섹션에서 이미 쓴 말
 - 궁합 headline: "${overview.headline}"
-- 궁합 spoiler: "${overviewOpening}"
-- insights overall: "${insights.overall.headline}" — ${insights.overall.content.slice(0, 80)}
-- insights chemistry: "${insights.chemistry.headline}" — ${insights.chemistry.content.slice(0, 80)}
-위 headline·표현과 같은 구조·어휘·패턴을 사용하지 마세요.
-⚠️ 표현만 다르게 하고 같은 내용을 반복하면 실패! 이 섹션 고유의 주제에 맞는 새로운 관점과 장면을 다루세요.`;
+- 궁합 요약 첫 문단: "${overviewOpening}"
+이 섹션에서는 위와 같은 문장 구조와 낱말을 피하고, 같은 장면이나 같은 성격 대비를 다시 쓰지 않아요.`;
 
   // ──── Stage 2: scenarios + categories(4개 통합) 병렬 ────
   const [scenarios, categories] = await Promise.all([

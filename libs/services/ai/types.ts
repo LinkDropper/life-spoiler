@@ -723,11 +723,12 @@ export type CompatibilityOverviewResponse = z.infer<
 >;
 
 // 궁합 인사이트 항목 스키마
+// KO는 화면에 점수·라벨만 나와서 headline·content를 생성하지 않는다 (compatibility-interpreter.ts)
 const CompatibilityInsightItemSchema = z.object({
   score: z.number().min(0).max(100),
   label: z.string(),
-  headline: z.string(),
-  content: z.string(),
+  headline: z.string().optional().default(""),
+  content: z.string().optional().default(""),
 });
 
 // 궁합 인사이트 응답 스키마 (8개 항목)
