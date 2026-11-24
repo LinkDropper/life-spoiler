@@ -159,7 +159,8 @@ describe("대운 사실", () => {
         }
         if (decade.lifeStage !== "adult" || decade.startAge < 20) {
           for (const claim of decade.claims) {
-            expect(claim.sceneSeeds).toEqual([]);
+            expect(claim.cues).toBeUndefined();
+            expect(claim.voice).toBeUndefined();
           }
         }
       }
@@ -253,13 +254,14 @@ describe("영역 근거 한 줄", () => {
     });
   });
 
-  it("보충 주장은 LLM 전용 표의 장면을 함께 싣는다 (화면용 성격 설명을 넘기지 않음)", () => {
+  it("보충 주장은 LLM 전용 표의 장면 재료를 함께 싣는다 (화면용 성격 설명을 넘기지 않음)", () => {
     let fallbackCount = 0;
     for (const sheet of sheets) {
       for (const claim of Object.values(sheet.claims).flat()) {
         if (!claim.id.startsWith("base:")) continue;
         fallbackCount++;
-        expect(claim.sceneSeeds.length).toBeGreaterThanOrEqual(2);
+        expect(claim.cues?.length).toBeGreaterThanOrEqual(3);
+        expect(claim.voice).toBeTruthy();
         expect(claim.topic.length).toBeLessThanOrEqual(45);
       }
     }
@@ -309,5 +311,94 @@ describe("영역 근거 한 줄", () => {
     expect(
       pairInHealth.claims.health.some((c) => c.id.endsWith("@질액궁:caution"))
     ).toBe(true);
+  });
+});
+
+describe("인연 섹션 재료 (연애 재료 표)", () => {
+  const build = (input: ZiweiInput) => {
+    const { chart, dayun } = setup(input);
+    return buildLifetimeFactSheet(chart, dayun, {
+      birthYear: 2003,
+      currentYear: 2026,
+    });
+  };
+  const target: ZiweiInput = {
+    name: "real-2003-08-08",
+    birthDate: "2003-08-08",
+    birthTime: "16:40",
+    gender: "male",
+    calendarType: "solar",
+  } as ZiweiInput;
+
+  it("'연애할 때의 나'(명궁)와 연애관(부처궁)을 함께 넣는다", () => {
+    for (const input of [...INPUTS, target]) {
+      const ids = build(input).claims.relationship.map((c) => c.id);
+      expect(ids.some((id) => id.startsWith("love:self:"))).toBe(true);
+      expect(ids.some((id) => id.startsWith("love:partner:"))).toBe(true);
+      expect(ids.some((id) => id.startsWith("base:"))).toBe(false);
+    }
+  });
+
+  it("주성 하나뿐인 부처궁도 주장이 2개에서 끝나지 않는다", () => {
+    const { relationship } = build(target).claims;
+    expect(relationship.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("연애 재료 주장은 완성 문장 장면 대신 단서·말·피할 해석을 싣는다", () => {
+    for (const claim of build(target).claims.relationship) {
+      if (!claim.id.startsWith("love:")) continue;
+      expect(claim.cues?.length).toBeGreaterThanOrEqual(3);
+      expect(claim.voice).toBeTruthy();
+      expect(claim.avoid).toBeTruthy();
+      expect(claim.lens).toBeTruthy();
+    }
+  });
+});
+
+describe("섹션 본궁 우선 배정", () => {
+  const target: ZiweiInput = {
+    name: "real-2003-08-08",
+    birthDate: "2003-08-08",
+    birthTime: "16:40",
+    gender: "male",
+    calendarType: "solar",
+  } as ZiweiInput;
+  const HOME = {
+    core: "명궁",
+    wealth: "재백궁",
+    career: "관록궁",
+    health: "질액궁",
+  } as const;
+
+  it("영역 섹션의 첫 주장은 그 섹션 본궁에서 나온다", () => {
+    for (const input of [...INPUTS, target]) {
+      const { chart, dayun } = setup(input);
+      const sheet = buildLifetimeFactSheet(chart, dayun, {
+        birthYear: 2000,
+        currentYear: 2026,
+      });
+      for (const [section, palace] of Object.entries(HOME) as [
+        keyof typeof HOME,
+        string,
+      ][]) {
+        const [first] = sheet.claims[section];
+        if (!first) continue;
+        expect(first.palace).toBe(palace);
+      }
+    }
+  });
+
+  it("스포일러에 명궁 주성 재료가 들어간다 (2003-08-08)", () => {
+    const { chart, dayun } = setup(target);
+    const sheet = buildLifetimeFactSheet(chart, dayun, {
+      birthYear: 2003,
+      currentYear: 2026,
+    });
+    expect(
+      sheet.claims.core.some(
+        (c) => c.id.startsWith("base:") && c.id.includes("@명궁")
+      )
+    ).toBe(true);
+    expect(sheet.claims.wealth[0].id).not.toBe("birth:화기@전택궁");
   });
 });

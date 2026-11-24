@@ -10,13 +10,17 @@
  * 1) 생년 사화가 앉은 궁 (SIHUA_PALACE_RULES)
  * 2) 궁간 비행사화·자화 (FLYING_SIHUA_RULES)
  * 3) 핵심 궁의 동궁 쌍성 (STAR_PAIR_RULES)
+ * 4) 모자란 섹션의 별×궁 보충 (STAR_PALACE_FACTS). 인연은 연애 재료 표(LOVE_*_FACTS)
  * 시간축(타이밍·지난 시기 확인)은 대운 궁간 사화와 유년 사화로 계산한다.
  */
 
 import {
   DECADE_STAGE,
   FLYING_SIHUA_RULES,
+  LOVE_PARTNER_FACTS,
+  LOVE_SELF_FACTS,
   PARTNER_RULES,
+  PEACH_BLOSSOM_FACTS,
   SIHUA_PALACE_RULES,
   STAR_CAREER,
   STAR_PAIR_RULES,
@@ -27,8 +31,12 @@ import type {
   FactRule,
   FactSection,
   FactStrength,
+  FallbackFact,
   FallbackPalace,
+  LoveFact,
   PartnerEntry,
+  PeachBlossomPalace,
+  PeachBlossomStar,
 } from "../constants/lifetime-facts/types";
 import type { LocalizedText } from "../constants/explanations/types";
 import type { PalaceName } from "../constants/palaces";
@@ -53,7 +61,6 @@ export interface FortuneClaim {
   topic: string;
   direction: FactDirection;
   strength: FactStrength;
-  sceneSeeds: string[];
   /**
    * 이 주장의 근거 문구를 "영역 근거 한 줄"로 써도 되는 영역.
    * - 생년 사화: 그 영역의 궁(재백·관록·부처·질액)에 걸렸을 때만
@@ -65,6 +72,16 @@ export interface FortuneClaim {
   evidence?: LocalizedText;
   /** 시기 주장일 때 나이 구간 (예: "23-32") */
   period?: string;
+  /** 주장이 나온 궁 (섹션 본궁 우선 배정에 쓴다) */
+  palace?: PalaceName;
+  /** 장면 재료가 있는 주장: 다룰 관점 */
+  lens?: string;
+  /** 장면 단서 명사구 (완성 문장이 아니라 언제·어디서·누구와·무엇) */
+  cues?: string[];
+  /** 곁 사람이 할 법한 말 재료 */
+  voice?: string;
+  /** 잘못 읽기 쉬운 해석 */
+  avoid?: string;
 }
 
 export type TimingTopic = "love" | "career" | "move";
@@ -152,7 +169,7 @@ const SECTION_LIMIT: Record<FactSection, number> = {
   core: 5,
   wealth: 4,
   career: 4,
-  relationship: 4,
+  relationship: 5,
   health: 4,
   timing: 4,
 };
@@ -242,17 +259,19 @@ const toClaim = (
   section: FactSection,
   rule: FactRule,
   evidenceFor: FactCategory | undefined,
+  palace: PalaceName,
   strengthDelta = 0,
   period?: string
 ): FortuneClaim => ({
   id,
   section,
+  palace,
   ...(evidenceFor ? { evidenceFor } : {}),
   topic: rule.topic,
   direction: rule.direction,
   strength: clampStrength(rule.strength + strengthDelta),
-  sceneSeeds: rule.sceneSeeds,
   evidence: rule.evidence,
+  ...rule.material,
   ...(period ? { period } : {}),
 });
 
@@ -281,6 +300,7 @@ const collectBirthSihuaClaims = (
       PALACE_SECTION[palace],
       SIHUA_PALACE_RULES[sihua][palace],
       PALACE_CATEGORY[palace],
+      palace,
       1
     )
   );
@@ -314,7 +334,8 @@ const collectFlyingClaims = (
       `fly:${rule.from}-${rule.sihua}->${rule.to}`,
       rule.section,
       rule.rule,
-      isCategory(rule.section) ? rule.section : undefined
+      isCategory(rule.section) ? rule.section : undefined,
+      rule.to === "self" ? rule.from : rule.to
     )
   );
 };
@@ -327,7 +348,13 @@ const collectPairClaims = (chart: ZiweiChart): FortuneClaim[] =>
     return STAR_PAIR_RULES.filter(
       ({ stars: [a, b] }) => stars.includes(a) && stars.includes(b)
     ).map(({ stars: [a, b], rule }) =>
-      toClaim(`pair:${a}+${b}@${name}`, PALACE_SECTION[name], rule, undefined)
+      toClaim(
+        `pair:${a}+${b}@${name}`,
+        PALACE_SECTION[name],
+        rule,
+        undefined,
+        name
+      )
     );
   });
 
@@ -348,7 +375,6 @@ const SECTION_PALACE: Partial<Record<FactSection, FallbackPalace>> = {
   core: "명궁",
   wealth: "재백궁",
   career: "관록궁",
-  relationship: "부처궁",
   health: "질액궁",
 };
 
@@ -361,6 +387,17 @@ const SECTION_PALACE: Partial<Record<FactSection, FallbackPalace>> = {
 const SECTION_MIN = 4;
 
 /**
+ * 인연은 "연애할 때의 나"(명궁)와 "연애관·끌리는 상대"(부처궁)를 함께 보여 줘야 해서
+ * 한 칸 더 둔다. 주성 하나씩이면 강점·주의 2쌍 = 4개 + 도화 1개.
+ */
+const SECTION_MIN_BY_SECTION: Partial<Record<FactSection, number>> = {
+  relationship: 5,
+};
+
+const sectionMin = (section: FactSection): number =>
+  SECTION_MIN_BY_SECTION[section] ?? SECTION_MIN;
+
+/**
  * 사화·비화·쌍성 신호가 없는 섹션은 해당 궁 주성의 별×영역 보충 주장으로 채운다.
  * 강도 2(약한 신호)로 두어 실제 신호가 있으면 그쪽이 먼저 배정된다.
  * 문구는 화면용 궁 설명(STAR_IN_PALACE)이 아니라 LLM 전용 표(STAR_PALACE_FACTS)를 쓴다.
@@ -371,26 +408,101 @@ const collectFallbackClaims = (chart: ZiweiChart): FortuneClaim[] =>
     ([section, palaceName]) =>
       effectiveMainStarNames(findPalace(chart, palaceName)).flatMap((star) => {
         const { energy, caution } = STAR_PALACE_FACTS[palaceName][star];
-        return [
-          {
-            id: `base:${star}@${palaceName}:energy`,
-            section,
-            topic: energy.topic,
-            direction: "positive" as const,
-            strength: 2 as const,
-            sceneSeeds: energy.sceneSeeds,
-          },
-          {
-            id: `base:${star}@${palaceName}:caution`,
-            section,
-            topic: caution.topic,
-            direction: "negative" as const,
-            strength: 1 as const,
-            sceneSeeds: caution.sceneSeeds,
-          },
-        ];
+        const base = (
+          kind: "energy" | "caution",
+          fact: FallbackFact
+        ): FortuneClaim => ({
+          id: `base:${star}@${palaceName}:${kind}`,
+          section,
+          palace: palaceName,
+          topic: fact.topic,
+          direction: kind === "energy" ? "positive" : "negative",
+          strength: kind === "energy" ? 2 : 1,
+          lens: fact.lens,
+          cues: fact.cues,
+          voice: fact.voice,
+          avoid: fact.avoid,
+        });
+        return [base("energy", energy), base("caution", caution)];
       })
   );
+
+const loveClaim = (
+  id: string,
+  fact: LoveFact,
+  direction: FactDirection,
+  strength: FactStrength
+): FortuneClaim => ({
+  id,
+  section: "relationship",
+  topic: fact.judgment,
+  direction,
+  strength,
+  lens: fact.lens,
+  cues: fact.cues,
+  voice: fact.voice,
+  avoid: fact.avoid,
+});
+
+const PEACH_BLOSSOM_STARS: PeachBlossomStar[] = ["홍란", "천희"];
+const PEACH_BLOSSOM_PALACES: PeachBlossomPalace[] = ["명궁", "부처궁"];
+
+const collectPeachBlossomClaims = (chart: ZiweiChart): FortuneClaim[] =>
+  PEACH_BLOSSOM_PALACES.flatMap((palaceName) => {
+    const names = (findPalace(chart, palaceName)?.minorStars ?? []).map(
+      (s) => s.name
+    );
+    return PEACH_BLOSSOM_STARS.filter((star) => names.includes(star)).map(
+      (star) =>
+        loveClaim(
+          `love:peach:${star}@${palaceName}`,
+          PEACH_BLOSSOM_FACTS[star][palaceName],
+          "positive",
+          2
+        )
+    );
+  });
+
+/**
+ * 인연 섹션 보충 재료 (재설계 3단계).
+ * 명궁 주성의 연애 행동(LOVE_SELF_FACTS)과 부처궁 주성의 연애관(LOVE_PARTNER_FACTS)을
+ * 번갈아 놓는다. 보충은 앞에서부터 채워지므로, 이 순서가 "나"와 "상대를 대하는 방식"이
+ * 둘 다 들어가게 한다. 도화성은 첫 쌍 뒤에 둔다.
+ */
+const collectLoveClaims = (chart: ZiweiChart): FortuneClaim[] => {
+  const pairsOf = (
+    palaceName: PalaceName,
+    table: typeof LOVE_SELF_FACTS,
+    kind: "self" | "partner"
+  ): FortuneClaim[][] =>
+    effectiveMainStarNames(findPalace(chart, palaceName)).map((star) => [
+      loveClaim(
+        `love:${kind}:${star}:energy`,
+        table[star].energy,
+        "positive",
+        3
+      ),
+      loveClaim(
+        `love:${kind}:${star}:caution`,
+        table[star].caution,
+        "negative",
+        2
+      ),
+    ]);
+  const self = pairsOf("명궁", LOVE_SELF_FACTS, "self");
+  const partner = pairsOf("부처궁", LOVE_PARTNER_FACTS, "partner");
+  const [firstSelf = [], ...restSelf] = self;
+  const [firstPartner = [], ...restPartner] = partner;
+  return [
+    ...firstSelf.slice(0, 1),
+    ...firstPartner.slice(0, 1),
+    ...firstSelf.slice(1),
+    ...firstPartner.slice(1),
+    ...collectPeachBlossomClaims(chart),
+    ...restSelf.flat(),
+    ...restPartner.flat(),
+  ];
+};
 
 // ============================================================
 // 배정
@@ -411,32 +523,68 @@ const rankClaims = (claims: FortuneClaim[]): FortuneClaim[] =>
       a.id.localeCompare(b.id)
   );
 
+/** 섹션의 본궁. 이 궁에서 나온 주장이 섹션의 판정이 된다 */
+const HOME_PALACE: Partial<Record<FactSection, PalaceName>> = {
+  core: "명궁",
+  wealth: "재백궁",
+  career: "관록궁",
+  relationship: "부처궁",
+  health: "질액궁",
+};
+
+/**
+ * 본궁 주성 보충 주장 중 다른 궁 신호보다 앞에 둘 개수.
+ * 영역 섹션은 주성 하나의 강점·주의(2개), 인연은 나·연애관의 강점·주의(4개).
+ */
+const HOME_BASE_SLOTS: Partial<Record<FactSection, number>> = {
+  relationship: 4,
+};
+
+const isHomeClaim = (claim: FortuneClaim): boolean =>
+  claim.id.startsWith("love:") ||
+  (claim.palace !== undefined && claim.palace === HOME_PALACE[claim.section]);
+
+/**
+ * 섹션별 배정: 본궁 신호 → 본궁 주성 보충 → 다른 궁 신호 → 나머지 보충 순.
+ *
+ * 예전에는 강도순이라 섹션 질문과 거리가 먼 강한 신호가 섹션의 첫 주장(판정)이 됐다
+ * (2003-08-08: 재물의 첫 주장이 전택궁 화기 "집 계약·이사 비용", 스포일러의 첫 주장이
+ * 복덕궁 화과 "교양과 취미", 명궁 주성은 아예 빠짐). 본궁을 앞에 두고, 다른 궁 신호는
+ * 보조로 뒤에 둔다(재설계 §3.2).
+ */
 const assignClaims = (
   claims: FortuneClaim[],
   fallback: FortuneClaim[]
 ): Record<FactSection, FortuneClaim[]> => {
-  const result: Record<FactSection, FortuneClaim[]> = {
-    core: [],
-    wealth: [],
-    career: [],
-    relationship: [],
-    health: [],
-    timing: [],
-  };
   const seen = new Set<string>();
-  for (const claim of rankClaims(claims)) {
-    if (seen.has(claim.id)) continue;
-    const bucket = result[claim.section];
-    if (bucket.length >= SECTION_LIMIT[claim.section]) continue;
+  const signals = rankClaims(claims).filter((claim) => {
+    if (seen.has(claim.id)) return false;
     seen.add(claim.id);
-    bucket.push(claim);
-  }
-  for (const claim of fallback) {
-    const bucket = result[claim.section];
-    if (bucket.length >= SECTION_MIN) continue;
-    bucket.push(claim);
-  }
-  return result;
+    return true;
+  });
+  const sections: FactSection[] = [
+    "core",
+    "wealth",
+    "career",
+    "relationship",
+    "health",
+    "timing",
+  ];
+  return Object.fromEntries(
+    sections.map((section) => {
+      const own = signals.filter((c) => c.section === section);
+      const extra = fallback.filter((c) => c.section === section);
+      const slots = HOME_BASE_SLOTS[section] ?? 2;
+      const ordered = [
+        ...own.filter(isHomeClaim),
+        ...extra.slice(0, slots),
+        ...own.filter((c) => !isHomeClaim(c)),
+        ...extra.slice(slots),
+      ];
+      const limit = Math.max(SECTION_LIMIT[section], sectionMin(section));
+      return [section, ordered.slice(0, limit)];
+    })
+  ) as Record<FactSection, FortuneClaim[]>;
 };
 
 // ============================================================
@@ -629,13 +777,15 @@ export const calculateDecadeFacts = (
           "timing",
           SIHUA_PALACE_RULES[sihua][palace],
           undefined,
+          palace,
           0,
           ageRange
         );
-        // 장면 씨앗(직장·연애·살림)은 성인기 장면이라 다른 생애 단계에는 주제만 넘긴다
-        return lifeStage === "adult" && period.startAge >= SCENE_MIN_START_AGE
-          ? claim
-          : { ...claim, sceneSeeds: [] };
+        // 장면 단서·대사(직장·연애·살림)는 성인기 장면이라 다른 생애 단계에는 주제만 넘긴다
+        if (lifeStage === "adult" && period.startAge >= SCENE_MIN_START_AGE) {
+          return claim;
+        }
+        return { ...claim, cues: undefined, voice: undefined };
       });
     const score = lands.reduce(
       (sum, { sihua, palace }) =>
@@ -707,7 +857,7 @@ export const buildLifetimeFactSheet = (
       ...collectFlyingClaims(chart, starPalace),
       ...collectPairClaims(chart),
     ],
-    collectFallbackClaims(chart)
+    [...collectFallbackClaims(chart), ...collectLoveClaims(chart)]
   );
 
   const decades = calculateDecadeFacts(dayun, starPalace);
