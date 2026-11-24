@@ -110,10 +110,24 @@ const BANNED_PHRASES_BY_LOCALE: Record<Locale, RegExp[]> = {
 /** 검사에서 제외하는 필드 (엔진이 넘긴 나이 구간을 그대로 복사하는 값) */
 const SKIPPED_KEYS = new Set(["period"]);
 
+/**
+ * 운세별 검사 옵션. 인생 운세 기준 규칙을 다른 운세에 그대로 쓰면 오탐이 나는 곳만 끈다
+ * (예: 전생의 "강의 흐름", 궁합에서 두 사람을 이름으로 부르는 문장).
+ */
+export interface OutputValidatorOptions {
+  /** 이 운세에서 검사하지 않는 규칙 */
+  skipCodes?: OutputViolationCode[];
+  /** 검사하지 않는 필드 이름 (이미지 프롬프트처럼 화면에 나오지 않는 값) */
+  skipKeys?: string[];
+  /** "~사람이에요" 맺음 허용 횟수 (기본 2) */
+  maxJudgmentEndings?: number;
+}
+
 const collectStrings = (
   value: unknown,
   path: string,
-  out: { path: string; text: string }[]
+  out: { path: string; text: string }[],
+  skippedKeys: ReadonlySet<string> = SKIPPED_KEYS
 ): void => {
   if (typeof value === "string") {
     out.push({ path, text: value });
@@ -121,14 +135,19 @@ const collectStrings = (
   }
   if (Array.isArray(value)) {
     value.forEach((item, index) =>
-      collectStrings(item, path ? `${path}.${index}` : `${index}`, out)
+      collectStrings(
+        item,
+        path ? `${path}.${index}` : `${index}`,
+        out,
+        skippedKeys
+      )
     );
     return;
   }
   if (value && typeof value === "object") {
     for (const [key, child] of Object.entries(value)) {
-      if (SKIPPED_KEYS.has(key)) continue;
-      collectStrings(child, path ? `${path}.${key}` : key, out);
+      if (skippedKeys.has(key)) continue;
+      collectStrings(child, path ? `${path}.${key}` : key, out, skippedKeys);
     }
   }
 };
@@ -149,12 +168,18 @@ const matchAll = (
  */
 export const findOutputViolations = (
   output: unknown,
-  language: Locale = "ko"
+  language: Locale = "ko",
+  options: OutputValidatorOptions = {}
 ): OutputViolation[] => {
+  const {
+    skipCodes = [],
+    skipKeys = [],
+    maxJudgmentEndings = MAX_JUDGMENT_ENDINGS,
+  } = options;
   const fields: { path: string; text: string }[] = [];
-  collectStrings(output, "", fields);
+  collectStrings(output, "", fields, new Set([...SKIPPED_KEYS, ...skipKeys]));
 
-  return [
+  const violations: OutputViolation[] = [
     ...matchAll(FORBIDDEN_TERMS_BY_LOCALE[language], "FORBIDDEN_TERM", fields),
     ...matchAll(META_PHRASES_BY_LOCALE[language], "META_PHRASE", fields),
     ...matchAll(BANNED_PHRASES_BY_LOCALE[language], "BANNED_PHRASE", fields),
@@ -165,11 +190,12 @@ export const findOutputViolations = (
           ...matchAll([KO_ABSTRACT_WORDS], "ABSTRACT_WORD", fields),
           ...matchAll([KO_TYPE_LABEL], "REPEATED_JUDGMENT", fields),
           ...matchAll([KO_JUDGMENT_ENDING], "REPEATED_JUDGMENT", fields).slice(
-            MAX_JUDGMENT_ENDINGS
+            maxJudgmentEndings
           ),
         ]
       : []),
   ];
+  return violations.filter((v) => !skipCodes.includes(v.code));
 };
 
 const uniqueMatches = (
