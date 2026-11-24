@@ -1,4 +1,4 @@
-export { calculateAge } from "./date";
+export { calculateAge, calculateAgeInYear } from "./date";
 export {
   getStarImagePath,
   getFirstStarImagePath,

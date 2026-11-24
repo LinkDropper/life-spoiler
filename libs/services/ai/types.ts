@@ -3,6 +3,7 @@ import { z } from "zod/v4";
 import type { Locale } from "@/i18n/config";
 import type { CompatibilityRelationshipType } from "@/libs/supabase/types";
 import type { LifetimeFactSheet } from "@/libs/zi-wei-dou-shu/calculators/lifetime-facts";
+import type { YearlyFactSheet } from "@/libs/zi-wei-dou-shu/calculators/yearly-facts";
 
 // ============================================================
 // Gemini API 타입
@@ -511,6 +512,16 @@ export interface YearlyInterpretationRequest {
   natalSihua?: SihuaData;
   /** 월별 운세 데이터 */
   monthlyFortunes?: YearlyMonthlyFortuneData[];
+  /**
+   * 올해 사실 시트 (KO). 있으면 원본 명반 텍스트 대신 이 시트를 넘긴다
+   * (yearly-fact-format.ts). EN/JA는 아직 원본 텍스트를 쓴다.
+   */
+  factSheet?: YearlyFactSheet;
+  /** 엔진이 계산한 영역 점수. 점수 칸의 순서 근거로 쓴다 */
+  engineScores?: Record<
+    "wealth" | "career" | "relationship" | "health",
+    number
+  >;
   requestType: YearlyInterpretationType;
   /** 이전 섹션 해석 맥락 (섹션 간 중복 방지) */
   previousContext?: string;

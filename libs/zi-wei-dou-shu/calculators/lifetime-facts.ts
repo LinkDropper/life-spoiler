@@ -140,7 +140,7 @@ export interface LifetimeFactSheet {
 const SIHUA_TYPES: Sihua[] = ["화록", "화권", "화과", "화기"];
 
 /** 궁 → 주장이 배정되는 섹션 */
-const PALACE_SECTION: Record<PalaceName, FactSection> = {
+export const PALACE_SECTION: Record<PalaceName, FactSection> = {
   명궁: "core",
   형제궁: "core",
   부처궁: "relationship",
