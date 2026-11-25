@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -10,6 +10,7 @@ import { useProfileActions } from "@/libs/stores/profile";
 import type { ProfileWithFortunes } from "@/libs/stores/profile";
 
 import { formatBirthDate } from "./format";
+import { HomeSheet, HomeSheetTextButton } from "./HomeSheet";
 import styles from "./ProfileSheet.module.css";
 
 const PAID_FORTUNE_TYPES = [
@@ -53,30 +54,18 @@ export const ProfileSheet = ({
   const [isEditing, setIsEditing] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const sheetRef = useRef<HTMLDivElement>(null);
+
+  // 만든 순서대로: 기본값(가장 먼저 만든 프로필)이 맨 위에 온다
+  const orderedProfiles = useMemo(
+    () =>
+      [...profiles].sort((a, b) => a.created_at.localeCompare(b.created_at)),
+    [profiles]
+  );
 
   const handleClose = useCallback(() => {
     setIsEditing(false);
     onClose();
   }, [onClose]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    document.body.style.overflow = "hidden";
-    sheetRef.current?.focus();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // 삭제 확인 모달이 떠 있으면 그쪽이 먼저 닫혀야 한다
-      if (event.key === "Escape" && !deleteTargetId) handleClose();
-    };
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = "";
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, deleteTargetId, handleClose]);
 
   const handleSelect = (profileId: string) => {
     onSelect(profileId);
@@ -109,76 +98,30 @@ export const ProfileSheet = ({
 
   if (!isOpen) return null;
 
-  const handleBackdropClick = (event: React.MouseEvent) => {
-    if (event.target === event.currentTarget) handleClose();
-  };
-
   return (
-    <div className={styles.backdrop} onClick={handleBackdropClick}>
-      <div
-        ref={sheetRef}
-        className={styles.sheet}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="profile-sheet-title"
-        tabIndex={-1}
+    <>
+      <HomeSheet
+        eyebrow={isEditing ? "EDIT" : "NOW SHOWING"}
+        title={isEditing ? t("editTitle") : t("title")}
+        showClose={!isEditing}
+        closeOnEscape={!deleteTargetId}
+        onClose={handleClose}
+        actions={
+          isEditing ? (
+            <HomeSheetTextButton onClick={() => setIsEditing(false)}>
+              {t("done")}
+            </HomeSheetTextButton>
+          ) : (
+            canEdit && (
+              <HomeSheetTextButton onClick={() => setIsEditing(true)}>
+                {t("edit")}
+              </HomeSheetTextButton>
+            )
+          )
+        }
       >
-        <span className={styles.handle} aria-hidden="true" />
-        <div className={styles.head}>
-          <div>
-            <p className={styles.eyebrow} aria-hidden="true">
-              {isEditing ? "EDIT" : "NOW SHOWING"}
-            </p>
-            <h2 id="profile-sheet-title" className={styles.title}>
-              {isEditing ? t("editTitle") : t("title")}
-            </h2>
-          </div>
-          <div className={styles.actions}>
-            {isEditing ? (
-              <button
-                type="button"
-                className={styles.textButton}
-                onClick={() => setIsEditing(false)}
-              >
-                {t("done")}
-              </button>
-            ) : (
-              <>
-                {canEdit && (
-                  <button
-                    type="button"
-                    className={styles.textButton}
-                    onClick={() => setIsEditing(true)}
-                  >
-                    {t("edit")}
-                  </button>
-                )}
-                <button
-                  type="button"
-                  className={styles.closeButton}
-                  onClick={handleClose}
-                  aria-label={t("close")}
-                >
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M6 6l12 12M18 6 6 18" />
-                  </svg>
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-
         <ul className={styles.list}>
-          {profiles.map((profile) => {
+          {orderedProfiles.map((profile) => {
             const paidCount = countPaidFortunes(profile);
             const isSelected = profile.id === selectedProfileId;
             const meta = (
@@ -254,7 +197,7 @@ export const ProfileSheet = ({
             {t("add")}
           </Link>
         )}
-      </div>
+      </HomeSheet>
 
       <DeleteConfirmModal
         isOpen={deleteTargetId !== null}
@@ -262,6 +205,6 @@ export const ProfileSheet = ({
         onConfirm={handleDeleteConfirm}
         isDeleting={isDeleting}
       />
-    </div>
+    </>
   );
 };

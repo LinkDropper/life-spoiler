@@ -1,0 +1,140 @@
+/* 홈 바텀시트 틀 — common-sheets 문법(밤하늘 바탕·mono eyebrow·디스플레이 제목) */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(5, 7, 15, 0.72);
+  animation: fade-in 0.2s ease;
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  max-height: 85vh;
+  max-height: 85svh;
+  overflow-y: auto;
+  padding: 8px 20px calc(28px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+  border-radius: 22px 22px 0 0;
+  background: #0a0f1c;
+  color: #f5f3f7;
+  word-break: keep-all;
+  animation: slide-up 0.25s ease;
+}
+
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 12% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 34% 62%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 58% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 78% 44%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 90% 76%, #fff, transparent),
+    radial-gradient(1px 1px at 22% 84%, #fff, transparent);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.sheet > * {
+  position: relative;
+}
+
+.sheet:focus {
+  outline: none;
+}
+
+.handle {
+  display: block;
+  width: 36px;
+  height: 4px;
+  margin: 0 auto;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0 12px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: #ff8fb1;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-sb-aggro);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-right: -12px;
+}
+
+.textButton,
+.closeButton {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.textButton {
+  padding: 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffccd9;
+}
+
+.closeButton {
+  color: #f5f3f7;
+}
+
+.textButton:focus-visible,
+.closeButton:focus-visible {
+  outline: 2px solid #f5f3f7;
+  outline-offset: -2px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .sheet {
+    animation: none;
+  }
+}
