@@ -121,12 +121,12 @@ function PaymentSuccessContent() {
         router.push(`/fortune/${fortuneType}/${profileId}`);
       }
     } else {
-      router.push("/profiles");
+      router.push("/home");
     }
   };
 
   const handleGoHome = () => {
-    router.push("/profiles");
+    router.push("/home");
   };
 
   if (isConfirming) {

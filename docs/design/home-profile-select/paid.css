@@ -1,0 +1,20 @@
+/* 결제 표시 (A 조명 확정). home.css 위에 얹는다.
+   결제한 칸 = li > a.cell.own. body 클래스 .a 범위.
+   결제 안 한 칸은 원래 모습 그대로(흐리게·잠금 없음). */
+
+/* 공통: 시각적으로는 숨기고 스크린리더에만 읽히는 텍스트 */
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.cell{position:relative;isolation:isolate}
+.stage{z-index:1}
+.cell .s .ck{flex:none}
+
+/* ================= A. 조명: 내 것이 된 오브젝트에만 진열장 조명이 켜진다 ================= */
+.a .cell.own{background:linear-gradient(180deg,rgba(255,204,217,.14),rgba(255,204,217,.02) 78%)}
+.a .lamp{position:absolute;top:0;left:50%;width:36px;height:3px;margin-left:-18px;border-radius:0 0 4px 4px;background:#fff1f6;box-shadow:0 0 12px 3px rgba(255,204,217,.8),0 0 28px 8px rgba(255,204,217,.28)}
+.a .cell.own::before{content:"";position:absolute;z-index:-1;top:3px;left:6%;right:6%;height:86px;background:linear-gradient(180deg,rgba(255,228,238,.42),rgba(255,228,238,0));clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)}
+.a .cell.own .stage::after{content:"";position:absolute;z-index:-1;left:50%;bottom:-3px;width:92px;height:18px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,204,217,.6),rgba(255,204,217,0))}
+.a .cell.own .s{display:inline-flex;align-items:center;gap:4px;min-height:24px;padding:0 10px 0 8px;border-radius:12px;background:var(--brand);color:var(--ink);font-size:12.5px;font-weight:800}
+
+
+/* 카드가 서로 붙지 않게 열 간격 */
+.a .shelf{column-gap:8px}

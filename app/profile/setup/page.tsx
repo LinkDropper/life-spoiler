@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+import { getFortuneHref, isFortuneRouteType } from "@/libs/fortune/navigation";
 import { useProfileActions } from "@/libs/stores/profile";
 import { useAuthStatus } from "@/libs/stores/user";
 import { HeaderClient } from "@/components/landing";
@@ -57,7 +58,7 @@ export default function ProfileSetupPage() {
   const authStatus = useAuthStatus();
   const typeParam = searchParams.get("type");
   const redirectParam = searchParams.get("redirect");
-  const { addProfile } = useProfileActions();
+  const { addProfile, selectProfile } = useProfileActions();
   const t = useTranslations("profileSetup");
 
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
@@ -115,7 +116,7 @@ export default function ProfileSetupPage() {
       const result = await response.json();
 
       const now = new Date().toISOString();
-      addProfile({
+      const newProfile = {
         id: result.profileId,
         user_id: "",
         name: stepOneData.name,
@@ -139,14 +140,17 @@ export default function ProfileSetupPage() {
         updated_at: now,
         fortunes: [],
         profile_free_access: [],
-      });
+      };
+      addProfile(newProfile);
+      // 방금 만든 프로필이 홈의 선택 프로필이 된다 (첫 프로필이면 기본값과 같다)
+      selectProfile(newProfile.id);
 
       const redirectPath =
         redirectParam && redirectParam.startsWith("/")
           ? redirectParam
-          : typeParam
-            ? `/profiles?type=${typeParam}`
-            : "/profiles";
+          : isFortuneRouteType(typeParam)
+            ? getFortuneHref(newProfile, typeParam)
+            : "/home";
       router.push(redirectPath);
     } catch {
       alert(

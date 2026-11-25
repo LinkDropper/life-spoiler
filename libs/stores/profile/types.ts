@@ -15,6 +15,8 @@ export interface ProfileState {
   profiles: ProfileWithFortunes[];
   status: ProfileLoadStatus;
   error: string | null;
+  /** 홈에서 고른 프로필 id. 유효성은 resolveSelectedProfile로 판단한다 */
+  selectedProfileId: string | null;
 }
 
 export interface ProfileActions {
@@ -25,6 +27,7 @@ export interface ProfileActions {
   addProfile: (profile: ProfileWithFortunes) => void;
   updateProfile: (profile: ProfileWithFortunes) => void;
   deleteProfile: (profileId: string) => void;
+  selectProfile: (profileId: string) => void;
   getProfileById: (profileId: string) => ProfileWithFortunes | undefined;
   reset: () => void;
 }

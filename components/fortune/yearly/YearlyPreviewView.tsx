@@ -103,7 +103,7 @@ export const YearlyPreviewView = ({ edition }: YearlyPreviewViewProps) => {
                 className={styles.backButton}
                 onClick={handleBack}
               >
-                {tCommon("backToProfiles")}
+                {tCommon("backToHome")}
               </button>
             </div>
           </div>

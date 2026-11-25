@@ -1,0 +1,15 @@
+/* 홈 히스토리(2026) 시안 공통. ../home-profile-select/home.css, paid.css 위에 얹는다.
+   body.a = 결제 조명 표시(paid.css 범위). n1/n2/n3 = 안 번호. */
+body.home{padding-bottom:32px}
+body.page{min-height:812px}
+
+/* 진열장 5칸: 6열 그리드, 칸은 기본 2열씩 차지 */
+.shelf5{grid-template-columns:repeat(6,minmax(0,1fr))}
+.shelf5>li{grid-column:span 2}
+
+/* 지나간 해의 오브젝트: 색을 빼고 어둡게 */
+.dim-obj{filter:grayscale(.85) brightness(.74)}
+
+/* 바깥 링크 공통 */
+.go{display:inline-flex;flex:none;align-items:center;gap:2px;min-height:44px;padding:0 12px 0 14px;border:1.5px solid rgba(255,204,217,.5);border-radius:22px;color:var(--brand);font-size:14px;font-weight:700;white-space:nowrap}
+.go svg{flex:none}

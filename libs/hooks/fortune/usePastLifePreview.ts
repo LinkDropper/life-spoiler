@@ -191,7 +191,7 @@ export const usePastLifePreview = (
   }, [router, profileId, isAIGenerated]);
 
   const handleBack = useCallback(() => {
-    router.push("/profiles?type=past-life");
+    router.push("/home");
   }, [router]);
 
   const isActuallyLoading =

@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   type ReactNode,
 } from "react";
@@ -11,6 +12,7 @@ import { useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { useIsAuthenticated } from "../user";
+import { resolveSelectedProfile } from "./selection";
 import { createProfileStore, type ProfileStoreApi } from "./store";
 import type { ProfileStore } from "./types";
 
@@ -103,6 +105,18 @@ export const useProfileActions = () => {
       addProfile: state.addProfile,
       updateProfile: state.updateProfile,
       deleteProfile: state.deleteProfile,
+      selectProfile: state.selectProfile,
     }))
+  );
+};
+
+/** 홈에서 고른 프로필. 기억된 선택이 없거나 지워졌으면 가장 먼저 만든 프로필 */
+export const useSelectedProfile = () => {
+  const profiles = useProfiles();
+  const selectedProfileId = useProfileStore((state) => state.selectedProfileId);
+
+  return useMemo(
+    () => resolveSelectedProfile(profiles, selectedProfileId),
+    [profiles, selectedProfileId]
   );
 };

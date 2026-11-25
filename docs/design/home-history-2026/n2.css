@@ -1,0 +1,26 @@
+/* 안 2 · 엔딩 크레딧
+   진열장은 "지금"만. 지난 해는 페이지 맨 끝, 영화가 끝난 뒤 올라가는 자막 자리에 조용한 한 줄 */
+.n2 .shelf5{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:8px}
+.n2 .shelf5>li{grid-column:auto}
+.n2 .shelf5>li.hero{grid-column:1/-1}
+
+/* 2027을 맨 앞 넓은 칸으로 */
+.n2 .cell.wide{flex-direction:row;justify-content:space-between;gap:12px;min-height:112px;padding:14px 8px 14px 20px;text-align:left;background:linear-gradient(100deg,color-mix(in srgb,#7cd0f5 16%,var(--night)),color-mix(in srgb,#7cd0f5 4%,var(--night)))}
+.n2 .cell.wide .tx{flex:1;min-width:0}
+.n2 .cell.wide .n{display:block;font-size:18px}
+.n2 .cell.wide .s{display:block;margin-top:2px;color:var(--haze)}
+.n2 .cell.wide .stage{flex:none;width:96px;height:96px}
+
+/* 끝자락 */
+.n2 .end{margin:44px 16px 0;text-align:center}
+.n2 .end .rule{display:flex;align-items:center;gap:14px;font-size:12px;font-weight:600;letter-spacing:.24em;color:var(--faint)}
+.n2 .end .rule::before,.n2 .end .rule::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
+.n2 .end .more{display:inline-flex;align-items:center;gap:2px;min-height:44px;margin-top:10px;padding:0 4px;font-size:14px;font-weight:700;color:var(--haze);text-decoration:underline;text-decoration-color:rgba(255,204,217,.5);text-underline-offset:6px}
+.n2 .end .cred{margin-top:0;font-size:12.5px;color:var(--faint)}
+
+/* 시트 안 지난 회차 행 */
+.row.past{gap:14px;min-height:84px}
+.row.past .th{display:grid;flex:none;place-items:center;width:56px;height:56px;border-radius:12px;overflow:hidden;background:#05070f;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.row.past .th img{width:76px;height:76px;object-fit:contain}
+.row.past .lbl{flex:1}
+.row.past .nm{font-size:16px;font-weight:700;color:#fff}
