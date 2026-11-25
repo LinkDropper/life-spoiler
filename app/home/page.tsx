@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { HeaderClient } from "@/components/landing";
 import {
+  PastFortunes,
   ProfilePicker,
   ProfileSheet,
   SpoilerShelf,
@@ -126,6 +127,7 @@ export default function HomePage() {
           로케일과 무관하게 항상 동작한다 — 막으면 바이럴 루프가 끊긴다.
         */}
         {isKo && <UniverseBanner href="/universe/create" />}
+        <PastFortunes profile={selectedProfile} />
       </main>
       <ProfileSheet
         isOpen={isSheetOpen}

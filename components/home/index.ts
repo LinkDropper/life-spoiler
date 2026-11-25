@@ -1,3 +1,4 @@
+export { PastFortunes } from "./PastFortunes";
 export { ProfilePicker } from "./ProfilePicker";
 export { ProfileSheet } from "./ProfileSheet";
 export { SpoilerShelf } from "./SpoilerShelf";

@@ -15,13 +15,7 @@ import type { ProfileWithFortunes } from "@/libs/stores/profile";
 import styles from "./SpoilerShelf.module.css";
 
 interface ShelfItem {
-  key:
-    | "lifetime"
-    | "yearly"
-    | "yearly2027"
-    | "compatibility"
-    | "pastLife"
-    | "faceReading";
+  key: "lifetime" | "yearly2027" | "compatibility" | "pastLife" | "faceReading";
   /** 프로필별 운세면 운세 종류, 아니면(궁합·관상) 고정 경로 */
   target: { fortune: PaidFortuneRouteType } | { href: string };
   image: string;
@@ -30,18 +24,13 @@ interface ShelfItem {
   masked?: boolean;
 }
 
+/** 2026 올해 운세는 연말이라 진열장에서 내리고 홈 맨 끝 "지난 운세"(PastFortunes)로 옮겼다 */
 const SHELF_ITEMS: ShelfItem[] = [
   {
     key: "lifetime",
     target: { fortune: "lifetime" },
     image: "lifetime",
     scale: 1.1,
-  },
-  {
-    key: "yearly",
-    target: { fortune: "yearly" },
-    image: "yearly",
-    scale: 1.45,
   },
   {
     key: "yearly2027",

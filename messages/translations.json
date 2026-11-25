@@ -283,6 +283,17 @@
         "delete": "삭제",
         "deleteLabel": "{name} 프로필 삭제",
         "paidCount": "결제 {count}건"
+      },
+      "past": {
+        "rule": "지난 운세",
+        "open": "지난 운세 {count}편 다시 보기",
+        "title": "지난 운세",
+        "owner": "{name}님의 운세",
+        "rewatch": "다시 보기",
+        "note": "지난 운세는 결제한 프로필에서만 다시 볼 수 있어요.",
+        "yearly2026": {
+          "title": "2026 올해 운세"
+        }
       }
     },
     "profiles": {
@@ -2115,6 +2126,17 @@
         "delete": "Delete",
         "deleteLabel": "Delete {name}'s profile",
         "paidCount": "{count, plural, one {# purchased} other {# purchased}}"
+      },
+      "past": {
+        "rule": "PAST FORTUNES",
+        "open": "View {count, plural, one {# past fortune} other {# past fortunes}} again",
+        "title": "Past fortunes",
+        "owner": "{name}'s fortune",
+        "rewatch": "View again",
+        "note": "Past fortunes stay available only on the profile that purchased them.",
+        "yearly2026": {
+          "title": "2026 Yearly Fortune"
+        }
       }
     },
     "profiles": {
@@ -3947,6 +3969,17 @@
         "delete": "削除",
         "deleteLabel": "{name}のプロフィールを削除",
         "paidCount": "購入済み{count}件"
+      },
+      "past": {
+        "rule": "過去の運勢",
+        "open": "過去の運勢{count}件をもう一度見る",
+        "title": "過去の運勢",
+        "owner": "{name}さんの運勢",
+        "rewatch": "もう一度見る",
+        "note": "過去の運勢は購入したプロフィールでのみもう一度見られます。",
+        "yearly2026": {
+          "title": "2026年の運勢"
+        }
       }
     },
     "profiles": {
