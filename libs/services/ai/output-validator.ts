@@ -18,7 +18,9 @@ export type OutputViolationCode =
   | "BANNED_PHRASE"
   | "THIRD_PERSON"
   | "ABSTRACT_WORD"
-  | "REPEATED_JUDGMENT";
+  | "REPEATED_JUDGMENT"
+  | "BROKEN_ENDING"
+  | "CONTEXT_MISMATCH";
 
 export interface OutputViolation {
   code: OutputViolationCode;
@@ -97,6 +99,12 @@ const KO_TYPE_LABEL = /타입이(?:에요|죠|라|고)/g;
 const KO_JUDGMENT_ENDING = /사람이(?:에요|죠)/g;
 const MAX_JUDGMENT_ENDINGS = 2;
 
+/**
+ * 깨진 어미. 겹친 "요요"("사람이에요요")와 르 불규칙 활용 오류("부르요"·"부르어요" → 불러요).
+ * "~르요"로 끝나는 바른 해요체 활용은 없다. 연애 운세 1·5회차에서 나왔다.
+ */
+const KO_BROKEN_ENDING = /[가-힣](?:요요|르요|르어요)(?=[.!?,\s"'”’)]|$)/g;
+
 /** 브랜드 금지 표현 (.claude/rules/brand-voice.md) */
 const BANNED_PHRASES_BY_LOCALE: Record<Locale, RegExp[]> = {
   ko: [
@@ -121,6 +129,11 @@ export interface OutputValidatorOptions {
   skipKeys?: string[];
   /** "~사람이에요" 맺음 허용 횟수 (기본 2) */
   maxJudgmentEndings?: number;
+  /**
+   * 운세별 추가 규칙. 손님 정보에 따라 달라지는 규칙(예: 학생인데 "퇴근")처럼
+   * 공용 규칙으로 두면 오탐이 나는 것을 호출하는 쪽에서 넣는다.
+   */
+  extraRules?: { code: OutputViolationCode; pattern: RegExp }[];
 }
 
 const collectStrings = (
@@ -175,6 +188,7 @@ export const findOutputViolations = (
     skipCodes = [],
     skipKeys = [],
     maxJudgmentEndings = MAX_JUDGMENT_ENDINGS,
+    extraRules = [],
   } = options;
   const fields: { path: string; text: string }[] = [];
   collectStrings(output, "", fields, new Set([...SKIPPED_KEYS, ...skipKeys]));
@@ -189,11 +203,15 @@ export const findOutputViolations = (
           ...matchAll([KO_THIRD_PERSON], "THIRD_PERSON", fields),
           ...matchAll([KO_ABSTRACT_WORDS], "ABSTRACT_WORD", fields),
           ...matchAll([KO_TYPE_LABEL], "REPEATED_JUDGMENT", fields),
+          ...matchAll([KO_BROKEN_ENDING], "BROKEN_ENDING", fields),
           ...matchAll([KO_JUDGMENT_ENDING], "REPEATED_JUDGMENT", fields).slice(
             maxJudgmentEndings
           ),
         ]
       : []),
+    ...extraRules.flatMap(({ code, pattern }) =>
+      matchAll([pattern], code, fields)
+    ),
   ];
   return violations.filter((v) => !skipCodes.includes(v.code));
 };
@@ -219,9 +237,11 @@ const buildKoViolationFeedback = (violations: OutputViolation[]): string => {
   const thirdPerson = uniqueMatches(violations, ["THIRD_PERSON"]);
   const abstract = uniqueMatches(violations, ["ABSTRACT_WORD"]);
   const repeated = uniqueMatches(violations, ["REPEATED_JUDGMENT"]);
+  const broken = uniqueMatches(violations, ["BROKEN_ENDING"]);
+  const context = uniqueMatches(violations, ["CONTEXT_MISMATCH"]);
   const lines = [
     terms.length > 0
-      ? `- 손님이 모르는 용어가 들어갔어요: ${quote(terms)}. 그 말이 뜻하는 생활 속 모습으로 바꿔 주세요.`
+      ? `- 읽는 사람이 모르는 용어가 들어갔어요: ${quote(terms)}. 그 말이 뜻하는 생활 속 모습으로 바꿔 주세요.`
       : "",
     phrases.length > 0
       ? `- 쓰지 않는 표현이 들어갔어요: ${quote(phrases)}. 빼거나 담백한 말로 바꿔 주세요.`
@@ -230,13 +250,19 @@ const buildKoViolationFeedback = (violations: OutputViolation[]): string => {
       ? `- "~니다"로 끝난 말이 있어요: ${quote(formal)}. 모든 문장을 해요체로 바꿔 주세요.`
       : "",
     thirdPerson.length > 0
-      ? `- 손님을 남 얘기하듯 가리킨 말이 있어요: ${quote(thirdPerson)}. 손님에게 직접 말하는 글이라 주어를 빼고 다시 써 주세요.`
+      ? `- 읽는 사람을 남 얘기하듯 가리킨 말이 있어요: ${quote(thirdPerson)}. 그 문장의 주어를 빼거나 '나'로 바꿔 다시 써 주세요.`
       : "",
     abstract.length > 0
       ? `- 뜻을 대신하는 말이 있어요: ${quote(abstract)}. 그 자리에 실제로 하는 일이나 생기는 일을 써 주세요.`
       : "",
     repeated.length > 0
       ? `- 같은 맺음이 되풀이되거나 유형 꼬리표가 있어요: ${quote(repeated)}. 판정은 첫 문장에서 한 번만 말하고, 나머지 문단은 장면에서 생기는 일이나 곁 사람의 반응으로 맺어 주세요.`
+      : "",
+    broken.length > 0
+      ? `- 어미가 깨진 곳이 있어요: ${quote(broken)}. 해요체 활용을 바르게 고쳐 주세요.`
+      : "",
+    context.length > 0
+      ? `- 상황과 맞지 않거나 입력 정보를 문장에 옮겨 적은 말이 있어요: ${quote(context)}. 그 부분을 나이나 직업과 상관없는 일상 장면의 행동으로 바꿔 주세요.`
       : "",
   ].filter(Boolean);
   return `방금 답에서 고칠 곳이 있어요.
