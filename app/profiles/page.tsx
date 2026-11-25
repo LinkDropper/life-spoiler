@@ -1,294 +1,86 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import Image from "next/image";
-
 import { HeaderClient } from "@/components/landing";
 import {
-  ProfileCard,
-  NewProfileCard,
-  DeleteConfirmModal,
-} from "@/components/profile";
-import { trackDailyEvent } from "@/libs/analytics";
+  getFortuneHref,
+  getProfileSetupHref,
+  isFortuneRouteType,
+} from "@/libs/fortune/navigation";
 import {
-  useProfiles,
   useIsProfilesLoaded,
-  useIsProfilesLoading,
   useProfileActions,
+  useSelectedProfile,
 } from "@/libs/stores/profile";
-import { useAuthStatus, useUser } from "@/libs/stores/user";
+import { useAuthStatus } from "@/libs/stores/user";
 
-// 임시: 특정 유저는 프로필 추가/삭제 버튼 숨김
-const RESTRICTED_USER_ID = "97f9d7a9-23f2-4fd8-98cf-ac52aa4fe059";
-
-import {
-  useProfileSelection,
-  useProfileDelete,
-  useFortuneNavigation,
-} from "./hooks";
 import styles from "./page.module.css";
 
+/**
+ * 프로필 선택은 홈의 프로필 셀렉트로 옮겼다. 이 경로는 곳곳에 남은
+ * `/profiles?type=...` 진입점(메뉴, 오늘의 운세 CTA, 친구 별자리 홍보 등)을
+ * 홈에서 고른 프로필의 운세로 바로 보내는 연결 지점으로만 남는다.
+ * - 프로필이 있으면 → 선택된 프로필의 본편/예고편
+ * - 프로필이 없으면 → 그 운세 이름이 붙은 프로필 입력
+ * - 운세 종류가 없으면 → 홈
+ */
 export default function ProfilesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const authStatus = useAuthStatus();
-  const user = useUser();
   const t = useTranslations("profiles");
 
-  // 임시: 특정 유저는 프로필 추가/삭제 버튼 숨김
-  const isRestrictedUser = user?.id === RESTRICTED_USER_ID;
-
   const typeParam = searchParams.get("type");
-  const fortuneType:
-    | "lifetime"
-    | "yearly"
-    | "past-life"
-    | "yearly_2027"
-    | "daily"
-    | null =
-    typeParam === "lifetime" ||
-    typeParam === "yearly" ||
-    typeParam === "past-life" ||
-    typeParam === "yearly_2027" ||
-    typeParam === "daily"
-      ? typeParam
-      : null;
+  const fortuneType = isFortuneRouteType(typeParam) ? typeParam : null;
 
-  const profiles = useProfiles();
-  const isProfilesLoading = useIsProfilesLoading();
   const isProfilesLoaded = useIsProfilesLoaded();
+  const selectedProfile = useSelectedProfile();
   const { fetchProfiles } = useProfileActions();
 
-  // 커스텀 훅 사용
-  const {
-    selectedProfileId,
-    selectedProfile,
-    handleProfileSelect,
-    getCompletedFortunes,
-  } = useProfileSelection({ profiles });
+  // 결제 직후 등 다른 화면에서 넘어오면 결제 여부가 바뀌었을 수 있어 새로 받는다.
+  // 이전에 로드된 목록으로 먼저 이동하지 않도록, 새로 받은 뒤에만 이동한다
+  const [hasRefetched, setHasRefetched] = useState(false);
 
-  const {
-    deleteTargetId,
-    isDeleting,
-    handleDeleteClick,
-    handleDeleteCancel,
-    handleDeleteConfirm,
-  } = useProfileDelete();
-
-  const { navigateToFortune } = useFortuneNavigation({ selectedProfile });
-
-  // 페이지 접근 시 프로필 정보를 다시 가져옴
   useEffect(() => {
-    if (authStatus === "authenticated") {
-      fetchProfiles(true);
-    }
+    if (authStatus !== "authenticated") return;
+    fetchProfiles(true).then(() => setHasRefetched(true));
   }, [authStatus, fetchProfiles]);
 
-  // 오늘의 운세: 프로필이 1개뿐이면 선택 화면을 건너뛰고 바로 결과로 이동
-  const singleProfileId =
-    fortuneType === "daily" && isProfilesLoaded && profiles.length === 1
-      ? profiles[0].id
-      : null;
-
-  useEffect(() => {
-    if (authStatus === "authenticated" && singleProfileId) {
-      router.replace(`/fortune/daily/${singleProfileId}`);
-    }
-  }, [authStatus, singleProfileId, router]);
-
-  // 인증되지 않은 사용자 리다이렉트
   useEffect(() => {
     if (authStatus === "unauthenticated") {
       router.replace("/login");
-    }
-  }, [authStatus, router]);
-
-  const handleBack = useCallback(() => {
-    router.push("/home");
-  }, [router]);
-
-  const handleNewProfile = useCallback(() => {
-    const path = fortuneType
-      ? `/profile/setup?type=${fortuneType}`
-      : "/profile/setup";
-    router.push(path);
-  }, [router, fortuneType]);
-
-  const handleLifetimeFortune = useCallback(() => {
-    if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
       return;
     }
-    navigateToFortune("lifetime");
-  }, [selectedProfileId, navigateToFortune, t]);
+    if (!hasRefetched || !isProfilesLoaded) return;
 
-  const handleYearlyFortune = useCallback(() => {
-    if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
+    if (!fortuneType) {
+      router.replace("/home");
       return;
     }
-    navigateToFortune("yearly");
-  }, [selectedProfileId, navigateToFortune, t]);
 
-  const handlePastLifeFortune = useCallback(() => {
-    if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
-      return;
-    }
-    navigateToFortune("past-life");
-  }, [selectedProfileId, navigateToFortune, t]);
-
-  const handleYearly2027Fortune = useCallback(() => {
-    if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
-      return;
-    }
-    navigateToFortune("yearly_2027");
-  }, [selectedProfileId, navigateToFortune, t]);
-
-  const handleDailyFortune = useCallback(() => {
-    if (!selectedProfileId) {
-      alert(t("selectProfile", { default: "프로필을 선택해주세요." }));
-      return;
-    }
-    trackDailyEvent("daily_profile_select");
-    navigateToFortune("daily");
-  }, [selectedProfileId, navigateToFortune, t]);
-
-  const onDeleteConfirm = useCallback(async () => {
-    const success = await handleDeleteConfirm();
-    if (!success) {
-      alert(
-        t("deleteError", {
-          default: "프로필 삭제에 실패했습니다. 다시 시도해주세요.",
-        })
-      );
-    }
-  }, [handleDeleteConfirm, t]);
-
-  // 로딩 상태
-  if (
-    authStatus === "loading" ||
-    isProfilesLoading ||
-    authStatus === "unauthenticated" ||
-    singleProfileId
-  ) {
-    return (
-      <div className={styles.page}>
-        <HeaderClient />
-        <div className={styles.loading}>
-          {t("loading", { default: "로딩 중..." })}
-        </div>
-      </div>
+    router.replace(
+      selectedProfile
+        ? getFortuneHref(selectedProfile, fortuneType)
+        : getProfileSetupHref(fortuneType)
     );
-  }
+  }, [
+    authStatus,
+    hasRefetched,
+    isProfilesLoaded,
+    fortuneType,
+    selectedProfile,
+    router,
+  ]);
 
   return (
     <div className={styles.page}>
       <HeaderClient />
-
-      <main className={styles.main}>
-        <div className={styles.profileList}>
-          {profiles.map((profile) => (
-            <ProfileCard
-              key={profile.id}
-              name={profile.name}
-              birthDate={profile.birth_date}
-              birthTime={profile.birth_time}
-              birthTimeUnknown={profile.birth_time_unknown}
-              calendarType={profile.calendar_type}
-              gender={profile.gender}
-              isSelected={profile.id === selectedProfileId}
-              completedFortunes={getCompletedFortunes(profile)}
-              onSelect={() => handleProfileSelect(profile.id)}
-              onDelete={
-                isRestrictedUser
-                  ? undefined
-                  : () => handleDeleteClick(profile.id)
-              }
-            />
-          ))}
-          {!isRestrictedUser && <NewProfileCard onClick={handleNewProfile} />}
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        {fortuneType && (
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={handleBack}
-            aria-label={t("back", { default: "뒤로가기" })}
-          >
-            <Image
-              src="/images/common/back-button.svg"
-              alt=""
-              width={52}
-              height={52}
-            />
-          </button>
-        )}
-        {(!fortuneType || fortuneType === "lifetime") && (
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={handleLifetimeFortune}
-            disabled={!selectedProfileId}
-          >
-            {t("lifetimeFortune", { default: "인생 운세 보기" })}
-          </button>
-        )}
-        {(!fortuneType || fortuneType === "yearly") && (
-          <button
-            type="button"
-            className={styles.secondaryButton}
-            onClick={handleYearlyFortune}
-            disabled={!selectedProfileId}
-          >
-            {t("yearlyFortune", { default: "올해 운세 보기" })}
-          </button>
-        )}
-        {(!fortuneType || fortuneType === "past-life") && (
-          <button
-            type="button"
-            className={styles.secondaryButton}
-            onClick={handlePastLifeFortune}
-            disabled={!selectedProfileId}
-          >
-            {t("pastLifeFortune", { default: "전생 운세 보기" })}
-          </button>
-        )}
-        {fortuneType === "yearly_2027" && (
-          <button
-            type="button"
-            className={styles.secondaryButton}
-            onClick={handleYearly2027Fortune}
-            disabled={!selectedProfileId}
-          >
-            {t("yearly2027Fortune", { default: "내년 운세 보기" })}
-          </button>
-        )}
-        {fortuneType === "daily" && (
-          <button
-            type="button"
-            className={styles.primaryButton}
-            onClick={handleDailyFortune}
-            disabled={!selectedProfileId}
-          >
-            {t("dailyFortune", { default: "오늘의 운세 보기" })}
-          </button>
-        )}
-      </footer>
-
-      <DeleteConfirmModal
-        isOpen={deleteTargetId !== null}
-        onClose={handleDeleteCancel}
-        onConfirm={onDeleteConfirm}
-        isDeleting={isDeleting}
-      />
+      <div className={styles.loading} role="status">
+        {t("loading", { default: "로딩 중..." })}
+      </div>
     </div>
   );
 }

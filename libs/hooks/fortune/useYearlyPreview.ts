@@ -193,8 +193,8 @@ export const useYearlyPreview = (
   }, [router, profileId, isAIGenerated, edition]);
 
   const handleBack = useCallback(() => {
-    router.push(`/profiles?type=${edition}`);
-  }, [router, edition]);
+    router.push("/home");
+  }, [router]);
 
   const isActuallyLoading =
     authStatus === "loading" || isLoading || !isProfilesLoaded;

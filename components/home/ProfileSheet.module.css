@@ -1,0 +1,91 @@
+/* 프로필 전환 시트 안의 목록 (틀은 HomeSheet) */
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 204, 217, 0.3);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 68px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 204, 217, 0.15);
+  background: none;
+  color: rgba(255, 255, 255, 0.78);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+}
+
+button.row {
+  cursor: pointer;
+}
+
+.row[aria-pressed="true"] {
+  font-weight: 800;
+  color: #fff;
+}
+
+.label {
+  min-width: 0;
+}
+
+.name {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.check {
+  flex: none;
+}
+
+.deleteButton {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.row:focus-visible,
+.addRow:focus-visible,
+.deleteButton:focus-visible {
+  outline: 2px solid #f5f3f7;
+  outline-offset: -2px;
+}

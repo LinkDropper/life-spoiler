@@ -1,5 +1,6 @@
 import { createStore } from "zustand";
 
+import { readStoredProfileId, writeStoredProfileId } from "./selection";
 import type { ProfileStore, ProfileWithFortunes } from "./types";
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
 export const createProfileStore = () => {
   return createStore<ProfileStore>((set, get) => ({
     ...initialState,
+    selectedProfileId: readStoredProfileId(),
 
     setProfiles: (profiles: ProfileWithFortunes[]) => set({ profiles }),
 
@@ -77,6 +79,11 @@ export const createProfileStore = () => {
       set((state) => ({
         profiles: state.profiles.filter((profile) => profile.id !== profileId),
       }));
+    },
+
+    selectProfile: (profileId: string) => {
+      writeStoredProfileId(profileId);
+      set({ selectedProfileId: profileId });
     },
 
     getProfileById: (profileId: string) => {

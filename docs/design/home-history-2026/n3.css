@@ -1,0 +1,31 @@
+/* 안 3 · 스틸 보관함
+   진열장 6번째 칸이 "지난 상영작" 보관함. 상영이 끝난 회차는 스틸컷 인화본으로 남아 별도 화면에 쌓인다 */
+
+/* 6번째 칸: 겹쳐 놓은 인화본 */
+.n3 .keep .stage{display:grid;place-items:center}
+.n3 .stack{position:relative;width:62px;height:74px}
+.n3 .stack i{position:absolute;inset:0;border-radius:5px}
+.n3 .stack i:nth-child(1){background:#625e75;transform:rotate(9deg) translate(6px,-2px)}
+.n3 .stack i:nth-child(2){background:#9a95ab;transform:rotate(-7deg) translate(-4px,0)}
+.n3 .stack i.f{display:grid;place-items:center;padding:5px;background:#e8e3ee;transform:rotate(-1deg);box-shadow:0 6px 10px -4px rgba(0,0,0,.7)}
+.n3 .stack i.f b{display:block;width:100%;height:100%;overflow:hidden;border-radius:2px;background:radial-gradient(circle at 50% 40%,#2a2447,#0e1222 78%)}
+.n3 .stack i.f img{width:100%;height:100%;object-fit:contain;transform:scale(1.5);filter:grayscale(.85) brightness(.8)}
+.n3 .stack i.e{border:1.5px dashed rgba(255,204,217,.5);background:none;transform:rotate(-3deg)}
+
+/* 보관함 화면 */
+.n3 .page2{padding-bottom:120px}
+.n3 .stills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px;margin-top:28px;padding:0;list-style:none}
+.n3 .still{position:relative;display:block;padding:8px 8px 14px;border-radius:6px;background:#e8e3ee;color:var(--ink);box-shadow:0 12px 22px -10px rgba(0,0,0,.8);transform:rotate(-1.6deg)}
+.n3 .still::before{content:"";position:absolute;top:-8px;left:50%;width:46px;height:16px;margin-left:-23px;transform:rotate(3deg);background:rgba(255,204,217,.55)}
+.n3 .still .ph{position:relative;display:grid;place-items:center;aspect-ratio:1;overflow:hidden;border-radius:3px;background:radial-gradient(circle at 50% 38%,#2a2447,#0e1222 78%)}
+.n3 .still .ph::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 3px);pointer-events:none}
+.n3 .still .ph img{width:100%;height:100%;object-fit:contain;transform:scale(1.35);filter:grayscale(.85) brightness(.8)}
+.n3 .still .cap{display:block;margin-top:10px;font-size:15px;font-weight:800;letter-spacing:-.01em;line-height:1.35}
+.n3 .still .sub{display:flex;align-items:center;gap:2px;min-height:24px;margin-top:2px;font-size:12.5px;font-weight:700;color:#54445f}
+.n3 .slot-empty{display:grid;place-items:center;min-height:200px;padding:16px;border:1.5px dashed rgba(255,204,217,.4);border-radius:6px;text-align:center;font-size:13px;line-height:1.55;color:var(--faint)}
+
+/* 비어 있는 보관함 */
+.n3 .void{display:flex;flex-direction:column;align-items:center;margin-top:40px;text-align:center}
+.n3 .ghost{display:block;width:132px;height:156px;margin-bottom:24px;border:1.5px dashed rgba(255,204,217,.45);border-radius:6px;transform:rotate(-2deg)}
+.n3 .void .t{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.n3 .void .d{max-width:290px;margin-top:8px;font-size:14px;line-height:1.6;color:var(--sub)}

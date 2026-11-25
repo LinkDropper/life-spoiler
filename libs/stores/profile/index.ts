@@ -16,6 +16,13 @@ export {
   useProfileLoadStatus,
   useProfiles,
   useProfileStore,
+  useSelectedProfile,
 } from "./provider";
+
+export {
+  pickDefaultProfile,
+  resolveSelectedProfile,
+  SELECTED_PROFILE_STORAGE_KEY,
+} from "./selection";
 
 export { createProfileStore, type ProfileStoreApi } from "./store";

@@ -443,7 +443,7 @@ export const DailyFortuneScreen = ({
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{t("result.pageTitle")}</h1>
           {canChangeProfile && (
-            <Link href="/profiles?type=daily" className={styles.changeLink}>
+            <Link href="/home" className={styles.changeLink}>
               {t("result.changeProfile")}
             </Link>
           )}

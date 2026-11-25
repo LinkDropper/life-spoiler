@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>홈 프로필 셀렉트 · 궁합 진입 (메모용)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="home.css">
+</head>
+<body class="ov">
+<header class="hd" style="padding-left:8px"><button class="back" type="button" aria-label="뒤로 가기" style="margin-left:0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button></header>
+
+<main class="page2">
+  <p class="ctx" aria-hidden="true">궁합 운세</p>
+  <h1>누구와의 궁합을 볼까요?</h1>
+  <p class="lead">첫 번째 칸은 홈에서 고른 프로필로 채워져 있어요. 바꾸려면 눌러 주세요.</p>
+
+  <!-- 첫 번째 칸 = 홈에서 선택한 프로필(기본값). "본인/나" 라벨 없음 -->
+  <div class="slot" style="margin-top:24px">
+    <div><p class="k">첫 번째</p><p class="nm">민지</p><p class="bd">1995.03.14</p></div>
+    <button class="chg" type="button">바꾸기</button>
+  </div>
+  <div class="slot empty">
+    <div><p class="k">두 번째</p><p class="nm">상대 프로필 고르기</p></div>
+    <span class="chg" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffccd9" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+  </div>
+</main>
+
+<span class="cta" aria-disabled="true">궁합 보기</span>
+</body>
+</html>

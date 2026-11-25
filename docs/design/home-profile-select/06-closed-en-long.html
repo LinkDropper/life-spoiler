@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>Home profile select · closed, EN, long name</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="home.css">
+</head>
+<body>
+<header class="hd"><span class="logo">Life Spoiler</span><a class="me" href="#">Profile</a></header>
+
+<!-- EN은 "Spoilers for [name]" 어순. 이름만 말줄임, 앞뒤 문구는 줄바꿈 없이 고정 -->
+<button class="pick" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Choose profile. Current: Alexandria Montgomery-Hartwell, born March 14, 1995">
+  <span class="who">
+    <span class="nm"><span class="p">Spoilers for</span><span class="n">Alexandria Montgomery-Hartwell</span></span>
+    <span class="bd">1995.03.14</span>
+  </span>
+  <span class="chev" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+</button>
+
+<a class="today" href="#"><img src="../home-v4/img/daily.png" alt="">
+  <span class="date">Tue, Nov 24</span><span class="t">Daily Fortune</span><span class="d">Free, renewed every midnight</span></a>
+
+<h1 class="shelf-h">Pick other spoilers</h1>
+<ul class="shelf">
+  <li><a class="cell" href="#"><span class="stage"><img src="../home-v4/img/lifetime.png" alt="" style="--s:1.1"></span><span class="n">Lifetime</span><span class="s">Through age 99</span></a></li>
+  <li><a class="cell" href="#"><span class="stage"><img src="../home-v4/img/yearly.png" alt="" style="--s:1.45"></span><span class="n">This Year</span><span class="s">2026 playbook</span></a></li>
+  <li><a class="cell" href="#"><span class="stage"><img src="../home-v4/img/next.png" alt="" style="--s:1.45"></span><span class="n">Next Year</span><span class="s">2027 preview</span></a></li>
+</ul>
+
+<!-- 시트 쪽 긴 이름: 줄바꿈 허용 (overflow-wrap:anywhere) -->
+<div style="margin:32px 20px 0;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--faint)">
+  <p style="margin-bottom:8px;font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--accent)">SHEET ROW (same name)</p>
+  <div class="row" style="padding:10px 0;color:#fff;font-weight:800;border-bottom:1px solid var(--line-soft)">
+    <span class="lbl"><span class="nm">Alexandria Montgomery-Hartwell</span><span class="mt">1995.03.14</span></span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff8fb1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+</div>
+</body>
+</html>

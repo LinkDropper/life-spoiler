@@ -229,7 +229,9 @@
     "home": {
       "shelf": {
         "title": "스포일러 고르기",
-        "titleWithToday": "다른 스포일러 고르기"
+        "titleWithToday": "다른 스포일러 고르기",
+        "rewatch": "다시 보기",
+        "ownedLabel": "결제함, "
       },
       "today": {
         "title": "오늘의 운세",
@@ -263,6 +265,35 @@
         "title": "나만의 별자리",
         "free": "무료",
         "description": "링크 하나로 친구들과 궁합 보기"
+      },
+      "picker": {
+        "title": "<name>{profileName}</name>님의 스포일러",
+        "triggerLabel": "{name}님의 스포일러 보는 중, 프로필 바꾸기",
+        "emptyTitle": "먼저 프로필을 만들어요",
+        "emptyDescription": "생년월일만 있으면 바로 스포일러를 볼 수 있어요",
+        "emptyButton": "만들기"
+      },
+      "sheet": {
+        "title": "누구의 스포일러를 볼까요?",
+        "editTitle": "프로필 편집",
+        "edit": "편집",
+        "done": "완료",
+        "close": "닫기",
+        "add": "프로필 추가",
+        "delete": "삭제",
+        "deleteLabel": "{name} 프로필 삭제",
+        "paidCount": "결제 {count}건"
+      },
+      "past": {
+        "rule": "지난 운세",
+        "open": "지난 운세 {count}편 다시 보기",
+        "title": "지난 운세",
+        "owner": "{name}님의 운세",
+        "rewatch": "다시 보기",
+        "note": "지난 운세는 결제한 프로필에서만 다시 볼 수 있어요.",
+        "yearly2026": {
+          "title": "2026 올해 운세"
+        }
       }
     },
     "profiles": {
@@ -458,7 +489,7 @@
       "common": {
         "profileNotFound": "프로필을 찾을 수 없습니다.",
         "unknownError": "알 수 없는 오류가 발생했습니다.",
-        "backToProfiles": "프로필 목록으로 돌아가기",
+        "backToHome": "홈으로 돌아가기",
         "copySuccess": "링크가 복사되었습니다.",
         "male": "남",
         "female": "여",
@@ -2041,7 +2072,9 @@
     "home": {
       "shelf": {
         "title": "Pick a spoiler",
-        "titleWithToday": "Pick other spoilers"
+        "titleWithToday": "Pick other spoilers",
+        "rewatch": "View again",
+        "ownedLabel": "Purchased, "
       },
       "today": {
         "title": "Daily Fortune",
@@ -2075,6 +2108,35 @@
         "title": "My own constellation",
         "free": "Free",
         "description": "Compare with friends via one link"
+      },
+      "picker": {
+        "title": "Spoilers for <name>{profileName}</name>",
+        "triggerLabel": "Viewing spoilers for {name}, switch profile",
+        "emptyTitle": "Create a profile first",
+        "emptyDescription": "All you need is a birth date to see your spoilers",
+        "emptyButton": "Create"
+      },
+      "sheet": {
+        "title": "Whose spoilers do you want to see?",
+        "editTitle": "Edit profiles",
+        "edit": "Edit",
+        "done": "Done",
+        "close": "Close",
+        "add": "Add profile",
+        "delete": "Delete",
+        "deleteLabel": "Delete {name}'s profile",
+        "paidCount": "{count, plural, one {# purchased} other {# purchased}}"
+      },
+      "past": {
+        "rule": "PAST FORTUNES",
+        "open": "View {count, plural, one {# past fortune} other {# past fortunes}} again",
+        "title": "Past fortunes",
+        "owner": "{name}'s fortune",
+        "rewatch": "View again",
+        "note": "Past fortunes stay available only on the profile that purchased them.",
+        "yearly2026": {
+          "title": "2026 Yearly Fortune"
+        }
       }
     },
     "profiles": {
@@ -2270,7 +2332,7 @@
       "common": {
         "profileNotFound": "Profile not found.",
         "unknownError": "An unknown error occurred.",
-        "backToProfiles": "Back to Profile List",
+        "backToHome": "Back to Home",
         "copySuccess": "Link copied to clipboard.",
         "male": "M",
         "female": "F",
@@ -3853,7 +3915,9 @@
     "home": {
       "shelf": {
         "title": "スポイラーを選ぶ",
-        "titleWithToday": "ほかのスポイラーを選ぶ"
+        "titleWithToday": "ほかのスポイラーを選ぶ",
+        "rewatch": "もう一度見る",
+        "ownedLabel": "購入済み、"
       },
       "today": {
         "title": "今日の運勢",
@@ -3887,6 +3951,35 @@
         "title": "自分だけの星座",
         "free": "無料",
         "description": "リンク1つで友達と相性チェック"
+      },
+      "picker": {
+        "title": "<name>{profileName}</name>さんのスポイラー",
+        "triggerLabel": "{name}さんのスポイラーを表示中、プロフィールを切り替える",
+        "emptyTitle": "まずプロフィールを作りましょう",
+        "emptyDescription": "生年月日があればすぐにスポイラーを見られます",
+        "emptyButton": "作成"
+      },
+      "sheet": {
+        "title": "誰のスポイラーを見ますか？",
+        "editTitle": "プロフィール編集",
+        "edit": "編集",
+        "done": "完了",
+        "close": "閉じる",
+        "add": "プロフィールを追加",
+        "delete": "削除",
+        "deleteLabel": "{name}のプロフィールを削除",
+        "paidCount": "購入済み{count}件"
+      },
+      "past": {
+        "rule": "過去の運勢",
+        "open": "過去の運勢{count}件をもう一度見る",
+        "title": "過去の運勢",
+        "owner": "{name}さんの運勢",
+        "rewatch": "もう一度見る",
+        "note": "過去の運勢は購入したプロフィールでのみもう一度見られます。",
+        "yearly2026": {
+          "title": "2026年の運勢"
+        }
       }
     },
     "profiles": {
@@ -4082,7 +4175,7 @@
       "common": {
         "profileNotFound": "プロフィールが見つかりません。",
         "unknownError": "不明なエラーが発生しました。",
-        "backToProfiles": "プロフィール一覧に戻る",
+        "backToHome": "ホームに戻る",
         "copySuccess": "リンクがコピーされました。",
         "male": "男",
         "female": "女",
