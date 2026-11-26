@@ -230,3 +230,36 @@ describe("findOutputViolations 운세별 옵션", () => {
     ).toHaveLength(1);
   });
 });
+
+describe("findOutputViolations 깨진 어미", () => {
+  it("겹친 '요요'와 르 불규칙 활용 오류를 잡는다", () => {
+    const output = {
+      a: "먼저 다가가는 사람이에요요.",
+      b: "친구들을 부르요.",
+      c: "자리에 같이 부르어요.",
+    };
+    expect(
+      findOutputViolations(output, "ko").map((v) => [v.code, v.match])
+    ).toEqual([
+      ["BROKEN_ENDING", "에요요"],
+      ["BROKEN_ENDING", "부르요"],
+      ["BROKEN_ENDING", "부르어요"],
+    ]);
+  });
+
+  it("바르게 활용한 해요체는 잡지 않는다", () => {
+    const output = { a: "친구들을 불러요. 요즘 자주 웃어요." };
+    expect(findOutputViolations(output, "ko")).toEqual([]);
+  });
+});
+
+describe("findOutputViolations extraRules", () => {
+  it("운세별 추가 규칙을 지정한 코드로 잡는다", () => {
+    const output = { a: "퇴근하고 집에 와서 먼저 연락해요." };
+    expect(
+      findOutputViolations(output, "ko", {
+        extraRules: [{ code: "CONTEXT_MISMATCH", pattern: /퇴근/g }],
+      }).map((v) => [v.code, v.match])
+    ).toEqual([["CONTEXT_MISMATCH", "퇴근"]]);
+  });
+});
