@@ -11,6 +11,7 @@ import {
   parseVisitorId,
   serializeAttribution,
 } from "@/libs/attribution";
+import { refreshSupabaseSession } from "@/libs/supabase/middleware";
 
 import { defaultLocale, locales } from "./i18n/config";
 import type { Locale } from "./i18n/config";
@@ -72,7 +73,8 @@ const resolveLocaleResponse = (request: NextRequest) => {
 
   const existingLocale = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
   if (isLocale(existingLocale)) {
-    return NextResponse.next();
+    // 세션 갱신으로 바뀐 요청 쿠키를 서버 컴포넌트에 넘기려면 헤더를 전달해야 한다.
+    return NextResponse.next({ request: { headers: request.headers } });
   }
 
   const acceptLanguage = request.headers.get("accept-language");
@@ -138,8 +140,17 @@ const trackUtmLanding = (
   );
 };
 
-export const middleware = (request: NextRequest, event: NextFetchEvent) => {
+export const middleware = async (
+  request: NextRequest,
+  event: NextFetchEvent
+) => {
+  // 요청 쿠키를 먼저 갱신해야 아래에서 만드는 응답이 새 세션을 전달한다.
+  const sessionCookies = await refreshSupabaseSession(request);
+
   const response = resolveLocaleResponse(request);
+  sessionCookies.forEach(({ name, value, options }) => {
+    response.cookies.set(name, value, options);
+  });
   trackUtmLanding(request, response, event);
   return response;
 };
