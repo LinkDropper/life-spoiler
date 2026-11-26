@@ -6,7 +6,7 @@ export const POST = async () => {
   try {
     const supabase = await createAuthClient();
 
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({ scope: "local" });
 
     if (error) {
       console.error("Supabase signOut error:", error);
